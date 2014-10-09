@@ -382,7 +382,7 @@ public class Show extends RPCRequest {
     }
 
 
-    public Image setSecondaryGraphic() {
+    public Image getSecondaryGraphic() {
     	Object obj = parameters.get(Names.secondaryGraphic);
         if (obj instanceof Image) {
             return (Image) obj;
