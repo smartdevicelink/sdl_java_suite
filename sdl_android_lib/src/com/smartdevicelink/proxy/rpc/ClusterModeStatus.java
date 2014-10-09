@@ -26,7 +26,7 @@ public class ClusterModeStatus extends RPCStruct {
 	    public Boolean getPowerModeActive() {
 	        return (Boolean) store.get(Names.powerModeActive);
 	    }
-	    public void setPowerModeQualificationStatus(Names powerModeQualificationStatus) {
+	    public void setPowerModeQualificationStatus(PowerModeQualificationStatus powerModeQualificationStatus) {
 	        if (powerModeQualificationStatus != null) {
 	            store.put(Names.powerModeQualificationStatus, powerModeQualificationStatus);
 	        } else {
