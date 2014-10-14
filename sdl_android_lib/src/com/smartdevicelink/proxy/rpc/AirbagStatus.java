@@ -3,11 +3,18 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class AirbagStatus extends RPCStruct {
+    public static final String driverAirbagDeployed = "driverAirbagDeployed";
+    public static final String driverSideAirbagDeployed = "driverSideAirbagDeployed";
+    public static final String driverCurtainAirbagDeployed = "driverCurtainAirbagDeployed";
+    public static final String passengerAirbagDeployed = "passengerAirbagDeployed";
+    public static final String passengerCurtainAirbagDeployed = "passengerCurtainAirbagDeployed";
+    public static final String driverKneeAirbagDeployed = "driverKneeAirbagDeployed";
+    public static final String passengerSideAirbagDeployed = "passengerSideAirbagDeployed";
+    public static final String passengerKneeAirbagDeployed = "passengerKneeAirbagDeployed";
 
     public AirbagStatus() { }
     public AirbagStatus(Hashtable hash) {
@@ -16,13 +23,13 @@ public class AirbagStatus extends RPCStruct {
 
     public void setDriverAirbagDeployed(VehicleDataEventStatus driverAirbagDeployed) {
         if (driverAirbagDeployed != null) {
-            store.put(Names.driverAirbagDeployed, driverAirbagDeployed);
+            store.put(AirbagStatus.driverAirbagDeployed, driverAirbagDeployed);
         } else {
-        	store.remove(Names.driverAirbagDeployed);
+            store.remove(AirbagStatus.driverAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getDriverAirbagDeployed() {
-        Object obj = store.get(Names.driverAirbagDeployed);
+        Object obj = store.get(AirbagStatus.driverAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -30,7 +37,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.driverAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.driverAirbagDeployed, e);
             }
             return theCode;
         }
@@ -38,13 +45,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setDriverSideAirbagDeployed(VehicleDataEventStatus driverSideAirbagDeployed) {
         if (driverSideAirbagDeployed != null) {
-            store.put(Names.driverSideAirbagDeployed, driverSideAirbagDeployed);
+            store.put(AirbagStatus.driverSideAirbagDeployed, driverSideAirbagDeployed);
         } else {
-        	store.remove(Names.driverSideAirbagDeployed);
+            store.remove(AirbagStatus.driverSideAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getDriverSideAirbagDeployed() {
-        Object obj = store.get(Names.driverSideAirbagDeployed);
+        Object obj = store.get(AirbagStatus.driverSideAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -52,7 +59,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.driverSideAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.driverSideAirbagDeployed, e);
             }
             return theCode;
         }
@@ -60,13 +67,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setDriverCurtainAirbagDeployed(VehicleDataEventStatus driverCurtainAirbagDeployed) {
         if (driverCurtainAirbagDeployed != null) {
-            store.put(Names.driverCurtainAirbagDeployed, driverCurtainAirbagDeployed);
+            store.put(AirbagStatus.driverCurtainAirbagDeployed, driverCurtainAirbagDeployed);
         } else {
-        	store.remove(Names.driverCurtainAirbagDeployed);
+            store.remove(AirbagStatus.driverCurtainAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getDriverCurtainAirbagDeployed() {
-        Object obj = store.get(Names.driverCurtainAirbagDeployed);
+        Object obj = store.get(AirbagStatus.driverCurtainAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -74,7 +81,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.driverCurtainAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.driverCurtainAirbagDeployed, e);
             }
             return theCode;
         }
@@ -82,13 +89,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setPassengerAirbagDeployed(VehicleDataEventStatus passengerAirbagDeployed) {
         if (passengerAirbagDeployed != null) {
-            store.put(Names.passengerAirbagDeployed, passengerAirbagDeployed);
+            store.put(AirbagStatus.passengerAirbagDeployed, passengerAirbagDeployed);
         } else {
-        	store.remove(Names.passengerAirbagDeployed);
+            store.remove(AirbagStatus.passengerAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getPassengerAirbagDeployed() {
-        Object obj = store.get(Names.passengerAirbagDeployed);
+        Object obj = store.get(AirbagStatus.passengerAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -96,7 +103,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.passengerAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.passengerAirbagDeployed, e);
             }
             return theCode;
         }
@@ -104,13 +111,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setPassengerCurtainAirbagDeployed(VehicleDataEventStatus passengerCurtainAirbagDeployed) {
         if (passengerCurtainAirbagDeployed != null) {
-            store.put(Names.passengerCurtainAirbagDeployed, passengerCurtainAirbagDeployed);
+            store.put(AirbagStatus.passengerCurtainAirbagDeployed, passengerCurtainAirbagDeployed);
         } else {
-        	store.remove(Names.passengerCurtainAirbagDeployed);
+            store.remove(AirbagStatus.passengerCurtainAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getPassengerCurtainAirbagDeployed() {
-        Object obj = store.get(Names.passengerCurtainAirbagDeployed);
+        Object obj = store.get(AirbagStatus.passengerCurtainAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -118,7 +125,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.passengerCurtainAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.passengerCurtainAirbagDeployed, e);
             }
             return theCode;
         }
@@ -126,13 +133,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setDriverKneeAirbagDeployed(VehicleDataEventStatus driverKneeAirbagDeployed) {
         if (driverKneeAirbagDeployed != null) {
-            store.put(Names.driverKneeAirbagDeployed, driverKneeAirbagDeployed);
+            store.put(AirbagStatus.driverKneeAirbagDeployed, driverKneeAirbagDeployed);
         } else {
-        	store.remove(Names.driverKneeAirbagDeployed);
+            store.remove(AirbagStatus.driverKneeAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getDriverKneeAirbagDeployed() {
-        Object obj = store.get(Names.driverKneeAirbagDeployed);
+        Object obj = store.get(AirbagStatus.driverKneeAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -140,7 +147,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.driverKneeAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.driverKneeAirbagDeployed, e);
             }
             return theCode;
         }
@@ -148,13 +155,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setPassengerSideAirbagDeployed(VehicleDataEventStatus passengerSideAirbagDeployed) {
         if (passengerSideAirbagDeployed != null) {
-            store.put(Names.passengerSideAirbagDeployed, passengerSideAirbagDeployed);
+            store.put(AirbagStatus.passengerSideAirbagDeployed, passengerSideAirbagDeployed);
         } else {
-        	store.remove(Names.passengerSideAirbagDeployed);
+            store.remove(AirbagStatus.passengerSideAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getPassengerSideAirbagDeployed() {
-        Object obj = store.get(Names.passengerSideAirbagDeployed);
+        Object obj = store.get(AirbagStatus.passengerSideAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -162,7 +169,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.passengerSideAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.passengerSideAirbagDeployed, e);
             }
             return theCode;
         }
@@ -170,13 +177,13 @@ public class AirbagStatus extends RPCStruct {
     }
     public void setPassengerKneeAirbagDeployed(VehicleDataEventStatus passengerKneeAirbagDeployed) {
         if (passengerKneeAirbagDeployed != null) {
-            store.put(Names.passengerKneeAirbagDeployed, passengerKneeAirbagDeployed);
+            store.put(AirbagStatus.passengerKneeAirbagDeployed, passengerKneeAirbagDeployed);
         } else {
-        	store.remove(Names.passengerKneeAirbagDeployed);
+            store.remove(AirbagStatus.passengerKneeAirbagDeployed);
         }
     }
     public VehicleDataEventStatus getPassengerKneeAirbagDeployed() {
-        Object obj = store.get(Names.passengerKneeAirbagDeployed);
+        Object obj = store.get(AirbagStatus.passengerKneeAirbagDeployed);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -184,7 +191,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.passengerKneeAirbagDeployed, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AirbagStatus.passengerKneeAirbagDeployed, e);
             }
             return theCode;
         }

@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
@@ -146,6 +145,24 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class GPSData extends RPCStruct {
+	public static final String longitudeDegrees = "longitudeDegrees";
+	public static final String latitudeDegrees = "latitudeDegrees";
+	public static final String utcYear = "utcYear";
+	public static final String utcMonth = "utcMonth";
+	public static final String utcDay = "utcDay";
+	public static final String utcHours = "utcHours";
+	public static final String utcMinutes = "utcMinutes";
+	public static final String utcSeconds = "utcSeconds";
+	public static final String compassDirection = "compassDirection";
+	public static final String pdop = "pdop";
+	public static final String vdop = "vdop";
+	public static final String hdop = "hdop";
+	public static final String actual = "actual";
+	public static final String satellites = "satellites";
+	public static final String dimension = "dimension";
+	public static final String altitude = "altitude";
+	public static final String heading = "heading";
+	public static final String speed = "speed";
 
 	/**
 	 * Constructs a newly allocated GPSData object
@@ -166,9 +183,9 @@ public class GPSData extends RPCStruct {
      */
     public void setLongitudeDegrees(Double longitudeDegrees) {
     	if (longitudeDegrees != null) {
-    		store.put(Names.longitudeDegrees, longitudeDegrees);
+    		store.put(GPSData.longitudeDegrees, longitudeDegrees);
     	} else {
-    		store.remove(Names.longitudeDegrees);
+    		store.remove(GPSData.longitudeDegrees);
     	}
     }
     
@@ -177,7 +194,7 @@ public class GPSData extends RPCStruct {
      * @return longitude degrees
      */
     public Double getLongitudeDegrees() {
-    	return (Double) store.get(Names.longitudeDegrees);
+    	return (Double) store.get(GPSData.longitudeDegrees);
     }
     
     /**
@@ -186,9 +203,9 @@ public class GPSData extends RPCStruct {
      */
     public void setLatitudeDegrees(Double latitudeDegrees) {
     	if (latitudeDegrees != null) {
-    		store.put(Names.latitudeDegrees, latitudeDegrees);
+    		store.put(GPSData.latitudeDegrees, latitudeDegrees);
     	} else {
-    		store.remove(Names.latitudeDegrees);
+    		store.remove(GPSData.latitudeDegrees);
     	}
     }
     
@@ -197,7 +214,7 @@ public class GPSData extends RPCStruct {
      * @return latitude degrees
      */
     public Double getLatitudeDegrees() {
-    	return (Double) store.get(Names.latitudeDegrees);
+    	return (Double) store.get(GPSData.latitudeDegrees);
     }
     
     /**
@@ -206,9 +223,9 @@ public class GPSData extends RPCStruct {
      */
     public void setUtcYear(Integer utcYear) {
     	if (utcYear != null) {
-    		store.put(Names.utcYear, utcYear);
+    		store.put(GPSData.utcYear, utcYear);
     	} else {
-    		store.remove(Names.utcYear);
+    		store.remove(GPSData.utcYear);
     	}
     }
     
@@ -217,7 +234,7 @@ public class GPSData extends RPCStruct {
      * @return utc year
      */
     public Integer getUtcYear() {
-    	return (Integer) store.get(Names.utcYear);
+    	return (Integer) store.get(GPSData.utcYear);
     }
     
     /**
@@ -226,9 +243,9 @@ public class GPSData extends RPCStruct {
      */
     public void setUtcMonth(Integer utcMonth) {
     	if (utcMonth != null) {
-    		store.put(Names.utcMonth, utcMonth);
+    		store.put(GPSData.utcMonth, utcMonth);
     	} else {
-    		store.remove(Names.utcMonth);
+    		store.remove(GPSData.utcMonth);
     	}
     }
     
@@ -237,7 +254,7 @@ public class GPSData extends RPCStruct {
      * @return utc month
      */
     public Integer getUtcMonth() {
-    	return (Integer) store.get(Names.utcMonth);
+    	return (Integer) store.get(GPSData.utcMonth);
     }
     
     /**
@@ -246,9 +263,9 @@ public class GPSData extends RPCStruct {
      */
     public void setUtcDay(Integer utcDay) {
     	if (utcDay != null) {
-    		store.put(Names.utcDay, utcDay);
+    		store.put(GPSData.utcDay, utcDay);
     	} else {
-    		store.remove(Names.utcDay);
+    		store.remove(GPSData.utcDay);
     	}
     }
     
@@ -257,7 +274,7 @@ public class GPSData extends RPCStruct {
      * @return utc day
      */
     public Integer getUtcDay() {
-    	return (Integer) store.get(Names.utcDay);
+    	return (Integer) store.get(GPSData.utcDay);
     }
     
     /**
@@ -266,9 +283,9 @@ public class GPSData extends RPCStruct {
      */
     public void setUtcHours(Integer utcHours) {
     	if (utcHours != null) {
-    		store.put(Names.utcHours, utcHours);
+    		store.put(GPSData.utcHours, utcHours);
     	} else {
-    		store.remove(Names.utcHours);
+    		store.remove(GPSData.utcHours);
     	}
     }
     
@@ -277,7 +294,7 @@ public class GPSData extends RPCStruct {
      * @return utc hours
      */
     public Integer getUtcHours() {
-    	return (Integer) store.get(Names.utcHours);
+    	return (Integer) store.get(GPSData.utcHours);
     }
     
     /**
@@ -286,9 +303,9 @@ public class GPSData extends RPCStruct {
      */
     public void setUtcMinutes(Integer utcMinutes) {
     	if (utcMinutes != null) {
-    		store.put(Names.utcMinutes, utcMinutes);
+    		store.put(GPSData.utcMinutes, utcMinutes);
     	} else {
-    		store.remove(Names.utcMinutes);
+    		store.remove(GPSData.utcMinutes);
     	}
     }
     
@@ -297,7 +314,7 @@ public class GPSData extends RPCStruct {
      * @return utc minutes
      */
     public Integer getUtcMinutes() {
-    	return (Integer) store.get(Names.utcMinutes);
+    	return (Integer) store.get(GPSData.utcMinutes);
     }
     
     /**
@@ -306,9 +323,9 @@ public class GPSData extends RPCStruct {
      */
     public void setUtcSeconds(Integer utcSeconds) {
     	if (utcSeconds != null) {
-    		store.put(Names.utcSeconds, utcSeconds);
+    		store.put(GPSData.utcSeconds, utcSeconds);
     	} else {
-    		store.remove(Names.utcSeconds);
+    		store.remove(GPSData.utcSeconds);
     	}
     }
     
@@ -317,17 +334,17 @@ public class GPSData extends RPCStruct {
      * @return utc seconds
      */
     public Integer getUtcSeconds() {
-    	return (Integer) store.get(Names.utcSeconds);
+    	return (Integer) store.get(GPSData.utcSeconds);
     }
     public void setCompassDirection(CompassDirection compassDirection) {
     	if (compassDirection != null) {
-    		store.put(Names.compassDirection, compassDirection);
+    		store.put(GPSData.compassDirection, compassDirection);
     	} else {
-    		store.remove(Names.compassDirection);
+    		store.remove(GPSData.compassDirection);
     	}
     }
     public CompassDirection getCompassDirection() {
-        Object obj = store.get(Names.compassDirection);
+        Object obj = store.get(GPSData.compassDirection);
         if (obj instanceof CompassDirection) {
             return (CompassDirection) obj;
         } else if (obj instanceof String) {
@@ -335,7 +352,7 @@ public class GPSData extends RPCStruct {
             try {
                 theCode = CompassDirection.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.compassDirection, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + GPSData.compassDirection, e);
             }
             return theCode;
         }
@@ -348,9 +365,9 @@ public class GPSData extends RPCStruct {
      */
     public void setPdop(Double pdop) {
     	if (pdop != null) {
-    		store.put(Names.pdop, pdop);
+    		store.put(GPSData.pdop, pdop);
     	} else {
-    		store.remove(Names.pdop);
+    		store.remove(GPSData.pdop);
     	}
     }
     
@@ -358,7 +375,7 @@ public class GPSData extends RPCStruct {
      * get  the positional dilution of precision
      */
     public Double getPdop() {
-    	return (Double) store.get(Names.pdop);
+    	return (Double) store.get(GPSData.pdop);
     }
     
     /**
@@ -367,9 +384,9 @@ public class GPSData extends RPCStruct {
      */
     public void setHdop(Double hdop) {
     	if (hdop != null) {
-    		store.put(Names.hdop, hdop);
+    		store.put(GPSData.hdop, hdop);
     	} else {
-    		store.remove(Names.hdop);
+    		store.remove(GPSData.hdop);
     	}
     }
     
@@ -378,7 +395,7 @@ public class GPSData extends RPCStruct {
      * @return the horizontal dilution of precision
      */
     public Double getHdop() {
-    	return (Double) store.get(Names.hdop);
+    	return (Double) store.get(GPSData.hdop);
     }
     
     /**
@@ -387,9 +404,9 @@ public class GPSData extends RPCStruct {
      */
     public void setVdop(Double vdop) {
     	if (vdop != null) {
-    		store.put(Names.vdop, vdop);
+    		store.put(GPSData.vdop, vdop);
     	} else {
-    		store.remove(Names.vdop);
+    		store.remove(GPSData.vdop);
     	}
     }
     
@@ -398,7 +415,7 @@ public class GPSData extends RPCStruct {
      * @return the vertical dilution of precision
      */
     public Double getVdop() {
-    	return (Double) store.get(Names.vdop);
+    	return (Double) store.get(GPSData.vdop);
     }
     
     /**
@@ -407,9 +424,9 @@ public class GPSData extends RPCStruct {
      */
     public void setActual(Boolean actual) {
     	if (actual != null) {
-    		store.put(Names.actual, actual);
+    		store.put(GPSData.actual, actual);
     	} else {
-    		store.remove(Names.actual);
+    		store.remove(GPSData.actual);
     	}
     }
     
@@ -418,7 +435,7 @@ public class GPSData extends RPCStruct {
      * @return True, if coordinates are based on satellites.False, if based on dead reckoning
      */
     public Boolean getActual() {
-    	return (Boolean) store.get(Names.actual);
+    	return (Boolean) store.get(GPSData.actual);
     }
     
     /**
@@ -427,9 +444,9 @@ public class GPSData extends RPCStruct {
      */
     public void setSatellites(Integer satellites) {
     	if (satellites != null) {
-    		store.put(Names.satellites, satellites);
+    		store.put(GPSData.satellites, satellites);
     	} else {
-    		store.remove(Names.satellites);
+    		store.remove(GPSData.satellites);
     	}
     }
     
@@ -438,17 +455,17 @@ public class GPSData extends RPCStruct {
      * @return the number of satellites in view
      */
     public Integer getSatellites() {
-    	return (Integer) store.get(Names.satellites);
+    	return (Integer) store.get(GPSData.satellites);
     }
     public void setDimension(Dimension dimension) {
     	if (dimension != null) {
-    		store.put(Names.dimension, dimension);
+    		store.put(GPSData.dimension, dimension);
     	} else {
-    		store.remove(Names.dimension);
+    		store.remove(GPSData.dimension);
     	}
     }
     public Dimension getDimension() {
-        Object obj = store.get(Names.dimension);
+        Object obj = store.get(GPSData.dimension);
         if (obj instanceof Dimension) {
             return (Dimension) obj;
         } else if (obj instanceof String) {
@@ -456,7 +473,7 @@ public class GPSData extends RPCStruct {
             try {
                 theCode = Dimension.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.dimension, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + GPSData.dimension, e);
             }
             return theCode;
         }
@@ -469,9 +486,9 @@ public class GPSData extends RPCStruct {
      */
     public void setAltitude(Double altitude) {
     	if (altitude != null) {
-    		store.put(Names.altitude, altitude);
+    		store.put(GPSData.altitude, altitude);
     	} else {
-    		store.remove(Names.altitude);
+    		store.remove(GPSData.altitude);
     	}
     }
     
@@ -480,7 +497,7 @@ public class GPSData extends RPCStruct {
      * @return altitude in meters
      */
     public Double getAltitude() {
-    	return (Double) store.get(Names.altitude);
+    	return (Double) store.get(GPSData.altitude);
     }
     
     /**
@@ -489,9 +506,9 @@ public class GPSData extends RPCStruct {
      */
     public void setHeading(Double heading) {
     	if (heading != null) {
-    		store.put(Names.heading, heading);
+    		store.put(GPSData.heading, heading);
     	} else {
-    		store.remove(Names.heading);
+    		store.remove(GPSData.heading);
     	}
     }
     
@@ -499,7 +516,7 @@ public class GPSData extends RPCStruct {
      * get the heading
      */
     public Double getHeading() {
-    	return (Double) store.get(Names.heading);
+    	return (Double) store.get(GPSData.heading);
     }
     
     /**
@@ -508,9 +525,9 @@ public class GPSData extends RPCStruct {
      */
     public void setSpeed(Double speed) {
     	if (speed != null) {
-    		store.put(Names.speed, speed);
+    		store.put(GPSData.speed, speed);
     	} else {
-    		store.remove(Names.speed);
+    		store.remove(GPSData.speed);
     	}
     }
     
@@ -519,6 +536,6 @@ public class GPSData extends RPCStruct {
      * @return the speed in KPH
      */
     public Double getSpeed() {
-    	return (Double) store.get(Names.speed);
+    	return (Double) store.get(GPSData.speed);
     }
 }

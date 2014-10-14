@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.util.DebugTool;
@@ -84,6 +83,9 @@ import com.smartdevicelink.util.DebugTool;
  * 
  */
 public class OnButtonEvent extends RPCNotification {
+	public static final String buttonEventMode = "buttonEventMode";
+	public static final String buttonName = "buttonName";
+	public static final String customButtonID = "customButtonID";
 	/**
 	*Constructs a newly allocated OnButtonEvent object
 	*/
@@ -107,7 +109,7 @@ public class OnButtonEvent extends RPCNotification {
      * @return ButtonName Name of the button
      */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(Names.buttonName);
+        Object obj = parameters.get(OnButtonEvent.buttonName);
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
@@ -115,7 +117,7 @@ public class OnButtonEvent extends RPCNotification {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.buttonName, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnButtonEvent.buttonName, e);
             }
             return theCode;
         }
@@ -127,9 +129,9 @@ public class OnButtonEvent extends RPCNotification {
      */    
     public void setButtonName(ButtonName buttonName) {
         if (buttonName != null) {
-            parameters.put(Names.buttonName, buttonName);
+            parameters.put(OnButtonEvent.buttonName, buttonName);
         } else {
-        	parameters.remove(Names.buttonName);
+        	parameters.remove(OnButtonEvent.buttonName);
         }
     }
     /**
@@ -137,7 +139,7 @@ public class OnButtonEvent extends RPCNotification {
      * @return ButtonEventMode the button depressed or released
      */    
     public ButtonEventMode getButtonEventMode() {
-        Object obj = parameters.get(Names.buttonEventMode);
+        Object obj = parameters.get(OnButtonEvent.buttonEventMode);
         if (obj instanceof ButtonEventMode) {
             return (ButtonEventMode) obj;
         } else if (obj instanceof String) {
@@ -145,7 +147,7 @@ public class OnButtonEvent extends RPCNotification {
             try {
                 theCode = ButtonEventMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.buttonEventMode, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnButtonEvent.buttonEventMode, e);
             }
             return theCode;
         }
@@ -158,19 +160,19 @@ public class OnButtonEvent extends RPCNotification {
      */    
     public void setButtonEventMode(ButtonEventMode buttonEventMode) {
         if (buttonEventMode != null) {
-            parameters.put(Names.buttonEventMode, buttonEventMode);
+            parameters.put(OnButtonEvent.buttonEventMode, buttonEventMode);
         } else {
-    		parameters.remove(Names.buttonEventMode);
+    		parameters.remove(OnButtonEvent.buttonEventMode);
     	}
     }
     public void setCustomButtonID(Integer customButtonID) {
     	if (customButtonID != null) {
-    		parameters.put(Names.customButtonID, customButtonID);
+    		parameters.put(OnButtonEvent.customButtonID, customButtonID);
     	} else {
-    		parameters.remove(Names.customButtonID);
+    		parameters.remove(OnButtonEvent.customButtonID);
     	}
     }
     public Integer getCustomButtonID() {
-    	return (Integer) parameters.get(Names.customButtonID);
+    	return (Integer) parameters.get(OnButtonEvent.customButtonID);
     }
 }

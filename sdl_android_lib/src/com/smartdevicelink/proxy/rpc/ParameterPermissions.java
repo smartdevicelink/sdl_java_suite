@@ -4,8 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -45,6 +43,8 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
  * @since SmartDeviceLink 2.0
  */
 public class ParameterPermissions extends RPCStruct {
+	public static final String allowed = "allowed";
+	public static final String userDisallowed = "userDisallowed";
 
 	/**
 	 *  Constructs a newly allocated ParameterPermissions object
@@ -64,8 +64,8 @@ public class ParameterPermissions extends RPCStruct {
      * @return a set of all parameters that are permitted for this given RPC.
      */
     public Vector<String> getAllowed() {
-        if (store.get(Names.allowed) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.allowed);
+        if (store.get(ParameterPermissions.allowed) instanceof Vector<?>) {
+        	Vector<?> list = (Vector<?>)store.get( ParameterPermissions.allowed);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
@@ -82,9 +82,9 @@ public class ParameterPermissions extends RPCStruct {
      */
     public void setAllowed(Vector<String> allowed) {
         if (allowed != null) {
-            store.put(Names.allowed, allowed);
+            store.put(ParameterPermissions.allowed, allowed);
         } else {
-    		store.remove(Names.allowed);
+    		store.remove(ParameterPermissions.allowed);
     	}
     }
     
@@ -93,8 +93,8 @@ public class ParameterPermissions extends RPCStruct {
      * @return a set of all parameters that are prohibited for this given RPC
      */
     public Vector<String> getUserDisallowed() {
-        if (store.get(Names.userDisallowed) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.userDisallowed);
+        if (store.get(ParameterPermissions.userDisallowed) instanceof Vector<?>) {
+        	Vector<?> list = (Vector<?>)store.get( ParameterPermissions.userDisallowed);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
@@ -111,9 +111,9 @@ public class ParameterPermissions extends RPCStruct {
      */
     public void setUserDisallowed(Vector<String> userDisallowed) {
         if (userDisallowed != null) {
-            store.put(Names.userDisallowed, userDisallowed);
+            store.put(ParameterPermissions.userDisallowed, userDisallowed);
         } else {
-    		store.remove(Names.userDisallowed);
+    		store.remove(ParameterPermissions.userDisallowed);
     	}
     }
 }

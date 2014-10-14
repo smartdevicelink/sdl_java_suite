@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
@@ -38,6 +37,14 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see Speak
  */
 public class Alert extends RPCRequest {
+	public static final String playTone = "playTone";
+	public static final String duration = "duration";
+	public static final String alertText1 = "alertText1";
+	public static final String alertText2 = "alertText2";
+	public static final String alertText3 = "alertText3";
+    public static final String progressIndicator = "progressIndicator";
+	public static final String ttsChunks = "ttsChunks";
+	public static final String softButtons = "softButtons";
 
 	/**
 	 * Constructs a new Alert object
@@ -63,7 +70,7 @@ public class Alert extends RPCRequest {
 	 *         in the first field during the Alert
 	 */    
     public String getAlertText1() {
-        return (String) parameters.get(Names.alertText1);
+        return (String) parameters.get(Alert.alertText1);
     }
 	/**
 	 * Sets the String to be displayed in the first field of the display during
@@ -82,9 +89,9 @@ public class Alert extends RPCRequest {
 	 */    
     public void setAlertText1(String alertText1) {
         if (alertText1 != null) {
-            parameters.put(Names.alertText1, alertText1);
+            parameters.put(Alert.alertText1, alertText1);
         } else {
-        	parameters.remove(Names.alertText1);
+            parameters.remove(Alert.alertText1);
         }
     }
 	/**
@@ -95,7 +102,7 @@ public class Alert extends RPCRequest {
 	 *         in the second field during the Alert
 	 */    
     public String getAlertText2() {
-        return (String) parameters.get(Names.alertText2);
+        return (String) parameters.get(Alert.alertText2);
     }
 	/**
 	 * Sets the String to be displayed in the second field of the display during
@@ -115,9 +122,9 @@ public class Alert extends RPCRequest {
 	 */    
     public void setAlertText2(String alertText2) {
         if (alertText2 != null) {
-            parameters.put(Names.alertText2, alertText2);
+            parameters.put(Alert.alertText2, alertText2);
         } else {
-        	parameters.remove(Names.alertText2);
+            parameters.remove(Alert.alertText2);
         }
     }
 
@@ -131,7 +138,7 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getAlertText3() {
-        return (String) parameters.get(Names.alertText3);
+        return (String) parameters.get(Alert.alertText3);
     }
 
 	/**
@@ -154,9 +161,9 @@ public class Alert extends RPCRequest {
 	 */
     public void setAlertText3(String alertText3) {
         if (alertText3 != null) {
-            parameters.put(Names.alertText3, alertText3);
+            parameters.put(Alert.alertText3, alertText3);
         } else {
-        	parameters.remove(Names.alertText3);
+            parameters.remove(Alert.alertText3);
         }
     }
 	/**
@@ -167,8 +174,8 @@ public class Alert extends RPCRequest {
 	 *         the user
 	 */    
     public Vector<TTSChunk> getTtsChunks() {
-        if (parameters.get(Names.ttsChunks) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.ttsChunks);
+        if (parameters.get(Alert.ttsChunks) instanceof Vector<?>) {
+            Vector<?> list = (Vector<?>)parameters.get(Alert.ttsChunks);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
@@ -194,9 +201,9 @@ public class Alert extends RPCRequest {
 	 */    
     public void setTtsChunks(Vector<TTSChunk> ttsChunks) {
         if (ttsChunks != null) {
-            parameters.put(Names.ttsChunks, ttsChunks);
+            parameters.put(Alert.ttsChunks, ttsChunks);
         } else {
-        	parameters.remove(Names.ttsChunks);
+            parameters.remove(Alert.ttsChunks);
         }
     }
 	/**
@@ -206,7 +213,7 @@ public class Alert extends RPCRequest {
 	 *         displayed portion of the alert, in milliseconds
 	 */    
     public Integer getDuration() {
-        return (Integer) parameters.get(Names.duration);
+        return (Integer) parameters.get(Alert.duration);
     }
 	/**
 	 * Sets the duration of the displayed portion of the alert, in milliseconds.
@@ -227,9 +234,9 @@ public class Alert extends RPCRequest {
 	 */    
     public void setDuration(Integer duration) {
         if (duration != null) {
-            parameters.put(Names.duration, duration);
+            parameters.put(Alert.duration, duration);
         } else {
-        	parameters.remove(Names.duration);
+            parameters.remove(Alert.duration);
         }
     }
 	/**
@@ -239,7 +246,7 @@ public class Alert extends RPCRequest {
 	 *         TTS (if any) is spoken
 	 */    
     public Boolean getPlayTone() {
-        return (Boolean) parameters.get(Names.playTone);
+        return (Boolean) parameters.get(Alert.playTone);
     }
 	/**
 	 * Sets whether the alert tone should be played before the TTS (if any) is
@@ -253,9 +260,9 @@ public class Alert extends RPCRequest {
 	 */    
     public void setPlayTone(Boolean playTone) {
         if (playTone != null) {
-            parameters.put(Names.playTone, playTone);
+            parameters.put(Alert.playTone, playTone);
         } else {
-        	parameters.remove(Names.playTone);
+            parameters.remove(Alert.playTone);
         }
     }
 
@@ -267,8 +274,8 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Names.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
+        if (parameters.get(Alert.softButtons) instanceof Vector<?>) {
+            Vector<?> list = (Vector<?>)parameters.get(Alert.softButtons);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
@@ -303,13 +310,13 @@ public class Alert extends RPCRequest {
     
     public void setSoftButtons(Vector<SoftButton> softButtons) {
         if (softButtons != null) {
-            parameters.put(Names.softButtons, softButtons);
+            parameters.put(Alert.softButtons, softButtons);
         } else {
-        	parameters.remove(Names.softButtons);
+            parameters.remove(Alert.softButtons);
         }
     }
     public Boolean getProgressIndicator() {
-        final Object obj = parameters.get(Names.progressIndicator);
+        final Object obj = parameters.get(Alert.progressIndicator);
         if (obj instanceof Boolean) {
             return (Boolean) obj;
         }
@@ -317,9 +324,9 @@ public class Alert extends RPCRequest {
     }
     public void setProgressIndicator(Boolean progressIndicator) {
         if (progressIndicator != null) {
-            parameters.put(Names.progressIndicator, progressIndicator);
+            parameters.put(Alert.progressIndicator, progressIndicator);
         } else {
-        	parameters.remove(Names.progressIndicator);
+            parameters.remove(Alert.progressIndicator);
         }
     }    
 }

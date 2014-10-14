@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.DebugTool;
 
@@ -53,6 +52,8 @@ import com.smartdevicelink.util.DebugTool;
  * @see DeleteSubMenu
  */
 public class OnCommand extends RPCNotification {
+	public static final String cmdID = "cmdID";
+	public static final String triggerSource = "triggerSource";
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
@@ -71,7 +72,7 @@ public class OnCommand extends RPCNotification {
      * @return Integer an integer representation of this object
      */    
     public Integer getCmdID() {
-        return (Integer) parameters.get( Names.cmdID );
+        return (Integer) parameters.get( OnCommand.cmdID );
     }
     /**
      * <p>Sets a Command ID</p>    
@@ -79,7 +80,7 @@ public class OnCommand extends RPCNotification {
      */    
     public void setCmdID( Integer cmdID ) {
         if (cmdID != null) {
-            parameters.put(Names.cmdID, cmdID );
+            parameters.put(OnCommand.cmdID, cmdID );
         }
     }
     /**
@@ -87,7 +88,7 @@ public class OnCommand extends RPCNotification {
      * @return TriggerSource a TriggerSource object
      */    
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(Names.triggerSource);
+        Object obj = parameters.get(OnCommand.triggerSource);
         if (obj instanceof TriggerSource) {
             return (TriggerSource) obj;
         } else if (obj instanceof String) {
@@ -95,7 +96,7 @@ public class OnCommand extends RPCNotification {
             try {
                 theCode = TriggerSource.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.triggerSource, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnCommand.triggerSource, e);
             }
             return theCode;
         }
@@ -108,7 +109,7 @@ public class OnCommand extends RPCNotification {
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
         if (triggerSource != null) {
-            parameters.put(Names.triggerSource, triggerSource );
+            parameters.put(OnCommand.triggerSource, triggerSource );
         }
     }
 }

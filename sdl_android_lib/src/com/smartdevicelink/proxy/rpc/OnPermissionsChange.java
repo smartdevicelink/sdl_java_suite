@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Provides update to app of which sets of functions are available
@@ -48,6 +47,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * </p>
  */
 public class OnPermissionsChange extends RPCNotification {
+	public static final String permissionItem = "permissionItem";
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
@@ -66,7 +66,7 @@ public class OnPermissionsChange extends RPCNotification {
      * @return Vector<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
      */   
 	public Vector<PermissionItem> getPermissionItem() {
-		Vector<?> list = (Vector<?>)parameters.get(Names.permissionItem);
+		Vector<?> list = (Vector<?>)parameters.get(OnPermissionsChange.permissionItem);
 		if (list != null && list.size()>0) {
 			Object obj = list.get(0);
 			if(obj instanceof PermissionItem){
@@ -87,9 +87,9 @@ public class OnPermissionsChange extends RPCNotification {
      */  
 	public void setPermissionItem(Vector<PermissionItem> permissionItem) {
 		if (permissionItem != null) {
-			parameters.put(Names.permissionItem, permissionItem);
+			parameters.put(OnPermissionsChange.permissionItem, permissionItem);
 		} else {
-			parameters.remove(Names.permissionItem);
+			parameters.remove(OnPermissionsChange.permissionItem);
         }
 	}
 }

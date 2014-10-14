@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 import java.util.Hashtable;
 
 public class ImageResolution extends RPCStruct {
+	public static final String resolutionWidth = "resolutionWidth";
+	public static final String resolutionHeight = "resolutionHeight";
     public ImageResolution() {}
     
     public ImageResolution(Hashtable hash) {
@@ -14,25 +15,25 @@ public class ImageResolution extends RPCStruct {
     
     public void setResolutionWidth(Integer resolutionWidth) {
         if (resolutionWidth != null) {
-            store.put(Names.resolutionWidth, resolutionWidth);
+            store.put(ImageResolution.resolutionWidth, resolutionWidth);
         } else {
-        	store.remove(Names.resolutionWidth);
+        	store.remove(ImageResolution.resolutionWidth);
         }
     }
     
     public Integer getResolutionWidth() {
-        return (Integer) store.get(Names.resolutionWidth);
+        return (Integer) store.get(ImageResolution.resolutionWidth);
     }
     
     public void setResolutionHeight(Integer resolutionHeight) {
         if (resolutionHeight != null) {
-            store.put(Names.resolutionHeight, resolutionHeight);
+            store.put(ImageResolution.resolutionHeight, resolutionHeight);
         } else {
-        	store.remove(Names.resolutionHeight);
+        	store.remove(ImageResolution.resolutionHeight);
         }
     }
     
     public Integer getResolutionHeight() {
-        return (Integer) store.get(Names.resolutionHeight);
+        return (Integer) store.get(ImageResolution.resolutionHeight);
     }
 }

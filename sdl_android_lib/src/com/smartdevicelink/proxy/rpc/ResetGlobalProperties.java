@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.util.DebugTool;
 /**
@@ -24,6 +23,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see SetGlobalProperties
  */
 public class ResetGlobalProperties extends RPCRequest {
+	public static final String properties = "properties";
 	/**
 	 * Constructs a new ResetGlobalProperties object
 	 */
@@ -49,8 +49,8 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *         enumeration elements
 	 */    
     public Vector<GlobalProperty> getProperties() {
-    	if (parameters.get(Names.properties) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(Names.properties);
+    	if (parameters.get(ResetGlobalProperties.properties) instanceof Vector<?>) {
+	        Vector<?> list = (Vector<?>)parameters.get(ResetGlobalProperties.properties);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof GlobalProperty) {
@@ -63,7 +63,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	                    try {
 	                        toAdd = GlobalProperty.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.properties, e);
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + ResetGlobalProperties.properties, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -88,7 +88,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 */    
     public void setProperties( Vector<GlobalProperty> properties ) {
         if (properties != null) {
-            parameters.put(Names.properties, properties );
+            parameters.put(ResetGlobalProperties.properties, properties );
         }
     }
 }

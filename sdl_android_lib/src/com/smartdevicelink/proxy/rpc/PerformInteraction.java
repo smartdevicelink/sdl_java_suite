@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
@@ -26,6 +25,15 @@ import com.smartdevicelink.util.DebugTool;
  * @see DeleteInteractionChoiceSet
  */
 public class PerformInteraction extends RPCRequest {
+	public static final String initialText = "initialText";
+	public static final String interactionMode = "interactionMode";
+	public static final String interactionChoiceSetIDList = "interactionChoiceSetIDList";
+	public static final String interactionLayout = "interactionLayout";
+	public static final String initialPrompt = "initialPrompt";
+	public static final String helpPrompt = "helpPrompt";
+	public static final String timeoutPrompt = "timeoutPrompt";
+	public static final String timeout = "timeout";
+	public static final String vrHelp = "vrHelp";
 	/**
 	 * Constructs a new PerformInteraction object
 	 */
@@ -52,7 +60,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @return String -the text displayed when the interaction begins
 	 */
     public String getInitialText() {
-        return (String) parameters.get(Names.initialText);
+        return (String) parameters.get(PerformInteraction.initialText);
     }
 	/**
 	 * Sets the Text that Displayed when the interaction begins. This text may
@@ -65,9 +73,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setInitialText(String initialText) {
         if (initialText != null) {
-            parameters.put(Names.initialText, initialText);
+            parameters.put(PerformInteraction.initialText, initialText);
         } else {
-        	parameters.remove(Names.initialText);
+        	parameters.remove(PerformInteraction.initialText);
         }
     }
 	/**
@@ -78,8 +86,8 @@ public class PerformInteraction extends RPCRequest {
 	 *         spoken to the user at the start of an interaction
 	 */
     public Vector<TTSChunk> getInitialPrompt() {
-        if (parameters.get(Names.initialPrompt) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.initialPrompt);
+        if (parameters.get(PerformInteraction.initialPrompt) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(PerformInteraction.initialPrompt);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
@@ -105,9 +113,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setInitialPrompt(Vector<TTSChunk> initialPrompt) {
         if (initialPrompt != null) {
-            parameters.put(Names.initialPrompt, initialPrompt);
+            parameters.put(PerformInteraction.initialPrompt, initialPrompt);
         } else {
-        	parameters.remove(Names.initialPrompt);
+        	parameters.remove(PerformInteraction.initialPrompt);
         }
     }
 	/**
@@ -119,7 +127,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         (VR_ONLY, MANUAL_ONLY or BOTH)
 	 */    
     public InteractionMode getInteractionMode() {
-        Object obj = parameters.get(Names.interactionMode);
+        Object obj = parameters.get(PerformInteraction.interactionMode);
         if (obj instanceof InteractionMode) {
             return (InteractionMode) obj;
         } else if (obj instanceof String) {
@@ -127,7 +135,7 @@ public class PerformInteraction extends RPCRequest {
             try {
                 theCode = InteractionMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.interactionMode, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + PerformInteraction.interactionMode, e);
             }
             return theCode;
         }
@@ -144,9 +152,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setInteractionMode(InteractionMode interactionMode) {
         if (interactionMode != null) {
-            parameters.put(Names.interactionMode, interactionMode);
+            parameters.put(PerformInteraction.interactionMode, interactionMode);
         } else {
-        	parameters.remove(Names.interactionMode);
+        	parameters.remove(PerformInteraction.interactionMode);
         }
     }
 	/**
@@ -158,8 +166,8 @@ public class PerformInteraction extends RPCRequest {
 	 *         of the specified Choice Sets
 	 */    
     public Vector<Integer> getInteractionChoiceSetIDList() {
-    	if(parameters.get(Names.interactionChoiceSetIDList) instanceof Vector<?>){
-    		Vector<?> list = (Vector<?>)parameters.get(Names.interactionChoiceSetIDList);
+    	if(parameters.get(PerformInteraction.interactionChoiceSetIDList) instanceof Vector<?>){
+    		Vector<?> list = (Vector<?>)parameters.get(PerformInteraction.interactionChoiceSetIDList);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof Integer){
@@ -182,9 +190,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setInteractionChoiceSetIDList(Vector<Integer> interactionChoiceSetIDList) {
         if (interactionChoiceSetIDList != null) {
-            parameters.put(Names.interactionChoiceSetIDList, interactionChoiceSetIDList);
+            parameters.put(PerformInteraction.interactionChoiceSetIDList, interactionChoiceSetIDList);
         } else {
-        	parameters.remove(Names.interactionChoiceSetIDList);
+        	parameters.remove(PerformInteraction.interactionChoiceSetIDList);
         }
     }
 	/**
@@ -196,8 +204,8 @@ public class PerformInteraction extends RPCRequest {
 	 *         during the VR session
 	 */    
     public Vector<TTSChunk> getHelpPrompt() {
-        if(parameters.get(Names.helpPrompt) instanceof Vector<?>){
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.helpPrompt);
+        if(parameters.get(PerformInteraction.helpPrompt) instanceof Vector<?>){
+	    	Vector<?> list = (Vector<?>)parameters.get(PerformInteraction.helpPrompt);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
@@ -231,9 +239,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setHelpPrompt(Vector<TTSChunk> helpPrompt) {
         if (helpPrompt != null) {
-            parameters.put(Names.helpPrompt, helpPrompt);
+            parameters.put(PerformInteraction.helpPrompt, helpPrompt);
         } else {
-        	parameters.remove(Names.helpPrompt);
+        	parameters.remove(PerformInteraction.helpPrompt);
         }
     }
 	/**
@@ -244,8 +252,8 @@ public class PerformInteraction extends RPCRequest {
 	 *         spoken when the listen times out during the VR session
 	 */    
     public Vector<TTSChunk> getTimeoutPrompt() {
-        if (parameters.get(Names.timeoutPrompt) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.timeoutPrompt);
+        if (parameters.get(PerformInteraction.timeoutPrompt) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(PerformInteraction.timeoutPrompt);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
@@ -274,9 +282,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setTimeoutPrompt(Vector<TTSChunk> timeoutPrompt) {
         if (timeoutPrompt != null) {
-            parameters.put(Names.timeoutPrompt, timeoutPrompt);
+            parameters.put(PerformInteraction.timeoutPrompt, timeoutPrompt);
         } else {
-        	parameters.remove(Names.timeoutPrompt);
+        	parameters.remove(PerformInteraction.timeoutPrompt);
         }
     }
 	/**
@@ -288,7 +296,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         Menu)
 	 */    
     public Integer getTimeout() {
-        return (Integer) parameters.get(Names.timeout);
+        return (Integer) parameters.get(PerformInteraction.timeout);
     }
 	/**
 	 * Sets the amount of time, in milliseconds, SDL will wait for the user to
@@ -308,9 +316,9 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     public void setTimeout(Integer timeout) {
         if (timeout != null) {
-            parameters.put(Names.timeout, timeout);
+            parameters.put(PerformInteraction.timeout, timeout);
         } else {
-        	parameters.remove(Names.timeout);
+        	parameters.remove(PerformInteraction.timeout);
         }
     }
 
@@ -323,8 +331,8 @@ public class PerformInteraction extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Vector<VrHelpItem> getVrHelp() {
-        if (parameters.get(Names.vrHelp) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrHelp);
+        if (parameters.get(PerformInteraction.vrHelp) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(PerformInteraction.vrHelp);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof VrHelpItem) {
@@ -354,14 +362,14 @@ public class PerformInteraction extends RPCRequest {
 	 */
     public void setVrHelp(Vector<VrHelpItem> vrHelp) {
         if (vrHelp != null) {
-            parameters.put(Names.vrHelp, vrHelp);
+            parameters.put(PerformInteraction.vrHelp, vrHelp);
         } else {
-        	parameters.remove(Names.vrHelp);
+        	parameters.remove(PerformInteraction.vrHelp);
         }
     }
     
     public LayoutMode getInteractionLayout() {
-        Object obj = parameters.get(Names.interactionLayout);
+        Object obj = parameters.get(PerformInteraction.interactionLayout);
         if (obj instanceof DisplayType) {
             return (LayoutMode) obj;
         } else if (obj instanceof String) {
@@ -369,7 +377,7 @@ public class PerformInteraction extends RPCRequest {
             try {
                 theCode = LayoutMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.interactionLayout, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + PerformInteraction.interactionLayout, e);
             }
             return theCode;
         }
@@ -378,10 +386,10 @@ public class PerformInteraction extends RPCRequest {
   
     public void setInteractionLayout( LayoutMode interactionLayout ) {
         if (interactionLayout != null) {
-        	parameters.put(Names.interactionLayout, interactionLayout );
+        	parameters.put(PerformInteraction.interactionLayout, interactionLayout );
         }
         else {
-        	parameters.remove(Names.interactionLayout);
+        	parameters.remove(PerformInteraction.interactionLayout);
         }
     }    
 }

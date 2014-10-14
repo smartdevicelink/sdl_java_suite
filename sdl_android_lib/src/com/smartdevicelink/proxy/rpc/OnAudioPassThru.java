@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Binary data is in binary part of hybrid msg.
@@ -56,12 +55,12 @@ public class OnAudioPassThru extends RPCNotification {
     }
     public void setAPTData(byte[] aptData) {
         if (aptData != null) {
-            store.put(Names.bulkData, aptData);
+            store.put(RPCNotification.bulkData, aptData);
         } else {
-        	store.remove(Names.bulkData);
+        	store.remove(RPCNotification.bulkData);
         }
     }
     public byte[] getAPTData() {
-        return (byte[]) store.get(Names.bulkData);
+        return (byte[]) store.get(RPCNotification.bulkData);
     }
 }

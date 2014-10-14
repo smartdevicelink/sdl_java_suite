@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Used to delete a file resident on the SDL module in the app's local cache.
@@ -15,6 +14,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see ListFiles
  */
 public class DeleteFile extends RPCRequest {
+	public static final String smartDeviceLinkFileName = "syncFileName";
 
 	/**
 	 * Constructs a new DeleteFile object
@@ -42,9 +42,9 @@ public class DeleteFile extends RPCRequest {
 	 */
     public void setSdlFileName(String sdlFileName) {
         if (sdlFileName != null) {
-            parameters.put(Names.smartDeviceLinkFileName, sdlFileName);
+            parameters.put(DeleteFile.smartDeviceLinkFileName, sdlFileName);
         } else {
-        	parameters.remove(Names.smartDeviceLinkFileName);
+        	parameters.remove(DeleteFile.smartDeviceLinkFileName);
         }
     }
 
@@ -54,6 +54,6 @@ public class DeleteFile extends RPCRequest {
 	 * @return String -a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(Names.smartDeviceLinkFileName);
+        return (String) parameters.get(DeleteFile.smartDeviceLinkFileName);
     }
 }

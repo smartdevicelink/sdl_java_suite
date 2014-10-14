@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.util.DebugTool;
@@ -56,6 +55,10 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class TextField extends RPCStruct {
+	public static final String width = "width";
+	public static final String characterSet = "characterSet";
+	public static final String rows = "rows";
+	public static final String name = "name";
 	/**
 	 * Constructs a newly allocated TextField object
 	 */
@@ -72,7 +75,7 @@ public class TextField extends RPCStruct {
      * @return the name of TextField
      */    
     public TextFieldName getName() {
-        Object obj = store.get(Names.name);
+        Object obj = store.get(TextField.name);
         if (obj instanceof TextFieldName) {
             return (TextFieldName) obj;
         } else if (obj instanceof String) {
@@ -80,7 +83,7 @@ public class TextField extends RPCStruct {
             try {
                 theCode = TextFieldName.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.name, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + TextField.name, e);
             }
             return theCode;
         }
@@ -92,7 +95,7 @@ public class TextField extends RPCStruct {
      */    
     public void setName( TextFieldName name ) {
         if (name != null) {
-            store.put(Names.name, name );
+            store.put(TextField.name, name );
         }
     }
     /**
@@ -100,7 +103,7 @@ public class TextField extends RPCStruct {
      * @return the character set
      */    
     public CharacterSet getCharacterSet() {
-        Object obj = store.get(Names.characterSet);
+        Object obj = store.get(TextField.characterSet);
         if (obj instanceof CharacterSet) {
             return (CharacterSet) obj;
         } else if (obj instanceof String) {
@@ -108,7 +111,7 @@ public class TextField extends RPCStruct {
             try {
                 theCode = CharacterSet.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.characterSet, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + TextField.characterSet, e);
             }
             return theCode;
         }
@@ -120,7 +123,7 @@ public class TextField extends RPCStruct {
      */    
     public void setCharacterSet( CharacterSet characterSet ) {
         if (characterSet != null) {
-            store.put(Names.characterSet, characterSet );
+            store.put(TextField.characterSet, characterSet );
         }
     }
     /**
@@ -132,7 +135,7 @@ public class TextField extends RPCStruct {
      * @return the number of characters in one row of this field
      */    
     public Integer getWidth() {
-        return (Integer) store.get( Names.width );
+        return (Integer) store.get( TextField.width );
     }
     /**
      * Set the number of characters in one row of this field.
@@ -144,7 +147,7 @@ public class TextField extends RPCStruct {
      */    
     public void setWidth( Integer width ) {
         if (width != null) {
-            store.put(Names.width, width );
+            store.put(TextField.width, width );
         }
     }
     /**
@@ -156,11 +159,11 @@ public class TextField extends RPCStruct {
      * @return  the number of rows for this text field
      */    
     public Integer getRows() {
-        return (Integer) store.get( Names.rows );
+        return (Integer) store.get( TextField.rows );
     }
     public void setRows( Integer rows ) {
         if (rows != null) {
-            store.put(Names.rows, rows );
+            store.put(TextField.rows, rows );
         }
     }
 }

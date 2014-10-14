@@ -3,11 +3,13 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class HeadLampStatus extends RPCStruct {
+	public static final String ambientLightSensorStatus = "ambientLightSensorStatus";
+	public static final String highBeamsOn = "highBeamsOn";
+    public static final String lowBeamsOn = "lowBeamsOn";
 
     public HeadLampStatus() {}
     public HeadLampStatus(Hashtable hash) {
@@ -15,13 +17,13 @@ public class HeadLampStatus extends RPCStruct {
     }
     public void setAmbientLightStatus(AmbientLightStatus ambientLightSensorStatus) {
         if (ambientLightSensorStatus != null) {
-            store.put(Names.ambientLightSensorStatus, ambientLightSensorStatus);
+            store.put(HeadLampStatus.ambientLightSensorStatus, ambientLightSensorStatus);
         } else {
-        	store.remove(Names.ambientLightSensorStatus);
+        	store.remove(HeadLampStatus.ambientLightSensorStatus);
         }
     }
     public AmbientLightStatus getAmbientLightStatus() {
-        Object obj = store.get(Names.ambientLightSensorStatus);
+        Object obj = store.get(HeadLampStatus.ambientLightSensorStatus);
         if (obj instanceof AmbientLightStatus) {
             return (AmbientLightStatus) obj;
         } else if (obj instanceof String) {
@@ -29,7 +31,7 @@ public class HeadLampStatus extends RPCStruct {
             try {
                 theCode = AmbientLightStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.ambientLightSensorStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + HeadLampStatus.ambientLightSensorStatus, e);
             }
             return theCode;
         }
@@ -37,22 +39,22 @@ public class HeadLampStatus extends RPCStruct {
     }
     public void setHighBeamsOn(Boolean highBeamsOn) {
         if (highBeamsOn != null) {
-            store.put(Names.highBeamsOn, highBeamsOn);
+            store.put(HeadLampStatus.highBeamsOn, highBeamsOn);
         } else {
-        	store.remove(Names.highBeamsOn);
+        	store.remove(HeadLampStatus.highBeamsOn);
         }
     }
     public Boolean getHighBeamsOn() {
-    	return (Boolean) store.get(Names.highBeamsOn);
+    	return (Boolean) store.get(HeadLampStatus.highBeamsOn);
     }
     public void setLowBeamsOn(Boolean lowBeamsOn) {
         if (lowBeamsOn != null) {
-            store.put(Names.lowBeamsOn, lowBeamsOn);
+            store.put(HeadLampStatus.lowBeamsOn, lowBeamsOn);
         } else {
-        	store.remove(Names.lowBeamsOn);
+        	store.remove(HeadLampStatus.lowBeamsOn);
         }
     }
     public Boolean getLowBeamsOn() {
-    	return (Boolean) store.get(Names.lowBeamsOn);
+    	return (Boolean) store.get(HeadLampStatus.lowBeamsOn);
     }
 }

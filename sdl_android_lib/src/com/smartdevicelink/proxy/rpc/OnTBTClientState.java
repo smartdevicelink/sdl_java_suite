@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 import com.smartdevicelink.util.DebugTool;
 
@@ -40,6 +39,7 @@ import com.smartdevicelink.util.DebugTool;
  * 
  */
 public class OnTBTClientState extends RPCNotification {
+	public static final String state = "state";
 	/**
 	*Constructs a newly allocated OnTBTClientState object
 	*/ 
@@ -58,7 +58,7 @@ public class OnTBTClientState extends RPCNotification {
      * @return {@linkplain TBTState} the current state of TBT client
      */    
     public TBTState getState() {
-        Object obj = parameters.get(Names.state);
+        Object obj = parameters.get(OnTBTClientState.state);
         if (obj instanceof TBTState) {
         	return (TBTState)obj;
         } else if(obj instanceof String) {
@@ -66,7 +66,7 @@ public class OnTBTClientState extends RPCNotification {
         	try{
         		theCode = TBTState.valueForString((String) obj);
         	} catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.state, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnTBTClientState.state, e);
             }
         	return theCode;
         }    	
@@ -78,9 +78,9 @@ public class OnTBTClientState extends RPCNotification {
      */    
     public void setState( TBTState state ) {
         if (state != null) {
-            parameters.put(Names.state, state );
+            parameters.put(OnTBTClientState.state, state );
         } else {
-        	parameters.remove(Names.state);
+        	parameters.remove(OnTBTClientState.state);
         }
     }
 } // end-class

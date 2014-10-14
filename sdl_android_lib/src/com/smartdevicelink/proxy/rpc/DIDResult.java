@@ -2,11 +2,13 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.util.DebugTool;
 
 public class DIDResult extends RPCStruct {
+	public static final String resultCode = "resultCode";
+	public static final String data = "data";
+	public static final String didLocation = "didLocation";
 	
     public DIDResult() {}
     public DIDResult(Hashtable hash) {
@@ -14,13 +16,13 @@ public class DIDResult extends RPCStruct {
     }
     public void setResultCode(VehicleDataResultCode resultCode) {
     	if (resultCode != null) {
-    		store.put(Names.resultCode, resultCode);
+    		store.put(DIDResult.resultCode, resultCode);
     	} else {
-    		store.remove(Names.resultCode);
+    		store.remove(DIDResult.resultCode);
     	}
     }
     public VehicleDataResultCode getResultCode() {
-        Object obj = store.get(Names.resultCode);
+        Object obj = store.get(DIDResult.resultCode);
         if (obj instanceof VehicleDataResultCode) {
             return (VehicleDataResultCode) obj;
         } else if (obj instanceof String) {
@@ -28,7 +30,7 @@ public class DIDResult extends RPCStruct {
             try {
                 theCode = VehicleDataResultCode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.resultCode, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + DIDResult.resultCode, e);
             }
             return theCode;
         }
@@ -36,22 +38,22 @@ public class DIDResult extends RPCStruct {
     }
     public void setDidLocation(Integer didLocation) {
     	if (didLocation != null) {
-    		store.put(Names.didLocation, didLocation);
+    		store.put(DIDResult.didLocation, didLocation);
     	} else {
-    		store.remove(Names.didLocation);
+    		store.remove(DIDResult.didLocation);
     	}
     }
     public Integer getDidLocation() {
-    	return (Integer) store.get(Names.didLocation);
+    	return (Integer) store.get(DIDResult.didLocation);
     }    
     public void setData(String data) {
     	if (data != null) {
-    		store.put(Names.data, data);
+    		store.put(DIDResult.data, data);
     	} else {
-    		store.remove(Names.data);
+    		store.remove(DIDResult.data);
     	}
     }
     public String getData() {
-    	return (String) store.get(Names.data);
+    	return (String) store.get(DIDResult.data);
     }
 }
