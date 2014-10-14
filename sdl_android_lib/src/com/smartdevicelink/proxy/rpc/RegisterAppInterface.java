@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.util.DebugTool;
@@ -80,6 +79,18 @@ import com.smartdevicelink.util.DebugTool;
  * @see OnAppInterfaceUnregistered
  */
 public class RegisterAppInterface extends RPCRequest {
+	public static final String ttsName = "ttsName";
+	public static final String hmiDisplayLanguageDesired = "hmiDisplayLanguageDesired";
+	public static final String appHMIType = "appHMIType";
+	public static final String appID = "appID";
+	public static final String languageDesired = "languageDesired";
+	public static final String deviceInfo = "deviceInfo";
+	public static final String appName = "appName";
+	public static final String ngnMediaScreenAppName = "ngnMediaScreenAppName";
+	public static final String isMediaApplication = "isMediaApplication";
+	public static final String vrSynonyms = "vrSynonyms";
+	public static final String sdlMsgVersion = "syncMsgVersion";
+	public static final String hashID = "hashID";
 	/**
 	 * Constructs a new RegisterAppInterface object
 	 */
@@ -104,7 +115,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */    
     public SdlMsgVersion getSdlMsgVersion() {
-        Object obj = parameters.get(Names.sdlMsgVersion);
+        Object obj = parameters.get(RegisterAppInterface.sdlMsgVersion);
         if (obj instanceof SdlMsgVersion) {
         	return (SdlMsgVersion) obj;
         } else if (obj instanceof Hashtable) {
@@ -133,14 +144,14 @@ public class RegisterAppInterface extends RPCRequest {
 	 */    
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
         if (sdlMsgVersion != null) {
-            parameters.put(Names.sdlMsgVersion, sdlMsgVersion);
+            parameters.put(RegisterAppInterface.sdlMsgVersion, sdlMsgVersion);
         } else {
-        	parameters.remove(Names.sdlMsgVersion);
+        	parameters.remove(RegisterAppInterface.sdlMsgVersion);
         }
     }
     
     public DeviceInfo getDeviceInfo() {
-        Object obj = parameters.get(Names.deviceInfo);
+        Object obj = parameters.get(RegisterAppInterface.deviceInfo);
         if (obj instanceof DeviceInfo) {
         	return (DeviceInfo) obj;
         } else if (obj instanceof Hashtable) {
@@ -151,9 +162,9 @@ public class RegisterAppInterface extends RPCRequest {
     
     public void setDeviceInfo(DeviceInfo deviceInfo) {
         if (deviceInfo != null) {
-            parameters.put(Names.deviceInfo, deviceInfo);
+            parameters.put(RegisterAppInterface.deviceInfo, deviceInfo);
         } else {
-        	parameters.remove(Names.deviceInfo);
+        	parameters.remove(RegisterAppInterface.deviceInfo);
         }
     }    
 	/**
@@ -162,7 +173,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return String -a String representing the Mobile Application's Name
 	 */    
     public String getAppName() {
-        return (String) parameters.get(Names.appName);
+        return (String) parameters.get(RegisterAppInterface.appName);
     }
 	/**
 	 * Sets Mobile Application's Name, This name is displayed in the SDL&reg;
@@ -182,9 +193,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */    
     public void setAppName(String appName) {
         if (appName != null) {
-            parameters.put(Names.appName, appName);
+            parameters.put(RegisterAppInterface.appName, appName);
         } else {
-        	parameters.remove(Names.appName);
+        	parameters.remove(RegisterAppInterface.appName);
         }
     }
 
@@ -195,8 +206,8 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Vector<TTSChunk> getTtsName() {
-        if (parameters.get(Names.ttsName) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.ttsName);
+        if (parameters.get(RegisterAppInterface.ttsName) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterface.ttsName);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
@@ -233,9 +244,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */
     public void setTtsName(Vector<TTSChunk> ttsName) {
         if (ttsName != null) {
-            parameters.put(Names.ttsName, ttsName);
+            parameters.put(RegisterAppInterface.ttsName, ttsName);
         } else {
-        	parameters.remove(Names.ttsName);
+        	parameters.remove(RegisterAppInterface.ttsName);
         }
     }
 	/**
@@ -247,7 +258,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         mobile applincation's name
 	 */    
     public String getNgnMediaScreenAppName() {
-        return (String) parameters.get(Names.ngnMediaScreenAppName);
+        return (String) parameters.get(RegisterAppInterface.ngnMediaScreenAppName);
     }
 	/**
 	 * Sets a String representing an abbreviated version of the mobile
@@ -267,9 +278,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */    
     public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
         if (ngnMediaScreenAppName != null) {
-            parameters.put(Names.ngnMediaScreenAppName, ngnMediaScreenAppName);
+            parameters.put(RegisterAppInterface.ngnMediaScreenAppName, ngnMediaScreenAppName);
         } else {
-        	parameters.remove(Names.ngnMediaScreenAppName);
+        	parameters.remove(RegisterAppInterface.ngnMediaScreenAppName);
         }
     }
 	/**
@@ -281,8 +292,8 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         synonym
 	 */    
     public Vector<String> getVrSynonyms() {
-    	if (parameters.get(Names.vrSynonyms) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(Names.vrSynonyms);
+    	if (parameters.get(RegisterAppInterface.vrSynonyms) instanceof Vector<?>) {
+    		Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterface.vrSynonyms);
     		if (list != null && list.size()>0) {
     			Object obj = list.get(0);
     			if (obj instanceof String) {
@@ -311,9 +322,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */    
     public void setVrSynonyms(Vector<String> vrSynonyms) {
         if (vrSynonyms != null) {
-            parameters.put(Names.vrSynonyms, vrSynonyms);
+            parameters.put(RegisterAppInterface.vrSynonyms, vrSynonyms);
         } else {
-        	parameters.remove(Names.vrSynonyms);
+        	parameters.remove(RegisterAppInterface.vrSynonyms);
         }
     }
 	/**
@@ -323,7 +334,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         a media application or not
 	 */    
     public Boolean getIsMediaApplication() {
-        return (Boolean) parameters.get(Names.isMediaApplication);
+        return (Boolean) parameters.get(RegisterAppInterface.isMediaApplication);
     }
 	/**
 	 * Sets a Boolean to indicate a mobile application that is a media
@@ -334,9 +345,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */    
     public void setIsMediaApplication(Boolean isMediaApplication) {
         if (isMediaApplication != null) {
-            parameters.put(Names.isMediaApplication, isMediaApplication);
+            parameters.put(RegisterAppInterface.isMediaApplication, isMediaApplication);
         } else {
-        	parameters.remove(Names.isMediaApplication);
+        	parameters.remove(RegisterAppInterface.isMediaApplication);
         }
     }
 	/**
@@ -346,7 +357,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return Enumeration -a language enumeration
 	 */    
     public Language getLanguageDesired() {
-        Object obj = parameters.get(Names.languageDesired);
+        Object obj = parameters.get(RegisterAppInterface.languageDesired);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -354,7 +365,7 @@ public class RegisterAppInterface extends RPCRequest {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.languageDesired, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RegisterAppInterface.languageDesired, e);
             }
             return theCode;
         }
@@ -371,9 +382,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */    
     public void setLanguageDesired(Language languageDesired) {
         if (languageDesired != null) {
-            parameters.put(Names.languageDesired, languageDesired);
+            parameters.put(RegisterAppInterface.languageDesired, languageDesired);
         } else {
-        	parameters.remove(Names.languageDesired);
+        	parameters.remove(RegisterAppInterface.languageDesired);
         }
     }
 
@@ -387,7 +398,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Language getHmiDisplayLanguageDesired() {
-        Object obj = parameters.get(Names.hmiDisplayLanguageDesired);
+        Object obj = parameters.get(RegisterAppInterface.hmiDisplayLanguageDesired);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -395,7 +406,7 @@ public class RegisterAppInterface extends RPCRequest {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.hmiDisplayLanguageDesired, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RegisterAppInterface.hmiDisplayLanguageDesired, e);
             }
             return theCode;
         }
@@ -411,9 +422,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */
     public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
         if (hmiDisplayLanguageDesired != null) {
-            parameters.put(Names.hmiDisplayLanguageDesired, hmiDisplayLanguageDesired);
+            parameters.put(RegisterAppInterface.hmiDisplayLanguageDesired, hmiDisplayLanguageDesired);
         } else {
-        	parameters.remove(Names.hmiDisplayLanguageDesired);
+        	parameters.remove(RegisterAppInterface.hmiDisplayLanguageDesired);
         }
     }
 
@@ -428,8 +439,8 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLinke 2.0
 	 */
     public Vector<AppHMIType> getAppHMIType() {
-        if (parameters.get(Names.appHMIType) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.appHMIType);
+        if (parameters.get(RegisterAppInterface.appHMIType) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterface.appHMIType);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof AppHMIType) {
@@ -442,7 +453,7 @@ public class RegisterAppInterface extends RPCRequest {
 	                    try {
 	                        toAdd = AppHMIType.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.appHMIType, e);	                    }
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RegisterAppInterface.appHMIType, e);	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -471,21 +482,21 @@ public class RegisterAppInterface extends RPCRequest {
 	 */
     public void setAppHMIType(Vector<AppHMIType> appHMIType) {
         if (appHMIType != null) {
-            parameters.put(Names.appHMIType, appHMIType);
+            parameters.put(RegisterAppInterface.appHMIType, appHMIType);
         } else {
-        	parameters.remove(Names.appHMIType);
+        	parameters.remove(RegisterAppInterface.appHMIType);
         }
     }
     
     public String getHashID() {
-        return (String) parameters.get(Names.hashID);
+        return (String) parameters.get(RegisterAppInterface.hashID);
     }
    
     public void setHashID(String hashID) {
         if (hashID != null) {
-            parameters.put(Names.hashID, hashID);
+            parameters.put(RegisterAppInterface.hashID, hashID);
         } else {
-        	parameters.remove(Names.hashID);
+        	parameters.remove(RegisterAppInterface.hashID);
         }
     }        
     
@@ -497,7 +508,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getAppID() {
-        return (String) parameters.get(Names.appID);
+        return (String) parameters.get(RegisterAppInterface.appID);
     }
 
 	/**
@@ -512,9 +523,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 */
     public void setAppID(String appID) {
         if (appID != null) {
-            parameters.put(Names.appID, appID);
+            parameters.put(RegisterAppInterface.appID, appID);
         } else {
-        	parameters.remove(Names.appID);
+        	parameters.remove(RegisterAppInterface.appID);
         }
     }
 }

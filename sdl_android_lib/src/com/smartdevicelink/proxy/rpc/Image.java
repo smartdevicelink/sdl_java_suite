@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -38,6 +37,8 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class Image extends RPCStruct {
+	public static final String value = "value";
+	public static final String imageType = "imageType";
 
 	/**
 	 * Constructs a newly allocated Image object
@@ -58,9 +59,9 @@ public class Image extends RPCStruct {
      */
     public void setValue(String value) {
         if (value != null) {
-            store.put(Names.value, value);
+            store.put(Image.value, value);
         } else {
-        	store.remove(Names.value);
+        	store.remove(Image.value);
         }
     }
     
@@ -69,7 +70,7 @@ public class Image extends RPCStruct {
      * @return  either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public String getValue() {
-        return (String) store.get(Names.value);
+        return (String) store.get(Image.value);
     }
     
     /**
@@ -78,9 +79,9 @@ public class Image extends RPCStruct {
      */
     public void setImageType(ImageType imageType) {
         if (imageType != null) {
-            store.put(Names.imageType, imageType);
+            store.put(Image.imageType, imageType);
         } else {
-        	store.remove(Names.imageType);
+        	store.remove(Image.imageType);
         }
     }
     
@@ -89,7 +90,7 @@ public class Image extends RPCStruct {
      * @return the image type
      */
     public ImageType getImageType() {
-    	Object obj = store.get(Names.imageType);
+    	Object obj = store.get(Image.imageType);
         if (obj instanceof ImageType) {
             return (ImageType) obj;
         } else if (obj instanceof String) {
@@ -97,7 +98,7 @@ public class Image extends RPCStruct {
             try {
                 theCode = ImageType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.imageType, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Image.imageType, e);
             }
             return theCode;
         }

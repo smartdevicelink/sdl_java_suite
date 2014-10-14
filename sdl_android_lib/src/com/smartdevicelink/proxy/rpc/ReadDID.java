@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Non periodic vehicle data read request. This is an RPC to get diagnostics
@@ -19,6 +18,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class ReadDID extends RPCRequest {
+	public static final String ecuName = "ecuName";
+	public static final String didLocation = "didLocation";
 
 	/**
 	 * Constructs a new ReadDID object
@@ -48,9 +49,9 @@ public class ReadDID extends RPCRequest {
 	 */
     public void setEcuName(Integer ecuName) {
     	if (ecuName != null) {
-    		parameters.put(Names.ecuName, ecuName);
+    		parameters.put(ReadDID.ecuName, ecuName);
     	} else {
-    		parameters.remove(Names.ecuName);
+    		parameters.remove(ReadDID.ecuName);
     	}
     }
 
@@ -61,7 +62,7 @@ public class ReadDID extends RPCRequest {
 	 *         module
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(Names.ecuName);
+    	return (Integer) parameters.get(ReadDID.ecuName);
     }
 
 	/**
@@ -79,9 +80,9 @@ public class ReadDID extends RPCRequest {
 	 */
     public void setDidLocation(Vector<Integer> didLocation) {
     	if (didLocation != null) {
-    		parameters.put(Names.didLocation, didLocation);
+    		parameters.put(ReadDID.didLocation, didLocation);
     	} else {
-    		parameters.remove(Names.didLocation);
+    		parameters.remove(ReadDID.didLocation);
     	}
     }
 
@@ -92,8 +93,8 @@ public class ReadDID extends RPCRequest {
 	 *         from vehicle data DID location(s)
 	 */
     public Vector<Integer> getDidLocation() {
-        if (parameters.get(Names.didLocation) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(Names.didLocation);
+        if (parameters.get(ReadDID.didLocation) instanceof Vector<?>) {
+        	Vector<?> list = (Vector<?>)parameters.get(ReadDID.didLocation);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof Integer) {

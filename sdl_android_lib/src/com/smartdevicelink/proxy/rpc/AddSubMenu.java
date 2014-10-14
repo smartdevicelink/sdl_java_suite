@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Add a SubMenu to the Command Menu
@@ -21,6 +20,9 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see DeleteCommand
  */
 public class AddSubMenu extends RPCRequest {
+	public static final String position = "position";
+	public static final String menuName = "menuName";
+	public static final String menuID = "menuID";
 
 	/**
 	 * Constructs a new AddSubMenu object
@@ -47,7 +49,7 @@ public class AddSubMenu extends RPCRequest {
 	 *         menu
 	 */
     public Integer getMenuID() {
-        return (Integer) parameters.get( Names.menuID );
+        return (Integer) parameters.get( AddSubMenu.menuID );
     }
 	/**
 	 * Sets a Menu ID that identifies a sub menu. This value is used in
@@ -62,7 +64,7 @@ public class AddSubMenu extends RPCRequest {
 	 */    
     public void setMenuID( Integer menuID ) {
         if (menuID != null) {
-            parameters.put(Names.menuID, menuID );
+            parameters.put(AddSubMenu.menuID, menuID );
         }
     }
 	/**
@@ -72,7 +74,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @return Integer -the value representing the relative position of menus
 	 */    
     public Integer getPosition() {
-        return (Integer) parameters.get( Names.position );
+        return (Integer) parameters.get( AddSubMenu.position );
     }
 	/**
 	 * Sets a position of menu
@@ -96,7 +98,7 @@ public class AddSubMenu extends RPCRequest {
 	 */    
     public void setPosition( Integer position ) {
         if (position != null) {
-            parameters.put(Names.position, position );
+            parameters.put(AddSubMenu.position, position );
         }
     }
 	/**
@@ -105,7 +107,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @return String -a Submenu item's name
 	 */
     public String getMenuName() {
-        return (String) parameters.get( Names.menuName );
+        return (String) parameters.get( AddSubMenu.menuName );
     }
 	/**
 	 * Sets a menuName which is displayed representing this submenu item
@@ -115,7 +117,7 @@ public class AddSubMenu extends RPCRequest {
 	 */    
     public void setMenuName( String menuName ) {
         if (menuName != null) {
-            parameters.put(Names.menuName, menuName );
+            parameters.put(AddSubMenu.menuName, menuName );
         }
     }
 }

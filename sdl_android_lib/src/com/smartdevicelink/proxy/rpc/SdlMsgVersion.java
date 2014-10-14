@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
@@ -41,6 +40,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 1.0
  */
 public class SdlMsgVersion extends RPCStruct {
+	public static final String majorVersion = "majorVersion";
+	public static final String minorVersion = "minorVersion";
 
 	/**
 	 * Constructs a newly allocated SdlMsgVersion object
@@ -62,7 +63,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the major version
      */	
     public Integer getMajorVersion() {
-        return (Integer) store.get( Names.majorVersion );
+        return (Integer) store.get( SdlMsgVersion.majorVersion );
     }
     /**
      * Set major version
@@ -74,7 +75,7 @@ public class SdlMsgVersion extends RPCStruct {
      */    
     public void setMajorVersion( Integer majorVersion ) {
         if (majorVersion != null) {
-            store.put(Names.majorVersion, majorVersion );
+            store.put(SdlMsgVersion.majorVersion, majorVersion );
         }
     }
     /**
@@ -86,7 +87,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the minor version
      */    
     public Integer getMinorVersion() {
-        return (Integer) store.get( Names.minorVersion );
+        return (Integer) store.get( SdlMsgVersion.minorVersion );
     }
     /**
      * Set minor version
@@ -98,7 +99,7 @@ public class SdlMsgVersion extends RPCStruct {
      */
     public void setMinorVersion( Integer minorVersion ) {
         if (minorVersion != null) {
-            store.put(Names.minorVersion, minorVersion );
+            store.put(SdlMsgVersion.minorVersion, minorVersion );
         }
     }
 }

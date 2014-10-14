@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.util.DebugTool;
 /**
@@ -17,6 +16,9 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class SetMediaClockTimer extends RPCRequest {
+	public static final String startTime = "startTime";
+	public static final String endTime = "endTime";
+	public static final String updateMode = "updateMode";
 	/**
 	 * Constructs a new SetMediaClockTimer object
 	 */
@@ -41,7 +43,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *         values
 	 */    
     public StartTime getStartTime() {
-        Object obj = parameters.get(Names.startTime);
+        Object obj = parameters.get(SetMediaClockTimer.startTime);
         if (obj instanceof StartTime) {
         	return (StartTime)obj;
         } else if (obj instanceof Hashtable) {
@@ -64,12 +66,12 @@ public class SetMediaClockTimer extends RPCRequest {
 	 */    
     public void setStartTime( StartTime startTime ) {
         if (startTime != null) {
-            parameters.put(Names.startTime, startTime );
+            parameters.put(SetMediaClockTimer.startTime, startTime );
         }
     }
     
     public StartTime getEndTime() {
-        Object obj = parameters.get(Names.endTime);
+        Object obj = parameters.get(SetMediaClockTimer.endTime);
         if (obj instanceof StartTime) {
         	return (StartTime)obj;
         } else if (obj instanceof Hashtable) {
@@ -80,7 +82,7 @@ public class SetMediaClockTimer extends RPCRequest {
     
     public void setEndTime( StartTime endTime ) {
         if (endTime != null) {
-            parameters.put(Names.endTime, endTime );
+            parameters.put(SetMediaClockTimer.endTime, endTime );
         }
     }
     
@@ -90,7 +92,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return UpdateMode -a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
 	 */    
     public UpdateMode getUpdateMode() {
-        Object obj = parameters.get(Names.updateMode);
+        Object obj = parameters.get(SetMediaClockTimer.updateMode);
         if (obj instanceof UpdateMode) {
             return (UpdateMode) obj;
         } else if (obj instanceof String) {
@@ -98,7 +100,7 @@ public class SetMediaClockTimer extends RPCRequest {
             try {
                 theCode = UpdateMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.updateMode, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + SetMediaClockTimer.updateMode, e);
             }
             return theCode;
         }
@@ -120,7 +122,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 */    
     public void setUpdateMode( UpdateMode updateMode ) {
         if (updateMode != null) {
-            parameters.put(Names.updateMode, updateMode );
+            parameters.put(SetMediaClockTimer.updateMode, updateMode );
         }
     }
 }

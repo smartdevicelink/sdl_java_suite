@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * String containing hexadecimal identifier as well as other common names.
@@ -30,7 +29,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class DTC extends RPCStruct {
-
+	public static final String identifier = "identifier";
+	public static final String statusByte = "statusByte";
 	/**
 	 * Constructs a newly allocated DTC object
 	 */
@@ -50,9 +50,9 @@ public class DTC extends RPCStruct {
      */
     public void setIdentifier(String identifier) {
     	if (identifier != null) {
-    		store.put(Names.identifier, identifier);
+    		store.put(DTC.identifier, identifier);
     	} else {
-    		store.remove(Names.identifier);
+    		store.remove(DTC.identifier);
     	}
     }
     
@@ -61,7 +61,7 @@ public class DTC extends RPCStruct {
      * @return identifier
      */
     public String getIdentifier() {
-    	return (String) store.get(Names.identifier);
+    	return (String) store.get(DTC.identifier);
     }
     
     /**
@@ -70,9 +70,9 @@ public class DTC extends RPCStruct {
      */
     public void setStatusByte(String statusByte) {
     	if (statusByte != null) {
-    		store.put(Names.statusByte, statusByte);
+    		store.put(DTC.statusByte, statusByte);
     	} else {
-    		store.remove(Names.statusByte);
+    		store.remove(DTC.statusByte);
     	}
     }
     
@@ -81,6 +81,6 @@ public class DTC extends RPCStruct {
      * @return Hexadecimal byte string
      */
     public String getStatusByte() {
-    	return (String) store.get(Names.statusByte);
+    	return (String) store.get(DTC.statusByte);
     }
 }

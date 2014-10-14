@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Speaks a phrase over the vehicle audio system using SDL's TTS
@@ -72,6 +71,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see Alert
  */
 public class Speak extends RPCRequest {
+	public static final String ttsChunks = "ttsChunks";
 
 	/**
 	 * Constructs a new Speak object
@@ -96,8 +96,8 @@ public class Speak extends RPCRequest {
 	 * @return Vector<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
 	 */    
     public Vector<TTSChunk> getTtsChunks() {
-    	if (parameters.get(Names.ttsChunks) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(Names.ttsChunks);
+    	if (parameters.get(Speak.ttsChunks) instanceof Vector<?>) {
+	        Vector<?> list = (Vector<?>)parameters.get(Speak.ttsChunks);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
@@ -131,7 +131,7 @@ public class Speak extends RPCRequest {
 	 */    
     public void setTtsChunks( Vector<TTSChunk> ttsChunks ) {
         if (ttsChunks != null) {
-            parameters.put(Names.ttsChunks, ttsChunks );
+            parameters.put(Speak.ttsChunks, ttsChunks );
         }
     }
 }

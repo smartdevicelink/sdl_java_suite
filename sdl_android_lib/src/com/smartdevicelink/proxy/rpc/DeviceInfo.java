@@ -3,9 +3,14 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 public class DeviceInfo extends RPCStruct{
+    public static final String hardware = "hardware";
+    public static final String firmwareRev = "firmwareRev";
+    public static final String os = "os";
+    public static final String osVersion = "osVersion";
+    public static final String carrier = "carrier";
+    public static final String maxNumberRFCOMMPorts = "maxNumberRFCOMMPorts";
 
 	public DeviceInfo() { }
  
@@ -15,74 +20,74 @@ public class DeviceInfo extends RPCStruct{
 	
    public void setHardware(String hardware) {
         if (hardware != null) {
-        	store.put(Names.hardware, hardware);
+        	store.put(DeviceInfo.hardware, hardware);
         } else {
-        	store.remove(Names.hardware);
+        	store.remove(DeviceInfo.hardware);
         }
    }
 
    public String getHardware() {
-       return (String) store.get(Names.hardware);
+       return (String) store.get(DeviceInfo.hardware);
    }
     
    public void setFirmwareRev(String firmwareRev) {
        if (firmwareRev != null) {
-       	store.put(Names.firmwareRev, firmwareRev);
+       	store.put(DeviceInfo.firmwareRev, firmwareRev);
        } else {
-       	store.remove(Names.firmwareRev);
+       	store.remove(DeviceInfo.firmwareRev);
        }
   }
 
   public String getFirmwareRev() {
-      return (String) store.get(Names.firmwareRev);
+      return (String) store.get(DeviceInfo.firmwareRev);
   }
 
   public void setOs(String os) {
       if (os != null) {
-      	store.put(Names.os, os);
+      	store.put(DeviceInfo.os, os);
       } else {
-      	store.remove(Names.os);
+      	store.remove(DeviceInfo.os);
       }
   }
 
  public String getOs() {
-     return (String) store.get(Names.os);
+     return (String) store.get(DeviceInfo.os);
  }  
 
  public void setOsVersion(String osVersion) {
      if (osVersion != null) {
-     	store.put(Names.osVersion, osVersion);
+     	store.put(DeviceInfo.osVersion, osVersion);
      } else {
-     	store.remove(Names.osVersion);
+     	store.remove(DeviceInfo.osVersion);
      }
 }
 
 public String getOsVersion() {
-    return (String) store.get(Names.osVersion);
+    return (String) store.get(DeviceInfo.osVersion);
 }  
     
 public void setCarrier(String carrier) {
     if (carrier != null) {
-    	store.put(Names.carrier, carrier);
+    	store.put(DeviceInfo.carrier, carrier);
     } else {
-    	store.remove(Names.carrier);
+    	store.remove(DeviceInfo.carrier);
     }
 }
 
 public String getCarrier() {
-   return (String) store.get(Names.carrier);
+   return (String) store.get(DeviceInfo.carrier);
 } 
 
 public Integer getMaxNumberRFCOMMPorts() {
-    return (Integer) store.get( Names.maxNumberRFCOMMPorts );
+    return (Integer) store.get( DeviceInfo.maxNumberRFCOMMPorts );
 }
 
 public void setMaxNumberRFCOMMPorts( Integer maxNumberRFCOMMPorts ) {
     if (maxNumberRFCOMMPorts != null) {
-        store.put(Names.maxNumberRFCOMMPorts, maxNumberRFCOMMPorts );
+        store.put(DeviceInfo.maxNumberRFCOMMPorts, maxNumberRFCOMMPorts );
     }
     else {
-    	store.remove(Names.maxNumberRFCOMMPorts);
+    	store.remove(DeviceInfo.maxNumberRFCOMMPorts);
     }    
 }
 

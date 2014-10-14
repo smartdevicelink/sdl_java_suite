@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 
 /**
@@ -13,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
  * @since SmartDeviceLink 2.0
  */
 public class ReadDIDResponse extends RPCResponse {
+	public static final String didResult = "didResult";
 
     public ReadDIDResponse() {
         super("ReadDID");
@@ -22,14 +22,14 @@ public class ReadDIDResponse extends RPCResponse {
     }
     public void setDidResult(Vector<DIDResult> didResult) {
     	if (didResult != null) {
-    		parameters.put(Names.didResult, didResult);
+    		parameters.put(ReadDIDResponse.didResult, didResult);
     	} else {
-    		parameters.remove(Names.didResult);
+    		parameters.remove(ReadDIDResponse.didResult);
     	}
     }
     public Vector<DIDResult> getDidResult() {
-        if (parameters.get(Names.didResult) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.didResult);
+        if (parameters.get(ReadDIDResponse.didResult) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(ReadDIDResponse.didResult);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof DIDResult) {

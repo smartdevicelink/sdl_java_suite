@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Creates a Choice Set which can be used in subsequent <i>
@@ -20,6 +19,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see PerformInteraction
  */
 public class CreateInteractionChoiceSet extends RPCRequest {
+	public static final String choiceSet = "choiceSet";
+	public static final String interactionChoiceSetID = "interactionChoiceSetID";
 
 	/**
 	 * Constructs a new CreateInteractionChoiceSet object
@@ -44,7 +45,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @return Integer -an Integer representing the Choice Set ID
 	 */    
     public Integer getInteractionChoiceSetID() {
-        return (Integer) parameters.get( Names.interactionChoiceSetID );
+        return (Integer) parameters.get( CreateInteractionChoiceSet.interactionChoiceSetID );
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
@@ -56,7 +57,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
         if (interactionChoiceSetID != null) {
-            parameters.put(Names.interactionChoiceSetID, interactionChoiceSetID );
+            parameters.put(CreateInteractionChoiceSet.interactionChoiceSetID, interactionChoiceSetID );
         }
     }
 	/**
@@ -66,8 +67,8 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *         more elements
 	 */    
     public Vector<Choice> getChoiceSet() {
-        if (parameters.get(Names.choiceSet) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.choiceSet);
+        if (parameters.get(CreateInteractionChoiceSet.choiceSet) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(CreateInteractionChoiceSet.choiceSet);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof Choice) {
@@ -94,7 +95,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 */    
     public void setChoiceSet( Vector<Choice> choiceSet ) {
         if (choiceSet != null) {
-            parameters.put(Names.choiceSet, choiceSet );
+            parameters.put(CreateInteractionChoiceSet.choiceSet, choiceSet );
         }
     }
 }

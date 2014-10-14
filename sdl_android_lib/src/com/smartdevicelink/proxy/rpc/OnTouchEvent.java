@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -9,6 +8,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 public class OnTouchEvent extends RPCNotification {
+	public static final String event = "event";
+	public static final String type = "type";
     public OnTouchEvent() {
         super("OnTouchEvent");
     }
@@ -18,14 +19,14 @@ public class OnTouchEvent extends RPCNotification {
     
     public void setType(TouchType type) {
     	if (type != null) {
-    		parameters.put(Names.type, type);
+    		parameters.put(OnTouchEvent.type, type);
     	} else {
-    		parameters.remove(Names.type);
+    		parameters.remove(OnTouchEvent.type);
     	}
     }
     
     public TouchType getType() {
-        Object obj = parameters.get(Names.type);
+        Object obj = parameters.get(OnTouchEvent.type);
         if (obj instanceof TouchType) {
             return (TouchType) obj;
         } else if (obj instanceof String) {
@@ -33,7 +34,7 @@ public class OnTouchEvent extends RPCNotification {
             try {
                 theCode = TouchType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.type, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnTouchEvent.type, e);
             }
             return theCode;
         }
@@ -42,15 +43,15 @@ public class OnTouchEvent extends RPCNotification {
     
     public void setEvent(Vector<TouchEvent> event) {
         if (event != null) {
-            parameters.put(Names.event, event);
+            parameters.put(OnTouchEvent.event, event);
         } else {
-        	parameters.remove(Names.event);
+        	parameters.remove(OnTouchEvent.event);
         }
     }
     
     public Vector<TouchEvent> getEvent() {
-        if (parameters.get(Names.event) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.event);
+        if (parameters.get(OnTouchEvent.event) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)parameters.get(OnTouchEvent.event);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TouchEvent) {

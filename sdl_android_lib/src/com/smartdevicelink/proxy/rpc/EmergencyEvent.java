@@ -3,13 +3,17 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class EmergencyEvent extends RPCStruct {
+    public static final String emergencyEventType = "emergencyEventType";
+    public static final String fuelCutoffStatus = "fuelCutoffStatus";
+    public static final String rolloverEvent = "rolloverEvent";
+    public static final String maximumChangeVelocity = "maximumChangeVelocity";
+    public static final String multipleEvents = "multipleEvents";
 
     public EmergencyEvent() { }
     public EmergencyEvent(Hashtable hash) {
@@ -18,13 +22,13 @@ public class EmergencyEvent extends RPCStruct {
 
     public void setEmergencyEventType(EmergencyEventType emergencyEventType) {
         if (emergencyEventType != null) {
-            store.put(Names.emergencyEventType, emergencyEventType);
+            store.put(EmergencyEvent.emergencyEventType, emergencyEventType);
         } else {
-        	store.remove(Names.emergencyEventType);
+        	store.remove(EmergencyEvent.emergencyEventType);
         }
     }
     public EmergencyEventType getEmergencyEventType() {
-        Object obj = store.get(Names.emergencyEventType);
+        Object obj = store.get(EmergencyEvent.emergencyEventType);
         if (obj instanceof EmergencyEventType) {
             return (EmergencyEventType) obj;
         } else if (obj instanceof String) {
@@ -32,7 +36,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = EmergencyEventType.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.emergencyEventType, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + EmergencyEvent.emergencyEventType, e);
             }
             return theCode;
         }
@@ -40,13 +44,13 @@ public class EmergencyEvent extends RPCStruct {
     }
     public void setFuelCutoffStatus(FuelCutoffStatus fuelCutoffStatus) {
         if (fuelCutoffStatus != null) {
-            store.put(Names.fuelCutoffStatus, fuelCutoffStatus);
+            store.put(EmergencyEvent.fuelCutoffStatus, fuelCutoffStatus);
         } else {
-        	store.remove(Names.fuelCutoffStatus);
+        	store.remove(EmergencyEvent.fuelCutoffStatus);
         }
     }
     public FuelCutoffStatus getFuelCutoffStatus() {
-        Object obj = store.get(Names.fuelCutoffStatus);
+        Object obj = store.get(EmergencyEvent.fuelCutoffStatus);
         if (obj instanceof FuelCutoffStatus) {
             return (FuelCutoffStatus) obj;
         } else if (obj instanceof String) {
@@ -54,7 +58,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = FuelCutoffStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.fuelCutoffStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + EmergencyEvent.fuelCutoffStatus, e);
             }
             return theCode;
         }
@@ -62,13 +66,13 @@ public class EmergencyEvent extends RPCStruct {
     }
     public void setRolloverEvent(VehicleDataEventStatus rolloverEvent) {
         if (rolloverEvent != null) {
-            store.put(Names.rolloverEvent, rolloverEvent);
+            store.put(EmergencyEvent.rolloverEvent, rolloverEvent);
         } else {
-        	store.remove(Names.rolloverEvent);
+        	store.remove(EmergencyEvent.rolloverEvent);
         }
     }
     public VehicleDataEventStatus getRolloverEvent() {
-        Object obj = store.get(Names.rolloverEvent);
+        Object obj = store.get(EmergencyEvent.rolloverEvent);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -76,7 +80,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.rolloverEvent, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + EmergencyEvent.rolloverEvent, e);
             }
             return theCode;
         }
@@ -84,23 +88,23 @@ public class EmergencyEvent extends RPCStruct {
     }
     public void setMaximumChangeVelocity(Integer maximumChangeVelocity) {
         if (maximumChangeVelocity != null) {
-            store.put(Names.maximumChangeVelocity, maximumChangeVelocity);
+            store.put(EmergencyEvent.maximumChangeVelocity, maximumChangeVelocity);
         } else {
-        	store.remove(Names.maximumChangeVelocity);
+        	store.remove(EmergencyEvent.maximumChangeVelocity);
         }
     }
     public Integer getMaximumChangeVelocity() {
-    	return (Integer) store.get(Names.maximumChangeVelocity);
+    	return (Integer) store.get(EmergencyEvent.maximumChangeVelocity);
     }
     public void setMultipleEvents(VehicleDataEventStatus multipleEvents) {
         if (multipleEvents != null) {
-            store.put(Names.multipleEvents, multipleEvents);
+            store.put(EmergencyEvent.multipleEvents, multipleEvents);
         } else {
-        	store.remove(Names.multipleEvents);
+        	store.remove(EmergencyEvent.multipleEvents);
         }
     }
     public VehicleDataEventStatus getMultipleEvents() {
-        Object obj = store.get(Names.multipleEvents);
+        Object obj = store.get(EmergencyEvent.multipleEvents);
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
@@ -108,7 +112,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.multipleEvents, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + EmergencyEvent.multipleEvents, e);
             }
             return theCode;
         }

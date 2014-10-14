@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.util.DebugTool;
 
@@ -42,6 +41,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see RegisterAppInterface
  */
 public class OnAppInterfaceUnregistered extends RPCNotification {
+	public static final String reason = "reason";
 	/**
 	*Constructs a newly allocated OnAppInterfaceUnregistered object
 	*/ 
@@ -60,7 +60,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
      */    
     public AppInterfaceUnregisteredReason getReason() {
-        Object obj = parameters.get(Names.reason);
+        Object obj = parameters.get(OnAppInterfaceUnregistered.reason);
         if (obj instanceof AppInterfaceUnregisteredReason) {
             return (AppInterfaceUnregisteredReason) obj;
         } else if (obj instanceof String) {
@@ -68,7 +68,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
             try {
                 theCode = AppInterfaceUnregisteredReason.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.reason, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnAppInterfaceUnregistered.reason, e);
             }
             return theCode;
         }
@@ -80,7 +80,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      */    
     public void setReason( AppInterfaceUnregisteredReason reason ) {
         if (reason != null) {
-            parameters.put(Names.reason, reason );
+            parameters.put(OnAppInterfaceUnregistered.reason, reason );
         }
     }
 }

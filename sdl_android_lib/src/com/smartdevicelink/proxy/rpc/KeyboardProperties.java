@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -13,20 +12,25 @@ import com.smartdevicelink.util.DebugTool;
 public class KeyboardProperties extends RPCStruct {
     private static final KeypressMode KEYPRESS_MODE_DEFAULT =
             KeypressMode.RESEND_CURRENT_ENTRY;
+    public static final String keypressMode = "keypressMode";
+	public static final String keyboardLayout = "keyboardLayout";
+	public static final String limitedCharacterList = "limitedCharacterList";
+	public static final String autoCompleteText = "autoCompleteText";
+	public static final String language = "language";
 
     public KeyboardProperties() {
-        store.put(Names.keypressMode, KEYPRESS_MODE_DEFAULT);
+        store.put(KeyboardProperties.keypressMode, KEYPRESS_MODE_DEFAULT);
     }
 
     public KeyboardProperties(Hashtable hash) {
         super(hash);
-        if (!store.containsKey(Names.keypressMode)) {
-            store.put(Names.keypressMode, KEYPRESS_MODE_DEFAULT);
+        if (!store.containsKey(KeyboardProperties.keypressMode)) {
+            store.put(KeyboardProperties.keypressMode, KEYPRESS_MODE_DEFAULT);
         }
     }
 
     public Language getLanguage() {
-        Object obj = store.get(Names.language);
+        Object obj = store.get(KeyboardProperties.language);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -36,7 +40,7 @@ public class KeyboardProperties extends RPCStruct {
             } catch (Exception e) {
                 DebugTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
-                        		Names.language, e);
+                        		KeyboardProperties.language, e);
             }
             return theCode;
         }
@@ -45,14 +49,14 @@ public class KeyboardProperties extends RPCStruct {
 
     public void setLanguage(Language language) {
         if (language != null) {
-            store.put(Names.language, language);
+            store.put(KeyboardProperties.language, language);
         } else {
-            store.remove(Names.language);
+            store.remove(KeyboardProperties.language);
         }
     }
 
     public KeyboardLayout getKeyboardLayout() {
-        Object obj = store.get(Names.keyboardLayout);
+        Object obj = store.get(KeyboardProperties.keyboardLayout);
         if (obj instanceof KeyboardLayout) {
             return (KeyboardLayout) obj;
         } else if (obj instanceof String) {
@@ -62,7 +66,7 @@ public class KeyboardProperties extends RPCStruct {
             } catch (Exception e) {
                 DebugTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
-                        		Names.keyboardLayout, e);
+                        		KeyboardProperties.keyboardLayout, e);
             }
             return theCode;
         }
@@ -71,14 +75,14 @@ public class KeyboardProperties extends RPCStruct {
 
     public void setKeyboardLayout(KeyboardLayout keyboardLayout) {
         if (keyboardLayout != null) {
-            store.put(Names.keyboardLayout, keyboardLayout);
+            store.put(KeyboardProperties.keyboardLayout, keyboardLayout);
         } else {
-            store.remove(Names.keyboardLayout);
+            store.remove(KeyboardProperties.keyboardLayout);
         }
     }
 
     public KeypressMode getKeypressMode() {
-        Object obj = store.get(Names.keypressMode);
+        Object obj = store.get(KeyboardProperties.keypressMode);
         if (obj instanceof KeypressMode) {
             return (KeypressMode) obj;
         } else if (obj instanceof String) {
@@ -88,7 +92,7 @@ public class KeyboardProperties extends RPCStruct {
             } catch (Exception e) {
                 DebugTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
-                        		Names.keypressMode, e);
+                        		KeyboardProperties.keypressMode, e);
             }
             return theCode;
         }
@@ -97,14 +101,14 @@ public class KeyboardProperties extends RPCStruct {
 
     public void setKeypressMode(KeypressMode keypressMode) {
         if (keypressMode != null) {
-            store.put(Names.keypressMode, keypressMode);
+            store.put(KeyboardProperties.keypressMode, keypressMode);
         } else {
-            store.put(Names.keypressMode, KEYPRESS_MODE_DEFAULT);
+            store.put(KeyboardProperties.keypressMode, KEYPRESS_MODE_DEFAULT);
         }
     }
 
     public Vector<String> getLimitedCharacterList() {
-        final Object listObj = store.get(Names.limitedCharacterList);
+        final Object listObj = store.get(KeyboardProperties.limitedCharacterList);
         if (listObj instanceof Vector<?>) {
             Vector<?> list = (Vector<?>) listObj;
             if (list != null && list.size() > 0) {
@@ -119,14 +123,14 @@ public class KeyboardProperties extends RPCStruct {
 
     public void setLimitedCharacterList(Vector<String> limitedCharacterList) {
         if (limitedCharacterList != null) {
-            store.put(Names.limitedCharacterList, limitedCharacterList);
+            store.put(KeyboardProperties.limitedCharacterList, limitedCharacterList);
         } else {
-            store.remove(Names.limitedCharacterList);
+            store.remove(KeyboardProperties.limitedCharacterList);
         }
     }
 
     public String getAutoCompleteText() {
-        final Object obj = store.get(Names.autoCompleteText);
+        final Object obj = store.get(KeyboardProperties.autoCompleteText);
         if (obj instanceof String) {
             return (String) obj;
         }
@@ -135,9 +139,9 @@ public class KeyboardProperties extends RPCStruct {
 
     public void setAutoCompleteText(String autoCompleteText) {
         if (autoCompleteText != null) {
-            store.put(Names.autoCompleteText, autoCompleteText);
+            store.put(KeyboardProperties.autoCompleteText, autoCompleteText);
         } else {
-            store.remove(Names.autoCompleteText);
+            store.remove(KeyboardProperties.autoCompleteText);
         }
     }
 }

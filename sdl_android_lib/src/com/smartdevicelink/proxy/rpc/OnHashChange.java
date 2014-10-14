@@ -3,9 +3,9 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 
 public class OnHashChange extends RPCNotification {
+	public static final String hashID = "hashID";
 
     public OnHashChange() {
         super("OnHashChange");
@@ -16,14 +16,14 @@ public class OnHashChange extends RPCNotification {
     }
     
     public String getHashID() {
-        return (String) parameters.get(Names.hashID);
+        return (String) parameters.get(OnHashChange.hashID);
     }
    
     public void setHashID(String hashID) {
         if (hashID != null) {
-            parameters.put(Names.hashID, hashID);
+            parameters.put(OnHashChange.hashID, hashID);
         } else {
-        	parameters.remove(Names.hashID);
+        	parameters.remove(OnHashChange.hashID);
         }
     }   
     

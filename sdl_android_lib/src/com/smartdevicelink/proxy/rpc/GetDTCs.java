@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
@@ -15,6 +14,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * <p>
  */
 public class GetDTCs extends RPCRequest {
+	public static final String dtcMask = "dtcMask";
+	public static final String ecuName = "ecuName";
 
 	/**
 	 * Constructs a new GetDTCs object
@@ -45,9 +46,9 @@ public class GetDTCs extends RPCRequest {
 	 */
     public void setEcuName(Integer ecuName) {
     	if (ecuName != null) {
-    		parameters.put(Names.ecuName, ecuName);
+    		parameters.put(GetDTCs.ecuName, ecuName);
     	} else {
-    		parameters.remove(Names.ecuName);
+    		parameters.remove(GetDTCs.ecuName);
     	}
     }
 
@@ -58,16 +59,16 @@ public class GetDTCs extends RPCRequest {
 	 *         receive the DTC form
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(Names.ecuName);
+    	return (Integer) parameters.get(GetDTCs.ecuName);
     }
     public void setDtcMask(Integer dtcMask) {
     	if (dtcMask != null) {
-    		parameters.put(Names.dtcMask, dtcMask);
+    		parameters.put(GetDTCs.dtcMask, dtcMask);
     	} else {
-    		parameters.remove(Names.dtcMask);
+    		parameters.remove(GetDTCs.dtcMask);
     	}
     }
     public Integer getDtcMask() {
-    	return (Integer) parameters.get(Names.dtcMask);
+    	return (Integer) parameters.get(GetDTCs.dtcMask);
     }
 }

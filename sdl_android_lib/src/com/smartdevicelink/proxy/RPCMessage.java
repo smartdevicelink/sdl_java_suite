@@ -1,9 +1,7 @@
 package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
-import java.util.Iterator;
 
-import com.smartdevicelink.proxy.constants.Names;
 
 public class RPCMessage extends RPCStruct  {
 
@@ -25,17 +23,17 @@ public class RPCMessage extends RPCStruct  {
 		this.messageType = messageType;
 		store.put(messageType, function);
 		parameters = new Hashtable();
-		function.put(Names.parameters, parameters);
-		function.put(Names.function_name, functionName);
+		function.put(RPCStruct.parameters, parameters);
+		function.put(RPCStruct.function_name, functionName);
 	}
 
 	public RPCMessage(Hashtable hash) {
         store = hash;
         messageType = getMessageTypeName(hash.keySet());
         function = (Hashtable) hash.get(messageType);
-        parameters = (Hashtable) function.get(Names.parameters);
-        if (hasKey(hash.keySet(), Names.bulkData)) {
-            setBulkData((byte[]) hash.get(Names.bulkData));
+        parameters = (Hashtable) function.get(RPCStruct.parameters);
+        if (hasKey(hash.keySet(), RPCStruct.bulkData)) {
+            setBulkData((byte[]) hash.get(RPCStruct.bulkData));
         }
 	}
 
@@ -44,11 +42,11 @@ public class RPCMessage extends RPCStruct  {
 	protected Hashtable function;
 	
 	public String getFunctionName() {
-		return (String)function.get(Names.function_name);
+		return (String)function.get(RPCStruct.function_name);
 	}
 	
 	protected void setFunctionName(String functionName) {
-		function.put(Names.function_name, functionName);
+		function.put(RPCStruct.function_name, functionName);
 	}
 
 	public String getMessageType() {

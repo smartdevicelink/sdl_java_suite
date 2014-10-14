@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.util.DebugTool;
@@ -49,6 +48,14 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class DisplayCapabilities extends RPCStruct {
+	public static final String displayType = "displayType";
+	public static final String mediaClockFormats = "mediaClockFormats";
+	public static final String textFields = "textFields";
+	public static final String imageFields = "imageFields";
+    public static final String graphicSupported = "graphicSupported";
+    public static final String screenParams = "screenParams";
+    public static final String templatesAvailable = "templatesAvailable";
+    public static final String numCustomPresetsAvailable = "numCustomPresetsAvailable";
 	/**
 	 * Constructs a newly allocated DisplayCapabilities object
 	 */
@@ -65,7 +72,7 @@ public class DisplayCapabilities extends RPCStruct {
      * @return the type of display
      */    
     public DisplayType getDisplayType() {
-        Object obj = store.get(Names.displayType);
+        Object obj = store.get(DisplayCapabilities.displayType);
         if (obj instanceof DisplayType) {
             return (DisplayType) obj;
         } else if (obj instanceof String) {
@@ -73,7 +80,7 @@ public class DisplayCapabilities extends RPCStruct {
             try {
                 theCode = DisplayType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.displayType, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + DisplayCapabilities.displayType, e);
             }
             return theCode;
         }
@@ -85,7 +92,7 @@ public class DisplayCapabilities extends RPCStruct {
      */    
     public void setDisplayType( DisplayType displayType ) {
         if (displayType != null) {
-            store.put(Names.displayType, displayType );
+            store.put(DisplayCapabilities.displayType, displayType );
         }
     }
     /**
@@ -94,8 +101,8 @@ public class DisplayCapabilities extends RPCStruct {
      * @return the Vector of textFields
      */    
     public Vector<TextField> getTextFields() {
-        if (store.get(Names.textFields) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(Names.textFields);
+        if (store.get(DisplayCapabilities.textFields) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)store.get(DisplayCapabilities.textFields);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TextField) {
@@ -118,15 +125,15 @@ public class DisplayCapabilities extends RPCStruct {
      */    
     public void setTextFields( Vector<TextField> textFields ) {
         if (textFields != null) {
-            store.put(Names.textFields, textFields );
+            store.put(DisplayCapabilities.textFields, textFields );
         }
     }
     
     
     
     public Vector<TextField> getImageFields() {
-        if (store.get(Names.imageFields) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(Names.imageFields);
+        if (store.get(DisplayCapabilities.imageFields) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)store.get(DisplayCapabilities.imageFields);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TextField) {
@@ -145,25 +152,25 @@ public class DisplayCapabilities extends RPCStruct {
   
     public void setImageFields( Vector<TextField> imageFields ) {
         if (imageFields != null) {
-            store.put(Names.imageFields, imageFields );
+            store.put(DisplayCapabilities.imageFields, imageFields );
         }
         else
         {
-        	store.remove(Names.imageFields);
+        	store.remove(DisplayCapabilities.imageFields);
         }
     }    
     
     public Integer getNumCustomPresetsAvailable() {
-        return (Integer) store.get(Names.numCustomPresetsAvailable);
+        return (Integer) store.get(DisplayCapabilities.numCustomPresetsAvailable);
     }
  
     public void setNumCustomPresetsAvailable(Integer numCustomPresetsAvailable) {
         if (numCustomPresetsAvailable != null) {
-            store.put(Names.numCustomPresetsAvailable, numCustomPresetsAvailable);
+            store.put(DisplayCapabilities.numCustomPresetsAvailable, numCustomPresetsAvailable);
         }
         else
         {
-        	store.remove(Names.numCustomPresetsAvailable);
+        	store.remove(DisplayCapabilities.numCustomPresetsAvailable);
         }
     }
       
@@ -172,8 +179,8 @@ public class DisplayCapabilities extends RPCStruct {
      * @return the Veotor of mediaClockFormat
      */    
     public Vector<MediaClockFormat> getMediaClockFormats() {
-        if (store.get(Names.mediaClockFormats) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(Names.mediaClockFormats);
+        if (store.get(DisplayCapabilities.mediaClockFormats) instanceof Vector<?>) {
+	    	Vector<?> list = (Vector<?>)store.get(DisplayCapabilities.mediaClockFormats);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof MediaClockFormat) {
@@ -186,7 +193,7 @@ public class DisplayCapabilities extends RPCStruct {
 	                    try {
 	                        toAdd = MediaClockFormat.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                        DebugTool.logError("Failed to parse MediaClockFormat from " + getClass().getSimpleName() + "." + Names.mediaClockFormats, e);
+	                        DebugTool.logError("Failed to parse MediaClockFormat from " + getClass().getSimpleName() + "." + DisplayCapabilities.mediaClockFormats, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -204,7 +211,7 @@ public class DisplayCapabilities extends RPCStruct {
      */    
     public void setMediaClockFormats( Vector<MediaClockFormat> mediaClockFormats ) {
         if (mediaClockFormats != null) {
-            store.put(Names.mediaClockFormats, mediaClockFormats );
+            store.put(DisplayCapabilities.mediaClockFormats, mediaClockFormats );
         }
     }
     
@@ -215,9 +222,9 @@ public class DisplayCapabilities extends RPCStruct {
      */
     public void setGraphicSupported(Boolean graphicSupported) {
     	if (graphicSupported != null) {
-    		store.put(Names.graphicSupported, graphicSupported);
+    		store.put(DisplayCapabilities.graphicSupported, graphicSupported);
     	} else {
-    		store.remove(Names.graphicSupported);
+    		store.remove(DisplayCapabilities.graphicSupported);
     	}
     }
     
@@ -227,12 +234,12 @@ public class DisplayCapabilities extends RPCStruct {
      * @since SmartDeviceLink 2.0
      */
     public Boolean getGraphicSupported() {
-    	return (Boolean) store.get(Names.graphicSupported);
+    	return (Boolean) store.get(DisplayCapabilities.graphicSupported);
     }
     
     public Vector<String> getTemplatesAvailable() {
-        if (store.get(Names.templatesAvailable) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.templatesAvailable);
+        if (store.get(DisplayCapabilities.templatesAvailable) instanceof Vector<?>) {
+        	Vector<?> list = (Vector<?>)store.get( DisplayCapabilities.templatesAvailable);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
@@ -245,31 +252,31 @@ public class DisplayCapabilities extends RPCStruct {
     
     public void setTemplatesAvailable(Vector<String> templatesAvailable) {
         if (templatesAvailable != null) {
-            store.put(Names.templatesAvailable, templatesAvailable);
+            store.put(DisplayCapabilities.templatesAvailable, templatesAvailable);
         }
         else
         {
-        	store.remove(Names.templatesAvailable);
+        	store.remove(DisplayCapabilities.templatesAvailable);
         }        
     }
         
     public void setScreenParams(ScreenParams screenParams) {
         if (screenParams != null) {
-            store.put(Names.screenParams, screenParams);
+            store.put(DisplayCapabilities.screenParams, screenParams);
         } else {
-            store.remove(Names.screenParams);
+            store.remove(DisplayCapabilities.screenParams);
         }
     }
 
     public ScreenParams getScreenParams() {
-        Object obj = store.get(Names.screenParams);
+        Object obj = store.get(DisplayCapabilities.screenParams);
         if (obj instanceof ScreenParams) {
             return (ScreenParams) obj;
         } else if (obj instanceof Hashtable) {
             try {
                 return new ScreenParams((Hashtable) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.screenParams, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + DisplayCapabilities.screenParams, e);
             }
         }
         return null;
