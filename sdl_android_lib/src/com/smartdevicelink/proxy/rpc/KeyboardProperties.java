@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -107,21 +107,21 @@ public class KeyboardProperties extends RPCStruct {
         }
     }
 
-    public Vector<String> getLimitedCharacterList() {
+    public List<String> getLimitedCharacterList() {
         final Object listObj = store.get(KeyboardProperties.limitedCharacterList);
-        if (listObj instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>) listObj;
+        if (listObj instanceof List<?>) {
+        	List<?> list = (List<?>) listObj;
             if (list != null && list.size() > 0) {
                 Object obj = list.get(0);
                 if (obj instanceof String) {
-                    return (Vector<String>) list;
+                    return (List<String>) list;
                 }
             }
         }
         return null;
     }
 
-    public void setLimitedCharacterList(Vector<String> limitedCharacterList) {
+    public void setLimitedCharacterList(List<String> limitedCharacterList) {
         if (limitedCharacterList != null) {
             store.put(KeyboardProperties.limitedCharacterList, limitedCharacterList);
         } else {

@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -40,20 +40,20 @@ public class DiagnosticMessage extends RPCRequest {
     	return (Integer) parameters.get(DiagnosticMessage.messageLength);
     }
 
-    public Vector<Integer> getMessageData() {
-    	if(parameters.get(DiagnosticMessage.messageData) instanceof Vector<?>){
-    		Vector<?> list = (Vector<?>)parameters.get(DiagnosticMessage.messageData);
+    public List<Integer> getMessageData() {
+    	if(parameters.get(DiagnosticMessage.messageData) instanceof List<?>){
+    		List<?> list = (List<?>)parameters.get(DiagnosticMessage.messageData);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof Integer){
-        			return (Vector<Integer>) list;
+        			return (List<Integer>) list;
         		}
     		}
     	}
         return null;
     }
     
-    public void setMessageData(Vector<Integer> messageData) {
+    public void setMessageData(List<Integer> messageData) {
         if (messageData != null) {
             parameters.put(DiagnosticMessage.messageData, messageData);
         } else {

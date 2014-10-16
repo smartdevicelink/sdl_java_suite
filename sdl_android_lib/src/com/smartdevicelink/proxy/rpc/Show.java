@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -410,19 +411,19 @@ public class Show extends RPCRequest {
 	/**
 	 * Gets the Soft buttons defined by the App
 	 * 
-	 * @return Vector<SoftButton> -a Vector value representing the Soft buttons
+	 * @return List<SoftButton> -a List value representing the Soft buttons
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Show.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Show.softButtons);
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(Show.softButtons) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(Show.softButtons);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButton((Hashtable)hashObj));
 	                }
@@ -437,7 +438,7 @@ public class Show extends RPCRequest {
 	 * Sets the the Soft buttons defined by the App
 	 * 
 	 * @param softButtons
-	 *            a Vector value represemting the Soft buttons defined by the
+	 *            a List value represemting the Soft buttons defined by the
 	 *            App
 	 *            <p>
 	 *            <b>Notes: </b><br/>
@@ -450,7 +451,7 @@ public class Show extends RPCRequest {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
             parameters.put(Show.softButtons, softButtons);
         } else {
@@ -461,17 +462,17 @@ public class Show extends RPCRequest {
 	/**
 	 * Gets the Custom Presets defined by the App
 	 * 
-	 * @return Vector<String> - a Vector value representing the Custom presets
+	 * @return List<String> - a List value representing the Custom presets
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<String> getCustomPresets() {
-    	if (parameters.get(Show.customPresets) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(Show.customPresets);
+    public List<String> getCustomPresets() {
+    	if (parameters.get(Show.customPresets) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(Show.customPresets);
     		if (list != null && list.size()>0) {
     			Object obj = list.get(0);
     			if (obj instanceof String) {
-    				return (Vector<String>) list;
+    				return (List<String>) list;
     			}
     		}
     	}
@@ -482,7 +483,7 @@ public class Show extends RPCRequest {
 	 * Sets the Custom Presets defined by the App
 	 * 
 	 * @param customPresets
-	 *            a Vector value representing the Custom Presets defined by the
+	 *            a List value representing the Custom Presets defined by the
 	 *            App
 	 *            <p>
 	 *            <ul>
@@ -492,7 +493,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setCustomPresets(Vector<String> customPresets) {
+    public void setCustomPresets(List<String> customPresets) {
         if (customPresets != null) {
             parameters.put(Show.customPresets, customPresets);
         } else {

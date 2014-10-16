@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -69,7 +69,7 @@ public class ReadDID extends RPCRequest {
 	 * Sets raw data from vehicle data DID location(s)
 	 * 
 	 * @param didLocation
-	 *            a Vector<Integer> value representing raw data from vehicle
+	 *            a List<Integer> value representing raw data from vehicle
 	 *            data DID location(s)
 	 *            <p>
 	 *            <b>Notes: </b>
@@ -78,7 +78,7 @@ public class ReadDID extends RPCRequest {
 	 *            <li>ArrayMin:0; ArrayMax:1000</li>
 	 *            </ul>
 	 */
-    public void setDidLocation(Vector<Integer> didLocation) {
+    public void setDidLocation(List<Integer> didLocation) {
     	if (didLocation != null) {
     		parameters.put(ReadDID.didLocation, didLocation);
     	} else {
@@ -89,16 +89,16 @@ public class ReadDID extends RPCRequest {
 	/**
 	 * Gets raw data from vehicle data DID location(s)
 	 * 
-	 * @return Vector<Integer> -a Vector<Integer> value representing raw data
+	 * @return List<Integer> -a List<Integer> value representing raw data
 	 *         from vehicle data DID location(s)
 	 */
-    public Vector<Integer> getDidLocation() {
-        if (parameters.get(ReadDID.didLocation) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(ReadDID.didLocation);
+    public List<Integer> getDidLocation() {
+        if (parameters.get(ReadDID.didLocation) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(ReadDID.didLocation);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof Integer) {
-                	return (Vector<Integer>) list;        			
+                	return (List<Integer>) list;
         		}
         	}
         }

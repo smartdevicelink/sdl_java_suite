@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
 

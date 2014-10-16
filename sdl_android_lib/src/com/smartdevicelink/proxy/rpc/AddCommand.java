@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.DebugTool;
@@ -140,15 +140,15 @@ public class AddCommand extends RPCRequest {
 	 * Gets Voice Recognition Commands
 	 * </p>
 	 * 
-	 * @return Vector<String> -(Vector<String>) indicating one or more VR phrases
+	 * @return List<String> -(List<String>) indicating one or more VR phrases
 	 */    
-    public Vector<String> getVrCommands() {
-        if (parameters.get(AddCommand.vrCommands) instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>)parameters.get(AddCommand.vrCommands);
+    public List<String> getVrCommands() {
+        if (parameters.get(AddCommand.vrCommands) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(AddCommand.vrCommands);
 	    	if (list != null && list.size() > 0) {
 	    		Object obj = list.get(0);
 	    		if (obj instanceof String) {
-	    			return (Vector<String>)list;
+	    			return (List<String>)list;
 	    		}
 	    	}
     	}
@@ -165,13 +165,13 @@ public class AddCommand extends RPCRequest {
 	 * </p>
 	 * 
 	 * @param vrCommands
-	 *            Vector<String> indicating one or more VR phrases
+	 *            List<String> indicating one or more VR phrases
 	 *            <p>
 	 *            <b>Notes: </b>Optional only if menuParams is provided. If
 	 *            provided, array must contain at least one non-empty (not null,
 	 *            not zero-length, not whitespace only) element
 	 */
-    public void setVrCommands( Vector<String> vrCommands ) {
+    public void setVrCommands( List<String> vrCommands ) {
         if (vrCommands != null) {
             parameters.put(AddCommand.vrCommands, vrCommands );
         } else {

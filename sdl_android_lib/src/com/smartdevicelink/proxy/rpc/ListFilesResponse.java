@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCResponse;
 
@@ -23,20 +23,20 @@ public class ListFilesResponse extends RPCResponse {
     public ListFilesResponse(Hashtable hash) {
         super(hash);
     }
-    public void setFilenames(Vector<String> filenames) {
+    public void setFilenames(List<String> filenames) {
         if (filenames != null) {
             parameters.put(ListFilesResponse.filenames, filenames);
         } else {
         	parameters.remove(ListFilesResponse.filenames);
         }
     }
-    public Vector<String> getFilenames() {
-        if (parameters.get(ListFilesResponse.filenames) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(ListFilesResponse.filenames);
+    public List<String> getFilenames() {
+        if (parameters.get(ListFilesResponse.filenames) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(ListFilesResponse.filenames);
         	if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>) list;
+        			return (List<String>) list;
         		}
         	}
         }

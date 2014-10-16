@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -62,17 +63,17 @@ public class OnPermissionsChange extends RPCNotification {
 		super(hash);
 	}
 	/**
-     * <p>Returns Vector<PermissionItem> object describing change in permissions for a given set of RPCs</p>
-     * @return Vector<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
+     * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
+     * @return List<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
      */   
-	public Vector<PermissionItem> getPermissionItem() {
-		Vector<?> list = (Vector<?>)parameters.get(OnPermissionsChange.permissionItem);
+	public List<PermissionItem> getPermissionItem() {
+		List<?> list = (List<?>)parameters.get(OnPermissionsChange.permissionItem);
 		if (list != null && list.size()>0) {
 			Object obj = list.get(0);
 			if(obj instanceof PermissionItem){
-				return (Vector<PermissionItem>) list;
+				return (List<PermissionItem>) list;
 			} else if(obj instanceof Hashtable) {
-				Vector<PermissionItem> newList = new Vector<PermissionItem>();
+				List<PermissionItem> newList = new ArrayList<PermissionItem>();
 				for (Object hash:list) {
 					newList.add(new PermissionItem((Hashtable)hash));
 				}
@@ -83,9 +84,9 @@ public class OnPermissionsChange extends RPCNotification {
 	}
     /**
      * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
-     * @param permissionItem an vector of  PermissionItem describing change in permissions for a given set of RPCs
+     * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
-	public void setPermissionItem(Vector<PermissionItem> permissionItem) {
+	public void setPermissionItem(List<PermissionItem> permissionItem) {
 		if (permissionItem != null) {
 			parameters.put(OnPermissionsChange.permissionItem, permissionItem);
 		} else {

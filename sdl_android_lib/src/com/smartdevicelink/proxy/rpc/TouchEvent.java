@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
@@ -25,34 +26,34 @@ public class TouchEvent extends RPCStruct {
     public Integer getId() {
         return (Integer) store.get(TouchEvent.id);
     }    
-    public Vector<Integer> getTs() {
-    	if(store.get(TouchEvent.ts) instanceof Vector<?>){
-    		Vector<?> list = (Vector<?>)store.get(TouchEvent.ts);
+    public List<Integer> getTs() {
+    	if(store.get(TouchEvent.ts) instanceof List<?>){
+    		List<?> list = (List<?>)store.get(TouchEvent.ts);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof Integer){
-        			return (Vector<Integer>) list;
+        			return (List<Integer>) list;
         		}
     		}
     	}
         return null;
     }
-    public void setTs(Vector<Integer> ts) {
+    public void setTs(List<Integer> ts) {
         if (ts != null) {
             store.put(TouchEvent.ts, ts);
         } else {
         	store.remove(TouchEvent.ts);
         }
     }
-    public Vector<TouchCoord> getC() {
-        if (store.get(TouchEvent.c) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(TouchEvent.c);
+    public List<TouchCoord> getC() {
+        if (store.get(TouchEvent.c) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get(TouchEvent.c);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TouchCoord) {
-	                return (Vector<TouchCoord>) list;
+	                return (List<TouchCoord>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TouchCoord> newList = new Vector<TouchCoord>();
+	            	List<TouchCoord> newList = new ArrayList<TouchCoord>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TouchCoord((Hashtable) hashObj));
 	                }
@@ -62,7 +63,7 @@ public class TouchEvent extends RPCStruct {
         }
         return null;
     } 
-    public void setC( Vector<TouchCoord> c ) {
+    public void setC( List<TouchCoord> c ) {
         if (c != null) {
             store.put(TouchEvent.c, c );
         } else {

@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 public class SystemRequest extends RPCRequest {
 	public static final String fileName = "fileName";
@@ -23,20 +23,20 @@ public class SystemRequest extends RPCRequest {
         super(hash);
     }
     
-    public Vector<String> getLegacyData() {
-        if (parameters.get(SystemRequest.data) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(SystemRequest.data);
+    public List<String> getLegacyData() {
+        if (parameters.get(SystemRequest.data) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(SystemRequest.data);
         	if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>) list;
+        			return (List<String>) list;
         		}
         	}
         }
     	return null;
     }
  
-    public void setLegacyData( Vector<String> data ) {
+    public void setLegacyData( List<String> data ) {
     	if ( data!= null) {
     		parameters.put(SystemRequest.data, data );
     	}

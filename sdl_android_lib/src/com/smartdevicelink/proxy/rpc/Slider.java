@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -125,11 +125,11 @@ public class Slider extends RPCRequest {
 	 * Sets a text footer to display
 	 * 
 	 * @param sliderFooter
-	 *            a Vector<String> value representing a text footer to display
+	 *            a List<String> value representing a text footer to display
 	 *            <p>
 	 *            <b>Notes: </b>Maxlength=500; Minvalue=1; Maxvalue=26
 	 */
-    public void setSliderFooter(Vector<String> sliderFooter) {
+    public void setSliderFooter(List<String> sliderFooter) {
     	if (sliderFooter != null) {
     		parameters.put(Slider.sliderFooter, sliderFooter);
     	} else {
@@ -142,13 +142,13 @@ public class Slider extends RPCRequest {
 	 * 
 	 * @return String -a String value representing a text footer to display
 	 */
-    public Vector<String> getSliderFooter() {
-        if (parameters.get(Slider.sliderFooter) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(Slider.sliderFooter);
+    public List<String> getSliderFooter() {
+        if (parameters.get(Slider.sliderFooter) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(Slider.sliderFooter);
         	if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>) list;
+        			return (List<String>) list;
         		}
         	}
         }

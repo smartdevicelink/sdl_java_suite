@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.Version;
@@ -198,15 +199,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return buttonCapabilities
 	 */
-    public Vector<ButtonCapabilities> getButtonCapabilities() {
-        if (parameters.get(RegisterAppInterfaceResponse.buttonCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.buttonCapabilities);
+    public List<ButtonCapabilities> getButtonCapabilities() {
+        if (parameters.get(RegisterAppInterfaceResponse.buttonCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.buttonCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof ButtonCapabilities) {
-	                return (Vector<ButtonCapabilities>) list;
+	                return (List<ButtonCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<ButtonCapabilities> newList = new Vector<ButtonCapabilities>();
+	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new ButtonCapabilities((Hashtable)hashObj));
 	                }
@@ -220,7 +221,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets Button Capabilities
      * @param buttonCapabilities
      */
-    public void setButtonCapabilities(Vector<ButtonCapabilities> buttonCapabilities) {
+    public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         if (buttonCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.buttonCapabilities, buttonCapabilities);
         }
@@ -230,15 +231,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return SoftButtonCapabilities 
 	 */
-    public Vector<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(RegisterAppInterfaceResponse.softButtonCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.softButtonCapabilities);
+    public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
+        if (parameters.get(RegisterAppInterfaceResponse.softButtonCapabilities) instanceof List<?>) {
+	    	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.softButtonCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButtonCapabilities) {
-	                return (Vector<SoftButtonCapabilities>) list;
+	                return (List<SoftButtonCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButtonCapabilities> newList = new Vector<SoftButtonCapabilities>();
+	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButtonCapabilities((Hashtable)hashObj));
 	                }
@@ -252,7 +253,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets softButtonCapabilities
      * @param softButtonCapabilities
      */
-    public void setSoftButtonCapabilities(Vector<SoftButtonCapabilities> softButtonCapabilities) {
+    public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         if (softButtonCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.softButtonCapabilities, softButtonCapabilities);
         }
@@ -287,15 +288,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return HmiZoneCapabilities
 	 */
-    public Vector<HmiZoneCapabilities> getHmiZoneCapabilities() {
-        if (parameters.get(RegisterAppInterfaceResponse.hmiZoneCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.hmiZoneCapabilities);
+    public List<HmiZoneCapabilities> getHmiZoneCapabilities() {
+        if (parameters.get(RegisterAppInterfaceResponse.hmiZoneCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.hmiZoneCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof HmiZoneCapabilities) {
-	                return (Vector<HmiZoneCapabilities>) list;
+	                return (List<HmiZoneCapabilities>) list;
 	            } else if (obj instanceof String) {
-	                Vector<HmiZoneCapabilities> newList = new Vector<HmiZoneCapabilities>();
+	            	List<HmiZoneCapabilities> newList = new ArrayList<HmiZoneCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    HmiZoneCapabilities toAdd = null;
@@ -318,7 +319,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets hmiZoneCapabilities
      * @param hmiZoneCapabilities
      */
-    public void setHmiZoneCapabilities(Vector<HmiZoneCapabilities> hmiZoneCapabilities) {
+    public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
         if (hmiZoneCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.hmiZoneCapabilities, hmiZoneCapabilities);
         }
@@ -329,15 +330,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return SpeechCapabilities
 	 */
-    public Vector<SpeechCapabilities> getSpeechCapabilities() {
-        if (parameters.get(RegisterAppInterfaceResponse.speechCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.speechCapabilities);
+    public List<SpeechCapabilities> getSpeechCapabilities() {
+        if (parameters.get(RegisterAppInterfaceResponse.speechCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.speechCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SpeechCapabilities) {
-	                return (Vector<SpeechCapabilities>) list;
+	                return (List<SpeechCapabilities>) list;
 	            } else if (obj instanceof String) {
-	                Vector<SpeechCapabilities> newList = new Vector<SpeechCapabilities>();
+	            	List<SpeechCapabilities> newList = new ArrayList<SpeechCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    SpeechCapabilities toAdd = null;
@@ -360,22 +361,22 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets speechCapabilities
      * @param speechCapabilities
      */
-    public void setSpeechCapabilities(Vector<SpeechCapabilities> speechCapabilities) {
+    public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
         if (speechCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.speechCapabilities, speechCapabilities);
         }
     }
 
     
-    public Vector<PrerecordedSpeech> getPrerecordedSpeech() {
-        if (parameters.get(RegisterAppInterfaceResponse.prerecordedSpeech) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.prerecordedSpeech);
+    public List<PrerecordedSpeech> getPrerecordedSpeech() {
+        if (parameters.get(RegisterAppInterfaceResponse.prerecordedSpeech) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.prerecordedSpeech);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof PrerecordedSpeech) {
-	                return (Vector<PrerecordedSpeech>) list;
+	                return (List<PrerecordedSpeech>) list;
 	            } else if (obj instanceof String) {
-	                Vector<PrerecordedSpeech> newList = new Vector<PrerecordedSpeech>();
+	            	List<PrerecordedSpeech> newList = new ArrayList<PrerecordedSpeech>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    PrerecordedSpeech toAdd = null;
@@ -395,7 +396,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return null;
     }
 
-    public void setPrerecordedSpeech(Vector<PrerecordedSpeech> prerecordedSpeech) {
+    public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
         if (prerecordedSpeech != null) {
             parameters.put(RegisterAppInterfaceResponse.prerecordedSpeech, prerecordedSpeech);
         }
@@ -407,15 +408,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return VrCapabilities
 	 */
-    public Vector<VrCapabilities> getVrCapabilities() {
-        if (parameters.get(RegisterAppInterfaceResponse.vrCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.vrCapabilities);
+    public List<VrCapabilities> getVrCapabilities() {
+        if (parameters.get(RegisterAppInterfaceResponse.vrCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.vrCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof VrCapabilities) {
-	                return (Vector<VrCapabilities>) list;
+	                return (List<VrCapabilities>) list;
 	            } else if (obj instanceof String) {
-	                Vector<VrCapabilities> newList = new Vector<VrCapabilities>();
+	            	List<VrCapabilities> newList = new ArrayList<VrCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    VrCapabilities toAdd = null;
@@ -438,7 +439,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets VrCapabilities
      * @param vrCapabilities
      */
-    public void setVrCapabilities(Vector<VrCapabilities> vrCapabilities) {
+    public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
         if (vrCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.vrCapabilities, vrCapabilities);
         }
@@ -473,15 +474,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return AudioPassThruCapabilities 
 	 */
-    public Vector<AudioPassThruCapabilities> getAudioPassThruCapabilities() {
-        if (parameters.get(RegisterAppInterfaceResponse.audioPassThruCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterfaceResponse.audioPassThruCapabilities);
+    public List<AudioPassThruCapabilities> getAudioPassThruCapabilities() {
+        if (parameters.get(RegisterAppInterfaceResponse.audioPassThruCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterfaceResponse.audioPassThruCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof AudioPassThruCapabilities) {
-	                return (Vector<AudioPassThruCapabilities>) list;
+	                return (List<AudioPassThruCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<AudioPassThruCapabilities> newList = new Vector<AudioPassThruCapabilities>();
+	            	List<AudioPassThruCapabilities> newList = new ArrayList<AudioPassThruCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new AudioPassThruCapabilities((Hashtable)hashObj));
 	                }
@@ -495,7 +496,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets AudioPassThruCapabilities
      * @param audioPassThruCapabilities
      */
-    public void setAudioPassThruCapabilities(Vector<AudioPassThruCapabilities> audioPassThruCapabilities) {
+    public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
         if (audioPassThruCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.audioPassThruCapabilities, audioPassThruCapabilities);
         }
@@ -506,7 +507,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	
 		return null;
     }
-    public void setSupportedDiagModes(Vector<Integer> supportedDiagModes) {
+    public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
         if (supportedDiagModes != null) {
         	parameters.put(RegisterAppInterfaceResponse.supportedDiagModes, supportedDiagModes);
         }
@@ -516,14 +517,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         }
     }
 
-    public Vector<Integer> getSupportedDiagModes() {
+    public List<Integer> getSupportedDiagModes() {
         
-    	if (parameters.get(RegisterAppInterfaceResponse.supportedDiagModes) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get( RegisterAppInterfaceResponse.supportedDiagModes);
+    	if (parameters.get(RegisterAppInterfaceResponse.supportedDiagModes) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get( RegisterAppInterfaceResponse.supportedDiagModes);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof Integer) {
-                	return (Vector<Integer>) list;        			
+                	return (List<Integer>) list;
         		}
         	}
         }

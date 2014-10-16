@@ -4,8 +4,9 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 public class OnTouchEvent extends RPCNotification {
 	public static final String event = "event";
@@ -41,7 +42,7 @@ public class OnTouchEvent extends RPCNotification {
         return null;
     }
     
-    public void setEvent(Vector<TouchEvent> event) {
+    public void setEvent(List<TouchEvent> event) {
         if (event != null) {
             parameters.put(OnTouchEvent.event, event);
         } else {
@@ -49,15 +50,15 @@ public class OnTouchEvent extends RPCNotification {
         }
     }
     
-    public Vector<TouchEvent> getEvent() {
-        if (parameters.get(OnTouchEvent.event) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(OnTouchEvent.event);
+    public List<TouchEvent> getEvent() {
+        if (parameters.get(OnTouchEvent.event) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(OnTouchEvent.event);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TouchEvent) {
-	                return (Vector<TouchEvent>) list;
+	                return (List<TouchEvent>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TouchEvent> newList = new Vector<TouchEvent>();
+	            	List<TouchEvent> newList = new ArrayList<TouchEvent>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TouchEvent((Hashtable) hashObj));
 	                }

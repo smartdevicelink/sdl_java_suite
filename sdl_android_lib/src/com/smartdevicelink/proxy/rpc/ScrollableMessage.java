@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
@@ -97,12 +98,12 @@ public class ScrollableMessage extends RPCRequest {
 	 * system defined "Close" SoftButton will be displayed
 	 * 
 	 * @param softButtons
-	 *            a Vector<SoftButton> value representing App defined
+	 *            a List<SoftButton> value representing App defined
 	 *            SoftButtons
 	 *            <p>
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
             parameters.put(ScrollableMessage.softButtons, softButtons);
         } else {
@@ -112,17 +113,17 @@ public class ScrollableMessage extends RPCRequest {
 
 	/**
 	 * Gets App defined soft button
-	 * @return Vector -Vector<SoftButton> value
+	 * @return List -List<SoftButton> value
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(ScrollableMessage.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(ScrollableMessage.softButtons);
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(ScrollableMessage.softButtons) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(ScrollableMessage.softButtons);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButton((Hashtable) hashObj));
 	                }

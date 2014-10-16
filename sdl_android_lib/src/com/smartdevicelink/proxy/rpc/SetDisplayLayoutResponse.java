@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCResponse;
 
@@ -51,15 +52,15 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         }
     }
 
-    public Vector<ButtonCapabilities> getButtonCapabilities() {
-        if (parameters.get(SetDisplayLayoutResponse.buttonCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(SetDisplayLayoutResponse.buttonCapabilities);
+    public List<ButtonCapabilities> getButtonCapabilities() {
+        if (parameters.get(SetDisplayLayoutResponse.buttonCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(SetDisplayLayoutResponse.buttonCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof ButtonCapabilities) {
-	                return (Vector<ButtonCapabilities>) list;
+	                return (List<ButtonCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<ButtonCapabilities> newList = new Vector<ButtonCapabilities>();
+	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new ButtonCapabilities((Hashtable)hashObj));
 	                }
@@ -70,21 +71,21 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return null;
     }
 
-    public void setButtonCapabilities(Vector<ButtonCapabilities> buttonCapabilities) {
+    public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         if (buttonCapabilities != null) {
             parameters.put(SetDisplayLayoutResponse.buttonCapabilities, buttonCapabilities);
         }
     }
 
-    public Vector<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(SetDisplayLayoutResponse.softButtonCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(SetDisplayLayoutResponse.softButtonCapabilities);
+    public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
+        if (parameters.get(SetDisplayLayoutResponse.softButtonCapabilities) instanceof List<?>) {
+	    	List<?> list = (List<?>)parameters.get(SetDisplayLayoutResponse.softButtonCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButtonCapabilities) {
-	                return (Vector<SoftButtonCapabilities>) list;
+	                return (List<SoftButtonCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButtonCapabilities> newList = new Vector<SoftButtonCapabilities>();
+	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButtonCapabilities((Hashtable)hashObj));
 	                }
@@ -95,7 +96,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return null;
     }
 
-    public void setSoftButtonCapabilities(Vector<SoftButtonCapabilities> softButtonCapabilities) {
+    public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         if (softButtonCapabilities != null) {
             parameters.put(SetDisplayLayoutResponse.softButtonCapabilities, softButtonCapabilities);
         }

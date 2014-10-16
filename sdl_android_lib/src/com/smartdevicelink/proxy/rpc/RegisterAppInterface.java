@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -202,18 +203,18 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * Gets TTS string for VR recognition of the mobile application name
 	 * 
-	 * @return Vector<TTSChunk> -Vector value representing the TTS string
+	 * @return List<TTSChunk> -List value representing the TTS string
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<TTSChunk> getTtsName() {
-        if (parameters.get(RegisterAppInterface.ttsName) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterface.ttsName);
+    public List<TTSChunk> getTtsName() {
+        if (parameters.get(RegisterAppInterface.ttsName) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterface.ttsName);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TTSChunk((Hashtable) hashObj));
 	                }
@@ -227,7 +228,7 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * 
 	 * @param ttsName
-	 *            a Vector<TTSChunk> value represeting the TTS Name
+	 *            a List<TTSChunk> value represeting the TTS Name
 	 *            <p>
 	 *            <b>Notes: </b><br/>
 	 *            <ul>
@@ -242,7 +243,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setTtsName(Vector<TTSChunk> ttsName) {
+    public void setTtsName(List<TTSChunk> ttsName) {
         if (ttsName != null) {
             parameters.put(RegisterAppInterface.ttsName, ttsName);
         } else {
@@ -284,20 +285,20 @@ public class RegisterAppInterface extends RPCRequest {
         }
     }
 	/**
-	 * Gets the Vector<String> representing the an array of 1-100 elements, each
+	 * Gets the List<String> representing the an array of 1-100 elements, each
 	 * element containing a voice-recognition synonym
 	 * 
-	 * @return Vector<String> -a Vector value representing the an array of
+	 * @return List<String> -a List value representing the an array of
 	 *         1-100 elements, each element containing a voice-recognition
 	 *         synonym
 	 */    
-    public Vector<String> getVrSynonyms() {
-    	if (parameters.get(RegisterAppInterface.vrSynonyms) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterface.vrSynonyms);
+    public List<String> getVrSynonyms() {
+    	if (parameters.get(RegisterAppInterface.vrSynonyms) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(RegisterAppInterface.vrSynonyms);
     		if (list != null && list.size()>0) {
     			Object obj = list.get(0);
     			if (obj instanceof String) {
-    				return (Vector<String>) list;
+    				return (List<String>) list;
     			}
     		}
     	}
@@ -308,7 +309,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * element containing a voice-recognition synonym
 	 * 
 	 * @param vrSynonyms
-	 *            a Vector<String> value representing the an array of 1-100
+	 *            a List<String> value representing the an array of 1-100
 	 *            elements
 	 *            <p>
 	 *            <b>Notes: </b>
@@ -320,7 +321,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            application</li>
 	 *            </ul>
 	 */    
-    public void setVrSynonyms(Vector<String> vrSynonyms) {
+    public void setVrSynonyms(List<String> vrSynonyms) {
         if (vrSynonyms != null) {
             parameters.put(RegisterAppInterface.vrSynonyms, vrSynonyms);
         } else {
@@ -433,20 +434,20 @@ public class RegisterAppInterface extends RPCRequest {
 	 * be given to the app.e.g. for platforms , like GEN2, this will determine
 	 * which "corner(s)" the app can populate
 	 * 
-	 * @return Vector<AppHMIType> - a Vector value representing a list of all
+	 * @return List<AppHMIType> - a List value representing a list of all
 	 *         applicable app types stating which classifications to be given to
 	 *         the app
 	 * @since SmartDeviceLinke 2.0
 	 */
-    public Vector<AppHMIType> getAppHMIType() {
-        if (parameters.get(RegisterAppInterface.appHMIType) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(RegisterAppInterface.appHMIType);
+    public List<AppHMIType> getAppHMIType() {
+        if (parameters.get(RegisterAppInterface.appHMIType) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(RegisterAppInterface.appHMIType);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof AppHMIType) {
-	                return (Vector<AppHMIType>) list;
+	                return (List<AppHMIType>) list;
 	            } else if (obj instanceof String) {
-	                Vector<AppHMIType> newList = new Vector<AppHMIType>();
+	            	List<AppHMIType> newList = new ArrayList<AppHMIType>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    AppHMIType toAdd = null;
@@ -471,7 +472,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * determine which "corner(s)" the app can populate
 	 * 
 	 * @param appHMIType
-	 *            a Vector<AppHMIType>
+	 *            a List<AppHMIType>
 	 *            <p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -480,7 +481,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAppHMIType(Vector<AppHMIType> appHMIType) {
+    public void setAppHMIType(List<AppHMIType> appHMIType) {
         if (appHMIType != null) {
             parameters.put(RegisterAppInterface.appHMIType, appHMIType);
         } else {

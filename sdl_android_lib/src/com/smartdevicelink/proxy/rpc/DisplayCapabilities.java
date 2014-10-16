@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
@@ -98,17 +99,17 @@ public class DisplayCapabilities extends RPCStruct {
     /**
      *Get an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
      *	 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
-     * @return the Vector of textFields
+     * @return the List of textFields
      */    
-    public Vector<TextField> getTextFields() {
-        if (store.get(DisplayCapabilities.textFields) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(DisplayCapabilities.textFields);
+    public List<TextField> getTextFields() {
+        if (store.get(DisplayCapabilities.textFields) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get(DisplayCapabilities.textFields);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TextField) {
-	                return (Vector<TextField>) list;
+	                return (List<TextField>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TextField> newList = new Vector<TextField>();
+	            	List<TextField> newList = new ArrayList<TextField>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TextField((Hashtable)hashObj));
 	                }
@@ -121,9 +122,9 @@ public class DisplayCapabilities extends RPCStruct {
     /**
      * Set an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
      *	 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
-     * @param textFields the Vector of textFields
+     * @param textFields the List of textFields
      */    
-    public void setTextFields( Vector<TextField> textFields ) {
+    public void setTextFields( List<TextField> textFields ) {
         if (textFields != null) {
             store.put(DisplayCapabilities.textFields, textFields );
         }
@@ -131,15 +132,15 @@ public class DisplayCapabilities extends RPCStruct {
     
     
     
-    public Vector<TextField> getImageFields() {
-        if (store.get(DisplayCapabilities.imageFields) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(DisplayCapabilities.imageFields);
+    public List<TextField> getImageFields() {
+        if (store.get(DisplayCapabilities.imageFields) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get(DisplayCapabilities.imageFields);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TextField) {
-	                return (Vector<TextField>) list;
+	                return (List<TextField>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TextField> newList = new Vector<TextField>();
+	            	List<TextField> newList = new ArrayList<TextField>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TextField((Hashtable)hashObj));
 	                }
@@ -150,7 +151,7 @@ public class DisplayCapabilities extends RPCStruct {
         return null;
     }
   
-    public void setImageFields( Vector<TextField> imageFields ) {
+    public void setImageFields( List<TextField> imageFields ) {
         if (imageFields != null) {
             store.put(DisplayCapabilities.imageFields, imageFields );
         }
@@ -178,15 +179,15 @@ public class DisplayCapabilities extends RPCStruct {
      * Get an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
      * @return the Veotor of mediaClockFormat
      */    
-    public Vector<MediaClockFormat> getMediaClockFormats() {
-        if (store.get(DisplayCapabilities.mediaClockFormats) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(DisplayCapabilities.mediaClockFormats);
+    public List<MediaClockFormat> getMediaClockFormats() {
+        if (store.get(DisplayCapabilities.mediaClockFormats) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get(DisplayCapabilities.mediaClockFormats);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof MediaClockFormat) {
-	                return (Vector<MediaClockFormat>) list;
+	                return (List<MediaClockFormat>) list;
 	            } else if (obj instanceof String) {
-	                Vector<MediaClockFormat> newList = new Vector<MediaClockFormat>();
+	            	List<MediaClockFormat> newList = new ArrayList<MediaClockFormat>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    MediaClockFormat toAdd = null;
@@ -207,9 +208,9 @@ public class DisplayCapabilities extends RPCStruct {
     }
     /**
      * Set an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
-     * @param mediaClockFormats the Vector of MediaClockFormat
+     * @param mediaClockFormats the List of MediaClockFormat
      */    
-    public void setMediaClockFormats( Vector<MediaClockFormat> mediaClockFormats ) {
+    public void setMediaClockFormats( List<MediaClockFormat> mediaClockFormats ) {
         if (mediaClockFormats != null) {
             store.put(DisplayCapabilities.mediaClockFormats, mediaClockFormats );
         }
@@ -237,20 +238,20 @@ public class DisplayCapabilities extends RPCStruct {
     	return (Boolean) store.get(DisplayCapabilities.graphicSupported);
     }
     
-    public Vector<String> getTemplatesAvailable() {
-        if (store.get(DisplayCapabilities.templatesAvailable) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( DisplayCapabilities.templatesAvailable);
+    public List<String> getTemplatesAvailable() {
+        if (store.get(DisplayCapabilities.templatesAvailable) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get( DisplayCapabilities.templatesAvailable);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
         return null;
     }   
     
-    public void setTemplatesAvailable(Vector<String> templatesAvailable) {
+    public void setTemplatesAvailable(List<String> templatesAvailable) {
         if (templatesAvailable != null) {
             store.put(DisplayCapabilities.templatesAvailable, templatesAvailable);
         }

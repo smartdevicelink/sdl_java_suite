@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
@@ -107,16 +107,16 @@ public class Choice extends RPCStruct {
     }
     /**
      * Get an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
-     * @return vrCommands Vector
+     * @return vrCommands List
      * @since SmartDeviceLink 2.0
      */    
-    public Vector<String> getVrCommands() {
-        if (store.get(Choice.vrCommands) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Choice.vrCommands);
+    public List<String> getVrCommands() {
+        if (store.get(Choice.vrCommands) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get( Choice.vrCommands);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
@@ -124,10 +124,10 @@ public class Choice extends RPCStruct {
     }
     /**
      * Set an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
-     * @param vrCommands the Vector of  vrCommands
+     * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */    
-    public void setVrCommands(Vector<String> vrCommands) {
+    public void setVrCommands(List<String> vrCommands) {
         if (vrCommands != null) {
             store.put(Choice.vrCommands, vrCommands);
         }

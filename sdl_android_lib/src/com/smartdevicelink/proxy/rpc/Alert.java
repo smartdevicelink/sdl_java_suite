@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -170,18 +171,18 @@ public class Alert extends RPCRequest {
 	 * Gets TTSChunk[], the Array of type TTSChunk which, taken together,
 	 * specify what is to be spoken to the user
 	 * 
-	 * @return Vector -a Vector<TTSChunk> value specify what is to be spoken to
+	 * @return List -a List<TTSChunk> value specify what is to be spoken to
 	 *         the user
 	 */    
-    public Vector<TTSChunk> getTtsChunks() {
-        if (parameters.get(Alert.ttsChunks) instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>)parameters.get(Alert.ttsChunks);
+    public List<TTSChunk> getTtsChunks() {
+        if (parameters.get(Alert.ttsChunks) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(Alert.ttsChunks);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TTSChunk((Hashtable)hashObj));
 	                }
@@ -199,7 +200,7 @@ public class Alert extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes: </b>Array must have a least one element
 	 */    
-    public void setTtsChunks(Vector<TTSChunk> ttsChunks) {
+    public void setTtsChunks(List<TTSChunk> ttsChunks) {
         if (ttsChunks != null) {
             parameters.put(Alert.ttsChunks, ttsChunks);
         } else {
@@ -267,21 +268,21 @@ public class Alert extends RPCRequest {
     }
 
 	/**
-	 * Gets the SoftButton Vector object
+	 * Gets the SoftButton List object
 	 * 
-	 * @return Vector<SoftButton> -a Vector<SoftButton> representing the Vector
+	 * @return List<SoftButton> -a List<SoftButton> representing the List
 	 *         object
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Alert.softButtons) instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>)parameters.get(Alert.softButtons);
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(Alert.softButtons) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(Alert.softButtons);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButton((Hashtable)hashObj));
 	                }
@@ -296,7 +297,7 @@ public class Alert extends RPCRequest {
 	 * Sets the SoftButtons
 	 * 
 	 * @param softButtons
-	 *            a Vector<SoftButton> value
+	 *            a List<SoftButton> value
 	 *            <p>
 	 *            <b>Notes: </b><br/>
 	 *            <ul>
@@ -308,7 +309,7 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
             parameters.put(Alert.softButtons, softButtons);
         } else {

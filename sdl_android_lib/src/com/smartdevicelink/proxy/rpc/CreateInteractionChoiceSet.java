@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -63,18 +64,18 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	/**
 	 * Gets Choice Set Array of one or more elements
 	 * 
-	 * @return Vector<Choice> -a Vector<Choice> representing the array of one or
+	 * @return List<Choice> -a List<Choice> representing the array of one or
 	 *         more elements
 	 */    
-    public Vector<Choice> getChoiceSet() {
-        if (parameters.get(CreateInteractionChoiceSet.choiceSet) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(CreateInteractionChoiceSet.choiceSet);
+    public List<Choice> getChoiceSet() {
+        if (parameters.get(CreateInteractionChoiceSet.choiceSet) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(CreateInteractionChoiceSet.choiceSet);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof Choice) {
-	                return (Vector<Choice>) list;
+	                return (List<Choice>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<Choice> newList = new Vector<Choice>();
+	            	List<Choice> newList = new ArrayList<Choice>();
 	                for (Object hashObj : list) {
 	                    newList.add(new Choice((Hashtable)hashObj));
 	                }
@@ -88,12 +89,12 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * Sets a Choice Set that is an Array of one or more elements
 	 * 
 	 * @param choiceSet
-	 *            a Vector<Choice> representing the array of one or more
+	 *            a List<Choice> representing the array of one or more
 	 *            elements
 	 *            <p>
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
-    public void setChoiceSet( Vector<Choice> choiceSet ) {
+    public void setChoiceSet( List<Choice> choiceSet ) {
         if (choiceSet != null) {
             parameters.put(CreateInteractionChoiceSet.choiceSet, choiceSet );
         }

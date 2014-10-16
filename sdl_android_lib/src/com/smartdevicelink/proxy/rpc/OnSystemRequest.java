@@ -7,9 +7,8 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,13 +66,13 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     
-    public Vector<String> getLegacyData() {
-    	if (parameters.get(OnSystemRequest.data) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(OnSystemRequest.data);
+    public List<String> getLegacyData() {
+    	if (parameters.get(OnSystemRequest.data) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(OnSystemRequest.data);
     		if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>)list;
+        			return (List<String>)list;
         		}
     		}
     	}
@@ -173,13 +172,13 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
-    /*public Vector<String> getUrl() {
-        if (parameters.get(Names.url) instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>) parameters.get(Names.url);
+    /*public List<String> getUrl() {
+        if (parameters.get(Names.url) instanceof List<?>) {
+            List<?> list = (List<?>) parameters.get(Names.url);
             if (list != null && list.size() > 0) {
                 Object obj = list.get(0);
                 if (obj instanceof String) {
-                    return (Vector<String>) list;
+                    return (List<String>) list;
                 }
             }
         }
@@ -210,7 +209,7 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
     
-   /* public void setUrl(Vector<String> url) {
+   /* public void setUrl(List<String> url) {
         if (url != null) {
             parameters.put(Names.url, url);
         } else {

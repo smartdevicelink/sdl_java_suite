@@ -1,7 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -55,7 +56,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * thru session by SDL
 	 * 
 	 * @param initialPrompt
-	 *            a Vector<TTSChunk> value represents the initial prompt which
+	 *            a List<TTSChunk> value represents the initial prompt which
 	 *            will be spoken before opening the audio pass thru session by
 	 *            SDL
 	 *            <p>
@@ -68,7 +69,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <li>Array Maxsize: 100</li>
 	 *            </ul>
 	 */
-    public void setInitialPrompt(Vector<TTSChunk> initialPrompt) {
+    public void setInitialPrompt(List<TTSChunk> initialPrompt) {
     	if (initialPrompt != null) {
     		parameters.put(PerformAudioPassThru.initialPrompt, initialPrompt);
     	} else {
@@ -77,22 +78,22 @@ public class PerformAudioPassThru extends RPCRequest {
     }
 
 	/**
-	 * Gets a Vector value representing an initial prompt which will be spoken
+	 * Gets a List value representing an initial prompt which will be spoken
 	 * before opening the audio pass thru session by SDL
 	 * 
-	 * @return Vector<TTSChunk> -a Vector value representing an initial prompt
+	 * @return List<TTSChunk> -a List value representing an initial prompt
 	 *         which will be spoken before opening the audio pass thru session
 	 *         by SDL
 	 */
-    public Vector<TTSChunk> getInitialPrompt() {
-    	if (parameters.get(PerformAudioPassThru.initialPrompt) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(PerformAudioPassThru.initialPrompt);
+    public List<TTSChunk> getInitialPrompt() {
+    	if (parameters.get(PerformAudioPassThru.initialPrompt) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(PerformAudioPassThru.initialPrompt);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TTSChunk((Hashtable)hashObj));
 	                }

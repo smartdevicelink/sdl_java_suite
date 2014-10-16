@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import android.app.Service;
@@ -175,15 +176,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Language _sdlLanguage = null;
 	protected Language _hmiDisplayLanguage = null;
 	protected DisplayCapabilities _displayCapabilities = null;
-	protected Vector<ButtonCapabilities> _buttonCapabilities = null;
-	protected Vector<SoftButtonCapabilities> _softButtonCapabilities = null;
+	protected List<ButtonCapabilities> _buttonCapabilities = null;
+	protected List<SoftButtonCapabilities> _softButtonCapabilities = null;
 	protected PresetBankCapabilities _presetBankCapabilities = null;
-	protected Vector<HmiZoneCapabilities> _hmiZoneCapabilities = null;
-	protected Vector<SpeechCapabilities> _speechCapabilities = null;
-	protected Vector<PrerecordedSpeech> _prerecordedSpeech = null;	
-	protected Vector<VrCapabilities> _vrCapabilities = null;
+	protected List<HmiZoneCapabilities> _hmiZoneCapabilities = null;
+	protected List<SpeechCapabilities> _speechCapabilities = null;
+	protected List<PrerecordedSpeech> _prerecordedSpeech = null;
+	protected List<VrCapabilities> _vrCapabilities = null;
 	protected VehicleType _vehicleType = null;
-	protected Vector<Integer> _diagModes = null;
+	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;
@@ -768,7 +769,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (sBodyString == null)
 			{				
-				Vector<String> legacyData = msg.getLegacyData();
+				List<String> legacyData = msg.getLegacyData();
 				JSONArray jsonArrayOfSdlPPackets = new JSONArray(legacyData);
 				jsonObjectToSendToServer = new JSONObject();
 				jsonObjectToSendToServer.put("data", jsonArrayOfSdlPPackets);

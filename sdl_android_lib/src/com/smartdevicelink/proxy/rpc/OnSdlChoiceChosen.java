@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
@@ -45,10 +45,10 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		private SdlSubMenu _parentSubMenu = null;
 		private Integer _position = null;
 		private String _menuName = null;
-		private Vector<String> _vrCommands = null;
+		private List<String> _vrCommands = null;
 		
 		// Constructor
-		SdlCommand(Integer commandID, SdlSubMenu parentSubMenu, Integer position, String menuName, Vector<String> vrCommands) {
+		SdlCommand(Integer commandID, SdlSubMenu parentSubMenu, Integer position, String menuName, List<String> vrCommands) {
 			_commandID = commandID;
 			_parentSubMenu = parentSubMenu;
 			_position = position;
@@ -72,7 +72,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _menuName;
 		}
 		
-		public Vector<String> getVrCommands() {
+		public List<String> getVrCommands() {
 			return _vrCommands;
 		}
 		
@@ -102,7 +102,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _choice.getMenuName();
 		}
 		
-		public Vector<String> getVrCommands() {
+		public List<String> getVrCommands() {
 			return _choice.getVrCommands();
 		}
 		
@@ -113,10 +113,10 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 	public class SdlChoiceSet {
 		private Integer _choiceSetID = null;
-		private Vector<SdlChoice> _choiceSet = null;
+		private List<SdlChoice> _choiceSet = null;
 		
 		// Constructor
-		SdlChoiceSet(Integer choiceSetID, Vector<SdlChoice> choiceSet) {
+		SdlChoiceSet(Integer choiceSetID, List<SdlChoice> choiceSet) {
 			_choiceSetID = choiceSetID;
 			_choiceSet = choiceSet;
 		}
@@ -125,7 +125,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _choiceSetID;
 		}
 		
-		public Vector<SdlChoice> getChoiceSet() {
+		public List<SdlChoice> getChoiceSet() {
 			return _choiceSet;
 		}
 	}
