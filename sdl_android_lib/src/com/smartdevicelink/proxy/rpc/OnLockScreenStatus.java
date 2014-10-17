@@ -1,62 +1,67 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 
 public class OnLockScreenStatus extends RPCNotification {
+	public static final String driverDistraction = "driverDistraction";
+	public static final String showLockScreen = "showLockScreen";
+	public static final String userSelected = "userSelected";
+	public static final String notSet = "notSet";
+
 	public OnLockScreenStatus() {
 		super("OnLockScreenStatus");
 	}
 	
 	public String getDriverDistractionStatus() {
-		return (String)parameters.get(Names.driverDistraction);
+		return (String)parameters.get(OnLockScreenStatus.driverDistraction);
 	}
 	
 	public void setDriverDistractionStatus(Boolean driverDistractionStatus) {
 		
 		if (driverDistractionStatus == null){
-			parameters.put(Names.driverDistraction, Names.notSet);
+			parameters.put(OnLockScreenStatus.driverDistraction, OnLockScreenStatus.notSet);
 		}
 		else{
-			parameters.put(Names.driverDistraction, driverDistractionStatus.toString());
+			parameters.put(OnLockScreenStatus.driverDistraction, driverDistractionStatus.toString());
 		}
 	}	
 	
 	public LockScreenStatus getShowLockScreen() {
-		return (LockScreenStatus)parameters.get(Names.showLockScreen);
+		return (LockScreenStatus)parameters.get(OnLockScreenStatus.showLockScreen);
 	}
 	
 	public void setShowLockScreen(LockScreenStatus showLockScreen) {
 		if (showLockScreen != null) {
-			parameters.put(Names.showLockScreen, showLockScreen );
-        } else if (parameters.contains(Names.showLockScreen)) {
-        	parameters.remove(Names.showLockScreen);
+			parameters.put(OnLockScreenStatus.showLockScreen, showLockScreen );
+        } else if (parameters.contains(OnLockScreenStatus.showLockScreen)) {
+        	parameters.remove(OnLockScreenStatus.showLockScreen);
         }
 	}
 	
 	public Boolean getUserSelected() {
-		return (Boolean)parameters.get(Names.userSelected);
+		return (Boolean)parameters.get(OnLockScreenStatus.userSelected);
 	}
 	
 	public void setUserSelected(Boolean userSelected) {
 		if (userSelected != null) {
-			parameters.put(Names.userSelected, userSelected );
-        } else if (parameters.contains(Names.userSelected)) {
-        	parameters.remove(Names.userSelected);
+			parameters.put(OnLockScreenStatus.userSelected, userSelected );
+        } else if (parameters.contains(OnLockScreenStatus.userSelected)) {
+        	parameters.remove(OnLockScreenStatus.userSelected);
         }
 	}		
 	
 	public HMILevel getHMILevel() {
-		return (HMILevel)parameters.get(Names.hmiLevel);
+		return (HMILevel)parameters.get(OnHMIStatus.hmiLevel);
 	}
 	
 	public void setHMILevel(HMILevel setHMILevel) {
 		if (setHMILevel != null) {
-			parameters.put(Names.hmiLevel, setHMILevel );
-        } else if (parameters.contains(Names.hmiLevel)) {
-        	parameters.remove(Names.hmiLevel);
+			parameters.put(OnHMIStatus.hmiLevel, setHMILevel );
+        } else if (parameters.contains(OnHMIStatus.hmiLevel)) {
+        	parameters.remove(OnHMIStatus.hmiLevel);
         }
 	}				
 }

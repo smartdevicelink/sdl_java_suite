@@ -3,13 +3,16 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class ClusterModeStatus extends RPCStruct {
+    public static final String powerModeActive = "powerModeActive";
+    public static final String powerModeQualificationStatus = "powerModeQualificationStatus";
+    public static final String carModeStatus = "carModeStatus";
+    public static final String powerModeStatus = "powerModeStatus";
 
 	    public ClusterModeStatus() { }
 	    public ClusterModeStatus(Hashtable hash) {
@@ -18,23 +21,23 @@ public class ClusterModeStatus extends RPCStruct {
 
 	    public void setPowerModeActive(Boolean powerModeActive) {
 	        if (powerModeActive != null) {
-	        	store.put(Names.powerModeActive, powerModeActive);
+	        	store.put(ClusterModeStatus.powerModeActive, powerModeActive);
 	        } else {
-	        	store.remove(Names.powerModeActive);
+	        	store.remove(ClusterModeStatus.powerModeActive);
 	        }
 	    }
 	    public Boolean getPowerModeActive() {
-	        return (Boolean) store.get(Names.powerModeActive);
+	        return (Boolean) store.get(ClusterModeStatus.powerModeActive);
 	    }
-	    public void setPowerModeQualificationStatus(Names powerModeQualificationStatus) {
+	    public void setPowerModeQualificationStatus(PowerModeQualificationStatus powerModeQualificationStatus) {
 	        if (powerModeQualificationStatus != null) {
-	            store.put(Names.powerModeQualificationStatus, powerModeQualificationStatus);
+	            store.put(ClusterModeStatus.powerModeQualificationStatus, powerModeQualificationStatus);
 	        } else {
-	        	store.remove(Names.powerModeQualificationStatus);
+	        	store.remove(ClusterModeStatus.powerModeQualificationStatus);
 	        }
 	    }
 	    public PowerModeQualificationStatus getPowerModeQualificationStatus() {
-	        Object obj = store.get(Names.powerModeQualificationStatus);
+	        Object obj = store.get(ClusterModeStatus.powerModeQualificationStatus);
 	        if (obj instanceof PowerModeQualificationStatus) {
 	            return (PowerModeQualificationStatus) obj;
 	        } else if (obj instanceof String) {
@@ -42,7 +45,7 @@ public class ClusterModeStatus extends RPCStruct {
 	            try {
 	                theCode = PowerModeQualificationStatus.valueForString((String) obj);
 	            } catch (Exception e) {
-	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.powerModeQualificationStatus, e);
+	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + ClusterModeStatus.powerModeQualificationStatus, e);
 	            }
 	            return theCode;
 	        }
@@ -50,13 +53,13 @@ public class ClusterModeStatus extends RPCStruct {
 	    }
 	    public void setCarModeStatus(CarModeStatus carModeStatus) {
 	        if (carModeStatus != null) {
-	            store.put(Names.carModeStatus, carModeStatus);
+	            store.put(ClusterModeStatus.carModeStatus, carModeStatus);
 	        } else {
-	        	store.remove(Names.carModeStatus);
+	        	store.remove(ClusterModeStatus.carModeStatus);
 	        }
 	    }
 	    public CarModeStatus getCarModeStatus() {
-	        Object obj = store.get(Names.carModeStatus);
+	        Object obj = store.get(ClusterModeStatus.carModeStatus);
 	        if (obj instanceof CarModeStatus) {
 	            return (CarModeStatus) obj;
 	        } else if (obj instanceof String) {
@@ -64,7 +67,7 @@ public class ClusterModeStatus extends RPCStruct {
 	            try {
 	                theCode = CarModeStatus.valueForString((String) obj);
 	            } catch (Exception e) {
-	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.carModeStatus, e);
+	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + ClusterModeStatus.carModeStatus, e);
 	            }
 	            return theCode;
 	        }
@@ -72,13 +75,13 @@ public class ClusterModeStatus extends RPCStruct {
 	    }
 	    public void setPowerModeStatus(PowerModeStatus powerModeStatus) {
 	        if (powerModeStatus != null) {
-	            store.put(Names.powerModeStatus, powerModeStatus);
+	            store.put(ClusterModeStatus.powerModeStatus, powerModeStatus);
 	        } else {
-	        	store.remove(Names.powerModeStatus);
+	        	store.remove(ClusterModeStatus.powerModeStatus);
 	        }
 	    }
 	    public PowerModeStatus getPowerModeStatus() {
-	        Object obj = store.get(Names.powerModeStatus);
+	        Object obj = store.get(ClusterModeStatus.powerModeStatus);
 	        if (obj instanceof PowerModeStatus) {
 	            return (PowerModeStatus) obj;
 	        } else if (obj instanceof String) {
@@ -86,7 +89,7 @@ public class ClusterModeStatus extends RPCStruct {
 	            try {
 	                theCode = PowerModeStatus.valueForString((String) obj);
 	            } catch (Exception e) {
-	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.powerModeStatus, e);
+	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + ClusterModeStatus.powerModeStatus, e);
 	            }
 	            return theCode;
 	        }

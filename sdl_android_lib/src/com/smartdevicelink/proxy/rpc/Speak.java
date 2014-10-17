@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Speaks a phrase over the vehicle audio system using SDL's TTS
@@ -72,6 +72,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see Alert
  */
 public class Speak extends RPCRequest {
+	public static final String ttsChunks = "ttsChunks";
 
 	/**
 	 * Constructs a new Speak object
@@ -90,20 +91,20 @@ public class Speak extends RPCRequest {
         super(hash);
     }
 	/**
-	 * Gets a Vector<TTSChunk> representing an array of 1-100 TTSChunk structs
+	 * Gets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
 	 * which, taken together, specify the phrase to be spoken
 	 * 
-	 * @return Vector<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
+	 * @return List<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
 	 */    
-    public Vector<TTSChunk> getTtsChunks() {
-    	if (parameters.get(Names.ttsChunks) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(Names.ttsChunks);
+    public List<TTSChunk> getTtsChunks() {
+    	if (parameters.get(Speak.ttsChunks) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(Speak.ttsChunks);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TTSChunk((Hashtable)hashObj));
 	                }
@@ -114,11 +115,11 @@ public class Speak extends RPCRequest {
         return null;
     }
 	/**
-	 * Sets a Vector<TTSChunk> representing an array of 1-100 TTSChunk structs
+	 * Sets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
 	 * which, taken together, specify the phrase to be spoken
 	 * 
 	 * @param ttsChunks
-	 *            a Vector<TTSChunk> value representing an array of 1-100 TTSChunk structs
+	 *            a List<TTSChunk> value representing an array of 1-100 TTSChunk structs
 	 * which specify the phrase to be spoken
 	 *            <p>
 	 *            <ul>
@@ -129,9 +130,9 @@ public class Speak extends RPCRequest {
 	 *            <li>Each chunk can be no more than 500 characters</li>
 	 *            </ul>
 	 */    
-    public void setTtsChunks( Vector<TTSChunk> ttsChunks ) {
+    public void setTtsChunks( List<TTSChunk> ttsChunks ) {
         if (ttsChunks != null) {
-            parameters.put(Names.ttsChunks, ttsChunks );
+            parameters.put(Speak.ttsChunks, ttsChunks );
         }
     }
 }

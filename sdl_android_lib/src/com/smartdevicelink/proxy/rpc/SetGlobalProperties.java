@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Sets value(s) for the specified global property(ies)
@@ -17,6 +17,13 @@ import com.smartdevicelink.util.DebugTool;
  * @see ResetGlobalProperties
  */
 public class SetGlobalProperties extends RPCRequest {
+	public static final String vrHelpTitle = "vrHelpTitle";
+	public static final String menuTitle = "menuTitle";
+	public static final String menuIcon = "menuIcon";
+	public static final String keyboardProperties = "keyboardProperties";
+	public static final String helpPrompt = "helpPrompt";
+	public static final String timeoutPrompt = "timeoutPrompt";
+	public static final String vrHelp = "vrHelp";
 	/**
 	 * Constructs a new SetGlobalProperties object
 	 */
@@ -35,22 +42,22 @@ public class SetGlobalProperties extends RPCRequest {
         super(hash);
     }
 	/**
-	 * Gets a Vector<TTSChunk> for Help Prompt representing Array of one or more
+	 * Gets a List<TTSChunk> for Help Prompt representing Array of one or more
 	 * TTSChunk elements specifying the help prompt used in an interaction
 	 * started by PTT
 	 * 
-	 * @return Vector<TTSChunk> -an Array of one or more TTSChunk elements
+	 * @return List<TTSChunk> -an Array of one or more TTSChunk elements
 	 *         specifying the help prompt used in an interaction started by PTT
 	 */    
-    public Vector<TTSChunk> getHelpPrompt() {
-    	if (parameters.get(Names.helpPrompt) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(Names.helpPrompt);
+    public List<TTSChunk> getHelpPrompt() {
+    	if (parameters.get(SetGlobalProperties.helpPrompt) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(SetGlobalProperties.helpPrompt);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TTSChunk((Hashtable)hashObj));
 	                }
@@ -61,12 +68,12 @@ public class SetGlobalProperties extends RPCRequest {
 	    return null;
     }
 	/**
-	 * Sets a Vector<TTSChunk> for Help Prompt that Array of one or more
+	 * Sets a List<TTSChunk> for Help Prompt that Array of one or more
 	 * TTSChunk elements specifying the help prompt used in an interaction
 	 * started by PTT
 	 * 
 	 * @param helpPrompt
-	 *            a Vector<TTSChunk> of one or more TTSChunk elements
+	 *            a List<TTSChunk> of one or more TTSChunk elements
 	 *            <p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -74,28 +81,28 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            <li>Only optional it timeoutPrompt has been specified</li>
 	 *            </ul>
 	 */    
-    public void setHelpPrompt(Vector<TTSChunk> helpPrompt) {
+    public void setHelpPrompt(List<TTSChunk> helpPrompt) {
         if (helpPrompt != null) {
-            parameters.put(Names.helpPrompt, helpPrompt);
+            parameters.put(SetGlobalProperties.helpPrompt, helpPrompt);
         }
     }
 	/**
-	 * Gets a Vector<TTSChunk> for Timeout Prompt representing Array of one or
+	 * Gets a List<TTSChunk> for Timeout Prompt representing Array of one or
 	 * more TTSChunk elements specifying the help prompt used in an interaction
 	 * started by PTT
 	 * 
-	 * @return Vector<TTSChunk> -an Array of one or more TTSChunk elements
+	 * @return List<TTSChunk> -an Array of one or more TTSChunk elements
 	 *         specifying the help prompt used in an interaction started by PTT
 	 */    
-    public Vector<TTSChunk> getTimeoutPrompt() {
-        if (parameters.get(Names.timeoutPrompt) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.timeoutPrompt);
+    public List<TTSChunk> getTimeoutPrompt() {
+        if (parameters.get(SetGlobalProperties.timeoutPrompt) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(SetGlobalProperties.timeoutPrompt);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TTSChunk((Hashtable)hashObj));
 	                }
@@ -106,14 +113,14 @@ public class SetGlobalProperties extends RPCRequest {
         return null;
     }
 	/**
-	 * Sets a Vector<TTSChunk> for Timeout Prompt representing Array of one or
+	 * Sets a List<TTSChunk> for Timeout Prompt representing Array of one or
 	 * more TTSChunk elements specifying the help prompt used in an interaction
 	 * started by PTT
 	 * 
 	 */    
-    public void setTimeoutPrompt(Vector<TTSChunk> timeoutPrompt) {
+    public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
         if (timeoutPrompt != null) {
-            parameters.put(Names.timeoutPrompt, timeoutPrompt);
+            parameters.put(SetGlobalProperties.timeoutPrompt, timeoutPrompt);
         }
     }
 
@@ -125,7 +132,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getVrHelpTitle() {
-        return (String) parameters.get(Names.vrHelpTitle);
+        return (String) parameters.get(SetGlobalProperties.vrHelpTitle);
     }
 
 	/**
@@ -146,9 +153,9 @@ public class SetGlobalProperties extends RPCRequest {
 	 */
     public void setVrHelpTitle(String vrHelpTitle) {
         if (vrHelpTitle != null) {
-            parameters.put(Names.vrHelpTitle, vrHelpTitle);
+            parameters.put(SetGlobalProperties.vrHelpTitle, vrHelpTitle);
         } else {
-        	parameters.remove(Names.vrHelpTitle);
+        	parameters.remove(SetGlobalProperties.vrHelpTitle);
         }
     }
 
@@ -156,19 +163,19 @@ public class SetGlobalProperties extends RPCRequest {
 	 * Gets items listed in the VR help screen used in an interaction started by
 	 * PTT
 	 * 
-	 * @return Vector<VrHelpItem> - a Vector value representing items listed in
+	 * @return List<VrHelpItem> - a List value representing items listed in
 	 *         the VR help screen used in an interaction started by PTT
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<VrHelpItem> getVrHelp() {
-        if (parameters.get(Names.vrHelp) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrHelp);
+    public List<VrHelpItem> getVrHelp() {
+        if (parameters.get(SetGlobalProperties.vrHelp) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(SetGlobalProperties.vrHelp);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof VrHelpItem) {
-	                return (Vector<VrHelpItem>) list;
+	                return (List<VrHelpItem>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<VrHelpItem> newList = new Vector<VrHelpItem>();
+	            	List<VrHelpItem> newList = new ArrayList<VrHelpItem>();
 	                for (Object hashObj : list) {
 	                    newList.add(new VrHelpItem((Hashtable)hashObj));
 	                }
@@ -184,7 +191,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * started by PTT
 	 * 
 	 * @param vrHelp
-	 *            a Vector value representing items listed in the VR help screen
+	 *            a List value representing items listed in the VR help screen
 	 *            used in an interaction started by PTT
 	 *            <p>
 	 *            <b>Notes: </b><br/>
@@ -200,43 +207,43 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setVrHelp(Vector<VrHelpItem> vrHelp) {
+    public void setVrHelp(List<VrHelpItem> vrHelp) {
         if (vrHelp != null) {
-            parameters.put(Names.vrHelp, vrHelp);
+            parameters.put(SetGlobalProperties.vrHelp, vrHelp);
         } else {
-        	parameters.remove(Names.vrHelp);
+        	parameters.remove(SetGlobalProperties.vrHelp);
         }
     }
     
     public String getMenuTitle() {
-        return (String) parameters.get(Names.menuTitle);
+        return (String) parameters.get(SetGlobalProperties.menuTitle);
     }
 
     public void setMenuTitle(String menuTitle) {
         if (menuTitle != null) {
-            parameters.put(Names.menuTitle, menuTitle);
+            parameters.put(SetGlobalProperties.menuTitle, menuTitle);
         } else {
-        	parameters.remove(Names.menuTitle);
+        	parameters.remove(SetGlobalProperties.menuTitle);
         }
     }
 
     public void setMenuIcon(Image menuIcon) {
         if (menuIcon != null) {
-            parameters.put(Names.menuIcon, menuIcon);
+            parameters.put(SetGlobalProperties.menuIcon, menuIcon);
         } else {
-        	parameters.remove(Names.menuIcon);
+        	parameters.remove(SetGlobalProperties.menuIcon);
         }
     }
 
     public Image getMenuIcon() {
-    	Object obj = parameters.get(Names.menuIcon);
+    	Object obj = parameters.get(SetGlobalProperties.menuIcon);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
         		return new Image((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.menuIcon, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + SetGlobalProperties.menuIcon, e);
             }
         }
         return null;
@@ -244,21 +251,21 @@ public class SetGlobalProperties extends RPCRequest {
     
     public void setKeyboardProperties(KeyboardProperties keyboardProperties) {
         if (keyboardProperties != null) {
-            parameters.put(Names.keyboardProperties, keyboardProperties);
+            parameters.put(SetGlobalProperties.keyboardProperties, keyboardProperties);
         } else {
-        	parameters.remove(Names.keyboardProperties);
+        	parameters.remove(SetGlobalProperties.keyboardProperties);
         }
     }
 
     public KeyboardProperties getKeyboardProperties() {
-    	Object obj = parameters.get(Names.keyboardProperties);
+    	Object obj = parameters.get(SetGlobalProperties.keyboardProperties);
         if (obj instanceof Image) {
             return (KeyboardProperties) obj;
         } else if (obj instanceof Hashtable) {
         	try {
         		return new KeyboardProperties((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.keyboardProperties, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + SetGlobalProperties.keyboardProperties, e);
             }
         }
         return null;

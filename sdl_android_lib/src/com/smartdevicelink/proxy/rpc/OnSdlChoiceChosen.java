@@ -1,15 +1,15 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.DebugTool;
 
 public class OnSdlChoiceChosen extends RPCNotification {
-	
+	public static final String sdlChoice = "sdlChoice";
+	public static final String triggerSource = "triggerSource";
 	
 	public class SdlSubMenu {
 		private Integer _menuID = null;
@@ -45,10 +45,10 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		private SdlSubMenu _parentSubMenu = null;
 		private Integer _position = null;
 		private String _menuName = null;
-		private Vector<String> _vrCommands = null;
+		private List<String> _vrCommands = null;
 		
 		// Constructor
-		SdlCommand(Integer commandID, SdlSubMenu parentSubMenu, Integer position, String menuName, Vector<String> vrCommands) {
+		SdlCommand(Integer commandID, SdlSubMenu parentSubMenu, Integer position, String menuName, List<String> vrCommands) {
 			_commandID = commandID;
 			_parentSubMenu = parentSubMenu;
 			_position = position;
@@ -72,7 +72,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _menuName;
 		}
 		
-		public Vector<String> getVrCommands() {
+		public List<String> getVrCommands() {
 			return _vrCommands;
 		}
 		
@@ -102,7 +102,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _choice.getMenuName();
 		}
 		
-		public Vector<String> getVrCommands() {
+		public List<String> getVrCommands() {
 			return _choice.getVrCommands();
 		}
 		
@@ -113,10 +113,10 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 	public class SdlChoiceSet {
 		private Integer _choiceSetID = null;
-		private Vector<SdlChoice> _choiceSet = null;
+		private List<SdlChoice> _choiceSet = null;
 		
 		// Constructor
-		SdlChoiceSet(Integer choiceSetID, Vector<SdlChoice> choiceSet) {
+		SdlChoiceSet(Integer choiceSetID, List<SdlChoice> choiceSet) {
 			_choiceSetID = choiceSetID;
 			_choiceSet = choiceSet;
 		}
@@ -125,7 +125,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _choiceSetID;
 		}
 		
-		public Vector<SdlChoice> getChoiceSet() {
+		public List<SdlChoice> getChoiceSet() {
 			return _choiceSet;
 		}
 	}
@@ -134,21 +134,21 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 
 	public OnSdlChoiceChosen() {
-		super(Names.OnSdlChoiceChosen);
+		super("OnSdlChoiceChosen");
 	}
 	public OnSdlChoiceChosen(Hashtable hash){
 		super(hash);
 	}
     public SdlChoice getSdlChoice() {
-    	return (SdlChoice) parameters.get(Names.sdlChoice);
+    	return (SdlChoice) parameters.get(OnSdlChoiceChosen.sdlChoice);
     }
     public void setSdlChoice(SdlChoice sdlChoice) {
     	if (sdlChoice != null) {
-    		parameters.put(Names.sdlChoice, sdlChoice);
+    		parameters.put(OnSdlChoiceChosen.sdlChoice, sdlChoice);
     	}
     }
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(Names.triggerSource);
+        Object obj = parameters.get(OnSdlChoiceChosen.triggerSource);
         if (obj instanceof TriggerSource) {
             return (TriggerSource) obj;
         } else if (obj instanceof String) {
@@ -156,7 +156,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
             try {
                 theCode = TriggerSource.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.triggerSource, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnSdlChoiceChosen.triggerSource, e);
             }
             return theCode;
         }
@@ -164,7 +164,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
     }
     public void setTriggerSource( TriggerSource triggerSource ) {
         if (triggerSource != null) {
-            parameters.put(Names.triggerSource, triggerSource );
+            parameters.put(OnSdlChoiceChosen.triggerSource, triggerSource );
         }
     }
 }

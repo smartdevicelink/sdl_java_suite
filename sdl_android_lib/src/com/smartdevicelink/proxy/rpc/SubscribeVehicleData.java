@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Subscribes for specific published vehicle data items. The data will be only
@@ -22,6 +21,30 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see GetVehicleData
  */
 public class SubscribeVehicleData extends RPCRequest {
+	public static final String rpm = "rpm";
+	public static final String externalTemperature = "externalTemperature";
+	public static final String fuelLevel = "fuelLevel";
+	public static final String prndl = "prndl";
+	public static final String tirePressure = "tirePressure";
+	public static final String engineTorque = "engineTorque";
+	public static final String odometer = "odometer";
+	public static final String gps = "gps";
+	public static final String fuelLevel_State = "fuelLevel_State";
+	public static final String instantFuelConsumption = "instantFuelConsumption";
+	public static final String beltStatus = "beltStatus";
+	public static final String bodyInformation = "bodyInformation";
+	public static final String deviceStatus = "deviceStatus";
+	public static final String driverBraking = "driverBraking";
+	public static final String wiperStatus = "wiperStatus";
+	public static final String headLampStatus = "headLampStatus";
+	public static final String accPedalPosition = "accPedalPosition";
+	public static final String steeringWheelAngle = "steeringWheelAngle";
+	public static final String eCallInfo = "eCallInfo";
+	public static final String airbagStatus = "airbagStatus";
+	public static final String emergencyEvent = "emergencyEvent";
+	public static final String clusterModeStatus = "clusterModeStatus";
+	public static final String myKey = "myKey";
+	public static final String speed = "speed";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -50,9 +73,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setGps(Boolean gps) {
         if (gps != null) {
-            parameters.put(Names.gps, gps);
+            parameters.put(SubscribeVehicleData.gps, gps);
         } else {
-        	parameters.remove(Names.gps);
+        	parameters.remove(SubscribeVehicleData.gps);
         }
     }
 
@@ -63,7 +86,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         subscribed.
 	 */
     public Boolean getGps() {
-        return (Boolean) parameters.get(Names.gps);
+        return (Boolean) parameters.get(SubscribeVehicleData.gps);
     }
 
 	/**
@@ -74,9 +97,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setSpeed(Boolean speed) {
         if (speed != null) {
-            parameters.put(Names.speed, speed);
+            parameters.put(SubscribeVehicleData.speed, speed);
         } else {
-        	parameters.remove(Names.speed);
+        	parameters.remove(SubscribeVehicleData.speed);
         }
     }
 
@@ -87,7 +110,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         subscribed.
 	 */
     public Boolean getSpeed() {
-        return (Boolean) parameters.get(Names.speed);
+        return (Boolean) parameters.get(SubscribeVehicleData.speed);
     }
 
 	/**
@@ -98,9 +121,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setRpm(Boolean rpm) {
         if (rpm != null) {
-            parameters.put(Names.rpm, rpm);
+            parameters.put(SubscribeVehicleData.rpm, rpm);
         } else {
-        	parameters.remove(Names.rpm);
+        	parameters.remove(SubscribeVehicleData.rpm);
         }
     }
 
@@ -111,7 +134,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         subscribed.
 	 */
     public Boolean getRpm() {
-        return (Boolean) parameters.get(Names.rpm);
+        return (Boolean) parameters.get(SubscribeVehicleData.rpm);
     }
 
 	/**
@@ -122,9 +145,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setFuelLevel(Boolean fuelLevel) {
         if (fuelLevel != null) {
-            parameters.put(Names.fuelLevel, fuelLevel);
+            parameters.put(SubscribeVehicleData.fuelLevel, fuelLevel);
         } else {
-        	parameters.remove(Names.fuelLevel);
+        	parameters.remove(SubscribeVehicleData.fuelLevel);
         }
     }
 
@@ -136,7 +159,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         been subscribed.
 	 */
     public Boolean getFuelLevel() {
-        return (Boolean) parameters.get(Names.fuelLevel);
+        return (Boolean) parameters.get(SubscribeVehicleData.fuelLevel);
     }
 
 	/**
@@ -147,9 +170,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setFuelLevel_State(Boolean fuelLevel_State) {
         if (fuelLevel_State != null) {
-            parameters.put(Names.fuelLevel_State, fuelLevel_State);
+            parameters.put(SubscribeVehicleData.fuelLevel_State, fuelLevel_State);
         } else {
-        	parameters.remove(Names.fuelLevel_State);
+        	parameters.remove(SubscribeVehicleData.fuelLevel_State);
         }
     }
 
@@ -161,7 +184,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getFuelLevel_State() {
-        return (Boolean) parameters.get(Names.fuelLevel_State);
+        return (Boolean) parameters.get(SubscribeVehicleData.fuelLevel_State);
     }
 
 	/**
@@ -172,9 +195,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
         if (instantFuelConsumption != null) {
-            parameters.put(Names.instantFuelConsumption, instantFuelConsumption);
+            parameters.put(SubscribeVehicleData.instantFuelConsumption, instantFuelConsumption);
         } else {
-        	parameters.remove(Names.instantFuelConsumption);
+        	parameters.remove(SubscribeVehicleData.instantFuelConsumption);
         }
     }
 
@@ -186,7 +209,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getInstantFuelConsumption() {
-        return (Boolean) parameters.get(Names.instantFuelConsumption);
+        return (Boolean) parameters.get(SubscribeVehicleData.instantFuelConsumption);
     }
 
 	/**
@@ -197,9 +220,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setExternalTemperature(Boolean externalTemperature) {
         if (externalTemperature != null) {
-            parameters.put(Names.externalTemperature, externalTemperature);
+            parameters.put(SubscribeVehicleData.externalTemperature, externalTemperature);
         } else {
-        	parameters.remove(Names.externalTemperature);
+        	parameters.remove(SubscribeVehicleData.externalTemperature);
         }
     }
 
@@ -211,7 +234,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getExternalTemperature() {
-        return (Boolean) parameters.get(Names.externalTemperature);
+        return (Boolean) parameters.get(SubscribeVehicleData.externalTemperature);
     }
 
 	/**
@@ -222,9 +245,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setPrndl(Boolean prndl) {
         if (prndl != null) {
-            parameters.put(Names.prndl, prndl);
+            parameters.put(SubscribeVehicleData.prndl, prndl);
         } else {
-        	parameters.remove(Names.prndl);
+        	parameters.remove(SubscribeVehicleData.prndl);
         }
     }
 
@@ -236,7 +259,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getPrndl() {
-        return (Boolean) parameters.get(Names.prndl);
+        return (Boolean) parameters.get(SubscribeVehicleData.prndl);
     }
 
 	/**
@@ -247,9 +270,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setTirePressure(Boolean tirePressure) {
         if (tirePressure != null) {
-            parameters.put(Names.tirePressure, tirePressure);
+            parameters.put(SubscribeVehicleData.tirePressure, tirePressure);
         } else {
-        	parameters.remove(Names.tirePressure);
+        	parameters.remove(SubscribeVehicleData.tirePressure);
         }
     }
 
@@ -261,7 +284,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getTirePressure() {
-        return (Boolean) parameters.get(Names.tirePressure);
+        return (Boolean) parameters.get(SubscribeVehicleData.tirePressure);
     }
 
 	/**
@@ -272,9 +295,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setOdometer(Boolean odometer) {
         if (odometer != null) {
-            parameters.put(Names.odometer, odometer);
+            parameters.put(SubscribeVehicleData.odometer, odometer);
         } else {
-        	parameters.remove(Names.odometer);
+        	parameters.remove(SubscribeVehicleData.odometer);
         }
     }
 
@@ -286,7 +309,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getOdometer() {
-        return (Boolean) parameters.get(Names.odometer);
+        return (Boolean) parameters.get(SubscribeVehicleData.odometer);
     }
 
 	/**
@@ -297,9 +320,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setBeltStatus(Boolean beltStatus) {
         if (beltStatus != null) {
-            parameters.put(Names.beltStatus, beltStatus);
+            parameters.put(SubscribeVehicleData.beltStatus, beltStatus);
         } else {
-        	parameters.remove(Names.beltStatus);
+        	parameters.remove(SubscribeVehicleData.beltStatus);
         }
     }
 
@@ -311,7 +334,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getBeltStatus() {
-        return (Boolean) parameters.get(Names.beltStatus);
+        return (Boolean) parameters.get(SubscribeVehicleData.beltStatus);
     }
 
 	/**
@@ -322,9 +345,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setBodyInformation(Boolean bodyInformation) {
         if (bodyInformation != null) {
-            parameters.put(Names.bodyInformation, bodyInformation);
+            parameters.put(SubscribeVehicleData.bodyInformation, bodyInformation);
         } else {
-        	parameters.remove(Names.bodyInformation);
+        	parameters.remove(SubscribeVehicleData.bodyInformation);
         }
     }
 
@@ -336,7 +359,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getBodyInformation() {
-        return (Boolean) parameters.get(Names.bodyInformation);
+        return (Boolean) parameters.get(SubscribeVehicleData.bodyInformation);
     }
 
 	/**
@@ -347,9 +370,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setDeviceStatus(Boolean deviceStatus) {
         if (deviceStatus != null) {
-            parameters.put(Names.deviceStatus, deviceStatus);
+            parameters.put(SubscribeVehicleData.deviceStatus, deviceStatus);
         } else {
-        	parameters.remove(Names.deviceStatus);
+        	parameters.remove(SubscribeVehicleData.deviceStatus);
         }
     }
 
@@ -361,7 +384,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getDeviceStatus() {
-        return (Boolean) parameters.get(Names.deviceStatus);
+        return (Boolean) parameters.get(SubscribeVehicleData.deviceStatus);
     }
 
 	/**
@@ -372,9 +395,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setDriverBraking(Boolean driverBraking) {
         if (driverBraking != null) {
-            parameters.put(Names.driverBraking, driverBraking);
+            parameters.put(SubscribeVehicleData.driverBraking, driverBraking);
         } else {
-        	parameters.remove(Names.driverBraking);
+        	parameters.remove(SubscribeVehicleData.driverBraking);
         }
     }
 
@@ -386,7 +409,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getDriverBraking() {
-        return (Boolean) parameters.get(Names.driverBraking);
+        return (Boolean) parameters.get(SubscribeVehicleData.driverBraking);
     }
 
 	/**
@@ -397,9 +420,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setWiperStatus(Boolean wiperStatus) {
         if (wiperStatus != null) {
-            parameters.put(Names.wiperStatus, wiperStatus);
+            parameters.put(SubscribeVehicleData.wiperStatus, wiperStatus);
         } else {
-        	parameters.remove(Names.wiperStatus);
+        	parameters.remove(SubscribeVehicleData.wiperStatus);
         }
     }
 
@@ -411,7 +434,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getWiperStatus() {
-        return (Boolean) parameters.get(Names.wiperStatus);
+        return (Boolean) parameters.get(SubscribeVehicleData.wiperStatus);
     }
 
 	/**
@@ -422,9 +445,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setHeadLampStatus(Boolean headLampStatus) {
         if (headLampStatus != null) {
-            parameters.put(Names.headLampStatus, headLampStatus);
+            parameters.put(SubscribeVehicleData.headLampStatus, headLampStatus);
         } else {
-        	parameters.remove(Names.headLampStatus);
+        	parameters.remove(SubscribeVehicleData.headLampStatus);
         }
     }
 
@@ -436,7 +459,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getHeadLampStatus() {
-        return (Boolean) parameters.get(Names.headLampStatus);
+        return (Boolean) parameters.get(SubscribeVehicleData.headLampStatus);
     }
 
 	/**
@@ -447,9 +470,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setEngineTorque(Boolean engineTorque) {
         if (engineTorque != null) {
-            parameters.put(Names.engineTorque, engineTorque);
+            parameters.put(SubscribeVehicleData.engineTorque, engineTorque);
         } else {
-        	parameters.remove(Names.engineTorque);
+        	parameters.remove(SubscribeVehicleData.engineTorque);
         }
     }
 
@@ -461,7 +484,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getEngineTorque() {
-        return (Boolean) parameters.get(Names.engineTorque);
+        return (Boolean) parameters.get(SubscribeVehicleData.engineTorque);
     }
 
 	/**
@@ -472,9 +495,9 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
     public void setAccPedalPosition(Boolean accPedalPosition) {
         if (accPedalPosition != null) {
-            parameters.put(Names.accPedalPosition, accPedalPosition);
+            parameters.put(SubscribeVehicleData.accPedalPosition, accPedalPosition);
         } else {
-        	parameters.remove(Names.accPedalPosition);
+        	parameters.remove(SubscribeVehicleData.accPedalPosition);
         }
     }
 
@@ -486,69 +509,69 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getAccPedalPosition() {
-        return (Boolean) parameters.get(Names.accPedalPosition);
+        return (Boolean) parameters.get(SubscribeVehicleData.accPedalPosition);
     }
   
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
         if (steeringWheelAngle != null) {
-            parameters.put(Names.steeringWheelAngle, steeringWheelAngle);
+            parameters.put(SubscribeVehicleData.steeringWheelAngle, steeringWheelAngle);
         } else {
-        	parameters.remove(Names.steeringWheelAngle);
+        	parameters.remove(SubscribeVehicleData.steeringWheelAngle);
         }
     }
 
     public Boolean getSteeringWheelAngle() {
-        return (Boolean) parameters.get(Names.steeringWheelAngle);
+        return (Boolean) parameters.get(SubscribeVehicleData.steeringWheelAngle);
     }    
     public void setECallInfo(Boolean eCallInfo) {
         if (eCallInfo != null) {
-            parameters.put(Names.eCallInfo, eCallInfo);
+            parameters.put(SubscribeVehicleData.eCallInfo, eCallInfo);
         } else {
-        	parameters.remove(Names.eCallInfo);
+        	parameters.remove(SubscribeVehicleData.eCallInfo);
         }
     }
     public Boolean getECallInfo() {
-        return (Boolean) parameters.get(Names.eCallInfo);
+        return (Boolean) parameters.get(SubscribeVehicleData.eCallInfo);
     }
     public void setAirbagStatus(Boolean airbagStatus) {
         if (airbagStatus != null) {
-            parameters.put(Names.airbagStatus, airbagStatus);
+            parameters.put(SubscribeVehicleData.airbagStatus, airbagStatus);
         } else {
-        	parameters.remove(Names.airbagStatus);
+        	parameters.remove(SubscribeVehicleData.airbagStatus);
         }
     }
     public Boolean getAirbagStatus() {
-        return (Boolean) parameters.get(Names.airbagStatus);
+        return (Boolean) parameters.get(SubscribeVehicleData.airbagStatus);
     }
     public void setEmergencyEvent(Boolean emergencyEvent) {
         if (emergencyEvent != null) {
-            parameters.put(Names.emergencyEvent, emergencyEvent);
+            parameters.put(SubscribeVehicleData.emergencyEvent, emergencyEvent);
         } else {
-        	parameters.remove(Names.emergencyEvent);
+        	parameters.remove(SubscribeVehicleData.emergencyEvent);
         }
     }
     public Boolean getEmergencyEvent() {
-        return (Boolean) parameters.get(Names.emergencyEvent);
+        return (Boolean) parameters.get(SubscribeVehicleData.emergencyEvent);
     }
     public void setClusterModeStatus(Boolean clusterModeStatus) {
         if (clusterModeStatus != null) {
-            parameters.put(Names.clusterModeStatus, clusterModeStatus);
+            parameters.put(SubscribeVehicleData.clusterModeStatus, clusterModeStatus);
         } else {
-        	parameters.remove(Names.clusterModeStatus);
+        	parameters.remove(SubscribeVehicleData.clusterModeStatus);
         }
     }
     public Boolean getClusterModeStatus() {
-        return (Boolean) parameters.get(Names.clusterModeStatus);
+        return (Boolean) parameters.get(SubscribeVehicleData.clusterModeStatus);
     }
     public void setMyKey(Boolean myKey) {
         if (myKey != null) {
-            parameters.put(Names.myKey, myKey);
+            parameters.put(SubscribeVehicleData.myKey, myKey);
         } else {
-        	parameters.remove(Names.myKey);
+        	parameters.remove(SubscribeVehicleData.myKey);
         }
     }
     public Boolean getMyKey() {
-        return (Boolean) parameters.get(Names.myKey);
+        return (Boolean) parameters.get(SubscribeVehicleData.myKey);
     }      
     
 }

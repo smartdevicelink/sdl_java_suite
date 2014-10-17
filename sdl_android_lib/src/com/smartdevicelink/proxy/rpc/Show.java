@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
@@ -32,7 +32,18 @@ import com.smartdevicelink.util.DebugTool;
  * @see SetMediaClockTimer
  */
 public class Show extends RPCRequest {
-
+	public static final String graphic = "graphic";
+	public static final String customPresets = "customPresets";
+	public static final String mainField1 = "mainField1";
+	public static final String mainField2 = "mainField2";
+	public static final String mainField3 = "mainField3";
+	public static final String mainField4 = "mainField4";
+	public static final String statusBar = "statusBar";
+	public static final String mediaClock = "mediaClock";
+	public static final String alignment = "alignment";
+	public static final String mediaTrack = "mediaTrack";
+	public static final String secondaryGraphic = "secondaryGraphic";
+	public static final String softButtons = "softButtons";
 	/**
 	 * Constructs a new Show object
 	 */
@@ -58,7 +69,7 @@ public class Show extends RPCRequest {
 	 *         display
 	 */    
     public String getMainField1() {
-        return (String) parameters.get(Names.mainField1);
+        return (String) parameters.get(Show.mainField1);
     }
 	/**
 	 * Sets the text displayed in a single-line display, or in the upper display
@@ -79,9 +90,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setMainField1(String mainField1) {
         if (mainField1 != null) {
-            parameters.put(Names.mainField1, mainField1);
+            parameters.put(Show.mainField1, mainField1);
         } else {
-        	parameters.remove(Names.mainField1);
+        	parameters.remove(Show.mainField1);
         }
     }
 	/**
@@ -91,7 +102,7 @@ public class Show extends RPCRequest {
 	 *         second display line of a two-line display
 	 */    
     public String getMainField2() {
-        return (String) parameters.get(Names.mainField2);
+        return (String) parameters.get(Show.mainField2);
     }
 	/**
 	 * Sets the text displayed on the second display line of a two-line display
@@ -113,9 +124,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setMainField2(String mainField2) {
         if (mainField2 != null) {
-            parameters.put(Names.mainField2, mainField2);
+            parameters.put(Show.mainField2, mainField2);
         } else {
-        	parameters.remove(Names.mainField2);
+        	parameters.remove(Show.mainField2);
         }
     }
 
@@ -127,7 +138,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField3() {
-        return (String) parameters.get(Names.mainField3);
+        return (String) parameters.get(Show.mainField3);
     }
 
 	/**
@@ -151,9 +162,9 @@ public class Show extends RPCRequest {
 	 */
     public void setMainField3(String mainField3) {
         if (mainField3 != null) {
-            parameters.put(Names.mainField3, mainField3);
+            parameters.put(Show.mainField3, mainField3);
         } else {
-        	parameters.remove(Names.mainField3);
+        	parameters.remove(Show.mainField3);
         }
     }
 
@@ -165,7 +176,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField4() {
-        return (String) parameters.get(Names.mainField4);
+        return (String) parameters.get(Show.mainField4);
     }
 
 	/**
@@ -189,9 +200,9 @@ public class Show extends RPCRequest {
 	 */
     public void setMainField4(String mainField4) {
         if (mainField4 != null) {
-            parameters.put(Names.mainField4, mainField4);
+            parameters.put(Show.mainField4, mainField4);
         } else {
-        	parameters.remove(Names.mainField4);
+        	parameters.remove(Show.mainField4);
         }
     }
 	/**
@@ -201,7 +212,7 @@ public class Show extends RPCRequest {
 	 * @return TextAlignment -an Enumeration value
 	 */    
     public TextAlignment getAlignment() {
-        Object obj = parameters.get(Names.alignment);
+        Object obj = parameters.get(Show.alignment);
         if (obj instanceof TextAlignment) {
             return (TextAlignment) obj;
         } else if (obj instanceof String) {
@@ -209,7 +220,7 @@ public class Show extends RPCRequest {
             try {
                 theCode = TextAlignment.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.alignment, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Show.alignment, e);
             }
             return theCode;
         }
@@ -233,9 +244,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setAlignment(TextAlignment alignment) {
         if (alignment != null) {
-            parameters.put(Names.alignment, alignment);
+            parameters.put(Show.alignment, alignment);
         } else {
-        	parameters.remove(Names.alignment);
+        	parameters.remove(Show.alignment);
         }
     }
 	/**
@@ -244,7 +255,7 @@ public class Show extends RPCRequest {
 	 * @return String -the value in the Status Bar
 	 */    
     public String getStatusBar() {
-        return (String) parameters.get(Names.statusBar);
+        return (String) parameters.get(Show.statusBar);
     }
 	/**
 	 * Sets text in the Status Bar
@@ -266,9 +277,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setStatusBar(String statusBar) {
         if (statusBar != null) {
-            parameters.put(Names.statusBar, statusBar);
+            parameters.put(Show.statusBar, statusBar);
         } else {
-        	parameters.remove(Names.statusBar);
+        	parameters.remove(Show.statusBar);
         }
     }
 	/**
@@ -278,7 +289,7 @@ public class Show extends RPCRequest {
 	 */ 
 	@Deprecated	 
     public String getMediaClock() {
-        return (String) parameters.get(Names.mediaClock);
+        return (String) parameters.get(Show.mediaClock);
     }
 	/**
 	 * Sets the value for the MediaClock field using a format described in the
@@ -299,9 +310,9 @@ public class Show extends RPCRequest {
 	@Deprecated
     public void setMediaClock(String mediaClock) {
         if (mediaClock != null) {
-            parameters.put(Names.mediaClock, mediaClock);
+            parameters.put(Show.mediaClock, mediaClock);
         } else {
-        	parameters.remove(Names.mediaClock);
+        	parameters.remove(Show.mediaClock);
         }
     }
 	/**
@@ -310,7 +321,7 @@ public class Show extends RPCRequest {
 	 * @return String -a String displayed in the track field
 	 */    
     public String getMediaTrack() {
-        return (String) parameters.get(Names.mediaTrack);
+        return (String) parameters.get(Show.mediaTrack);
     }
 	/**
 	 * Sets the text in the track field
@@ -327,9 +338,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setMediaTrack(String mediaTrack) {
         if (mediaTrack != null) {
-            parameters.put(Names.mediaTrack, mediaTrack);
+            parameters.put(Show.mediaTrack, mediaTrack);
         } else {
-        	parameters.remove(Names.mediaTrack);
+        	parameters.remove(Show.mediaTrack);
         }
     }
 
@@ -345,9 +356,9 @@ public class Show extends RPCRequest {
 	 */
     public void setGraphic(Image graphic) {
         if (graphic != null) {
-            parameters.put(Names.graphic, graphic);
+            parameters.put(Show.graphic, graphic);
         } else {
-        	parameters.remove(Names.graphic);
+        	parameters.remove(Show.graphic);
         }
     }
 
@@ -359,14 +370,14 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Image getGraphic() {
-    	Object obj = parameters.get(Names.graphic);
+    	Object obj = parameters.get(Show.graphic);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
         		return new Image((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.graphic, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Show.graphic, e);
             }
         }
         return null;
@@ -375,22 +386,22 @@ public class Show extends RPCRequest {
     
     public void setSecondaryGraphic(Image secondaryGraphic) {
         if (secondaryGraphic != null) {
-            parameters.put(Names.secondaryGraphic, secondaryGraphic);
+            parameters.put(Show.secondaryGraphic, secondaryGraphic);
         } else {
-        	parameters.remove(Names.secondaryGraphic);
+        	parameters.remove(Show.secondaryGraphic);
         }
     }
 
 
     public Image setSecondaryGraphic() {
-    	Object obj = parameters.get(Names.secondaryGraphic);
+    	Object obj = parameters.get(Show.secondaryGraphic);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
         		return new Image((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.secondaryGraphic, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Show.secondaryGraphic, e);
             }
         }
         return null;
@@ -400,19 +411,19 @@ public class Show extends RPCRequest {
 	/**
 	 * Gets the Soft buttons defined by the App
 	 * 
-	 * @return Vector<SoftButton> -a Vector value representing the Soft buttons
+	 * @return List<SoftButton> -a List value representing the Soft buttons
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Names.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(Show.softButtons) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(Show.softButtons);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButton((Hashtable)hashObj));
 	                }
@@ -427,7 +438,7 @@ public class Show extends RPCRequest {
 	 * Sets the the Soft buttons defined by the App
 	 * 
 	 * @param softButtons
-	 *            a Vector value represemting the Soft buttons defined by the
+	 *            a List value represemting the Soft buttons defined by the
 	 *            App
 	 *            <p>
 	 *            <b>Notes: </b><br/>
@@ -440,28 +451,28 @@ public class Show extends RPCRequest {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
-            parameters.put(Names.softButtons, softButtons);
+            parameters.put(Show.softButtons, softButtons);
         } else {
-        	parameters.remove(Names.softButtons);
+        	parameters.remove(Show.softButtons);
         }
     }
 
 	/**
 	 * Gets the Custom Presets defined by the App
 	 * 
-	 * @return Vector<String> - a Vector value representing the Custom presets
+	 * @return List<String> - a List value representing the Custom presets
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<String> getCustomPresets() {
-    	if (parameters.get(Names.customPresets) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(Names.customPresets);
+    public List<String> getCustomPresets() {
+    	if (parameters.get(Show.customPresets) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(Show.customPresets);
     		if (list != null && list.size()>0) {
     			Object obj = list.get(0);
     			if (obj instanceof String) {
-    				return (Vector<String>) list;
+    				return (List<String>) list;
     			}
     		}
     	}
@@ -472,7 +483,7 @@ public class Show extends RPCRequest {
 	 * Sets the Custom Presets defined by the App
 	 * 
 	 * @param customPresets
-	 *            a Vector value representing the Custom Presets defined by the
+	 *            a List value representing the Custom Presets defined by the
 	 *            App
 	 *            <p>
 	 *            <ul>
@@ -482,11 +493,11 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setCustomPresets(Vector<String> customPresets) {
+    public void setCustomPresets(List<String> customPresets) {
         if (customPresets != null) {
-            parameters.put(Names.customPresets, customPresets);
+            parameters.put(Show.customPresets, customPresets);
         } else {
-        	parameters.remove(Names.customPresets);
+        	parameters.remove(Show.customPresets);
         }
     }
 }

@@ -1,10 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Non periodic vehicle data read request. This is an RPC to get diagnostics
@@ -19,6 +18,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class ReadDID extends RPCRequest {
+	public static final String ecuName = "ecuName";
+	public static final String didLocation = "didLocation";
 
 	/**
 	 * Constructs a new ReadDID object
@@ -48,9 +49,9 @@ public class ReadDID extends RPCRequest {
 	 */
     public void setEcuName(Integer ecuName) {
     	if (ecuName != null) {
-    		parameters.put(Names.ecuName, ecuName);
+    		parameters.put(ReadDID.ecuName, ecuName);
     	} else {
-    		parameters.remove(Names.ecuName);
+    		parameters.remove(ReadDID.ecuName);
     	}
     }
 
@@ -61,14 +62,14 @@ public class ReadDID extends RPCRequest {
 	 *         module
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(Names.ecuName);
+    	return (Integer) parameters.get(ReadDID.ecuName);
     }
 
 	/**
 	 * Sets raw data from vehicle data DID location(s)
 	 * 
 	 * @param didLocation
-	 *            a Vector<Integer> value representing raw data from vehicle
+	 *            a List<Integer> value representing raw data from vehicle
 	 *            data DID location(s)
 	 *            <p>
 	 *            <b>Notes: </b>
@@ -77,27 +78,27 @@ public class ReadDID extends RPCRequest {
 	 *            <li>ArrayMin:0; ArrayMax:1000</li>
 	 *            </ul>
 	 */
-    public void setDidLocation(Vector<Integer> didLocation) {
+    public void setDidLocation(List<Integer> didLocation) {
     	if (didLocation != null) {
-    		parameters.put(Names.didLocation, didLocation);
+    		parameters.put(ReadDID.didLocation, didLocation);
     	} else {
-    		parameters.remove(Names.didLocation);
+    		parameters.remove(ReadDID.didLocation);
     	}
     }
 
 	/**
 	 * Gets raw data from vehicle data DID location(s)
 	 * 
-	 * @return Vector<Integer> -a Vector<Integer> value representing raw data
+	 * @return List<Integer> -a List<Integer> value representing raw data
 	 *         from vehicle data DID location(s)
 	 */
-    public Vector<Integer> getDidLocation() {
-        if (parameters.get(Names.didLocation) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(Names.didLocation);
+    public List<Integer> getDidLocation() {
+        if (parameters.get(ReadDID.didLocation) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(ReadDID.didLocation);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof Integer) {
-                	return (Vector<Integer>) list;        			
+                	return (List<Integer>) list;
         		}
         	}
         }

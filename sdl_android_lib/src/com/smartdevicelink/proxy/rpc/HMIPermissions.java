@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.util.DebugTool;
 /**
@@ -43,7 +43,8 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class HMIPermissions extends RPCStruct {
-
+	public static final String allowed = "allowed";
+	public static final String userDisallowed = "userDisallowed";
 	/**
 	 * Constructs a newly allocated HMIPermissions object
 	 */
@@ -61,22 +62,22 @@ public class HMIPermissions extends RPCStruct {
      * get a set of all HMI levels that are permitted for this given RPC.
      * @return   a set of all HMI levels that are permitted for this given RPC
      */
-    public Vector<HMILevel> getAllowed() {
-        if (store.get(Names.allowed) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(Names.allowed);
+    public List<HMILevel> getAllowed() {
+        if (store.get(HMIPermissions.allowed) instanceof List<?>) {
+	    	List<?> list = (List<?>)store.get(HMIPermissions.allowed);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof HMILevel) {
-	                return (Vector<HMILevel>) list;
+	                return (List<HMILevel>) list;
 	            } else if (obj instanceof String) {
-	                Vector<HMILevel> newList = new Vector<HMILevel>();
+	            	List<HMILevel> newList = new ArrayList<HMILevel>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    HMILevel toAdd = null;
 	                    try {
 	                        toAdd = HMILevel.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.allowed, e);
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + HMIPermissions.allowed, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -93,11 +94,11 @@ public class HMIPermissions extends RPCStruct {
      * set  HMI level that is permitted for this given RPC.
      * @param allowed HMI level that is permitted for this given RPC
      */
-    public void setAllowed(Vector<HMILevel> allowed) {
+    public void setAllowed(List<HMILevel> allowed) {
         if (allowed != null) {
-            store.put(Names.allowed, allowed);
+            store.put(HMIPermissions.allowed, allowed);
         } else {
-    		store.remove(Names.allowed);
+    		store.remove(HMIPermissions.allowed);
     	}
     }
     
@@ -105,22 +106,22 @@ public class HMIPermissions extends RPCStruct {
      * get a set of all HMI levels that are prohibited for this given RPC
      * @return a set of all HMI levels that are prohibited for this given RPC
      */
-    public Vector<HMILevel> getUserDisallowed() {
-        if (store.get(Names.userDisallowed) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(Names.userDisallowed);
+    public List<HMILevel> getUserDisallowed() {
+        if (store.get(HMIPermissions.userDisallowed) instanceof List<?>) {
+	    	List<?> list = (List<?>)store.get(HMIPermissions.userDisallowed);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof HMILevel) {
-	                return (Vector<HMILevel>) list;
+	                return (List<HMILevel>) list;
 	            } else if (obj instanceof String) {
-	                Vector<HMILevel> newList = new Vector<HMILevel>();
+	                List<HMILevel> newList = new ArrayList<HMILevel>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    HMILevel toAdd = null;
 	                    try {
 	                        toAdd = HMILevel.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.userDisallowed, e);
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + HMIPermissions.userDisallowed, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -137,11 +138,11 @@ public class HMIPermissions extends RPCStruct {
      * set a set of all HMI levels that are prohibited for this given RPC
      * @param userDisallowed  HMI level that is prohibited for this given RPC
      */
-    public void setUserDisallowed(Vector<HMILevel> userDisallowed) {
+    public void setUserDisallowed(List<HMILevel> userDisallowed) {
         if (userDisallowed != null) {
-            store.put(Names.userDisallowed, userDisallowed);
+            store.put(HMIPermissions.userDisallowed, userDisallowed);
         } else {
-    		store.remove(Names.userDisallowed);
+    		store.remove(HMIPermissions.userDisallowed);
     	}
     }
 }

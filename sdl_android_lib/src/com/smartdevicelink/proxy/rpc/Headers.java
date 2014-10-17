@@ -3,11 +3,20 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.util.DebugTool;
 
 public class Headers extends RPCStruct {
+	public static final String ContentType = "ContentType";
+	public static final String ConnectTimeout = "ConnectTimeout";
+	public static final String DoOutput = "DoOutput";
+	public static final String DoInput  = "DoInput";
+	public static final String UseCaches = "UseCaches";
+	public static final String RequestMethod = "RequestMethod";
+	public static final String ReadTimeout = "ReadTimeout";
+	public static final String InstanceFollowRedirects = "InstanceFollowRedirects";
+	public static final String charset = "charset";
+	public static final String ContentLength = "Content-Length";
 
     public Headers() { }
     
@@ -17,122 +26,122 @@ public class Headers extends RPCStruct {
 	
     public void setContentType(String contenttype) {
         if (contenttype != null) {
-            store.put(Names.ContentType, contenttype);
+            store.put(Headers.ContentType, contenttype);
         } else {
-        	store.remove(Names.ContentType);
+        	store.remove(Headers.ContentType);
         }
     }
     
     public String getContentType() {
-        return (String) store.get(Names.ContentType);
+        return (String) store.get(Headers.ContentType);
     }     
     
     public void setConnectTimeout(Integer connectiontimeout) {
         if (connectiontimeout != null) {
-            store.put(Names.ConnectTimeout, connectiontimeout);
+            store.put(Headers.ConnectTimeout, connectiontimeout);
         } else {
-        	store.remove(Names.ConnectTimeout);
+        	store.remove(Headers.ConnectTimeout);
         }
     }
     
     public Integer getConnectTimeout() {
-        return (Integer) store.get(Names.ConnectTimeout);
+        return (Integer) store.get(Headers.ConnectTimeout);
     }
     
     public void setDoOutput(Boolean dooutput) {
         if (dooutput != null) {
-            store.put(Names.DoOutput, dooutput);
+            store.put(Headers.DoOutput, dooutput);
         } else {
-        	store.remove(Names.DoOutput);
+        	store.remove(Headers.DoOutput);
         }
     }
     
     public Boolean getDoOutput() {
-        return (Boolean) store.get(Names.DoOutput);
+        return (Boolean) store.get(Headers.DoOutput);
     }    
     
     public void setDoInput(Boolean dooutput) {
         if (dooutput != null) {
-            store.put(Names.DoInput, dooutput);
+            store.put(Headers.DoInput, dooutput);
         } else {
-        	store.remove(Names.DoInput);
+        	store.remove(Headers.DoInput);
         }
     }
     
     public Boolean getDoInput() {
-        return (Boolean) store.get(Names.DoInput);
+        return (Boolean) store.get(Headers.DoInput);
     }       
 
     public void setUseCaches(Boolean usescaches) {
         if (usescaches != null) {
-            store.put(Names.UseCaches, usescaches);
+            store.put(Headers.UseCaches, usescaches);
         } else {
-        	store.remove(Names.UseCaches);
+        	store.remove(Headers.UseCaches);
         }
     }
     
     public Boolean getUseCaches() {
-        return (Boolean) store.get(Names.UseCaches);
+        return (Boolean) store.get(Headers.UseCaches);
     }      
     
     public void setRequestMethod(String requestmethod) {
         if (requestmethod != null) {
-            store.put(Names.RequestMethod, requestmethod);
+            store.put(Headers.RequestMethod, requestmethod);
         } else {
-        	store.remove(Names.RequestMethod);
+        	store.remove(Headers.RequestMethod);
         }
     }
     
     public String getRequestMethod() {
-        return (String) store.get(Names.RequestMethod);
+        return (String) store.get(Headers.RequestMethod);
     }   
     
     
     public void setReadTimeout(Integer readtimeout) {
         if (readtimeout != null) {
-            store.put(Names.ReadTimeout, readtimeout);
+            store.put(Headers.ReadTimeout, readtimeout);
         } else {
-        	store.remove(Names.ReadTimeout);
+        	store.remove(Headers.ReadTimeout);
         }
     }
     
     public Integer getReadTimeout() {
-        return (Integer) store.get(Names.ReadTimeout);
+        return (Integer) store.get(Headers.ReadTimeout);
     }
     
     public void setInstanceFollowRedirects(Boolean instancefollowredirects) {
         if (instancefollowredirects != null) {
-            store.put(Names.InstanceFollowRedirects, instancefollowredirects);
+            store.put(Headers.InstanceFollowRedirects, instancefollowredirects);
         } else {
-        	store.remove(Names.InstanceFollowRedirects);
+        	store.remove(Headers.InstanceFollowRedirects);
         }
     }
     
     public Boolean getInstanceFollowRedirects() {
-        return (Boolean) store.get(Names.InstanceFollowRedirects);
+        return (Boolean) store.get(Headers.InstanceFollowRedirects);
     }
     
     public void setCharset(String charset) {
         if (charset != null) {
-            store.put(Names.charset, charset);
+            store.put(Headers.charset, charset);
         } else {
-        	store.remove(Names.charset);
+        	store.remove(Headers.charset);
         }
     }
     
     public String getCharset() {
-        return (String) store.get(Names.charset);
+        return (String) store.get(Headers.charset);
     }
 
     public void setContentLength(Integer contentlength) {
         if (contentlength != null) {
-            store.put(Names.ContentLength, contentlength);
+            store.put(Headers.ContentLength, contentlength);
         } else {
-        	store.remove(Names.ContentLength);
+        	store.remove(Headers.ContentLength);
         }
     }
     
     public Integer getContentLength() {
-        return (Integer) store.get(Names.ContentLength);
+        return (Integer) store.get(Headers.ContentLength);
     }    
 }

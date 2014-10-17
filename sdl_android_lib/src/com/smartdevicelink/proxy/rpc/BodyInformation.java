@@ -3,12 +3,18 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class BodyInformation extends RPCStruct {
+    public static final String parkBrakeActive = "parkBrakeActive";
+    public static final String ignitionStableStatus = "ignitionStableStatus";
+    public static final String ignitionStatus = "ignitionStatus";
+    public static final String driverDoorAjar = "driverDoorAjar";
+    public static final String passengerDoorAjar = "passengerDoorAjar";
+    public static final String rearLeftDoorAjar = "rearLeftDoorAjar";
+    public static final String rearRightDoorAjar = "rearRightDoorAjar";
 
     public BodyInformation() { }
     public BodyInformation(Hashtable hash) {
@@ -17,23 +23,23 @@ public class BodyInformation extends RPCStruct {
 
     public void setParkBrakeActive(Boolean parkBrakeActive) {
         if (parkBrakeActive != null) {
-        	store.put(Names.parkBrakeActive, parkBrakeActive);
+        	store.put(BodyInformation.parkBrakeActive, parkBrakeActive);
         } else {
-        	store.remove(Names.parkBrakeActive);
+        	store.remove(BodyInformation.parkBrakeActive);
         }
     }
     public Boolean getParkBrakeActive() {
-        return (Boolean) store.get(Names.parkBrakeActive);
+        return (Boolean) store.get(BodyInformation.parkBrakeActive);
     }
     public void setIgnitionStableStatus(IgnitionStableStatus ignitionStableStatus) {
         if (ignitionStableStatus != null) {
-            store.put(Names.ignitionStableStatus, ignitionStableStatus);
+            store.put(BodyInformation.ignitionStableStatus, ignitionStableStatus);
         } else {
-        	store.remove(Names.ignitionStableStatus);
+        	store.remove(BodyInformation.ignitionStableStatus);
         }
     }
     public IgnitionStableStatus getIgnitionStableStatus() {
-        Object obj = store.get(Names.ignitionStableStatus);
+        Object obj = store.get(BodyInformation.ignitionStableStatus);
         if (obj instanceof IgnitionStableStatus) {
             return (IgnitionStableStatus) obj;
         } else if (obj instanceof String) {
@@ -41,7 +47,7 @@ public class BodyInformation extends RPCStruct {
             try {
                 theCode = IgnitionStableStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.ignitionStableStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + BodyInformation.ignitionStableStatus, e);
             }
             return theCode;
         }
@@ -49,13 +55,13 @@ public class BodyInformation extends RPCStruct {
     }
     public void setIgnitionStatus(IgnitionStatus ignitionStatus) {
         if (ignitionStatus != null) {
-            store.put(Names.ignitionStatus, ignitionStatus);
+            store.put(BodyInformation.ignitionStatus, ignitionStatus);
         } else {
-        	store.remove(Names.ignitionStatus);
+        	store.remove(BodyInformation.ignitionStatus);
         }
     }
     public IgnitionStatus getIgnitionStatus() {
-        Object obj = store.get(Names.ignitionStatus);
+        Object obj = store.get(BodyInformation.ignitionStatus);
         if (obj instanceof IgnitionStatus) {
             return (IgnitionStatus) obj;
         } else if (obj instanceof String) {
@@ -63,7 +69,7 @@ public class BodyInformation extends RPCStruct {
             try {
                 theCode = IgnitionStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.ignitionStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + BodyInformation.ignitionStatus, e);
             }
             return theCode;
         }
@@ -72,47 +78,47 @@ public class BodyInformation extends RPCStruct {
     
     public void setDriverDoorAjar(Boolean driverDoorAjar) {
         if (driverDoorAjar != null) {
-        	store.put(Names.driverDoorAjar, driverDoorAjar);
+        	store.put(BodyInformation.driverDoorAjar, driverDoorAjar);
         } else {
-        	store.remove(Names.driverDoorAjar);
+        	store.remove(BodyInformation.driverDoorAjar);
         }
     }    
     public Boolean getDriverDoorAjar() {
-        return (Boolean) store.get(Names.driverDoorAjar);
+        return (Boolean) store.get(BodyInformation.driverDoorAjar);
     }
     
     
     public void setPassengerDoorAjar(Boolean passengerDoorAjar) {
         if (passengerDoorAjar != null) {
-        	store.put(Names.passengerDoorAjar, passengerDoorAjar);
+        	store.put(BodyInformation.passengerDoorAjar, passengerDoorAjar);
         } else {
-        	store.remove(Names.passengerDoorAjar);
+        	store.remove(BodyInformation.passengerDoorAjar);
         }
     }    
     public Boolean getPassengerDoorAjar() {
-        return (Boolean) store.get(Names.passengerDoorAjar);
+        return (Boolean) store.get(BodyInformation.passengerDoorAjar);
     }
     
     public void setRearLeftDoorAjar(Boolean rearLeftDoorAjar) {
         if (rearLeftDoorAjar != null) {
-        	store.put(Names.rearLeftDoorAjar, rearLeftDoorAjar);
+        	store.put(BodyInformation.rearLeftDoorAjar, rearLeftDoorAjar);
         } else {
-        	store.remove(Names.rearLeftDoorAjar);
+        	store.remove(BodyInformation.rearLeftDoorAjar);
         }
     }    
     public Boolean getRearLeftDoorAjar() {
-        return (Boolean) store.get(Names.rearLeftDoorAjar);
+        return (Boolean) store.get(BodyInformation.rearLeftDoorAjar);
     }
 
     public void setRearRightDoorAjar(Boolean rearRightDoorAjar) {
         if (rearRightDoorAjar != null) {
-        	store.put(Names.rearRightDoorAjar, rearRightDoorAjar);
+        	store.put(BodyInformation.rearRightDoorAjar, rearRightDoorAjar);
         } else {
-        	store.remove(Names.rearRightDoorAjar);
+        	store.remove(BodyInformation.rearRightDoorAjar);
         }
     }    
     public Boolean getRearRightDoorAjar() {
-        return (Boolean) store.get(Names.rearRightDoorAjar);
+        return (Boolean) store.get(BodyInformation.rearRightDoorAjar);
     }     
     
 }

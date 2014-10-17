@@ -2,7 +2,7 @@ package com.smartdevicelink.trace;
 
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
@@ -68,14 +68,14 @@ class OpenRPCMessage extends RPCMessage {
 			OpenRPCMessage orpcm = new OpenRPCMessage((RPCStruct)obj);
 			orpcm.msgDump(pd);
 			pd.append("]");
-		} else if (obj instanceof Vector) {
+		} else if (obj instanceof List) {
 			pd.append("[");
-			Vector vec = (Vector)obj;
-			for (int idx=0;idx < vec.size();idx++) {
+			List list = (List)obj;
+			for (int idx=0;idx < list.size();idx++) {
 				if (idx > 0) {
 					pd.append(", ");
 				}
-				dumpParamNode(key, vec.elementAt(idx), pd);
+				dumpParamNode(key, list.get(idx), pd);
 			} // end-for
 			pd.append("]");
 		} else {
