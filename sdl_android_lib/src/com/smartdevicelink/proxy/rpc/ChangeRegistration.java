@@ -38,7 +38,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ChangeRegistration(Hashtable hash) {
+    public ChangeRegistration(Hashtable<String, Object> hash) {
         super(hash);
     }
 

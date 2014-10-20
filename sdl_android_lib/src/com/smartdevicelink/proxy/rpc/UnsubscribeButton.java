@@ -36,7 +36,7 @@ public class UnsubscribeButton extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */	
-    public UnsubscribeButton(Hashtable hash) {
+    public UnsubscribeButton(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**

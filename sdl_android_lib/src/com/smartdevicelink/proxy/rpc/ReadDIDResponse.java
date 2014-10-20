@@ -17,7 +17,7 @@ public class ReadDIDResponse extends RPCResponse {
     public ReadDIDResponse() {
         super("ReadDID");
     }
-    public ReadDIDResponse(Hashtable hash) {
+    public ReadDIDResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setDidResult(Vector<DIDResult> didResult) {
@@ -27,6 +27,7 @@ public class ReadDIDResponse extends RPCResponse {
     		parameters.remove(Names.didResult);
     	}
     }
+    @SuppressWarnings("unchecked")
     public Vector<DIDResult> getDidResult() {
         if (parameters.get(Names.didResult) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.didResult);
@@ -37,7 +38,7 @@ public class ReadDIDResponse extends RPCResponse {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<DIDResult> newList = new Vector<DIDResult>();
 	                for (Object hashObj : list) {
-	                    newList.add(new DIDResult((Hashtable)hashObj));
+	                    newList.add(new DIDResult((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

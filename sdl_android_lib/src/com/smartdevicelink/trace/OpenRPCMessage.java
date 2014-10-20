@@ -37,8 +37,8 @@ class OpenRPCMessage extends RPCMessage {
 		return;
 	} // end-method
 
-	private void dumpParams(Hashtable ht, StringBuilder pd) {
-		Iterator keySet = ht.keySet().iterator();
+	private void dumpParams(Hashtable<String, Object> ht, StringBuilder pd) {
+		Iterator<String> keySet = ht.keySet().iterator();
 		Object obj = null;
 		String key = "";
 		boolean isFirstParam = true;
@@ -57,11 +57,12 @@ class OpenRPCMessage extends RPCMessage {
 		} // end-while
 	} // end-method
 	
-	private void dumpParamNode(String key, Object obj, StringBuilder pd) {
+	@SuppressWarnings("unchecked")
+    private void dumpParamNode(String key, Object obj, StringBuilder pd) {
 
 		if (obj instanceof Hashtable) {
 			pd.append("[");
-			dumpParams((Hashtable)obj, pd);
+			dumpParams((Hashtable<String, Object>)obj, pd);
 			pd.append("]");
 		} else if (obj instanceof RPCStruct) {
 			pd.append("[");
@@ -70,7 +71,7 @@ class OpenRPCMessage extends RPCMessage {
 			pd.append("]");
 		} else if (obj instanceof Vector) {
 			pd.append("[");
-			Vector vec = (Vector)obj;
+			Vector<?> vec = (Vector<?>)obj;
 			for (int idx=0;idx < vec.size();idx++) {
 				if (idx > 0) {
 					pd.append(", ");

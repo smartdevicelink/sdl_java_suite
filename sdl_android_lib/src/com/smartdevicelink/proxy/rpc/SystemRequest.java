@@ -17,10 +17,11 @@ public class SystemRequest extends RPCRequest {
         super("EncodedSyncPData");
     }
     
-    public SystemRequest(Hashtable hash) {
+    public SystemRequest(Hashtable<String, Object> hash) {
         super(hash);
     }
     
+    @SuppressWarnings("unchecked")
     public Vector<String> getLegacyData() {
         if (parameters.get(Names.data) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)parameters.get(Names.data);

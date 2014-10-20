@@ -14,7 +14,7 @@ public class DeleteInteractionChoiceSetResponse extends RPCResponse {
     public DeleteInteractionChoiceSetResponse() {
         super("DeleteInteractionChoiceSet");
     }
-    public DeleteInteractionChoiceSetResponse(Hashtable hash) {
+    public DeleteInteractionChoiceSetResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

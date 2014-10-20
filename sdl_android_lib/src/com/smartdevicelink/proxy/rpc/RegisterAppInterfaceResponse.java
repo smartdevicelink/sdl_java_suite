@@ -34,7 +34,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public RegisterAppInterfaceResponse(Hashtable hash) {
+    public RegisterAppInterfaceResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -44,12 +44,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */
+    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
         Object obj = parameters.get(Names.sdlMsgVersion);
         if (obj instanceof SdlMsgVersion) {
         	return (SdlMsgVersion)obj;
         } else if (obj instanceof Hashtable) {
-        	return new SdlMsgVersion((Hashtable)obj);
+        	return new SdlMsgVersion((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -161,12 +162,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return DisplayCapabilities
 	 */
+    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
         Object obj = parameters.get(Names.displayCapabilities);
         if (obj instanceof DisplayCapabilities) {
         	return (DisplayCapabilities)obj;
         } else if (obj instanceof Hashtable) {
-        	return new DisplayCapabilities((Hashtable)obj);
+        	return new DisplayCapabilities((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -185,6 +187,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return buttonCapabilities
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<ButtonCapabilities> getButtonCapabilities() {
         if (parameters.get(Names.buttonCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.buttonCapabilities);
@@ -195,7 +198,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<ButtonCapabilities> newList = new Vector<ButtonCapabilities>();
 	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable)hashObj));
+	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -217,6 +220,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return SoftButtonCapabilities 
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<SoftButtonCapabilities> getSoftButtonCapabilities() {
         if (parameters.get(Names.softButtonCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtonCapabilities);
@@ -227,7 +231,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<SoftButtonCapabilities> newList = new Vector<SoftButtonCapabilities>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable)hashObj));
+	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -250,12 +254,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return PresetBankCapabilities 
 	 */
+    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
         Object obj = parameters.get(Names.presetBankCapabilities);
         if (obj instanceof PresetBankCapabilities) {
         	return (PresetBankCapabilities)obj;
         } else if (obj instanceof Hashtable) {
-        	return new PresetBankCapabilities((Hashtable)obj);
+        	return new PresetBankCapabilities((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -274,6 +279,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return HmiZoneCapabilities
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<HmiZoneCapabilities> getHmiZoneCapabilities() {
         if (parameters.get(Names.hmiZoneCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.hmiZoneCapabilities);
@@ -316,6 +322,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return SpeechCapabilities
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<SpeechCapabilities> getSpeechCapabilities() {
         if (parameters.get(Names.speechCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.speechCapabilities);
@@ -354,6 +361,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
 
     
+    @SuppressWarnings("unchecked")
     public Vector<PrerecordedSpeech> getPrerecordedSpeech() {
         if (parameters.get(Names.prerecordedSpeech) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.prerecordedSpeech);
@@ -394,6 +402,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return VrCapabilities
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<VrCapabilities> getVrCapabilities() {
         if (parameters.get(Names.vrCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrCapabilities);
@@ -436,12 +445,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return vehicleType 
 	 */
+    @SuppressWarnings("unchecked")
     public VehicleType getVehicleType() {
         Object obj = parameters.get(Names.vehicleType);
         if (obj instanceof VehicleType) {
         	return (VehicleType)obj;
         } else if (obj instanceof Hashtable) {
-        	return new VehicleType((Hashtable)obj);
+        	return new VehicleType((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -460,6 +470,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return AudioPassThruCapabilities 
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<AudioPassThruCapabilities> getAudioPassThruCapabilities() {
         if (parameters.get(Names.audioPassThruCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.audioPassThruCapabilities);
@@ -470,7 +481,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<AudioPassThruCapabilities> newList = new Vector<AudioPassThruCapabilities>();
 	                for (Object hashObj : list) {
-	                    newList.add(new AudioPassThruCapabilities((Hashtable)hashObj));
+	                    newList.add(new AudioPassThruCapabilities((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -503,6 +514,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Vector<Integer> getSupportedDiagModes() {
         
     	if (parameters.get(Names.supportedDiagModes) instanceof Vector<?>) {

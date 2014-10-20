@@ -9,7 +9,7 @@ public class SetAppIconResponse extends RPCResponse {
     public SetAppIconResponse() {
         super("SetAppIcon");
     }
-    public SetAppIconResponse(Hashtable hash) {
+    public SetAppIconResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

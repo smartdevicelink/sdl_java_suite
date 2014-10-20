@@ -31,7 +31,7 @@ public class EndAudioPassThru extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
      */
-    public EndAudioPassThru(Hashtable hash) {
+    public EndAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

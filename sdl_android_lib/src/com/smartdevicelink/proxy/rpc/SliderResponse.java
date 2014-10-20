@@ -27,7 +27,7 @@ public class SliderResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SliderResponse(Hashtable hash) {
+    public SliderResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

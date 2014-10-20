@@ -31,7 +31,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public SetMediaClockTimer(Hashtable hash) {
+    public SetMediaClockTimer(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -40,12 +40,13 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return StartTime -a StartTime object specifying hour, minute, second
 	 *         values
 	 */    
+    @SuppressWarnings("unchecked")
     public StartTime getStartTime() {
         Object obj = parameters.get(Names.startTime);
         if (obj instanceof StartTime) {
         	return (StartTime)obj;
         } else if (obj instanceof Hashtable) {
-        	return new StartTime((Hashtable)obj);
+        	return new StartTime((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -68,12 +69,13 @@ public class SetMediaClockTimer extends RPCRequest {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public StartTime getEndTime() {
         Object obj = parameters.get(Names.endTime);
         if (obj instanceof StartTime) {
         	return (StartTime)obj;
         } else if (obj instanceof Hashtable) {
-        	return new StartTime((Hashtable)obj);
+        	return new StartTime((Hashtable<String, Object>)obj);
         }
         return null;
     }

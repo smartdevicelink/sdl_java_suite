@@ -35,7 +35,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */	
-    public CreateInteractionChoiceSet(Hashtable hash) {
+    public CreateInteractionChoiceSet(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -65,6 +65,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @return Vector<Choice> -a Vector<Choice> representing the array of one or
 	 *         more elements
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<Choice> getChoiceSet() {
         if (parameters.get(Names.choiceSet) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.choiceSet);
@@ -75,7 +76,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<Choice> newList = new Vector<Choice>();
 	                for (Object hashObj : list) {
-	                    newList.add(new Choice((Hashtable)hashObj));
+	                    newList.add(new Choice((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

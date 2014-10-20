@@ -50,7 +50,7 @@ public class SdlMsgVersion extends RPCStruct {
      * Constructs a newly allocated SdlMsgVersion object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-	public SdlMsgVersion(Hashtable hash) {
+	public SdlMsgVersion(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

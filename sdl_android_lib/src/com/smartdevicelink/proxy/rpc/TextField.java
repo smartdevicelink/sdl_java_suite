@@ -64,7 +64,7 @@ public class TextField extends RPCStruct {
      * Constructs a newly allocated TextField object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-    public TextField(Hashtable hash) {
+    public TextField(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

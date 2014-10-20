@@ -74,7 +74,7 @@ public class OnHMIStatus extends RPCNotification {
     *<p>Constructs a newly allocated OnHMIStatus object indicated by the Hashtable parameter</p>
     *@param hash The Hashtable to use
     */    
-    public OnHMIStatus(Hashtable hash) {
+    public OnHMIStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

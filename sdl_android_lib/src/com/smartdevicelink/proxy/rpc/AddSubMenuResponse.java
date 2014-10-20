@@ -13,7 +13,7 @@ public class AddSubMenuResponse extends RPCResponse {
     public AddSubMenuResponse() {
         super("AddSubMenu");
     }
-    public AddSubMenuResponse(Hashtable hash) {
+    public AddSubMenuResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

@@ -35,7 +35,7 @@ public class DeleteCommand extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-	public DeleteCommand(Hashtable hash) {
+	public DeleteCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**

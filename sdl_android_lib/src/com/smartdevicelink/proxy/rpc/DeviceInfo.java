@@ -9,7 +9,7 @@ public class DeviceInfo extends RPCStruct{
 
 	public DeviceInfo() { }
  
-	public DeviceInfo(Hashtable hash) {
+	public DeviceInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
 	

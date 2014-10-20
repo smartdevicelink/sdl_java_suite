@@ -48,7 +48,7 @@ public class TTSChunk extends RPCStruct {
      * Constructs a newly allocated TTSChunk object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-    public TTSChunk(Hashtable hash) {
+    public TTSChunk(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

@@ -11,7 +11,7 @@ public class RPCNotification extends RPCMessage {
 		super(functionName, "notification");
 	}
 
-	public RPCNotification(Hashtable hash) {
+	public RPCNotification(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 

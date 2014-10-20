@@ -10,7 +10,7 @@ import com.smartdevicelink.util.DebugTool;
 public class AirbagStatus extends RPCStruct {
 
     public AirbagStatus() { }
-    public AirbagStatus(Hashtable hash) {
+    public AirbagStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
 

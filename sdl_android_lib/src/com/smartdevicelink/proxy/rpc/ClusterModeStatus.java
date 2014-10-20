@@ -12,7 +12,7 @@ import com.smartdevicelink.util.DebugTool;
 public class ClusterModeStatus extends RPCStruct {
 
 	    public ClusterModeStatus() { }
-	    public ClusterModeStatus(Hashtable hash) {
+	    public ClusterModeStatus(Hashtable<String, Object> hash) {
 	        super(hash);
 	    }
 

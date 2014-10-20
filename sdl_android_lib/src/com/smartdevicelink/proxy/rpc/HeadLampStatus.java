@@ -10,7 +10,7 @@ import com.smartdevicelink.util.DebugTool;
 public class HeadLampStatus extends RPCStruct {
 
     public HeadLampStatus() {}
-    public HeadLampStatus(Hashtable hash) {
+    public HeadLampStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setAmbientLightStatus(AmbientLightStatus ambientLightSensorStatus) {

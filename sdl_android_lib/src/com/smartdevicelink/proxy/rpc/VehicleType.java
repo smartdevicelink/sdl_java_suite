@@ -69,7 +69,7 @@ public class VehicleType extends RPCStruct {
      * Constructs a newly allocated VehicleType object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public VehicleType(Hashtable hash) {
+    public VehicleType(Hashtable<String, Object> hash) {
         super(hash);
     }
     

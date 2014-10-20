@@ -8,7 +8,7 @@ import java.util.Hashtable;
 public class ImageResolution extends RPCStruct {
     public ImageResolution() {}
     
-    public ImageResolution(Hashtable hash) {
+    public ImageResolution(Hashtable<String, Object> hash) {
         super(hash);
     }
     

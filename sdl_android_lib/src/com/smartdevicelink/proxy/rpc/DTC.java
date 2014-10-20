@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
@@ -40,7 +39,7 @@ public class DTC extends RPCStruct {
      * Constructs a newly allocated DTC object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public DTC(Hashtable hash) {
+    public DTC(Hashtable<String, Object> hash) {
         super(hash);
     }
     

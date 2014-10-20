@@ -26,7 +26,7 @@ public class ResetGlobalPropertiesResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ResetGlobalPropertiesResponse(Hashtable hash) {
+    public ResetGlobalPropertiesResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

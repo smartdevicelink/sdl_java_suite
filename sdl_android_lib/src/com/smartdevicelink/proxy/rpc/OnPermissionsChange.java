@@ -58,14 +58,15 @@ public class OnPermissionsChange extends RPCNotification {
      *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */
-	public OnPermissionsChange(Hashtable hash) {
+	public OnPermissionsChange(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 	/**
      * <p>Returns Vector<PermissionItem> object describing change in permissions for a given set of RPCs</p>
      * @return Vector<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
      */   
-	public Vector<PermissionItem> getPermissionItem() {
+	@SuppressWarnings("unchecked")
+    public Vector<PermissionItem> getPermissionItem() {
 		Vector<?> list = (Vector<?>)parameters.get(Names.permissionItem);
 		if (list != null && list.size()>0) {
 			Object obj = list.get(0);
@@ -74,7 +75,7 @@ public class OnPermissionsChange extends RPCNotification {
 			} else if(obj instanceof Hashtable) {
 				Vector<PermissionItem> newList = new Vector<PermissionItem>();
 				for (Object hash:list) {
-					newList.add(new PermissionItem((Hashtable)hash));
+					newList.add(new PermissionItem((Hashtable<String, Object>)hash));
 				}
 				return newList;
 			}

@@ -26,7 +26,7 @@ public class UnregisterAppInterfaceResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public UnregisterAppInterfaceResponse(Hashtable hash) {
+    public UnregisterAppInterfaceResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

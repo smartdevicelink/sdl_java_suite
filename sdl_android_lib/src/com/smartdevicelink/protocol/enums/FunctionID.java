@@ -36,7 +36,12 @@ public class FunctionID {
 
     static public void initFunctionIds() {
 
-        functionIDMap = new HashMap<String, Integer>(60) {{
+        functionIDMap = new HashMap<String, Integer>(60) {/**
+             * 
+             */
+            private static final long serialVersionUID = 6301013743706264910L;
+
+        {
             /*
                 Base Request / Response RPCs
                 Range = 0x 0000 0001 - 0x 0000 7FFF

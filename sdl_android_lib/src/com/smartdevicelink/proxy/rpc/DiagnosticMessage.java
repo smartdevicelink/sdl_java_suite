@@ -12,7 +12,7 @@ public class DiagnosticMessage extends RPCRequest {
         super("DiagnosticMessage");
     }
 
-    public DiagnosticMessage(Hashtable hash) {
+    public DiagnosticMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -38,6 +38,7 @@ public class DiagnosticMessage extends RPCRequest {
     	return (Integer) parameters.get(Names.messageLength);
     }
 
+    @SuppressWarnings("unchecked")
     public Vector<Integer> getMessageData() {
     	if(parameters.get(Names.messageData) instanceof Vector<?>){
     		Vector<?> list = (Vector<?>)parameters.get(Names.messageData);

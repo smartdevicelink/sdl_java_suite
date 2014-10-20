@@ -50,7 +50,7 @@ public class OnTBTClientState extends RPCNotification {
      *<p>Constructs a newly allocated OnTBTClientState object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */    
-    public OnTBTClientState(Hashtable hash) {
+    public OnTBTClientState(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

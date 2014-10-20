@@ -12,7 +12,7 @@ public class OnTouchEvent extends RPCNotification {
     public OnTouchEvent() {
         super("OnTouchEvent");
     }
-    public OnTouchEvent(Hashtable hash) {
+    public OnTouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -48,6 +48,7 @@ public class OnTouchEvent extends RPCNotification {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public Vector<TouchEvent> getEvent() {
         if (parameters.get(Names.event) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.event);
@@ -58,7 +59,7 @@ public class OnTouchEvent extends RPCNotification {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TouchEvent> newList = new Vector<TouchEvent>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TouchEvent((Hashtable) hashObj));
+	                    newList.add(new TouchEvent((Hashtable<String, Object>) hashObj));
 	                }
 	                return newList;
 	            }

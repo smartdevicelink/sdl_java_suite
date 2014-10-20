@@ -35,7 +35,7 @@ public class UnregisterAppInterface extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public UnregisterAppInterface(Hashtable hash) {
+    public UnregisterAppInterface(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

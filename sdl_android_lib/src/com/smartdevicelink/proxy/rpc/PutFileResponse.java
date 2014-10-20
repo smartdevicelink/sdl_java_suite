@@ -27,7 +27,7 @@ public class PutFileResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PutFileResponse(Hashtable hash) {
+    public PutFileResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {

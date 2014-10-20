@@ -27,7 +27,7 @@ public class AlertResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public AlertResponse(Hashtable hash) {
+    public AlertResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     public Integer getTryAgainTime() {

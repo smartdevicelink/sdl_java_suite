@@ -57,7 +57,7 @@ public class RPCResponse extends RPCMessage {
      *<p>Constructs a newly allocated RPCResponse object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */   
-	public RPCResponse(Hashtable hash) {
+	public RPCResponse(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 	/**

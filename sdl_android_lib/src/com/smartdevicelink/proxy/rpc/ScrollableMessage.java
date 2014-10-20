@@ -5,8 +5,6 @@ import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.SystemAction;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Creates a full screen overlay containing a large block of formatted text that
@@ -34,7 +32,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ScrollableMessage(Hashtable hash) {
+    public ScrollableMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -112,6 +110,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * Gets App defined soft button
 	 * @return Vector -Vector<SoftButton> value
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<SoftButton> getSoftButtons() {
         if (parameters.get(Names.softButtons) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
@@ -122,7 +121,7 @@ public class ScrollableMessage extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<SoftButton> newList = new Vector<SoftButton>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable) hashObj));
+	                    newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
 	                }
 	                return newList;
 	            }

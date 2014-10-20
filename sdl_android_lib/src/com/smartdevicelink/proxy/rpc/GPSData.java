@@ -6,7 +6,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
-import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -156,7 +155,7 @@ public class GPSData extends RPCStruct {
      * Constructs a newly allocated GPSData object indicated by the Hashtable parameter 
      * @param hash The Hashtable to use
      */    
-    public GPSData(Hashtable hash) {
+    public GPSData(Hashtable<String, Object> hash) {
         super(hash);
     }
     

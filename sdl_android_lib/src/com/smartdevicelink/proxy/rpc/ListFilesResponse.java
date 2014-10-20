@@ -19,7 +19,7 @@ public class ListFilesResponse extends RPCResponse {
     public ListFilesResponse() {
         super("ListFiles");
     }
-    public ListFilesResponse(Hashtable hash) {
+    public ListFilesResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setFilenames(Vector<String> filenames) {
@@ -29,6 +29,7 @@ public class ListFilesResponse extends RPCResponse {
         	parameters.remove(Names.filenames);
         }
     }
+    @SuppressWarnings("unchecked")
     public Vector<String> getFilenames() {
         if (parameters.get(Names.filenames) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)parameters.get(Names.filenames);

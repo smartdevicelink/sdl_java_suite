@@ -61,6 +61,8 @@ public enum SdlDisconnectedReason {
 			case FACTORY_DEFAULTS:
 				returnReason = SdlDisconnectedReason.FACTORY_DEFAULTS;
 				break;
+            default:
+                break;
 		}
 		
 		return returnReason;

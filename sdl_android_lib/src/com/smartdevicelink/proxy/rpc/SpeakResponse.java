@@ -26,7 +26,7 @@ public class SpeakResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SpeakResponse(Hashtable hash) {
+    public SpeakResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

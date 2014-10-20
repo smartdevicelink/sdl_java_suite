@@ -54,7 +54,7 @@ public class ButtonCapabilities extends RPCStruct {
      * Constructs a newly allocated ButtonCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public ButtonCapabilities(Hashtable hash) {
+    public ButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

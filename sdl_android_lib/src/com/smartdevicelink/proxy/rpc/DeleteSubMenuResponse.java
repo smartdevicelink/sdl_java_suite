@@ -14,7 +14,7 @@ public class DeleteSubMenuResponse extends RPCResponse {
     public DeleteSubMenuResponse() {
         super("DeleteSubMenu");
     }
-    public DeleteSubMenuResponse(Hashtable hash) {
+    public DeleteSubMenuResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

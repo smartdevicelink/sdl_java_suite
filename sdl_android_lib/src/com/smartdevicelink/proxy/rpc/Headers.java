@@ -4,14 +4,12 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.util.DebugTool;
 
 public class Headers extends RPCStruct {
 
     public Headers() { }
     
-    public Headers(Hashtable hash) {
+    public Headers(Hashtable<String, Object> hash) {
         super(hash);
     }	
 	

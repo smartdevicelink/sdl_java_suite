@@ -1,6 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
@@ -9,7 +10,7 @@ import com.smartdevicelink.util.DebugTool;
 public class DIDResult extends RPCStruct {
 	
     public DIDResult() {}
-    public DIDResult(Hashtable hash) {
+    public DIDResult(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setResultCode(VehicleDataResultCode resultCode) {

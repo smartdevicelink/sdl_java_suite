@@ -5,7 +5,6 @@ import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -55,7 +54,7 @@ public class ParameterPermissions extends RPCStruct {
      * Constructs a newly allocated ParameterPermissions object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public ParameterPermissions(Hashtable hash) {
+    public ParameterPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -63,6 +62,7 @@ public class ParameterPermissions extends RPCStruct {
      * get a set of all parameters that are permitted for this given RPC.
      * @return a set of all parameters that are permitted for this given RPC.
      */
+    @SuppressWarnings("unchecked")
     public Vector<String> getAllowed() {
         if (store.get(Names.allowed) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)store.get( Names.allowed);
@@ -92,6 +92,7 @@ public class ParameterPermissions extends RPCStruct {
      * get a set of all parameters that are prohibited for this given RPC.
      * @return a set of all parameters that are prohibited for this given RPC
      */
+    @SuppressWarnings("unchecked")
     public Vector<String> getUserDisallowed() {
         if (store.get(Names.userDisallowed) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)store.get( Names.userDisallowed);

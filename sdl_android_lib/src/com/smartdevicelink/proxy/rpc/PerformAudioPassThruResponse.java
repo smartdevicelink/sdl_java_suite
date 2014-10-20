@@ -26,7 +26,7 @@ public class PerformAudioPassThruResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PerformAudioPassThruResponse(Hashtable hash) {
+    public PerformAudioPassThruResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

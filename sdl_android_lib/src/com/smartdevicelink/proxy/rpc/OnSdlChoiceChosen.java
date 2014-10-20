@@ -13,7 +13,8 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 	public class SdlSubMenu {
 		private Integer _menuID = null;
-		private Integer _position = null;
+		@SuppressWarnings("unused")
+        private Integer _position = null;
 		private String _menuName = null;
 		
 		// Constructor
@@ -24,7 +25,8 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		}
 		
 		// Restrict no-arg constructor
-		private SdlSubMenu() {}
+		@SuppressWarnings("unused")
+        private SdlSubMenu() {}
 		
 		// Public Getters
 		public Integer getMenuID() {
@@ -43,7 +45,8 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	public class SdlCommand {
 		private Integer _commandID = null;
 		private SdlSubMenu _parentSubMenu = null;
-		private Integer _position = null;
+		@SuppressWarnings("unused")
+        private Integer _position = null;
 		private String _menuName = null;
 		private Vector<String> _vrCommands = null;
 		
@@ -57,7 +60,8 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		}
 		
 		// Restrict no-arg constructor
-		private SdlCommand() {}
+		@SuppressWarnings("unused")
+        private SdlCommand() {}
 		
 		// Public Getters
 		public Integer getCommandID() {
@@ -136,7 +140,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	public OnSdlChoiceChosen() {
 		super(Names.OnSdlChoiceChosen);
 	}
-	public OnSdlChoiceChosen(Hashtable hash){
+	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
 		super(hash);
 	}
     public SdlChoice getSdlChoice() {

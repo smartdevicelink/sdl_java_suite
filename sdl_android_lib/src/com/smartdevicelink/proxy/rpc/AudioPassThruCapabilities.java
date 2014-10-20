@@ -1,6 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -53,7 +54,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * Constructs a newly allocated AudioPassThruCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public AudioPassThruCapabilities(Hashtable hash) {
+    public AudioPassThruCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     

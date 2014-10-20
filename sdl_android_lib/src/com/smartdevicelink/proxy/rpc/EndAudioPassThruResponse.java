@@ -17,7 +17,7 @@ public class EndAudioPassThruResponse extends RPCResponse {
     public EndAudioPassThruResponse() {
         super("EndAudioPassThru");
     }
-    public EndAudioPassThruResponse(Hashtable hash) {
+    public EndAudioPassThruResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

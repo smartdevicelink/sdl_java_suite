@@ -26,7 +26,7 @@ public class UnsubscribeButtonResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public UnsubscribeButtonResponse(Hashtable hash) {
+    public UnsubscribeButtonResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

@@ -40,7 +40,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public PerformInteraction(Hashtable hash) {
+    public PerformInteraction(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -77,6 +77,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @return Vector<TTSChunk> -a Vector<TTSChunk> value, specify what is to be
 	 *         spoken to the user at the start of an interaction
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getInitialPrompt() {
         if (parameters.get(Names.initialPrompt) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.initialPrompt);
@@ -87,7 +88,7 @@ public class PerformInteraction extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -157,6 +158,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         one or more Choice Set IDs. User can select any choice from any
 	 *         of the specified Choice Sets
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<Integer> getInteractionChoiceSetIDList() {
     	if(parameters.get(Names.interactionChoiceSetIDList) instanceof Vector<?>){
     		Vector<?> list = (Vector<?>)parameters.get(Names.interactionChoiceSetIDList);
@@ -195,6 +197,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         specify the help phrase to be spoken when the user says "help"
 	 *         during the VR session
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getHelpPrompt() {
         if(parameters.get(Names.helpPrompt) instanceof Vector<?>){
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.helpPrompt);
@@ -205,7 +208,7 @@ public class PerformInteraction extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -243,6 +246,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @return Vector<TTSChunk> -a Vector<TTSChunk> specify the phrase to be
 	 *         spoken when the listen times out during the VR session
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getTimeoutPrompt() {
         if (parameters.get(Names.timeoutPrompt) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.timeoutPrompt);
@@ -253,7 +257,7 @@ public class PerformInteraction extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -322,6 +326,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         Help Items to display on-screen during Perform Interaction
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<VrHelpItem> getVrHelp() {
         if (parameters.get(Names.vrHelp) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrHelp);
@@ -332,7 +337,7 @@ public class PerformInteraction extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<VrHelpItem> newList = new Vector<VrHelpItem>();
 	                for (Object hashObj : list) {
-	                    newList.add(new VrHelpItem((Hashtable)hashObj));
+	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

@@ -11,7 +11,7 @@ import com.smartdevicelink.util.DebugTool;
 public class ECallInfo extends RPCStruct {
 
     public ECallInfo() { }
-    public ECallInfo(Hashtable hash) {
+    public ECallInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
 

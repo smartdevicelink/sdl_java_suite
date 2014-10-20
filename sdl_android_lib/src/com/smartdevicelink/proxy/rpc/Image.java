@@ -48,7 +48,7 @@ public class Image extends RPCStruct {
      * Constructs a newly allocated Image object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */      
-    public Image(Hashtable hash) {
+    public Image(Hashtable<String, Object> hash) {
         super(hash);
     }
     

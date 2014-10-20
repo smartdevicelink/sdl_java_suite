@@ -14,7 +14,7 @@ public class OnKeyboardInput extends RPCNotification {
         super("OnKeyboardInput");
     }
 
-    public OnKeyboardInput(Hashtable hash) {
+    public OnKeyboardInput(Hashtable<String, Object> hash) {
         super(hash);
     }
 

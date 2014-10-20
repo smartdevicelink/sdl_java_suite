@@ -86,7 +86,7 @@ public class Speak extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */	
-    public Speak(Hashtable hash) {
+    public Speak(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -95,6 +95,7 @@ public class Speak extends RPCRequest {
 	 * 
 	 * @return Vector<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getTtsChunks() {
     	if (parameters.get(Names.ttsChunks) instanceof Vector<?>) {
 	        Vector<?> list = (Vector<?>)parameters.get(Names.ttsChunks);
@@ -105,7 +106,7 @@ public class Speak extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

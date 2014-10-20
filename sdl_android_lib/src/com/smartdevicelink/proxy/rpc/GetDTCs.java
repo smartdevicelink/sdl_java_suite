@@ -30,7 +30,7 @@ public class GetDTCs extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public GetDTCs(Hashtable hash) {
+    public GetDTCs(Hashtable<String, Object> hash) {
         super(hash);
     }
 

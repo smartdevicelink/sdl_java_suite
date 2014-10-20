@@ -12,7 +12,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * This will open an audio pass thru session. By doing so the app can receive
- * audio data through the vehicle’s microphone
+ * audio data through the vehicleï¿½s microphone
  * <p>
  * Function Group: AudioPassThru
  * <p>
@@ -39,7 +39,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PerformAudioPassThru(Hashtable hash) {
+    public PerformAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -77,6 +77,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *         which will be spoken before opening the audio pass thru session
 	 *         by SDL
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getInitialPrompt() {
     	if (parameters.get(Names.initialPrompt) instanceof Vector<?>) {
 	        Vector<?> list = (Vector<?>)parameters.get(Names.initialPrompt);
@@ -87,7 +88,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

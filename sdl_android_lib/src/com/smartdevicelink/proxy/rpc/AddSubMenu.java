@@ -35,7 +35,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public AddSubMenu(Hashtable hash) {
+    public AddSubMenu(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**

@@ -63,7 +63,7 @@ public class MenuParams extends RPCStruct {
      * Constructs a newly allocated MenuParams object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-    public MenuParams(Hashtable hash) {
+    public MenuParams(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

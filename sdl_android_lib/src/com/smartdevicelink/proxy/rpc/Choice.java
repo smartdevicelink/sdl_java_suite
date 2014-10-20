@@ -60,7 +60,7 @@ public class Choice extends RPCStruct {
      * Constructs a newly allocated Choice object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-    public Choice(Hashtable hash) {
+    public Choice(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -104,6 +104,7 @@ public class Choice extends RPCStruct {
      * @return vrCommands Vector
      * @since SmartDeviceLink 2.0
      */    
+    @SuppressWarnings("unchecked")
     public Vector<String> getVrCommands() {
         if (store.get(Names.vrCommands) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)store.get( Names.vrCommands);
@@ -141,13 +142,14 @@ public class Choice extends RPCStruct {
      * Get the image
      * @return the image of the choice
      */    
+    @SuppressWarnings("unchecked")
     public Image getImage() {
     	Object obj = store.get(Names.image);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.image, e);
             }
@@ -189,13 +191,14 @@ public class Choice extends RPCStruct {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Image getSecondaryImage() {
         Object obj = store.get(Names.secondaryImage);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
             try {
-                return new Image((Hashtable) obj);
+                return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
                 DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.secondaryImage, e);
             }

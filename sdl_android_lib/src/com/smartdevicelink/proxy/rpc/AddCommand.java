@@ -61,7 +61,7 @@ public class AddCommand extends RPCRequest {
 	* @param hash
 	*            The Hashtable to use
 	*/
-    public AddCommand(Hashtable hash) {
+    public AddCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -100,6 +100,7 @@ public class AddCommand extends RPCRequest {
 	 * 
 	 * @return MenuParams -a MenuParams object
 	 */
+    @SuppressWarnings("unchecked")
     public MenuParams getMenuParams() {
         Object obj = parameters.get(Names.menuParams);
         if (obj instanceof MenuParams) {
@@ -107,7 +108,7 @@ public class AddCommand extends RPCRequest {
         }
         else if (obj instanceof Hashtable) {
         	try {
-        		return new MenuParams((Hashtable) obj);
+        		return new MenuParams((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.menuParams, e);
             }
@@ -139,6 +140,7 @@ public class AddCommand extends RPCRequest {
 	 * 
 	 * @return Vector<String> -(Vector<String>) indicating one or more VR phrases
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<String> getVrCommands() {
     	if (parameters.get(Names.vrCommands) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrCommands);
@@ -182,13 +184,14 @@ public class AddCommand extends RPCRequest {
 	 * @return Image -an Image object
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Image getCmdIcon() {
     	Object obj = parameters.get(Names.cmdIcon);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.cmdIcon, e);
             }

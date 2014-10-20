@@ -11,7 +11,7 @@ public class OnHashChange extends RPCNotification {
         super("OnHashChange");
     }
 
-    public OnHashChange(Hashtable hash) {
+    public OnHashChange(Hashtable<String, Object> hash) {
         super(hash);
     }
     

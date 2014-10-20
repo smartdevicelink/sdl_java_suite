@@ -38,7 +38,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public ResetGlobalProperties(Hashtable hash) {
+    public ResetGlobalProperties(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -48,6 +48,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * @return Vector<GlobalProperty> -an array of one or more GlobalProperty
 	 *         enumeration elements
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<GlobalProperty> getProperties() {
     	if (parameters.get(Names.properties) instanceof Vector<?>) {
 	        Vector<?> list = (Vector<?>)parameters.get(Names.properties);

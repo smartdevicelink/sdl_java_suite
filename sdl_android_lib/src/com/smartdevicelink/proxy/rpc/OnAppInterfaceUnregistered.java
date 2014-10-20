@@ -52,7 +52,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
     *<p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>
     *@param hash The Hashtable to use
     */    
-    public OnAppInterfaceUnregistered(Hashtable hash) {
+    public OnAppInterfaceUnregistered(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

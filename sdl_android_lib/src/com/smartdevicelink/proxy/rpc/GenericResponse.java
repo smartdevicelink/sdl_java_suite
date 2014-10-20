@@ -14,7 +14,7 @@ public class GenericResponse extends RPCResponse {
     public GenericResponse() {
         super("GenericResponse");
     }
-    public GenericResponse(Hashtable hash) {
+    public GenericResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

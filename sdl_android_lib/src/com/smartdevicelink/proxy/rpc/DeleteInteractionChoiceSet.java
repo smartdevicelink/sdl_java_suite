@@ -36,7 +36,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public DeleteInteractionChoiceSet(Hashtable hash) {
+    public DeleteInteractionChoiceSet(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**

@@ -8,7 +8,7 @@ import java.util.Hashtable;
 public class TouchCoord extends RPCStruct {
     public TouchCoord() {}
     
-    public TouchCoord(Hashtable hash) {
+    public TouchCoord(Hashtable<String, Object> hash) {
         super(hash);
     }
     

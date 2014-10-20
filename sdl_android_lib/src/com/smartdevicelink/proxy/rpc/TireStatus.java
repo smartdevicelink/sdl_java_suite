@@ -4,14 +4,13 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.TirePressureTellTale;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class TireStatus extends RPCStruct {
 
     public TireStatus() { }
-    public TireStatus(Hashtable hash) {
+    public TireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setPressureTellTale(WarningLightStatus pressureTellTale) {
@@ -43,13 +42,14 @@ public class TireStatus extends RPCStruct {
     		store.remove(Names.leftFront);
     	}
     }
+    @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftFront() {
     	Object obj = store.get(Names.leftFront);
         if (obj instanceof SingleTireStatus) {
             return (SingleTireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new SingleTireStatus((Hashtable) obj);
+        		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.leftFront, e);
             }
@@ -63,13 +63,14 @@ public class TireStatus extends RPCStruct {
     		store.remove(Names.rightFront);
     	}
     }
+    @SuppressWarnings("unchecked")
     public SingleTireStatus getRightFront() {
     	Object obj = store.get(Names.rightFront);
         if (obj instanceof SingleTireStatus) {
             return (SingleTireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new SingleTireStatus((Hashtable) obj);
+        		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.rightFront, e);
             }
@@ -83,13 +84,14 @@ public class TireStatus extends RPCStruct {
     		store.remove(Names.leftRear);
     	}
     }
+    @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftRear() {
     	Object obj = store.get(Names.leftRear);
         if (obj instanceof SingleTireStatus) {
             return (SingleTireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new SingleTireStatus((Hashtable) obj);
+        		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.leftRear, e);
             }
@@ -103,13 +105,14 @@ public class TireStatus extends RPCStruct {
     		store.remove(Names.rightRear);
     	}
     }
+    @SuppressWarnings("unchecked")
     public SingleTireStatus getRightRear() {
     	Object obj = store.get(Names.rightRear);
         if (obj instanceof SingleTireStatus) {
             return (SingleTireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new SingleTireStatus((Hashtable) obj);
+        		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.rightRear, e);
             }
@@ -123,13 +126,14 @@ public class TireStatus extends RPCStruct {
     		store.remove(Names.innerLeftRear);
     	}
     }
+    @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerLeftRear() {
     	Object obj = store.get(Names.innerLeftRear);
         if (obj instanceof SingleTireStatus) {
             return (SingleTireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new SingleTireStatus((Hashtable) obj);
+        		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.innerLeftRear, e);
             }
@@ -143,13 +147,14 @@ public class TireStatus extends RPCStruct {
     		store.remove(Names.innerRightRear);
     	}
     }
+    @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerRightRear() {
     	Object obj = store.get(Names.innerRightRear);
         if (obj instanceof SingleTireStatus) {
             return (SingleTireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new SingleTireStatus((Hashtable) obj);
+        		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.innerRightRear, e);
             }
