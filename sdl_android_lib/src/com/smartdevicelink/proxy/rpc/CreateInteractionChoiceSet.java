@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Creates a Choice Set which can be used in subsequent <i>
@@ -20,6 +20,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see PerformInteraction
  */
 public class CreateInteractionChoiceSet extends RPCRequest {
+	public static final String choiceSet = "choiceSet";
+	public static final String interactionChoiceSetID = "interactionChoiceSetID";
 
 	/**
 	 * Constructs a new CreateInteractionChoiceSet object
@@ -44,7 +46,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @return Integer -an Integer representing the Choice Set ID
 	 */    
     public Integer getInteractionChoiceSetID() {
-        return (Integer) parameters.get( Names.interactionChoiceSetID );
+        return (Integer) parameters.get( CreateInteractionChoiceSet.interactionChoiceSetID );
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
@@ -56,24 +58,26 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
         if (interactionChoiceSetID != null) {
-            parameters.put(Names.interactionChoiceSetID, interactionChoiceSetID );
+            parameters.put(CreateInteractionChoiceSet.interactionChoiceSetID, interactionChoiceSetID );
+        } else {
+        	parameters.remove(CreateInteractionChoiceSet.interactionChoiceSetID);
         }
     }
 	/**
 	 * Gets Choice Set Array of one or more elements
 	 * 
-	 * @return Vector<Choice> -a Vector<Choice> representing the array of one or
+	 * @return List<Choice> -a List<Choice> representing the array of one or
 	 *         more elements
 	 */    
-    public Vector<Choice> getChoiceSet() {
-        if (parameters.get(Names.choiceSet) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.choiceSet);
+    public List<Choice> getChoiceSet() {
+        if (parameters.get(CreateInteractionChoiceSet.choiceSet) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(CreateInteractionChoiceSet.choiceSet);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof Choice) {
-	                return (Vector<Choice>) list;
+	                return (List<Choice>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<Choice> newList = new Vector<Choice>();
+	            	List<Choice> newList = new ArrayList<Choice>();
 	                for (Object hashObj : list) {
 	                    newList.add(new Choice((Hashtable)hashObj));
 	                }
@@ -87,14 +91,16 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * Sets a Choice Set that is an Array of one or more elements
 	 * 
 	 * @param choiceSet
-	 *            a Vector<Choice> representing the array of one or more
+	 *            a List<Choice> representing the array of one or more
 	 *            elements
 	 *            <p>
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
-    public void setChoiceSet( Vector<Choice> choiceSet ) {
+    public void setChoiceSet( List<Choice> choiceSet ) {
         if (choiceSet != null) {
-            parameters.put(Names.choiceSet, choiceSet );
+            parameters.put(CreateInteractionChoiceSet.choiceSet, choiceSet );
+        } else {
+        	parameters.remove(CreateInteractionChoiceSet.choiceSet);
         }
     }
 }

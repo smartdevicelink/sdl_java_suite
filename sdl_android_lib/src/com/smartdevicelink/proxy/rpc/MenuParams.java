@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 /**
  * Used when adding a sub menu to an application menu or existing sub menu.
  * <p><b> Parameter List
@@ -55,6 +54,9 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 1.0
  */
 public class MenuParams extends RPCStruct {
+	public static final String parentID = "parentID";
+	public static final String position = "position";
+	public static final String menuName = "menuName";
 	/**
 	 * Constructs a newly allocated MenuParams object
 	 */
@@ -72,7 +74,7 @@ public class MenuParams extends RPCStruct {
      * @return parentID Min: 0 Max: 2000000000
      */    
     public Integer getParentID() {
-        return (Integer) store.get( Names.parentID );
+        return (Integer) store.get( MenuParams.parentID );
     }
     /**
      * Set the unique ID of an existing submenu to which a command will be added.
@@ -81,7 +83,9 @@ public class MenuParams extends RPCStruct {
      */    
     public void setParentID( Integer parentID ) {
         if (parentID != null) {
-            store.put(Names.parentID, parentID );
+            store.put(MenuParams.parentID, parentID );
+        } else {
+        	store.remove(MenuParams.parentID);
         }
     }
     /**
@@ -96,7 +100,7 @@ public class MenuParams extends RPCStruct {
      * @return  the position within the items of the parent Command Menu
      */    
     public Integer getPosition() {
-        return (Integer) store.get( Names.position );
+        return (Integer) store.get( MenuParams.position );
     }
     /**
      * Set the position within the items of the parent Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. 
@@ -111,7 +115,9 @@ public class MenuParams extends RPCStruct {
      */    
     public void setPosition( Integer position ) {
         if (position != null) {
-            store.put(Names.position, position );
+            store.put(MenuParams.position, position );
+        } else {
+        	store.remove(MenuParams.position);
         }
     }
     /**
@@ -124,7 +130,7 @@ public class MenuParams extends RPCStruct {
      */
     
     public String getMenuName() {
-        return (String) store.get( Names.menuName );
+        return (String) store.get( MenuParams.menuName );
     }
     /**
      * Set text which appears in menu, representing this command.
@@ -137,7 +143,9 @@ public class MenuParams extends RPCStruct {
     
     public void setMenuName( String menuName ) {
         if (menuName != null) {
-            store.put(Names.menuName, menuName );
+            store.put(MenuParams.menuName, menuName );
+        } else {
+        	store.remove(MenuParams.menuName);
         }
     }
 }

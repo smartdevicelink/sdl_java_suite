@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.util.DebugTool;
 
@@ -29,6 +28,7 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class SingleTireStatus extends RPCStruct {
+	public static final String status = "status";
 
 	/**
 	 * Constructs a newly allocated SingleTireStatus object
@@ -49,9 +49,9 @@ public class SingleTireStatus extends RPCStruct {
      */
     public void setStatus(ComponentVolumeStatus status) {
     	if (status != null) {
-    		store.put(Names.status, status);
+    		store.put(SingleTireStatus.status, status);
     	} else {
-    		store.remove(Names.status);
+    		store.remove(SingleTireStatus.status);
     	}
     }
     
@@ -60,7 +60,7 @@ public class SingleTireStatus extends RPCStruct {
      * @return  the volume status of a single tire
      */
     public ComponentVolumeStatus getStatus() {
-        Object obj = store.get(Names.status);
+        Object obj = store.get(SingleTireStatus.status);
         if (obj instanceof ComponentVolumeStatus) {
             return (ComponentVolumeStatus) obj;
         } else if (obj instanceof String) {
@@ -68,7 +68,7 @@ public class SingleTireStatus extends RPCStruct {
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.status, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + SingleTireStatus.status, e);
             }
             return theCode;
         }

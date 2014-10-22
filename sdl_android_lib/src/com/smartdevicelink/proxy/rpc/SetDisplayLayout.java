@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -14,7 +13,7 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class SetDisplayLayout extends RPCRequest {
-
+	public static final String displayLayout = "displayLayout";
 	/**
 	 * Constructs a new SetDisplayLayout object
 	 */
@@ -45,9 +44,9 @@ public class SetDisplayLayout extends RPCRequest {
 	 */
     public void setDisplayLayout(String displayLayout) {
         if (displayLayout != null) {
-            parameters.put(Names.displayLayout, displayLayout);
+            parameters.put(SetDisplayLayout.displayLayout, displayLayout);
         } else {
-        	parameters.remove(Names.displayLayout);
+        	parameters.remove(SetDisplayLayout.displayLayout);
         }
     }
 
@@ -55,6 +54,6 @@ public class SetDisplayLayout extends RPCRequest {
 	 * Gets a display layout.
 	 */
     public String getDisplayLayout() {
-    	return (String) parameters.get(Names.displayLayout);
+    	return (String) parameters.get(SetDisplayLayout.displayLayout);
     }
 }

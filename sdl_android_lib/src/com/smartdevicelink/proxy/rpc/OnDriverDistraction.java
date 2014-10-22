@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.util.DebugTool;
 
@@ -41,6 +40,7 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class OnDriverDistraction  extends RPCNotification {
+	public static final String state = "state";
 	/**
 	*Constructs a newly allocated OnDriverDistraction object
 	*/ 
@@ -59,7 +59,7 @@ public class OnDriverDistraction  extends RPCNotification {
      * @return {@linkplain DriverDistractionState} the Current driver distraction state.
      */    
     public DriverDistractionState getState() {
-        Object obj = parameters.get(Names.state);
+        Object obj = parameters.get(OnDriverDistraction.state);
         if (obj instanceof DriverDistractionState) {
         	return (DriverDistractionState)obj;
         } else if(obj instanceof String) {
@@ -67,7 +67,7 @@ public class OnDriverDistraction  extends RPCNotification {
         	try {
         		theCode = DriverDistractionState.valueForString((String) obj);
         	} catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.state, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnDriverDistraction.state, e);
             }
         	return theCode;
         }    	
@@ -79,7 +79,9 @@ public class OnDriverDistraction  extends RPCNotification {
      */    
     public void setState( DriverDistractionState state ) {
         if (state != null) {
-            parameters.put(Names.state, state );
+            parameters.put(OnDriverDistraction.state, state );
+        } else {
+            parameters.remove(OnDriverDistraction.state);
         }
     }  
 }

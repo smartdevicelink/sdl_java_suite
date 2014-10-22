@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Contains information about on-screen preset capabilities.
@@ -26,6 +25,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class PresetBankCapabilities extends RPCStruct {
+	public static final String OnScreenPresetsAvailable = "OnScreenPresetsAvailable";
 
 	/**
 	 * Constructs a newly allocated PresetBankCapabilities object
@@ -46,9 +46,9 @@ public class PresetBankCapabilities extends RPCStruct {
      */
     public void setOnScreenPresetsAvailable(Boolean onScreenPresetsAvailable) {
     	if (onScreenPresetsAvailable != null) {
-    		store.put(Names.OnScreenPresetsAvailable, onScreenPresetsAvailable);
+    		store.put(PresetBankCapabilities.OnScreenPresetsAvailable, onScreenPresetsAvailable);
     	} else {
-    		store.remove(Names.OnScreenPresetsAvailable);
+    		store.remove(PresetBankCapabilities.OnScreenPresetsAvailable);
     	}
     }
     
@@ -57,6 +57,6 @@ public class PresetBankCapabilities extends RPCStruct {
      * @return if Onscreen custom presets are available
      */
     public Boolean onScreenPresetsAvailable() {
-    	return (Boolean) store.get(Names.OnScreenPresetsAvailable);
+    	return (Boolean) store.get(PresetBankCapabilities.OnScreenPresetsAvailable);
     }
 }

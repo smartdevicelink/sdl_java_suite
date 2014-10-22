@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 import java.util.Hashtable;
 
 public class TouchCoord extends RPCStruct {
+    public static final String x = "x";
+    public static final String y = "y";
     public TouchCoord() {}
     
     public TouchCoord(Hashtable hash) {
@@ -14,26 +15,26 @@ public class TouchCoord extends RPCStruct {
     
     public void setX(Integer x) {
         if (x != null) {
-            store.put(Names.x, x);
+            store.put(TouchCoord.x, x);
         } else {
-        	store.remove(Names.x);
+        	store.remove(TouchCoord.x);
         }
     }
     
     public Integer getX() {
-        return (Integer) store.get(Names.x);
+        return (Integer) store.get(TouchCoord.x);
     }
     
     public void setY(Integer y) {
         if (y != null) {
-            store.put(Names.y, y);
+            store.put(TouchCoord.y, y);
         } else {
-        	store.remove(Names.y);
+        	store.remove(TouchCoord.y);
         }
     }
     
     public Integer getY() {
-        return (Integer) store.get(Names.y);
+        return (Integer) store.get(TouchCoord.y);
     }
     
 }

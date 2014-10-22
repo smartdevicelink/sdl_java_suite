@@ -1,10 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -52,6 +51,13 @@ import com.smartdevicelink.util.DebugTool;
   * @since SmartDeviceLink 1.0
  */
 public class Choice extends RPCStruct {
+	public static final String secondaryText = "secondaryText";
+	public static final String tertiaryText = "tertiaryText";
+	public static final String secondaryImage = "secondaryImage";
+	public static final String menuName = "menuName";
+	public static final String vrCommands = "vrCommands";
+	public static final String choiceID = "choiceID";
+	public static final String image = "image";
 	/**
 	 * Constructs a newly allocated Choice object
 	 */
@@ -68,7 +74,7 @@ public class Choice extends RPCStruct {
      * @return choiceID Min: 0  Max: 65535
      */    
     public Integer getChoiceID() {
-        return (Integer) store.get(Names.choiceID);
+        return (Integer) store.get(Choice.choiceID);
     }
     /**
      * Set the application-scoped identifier that uniquely identifies this choice.
@@ -76,7 +82,9 @@ public class Choice extends RPCStruct {
      */    
     public void setChoiceID(Integer choiceID) {
         if (choiceID != null) {
-            store.put(Names.choiceID, choiceID);
+            store.put(Choice.choiceID, choiceID);
+        } else {
+        	store.remove(Choice.choiceID);
         }
     }
     /**
@@ -86,7 +94,7 @@ public class Choice extends RPCStruct {
      * @return menuName the menu name
      */    
     public String getMenuName() {
-        return (String) store.get(Names.menuName);
+        return (String) store.get(Choice.menuName);
     }
     /**
      * Text which appears in menu, representing this choice.
@@ -96,21 +104,23 @@ public class Choice extends RPCStruct {
      */    
     public void setMenuName(String menuName) {
         if (menuName != null) {
-            store.put(Names.menuName, menuName);
+            store.put(Choice.menuName, menuName);
+        } else {
+        	store.remove(Choice.menuName);
         }
     }
     /**
      * Get an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
-     * @return vrCommands Vector
+     * @return vrCommands List
      * @since SmartDeviceLink 2.0
      */    
-    public Vector<String> getVrCommands() {
-        if (store.get(Names.vrCommands) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.vrCommands);
+    public List<String> getVrCommands() {
+        if (store.get(Choice.vrCommands) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get( Choice.vrCommands);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
@@ -118,12 +128,14 @@ public class Choice extends RPCStruct {
     }
     /**
      * Set an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
-     * @param vrCommands the Vector of  vrCommands
+     * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */    
-    public void setVrCommands(Vector<String> vrCommands) {
+    public void setVrCommands(List<String> vrCommands) {
         if (vrCommands != null) {
-            store.put(Names.vrCommands, vrCommands);
+            store.put(Choice.vrCommands, vrCommands);
+        } else {
+        	store.remove(Choice.vrCommands);
         }
     }
     /**
@@ -132,9 +144,9 @@ public class Choice extends RPCStruct {
      */    
     public void setImage(Image image) {
         if (image != null) {
-            store.put(Names.image, image);
+            store.put(Choice.image, image);
         } else {
-        	store.remove(Names.image);
+        	store.remove(Choice.image);
         }
     }
     /**
@@ -142,62 +154,62 @@ public class Choice extends RPCStruct {
      * @return the image of the choice
      */    
     public Image getImage() {
-    	Object obj = store.get(Names.image);
+    	Object obj = store.get(Choice.image);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
         		return new Image((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.image, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Choice.image, e);
             }
         }
         return null;
     }
     
     public String getSecondaryText() {
-        return (String) store.get(Names.secondaryText);
+        return (String) store.get(Choice.secondaryText);
     }
 
     public void setSecondaryText(String secondaryText) {
         if (secondaryText != null) {
-            store.put(Names.secondaryText, secondaryText);
+            store.put(Choice.secondaryText, secondaryText);
         }
         else {
-            store.remove(Names.secondaryText);
+            store.remove(Choice.secondaryText);
         }
     }
 
     public String getTertiaryText() {
-        return (String) store.get(Names.tertiaryText);
+        return (String) store.get(Choice.tertiaryText);
     }
 
     public void setTertiaryText(String tertiaryText) {
         if (tertiaryText != null) {
-            store.put(Names.tertiaryText, tertiaryText);
+            store.put(Choice.tertiaryText, tertiaryText);
         }
         else {
-            store.remove(Names.tertiaryText);
+            store.remove(Choice.tertiaryText);
         }        
     }
 
     public void setSecondaryImage(Image image) {
         if (image != null) {
-            store.put(Names.secondaryImage, image);
+            store.put(Choice.secondaryImage, image);
         } else {
-            store.remove(Names.secondaryImage);
+            store.remove(Choice.secondaryImage);
         }
     }
 
     public Image getSecondaryImage() {
-        Object obj = store.get(Names.secondaryImage);
+        Object obj = store.get(Choice.secondaryImage);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
             try {
                 return new Image((Hashtable) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.secondaryImage, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Choice.secondaryImage, e);
             }
         }
         return null;

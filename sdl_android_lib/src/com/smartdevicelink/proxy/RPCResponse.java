@@ -4,8 +4,6 @@
 package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
-
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.util.DebugTool;
 
@@ -46,6 +44,9 @@ import com.smartdevicelink.util.DebugTool;
  * </ul>
  */
 public class RPCResponse extends RPCMessage {
+	public static final String success = "success";
+	public static final String info = "info";
+	public static final String resultCode = "resultCode";
 	/**
 	*<p>Constructs a newly allocated RPCResponse object using function name</p>
 	*@param functionName a string that indicates the function's name
@@ -76,7 +77,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return int  the ID of the request
 	 */
 	public Integer getCorrelationID() {
-		return (Integer)function.get(Names.correlationID);
+		return (Integer)function.get(RPCStruct.correlationID);
 	}
 	
 	/**
@@ -89,9 +90,9 @@ public class RPCResponse extends RPCMessage {
 	 */
 	public void setCorrelationID(Integer correlationID) {
 		if (correlationID != null) {
-            function.put(Names.correlationID, correlationID );
-        } else if (parameters.contains(Names.correlationID)){
-        	function.remove(Names.correlationID);
+            function.put(RPCStruct.correlationID, correlationID );
+        } else if (parameters.contains(RPCStruct.correlationID)){
+        	function.remove(RPCStruct.correlationID);
         }
 	}
 	/**
@@ -102,7 +103,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return Boolean  the status of whether the request is successfully done
 	 */
 	public Boolean getSuccess() {
-        return (Boolean) parameters.get( Names.success );
+        return (Boolean) parameters.get( RPCResponse.success );
     }
 	/**
 	 * <p>
@@ -114,7 +115,7 @@ public class RPCResponse extends RPCMessage {
 	 */
     public void setSuccess( Boolean success ) {
         if (success != null) {
-            parameters.put(Names.success, success );
+            parameters.put(RPCResponse.success, success );
         }
     }
 	/**
@@ -125,7 +126,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return {@linkplain Result}  the status of whether the request is successfully done
 	 */
     public Result getResultCode() {
-        Object obj = parameters.get(Names.resultCode);
+        Object obj = parameters.get(RPCResponse.resultCode);
         if (obj instanceof Result) {
             return (Result) obj;
         } else if (obj instanceof String) {
@@ -133,7 +134,7 @@ public class RPCResponse extends RPCMessage {
             try {
                 theCode = Result.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.resultCode, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RPCResponse.resultCode, e);
             }
             return theCode;
         }
@@ -149,7 +150,7 @@ public class RPCResponse extends RPCMessage {
 	 */
     public void setResultCode( Result resultCode ) {
         if (resultCode != null) {
-            parameters.put(Names.resultCode, resultCode );
+            parameters.put(RPCResponse.resultCode, resultCode );
         }
     }
 	/**
@@ -160,7 +161,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return String  A string of text representing additional information returned from SDL
 	 */
     public String getInfo() {
-        return (String) parameters.get( Names.info );
+        return (String) parameters.get( RPCResponse.info );
     }
 	/**
 	 * <p>
@@ -172,7 +173,7 @@ public class RPCResponse extends RPCMessage {
 	 */
     public void setInfo( String info ) {
         if (info != null) {
-            parameters.put(Names.info, info );
+            parameters.put(RPCResponse.info, info );
         }
     }
 }

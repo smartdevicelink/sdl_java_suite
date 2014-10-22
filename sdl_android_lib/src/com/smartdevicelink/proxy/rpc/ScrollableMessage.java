@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.util.DebugTool;
 
@@ -18,6 +18,9 @@ import com.smartdevicelink.util.DebugTool;
  * <p>
  */
 public class ScrollableMessage extends RPCRequest {
+	public static final String scrollableMessageBody = "scrollableMessageBody";
+	public static final String timeout = "timeout";
+	public static final String softButtons = "softButtons";
 
 	/**
 	 * Constructs a new ScrollableMessage object
@@ -49,9 +52,9 @@ public class ScrollableMessage extends RPCRequest {
 	 */
     public void setScrollableMessageBody(String scrollableMessageBody) {
         if (scrollableMessageBody != null) {
-            parameters.put(Names.scrollableMessageBody, scrollableMessageBody);
+            parameters.put(ScrollableMessage.scrollableMessageBody, scrollableMessageBody);
         } else {
-        	parameters.remove(Names.scrollableMessageBody);
+        	parameters.remove(ScrollableMessage.scrollableMessageBody);
         }
     }
 
@@ -61,7 +64,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return String -a String value
 	 */
     public String getScrollableMessageBody() {
-        return (String) parameters.get(Names.scrollableMessageBody);
+        return (String) parameters.get(ScrollableMessage.scrollableMessageBody);
     }
 
 	/**
@@ -75,9 +78,9 @@ public class ScrollableMessage extends RPCRequest {
 	 */
     public void setTimeout(Integer timeout) {
         if (timeout != null) {
-            parameters.put(Names.timeout, timeout);
+            parameters.put(ScrollableMessage.timeout, timeout);
         } else {
-        	parameters.remove(Names.timeout);
+        	parameters.remove(ScrollableMessage.timeout);
         }
     }
 
@@ -87,7 +90,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return Integer -an Integer value representing an App defined timeout
 	 */
     public Integer getTimeout() {
-        return (Integer) parameters.get(Names.timeout);
+        return (Integer) parameters.get(ScrollableMessage.timeout);
     }
 
 	/**
@@ -95,32 +98,32 @@ public class ScrollableMessage extends RPCRequest {
 	 * system defined "Close" SoftButton will be displayed
 	 * 
 	 * @param softButtons
-	 *            a Vector<SoftButton> value representing App defined
+	 *            a List<SoftButton> value representing App defined
 	 *            SoftButtons
 	 *            <p>
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
-            parameters.put(Names.softButtons, softButtons);
+            parameters.put(ScrollableMessage.softButtons, softButtons);
         } else {
-        	parameters.remove(Names.softButtons);
+        	parameters.remove(ScrollableMessage.softButtons);
         }
     }
 
 	/**
 	 * Gets App defined soft button
-	 * @return Vector -Vector<SoftButton> value
+	 * @return List -List<SoftButton> value
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Names.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(ScrollableMessage.softButtons) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(ScrollableMessage.softButtons);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButton((Hashtable) hashObj));
 	                }

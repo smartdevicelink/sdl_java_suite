@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
@@ -64,6 +63,9 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class OnHMIStatus extends RPCNotification {
 	private Boolean firstRun;
+	public static final String audioStreamingState = "audioStreamingState";
+	public static final String systemContext = "systemContext";
+	public static final String hmiLevel = "hmiLevel";
 	/**
 	*Constructs a newly allocated OnHMIStatus object
 	*/ 	
@@ -82,7 +84,7 @@ public class OnHMIStatus extends RPCNotification {
      * @return {@linkplain HMILevel} the current HMI Level in effect for the application
      */    
     public HMILevel getHmiLevel() {
-        Object obj = parameters.get(Names.hmiLevel);
+        Object obj = parameters.get(OnHMIStatus.hmiLevel);
         if (obj instanceof HMILevel) {
             return (HMILevel) obj;
         } else if (obj instanceof String) {
@@ -90,7 +92,7 @@ public class OnHMIStatus extends RPCNotification {
             try {
                 theCode = HMILevel.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.hmiLevel, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnHMIStatus.hmiLevel, e);
             }
             return theCode;
         }
@@ -102,7 +104,9 @@ public class OnHMIStatus extends RPCNotification {
      */    
     public void setHmiLevel( HMILevel hmiLevel ) {
         if (hmiLevel != null) {
-            parameters.put(Names.hmiLevel, hmiLevel );
+            parameters.put(OnHMIStatus.hmiLevel, hmiLevel );
+        } else {
+            parameters.remove(OnHMIStatus.hmiLevel);
         }
     }
     /**
@@ -110,7 +114,7 @@ public class OnHMIStatus extends RPCNotification {
      * @return {@linkplain AudioStreamingState} Returns current state of audio streaming for the application
      */    
     public AudioStreamingState getAudioStreamingState() {
-        Object obj = parameters.get(Names.audioStreamingState);
+        Object obj = parameters.get(OnHMIStatus.audioStreamingState);
         if (obj instanceof AudioStreamingState) {
             return (AudioStreamingState) obj;
         } else if (obj instanceof String) {
@@ -118,7 +122,7 @@ public class OnHMIStatus extends RPCNotification {
             try {
                 theCode = AudioStreamingState.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.audioStreamingState, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnHMIStatus.audioStreamingState, e);
             }
             return theCode;
         }
@@ -130,7 +134,9 @@ public class OnHMIStatus extends RPCNotification {
      */    
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
         if (audioStreamingState != null) {
-            parameters.put(Names.audioStreamingState, audioStreamingState );
+            parameters.put(OnHMIStatus.audioStreamingState, audioStreamingState );
+        } else {
+            parameters.remove(OnHMIStatus.audioStreamingState);
         }
     }
     /**
@@ -138,7 +144,7 @@ public class OnHMIStatus extends RPCNotification {
      * @return {@linkplain SystemContext} whether a user-initiated interaction is in-progress (VRSESSION or MENU), or not (MAIN).
      */    
     public SystemContext getSystemContext() {
-        Object obj = parameters.get(Names.systemContext);
+        Object obj = parameters.get(OnHMIStatus.systemContext);
         if (obj instanceof SystemContext) {
             return (SystemContext) obj;
         } else if (obj instanceof String) {
@@ -146,7 +152,7 @@ public class OnHMIStatus extends RPCNotification {
             try {
                 theCode = SystemContext.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.systemContext, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnHMIStatus.systemContext, e);
             }
             return theCode;
         }
@@ -159,7 +165,9 @@ public class OnHMIStatus extends RPCNotification {
      */    
     public void setSystemContext( SystemContext systemContext ) {
         if (systemContext != null) {
-            parameters.put(Names.systemContext, systemContext );
+            parameters.put(OnHMIStatus.systemContext, systemContext );
+        } else {
+            parameters.remove(OnHMIStatus.systemContext);
         }
     }
     /**

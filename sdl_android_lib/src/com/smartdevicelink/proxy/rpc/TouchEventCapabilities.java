@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 import java.util.Hashtable;
 
 public class TouchEventCapabilities extends RPCStruct {
+    public static final String pressAvailable = "pressAvailable";
+    public static final String multiTouchAvailable = "multiTouchAvailable";
+    public static final String doublePressAvailable = "doublePressAvailable";
     public TouchEventCapabilities() {}
     
     public TouchEventCapabilities(Hashtable hash) {
@@ -14,37 +16,37 @@ public class TouchEventCapabilities extends RPCStruct {
     
     public void setPressAvailable(Boolean pressAvailable) {
         if (pressAvailable != null) {
-            store.put(Names.pressAvailable, pressAvailable);
+            store.put(TouchEventCapabilities.pressAvailable, pressAvailable);
         } else {
-        	store.remove(Names.pressAvailable);
+        	store.remove(TouchEventCapabilities.pressAvailable);
         }
     }
     
     public Boolean getPressAvailable() {
-        return (Boolean) store.get(Names.pressAvailable);
+        return (Boolean) store.get(TouchEventCapabilities.pressAvailable);
     }
     
     public void setMultiTouchAvailable(Boolean multiTouchAvailable) {
         if (multiTouchAvailable != null) {
-            store.put(Names.multiTouchAvailable, multiTouchAvailable);
+            store.put(TouchEventCapabilities.multiTouchAvailable, multiTouchAvailable);
         } else {
-        	store.remove(Names.multiTouchAvailable);
+        	store.remove(TouchEventCapabilities.multiTouchAvailable);
         }
     }
     
     public Boolean getMultiTouchAvailable() {
-        return (Boolean) store.get(Names.multiTouchAvailable);
+        return (Boolean) store.get(TouchEventCapabilities.multiTouchAvailable);
     }
     
     public void setDoublePressAvailable(Boolean doublePressAvailable) {
         if (doublePressAvailable != null) {
-            store.put(Names.doublePressAvailable, doublePressAvailable);
+            store.put(TouchEventCapabilities.doublePressAvailable, doublePressAvailable);
         } else {
-        	store.remove(Names.doublePressAvailable);
+        	store.remove(TouchEventCapabilities.doublePressAvailable);
         }
     }
     
     public Boolean getDoublePressAvailable() {
-        return (Boolean) store.get(Names.doublePressAvailable);
+        return (Boolean) store.get(TouchEventCapabilities.doublePressAvailable);
     }
 }

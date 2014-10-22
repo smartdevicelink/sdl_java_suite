@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.util.DebugTool;
 
@@ -22,6 +21,8 @@ import com.smartdevicelink.util.DebugTool;
  * @see RegisterAppInterface
  */
 public class ChangeRegistration extends RPCRequest {
+	public static final String language = "language";
+	public static final String hmiDisplayLanguage = "hmiDisplayLanguage";
 
 	/**
 	 * Constructs a new ChangeRegistration object
@@ -50,9 +51,9 @@ public class ChangeRegistration extends RPCRequest {
 	 */
     public void setLanguage(Language language) {
         if (language != null) {
-            parameters.put(Names.language, language);
+            parameters.put(ChangeRegistration.language, language);
         } else {
-        	parameters.remove(Names.language);
+        	parameters.remove(ChangeRegistration.language);
         }
     }
 
@@ -62,7 +63,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * @return Language -a Language value
 	 */
     public Language getLanguage() {
-    	Object obj = parameters.get(Names.language);
+    	Object obj = parameters.get(ChangeRegistration.language);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -70,7 +71,7 @@ public class ChangeRegistration extends RPCRequest {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.language, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + ChangeRegistration.language, e);
             }
             return theCode;
         }
@@ -85,9 +86,9 @@ public class ChangeRegistration extends RPCRequest {
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
         if (hmiDisplayLanguage != null) {
-            parameters.put(Names.hmiDisplayLanguage, hmiDisplayLanguage);
+            parameters.put(ChangeRegistration.hmiDisplayLanguage, hmiDisplayLanguage);
         } else {
-        	parameters.remove(Names.hmiDisplayLanguage);
+        	parameters.remove(ChangeRegistration.hmiDisplayLanguage);
         }
     }
 
@@ -97,7 +98,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * @return Language -a Language value
 	 */
     public Language getHmiDisplayLanguage() {
-    	Object obj = parameters.get(Names.hmiDisplayLanguage);
+    	Object obj = parameters.get(ChangeRegistration.hmiDisplayLanguage);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -105,7 +106,7 @@ public class ChangeRegistration extends RPCRequest {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.hmiDisplayLanguage, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + ChangeRegistration.hmiDisplayLanguage, e);
             }
             return theCode;
         }

@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.util.DebugTool;
 
@@ -21,6 +20,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see SubscribeButton
  */
 public class UnsubscribeButton extends RPCRequest {
+	public static final String buttonName = "buttonName";
 
 	/**
 	 * Constructs a new UnsubscribeButton object
@@ -46,7 +46,7 @@ public class UnsubscribeButton extends RPCRequest {
 	 *         {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(Names.buttonName);
+        Object obj = parameters.get(UnsubscribeButton.buttonName);
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
@@ -54,7 +54,7 @@ public class UnsubscribeButton extends RPCRequest {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.buttonName, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + UnsubscribeButton.buttonName, e);
             }
             return theCode;
         }
@@ -69,7 +69,9 @@ public class UnsubscribeButton extends RPCRequest {
 	 */    
     public void setButtonName( ButtonName buttonName ) {
         if (buttonName != null) {
-            parameters.put(Names.buttonName, buttonName );
+            parameters.put(UnsubscribeButton.buttonName, buttonName );
+        } else {
+            parameters.remove(UnsubscribeButton.buttonName);
         }
     }
 }

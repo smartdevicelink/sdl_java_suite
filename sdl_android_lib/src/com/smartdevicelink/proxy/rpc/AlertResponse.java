@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Alert Response is sent, when Alert has been called
@@ -11,6 +10,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 1.0
  */
 public class AlertResponse extends RPCResponse {
+	public static final String tryAgainTime = "tryAgainTime";
 
 	/**
 	 * Constructs a new AlertResponse object
@@ -31,13 +31,13 @@ public class AlertResponse extends RPCResponse {
         super(hash);
     }
     public Integer getTryAgainTime() {
-        return (Integer) parameters.get(Names.tryAgainTime);
+        return (Integer) parameters.get(AlertResponse.tryAgainTime);
     }
     public void setTryAgainTime(Integer tryAgainTime) {
         if (tryAgainTime != null) {
-            parameters.put(Names.tryAgainTime, tryAgainTime);
+            parameters.put(AlertResponse.tryAgainTime, tryAgainTime);
         } else {
-        	parameters.remove(Names.tryAgainTime);
+            parameters.remove(AlertResponse.tryAgainTime);
         }
     }
 }

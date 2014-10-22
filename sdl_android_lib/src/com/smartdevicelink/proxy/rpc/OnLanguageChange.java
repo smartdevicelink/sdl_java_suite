@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.util.DebugTool;
 
@@ -58,6 +57,8 @@ import com.smartdevicelink.util.DebugTool;
  *
  */
 public class OnLanguageChange extends RPCNotification {
+	public static final String language = "language";
+	public static final String hmiDisplayLanguage = "hmiDisplayLanguage";
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
@@ -77,9 +78,9 @@ public class OnLanguageChange extends RPCNotification {
      */  
     public void setLanguage(Language language) {
         if (language != null) {
-            parameters.put(Names.language, language);
+            parameters.put(OnLanguageChange.language, language);
         } else {
-        	parameters.remove(Names.language);
+        	parameters.remove(OnLanguageChange.language);
         }
     }
     /**
@@ -87,7 +88,7 @@ public class OnLanguageChange extends RPCNotification {
      * @return {@linkplain Language} language that current SDL voice engine(VR+TTS) use
      */  
     public Language getLanguage() {
-    	Object obj = parameters.get(Names.language);
+    	Object obj = parameters.get(OnLanguageChange.language);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -95,7 +96,7 @@ public class OnLanguageChange extends RPCNotification {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.language, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnLanguageChange.language, e);
             }
             return theCode;
         }
@@ -107,9 +108,9 @@ public class OnLanguageChange extends RPCNotification {
      */  
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
         if (hmiDisplayLanguage != null) {
-            parameters.put(Names.hmiDisplayLanguage, hmiDisplayLanguage);
+            parameters.put(OnLanguageChange.hmiDisplayLanguage, hmiDisplayLanguage);
         } else {
-        	parameters.remove(Names.hmiDisplayLanguage);
+        	parameters.remove(OnLanguageChange.hmiDisplayLanguage);
         }
     }
     /**
@@ -117,7 +118,7 @@ public class OnLanguageChange extends RPCNotification {
      * @return {@linkplain Language} language that current display use
      */  
     public Language getHmiDisplayLanguage() {
-    	Object obj = parameters.get(Names.hmiDisplayLanguage);
+    	Object obj = parameters.get(OnLanguageChange.hmiDisplayLanguage);
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
@@ -125,7 +126,7 @@ public class OnLanguageChange extends RPCNotification {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.hmiDisplayLanguage, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + OnLanguageChange.hmiDisplayLanguage, e);
             }
             return theCode;
         }

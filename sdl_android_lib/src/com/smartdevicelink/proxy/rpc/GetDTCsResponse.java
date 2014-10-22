@@ -1,10 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Get DTCs Response is sent, when GetDTCs has been called
@@ -12,6 +11,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class GetDTCsResponse extends RPCResponse {
+	public static final String dtc = "dtc";
 
     public GetDTCsResponse() {
         super("GetDTCs");
@@ -19,23 +19,23 @@ public class GetDTCsResponse extends RPCResponse {
     public GetDTCsResponse(Hashtable hash) {
         super(hash);
     }
-    public Vector<String> getDtc() {
-    	if(parameters.get(Names.dtc) instanceof Vector<?>){
-    		Vector<?> list = (Vector<?>)parameters.get(Names.dtc);
+    public List<String> getDtc() {
+    	if(parameters.get(GetDTCsResponse.dtc) instanceof List<?>){
+    		List<?> list = (List<?>)parameters.get(GetDTCsResponse.dtc);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof String){
-        			return (Vector<String>) list;
+        			return (List<String>) list;
     	}
     }
             }
         return null;
     }
-    public void setDtc(Vector<String> dtc) {
+    public void setDtc(List<String> dtc) {
         if (dtc != null) {
-            parameters.put(Names.dtc, dtc);
+            parameters.put(GetDTCsResponse.dtc, dtc);
         } else {
-        	parameters.remove(Names.dtc);
+        	parameters.remove(GetDTCsResponse.dtc);
         }
     }
 }

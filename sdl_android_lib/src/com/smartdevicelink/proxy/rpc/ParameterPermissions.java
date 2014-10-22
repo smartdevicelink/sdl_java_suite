@@ -1,11 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -45,6 +43,8 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
  * @since SmartDeviceLink 2.0
  */
 public class ParameterPermissions extends RPCStruct {
+	public static final String allowed = "allowed";
+	public static final String userDisallowed = "userDisallowed";
 
 	/**
 	 *  Constructs a newly allocated ParameterPermissions object
@@ -63,13 +63,13 @@ public class ParameterPermissions extends RPCStruct {
      * get a set of all parameters that are permitted for this given RPC.
      * @return a set of all parameters that are permitted for this given RPC.
      */
-    public Vector<String> getAllowed() {
-        if (store.get(Names.allowed) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.allowed);
+    public List<String> getAllowed() {
+        if (store.get(ParameterPermissions.allowed) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get( ParameterPermissions.allowed);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
@@ -80,11 +80,11 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are permitted for this given RPC.
      * @param allowed parameter that is permitted for this given RPC
      */
-    public void setAllowed(Vector<String> allowed) {
+    public void setAllowed(List<String> allowed) {
         if (allowed != null) {
-            store.put(Names.allowed, allowed);
+            store.put(ParameterPermissions.allowed, allowed);
         } else {
-    		store.remove(Names.allowed);
+    		store.remove(ParameterPermissions.allowed);
     	}
     }
     
@@ -92,13 +92,13 @@ public class ParameterPermissions extends RPCStruct {
      * get a set of all parameters that are prohibited for this given RPC.
      * @return a set of all parameters that are prohibited for this given RPC
      */
-    public Vector<String> getUserDisallowed() {
-        if (store.get(Names.userDisallowed) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.userDisallowed);
+    public List<String> getUserDisallowed() {
+        if (store.get(ParameterPermissions.userDisallowed) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get( ParameterPermissions.userDisallowed);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
@@ -109,11 +109,11 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are prohibited for this given RPC.
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
-    public void setUserDisallowed(Vector<String> userDisallowed) {
+    public void setUserDisallowed(List<String> userDisallowed) {
         if (userDisallowed != null) {
-            store.put(Names.userDisallowed, userDisallowed);
+            store.put(ParameterPermissions.userDisallowed, userDisallowed);
         } else {
-    		store.remove(Names.userDisallowed);
+    		store.remove(ParameterPermissions.userDisallowed);
     	}
     }
 }

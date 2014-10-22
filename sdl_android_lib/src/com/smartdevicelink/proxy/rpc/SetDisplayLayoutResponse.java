@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
@@ -12,6 +12,10 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class SetDisplayLayoutResponse extends RPCResponse {
+	public static final String buttonCapabilities = "buttonCapabilities";
+	public static final String displayCapabilities = "displayCapabilities";
+    public static final String softButtonCapabilities = "softButtonCapabilities";
+    public static final String presetBankCapabilities = "presetBankCapabilities";
 
 	/**
 	 * Constructs a new SetDisplayLayoutResponse object
@@ -33,7 +37,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
     
     public DisplayCapabilities getDisplayCapabilities() {
-        Object obj = parameters.get(Names.displayCapabilities);
+        Object obj = parameters.get(SetDisplayLayoutResponse.displayCapabilities);
         if (obj instanceof DisplayCapabilities) {
         	return (DisplayCapabilities)obj;
         } else if (obj instanceof Hashtable) {
@@ -44,19 +48,21 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
         if (displayCapabilities != null) {
-            parameters.put(Names.displayCapabilities, displayCapabilities);
+            parameters.put(SetDisplayLayoutResponse.displayCapabilities, displayCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.displayCapabilities);
         }
     }
 
-    public Vector<ButtonCapabilities> getButtonCapabilities() {
-        if (parameters.get(Names.buttonCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.buttonCapabilities);
+    public List<ButtonCapabilities> getButtonCapabilities() {
+        if (parameters.get(SetDisplayLayoutResponse.buttonCapabilities) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(SetDisplayLayoutResponse.buttonCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof ButtonCapabilities) {
-	                return (Vector<ButtonCapabilities>) list;
+	                return (List<ButtonCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<ButtonCapabilities> newList = new Vector<ButtonCapabilities>();
+	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new ButtonCapabilities((Hashtable)hashObj));
 	                }
@@ -67,21 +73,23 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return null;
     }
 
-    public void setButtonCapabilities(Vector<ButtonCapabilities> buttonCapabilities) {
+    public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         if (buttonCapabilities != null) {
-            parameters.put(Names.buttonCapabilities, buttonCapabilities);
+            parameters.put(SetDisplayLayoutResponse.buttonCapabilities, buttonCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.buttonCapabilities);
         }
     }
 
-    public Vector<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(Names.softButtonCapabilities) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtonCapabilities);
+    public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
+        if (parameters.get(SetDisplayLayoutResponse.softButtonCapabilities) instanceof List<?>) {
+	    	List<?> list = (List<?>)parameters.get(SetDisplayLayoutResponse.softButtonCapabilities);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButtonCapabilities) {
-	                return (Vector<SoftButtonCapabilities>) list;
+	                return (List<SoftButtonCapabilities>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButtonCapabilities> newList = new Vector<SoftButtonCapabilities>();
+	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
 	                for (Object hashObj : list) {
 	                    newList.add(new SoftButtonCapabilities((Hashtable)hashObj));
 	                }
@@ -92,14 +100,16 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         return null;
     }
 
-    public void setSoftButtonCapabilities(Vector<SoftButtonCapabilities> softButtonCapabilities) {
+    public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         if (softButtonCapabilities != null) {
-            parameters.put(Names.softButtonCapabilities, softButtonCapabilities);
+            parameters.put(SetDisplayLayoutResponse.softButtonCapabilities, softButtonCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.softButtonCapabilities);
         }
     }
 
     public PresetBankCapabilities getPresetBankCapabilities() {
-        Object obj = parameters.get(Names.presetBankCapabilities);
+        Object obj = parameters.get(SetDisplayLayoutResponse.presetBankCapabilities);
         if (obj instanceof PresetBankCapabilities) {
         	return (PresetBankCapabilities)obj;
         } else if (obj instanceof Hashtable) {
@@ -110,7 +120,9 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
         if (presetBankCapabilities != null) {
-            parameters.put(Names.presetBankCapabilities, presetBankCapabilities);
+            parameters.put(SetDisplayLayoutResponse.presetBankCapabilities, presetBankCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.presetBankCapabilities);
         }
     }
     

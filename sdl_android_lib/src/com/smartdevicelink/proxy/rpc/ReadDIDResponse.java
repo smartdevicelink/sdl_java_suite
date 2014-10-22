@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 
 /**
@@ -13,6 +13,7 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
  * @since SmartDeviceLink 2.0
  */
 public class ReadDIDResponse extends RPCResponse {
+	public static final String didResult = "didResult";
 
     public ReadDIDResponse() {
         super("ReadDID");
@@ -20,22 +21,22 @@ public class ReadDIDResponse extends RPCResponse {
     public ReadDIDResponse(Hashtable hash) {
         super(hash);
     }
-    public void setDidResult(Vector<DIDResult> didResult) {
+    public void setDidResult(List<DIDResult> didResult) {
     	if (didResult != null) {
-    		parameters.put(Names.didResult, didResult);
+    		parameters.put(ReadDIDResponse.didResult, didResult);
     	} else {
-    		parameters.remove(Names.didResult);
+    		parameters.remove(ReadDIDResponse.didResult);
     	}
     }
-    public Vector<DIDResult> getDidResult() {
-        if (parameters.get(Names.didResult) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.didResult);
+    public List<DIDResult> getDidResult() {
+        if (parameters.get(ReadDIDResponse.didResult) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(ReadDIDResponse.didResult);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof DIDResult) {
-	                return (Vector<DIDResult>) list;
+	                return (List<DIDResult>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<DIDResult> newList = new Vector<DIDResult>();
+	            	List<DIDResult> newList = new ArrayList<DIDResult>();
 	                for (Object hashObj : list) {
 	                    newList.add(new DIDResult((Hashtable)hashObj));
 	                }

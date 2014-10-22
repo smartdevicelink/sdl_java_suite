@@ -1,10 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -44,6 +43,10 @@ import com.smartdevicelink.util.DebugTool;
 */
 
 public class AddCommand extends RPCRequest {
+	public static final String cmdIcon = "cmdIcon";
+	public static final String menuParams = "menuParams";
+	public static final String cmdID = "cmdID";
+	public static final String vrCommands = "vrCommands";
 
 	/**
 	 * Constructs a new AddCommand object
@@ -72,7 +75,7 @@ public class AddCommand extends RPCRequest {
 	 * @return Integer -an integer representation a Unique Command ID
 	 */
     public Integer getCmdID() {
-        return (Integer) parameters.get(Names.cmdID);
+        return (Integer) parameters.get(AddCommand.cmdID);
     }
 	/**
 	 * Sets an Unique Command ID that identifies the command. Is returned in an
@@ -87,9 +90,9 @@ public class AddCommand extends RPCRequest {
 	 */
     public void setCmdID(Integer cmdID) {
         if (cmdID != null) {
-            parameters.put(Names.cmdID, cmdID);
+            parameters.put(AddCommand.cmdID, cmdID);
         } else {
-        	parameters.remove(Names.cmdID);
+            parameters.remove(AddCommand.cmdID);
         }
     }
 	/**
@@ -101,7 +104,7 @@ public class AddCommand extends RPCRequest {
 	 * @return MenuParams -a MenuParams object
 	 */
     public MenuParams getMenuParams() {
-        Object obj = parameters.get(Names.menuParams);
+        Object obj = parameters.get(AddCommand.menuParams);
         if (obj instanceof MenuParams) {
         	return (MenuParams) obj;
         }
@@ -109,7 +112,7 @@ public class AddCommand extends RPCRequest {
         	try {
         		return new MenuParams((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.menuParams, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AddCommand.menuParams, e);
             }
         }
         return null;
@@ -127,9 +130,9 @@ public class AddCommand extends RPCRequest {
 	 */    
     public void setMenuParams(MenuParams menuParams) {
         if (menuParams != null) {
-            parameters.put(Names.menuParams, menuParams);
+            parameters.put(AddCommand.menuParams, menuParams);
         } else {
-        	parameters.remove(Names.menuParams);
+            parameters.remove(AddCommand.menuParams);
         }
     }
 	/**
@@ -137,15 +140,15 @@ public class AddCommand extends RPCRequest {
 	 * Gets Voice Recognition Commands
 	 * </p>
 	 * 
-	 * @return Vector<String> -(Vector<String>) indicating one or more VR phrases
+	 * @return List<String> -(List<String>) indicating one or more VR phrases
 	 */    
-    public Vector<String> getVrCommands() {
-    	if (parameters.get(Names.vrCommands) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrCommands);
+    public List<String> getVrCommands() {
+        if (parameters.get(AddCommand.vrCommands) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(AddCommand.vrCommands);
 	    	if (list != null && list.size() > 0) {
 	    		Object obj = list.get(0);
 	    		if (obj instanceof String) {
-	    			return (Vector<String>)list;
+	    			return (List<String>)list;
 	    		}
 	    	}
     	}
@@ -162,17 +165,17 @@ public class AddCommand extends RPCRequest {
 	 * </p>
 	 * 
 	 * @param vrCommands
-	 *            Vector<String> indicating one or more VR phrases
+	 *            List<String> indicating one or more VR phrases
 	 *            <p>
 	 *            <b>Notes: </b>Optional only if menuParams is provided. If
 	 *            provided, array must contain at least one non-empty (not null,
 	 *            not zero-length, not whitespace only) element
 	 */
-    public void setVrCommands( Vector<String> vrCommands ) {
+    public void setVrCommands( List<String> vrCommands ) {
         if (vrCommands != null) {
-            parameters.put(Names.vrCommands, vrCommands );
+            parameters.put(AddCommand.vrCommands, vrCommands );
         } else {
-        	parameters.remove(Names.vrCommands);
+            parameters.remove(AddCommand.vrCommands);
         }
     }
 
@@ -183,14 +186,14 @@ public class AddCommand extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Image getCmdIcon() {
-    	Object obj = parameters.get(Names.cmdIcon);
+        Object obj = parameters.get(AddCommand.cmdIcon);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
         		return new Image((Hashtable) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.cmdIcon, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + AddCommand.cmdIcon, e);
             }
         }
         return null;
@@ -209,9 +212,9 @@ public class AddCommand extends RPCRequest {
 	 */
     public void setCmdIcon(Image cmdIcon) {
         if (cmdIcon != null) {
-            parameters.put(Names.cmdIcon, cmdIcon);
+            parameters.put(AddCommand.cmdIcon, cmdIcon);
         } else {
-        	parameters.remove(Names.cmdIcon);
+            parameters.remove(AddCommand.cmdIcon);
         }
     }
 }

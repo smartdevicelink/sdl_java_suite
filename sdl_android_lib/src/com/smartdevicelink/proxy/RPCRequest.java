@@ -5,13 +5,11 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.constants.Names;
-
 public class RPCRequest extends RPCMessage {
 
 	public RPCRequest(String functionName) {
 		super(functionName, "request");
-		messageType = Names.request;
+		messageType = RPCStruct.request;
 	}
 
 	public RPCRequest(Hashtable hash) {
@@ -19,14 +17,14 @@ public class RPCRequest extends RPCMessage {
 	}
 
 	public Integer getCorrelationID() {
-		return (Integer)function.get(Names.correlationID);
+		return (Integer)function.get(RPCStruct.correlationID);
 	}
 	
 	public void setCorrelationID(Integer correlationID) {
 		if (correlationID != null) {
-            function.put(Names.correlationID, correlationID );
-        } else if (parameters.contains(Names.correlationID)) {
-        	function.remove(Names.correlationID);
+            function.put(RPCStruct.correlationID, correlationID );
+        } else if (parameters.contains(RPCStruct.correlationID)) {
+        	function.remove(RPCStruct.correlationID);
         }
 	}
 }
