@@ -81,6 +81,8 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
     public void setReason( AppInterfaceUnregisteredReason reason ) {
         if (reason != null) {
             parameters.put(OnAppInterfaceUnregistered.reason, reason );
+        } else {
+            parameters.remove(OnAppInterfaceUnregistered.reason);
         }
     }
 }

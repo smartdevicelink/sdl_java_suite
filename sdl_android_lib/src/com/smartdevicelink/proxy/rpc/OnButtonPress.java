@@ -135,6 +135,8 @@ public class OnButtonPress extends RPCNotification {
     public void setButtonName( ButtonName buttonName ) {
         if (buttonName != null) {
             parameters.put(OnButtonPress.buttonName, buttonName );
+        } else {
+            parameters.remove(OnButtonPress.buttonName);
         }
     }
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
@@ -162,6 +164,8 @@ public class OnButtonPress extends RPCNotification {
     public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
         if (buttonPressMode != null) {
             parameters.put(OnButtonPress.buttonPressMode, buttonPressMode );
+        } else {
+            parameters.remove(OnButtonPress.buttonPressMode);
         }
     }
     public void setCustomButtonName(Integer customButtonID) {

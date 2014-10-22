@@ -65,6 +65,8 @@ public class AddSubMenu extends RPCRequest {
     public void setMenuID( Integer menuID ) {
         if (menuID != null) {
             parameters.put(AddSubMenu.menuID, menuID );
+        } else {
+            parameters.remove(AddSubMenu.menuID);
         }
     }
 	/**
@@ -99,6 +101,8 @@ public class AddSubMenu extends RPCRequest {
     public void setPosition( Integer position ) {
         if (position != null) {
             parameters.put(AddSubMenu.position, position );
+        } else {
+            parameters.remove(AddSubMenu.position);
         }
     }
 	/**
@@ -118,6 +122,8 @@ public class AddSubMenu extends RPCRequest {
     public void setMenuName( String menuName ) {
         if (menuName != null) {
             parameters.put(AddSubMenu.menuName, menuName );
+        } else {
+            parameters.remove(AddSubMenu.menuName);
         }
     }
 }

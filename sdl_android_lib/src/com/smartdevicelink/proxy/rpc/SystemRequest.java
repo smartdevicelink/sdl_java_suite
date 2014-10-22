@@ -39,7 +39,9 @@ public class SystemRequest extends RPCRequest {
     public void setLegacyData( List<String> data ) {
     	if ( data!= null) {
     		parameters.put(SystemRequest.data, data );
-    	}
+    	} else {
+            parameters.remove(SystemRequest.data);
+        }
     }    
             
     public String getFileName() {

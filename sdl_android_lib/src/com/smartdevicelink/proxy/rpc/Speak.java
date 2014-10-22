@@ -133,6 +133,8 @@ public class Speak extends RPCRequest {
     public void setTtsChunks( List<TTSChunk> ttsChunks ) {
         if (ttsChunks != null) {
             parameters.put(Speak.ttsChunks, ttsChunks );
+        } else {
+            parameters.remove(Speak.ttsChunks);
         }
     }
 }

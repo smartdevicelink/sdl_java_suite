@@ -101,6 +101,8 @@ public class SubscribeButton extends RPCRequest {
     public void setButtonName( ButtonName buttonName ) {
         if (buttonName != null) {
             parameters.put(SubscribeButton.buttonName, buttonName );
+        } else {
+            parameters.remove(SubscribeButton.buttonName);
         }
     }
 }

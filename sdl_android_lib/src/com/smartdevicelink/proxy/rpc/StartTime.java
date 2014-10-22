@@ -69,6 +69,8 @@ public class StartTime extends RPCStruct {
     public void setHours( Integer hours ) {
         if (hours != null) {
             store.put(StartTime.hours, hours );
+        } else {
+        	store.remove(StartTime.hours);
         }
     }
     /**
@@ -85,6 +87,8 @@ public class StartTime extends RPCStruct {
     public void setMinutes( Integer minutes ) {
         if (minutes != null) {
             store.put(StartTime.minutes, minutes );
+        } else {
+        	store.remove(StartTime.minutes);
         }
     }
     /**
@@ -101,6 +105,8 @@ public class StartTime extends RPCStruct {
     public void setSeconds( Integer seconds ) {
         if (seconds != null) {
             store.put(StartTime.seconds, seconds );
+        } else {
+        	store.remove(StartTime.seconds);
         }
     }
 }

@@ -94,6 +94,8 @@ public class DisplayCapabilities extends RPCStruct {
     public void setDisplayType( DisplayType displayType ) {
         if (displayType != null) {
             store.put(DisplayCapabilities.displayType, displayType );
+        } else {
+        	store.remove(DisplayCapabilities.displayType);
         }
     }
     /**
@@ -127,6 +129,8 @@ public class DisplayCapabilities extends RPCStruct {
     public void setTextFields( List<TextField> textFields ) {
         if (textFields != null) {
             store.put(DisplayCapabilities.textFields, textFields );
+        } else {
+        	store.remove(DisplayCapabilities.textFields);
         }
     }
     
@@ -213,6 +217,8 @@ public class DisplayCapabilities extends RPCStruct {
     public void setMediaClockFormats( List<MediaClockFormat> mediaClockFormats ) {
         if (mediaClockFormats != null) {
             store.put(DisplayCapabilities.mediaClockFormats, mediaClockFormats );
+        } else {
+        	store.remove(DisplayCapabilities.mediaClockFormats);
         }
     }
     

@@ -49,6 +49,8 @@ public class DeleteSubMenu extends RPCRequest {
     public void setMenuID( Integer menuID ) {
         if (menuID != null) {
             parameters.put(DeleteSubMenu.menuID, menuID );
+        } else {
+            parameters.remove(DeleteSubMenu.menuID);
         }
     }
 }

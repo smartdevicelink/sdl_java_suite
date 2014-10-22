@@ -67,6 +67,8 @@ public class SetMediaClockTimer extends RPCRequest {
     public void setStartTime( StartTime startTime ) {
         if (startTime != null) {
             parameters.put(SetMediaClockTimer.startTime, startTime );
+        } else {
+            parameters.remove(SetMediaClockTimer.startTime);
         }
     }
     
@@ -83,6 +85,8 @@ public class SetMediaClockTimer extends RPCRequest {
     public void setEndTime( StartTime endTime ) {
         if (endTime != null) {
             parameters.put(SetMediaClockTimer.endTime, endTime );
+        } else {
+            parameters.remove(SetMediaClockTimer.endTime);
         }
     }
     
@@ -123,6 +127,8 @@ public class SetMediaClockTimer extends RPCRequest {
     public void setUpdateMode( UpdateMode updateMode ) {
         if (updateMode != null) {
             parameters.put(SetMediaClockTimer.updateMode, updateMode );
+        } else {
+            parameters.remove(SetMediaClockTimer.updateMode);
         }
     }
 }

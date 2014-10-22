@@ -86,6 +86,8 @@ public class ButtonCapabilities extends RPCStruct {
     public void setName( ButtonName name ) {
         if (name != null) {
             store.put(ButtonCapabilities.name, name );
+        } else {
+        	store.remove(ButtonCapabilities.name);
         }
     }
     /**
@@ -102,6 +104,8 @@ public class ButtonCapabilities extends RPCStruct {
     public void setShortPressAvailable( Boolean shortPressAvailable ) {
         if (shortPressAvailable != null) {
             store.put(ButtonCapabilities.shortPressAvailable, shortPressAvailable );
+        } else {
+        	store.remove(ButtonCapabilities.shortPressAvailable);
         }
     }
     /**
@@ -118,6 +122,8 @@ public class ButtonCapabilities extends RPCStruct {
     public void setLongPressAvailable( Boolean longPressAvailable ) {
         if (longPressAvailable != null) {
             store.put(ButtonCapabilities.longPressAvailable, longPressAvailable );
+        } else {
+        	store.remove(ButtonCapabilities.longPressAvailable);
         }
     }
     /**
@@ -134,6 +140,8 @@ public class ButtonCapabilities extends RPCStruct {
     public void setUpDownAvailable( Boolean upDownAvailable ) {
         if (upDownAvailable != null) {
             store.put(ButtonCapabilities.upDownAvailable, upDownAvailable );
+        } else {
+        	store.remove(ButtonCapabilities.upDownAvailable);
         }
     }
 }

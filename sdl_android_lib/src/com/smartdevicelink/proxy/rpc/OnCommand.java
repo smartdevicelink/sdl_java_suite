@@ -81,6 +81,8 @@ public class OnCommand extends RPCNotification {
     public void setCmdID( Integer cmdID ) {
         if (cmdID != null) {
             parameters.put(OnCommand.cmdID, cmdID );
+        } else {
+            parameters.remove(OnCommand.cmdID);
         }
     }
     /**
@@ -110,6 +112,8 @@ public class OnCommand extends RPCNotification {
     public void setTriggerSource( TriggerSource triggerSource ) {
         if (triggerSource != null) {
             parameters.put(OnCommand.triggerSource, triggerSource );
+        } else {
+            parameters.remove(OnCommand.triggerSource);
         }
     }
 }

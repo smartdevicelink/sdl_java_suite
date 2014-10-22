@@ -96,6 +96,8 @@ public class TextField extends RPCStruct {
     public void setName( TextFieldName name ) {
         if (name != null) {
             store.put(TextField.name, name );
+        } else {
+        	store.remove(TextField.name);
         }
     }
     /**
@@ -124,6 +126,8 @@ public class TextField extends RPCStruct {
     public void setCharacterSet( CharacterSet characterSet ) {
         if (characterSet != null) {
             store.put(TextField.characterSet, characterSet );
+        } else {
+        	store.remove(TextField.characterSet);
         }
     }
     /**
@@ -148,6 +152,8 @@ public class TextField extends RPCStruct {
     public void setWidth( Integer width ) {
         if (width != null) {
             store.put(TextField.width, width );
+        } else {
+        	store.remove(TextField.width);
         }
     }
     /**
@@ -164,6 +170,8 @@ public class TextField extends RPCStruct {
     public void setRows( Integer rows ) {
         if (rows != null) {
             store.put(TextField.rows, rows );
+        } else {
+        	store.remove(TextField.rows);
         }
     }
 }

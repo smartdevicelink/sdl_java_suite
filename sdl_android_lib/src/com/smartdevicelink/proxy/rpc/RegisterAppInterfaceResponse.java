@@ -90,6 +90,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
         if (sdlMsgVersion != null) {
             parameters.put(RegisterAppInterfaceResponse.sdlMsgVersion, sdlMsgVersion);
+        } else {
+            parameters.remove(RegisterAppInterfaceResponse.sdlMsgVersion);
         }
     }
 
@@ -127,6 +129,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setLanguage(Language language) {
         if (language != null) {
             parameters.put(RegisterAppInterfaceResponse.language, language);
+        } else {
+            parameters.remove(RegisterAppInterfaceResponse.language);
         }
     }
 
@@ -191,6 +195,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
         if (displayCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.displayCapabilities, displayCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.displayCapabilities);
         }
     }
 
@@ -224,6 +230,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         if (buttonCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.buttonCapabilities, buttonCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.buttonCapabilities);
         }
     }
     /**
@@ -256,6 +264,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         if (softButtonCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.softButtonCapabilities, softButtonCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.softButtonCapabilities);
         }
     }
 
@@ -280,6 +290,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
         if (presetBankCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.presetBankCapabilities, presetBankCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.presetBankCapabilities);
         }
     }
 	
@@ -322,6 +334,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
         if (hmiZoneCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.hmiZoneCapabilities, hmiZoneCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.hmiZoneCapabilities);
         }
     }
 	
@@ -364,6 +378,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
         if (speechCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.speechCapabilities, speechCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.speechCapabilities);
         }
     }
 
@@ -399,6 +415,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
         if (prerecordedSpeech != null) {
             parameters.put(RegisterAppInterfaceResponse.prerecordedSpeech, prerecordedSpeech);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.prerecordedSpeech);
         }
     }
  
@@ -442,6 +460,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
         if (vrCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.vrCapabilities, vrCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.vrCapabilities);
         }
     }
 	
@@ -466,6 +486,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setVehicleType(VehicleType vehicleType) {
         if (vehicleType != null) {
             parameters.put(RegisterAppInterfaceResponse.vehicleType, vehicleType);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.vehicleType);
         }
     }
 	
@@ -499,6 +521,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
         if (audioPassThruCapabilities != null) {
             parameters.put(RegisterAppInterfaceResponse.audioPassThruCapabilities, audioPassThruCapabilities);
+        } else {
+        	parameters.remove(RegisterAppInterfaceResponse.audioPassThruCapabilities);
         }
     }
     public String getProxyVersionInfo() {

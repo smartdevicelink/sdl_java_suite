@@ -66,6 +66,8 @@ public class TTSChunk extends RPCStruct {
     public void setText( String text ) {
         if (text != null) {
             store.put(TTSChunk.text, text );
+        } else {
+        	store.remove(TTSChunk.text);
         }
     }
     /**
@@ -94,6 +96,8 @@ public class TTSChunk extends RPCStruct {
     public void setType( SpeechCapabilities type ) {
         if (type != null) {
             store.put(TTSChunk.type, type );
+        } else {
+        	store.remove(TTSChunk.type);
         }
     }
 }

@@ -90,6 +90,8 @@ public class ResetGlobalProperties extends RPCRequest {
     public void setProperties( List<GlobalProperty> properties ) {
         if (properties != null) {
             parameters.put(ResetGlobalProperties.properties, properties );
+        } else {
+        	parameters.remove(ResetGlobalProperties.properties);
         }
     }
 }

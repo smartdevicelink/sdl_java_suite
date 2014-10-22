@@ -105,6 +105,8 @@ public class OnHMIStatus extends RPCNotification {
     public void setHmiLevel( HMILevel hmiLevel ) {
         if (hmiLevel != null) {
             parameters.put(OnHMIStatus.hmiLevel, hmiLevel );
+        } else {
+            parameters.remove(OnHMIStatus.hmiLevel);
         }
     }
     /**
@@ -133,6 +135,8 @@ public class OnHMIStatus extends RPCNotification {
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
         if (audioStreamingState != null) {
             parameters.put(OnHMIStatus.audioStreamingState, audioStreamingState );
+        } else {
+            parameters.remove(OnHMIStatus.audioStreamingState);
         }
     }
     /**
@@ -162,6 +166,8 @@ public class OnHMIStatus extends RPCNotification {
     public void setSystemContext( SystemContext systemContext ) {
         if (systemContext != null) {
             parameters.put(OnHMIStatus.systemContext, systemContext );
+        } else {
+            parameters.remove(OnHMIStatus.systemContext);
         }
     }
     /**

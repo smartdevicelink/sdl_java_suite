@@ -84,6 +84,8 @@ public class SetGlobalProperties extends RPCRequest {
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
         if (helpPrompt != null) {
             parameters.put(SetGlobalProperties.helpPrompt, helpPrompt);
+        } else {
+            parameters.remove(SetGlobalProperties.helpPrompt);
         }
     }
 	/**
@@ -121,6 +123,8 @@ public class SetGlobalProperties extends RPCRequest {
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
         if (timeoutPrompt != null) {
             parameters.put(SetGlobalProperties.timeoutPrompt, timeoutPrompt);
+        } else {
+            parameters.remove(SetGlobalProperties.timeoutPrompt);
         }
     }
 

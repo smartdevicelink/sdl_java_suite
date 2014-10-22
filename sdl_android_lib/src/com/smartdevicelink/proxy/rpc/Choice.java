@@ -83,6 +83,8 @@ public class Choice extends RPCStruct {
     public void setChoiceID(Integer choiceID) {
         if (choiceID != null) {
             store.put(Choice.choiceID, choiceID);
+        } else {
+        	store.remove(Choice.choiceID);
         }
     }
     /**
@@ -103,6 +105,8 @@ public class Choice extends RPCStruct {
     public void setMenuName(String menuName) {
         if (menuName != null) {
             store.put(Choice.menuName, menuName);
+        } else {
+        	store.remove(Choice.menuName);
         }
     }
     /**
@@ -130,6 +134,8 @@ public class Choice extends RPCStruct {
     public void setVrCommands(List<String> vrCommands) {
         if (vrCommands != null) {
             store.put(Choice.vrCommands, vrCommands);
+        } else {
+        	store.remove(Choice.vrCommands);
         }
     }
     /**

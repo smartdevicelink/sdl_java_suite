@@ -70,6 +70,8 @@ public class UnsubscribeButton extends RPCRequest {
     public void setButtonName( ButtonName buttonName ) {
         if (buttonName != null) {
             parameters.put(UnsubscribeButton.buttonName, buttonName );
+        } else {
+            parameters.remove(UnsubscribeButton.buttonName);
         }
     }
 }

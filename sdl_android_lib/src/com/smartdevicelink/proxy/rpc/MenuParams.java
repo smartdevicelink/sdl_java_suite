@@ -84,6 +84,8 @@ public class MenuParams extends RPCStruct {
     public void setParentID( Integer parentID ) {
         if (parentID != null) {
             store.put(MenuParams.parentID, parentID );
+        } else {
+        	store.remove(MenuParams.parentID);
         }
     }
     /**
@@ -114,6 +116,8 @@ public class MenuParams extends RPCStruct {
     public void setPosition( Integer position ) {
         if (position != null) {
             store.put(MenuParams.position, position );
+        } else {
+        	store.remove(MenuParams.position);
         }
     }
     /**
@@ -140,6 +144,8 @@ public class MenuParams extends RPCStruct {
     public void setMenuName( String menuName ) {
         if (menuName != null) {
             store.put(MenuParams.menuName, menuName );
+        } else {
+        	store.remove(MenuParams.menuName);
         }
     }
 }

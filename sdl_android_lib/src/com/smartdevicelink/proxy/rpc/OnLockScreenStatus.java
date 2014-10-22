@@ -9,24 +9,22 @@ public class OnLockScreenStatus extends RPCNotification {
 	public static final String driverDistraction = "driverDistraction";
 	public static final String showLockScreen = "showLockScreen";
 	public static final String userSelected = "userSelected";
-	public static final String notSet = "notSet";
 
 	public OnLockScreenStatus() {
 		super("OnLockScreenStatus");
 	}
 	
-	public String getDriverDistractionStatus() {
-		return (String)parameters.get(OnLockScreenStatus.driverDistraction);
+	public Boolean getDriverDistractionStatus() {
+		return (Boolean)parameters.get(OnLockScreenStatus.driverDistraction);
 	}
 	
 	public void setDriverDistractionStatus(Boolean driverDistractionStatus) {
 		
-		if (driverDistractionStatus == null){
-			parameters.put(OnLockScreenStatus.driverDistraction, OnLockScreenStatus.notSet);
-		}
-		else{
-			parameters.put(OnLockScreenStatus.driverDistraction, driverDistractionStatus.toString());
-		}
+		if (driverDistractionStatus != null){
+			parameters.put(OnLockScreenStatus.driverDistraction, driverDistractionStatus);
+		} else {
+	        parameters.remove(OnLockScreenStatus.driverDistraction);
+	    }
 	}	
 	
 	public LockScreenStatus getShowLockScreen() {
@@ -36,7 +34,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	public void setShowLockScreen(LockScreenStatus showLockScreen) {
 		if (showLockScreen != null) {
 			parameters.put(OnLockScreenStatus.showLockScreen, showLockScreen );
-        } else if (parameters.contains(OnLockScreenStatus.showLockScreen)) {
+        } else {
         	parameters.remove(OnLockScreenStatus.showLockScreen);
         }
 	}
@@ -48,7 +46,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	public void setUserSelected(Boolean userSelected) {
 		if (userSelected != null) {
 			parameters.put(OnLockScreenStatus.userSelected, userSelected );
-        } else if (parameters.contains(OnLockScreenStatus.userSelected)) {
+        } else {
         	parameters.remove(OnLockScreenStatus.userSelected);
         }
 	}		
@@ -60,7 +58,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	public void setHMILevel(HMILevel setHMILevel) {
 		if (setHMILevel != null) {
 			parameters.put(OnHMIStatus.hmiLevel, setHMILevel );
-        } else if (parameters.contains(OnHMIStatus.hmiLevel)) {
+        } else {
         	parameters.remove(OnHMIStatus.hmiLevel);
         }
 	}				

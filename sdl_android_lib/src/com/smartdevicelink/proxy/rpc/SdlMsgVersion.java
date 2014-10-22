@@ -76,6 +76,8 @@ public class SdlMsgVersion extends RPCStruct {
     public void setMajorVersion( Integer majorVersion ) {
         if (majorVersion != null) {
             store.put(SdlMsgVersion.majorVersion, majorVersion );
+        } else {
+        	store.remove(SdlMsgVersion.majorVersion);
         }
     }
     /**
@@ -100,6 +102,8 @@ public class SdlMsgVersion extends RPCStruct {
     public void setMinorVersion( Integer minorVersion ) {
         if (minorVersion != null) {
             store.put(SdlMsgVersion.minorVersion, minorVersion );
+        } else {
+        	store.remove(SdlMsgVersion.minorVersion);
         }
     }
 }

@@ -59,6 +59,8 @@ public class CreateInteractionChoiceSet extends RPCRequest {
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
         if (interactionChoiceSetID != null) {
             parameters.put(CreateInteractionChoiceSet.interactionChoiceSetID, interactionChoiceSetID );
+        } else {
+        	parameters.remove(CreateInteractionChoiceSet.interactionChoiceSetID);
         }
     }
 	/**
@@ -97,6 +99,8 @@ public class CreateInteractionChoiceSet extends RPCRequest {
     public void setChoiceSet( List<Choice> choiceSet ) {
         if (choiceSet != null) {
             parameters.put(CreateInteractionChoiceSet.choiceSet, choiceSet );
+        } else {
+        	parameters.remove(CreateInteractionChoiceSet.choiceSet);
         }
     }
 }

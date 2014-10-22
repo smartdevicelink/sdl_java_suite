@@ -49,6 +49,8 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
         if (displayCapabilities != null) {
             parameters.put(SetDisplayLayoutResponse.displayCapabilities, displayCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.displayCapabilities);
         }
     }
 
@@ -74,6 +76,8 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
         if (buttonCapabilities != null) {
             parameters.put(SetDisplayLayoutResponse.buttonCapabilities, buttonCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.buttonCapabilities);
         }
     }
 
@@ -99,6 +103,8 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
         if (softButtonCapabilities != null) {
             parameters.put(SetDisplayLayoutResponse.softButtonCapabilities, softButtonCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.softButtonCapabilities);
         }
     }
 
@@ -115,6 +121,8 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
         if (presetBankCapabilities != null) {
             parameters.put(SetDisplayLayoutResponse.presetBankCapabilities, presetBankCapabilities);
+        } else {
+            parameters.remove(SetDisplayLayoutResponse.presetBankCapabilities);
         }
     }
     

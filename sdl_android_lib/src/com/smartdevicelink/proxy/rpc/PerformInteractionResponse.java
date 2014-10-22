@@ -48,6 +48,8 @@ public class PerformInteractionResponse extends RPCResponse {
     public void setChoiceID( Integer choiceID ) {
         if (choiceID != null) {
             parameters.put(PerformInteractionResponse.choiceID, choiceID );
+        } else {
+            parameters.remove(PerformInteractionResponse.choiceID);
         }
     }
     /**
@@ -77,6 +79,8 @@ public class PerformInteractionResponse extends RPCResponse {
     public void setTriggerSource( TriggerSource triggerSource ) {
         if (triggerSource != null) {
             parameters.put(PerformInteractionResponse.triggerSource, triggerSource );
+        } else {
+            parameters.remove(PerformInteractionResponse.triggerSource);
         }
     }
     

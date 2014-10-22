@@ -80,6 +80,8 @@ public class OnDriverDistraction  extends RPCNotification {
     public void setState( DriverDistractionState state ) {
         if (state != null) {
             parameters.put(OnDriverDistraction.state, state );
+        } else {
+            parameters.remove(OnDriverDistraction.state);
         }
     }  
 }

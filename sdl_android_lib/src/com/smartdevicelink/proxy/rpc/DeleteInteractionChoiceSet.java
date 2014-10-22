@@ -55,6 +55,8 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
         if (interactionChoiceSetID != null) {
             parameters.put(DeleteInteractionChoiceSet.interactionChoiceSetID, interactionChoiceSetID );
+        } else {
+            parameters.remove(DeleteInteractionChoiceSet.interactionChoiceSetID);
         }
     }
 }

@@ -145,7 +145,9 @@ public class OnSdlChoiceChosen extends RPCNotification {
     public void setSdlChoice(SdlChoice sdlChoice) {
     	if (sdlChoice != null) {
     		parameters.put(OnSdlChoiceChosen.sdlChoice, sdlChoice);
-    	}
+    	} else {
+            parameters.remove(OnSdlChoiceChosen.sdlChoice);
+        }
     }
     public TriggerSource getTriggerSource() {
         Object obj = parameters.get(OnSdlChoiceChosen.triggerSource);
@@ -165,6 +167,8 @@ public class OnSdlChoiceChosen extends RPCNotification {
     public void setTriggerSource( TriggerSource triggerSource ) {
         if (triggerSource != null) {
             parameters.put(OnSdlChoiceChosen.triggerSource, triggerSource );
+        } else {
+        	parameters.remove(OnSdlChoiceChosen.triggerSource);
         }
     }
 }

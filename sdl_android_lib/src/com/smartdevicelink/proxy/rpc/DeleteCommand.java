@@ -59,6 +59,8 @@ public class DeleteCommand extends RPCRequest {
     public void setCmdID( Integer cmdID ) {
         if (cmdID != null) {
             parameters.put(DeleteCommand.cmdID, cmdID );
+        } else {
+            parameters.remove(DeleteCommand.cmdID);
         }
     }
 }
