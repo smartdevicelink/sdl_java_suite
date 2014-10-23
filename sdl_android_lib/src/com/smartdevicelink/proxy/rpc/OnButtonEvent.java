@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.util.DebugTool;
@@ -84,11 +84,14 @@ import com.smartdevicelink.util.DebugTool;
  * 
  */
 public class OnButtonEvent extends RPCNotification {
+	public static final String KEY_BUTTON_EVENT_MODE = "buttonEventMode";
+	public static final String KEY_BUTTON_NAME = "buttonName";
+	public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
 	/**
 	*Constructs a newly allocated OnButtonEvent object
 	*/
     public OnButtonEvent() {
-        super("OnButtonEvent");
+        super(FunctionID.ON_BUTTON_EVENT);
     }
     /**
 	 * <p>
@@ -107,7 +110,7 @@ public class OnButtonEvent extends RPCNotification {
      * @return ButtonName Name of the button
      */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(Names.buttonName);
+        Object obj = parameters.get(KEY_BUTTON_NAME);
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
@@ -115,7 +118,7 @@ public class OnButtonEvent extends RPCNotification {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.buttonName, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
             }
             return theCode;
         }
@@ -127,9 +130,9 @@ public class OnButtonEvent extends RPCNotification {
      */    
     public void setButtonName(ButtonName buttonName) {
         if (buttonName != null) {
-            parameters.put(Names.buttonName, buttonName);
+            parameters.put(KEY_BUTTON_NAME, buttonName);
         } else {
-        	parameters.remove(Names.buttonName);
+        	parameters.remove(KEY_BUTTON_NAME);
         }
     }
     /**
@@ -137,7 +140,7 @@ public class OnButtonEvent extends RPCNotification {
      * @return ButtonEventMode the button depressed or released
      */    
     public ButtonEventMode getButtonEventMode() {
-        Object obj = parameters.get(Names.buttonEventMode);
+        Object obj = parameters.get(KEY_BUTTON_EVENT_MODE);
         if (obj instanceof ButtonEventMode) {
             return (ButtonEventMode) obj;
         } else if (obj instanceof String) {
@@ -145,7 +148,7 @@ public class OnButtonEvent extends RPCNotification {
             try {
                 theCode = ButtonEventMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.buttonEventMode, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_EVENT_MODE, e);
             }
             return theCode;
         }
@@ -158,19 +161,19 @@ public class OnButtonEvent extends RPCNotification {
      */    
     public void setButtonEventMode(ButtonEventMode buttonEventMode) {
         if (buttonEventMode != null) {
-            parameters.put(Names.buttonEventMode, buttonEventMode);
+            parameters.put(KEY_BUTTON_EVENT_MODE, buttonEventMode);
         } else {
-    		parameters.remove(Names.buttonEventMode);
+    		parameters.remove(KEY_BUTTON_EVENT_MODE);
     	}
     }
     public void setCustomButtonID(Integer customButtonID) {
     	if (customButtonID != null) {
-    		parameters.put(Names.customButtonID, customButtonID);
+    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
     	} else {
-    		parameters.remove(Names.customButtonID);
+    		parameters.remove(KEY_CUSTOM_BUTTON_ID);
     	}
     }
     public Integer getCustomButtonID() {
-    	return (Integer) parameters.get(Names.customButtonID);
+    	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);
     }
 }

@@ -1,8 +1,6 @@
 package com.smartdevicelink.proxy.constants;
 
-import java.lang.reflect.Field;
-import java.util.Hashtable;
-
+@Deprecated
 public class Names {
 	public static final String request = "request";
 	public static final String response = "response";
@@ -505,27 +503,4 @@ public class Names {
 	public static final String InstanceFollowRedirects = "InstanceFollowRedirects";
 	public static final String charset = "charset";
 	public static final String ContentLength = "Content-Length";
-	
-		
-               
-    public static final Hashtable<String, Object> getNamesList()
-    {
-		Hashtable <String, Object> returnHash = new Hashtable<String, Object>();
-    	for (Field field : Names.class.getDeclaredFields())
-		{
-			String sName = field.getName();
-			try {
-				Object oValue = field.get(sName);
-				returnHash.put(sName, oValue);
-				
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-		}
-    	return returnHash;
-    }
 }

@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.util.DebugTool;
 
@@ -9,9 +9,11 @@ import java.util.Hashtable;
 
 
 public class OnKeyboardInput extends RPCNotification {
+	public static final String KEY_DATA = "data";
+	public static final String KEY_EVENT = "event";
 
     public OnKeyboardInput() {
-        super("OnKeyboardInput");
+        super(FunctionID.ON_KEYBOARD_INPUT);
     }
 
     public OnKeyboardInput(Hashtable<String, Object> hash) {
@@ -19,7 +21,7 @@ public class OnKeyboardInput extends RPCNotification {
     }
 
     public KeyboardEvent getEvent() {
-        Object obj = parameters.get(Names.event);
+        Object obj = parameters.get(KEY_EVENT);
         if (obj instanceof KeyboardEvent) {
             return (KeyboardEvent) obj;
         } else if (obj instanceof String) {
@@ -27,7 +29,7 @@ public class OnKeyboardInput extends RPCNotification {
             try {
                 theCode = KeyboardEvent.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.event, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EVENT, e);
             }
             return theCode;
         }
@@ -36,21 +38,21 @@ public class OnKeyboardInput extends RPCNotification {
 
     public void setEvent(KeyboardEvent event) {
         if (event != null) {
-            parameters.put(Names.event, event);
+            parameters.put(KEY_EVENT, event);
         } else {
-            parameters.remove(Names.event);
+            parameters.remove(KEY_EVENT);
         }
     }
 
     public void setData(String data) {
         if (data != null) {
-            parameters.put(Names.data, data);
+            parameters.put(KEY_DATA, data);
         } else {
-            parameters.remove(Names.data);
+            parameters.remove(KEY_DATA);
         }
     }
     public String getData() {
-        Object obj = parameters.get(Names.data);
+        Object obj = parameters.get(KEY_DATA);
         if (obj instanceof String) {
             return (String) obj;
         }

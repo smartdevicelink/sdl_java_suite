@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
@@ -41,6 +40,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 1.0
  */
 public class SdlMsgVersion extends RPCStruct {
+	public static final String KEY_MAJOR_VERSION = "majorVersion";
+	public static final String KEY_MINOR_VERSION = "minorVersion";
 
 	/**
 	 * Constructs a newly allocated SdlMsgVersion object
@@ -62,7 +63,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the major version
      */	
     public Integer getMajorVersion() {
-        return (Integer) store.get( Names.majorVersion );
+        return (Integer) store.get( KEY_MAJOR_VERSION );
     }
     /**
      * Set major version
@@ -74,7 +75,9 @@ public class SdlMsgVersion extends RPCStruct {
      */    
     public void setMajorVersion( Integer majorVersion ) {
         if (majorVersion != null) {
-            store.put(Names.majorVersion, majorVersion );
+            store.put(KEY_MAJOR_VERSION, majorVersion );
+        } else {
+        	store.remove(KEY_MAJOR_VERSION);
         }
     }
     /**
@@ -86,7 +89,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the minor version
      */    
     public Integer getMinorVersion() {
-        return (Integer) store.get( Names.minorVersion );
+        return (Integer) store.get( KEY_MINOR_VERSION );
     }
     /**
      * Set minor version
@@ -98,7 +101,9 @@ public class SdlMsgVersion extends RPCStruct {
      */
     public void setMinorVersion( Integer minorVersion ) {
         if (minorVersion != null) {
-            store.put(Names.minorVersion, minorVersion );
+            store.put(KEY_MINOR_VERSION, minorVersion );
+        } else {
+        	store.remove(KEY_MINOR_VERSION);
         }
     }
 }

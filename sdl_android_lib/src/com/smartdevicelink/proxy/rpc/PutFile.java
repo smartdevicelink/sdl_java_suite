@@ -2,8 +2,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
+import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -17,12 +18,19 @@ import com.smartdevicelink.util.DebugTool;
  * @see ListFiles
  */
 public class PutFile extends RPCRequest {
+	public static final String KEY_PERSISTENT_FILE = "persistentFile";
+    public static final String KEY_SYSTEM_FILE = "systemFile";
+    public static final String KEY_FILE_TYPE = "fileType";
+    public static final String KEY_SDL_FILE_NAME = "syncFileName";
+    public static final String KEY_OFFSET = "offset";
+    public static final String KEY_LENGTH = "length";
+    
 
 	/**
 	 * Constructs a new PutFile object
 	 */
     public PutFile() {
-        super("PutFile");
+        super(FunctionID.PUT_FILE);
     }
 
 	/**
@@ -46,9 +54,9 @@ public class PutFile extends RPCRequest {
 	 */
     public void setSdlFileName(String sdlFileName) {
         if (sdlFileName != null) {
-            parameters.put(Names.smartDeviceLinkFileName, sdlFileName);
+            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
         } else {
-        	parameters.remove(Names.smartDeviceLinkFileName);
+        	parameters.remove(KEY_SDL_FILE_NAME);
         }
     }
 
@@ -58,7 +66,7 @@ public class PutFile extends RPCRequest {
 	 * @return String - a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(Names.smartDeviceLinkFileName);
+        return (String) parameters.get(KEY_SDL_FILE_NAME);
     }
 
 	/**
@@ -69,9 +77,9 @@ public class PutFile extends RPCRequest {
 	 */
     public void setFileType(FileType fileType) {
         if (fileType != null) {
-            parameters.put(Names.fileType, fileType);
+            parameters.put(KEY_FILE_TYPE, fileType);
         } else {
-        	parameters.remove(Names.fileType);
+        	parameters.remove(KEY_FILE_TYPE);
         }
     }
 
@@ -81,7 +89,7 @@ public class PutFile extends RPCRequest {
 	 * @return FileType -a FileType value representing a selected file type
 	 */
     public FileType getFileType() {
-        Object obj = parameters.get(Names.fileType);
+        Object obj = parameters.get(KEY_FILE_TYPE);
         if (obj instanceof FileType) {
             return (FileType) obj;
         } else if (obj instanceof String) {
@@ -89,7 +97,7 @@ public class PutFile extends RPCRequest {
             try {
                 theCode = FileType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.fileType, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FILE_TYPE, e);
             }
             return theCode;
         }
@@ -111,9 +119,9 @@ public class PutFile extends RPCRequest {
 	 */
     public void setPersistentFile(Boolean persistentFile) {
         if (persistentFile != null) {
-            parameters.put(Names.persistentFile, persistentFile);
+            parameters.put(KEY_PERSISTENT_FILE, persistentFile);
         } else {
-        	parameters.remove(Names.persistentFile);
+        	parameters.remove(KEY_PERSISTENT_FILE);
         }
     }
 
@@ -125,29 +133,29 @@ public class PutFile extends RPCRequest {
 	 *         persist between sessions / ignition cycles
 	 */
     public Boolean getPersistentFile() {
-        return (Boolean) parameters.get(Names.persistentFile);
+        return (Boolean) parameters.get(KEY_PERSISTENT_FILE);
     }
     public void setFileData(byte[] fileData) {
         if (fileData != null) {
-            parameters.put(Names.bulkData, fileData);
+            parameters.put(RPCStruct.KEY_BULK_DATA, fileData);
         } else {
-        	parameters.remove(Names.bulkData);
+        	parameters.remove(RPCStruct.KEY_BULK_DATA);
         }
     }
     public byte[] getFileData() {
-        return (byte[]) parameters.get(Names.bulkData);
+        return (byte[]) parameters.get(RPCStruct.KEY_BULK_DATA);
     }
     
     public void setOffset(Integer offset) {
         if (offset != null) {
-            parameters.put(Names.offset, offset);
+            parameters.put(KEY_OFFSET, offset);
         } else {
-            parameters.remove(Names.offset);
+            parameters.remove(KEY_OFFSET);
         }
     }
 
     public Integer getOffset() {
-        final Object o = parameters.get(Names.offset);
+        final Object o = parameters.get(KEY_OFFSET);
         if (o instanceof Integer) {
             return (Integer) o;
         }
@@ -157,14 +165,14 @@ public class PutFile extends RPCRequest {
 
     public void setLength(Integer length) {
         if (length != null) {
-            parameters.put(Names.length, length);
+            parameters.put(KEY_LENGTH, length);
         } else {
-            parameters.remove(Names.length);
+            parameters.remove(KEY_LENGTH);
         }
     }
 
     public Integer getLength() {
-        final Object o = parameters.get(Names.length);
+        final Object o = parameters.get(KEY_LENGTH);
         if (o instanceof Integer) {
             return (Integer) o;
         }
@@ -174,14 +182,14 @@ public class PutFile extends RPCRequest {
 
     public void setSystemFile(Boolean systemFile) {
         if (systemFile != null) {
-            parameters.put(Names.systemFile, systemFile);
+            parameters.put(KEY_SYSTEM_FILE, systemFile);
         } else {
-            parameters.remove(Names.systemFile);
+            parameters.remove(KEY_SYSTEM_FILE);
         }
     }
 
     public Boolean getSystemFile() {
-        final Object o = parameters.get(Names.systemFile);
+        final Object o = parameters.get(KEY_SYSTEM_FILE);
         if (o instanceof Boolean) {
             return (Boolean) o;
         }

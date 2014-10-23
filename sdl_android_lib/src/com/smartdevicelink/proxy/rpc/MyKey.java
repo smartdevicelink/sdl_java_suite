@@ -3,11 +3,11 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class MyKey extends RPCStruct {
+    public static final String KEY_E_911_OVERRIDE = "e911Override";
 
     public MyKey() { }
     public MyKey(Hashtable<String, Object> hash) {
@@ -16,13 +16,13 @@ public class MyKey extends RPCStruct {
 
     public void setE911Override(VehicleDataStatus e911Override) {
         if (e911Override != null) {
-            store.put(Names.e911Override, e911Override);
+            store.put(KEY_E_911_OVERRIDE, e911Override);
         } else {
-        	store.remove(Names.e911Override);
+        	store.remove(KEY_E_911_OVERRIDE);
         }
     }
     public VehicleDataStatus getE911Override() {
-        Object obj = store.get(Names.e911Override);
+        Object obj = store.get(KEY_E_911_OVERRIDE);
         if (obj instanceof VehicleDataStatus) {
             return (VehicleDataStatus) obj;
         } else if (obj instanceof String) {
@@ -30,7 +30,7 @@ public class MyKey extends RPCStruct {
             try {
                 theCode = VehicleDataStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.e911Override, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_911_OVERRIDE, e);
             }
             return theCode;
         }

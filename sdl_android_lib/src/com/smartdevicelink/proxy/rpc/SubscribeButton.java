@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.util.DebugTool;
 /**
@@ -57,12 +57,13 @@ import com.smartdevicelink.util.DebugTool;
  * @see UnsubscribeButton
  */
 public class SubscribeButton extends RPCRequest {
+	public static final String KEY_BUTTON_NAME = "buttonName";
 
 	/**
 	 * Constructs a new SubscribeButton object
 	 */
     public SubscribeButton() {
-        super("SubscribeButton");
+        super(FunctionID.SUBSCRIBE_BUTTON);
     }
 	/**
 	 * Constructs a new SubscribeButton object indicated by the Hashtable
@@ -80,7 +81,7 @@ public class SubscribeButton extends RPCRequest {
 	 * @return ButtonName -an enum value, see <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(Names.buttonName);
+        Object obj = parameters.get(KEY_BUTTON_NAME);
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
@@ -88,7 +89,7 @@ public class SubscribeButton extends RPCRequest {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.buttonName, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
             }
             return theCode;
         }
@@ -100,7 +101,9 @@ public class SubscribeButton extends RPCRequest {
 	 */    
     public void setButtonName( ButtonName buttonName ) {
         if (buttonName != null) {
-            parameters.put(Names.buttonName, buttonName );
+            parameters.put(KEY_BUTTON_NAME, buttonName );
+        } else {
+            parameters.remove(KEY_BUTTON_NAME);
         }
     }
 }

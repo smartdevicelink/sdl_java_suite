@@ -1,12 +1,70 @@
 package com.smartdevicelink.protocol.enums;
 
-import com.smartdevicelink.proxy.constants.Names;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class FunctionID {
     private static Map<String, Integer> functionIDMap = null;
+    public static final String SYNC_P_DATA = "SyncPData";
+	public static final String SHOW_CONSTANT_TBT = "ShowConstantTBT";
+	public static final String ALERT_MANEUVER = "AlertManeuver";
+	public static final String UPDATE_TURN_LIST = "UpdateTurnList";
+	public static final String ON_SYNC_P_DATA = "OnSyncPData";
+	public static final String REGISTER_APP_INTERFACE = "RegisterAppInterface";
+	public static final String UNREGISTER_APP_INTERFACE = "UnregisterAppInterface";
+	public static final String ALERT = "Alert";
+	public static final String SHOW = "Show";
+	public static final String SPEAK = "Speak";
+	public static final String ADD_COMMAND = "AddCommand";
+	public static final String DELETE_COMMAND = "DeleteCommand";
+	public static final String ADD_SUB_MENU = "AddSubMenu";
+	public static final String DELETE_SUB_MENU = "DeleteSubMenu";
+	public static final String CREATE_INTERACTION_CHOICE_SET = "CreateInteractionChoiceSet";
+	public static final String DELETE_INTERACTION_CHOICE_SET = "DeleteInteractionChoiceSet";
+	public static final String PERFORM_INTERACTION = "PerformInteraction";
+	public static final String ENCODED_SYNC_P_DATA = "EncodedSyncPData";
+	public static final String SUBSCRIBE_BUTTON = "SubscribeButton";
+	public static final String UNSUBSCRIBE_BUTTON = "UnsubscribeButton";
+	public static final String SUBSCRIBE_VEHICLE_DATA = "SubscribeVehicleData";
+	public static final String UNSUBSCRIBE_VEHICLE_DATA = "UnsubscribeVehicleData";
+	public static final String SET_MEDIA_CLOCK_TIMER = "SetMediaClockTimer";
+	public static final String SET_GLOBAL_PROPERTIES = "SetGlobalProperties";
+	public static final String GENERIC_RESPONSE = "GenericResponse";
+	public static final String SCROLLABLE_MESSAGE = "ScrollableMessage";
+	public static final String GET_DTCS = "GetDTCs";
+	public static final String DIAGNOSTIC_MESSAGE = "DiagnosticMessage";
+	public static final String SYSTEM_REQUEST = "SystemRequest";
+	public static final String READ_DID = "ReadDID";
+	public static final String ON_VEHICLE_DATA = "OnVehicleData";
+	public static final String PUT_FILE = "PutFile";
+	public static final String DELETE_FILE = "DeleteFile";
+	public static final String LIST_FILES = "ListFiles";
+	public static final String GET_VEHICLE_DATA = "GetVehicleData";
+	public static final String RESET_GLOBAL_PROPERTIES = "ResetGlobalProperties";
+	public static final String SET_APP_ICON = "SetAppIcon";
+	public static final String CHANGE_REGISTRATION = "ChangeRegistration";
+	public static final String CHANGE_LANGUAGE_REGISTRATION = "ChangeLanguageRegistration";
+	public static final String SET_DISPLAY_LAYOUT = "SetDisplayLayout";
+	public static final String ON_LANGUAGE_CHANGE = "OnLanguageChange";
+	public static final String PERFORM_AUDIO_PASS_THRU = "PerformAudioPassThru";
+	public static final String END_AUDIO_PASS_THRU = "EndAudioPassThru";
+	public static final String ON_AUDIO_PASS_THRU = "OnAudioPassThru";
+	public static final String ON_COMMAND = "OnCommand";
+	public static final String ON_BUTTON_PRESS = "OnButtonPress";
+	public static final String ON_BUTTON_EVENT = "OnButtonEvent";
+	public static final String ON_HMI_STATUS = "OnHMIStatus";
+	public static final String ON_TBT_CLIENT_STATE = "OnTBTClientState";
+	public static final String ON_ENCODED_SYNC_P_DATA = "OnEncodedSyncPData";
+	public static final String ON_DRIVER_DISTRACTION = "OnDriverDistraction";
+	public static final String ON_APP_INTERFACE_UNREGISTERED = "OnAppInterfaceUnregistered";
+	public static final String ON_KEYBOARD_INPUT = "OnKeyboardInput";
+	public static final String ON_TOUCH_EVENT = "OnTouchEvent";
+	public static final String ON_SYSTEM_REQUEST = "OnSystemRequest";
+	public static final String ON_HASH_CHANGE = "OnHashChange";
+	public static final String ON_PERMISSIONS_CHANGE = "OnPermissionsChange";
+	public static final String SLIDER = "Slider";
+	public static final String ON_LOCK_SCREEN_STATUS = "OnLockScreenStatus";
+	public static final String ON_SDL_CHOICE_CHOSEN = "OnSdlChoiceChosen";
 
     public FunctionID() {
     }
@@ -46,81 +104,81 @@ public class FunctionID {
                 Base Request / Response RPCs
                 Range = 0x 0000 0001 - 0x 0000 7FFF
              */
-            put(Names.RegisterAppInterface, 1);
-            put(Names.UnregisterAppInterface, 2);
-            put(Names.SetGlobalProperties, 3);
-            put(Names.ResetGlobalProperties, 4);
-            put(Names.AddCommand, 5);
-            put(Names.DeleteCommand, 6);
-            put(Names.AddSubMenu, 7);
-            put(Names.DeleteSubMenu, 8);
-            put(Names.CreateInteractionChoiceSet, 9);
-            put(Names.PerformInteraction, 10);
-            put(Names.DeleteInteractionChoiceSet, 11);
-            put(Names.Alert, 12);
-            put(Names.Show, 13);
-            put(Names.Speak, 14);
-            put(Names.SetMediaClockTimer, 15);
-            put(Names.PerformAudioPassThru, 16);
-            put(Names.EndAudioPassThru, 17);
-            put(Names.SubscribeButton, 18);
-            put(Names.UnsubscribeButton, 19);
-            put(Names.SubscribeVehicleData, 20);
-            put(Names.UnsubscribeVehicleData, 21);
-            put(Names.GetVehicleData, 22);
-            put(Names.ReadDID, 23);
-            put(Names.GetDTCs, 24);
-            put(Names.ScrollableMessage, 25);
-            put(Names.Slider, 26);
-            put(Names.ShowConstantTBT, 27);
-            put(Names.AlertManeuver, 28);
-            put(Names.UpdateTurnList, 29);
-            put(Names.ChangeRegistration, 30);
-            put(Names.GenericResponse, 31);
-            put(Names.PutFile, 32);
-            put(Names.DeleteFile, 33);
-            put(Names.ListFiles, 34);
-            put(Names.SetAppIcon, 35);
-            put(Names.SetDisplayLayout, 36);
-            put(Names.DiagnosticMessage, 37);
-            put(Names.SystemRequest, 38);
+            put(FunctionID.REGISTER_APP_INTERFACE, 1);
+            put(FunctionID.UNREGISTER_APP_INTERFACE, 2);
+            put(FunctionID.SET_GLOBAL_PROPERTIES, 3);
+            put(FunctionID.RESET_GLOBAL_PROPERTIES, 4);
+            put(FunctionID.ADD_COMMAND, 5);
+            put(FunctionID.DELETE_COMMAND, 6);
+            put(FunctionID.ADD_SUB_MENU, 7);
+            put(FunctionID.DELETE_SUB_MENU, 8);
+            put(FunctionID.CREATE_INTERACTION_CHOICE_SET, 9);
+            put(FunctionID.PERFORM_INTERACTION, 10);
+            put(FunctionID.DELETE_INTERACTION_CHOICE_SET, 11);
+            put(FunctionID.ALERT, 12);
+            put(FunctionID.SHOW, 13);
+            put(FunctionID.SPEAK, 14);
+            put(FunctionID.SET_MEDIA_CLOCK_TIMER, 15);
+            put(FunctionID.PERFORM_AUDIO_PASS_THRU, 16);
+            put(FunctionID.END_AUDIO_PASS_THRU, 17);
+            put(FunctionID.SUBSCRIBE_BUTTON, 18);
+            put(FunctionID.UNSUBSCRIBE_BUTTON, 19);
+            put(FunctionID.SUBSCRIBE_VEHICLE_DATA, 20);
+            put(FunctionID.UNSUBSCRIBE_VEHICLE_DATA, 21);
+            put(FunctionID.GET_VEHICLE_DATA, 22);
+            put(FunctionID.READ_DID, 23);
+            put(FunctionID.GET_DTCS, 24);
+            put(FunctionID.SCROLLABLE_MESSAGE, 25);
+            put(FunctionID.SLIDER, 26);
+            put(FunctionID.SHOW_CONSTANT_TBT, 27);
+            put(FunctionID.ALERT_MANEUVER, 28);
+            put(FunctionID.UPDATE_TURN_LIST, 29);
+            put(FunctionID.CHANGE_REGISTRATION, 30);
+            put(FunctionID.GENERIC_RESPONSE, 31);
+            put(FunctionID.PUT_FILE, 32);
+            put(FunctionID.DELETE_FILE, 33);
+            put(FunctionID.LIST_FILES, 34);
+            put(FunctionID.SET_APP_ICON, 35);
+            put(FunctionID.SET_DISPLAY_LAYOUT, 36);
+            put(FunctionID.DIAGNOSTIC_MESSAGE, 37);
+            put(FunctionID.SYSTEM_REQUEST, 38);
 
             /*
                 Base Notifications
                 Range = 0x 0000 8000 - 0x 0000 FFFF
              */
-            put(Names.OnHMIStatus, 32768);
-            put(Names.OnAppInterfaceUnregistered, 32769);
-            put(Names.OnButtonEvent, 32770);
-            put(Names.OnButtonPress, 32771);
-            put(Names.OnVehicleData, 32772);
-            put(Names.OnCommand, 32773);
-            put(Names.OnTBTClientState, 32774);
-            put(Names.OnDriverDistraction, 32775);
-            put(Names.OnPermissionsChange, 32776);
-            put(Names.OnAudioPassThru, 32777);
-            put(Names.OnLanguageChange, 32778);
-            put(Names.OnSystemRequest, 32781);
-            put(Names.OnHashChange, 32782);
+            put(FunctionID.ON_HMI_STATUS, 32768);
+            put(FunctionID.ON_APP_INTERFACE_UNREGISTERED, 32769);
+            put(FunctionID.ON_BUTTON_EVENT, 32770);
+            put(FunctionID.ON_BUTTON_PRESS, 32771);
+            put(FunctionID.ON_VEHICLE_DATA, 32772);
+            put(FunctionID.ON_COMMAND, 32773);
+            put(FunctionID.ON_TBT_CLIENT_STATE, 32774);
+            put(FunctionID.ON_DRIVER_DISTRACTION, 32775);
+            put(FunctionID.ON_PERMISSIONS_CHANGE, 32776);
+            put(FunctionID.ON_AUDIO_PASS_THRU, 32777);
+            put(FunctionID.ON_LANGUAGE_CHANGE, 32778);
+            put(FunctionID.ON_SYSTEM_REQUEST, 32781);
+            put(FunctionID.ON_HASH_CHANGE, 32782);
 
             /*
                 Ford Specific Request / Response RPCs
                 Range = 0x 0001 0000 - 0x 0001 7FFF
              */
-            put(Names.EncodedSyncPData, 65536);
-            put(Names.SyncPData, 65537);
+            put(FunctionID.ENCODED_SYNC_P_DATA, 65536);
+            put(FunctionID.SYNC_P_DATA, 65537);
 
             /*
                 Ford Specific Notifications
                 Range = 0x 0001 8000 - 0x 0001 FFFF
              */
-            put(Names.OnEncodedSyncPData, 98304);
-            put(Names.OnSyncPData, 98305);
+            put(FunctionID.ON_ENCODED_SYNC_P_DATA, 98304);
+            put(FunctionID.ON_SYNC_P_DATA, 98305);
 
             // OnKeyboardInput
-            put(Names.OnKeyboardInput, 32779);
+            put(FunctionID.ON_KEYBOARD_INPUT, 32779);
             // OnTouchEvent
-            put(Names.OnTouchEvent, 32780);
+            put(FunctionID.ON_TOUCH_EVENT, 32780);
         }};
     }
 }

@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -15,7 +16,7 @@ public class ChangeRegistrationResponse extends RPCResponse {
 	 * Constructs a new ChangeRegistrationResponse object
 	 */
     public ChangeRegistrationResponse() {
-        super("ChangeLanguageRegistration");
+        super(FunctionID.CHANGE_LANGUAGE_REGISTRATION);
     }
 
 	/**

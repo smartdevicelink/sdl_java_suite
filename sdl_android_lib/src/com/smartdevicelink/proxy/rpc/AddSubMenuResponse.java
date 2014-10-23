@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -11,7 +12,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class AddSubMenuResponse extends RPCResponse {
 
     public AddSubMenuResponse() {
-        super("AddSubMenu");
+        super(FunctionID.ADD_SUB_MENU);
     }
     public AddSubMenuResponse(Hashtable<String, Object> hash) {
         super(hash);

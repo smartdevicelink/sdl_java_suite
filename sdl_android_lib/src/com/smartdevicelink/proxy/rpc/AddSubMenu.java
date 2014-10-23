@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Add a SubMenu to the Command Menu
@@ -21,12 +21,15 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see DeleteCommand
  */
 public class AddSubMenu extends RPCRequest {
+	public static final String KEY_POSITION = "position";
+	public static final String KEY_MENU_NAME = "menuName";
+	public static final String KEY_MENU_ID = "menuID";
 
 	/**
 	 * Constructs a new AddSubMenu object
 	 */
 	public AddSubMenu() {
-        super("AddSubMenu");
+        super(FunctionID.ADD_SUB_MENU);
     }
 	/**
 	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
@@ -47,7 +50,7 @@ public class AddSubMenu extends RPCRequest {
 	 *         menu
 	 */
     public Integer getMenuID() {
-        return (Integer) parameters.get( Names.menuID );
+        return (Integer) parameters.get( KEY_MENU_ID );
     }
 	/**
 	 * Sets a Menu ID that identifies a sub menu. This value is used in
@@ -62,7 +65,9 @@ public class AddSubMenu extends RPCRequest {
 	 */    
     public void setMenuID( Integer menuID ) {
         if (menuID != null) {
-            parameters.put(Names.menuID, menuID );
+            parameters.put(KEY_MENU_ID, menuID );
+        } else {
+            parameters.remove(KEY_MENU_ID);
         }
     }
 	/**
@@ -72,7 +77,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @return Integer -the value representing the relative position of menus
 	 */    
     public Integer getPosition() {
-        return (Integer) parameters.get( Names.position );
+        return (Integer) parameters.get( KEY_POSITION );
     }
 	/**
 	 * Sets a position of menu
@@ -96,7 +101,9 @@ public class AddSubMenu extends RPCRequest {
 	 */    
     public void setPosition( Integer position ) {
         if (position != null) {
-            parameters.put(Names.position, position );
+            parameters.put(KEY_POSITION, position );
+        } else {
+            parameters.remove(KEY_POSITION);
         }
     }
 	/**
@@ -105,7 +112,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @return String -a Submenu item's name
 	 */
     public String getMenuName() {
-        return (String) parameters.get( Names.menuName );
+        return (String) parameters.get( KEY_MENU_NAME );
     }
 	/**
 	 * Sets a menuName which is displayed representing this submenu item
@@ -115,7 +122,9 @@ public class AddSubMenu extends RPCRequest {
 	 */    
     public void setMenuName( String menuName ) {
         if (menuName != null) {
-            parameters.put(Names.menuName, menuName );
+            parameters.put(KEY_MENU_NAME, menuName );
+        } else {
+            parameters.remove(KEY_MENU_NAME);
         }
     }
 }

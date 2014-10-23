@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Slider Response is sent, when Slider has been called
@@ -11,12 +11,13 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class SliderResponse extends RPCResponse {
+	public static final String KEY_SLIDER_POSITION = "sliderPosition";
 
 	/**
 	 * Constructs a new SliderResponse object
 	 */
     public SliderResponse() {
-        super("Slider");
+        super(FunctionID.SLIDER);
     }
 
 	/**
@@ -36,9 +37,9 @@ public class SliderResponse extends RPCResponse {
      */
     public void setSliderPosition(Integer sliderPosition) {
     	if (sliderPosition != null) {
-    		parameters.put(Names.sliderPosition, sliderPosition);
+    		parameters.put(KEY_SLIDER_POSITION, sliderPosition);
     	} else {
-    		parameters.remove(Names.sliderPosition);
+    		parameters.remove(KEY_SLIDER_POSITION);
     	}
     }
     /**
@@ -46,6 +47,6 @@ public class SliderResponse extends RPCResponse {
      * @return Integer
      */
     public Integer getSliderPosition() {
-    	return (Integer) parameters.get(Names.sliderPosition);
+    	return (Integer) parameters.get(KEY_SLIDER_POSITION);
     }
 }

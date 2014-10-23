@@ -7,10 +7,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.constants.Names;
 
 public class RPCStruct {
-	
+    public static final String KEY_BULK_DATA = "bulkData";
+
 	private byte[] _bulkData = null;
 
 	protected Hashtable<String, Object> store = null;
@@ -49,7 +49,7 @@ public class RPCStruct {
 		if (version > 1) {
 			String messageType = getMessageTypeName(store.keySet());
 			Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
-			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(Names.parameters);
+			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
 			return JsonRPCMarshaller.serializeHashtable(parameters);
 		} else return JsonRPCMarshaller.serializeHashtable(store);
 	}
@@ -71,8 +71,8 @@ public class RPCStruct {
 	          if (key == null) {
 	              continue;
 	          }
-	          if (key.equals(Names.request) || key.equals(Names.response) ||
-	                  key.equals(Names.notification)) {
+	          if (key.equals(RPCMessage.KEY_REQUEST) || key.equals(RPCMessage.KEY_RESPONSE) ||
+	                  key.equals(RPCMessage.KEY_NOTIFICATION)) {
 	              return key;
 	          }
 	      }

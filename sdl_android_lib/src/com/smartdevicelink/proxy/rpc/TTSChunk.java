@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
@@ -40,6 +39,8 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class TTSChunk extends RPCStruct {
+	public static final String KEY_TEXT = "text";
+	public static final String KEY_TYPE = "type";
 	/**
 	 * Constructs a newly allocated TTSChunk object
 	 */
@@ -56,7 +57,7 @@ public class TTSChunk extends RPCStruct {
      * @return text to be spoken, or a phoneme specification, or the name of a pre-recorded sound
      */    
     public String getText() {
-        return (String) store.get( Names.text );
+        return (String) store.get( KEY_TEXT );
     }
     /**
      * Set the text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
@@ -64,7 +65,9 @@ public class TTSChunk extends RPCStruct {
      */    
     public void setText( String text ) {
         if (text != null) {
-            store.put(Names.text, text );
+            store.put(KEY_TEXT, text );
+        } else {
+        	store.remove(KEY_TEXT);
         }
     }
     /**
@@ -72,7 +75,7 @@ public class TTSChunk extends RPCStruct {
      * @return the type of information in the "text" field
      */    
     public SpeechCapabilities getType() {
-        Object obj = store.get(Names.type);
+        Object obj = store.get(KEY_TYPE);
         if (obj instanceof SpeechCapabilities) {
             return (SpeechCapabilities) obj;
         } else if (obj instanceof String) {
@@ -80,7 +83,7 @@ public class TTSChunk extends RPCStruct {
             try {
                 theCode = SpeechCapabilities.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.type, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
             }
             return theCode;
         }
@@ -92,7 +95,9 @@ public class TTSChunk extends RPCStruct {
      */    
     public void setType( SpeechCapabilities type ) {
         if (type != null) {
-            store.put(Names.type, type );
+            store.put(KEY_TYPE, type );
+        } else {
+        	store.remove(KEY_TYPE);
         }
     }
 }

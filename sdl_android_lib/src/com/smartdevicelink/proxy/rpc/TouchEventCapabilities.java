@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 import java.util.Hashtable;
 
 public class TouchEventCapabilities extends RPCStruct {
+    public static final String KEY_PRESS_AVAILABLE = "pressAvailable";
+    public static final String KEY_MULTI_TOUCH_AVAILABLE = "multiTouchAvailable";
+    public static final String KEY_DOUBLE_PRESS_AVAILABLE = "doublePressAvailable";
     public TouchEventCapabilities() {}
     
     public TouchEventCapabilities(Hashtable<String, Object> hash) {
@@ -14,37 +16,37 @@ public class TouchEventCapabilities extends RPCStruct {
     
     public void setPressAvailable(Boolean pressAvailable) {
         if (pressAvailable != null) {
-            store.put(Names.pressAvailable, pressAvailable);
+            store.put(KEY_PRESS_AVAILABLE, pressAvailable);
         } else {
-        	store.remove(Names.pressAvailable);
+        	store.remove(KEY_PRESS_AVAILABLE);
         }
     }
     
     public Boolean getPressAvailable() {
-        return (Boolean) store.get(Names.pressAvailable);
+        return (Boolean) store.get(KEY_PRESS_AVAILABLE);
     }
     
     public void setMultiTouchAvailable(Boolean multiTouchAvailable) {
         if (multiTouchAvailable != null) {
-            store.put(Names.multiTouchAvailable, multiTouchAvailable);
+            store.put(KEY_MULTI_TOUCH_AVAILABLE, multiTouchAvailable);
         } else {
-        	store.remove(Names.multiTouchAvailable);
+        	store.remove(KEY_MULTI_TOUCH_AVAILABLE);
         }
     }
     
     public Boolean getMultiTouchAvailable() {
-        return (Boolean) store.get(Names.multiTouchAvailable);
+        return (Boolean) store.get(KEY_MULTI_TOUCH_AVAILABLE);
     }
     
     public void setDoublePressAvailable(Boolean doublePressAvailable) {
         if (doublePressAvailable != null) {
-            store.put(Names.doublePressAvailable, doublePressAvailable);
+            store.put(KEY_DOUBLE_PRESS_AVAILABLE, doublePressAvailable);
         } else {
-        	store.remove(Names.doublePressAvailable);
+        	store.remove(KEY_DOUBLE_PRESS_AVAILABLE);
         }
     }
     
     public Boolean getDoublePressAvailable() {
-        return (Boolean) store.get(Names.doublePressAvailable);
+        return (Boolean) store.get(KEY_DOUBLE_PRESS_AVAILABLE);
     }
 }

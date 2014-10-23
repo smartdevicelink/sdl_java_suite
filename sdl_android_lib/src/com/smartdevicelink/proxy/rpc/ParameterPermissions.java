@@ -1,10 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -44,6 +43,8 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class ParameterPermissions extends RPCStruct {
+	public static final String KEY_ALLOWED = "allowed";
+	public static final String KEY_USER_DISALLOWED = "userDisallowed";
 
 	/**
 	 *  Constructs a newly allocated ParameterPermissions object
@@ -63,13 +64,13 @@ public class ParameterPermissions extends RPCStruct {
      * @return a set of all parameters that are permitted for this given RPC.
      */
     @SuppressWarnings("unchecked")
-    public Vector<String> getAllowed() {
-        if (store.get(Names.allowed) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.allowed);
+    public List<String> getAllowed() {
+        if (store.get(KEY_ALLOWED) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get( KEY_ALLOWED);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
@@ -80,11 +81,11 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are permitted for this given RPC.
      * @param allowed parameter that is permitted for this given RPC
      */
-    public void setAllowed(Vector<String> allowed) {
+    public void setAllowed(List<String> allowed) {
         if (allowed != null) {
-            store.put(Names.allowed, allowed);
+            store.put(KEY_ALLOWED, allowed);
         } else {
-    		store.remove(Names.allowed);
+    		store.remove(KEY_ALLOWED);
     	}
     }
     
@@ -93,13 +94,13 @@ public class ParameterPermissions extends RPCStruct {
      * @return a set of all parameters that are prohibited for this given RPC
      */
     @SuppressWarnings("unchecked")
-    public Vector<String> getUserDisallowed() {
-        if (store.get(Names.userDisallowed) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)store.get( Names.userDisallowed);
+    public List<String> getUserDisallowed() {
+        if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
+            List<?> list = (List<?>)store.get( KEY_USER_DISALLOWED);
         	if (list != null && list.size() > 0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-                	return (Vector<String>) list;        			
+                	return (List<String>) list;
         		}
         	}
         }
@@ -110,11 +111,11 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are prohibited for this given RPC.
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
-    public void setUserDisallowed(Vector<String> userDisallowed) {
+    public void setUserDisallowed(List<String> userDisallowed) {
         if (userDisallowed != null) {
-            store.put(Names.userDisallowed, userDisallowed);
+            store.put(KEY_USER_DISALLOWED, userDisallowed);
         } else {
-    		store.remove(Names.userDisallowed);
+    		store.remove(KEY_USER_DISALLOWED);
     	}
     }
 }

@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.util.DebugTool;
@@ -56,6 +55,10 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class TextField extends RPCStruct {
+	public static final String KEY_WIDTH = "width";
+	public static final String KEY_CHARACTER_SET = "characterSet";
+	public static final String KEY_ROWS = "rows";
+	public static final String KEY_NAME = "name";
 	/**
 	 * Constructs a newly allocated TextField object
 	 */
@@ -72,7 +75,7 @@ public class TextField extends RPCStruct {
      * @return the name of TextField
      */    
     public TextFieldName getName() {
-        Object obj = store.get(Names.name);
+        Object obj = store.get(KEY_NAME);
         if (obj instanceof TextFieldName) {
             return (TextFieldName) obj;
         } else if (obj instanceof String) {
@@ -80,7 +83,7 @@ public class TextField extends RPCStruct {
             try {
                 theCode = TextFieldName.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.name, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
             }
             return theCode;
         }
@@ -92,7 +95,9 @@ public class TextField extends RPCStruct {
      */    
     public void setName( TextFieldName name ) {
         if (name != null) {
-            store.put(Names.name, name );
+            store.put(KEY_NAME, name );
+        } else {
+        	store.remove(KEY_NAME);
         }
     }
     /**
@@ -100,7 +105,7 @@ public class TextField extends RPCStruct {
      * @return the character set
      */    
     public CharacterSet getCharacterSet() {
-        Object obj = store.get(Names.characterSet);
+        Object obj = store.get(KEY_CHARACTER_SET);
         if (obj instanceof CharacterSet) {
             return (CharacterSet) obj;
         } else if (obj instanceof String) {
@@ -108,7 +113,7 @@ public class TextField extends RPCStruct {
             try {
                 theCode = CharacterSet.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.characterSet, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CHARACTER_SET, e);
             }
             return theCode;
         }
@@ -120,7 +125,9 @@ public class TextField extends RPCStruct {
      */    
     public void setCharacterSet( CharacterSet characterSet ) {
         if (characterSet != null) {
-            store.put(Names.characterSet, characterSet );
+            store.put(KEY_CHARACTER_SET, characterSet );
+        } else {
+        	store.remove(KEY_CHARACTER_SET);
         }
     }
     /**
@@ -132,7 +139,7 @@ public class TextField extends RPCStruct {
      * @return the number of characters in one row of this field
      */    
     public Integer getWidth() {
-        return (Integer) store.get( Names.width );
+        return (Integer) store.get( KEY_WIDTH );
     }
     /**
      * Set the number of characters in one row of this field.
@@ -144,7 +151,9 @@ public class TextField extends RPCStruct {
      */    
     public void setWidth( Integer width ) {
         if (width != null) {
-            store.put(Names.width, width );
+            store.put(KEY_WIDTH, width );
+        } else {
+        	store.remove(KEY_WIDTH);
         }
     }
     /**
@@ -156,11 +165,13 @@ public class TextField extends RPCStruct {
      * @return  the number of rows for this text field
      */    
     public Integer getRows() {
-        return (Integer) store.get( Names.rows );
+        return (Integer) store.get( KEY_ROWS );
     }
     public void setRows( Integer rows ) {
         if (rows != null) {
-            store.put(Names.rows, rows );
+            store.put(KEY_ROWS, rows );
+        } else {
+        	store.remove(KEY_ROWS);
         }
     }
 }

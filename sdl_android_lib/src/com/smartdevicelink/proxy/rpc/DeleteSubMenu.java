@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Deletes a submenu from the Command Menu
@@ -20,11 +20,12 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see DeleteCommand
  */
 public class DeleteSubMenu extends RPCRequest {
+	public static final String KEY_MENU_ID = "menuID";
 	/**
 	* Constructs a new DeleteSubMenu object
 	*/
 	public DeleteSubMenu() {
-        super("DeleteSubMenu");
+        super(FunctionID.DELETE_SUB_MENU);
     }
     /**
      * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter<p>    
@@ -38,7 +39,7 @@ public class DeleteSubMenu extends RPCRequest {
      * @return Integer -an Integer value representing menuID that identifies the SubMenu to be delete
      */    
     public Integer getMenuID() {
-        return (Integer) parameters.get( Names.menuID );
+        return (Integer) parameters.get( KEY_MENU_ID );
     }
     /**
      * Sets the MenuID that identifies the SubMenu to be delete  
@@ -48,7 +49,9 @@ public class DeleteSubMenu extends RPCRequest {
      */    
     public void setMenuID( Integer menuID ) {
         if (menuID != null) {
-            parameters.put(Names.menuID, menuID );
+            parameters.put(KEY_MENU_ID, menuID );
+        } else {
+            parameters.remove(KEY_MENU_ID);
         }
     }
 }

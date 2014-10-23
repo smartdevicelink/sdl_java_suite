@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Alert Response is sent, when Alert has been called
@@ -11,12 +11,13 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 1.0
  */
 public class AlertResponse extends RPCResponse {
+	public static final String KEY_TRY_AGAIN_TIME = "tryAgainTime";
 
 	/**
 	 * Constructs a new AlertResponse object
 	 */
     public AlertResponse() {
-        super("Alert");
+        super(FunctionID.ALERT);
     }
 
 	/**
@@ -31,13 +32,13 @@ public class AlertResponse extends RPCResponse {
         super(hash);
     }
     public Integer getTryAgainTime() {
-        return (Integer) parameters.get(Names.tryAgainTime);
+        return (Integer) parameters.get(KEY_TRY_AGAIN_TIME);
     }
     public void setTryAgainTime(Integer tryAgainTime) {
         if (tryAgainTime != null) {
-            parameters.put(Names.tryAgainTime, tryAgainTime);
+            parameters.put(KEY_TRY_AGAIN_TIME, tryAgainTime);
         } else {
-        	parameters.remove(Names.tryAgainTime);
+            parameters.remove(KEY_TRY_AGAIN_TIME);
         }
     }
 }

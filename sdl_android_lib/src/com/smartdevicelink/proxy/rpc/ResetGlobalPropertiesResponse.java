@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -15,7 +16,7 @@ public class ResetGlobalPropertiesResponse extends RPCResponse {
 	 * Constructs a new ResetGlobalPropertiesResponse object
 	 */
     public ResetGlobalPropertiesResponse() {
-        super("ResetGlobalProperties");
+        super(FunctionID.RESET_GLOBAL_PROPERTIES);
     }
 
 	/**

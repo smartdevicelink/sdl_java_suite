@@ -1,15 +1,18 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 public class DiagnosticMessage extends RPCRequest {
+	public static final String KEY_TARGET_ID = "targetID";
+	public static final String KEY_MESSAGE_LENGTH = "messageLength";
+	public static final String KEY_MESSAGE_DATA = "messageData";
 
     public DiagnosticMessage() {
-        super("DiagnosticMessage");
+        super(FunctionID.DIAGNOSTIC_MESSAGE);
     }
 
     public DiagnosticMessage(Hashtable<String, Object> hash) {
@@ -18,45 +21,45 @@ public class DiagnosticMessage extends RPCRequest {
     
     public void setTargetID(Integer targetID) {
     	if (targetID != null) {
-    		parameters.put(Names.targetID, targetID);
+    		parameters.put(KEY_TARGET_ID, targetID);
     	} else {
-    		parameters.remove(Names.targetID);
+    		parameters.remove(KEY_TARGET_ID);
     	}
     }
     public Integer getTargetID() {
-    	return (Integer) parameters.get(Names.targetID);
+    	return (Integer) parameters.get(KEY_TARGET_ID);
     }    
 
     public void setMessageLength(Integer messageLength) {
     	if (messageLength != null) {
-    		parameters.put(Names.messageLength, messageLength);
+    		parameters.put(KEY_MESSAGE_LENGTH, messageLength);
     	} else {
-    		parameters.remove(Names.messageLength);
+    		parameters.remove(KEY_MESSAGE_LENGTH);
     	}
     }
     public Integer getMessageLength() {
-    	return (Integer) parameters.get(Names.messageLength);
+    	return (Integer) parameters.get(KEY_MESSAGE_LENGTH);
     }
 
     @SuppressWarnings("unchecked")
-    public Vector<Integer> getMessageData() {
-    	if(parameters.get(Names.messageData) instanceof Vector<?>){
-    		Vector<?> list = (Vector<?>)parameters.get(Names.messageData);
+    public List<Integer> getMessageData() {
+    	if(parameters.get(KEY_MESSAGE_DATA) instanceof List<?>){
+    		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof Integer){
-        			return (Vector<Integer>) list;
+        			return (List<Integer>) list;
         		}
     		}
     	}
         return null;
     }
     
-    public void setMessageData(Vector<Integer> messageData) {
+    public void setMessageData(List<Integer> messageData) {
         if (messageData != null) {
-            parameters.put(Names.messageData, messageData);
+            parameters.put(KEY_MESSAGE_DATA, messageData);
         } else {
-        	parameters.remove(Names.messageData);
+        	parameters.remove(KEY_MESSAGE_DATA);
         }
     }    
 }

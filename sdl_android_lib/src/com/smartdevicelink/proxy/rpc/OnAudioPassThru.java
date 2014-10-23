@@ -2,8 +2,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
+import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Binary data is in binary part of hybrid msg.
@@ -45,7 +46,7 @@ public class OnAudioPassThru extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnAudioPassThru() {
-        super("OnAudioPassThru");
+        super(FunctionID.ON_AUDIO_PASS_THRU);
     }
     /**
      *<p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>
@@ -56,12 +57,12 @@ public class OnAudioPassThru extends RPCNotification {
     }
     public void setAPTData(byte[] aptData) {
         if (aptData != null) {
-            store.put(Names.bulkData, aptData);
+            store.put(RPCStruct.KEY_BULK_DATA, aptData);
         } else {
-        	store.remove(Names.bulkData);
+        	store.remove(RPCStruct.KEY_BULK_DATA);
         }
     }
     public byte[] getAPTData() {
-        return (byte[]) store.get(Names.bulkData);
+        return (byte[]) store.get(RPCStruct.KEY_BULK_DATA);
     }
 }

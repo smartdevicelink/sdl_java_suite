@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 import com.smartdevicelink.util.DebugTool;
@@ -99,6 +98,17 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class DeviceStatus extends RPCStruct {
+    public static final String KEY_VOICE_REC_ON = "voiceRecOn";
+    public static final String KEY_BT_ICON_ON = "btIconOn";
+    public static final String KEY_CALL_ACTIVE = "callActive";
+    public static final String KEY_PHONE_ROAMING = "phoneRoaming";
+    public static final String KEY_TEXT_MSG_AVAILABLE = "textMsgAvailable";
+    public static final String KEY_BATT_LEVEL_STATUS = "battLevelStatus";
+    public static final String KEY_STEREO_AUDIO_OUTPUT_MUTED = "stereoAudioOutputMuted";
+    public static final String KEY_MONO_AUDIO_OUTPUT_MUTED = "monoAudioOutputMuted";
+    public static final String KEY_SIGNAL_LEVEL_STATUS = "signalLevelStatus";
+    public static final String KEY_PRIMARY_AUDIO_SOURCE = "primaryAudioSource";
+    public static final String KEY_E_CALL_EVENT_ACTIVE = "eCallEventActive";
 
 	/**
 	 * Constructs a newly allocated DeviceStatus object
@@ -119,9 +129,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setVoiceRecOn(Boolean voiceRecOn) {
         if (voiceRecOn != null) {
-        	store.put(Names.voiceRecOn, voiceRecOn);
+        	store.put(KEY_VOICE_REC_ON, voiceRecOn);
         } else {
-        	store.remove(Names.voiceRecOn);
+        	store.remove(KEY_VOICE_REC_ON);
         }
     }
     
@@ -130,7 +140,7 @@ public class DeviceStatus extends RPCStruct {
      * @return whether the voice recognition is on
      */
     public Boolean getVoiceRecOn() {
-        return (Boolean) store.get(Names.voiceRecOn);
+        return (Boolean) store.get(KEY_VOICE_REC_ON);
     }
     
     /**
@@ -139,9 +149,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setBtIconOn(Boolean btIconOn) {
         if (btIconOn != null) {
-        	store.put(Names.btIconOn, btIconOn);
+        	store.put(KEY_BT_ICON_ON, btIconOn);
         } else {
-        	store.remove(Names.btIconOn);
+        	store.remove(KEY_BT_ICON_ON);
         }
     }
     
@@ -150,7 +160,7 @@ public class DeviceStatus extends RPCStruct {
      * @return the bluetooth connection established
      */
     public Boolean getBtIconOn() {
-        return (Boolean) store.get(Names.btIconOn);
+        return (Boolean) store.get(KEY_BT_ICON_ON);
     }
     
     /**
@@ -159,9 +169,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setCallActive(Boolean callActive) {
         if (callActive != null) {
-        	store.put(Names.callActive, callActive);
+        	store.put(KEY_CALL_ACTIVE, callActive);
         } else {
-        	store.remove(Names.callActive);
+        	store.remove(KEY_CALL_ACTIVE);
         }
     }
     
@@ -170,7 +180,7 @@ public class DeviceStatus extends RPCStruct {
      * @return  a call is being active
      */
     public Boolean getCallActive() {
-        return (Boolean) store.get(Names.callActive);
+        return (Boolean) store.get(KEY_CALL_ACTIVE);
     }
     
     /**
@@ -179,9 +189,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setPhoneRoaming(Boolean phoneRoaming) {
         if (phoneRoaming != null) {
-        	store.put(Names.phoneRoaming, phoneRoaming);
+        	store.put(KEY_PHONE_ROAMING, phoneRoaming);
         } else {
-        	store.remove(Names.phoneRoaming);
+        	store.remove(KEY_PHONE_ROAMING);
         }
     }
     
@@ -190,13 +200,13 @@ public class DeviceStatus extends RPCStruct {
      * @return  the phone is in roaming mode
      */
     public Boolean getPhoneRoaming() {
-        return (Boolean) store.get(Names.phoneRoaming);
+        return (Boolean) store.get(KEY_PHONE_ROAMING);
     }
     public void setTextMsgAvailable(Boolean textMsgAvailable) {
         if (textMsgAvailable != null) {
-        	store.put(Names.textMsgAvailable, textMsgAvailable);
+        	store.put(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
         } else {
-        	store.remove(Names.textMsgAvailable);
+        	store.remove(KEY_TEXT_MSG_AVAILABLE);
         }
     }
     
@@ -205,7 +215,7 @@ public class DeviceStatus extends RPCStruct {
      * @return a textmessage is available
      */
     public Boolean getTextMsgAvailable() {
-        return (Boolean) store.get(Names.textMsgAvailable);
+        return (Boolean) store.get(KEY_TEXT_MSG_AVAILABLE);
     }
     
     /**
@@ -214,9 +224,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setBattLevelStatus(DeviceLevelStatus battLevelStatus) {
         if (battLevelStatus != null) {
-        	store.put(Names.battLevelStatus, battLevelStatus);
+        	store.put(KEY_BATT_LEVEL_STATUS, battLevelStatus);
         } else {
-        	store.remove(Names.battLevelStatus);
+        	store.remove(KEY_BATT_LEVEL_STATUS);
         }
     }
     
@@ -225,7 +235,7 @@ public class DeviceStatus extends RPCStruct {
      * @return battery level status
      */
     public DeviceLevelStatus getBattLevelStatus() {
-        Object obj = store.get(Names.battLevelStatus);
+        Object obj = store.get(KEY_BATT_LEVEL_STATUS);
         if (obj instanceof DeviceLevelStatus) {
             return (DeviceLevelStatus) obj;
         } else if (obj instanceof String) {
@@ -233,7 +243,7 @@ public class DeviceStatus extends RPCStruct {
             try {
                 theCode = DeviceLevelStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.battLevelStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BATT_LEVEL_STATUS, e);
             }
             return theCode;
         }
@@ -246,9 +256,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setStereoAudioOutputMuted(Boolean stereoAudioOutputMuted) {
         if (stereoAudioOutputMuted != null) {
-        	store.put(Names.stereoAudioOutputMuted, stereoAudioOutputMuted);
+        	store.put(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
         } else {
-        	store.remove(Names.stereoAudioOutputMuted);
+        	store.remove(KEY_STEREO_AUDIO_OUTPUT_MUTED);
         }
     }
     
@@ -257,7 +267,7 @@ public class DeviceStatus extends RPCStruct {
      * @return the status of the stereo audio output channel
      */
     public Boolean getStereoAudioOutputMuted() {
-        return (Boolean) store.get(Names.stereoAudioOutputMuted);
+        return (Boolean) store.get(KEY_STEREO_AUDIO_OUTPUT_MUTED);
     }
     
     /**
@@ -266,9 +276,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setMonoAudioOutputMuted(Boolean monoAudioOutputMuted) {
         if (monoAudioOutputMuted != null) {
-        	store.put(Names.monoAudioOutputMuted, monoAudioOutputMuted);
+        	store.put(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
         } else {
-        	store.remove(Names.monoAudioOutputMuted);
+        	store.remove(KEY_MONO_AUDIO_OUTPUT_MUTED);
         }
     }
     
@@ -277,7 +287,7 @@ public class DeviceStatus extends RPCStruct {
      * @return the status of the mono audio output channel
      */
     public Boolean getMonoAudioOutputMuted() {
-        return (Boolean) store.get(Names.monoAudioOutputMuted);
+        return (Boolean) store.get(KEY_MONO_AUDIO_OUTPUT_MUTED);
     }
     
     /**
@@ -286,9 +296,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setSignalLevelStatus(DeviceLevelStatus signalLevelStatus) {
         if (signalLevelStatus != null) {
-        	store.put(Names.signalLevelStatus, signalLevelStatus);
+        	store.put(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
         } else {
-        	store.remove(Names.signalLevelStatus);
+        	store.remove(KEY_SIGNAL_LEVEL_STATUS);
         }
     }
     
@@ -297,7 +307,7 @@ public class DeviceStatus extends RPCStruct {
      * @return signal level status
      */
     public DeviceLevelStatus getSignalLevelStatus() {
-        Object obj = store.get(Names.signalLevelStatus);
+        Object obj = store.get(KEY_SIGNAL_LEVEL_STATUS);
         if (obj instanceof DeviceLevelStatus) {
             return (DeviceLevelStatus) obj;
         } else if (obj instanceof String) {
@@ -305,7 +315,7 @@ public class DeviceStatus extends RPCStruct {
             try {
                 theCode = DeviceLevelStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.signalLevelStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SIGNAL_LEVEL_STATUS, e);
             }
             return theCode;
         }
@@ -318,9 +328,9 @@ public class DeviceStatus extends RPCStruct {
      */
     public void setPrimaryAudioSource(PrimaryAudioSource primaryAudioSource) {
         if (primaryAudioSource != null) {
-        	store.put(Names.primaryAudioSource, primaryAudioSource);
+        	store.put(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
         } else {
-        	store.remove(Names.primaryAudioSource);
+        	store.remove(KEY_PRIMARY_AUDIO_SOURCE);
         }
     }
     
@@ -329,7 +339,7 @@ public class DeviceStatus extends RPCStruct {
      * @return  the current primary audio source of SDL (if selected).
      */
     public PrimaryAudioSource getPrimaryAudioSource() {
-        Object obj = store.get(Names.primaryAudioSource);
+        Object obj = store.get(KEY_PRIMARY_AUDIO_SOURCE);
         if (obj instanceof PrimaryAudioSource) {
             return (PrimaryAudioSource) obj;
         } else if (obj instanceof String) {
@@ -337,7 +347,7 @@ public class DeviceStatus extends RPCStruct {
             try {
                 theCode = PrimaryAudioSource.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.primaryAudioSource, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRIMARY_AUDIO_SOURCE, e);
             }
             return theCode;
         }
@@ -345,12 +355,12 @@ public class DeviceStatus extends RPCStruct {
     }
     public void setECallEventActive(Boolean eCallEventActive) {
         if (eCallEventActive != null) {
-        	store.put(Names.eCallEventActive, eCallEventActive);
+        	store.put(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
         } else {
-        	store.remove(Names.eCallEventActive);
+        	store.remove(KEY_E_CALL_EVENT_ACTIVE);
         }
     }
     public Boolean getECallEventActive() {
-        return (Boolean) store.get(Names.eCallEventActive);
+        return (Boolean) store.get(KEY_E_CALL_EVENT_ACTIVE);
     }
 }

@@ -1,12 +1,15 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 public class TouchEvent extends RPCStruct {
+    public static final String KEY_ID = "id";
+    public static final String KEY_TS = "ts";
+    public static final String KEY_C = "c";
     public TouchEvent() { }
   
     public TouchEvent(Hashtable<String, Object> hash) {
@@ -14,44 +17,44 @@ public class TouchEvent extends RPCStruct {
     }
     public void setId(Integer id) {
         if (id != null) {
-            store.put(Names.id, id);
+            store.put(KEY_ID, id);
         } else {
-        	store.remove(Names.id);
+        	store.remove(KEY_ID);
         }
     }    
     public Integer getId() {
-        return (Integer) store.get(Names.id);
+        return (Integer) store.get(KEY_ID);
     }    
     @SuppressWarnings("unchecked")
-    public Vector<Integer> getTs() {
-    	if(store.get(Names.ts) instanceof Vector<?>){
-    		Vector<?> list = (Vector<?>)store.get(Names.ts);
+    public List<Integer> getTs() {
+    	if(store.get(KEY_TS) instanceof List<?>){
+    		List<?> list = (List<?>)store.get(KEY_TS);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof Integer){
-        			return (Vector<Integer>) list;
+        			return (List<Integer>) list;
         		}
     		}
     	}
         return null;
     }
-    public void setTs(Vector<Integer> ts) {
+    public void setTs(List<Integer> ts) {
         if (ts != null) {
-            store.put(Names.ts, ts);
+            store.put(KEY_TS, ts);
         } else {
-        	store.remove(Names.ts);
+        	store.remove(KEY_TS);
         }
     }
     @SuppressWarnings("unchecked")
-    public Vector<TouchCoord> getC() {
-        if (store.get(Names.c) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)store.get(Names.c);
+    public List<TouchCoord> getC() {
+        if (store.get(KEY_C) instanceof List<?>) {
+        	List<?> list = (List<?>)store.get(KEY_C);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TouchCoord) {
-	                return (Vector<TouchCoord>) list;
+	                return (List<TouchCoord>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TouchCoord> newList = new Vector<TouchCoord>();
+	            	List<TouchCoord> newList = new ArrayList<TouchCoord>();
 	                for (Object hashObj : list) {
 	                    newList.add(new TouchCoord((Hashtable<String, Object>) hashObj));
 	                }
@@ -61,11 +64,11 @@ public class TouchEvent extends RPCStruct {
         }
         return null;
     } 
-    public void setC( Vector<TouchCoord> c ) {
+    public void setC( List<TouchCoord> c ) {
         if (c != null) {
-            store.put(Names.c, c );
+            store.put(KEY_C, c );
         } else {
-        	store.remove(Names.c);
+        	store.remove(KEY_C);
         }        
     }          
 }

@@ -2,13 +2,14 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 
 public class OnHashChange extends RPCNotification {
+	public static final String KEY_HASH_ID = "hashID";
 
     public OnHashChange() {
-        super("OnHashChange");
+        super(FunctionID.ON_HASH_CHANGE);
     }
 
     public OnHashChange(Hashtable<String, Object> hash) {
@@ -16,14 +17,14 @@ public class OnHashChange extends RPCNotification {
     }
     
     public String getHashID() {
-        return (String) parameters.get(Names.hashID);
+        return (String) parameters.get(KEY_HASH_ID);
     }
    
     public void setHashID(String hashID) {
         if (hashID != null) {
-            parameters.put(Names.hashID, hashID);
+            parameters.put(KEY_HASH_ID, hashID);
         } else {
-        	parameters.remove(Names.hashID);
+        	parameters.remove(KEY_HASH_ID);
         }
     }   
     

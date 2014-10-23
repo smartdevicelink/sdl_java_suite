@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.util.DebugTool;
 /**
@@ -24,11 +25,12 @@ import com.smartdevicelink.util.DebugTool;
  * @see SetGlobalProperties
  */
 public class ResetGlobalProperties extends RPCRequest {
+	public static final String KEY_PROPERTIES = "properties";
 	/**
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super("ResetGlobalProperties");
+        super(FunctionID.RESET_GLOBAL_PROPERTIES);
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
@@ -45,26 +47,26 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * Gets an array of one or more GlobalProperty enumeration elements
 	 * indicating which global properties to reset to their default value
 	 * 
-	 * @return Vector<GlobalProperty> -an array of one or more GlobalProperty
+	 * @return List<GlobalProperty> -an array of one or more GlobalProperty
 	 *         enumeration elements
 	 */    
     @SuppressWarnings("unchecked")
-    public Vector<GlobalProperty> getProperties() {
-    	if (parameters.get(Names.properties) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(Names.properties);
+    public List<GlobalProperty> getProperties() {
+    	if (parameters.get(KEY_PROPERTIES) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(KEY_PROPERTIES);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof GlobalProperty) {
-	                return (Vector<GlobalProperty>) list;
+	                return (List<GlobalProperty>) list;
 	            } else if (obj instanceof String) {
-	                Vector<GlobalProperty> newList = new Vector<GlobalProperty>();
+	            	List<GlobalProperty> newList = new ArrayList<GlobalProperty>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
 	                    GlobalProperty toAdd = null;
 	                    try {
 	                        toAdd = GlobalProperty.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.properties, e);
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PROPERTIES, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -81,15 +83,17 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * indicating which global properties to reset to their default value
 	 * 
 	 * @param properties
-	 *            a Vector<GlobalProperty> An array of one or more
+	 *            a List<GlobalProperty> An array of one or more
 	 *            GlobalProperty enumeration elements indicating which global
 	 *            properties to reset to their default value
 	 *            <p>
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
-    public void setProperties( Vector<GlobalProperty> properties ) {
+    public void setProperties( List<GlobalProperty> properties ) {
         if (properties != null) {
-            parameters.put(Names.properties, properties );
+            parameters.put(KEY_PROPERTIES, properties );
+        } else {
+        	parameters.remove(KEY_PROPERTIES);
         }
     }
 }
