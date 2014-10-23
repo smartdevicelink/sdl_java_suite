@@ -125,6 +125,7 @@ public class DisplayCapabilities extends RPCStruct {
     
     
     
+    @SuppressWarnings("unchecked")
     public Vector<ImageField> getImageFields() {
         if (store.get(Names.imageFields) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.imageFields);

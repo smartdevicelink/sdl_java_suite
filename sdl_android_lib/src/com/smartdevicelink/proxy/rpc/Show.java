@@ -383,6 +383,7 @@ public class Show extends RPCRequest {
     }
 
 
+    @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
     	Object obj = parameters.get(Names.secondaryGraphic);
         if (obj instanceof Image) {
