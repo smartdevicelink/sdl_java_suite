@@ -124,17 +124,17 @@ public class DisplayCapabilities extends RPCStruct {
     
     
     
-    public Vector<TextField> getImageFields() {
+    public Vector<ImageField> getImageFields() {
         if (store.get(Names.imageFields) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.imageFields);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TextField) {
-	                return (Vector<TextField>) list;
+	            if (obj instanceof ImageField) {
+	                return (Vector<ImageField>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TextField> newList = new Vector<TextField>();
+	                Vector<ImageField> newList = new Vector<ImageField>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TextField((Hashtable)hashObj));
+	                    newList.add(new ImageField((Hashtable)hashObj));
 	                }
 	                return newList;
 	            }
@@ -143,7 +143,7 @@ public class DisplayCapabilities extends RPCStruct {
         return null;
     }
   
-    public void setImageFields( Vector<TextField> imageFields ) {
+    public void setImageFields( Vector<ImageField> imageFields ) {
         if (imageFields != null) {
             store.put(Names.imageFields, imageFields );
         }
