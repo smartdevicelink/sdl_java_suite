@@ -60,7 +60,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * Constructs a newly allocated SoftButtonCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public SoftButtonCapabilities(Hashtable hash) {
+    public SoftButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     

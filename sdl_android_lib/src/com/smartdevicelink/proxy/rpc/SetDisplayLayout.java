@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Used to set an alternate display layout. If not sent, default screen for
@@ -30,7 +29,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SetDisplayLayout(Hashtable hash) {
+    public SetDisplayLayout(Hashtable<String, Object> hash) {
         super(hash);
     }
 

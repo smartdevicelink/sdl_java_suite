@@ -10,7 +10,7 @@ public class GetVehicleData extends RPCRequest {
     public GetVehicleData() {
         super("GetVehicleData");
     }
-    public GetVehicleData(Hashtable hash) {
+    public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setGps(Boolean gps) {

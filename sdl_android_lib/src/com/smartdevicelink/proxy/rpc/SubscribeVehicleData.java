@@ -38,7 +38,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SubscribeVehicleData(Hashtable hash) {
+    public SubscribeVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
 

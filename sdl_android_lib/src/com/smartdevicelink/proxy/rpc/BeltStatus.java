@@ -10,7 +10,7 @@ import com.smartdevicelink.util.DebugTool;
 public class BeltStatus extends RPCStruct {
 
     public BeltStatus() { }
-    public BeltStatus(Hashtable hash) {
+    public BeltStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
 

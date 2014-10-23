@@ -12,17 +12,18 @@ public class ScreenParams extends RPCStruct {
 
 	public ScreenParams() { }
   
-    public ScreenParams(Hashtable hash) {
+    public ScreenParams(Hashtable<String, Object> hash) {
         super(hash);
     }
     
+    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
     	Object obj = store.get(Names.resolution);
         if (obj instanceof ImageResolution) {
             return (ImageResolution) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new ImageResolution((Hashtable) obj);
+        		return new ImageResolution((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.resolution, e);
             }
@@ -37,13 +38,14 @@ public class ScreenParams extends RPCStruct {
     		store.remove(Names.resolution);
     	}
     }
+    @SuppressWarnings("unchecked")
     public TouchEventCapabilities getTouchEventAvailable() {
     	Object obj = store.get(Names.touchEventAvailable);
         if (obj instanceof TouchEventCapabilities) {
             return (TouchEventCapabilities) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new TouchEventCapabilities((Hashtable) obj);
+        		return new TouchEventCapabilities((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.touchEventAvailable, e);
             }

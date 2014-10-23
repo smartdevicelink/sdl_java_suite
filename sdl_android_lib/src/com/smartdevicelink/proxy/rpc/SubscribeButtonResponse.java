@@ -26,7 +26,7 @@ public class SubscribeButtonResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SubscribeButtonResponse(Hashtable hash) {
+    public SubscribeButtonResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

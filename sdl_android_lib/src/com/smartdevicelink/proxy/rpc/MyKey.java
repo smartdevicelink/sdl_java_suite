@@ -10,7 +10,7 @@ import com.smartdevicelink.util.DebugTool;
 public class MyKey extends RPCStruct {
 
     public MyKey() { }
-    public MyKey(Hashtable hash) {
+    public MyKey(Hashtable<String, Object> hash) {
         super(hash);
     }
 

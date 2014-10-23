@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 
+
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
@@ -51,7 +52,7 @@ public class OnDriverDistraction  extends RPCNotification {
      *<p>Constructs a newly allocated OnDriverDistraction object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */	
-    public OnDriverDistraction(Hashtable hash) {
+    public OnDriverDistraction(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

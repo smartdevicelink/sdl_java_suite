@@ -3,7 +3,6 @@ package com.smartdevicelink.streaming;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 

@@ -11,7 +11,7 @@ import com.smartdevicelink.util.DebugTool;
 public class BodyInformation extends RPCStruct {
 
     public BodyInformation() { }
-    public BodyInformation(Hashtable hash) {
+    public BodyInformation(Hashtable<String, Object> hash) {
         super(hash);
     }
 

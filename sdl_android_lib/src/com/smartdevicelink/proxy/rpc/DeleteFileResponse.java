@@ -15,7 +15,7 @@ public class DeleteFileResponse extends RPCResponse {
     public DeleteFileResponse() {
         super("DeleteFile");
     }
-    public DeleteFileResponse(Hashtable hash) {
+    public DeleteFileResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {

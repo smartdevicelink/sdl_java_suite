@@ -57,7 +57,7 @@ public class DisplayCapabilities extends RPCStruct {
      * Constructs a newly allocated DisplayCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-    public DisplayCapabilities(Hashtable hash) {
+    public DisplayCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -93,6 +93,7 @@ public class DisplayCapabilities extends RPCStruct {
      *	 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
      * @return the Vector of textFields
      */    
+    @SuppressWarnings("unchecked")
     public Vector<TextField> getTextFields() {
         if (store.get(Names.textFields) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.textFields);
@@ -103,7 +104,7 @@ public class DisplayCapabilities extends RPCStruct {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TextField> newList = new Vector<TextField>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TextField((Hashtable)hashObj));
+	                    newList.add(new TextField((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -134,7 +135,7 @@ public class DisplayCapabilities extends RPCStruct {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<ImageField> newList = new Vector<ImageField>();
 	                for (Object hashObj : list) {
-	                    newList.add(new ImageField((Hashtable)hashObj));
+	                    newList.add(new ImageField((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -171,6 +172,7 @@ public class DisplayCapabilities extends RPCStruct {
      * Get an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
      * @return the Veotor of mediaClockFormat
      */    
+    @SuppressWarnings("unchecked")
     public Vector<MediaClockFormat> getMediaClockFormats() {
         if (store.get(Names.mediaClockFormats) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.mediaClockFormats);
@@ -230,6 +232,7 @@ public class DisplayCapabilities extends RPCStruct {
     	return (Boolean) store.get(Names.graphicSupported);
     }
     
+    @SuppressWarnings("unchecked")
     public Vector<String> getTemplatesAvailable() {
         if (store.get(Names.templatesAvailable) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)store.get( Names.templatesAvailable);
@@ -261,13 +264,14 @@ public class DisplayCapabilities extends RPCStruct {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public ScreenParams getScreenParams() {
         Object obj = store.get(Names.screenParams);
         if (obj instanceof ScreenParams) {
             return (ScreenParams) obj;
         } else if (obj instanceof Hashtable) {
             try {
-                return new ScreenParams((Hashtable) obj);
+                return new ScreenParams((Hashtable<String, Object>) obj);
             } catch (Exception e) {
                 DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.screenParams, e);
             }

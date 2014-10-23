@@ -15,7 +15,7 @@ public class OnVehicleData extends RPCNotification {
     public OnVehicleData() {
         super("OnVehicleData");
     }
-    public OnVehicleData(Hashtable hash) {
+    public OnVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setGps(GPSData gps) {
@@ -25,6 +25,7 @@ public class OnVehicleData extends RPCNotification {
     		parameters.remove(Names.gps);
     	}
     }
+    @SuppressWarnings("unchecked")
     public GPSData getGps() {
     	Object obj = parameters.get(Names.gps);
         if (obj instanceof GPSData) {
@@ -32,7 +33,7 @@ public class OnVehicleData extends RPCNotification {
         } else if (obj instanceof Hashtable) {
         	GPSData theCode = null;
             try {
-                theCode = new GPSData((Hashtable) obj);
+                theCode = new GPSData((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.gps, e);
             }
@@ -151,13 +152,14 @@ public class OnVehicleData extends RPCNotification {
     		parameters.remove(Names.tirePressure);
     	}
     }
+    @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
     	Object obj = parameters.get(Names.tirePressure);
         if (obj instanceof TireStatus) {
             return (TireStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new TireStatus((Hashtable) obj);
+        		return new TireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.tirePressure, e);
             }
@@ -181,13 +183,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.beltStatus);
         }
     }
+    @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
     	Object obj = parameters.get(Names.beltStatus);
         if (obj instanceof BeltStatus) {
             return (BeltStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new BeltStatus((Hashtable) obj);
+        		return new BeltStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.beltStatus, e);
             }
@@ -201,13 +204,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.bodyInformation);
         }
     }
+    @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
     	Object obj = parameters.get(Names.bodyInformation);
         if (obj instanceof BodyInformation) {
             return (BodyInformation) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new BodyInformation((Hashtable) obj);
+        		return new BodyInformation((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.bodyInformation, e);
             }
@@ -221,13 +225,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.deviceStatus);
         }
     }
+    @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
     	Object obj = parameters.get(Names.deviceStatus);
         if (obj instanceof DeviceStatus) {
             return (DeviceStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new DeviceStatus((Hashtable) obj);
+        		return new DeviceStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.deviceStatus, e);
             }
@@ -285,13 +290,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.headLampStatus);
         }
     }
+    @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
     	Object obj = parameters.get(Names.headLampStatus);
         if (obj instanceof HeadLampStatus) {
             return (HeadLampStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new HeadLampStatus((Hashtable) obj);
+        		return new HeadLampStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.headLampStatus, e);
             }
@@ -335,13 +341,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.eCallInfo);
         }
     }
+    @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
     	Object obj = parameters.get(Names.eCallInfo);
         if (obj instanceof ECallInfo) {
             return (ECallInfo) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new ECallInfo((Hashtable) obj);
+        		return new ECallInfo((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.eCallInfo, e);
             }
@@ -355,13 +362,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.airbagStatus);
         }
     }
+    @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
     	Object obj = parameters.get(Names.airbagStatus);
         if (obj instanceof AirbagStatus) {
             return (AirbagStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new AirbagStatus((Hashtable) obj);
+        		return new AirbagStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.airbagStatus, e);
             }
@@ -375,13 +383,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.emergencyEvent);
         }
     }
+    @SuppressWarnings("unchecked")
     public EmergencyEvent getEmergencyEvent() {
     	Object obj = parameters.get(Names.emergencyEvent);
         if (obj instanceof EmergencyEvent) {
             return (EmergencyEvent) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new EmergencyEvent((Hashtable) obj);
+        		return new EmergencyEvent((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.emergencyEvent, e);
             }
@@ -395,13 +404,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.clusterModeStatus);
         }
     }
+    @SuppressWarnings("unchecked")
     public ClusterModeStatus getClusterModeStatus() {
     	Object obj = parameters.get(Names.clusterModeStatus);
         if (obj instanceof ClusterModeStatus) {
             return (ClusterModeStatus) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new ClusterModeStatus((Hashtable) obj);
+        		return new ClusterModeStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.clusterModeStatus, e);
             }
@@ -415,13 +425,14 @@ public class OnVehicleData extends RPCNotification {
         	parameters.remove(Names.myKey);
         }
     }
+    @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
     	Object obj = parameters.get(Names.myKey);
         if (obj instanceof MyKey) {
             return (MyKey) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new MyKey((Hashtable) obj);
+        		return new MyKey((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.myKey, e);
             }

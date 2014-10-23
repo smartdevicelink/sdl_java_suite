@@ -30,7 +30,8 @@ import com.smartdevicelink.transport.TransportType;
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	private static final String SDL_LIB_PRIVATE_TOKEN = "{DAE1A88C-6C16-4768-ACA5-6F1247EA01C2}";
+	@SuppressWarnings("unused")
+    private static final String SDL_LIB_PRIVATE_TOKEN = "{DAE1A88C-6C16-4768-ACA5-6F1247EA01C2}";
 	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL

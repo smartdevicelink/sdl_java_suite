@@ -11,9 +11,10 @@ public class DiagnosticMessageResponse extends RPCResponse {
     public DiagnosticMessageResponse() {
         super("DiagnosticMessage");
     }
-    public DiagnosticMessageResponse(Hashtable hash) {
+    public DiagnosticMessageResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+    @SuppressWarnings("unchecked")
     public Vector<Integer> getMessageDataResult() {
     	if(parameters.get(Names.messageDataResult) instanceof Vector<?>){
     		Vector<?> list = (Vector<?>)parameters.get(Names.messageDataResult);

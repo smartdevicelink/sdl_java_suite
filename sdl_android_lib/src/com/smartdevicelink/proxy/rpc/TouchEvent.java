@@ -5,12 +5,11 @@ import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.util.DebugTool;
 
 public class TouchEvent extends RPCStruct {
     public TouchEvent() { }
   
-    public TouchEvent(Hashtable hash) {
+    public TouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setId(Integer id) {
@@ -23,6 +22,7 @@ public class TouchEvent extends RPCStruct {
     public Integer getId() {
         return (Integer) store.get(Names.id);
     }    
+    @SuppressWarnings("unchecked")
     public Vector<Integer> getTs() {
     	if(store.get(Names.ts) instanceof Vector<?>){
     		Vector<?> list = (Vector<?>)store.get(Names.ts);
@@ -42,6 +42,7 @@ public class TouchEvent extends RPCStruct {
         	store.remove(Names.ts);
         }
     }
+    @SuppressWarnings("unchecked")
     public Vector<TouchCoord> getC() {
         if (store.get(Names.c) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.c);
@@ -52,7 +53,7 @@ public class TouchEvent extends RPCStruct {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TouchCoord> newList = new Vector<TouchCoord>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TouchCoord((Hashtable) hashObj));
+	                    newList.add(new TouchCoord((Hashtable<String, Object>) hashObj));
 	                }
 	                return newList;
 	            }

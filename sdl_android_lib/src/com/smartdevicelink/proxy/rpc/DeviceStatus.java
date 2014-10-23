@@ -109,7 +109,7 @@ public class DeviceStatus extends RPCStruct {
      * Constructs a newly allocated DeviceStatus object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public DeviceStatus(Hashtable hash) {
+    public DeviceStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
     

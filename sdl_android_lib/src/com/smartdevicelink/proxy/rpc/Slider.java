@@ -34,7 +34,7 @@ public class Slider extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public Slider(Hashtable hash) {
+    public Slider(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -138,6 +138,7 @@ public class Slider extends RPCRequest {
 	 * 
 	 * @return String -a String value representing a text footer to display
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<String> getSliderFooter() {
         if (parameters.get(Names.sliderFooter) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)parameters.get(Names.sliderFooter);

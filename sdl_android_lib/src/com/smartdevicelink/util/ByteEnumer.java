@@ -28,8 +28,8 @@ public abstract class ByteEnumer {
 		return value;
 	}
 	
-	public static ByteEnumer get(Vector theList, byte value) {
-		Enumeration enumer = theList.elements();
+	public static ByteEnumer get(Vector<?> theList, byte value) {
+		Enumeration<?> enumer = theList.elements();
 		while (enumer.hasMoreElements()) {
 			ByteEnumer current = (ByteEnumer)enumer.nextElement();
 			if (current.getValue() == value) {
@@ -39,8 +39,8 @@ public abstract class ByteEnumer {
 		return null;
 	}
 	
-	public static ByteEnumer get(Vector theList, String name) {
-		Enumeration enumer = theList.elements();
+	public static ByteEnumer get(Vector<?> theList, String name) {
+		Enumeration<?> enumer = theList.elements();
 		while (enumer.hasMoreElements()) {
 			ByteEnumer current = (ByteEnumer)enumer.nextElement();
 			if (current.getName().equals(name)) {

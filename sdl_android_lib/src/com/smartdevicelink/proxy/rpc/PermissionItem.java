@@ -9,7 +9,7 @@ import com.smartdevicelink.util.DebugTool;
 public class PermissionItem extends RPCStruct {
 
     public PermissionItem() { }
-    public PermissionItem(Hashtable hash) {
+    public PermissionItem(Hashtable<String, Object> hash) {
         super(hash);
     }
     public String getRpcName() {
@@ -22,13 +22,14 @@ public class PermissionItem extends RPCStruct {
         	store.remove(Names.rpcName);
         }
     }
+    @SuppressWarnings("unchecked")
     public HMIPermissions getHMIPermissions() {
     	Object obj = store.get(Names.hmiPermissions);
         if (obj instanceof HMIPermissions) {
             return (HMIPermissions) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new HMIPermissions((Hashtable) obj);
+        		return new HMIPermissions((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.hmiPermissions, e);
             }
@@ -42,13 +43,14 @@ public class PermissionItem extends RPCStruct {
         	store.remove(Names.hmiPermissions);
         }
     }
+    @SuppressWarnings("unchecked")
     public ParameterPermissions getParameterPermissions() {
     	Object obj = store.get(Names.parameterPermissions);
         if (obj instanceof ParameterPermissions) {
             return (ParameterPermissions) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new ParameterPermissions((Hashtable) obj);
+        		return new ParameterPermissions((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.parameterPermissions, e);
             }

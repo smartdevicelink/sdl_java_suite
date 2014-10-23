@@ -181,7 +181,8 @@ public class DebugTool {
 		}
 	}
 
-	protected static void logInfoToConsole(String msg) {
+	@SuppressWarnings("unchecked")
+    protected static void logInfoToConsole(String msg) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();
@@ -197,7 +198,8 @@ public class DebugTool {
 		}
 	}
 	
-	protected static void logErrorToConsole(String msg) {
+	@SuppressWarnings("unchecked")
+    protected static void logErrorToConsole(String msg) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();
@@ -212,7 +214,8 @@ public class DebugTool {
 		}
 	}
 	
-	protected static void logErrorToConsole(String msg, Throwable e) {
+	@SuppressWarnings("unchecked")
+    protected static void logErrorToConsole(String msg, Throwable e) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();
@@ -228,7 +231,8 @@ public class DebugTool {
 		}
 	}
 	
-	protected static void logRPCSendToConsole(String msg) {
+	@SuppressWarnings("unchecked")
+    protected static void logRPCSendToConsole(String msg) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();
@@ -244,7 +248,8 @@ public class DebugTool {
 		}
 	}
 	
-	protected static void logRPCReceiveToConsole(String msg) {
+	@SuppressWarnings("unchecked")
+    protected static void logRPCReceiveToConsole(String msg) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();

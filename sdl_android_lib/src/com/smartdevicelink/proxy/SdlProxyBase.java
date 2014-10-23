@@ -28,7 +28,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
 
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
@@ -116,8 +115,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private boolean navServiceResponseReceived = false;
 	private boolean navServiceResponse = false;
-	private boolean pcmServiceResponseReceived = false;
-	private boolean pcmServiceResponse = false;
+	@SuppressWarnings("unused")
+    private boolean pcmServiceResponseReceived = false;
+	@SuppressWarnings("unused")
+    private boolean pcmServiceResponse = false;
 	
 	// Device Info for logging
 	private TraceDeviceInfo _traceDeviceInterrogator = null;
@@ -160,7 +161,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	// Proxy State Variables
 	protected Boolean _appInterfaceRegisterd = false;
 	protected Boolean _preRegisterd = false;
-	private Boolean _haveReceivedFirstNonNoneHMILevel = false;
+	@SuppressWarnings("unused")
+    private Boolean _haveReceivedFirstNonNoneHMILevel = false;
 	protected Boolean _haveReceivedFirstFocusLevel = false;
 	protected Boolean _haveReceivedFirstFocusLevelFull = false;
 	protected Boolean _proxyDisposed = false;
@@ -807,7 +809,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			
 			long BeforeTime = System.currentTimeMillis();			
-			String sResponseMsg = urlConnection.getResponseMessage();			
+			@SuppressWarnings("unused")
+            String sResponseMsg = urlConnection.getResponseMessage();			
 			long AfterTime = System.currentTimeMillis();
 			final long roundtriptime = AfterTime - BeforeTime;
 			
@@ -1214,17 +1217,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (message.getVersion() > 1) setWiProVersion(message.getVersion());
 					}
 					
-					Hashtable hash = new Hashtable();
+					Hashtable<String, Object> hash = new Hashtable<String, Object>();
 					if (_wiproVersion > 1) {
-						Hashtable hashTemp = new Hashtable();
+						Hashtable<String, Object> hashTemp = new Hashtable<String, Object>();
 						hashTemp.put(Names.correlationID, message.getCorrID());
 						if (message.getJsonSize() > 0) {
 							final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
 							//hashTemp.put(Names.parameters, mhash.get(Names.parameters));
 							hashTemp.put(Names.parameters, mhash);
 						}
-						FunctionID functionID = new FunctionID();
-						String functionName = functionID.getFunctionName(message.getFunctionID());
+
+						String functionName = FunctionID.getFunctionName(message.getFunctionID());
 						if (functionName != null) {
 							hashTemp.put(Names.function_name, functionName);
 						} else {
@@ -1416,7 +1419,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
-	private void handleRPCMessage(Hashtable hash) {
+	private void handleRPCMessage(Hashtable<String, Object> hash) {
 		RPCMessage rpcMsg = new RPCMessage(hash);
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
@@ -2226,7 +2229,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					sdlSession.getLockScreenMan().setHMILevel(msg.getHmiLevel());
 				}
 				
-				msg.setFirstRun(new Boolean(firstTimeFull));
+				msg.setFirstRun(Boolean.valueOf(firstTimeFull));
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
 				
 				if (msg.getHmiLevel() != _priorHmiLevel && msg.getAudioStreamingState() != _priorAudioStreamingState) {
@@ -2805,12 +2808,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceResponse = false;
 	}
 	
-	private void AudioServiceStarted() {
+	@SuppressWarnings("unused")
+    private void AudioServiceStarted() {
 		pcmServiceResponseReceived = true;
 		pcmServiceResponse = true;
 	}
 	
-	private void AudioServiceEnded() {
+	@SuppressWarnings("unused")
+    private void AudioServiceEnded() {
 		pcmServiceResponseReceived = true;
 		pcmServiceResponse = false;
 	}	

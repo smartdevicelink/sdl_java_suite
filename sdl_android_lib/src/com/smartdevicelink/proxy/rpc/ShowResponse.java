@@ -26,7 +26,7 @@ public class ShowResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ShowResponse(Hashtable hash) {
+    public ShowResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.util.DebugTool;
@@ -12,7 +11,7 @@ import com.smartdevicelink.util.DebugTool;
 public class VehicleDataResult extends RPCStruct {
 
     public VehicleDataResult() { }
-    public VehicleDataResult(Hashtable hash) {
+    public VehicleDataResult(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setDataType(VehicleDataType dataType) {

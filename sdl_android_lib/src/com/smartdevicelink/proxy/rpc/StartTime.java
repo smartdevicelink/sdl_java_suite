@@ -48,7 +48,7 @@ public class StartTime extends RPCStruct {
      * Constructs a newly allocated StartTime object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public StartTime(Hashtable hash) {
+    public StartTime(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

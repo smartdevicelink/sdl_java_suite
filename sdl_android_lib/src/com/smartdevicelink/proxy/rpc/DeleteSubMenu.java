@@ -30,7 +30,7 @@ public class DeleteSubMenu extends RPCRequest {
      * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter<p>    
      * @param hash The Hashtable to use
      */
-    public DeleteSubMenu(Hashtable hash) {
+    public DeleteSubMenu(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

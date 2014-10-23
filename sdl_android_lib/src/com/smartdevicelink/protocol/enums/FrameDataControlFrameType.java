@@ -5,10 +5,11 @@ import java.util.Vector;
 import com.smartdevicelink.util.ByteEnumer;
 
 public class FrameDataControlFrameType extends ByteEnumer {
-	private static Vector theList = new Vector();
-	public static Vector getList() { return theList; } 
+	private static Vector<FrameDataControlFrameType> theList = new Vector<FrameDataControlFrameType>();
+	public static Vector<FrameDataControlFrameType> getList() { return theList; } 
 
-	private byte _i = 0x00;
+	@SuppressWarnings("unused")
+    private byte _i = 0x00;
 
 	protected FrameDataControlFrameType(byte value, String name) {super(value, name);}
 	public final static FrameDataControlFrameType Heartbeat = new FrameDataControlFrameType((byte)0x0, "Heartbeat");

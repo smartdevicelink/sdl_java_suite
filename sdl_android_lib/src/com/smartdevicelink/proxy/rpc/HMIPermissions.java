@@ -53,7 +53,7 @@ public class HMIPermissions extends RPCStruct {
      * Constructs a newly allocated HMIPermissions object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public HMIPermissions(Hashtable hash) {
+    public HMIPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -61,6 +61,7 @@ public class HMIPermissions extends RPCStruct {
      * get a set of all HMI levels that are permitted for this given RPC.
      * @return   a set of all HMI levels that are permitted for this given RPC
      */
+    @SuppressWarnings("unchecked")
     public Vector<HMILevel> getAllowed() {
         if (store.get(Names.allowed) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.allowed);
@@ -105,6 +106,7 @@ public class HMIPermissions extends RPCStruct {
      * get a set of all HMI levels that are prohibited for this given RPC
      * @return a set of all HMI levels that are prohibited for this given RPC
      */
+    @SuppressWarnings("unchecked")
     public Vector<HMILevel> getUserDisallowed() {
         if (store.get(Names.userDisallowed) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)store.get(Names.userDisallowed);

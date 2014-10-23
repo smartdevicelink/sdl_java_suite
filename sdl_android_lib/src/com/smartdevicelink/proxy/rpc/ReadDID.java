@@ -34,7 +34,7 @@ public class ReadDID extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ReadDID(Hashtable hash) {
+    public ReadDID(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -91,6 +91,7 @@ public class ReadDID extends RPCRequest {
 	 * @return Vector<Integer> -a Vector<Integer> value representing raw data
 	 *         from vehicle data DID location(s)
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<Integer> getDidLocation() {
         if (parameters.get(Names.didLocation) instanceof Vector<?>) {
         	Vector<?> list = (Vector<?>)parameters.get(Names.didLocation);

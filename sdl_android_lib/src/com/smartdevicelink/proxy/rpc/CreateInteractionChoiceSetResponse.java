@@ -15,7 +15,7 @@ public class CreateInteractionChoiceSetResponse extends RPCResponse {
     public CreateInteractionChoiceSetResponse() {
         super("CreateInteractionChoiceSet");
     }
-    public CreateInteractionChoiceSetResponse(Hashtable hash) {
+    public CreateInteractionChoiceSetResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

@@ -28,7 +28,7 @@ public class SetAppIcon extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SetAppIcon(Hashtable hash) {
+    public SetAppIcon(Hashtable<String, Object> hash) {
         super(hash);
     }
 

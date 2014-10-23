@@ -31,7 +31,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public SetGlobalProperties(Hashtable hash) {
+    public SetGlobalProperties(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -42,6 +42,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @return Vector<TTSChunk> -an Array of one or more TTSChunk elements
 	 *         specifying the help prompt used in an interaction started by PTT
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getHelpPrompt() {
     	if (parameters.get(Names.helpPrompt) instanceof Vector<?>) {
 	        Vector<?> list = (Vector<?>)parameters.get(Names.helpPrompt);
@@ -52,7 +53,7 @@ public class SetGlobalProperties extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -87,6 +88,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @return Vector<TTSChunk> -an Array of one or more TTSChunk elements
 	 *         specifying the help prompt used in an interaction started by PTT
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getTimeoutPrompt() {
         if (parameters.get(Names.timeoutPrompt) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.timeoutPrompt);
@@ -97,7 +99,7 @@ public class SetGlobalProperties extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -160,6 +162,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *         the VR help screen used in an interaction started by PTT
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<VrHelpItem> getVrHelp() {
         if (parameters.get(Names.vrHelp) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrHelp);
@@ -170,7 +173,7 @@ public class SetGlobalProperties extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<VrHelpItem> newList = new Vector<VrHelpItem>();
 	                for (Object hashObj : list) {
-	                    newList.add(new VrHelpItem((Hashtable)hashObj));
+	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -228,13 +231,14 @@ public class SetGlobalProperties extends RPCRequest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Image getMenuIcon() {
     	Object obj = parameters.get(Names.menuIcon);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.menuIcon, e);
             }
@@ -250,13 +254,14 @@ public class SetGlobalProperties extends RPCRequest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public KeyboardProperties getKeyboardProperties() {
     	Object obj = parameters.get(Names.keyboardProperties);
         if (obj instanceof Image) {
             return (KeyboardProperties) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new KeyboardProperties((Hashtable) obj);
+        		return new KeyboardProperties((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.keyboardProperties, e);
             }

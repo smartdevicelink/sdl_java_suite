@@ -16,9 +16,10 @@ public class GetDTCsResponse extends RPCResponse {
     public GetDTCsResponse() {
         super("GetDTCs");
     }
-    public GetDTCsResponse(Hashtable hash) {
+    public GetDTCsResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+    @SuppressWarnings("unchecked")
     public Vector<String> getDtc() {
     	if(parameters.get(Names.dtc) instanceof Vector<?>){
     		Vector<?> list = (Vector<?>)parameters.get(Names.dtc);

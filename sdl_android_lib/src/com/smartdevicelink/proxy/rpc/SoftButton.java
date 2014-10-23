@@ -11,7 +11,7 @@ import com.smartdevicelink.util.DebugTool;
 public class SoftButton extends RPCStruct {
 
     public SoftButton() { }
-    public SoftButton(Hashtable hash) {
+    public SoftButton(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setType(SoftButtonType type) {
@@ -53,13 +53,14 @@ public class SoftButton extends RPCStruct {
         	store.remove(Names.image);
         }
     }
+    @SuppressWarnings("unchecked")
     public Image getImage() {
     	Object obj = store.get(Names.image);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.image, e);
             }

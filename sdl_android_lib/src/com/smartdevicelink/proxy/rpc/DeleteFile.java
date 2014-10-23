@@ -30,7 +30,7 @@ public class DeleteFile extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public DeleteFile(Hashtable hash) {
+    public DeleteFile(Hashtable<String, Object> hash) {
         super(hash);
     }
 

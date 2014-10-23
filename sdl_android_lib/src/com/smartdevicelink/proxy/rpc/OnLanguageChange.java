@@ -68,7 +68,7 @@ public class OnLanguageChange extends RPCNotification {
      *<p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */
-    public OnLanguageChange(Hashtable hash) {
+    public OnLanguageChange(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

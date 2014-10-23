@@ -26,7 +26,7 @@ public class ScrollableMessageResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ScrollableMessageResponse(Hashtable hash) {
+    public ScrollableMessageResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

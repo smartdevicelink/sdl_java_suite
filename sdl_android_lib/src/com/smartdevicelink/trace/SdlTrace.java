@@ -1,12 +1,11 @@
 package com.smartdevicelink.trace;
 
 import java.sql.Timestamp;
-
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Process;
-
 import com.smartdevicelink.protocol.ProtocolFrameHeader;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
@@ -30,6 +29,7 @@ import com.smartdevicelink.util.NativeLogTool;
    It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
  */
 
+@SuppressLint("DefaultLocale")
 public class SdlTrace {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
@@ -128,6 +128,8 @@ public class SdlTrace {
 			case Transmit:
 				str = "tx";
 				break;
+        default:
+            break;
 		} // end-switch
 		return str;
 	} // end-method
@@ -415,7 +417,8 @@ public class SdlTrace {
 	} // end-method
 	
 	// Package-scoped
-	public static String getLogHeader(String dumpReason, int seqNo) {
+	@SuppressWarnings("deprecation")
+    public static String getLogHeader(String dumpReason, int seqNo) {
 		final String Sep = "-";
 		StringBuilder write = new StringBuilder("<?xml version=\"1.0\"?>" + "<logs>");
 		write.append("<info>");

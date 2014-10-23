@@ -35,7 +35,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public UnsubscribeVehicleData(Hashtable hash) {
+    public UnsubscribeVehicleData(Hashtable<String, Object> hash) {
         super(hash);
     }
 

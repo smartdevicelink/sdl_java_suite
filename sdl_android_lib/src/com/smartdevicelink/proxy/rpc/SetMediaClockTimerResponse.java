@@ -26,7 +26,7 @@ public class SetMediaClockTimerResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SetMediaClockTimerResponse(Hashtable hash) {
+    public SetMediaClockTimerResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

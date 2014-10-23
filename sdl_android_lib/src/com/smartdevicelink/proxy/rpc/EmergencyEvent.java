@@ -12,7 +12,7 @@ import com.smartdevicelink.util.DebugTool;
 public class EmergencyEvent extends RPCStruct {
 
     public EmergencyEvent() { }
-    public EmergencyEvent(Hashtable hash) {
+    public EmergencyEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
 

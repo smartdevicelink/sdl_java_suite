@@ -9,7 +9,7 @@ public class SystemRequestResponse extends RPCResponse {
         super("SystemRequest");
     }
 
-    public SystemRequestResponse(Hashtable hash) {
+    public SystemRequestResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

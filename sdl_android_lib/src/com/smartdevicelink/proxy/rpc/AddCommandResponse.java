@@ -15,7 +15,7 @@ public class AddCommandResponse extends RPCResponse {
         super("AddCommand");
     }
 
-    public AddCommandResponse(Hashtable hash) {
+    public AddCommandResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

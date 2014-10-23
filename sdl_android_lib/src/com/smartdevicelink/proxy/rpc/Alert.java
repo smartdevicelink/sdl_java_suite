@@ -52,7 +52,7 @@ public class Alert extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */	
-    public Alert(Hashtable hash) {
+    public Alert(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -166,6 +166,7 @@ public class Alert extends RPCRequest {
 	 * @return Vector -a Vector<TTSChunk> value specify what is to be spoken to
 	 *         the user
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getTtsChunks() {
         if (parameters.get(Names.ttsChunks) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.ttsChunks);
@@ -176,7 +177,7 @@ public class Alert extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -266,6 +267,7 @@ public class Alert extends RPCRequest {
 	 *         object
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<SoftButton> getSoftButtons() {
         if (parameters.get(Names.softButtons) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
@@ -276,7 +278,7 @@ public class Alert extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<SoftButton> newList = new Vector<SoftButton>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable)hashObj));
+	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

@@ -46,7 +46,7 @@ public class Show extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public Show(Hashtable hash) {
+    public Show(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -358,13 +358,14 @@ public class Show extends RPCRequest {
 	 *         displays
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Image getGraphic() {
     	Object obj = parameters.get(Names.graphic);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.graphic, e);
             }
@@ -388,7 +389,7 @@ public class Show extends RPCRequest {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.secondaryGraphic, e);
             }
@@ -404,6 +405,7 @@ public class Show extends RPCRequest {
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<SoftButton> getSoftButtons() {
         if (parameters.get(Names.softButtons) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
@@ -414,7 +416,7 @@ public class Show extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<SoftButton> newList = new Vector<SoftButton>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable)hashObj));
+	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -455,6 +457,7 @@ public class Show extends RPCRequest {
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<String> getCustomPresets() {
     	if (parameters.get(Names.customPresets) instanceof Vector<?>) {
     		Vector<?> list = (Vector<?>)parameters.get(Names.customPresets);

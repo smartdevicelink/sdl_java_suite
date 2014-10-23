@@ -63,7 +63,7 @@ public class OnCommand extends RPCNotification {
     *<p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>
     *@param hash The Hashtable to use
     */    
-    public OnCommand(Hashtable hash) {
+    public OnCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

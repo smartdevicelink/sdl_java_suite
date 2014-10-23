@@ -14,7 +14,7 @@ public class DeleteCommandResponse extends RPCResponse {
     public DeleteCommandResponse() {
         super("DeleteCommand");
     }
-    public DeleteCommandResponse(Hashtable hash) {
+    public DeleteCommandResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

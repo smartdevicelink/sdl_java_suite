@@ -72,7 +72,7 @@ public class SubscribeButton extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public SubscribeButton(Hashtable hash) {
+    public SubscribeButton(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**

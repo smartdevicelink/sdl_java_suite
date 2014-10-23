@@ -18,7 +18,7 @@ public class KeyboardProperties extends RPCStruct {
         store.put(Names.keypressMode, KEYPRESS_MODE_DEFAULT);
     }
 
-    public KeyboardProperties(Hashtable hash) {
+    public KeyboardProperties(Hashtable<String, Object> hash) {
         super(hash);
         if (!store.containsKey(Names.keypressMode)) {
             store.put(Names.keypressMode, KEYPRESS_MODE_DEFAULT);
@@ -103,6 +103,7 @@ public class KeyboardProperties extends RPCStruct {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Vector<String> getLimitedCharacterList() {
         final Object listObj = store.get(Names.limitedCharacterList);
         if (listObj instanceof Vector<?>) {

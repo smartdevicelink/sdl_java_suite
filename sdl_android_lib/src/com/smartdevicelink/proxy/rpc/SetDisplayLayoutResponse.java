@@ -28,16 +28,17 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SetDisplayLayoutResponse(Hashtable hash) {
+    public SetDisplayLayoutResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     
+    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
         Object obj = parameters.get(Names.displayCapabilities);
         if (obj instanceof DisplayCapabilities) {
         	return (DisplayCapabilities)obj;
         } else if (obj instanceof Hashtable) {
-        	return new DisplayCapabilities((Hashtable)obj);
+        	return new DisplayCapabilities((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -48,6 +49,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Vector<ButtonCapabilities> getButtonCapabilities() {
         if (parameters.get(Names.buttonCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.buttonCapabilities);
@@ -58,7 +60,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<ButtonCapabilities> newList = new Vector<ButtonCapabilities>();
 	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable)hashObj));
+	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -73,6 +75,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Vector<SoftButtonCapabilities> getSoftButtonCapabilities() {
         if (parameters.get(Names.softButtonCapabilities) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtonCapabilities);
@@ -83,7 +86,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<SoftButtonCapabilities> newList = new Vector<SoftButtonCapabilities>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable)hashObj));
+	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -98,12 +101,13 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
         Object obj = parameters.get(Names.presetBankCapabilities);
         if (obj instanceof PresetBankCapabilities) {
         	return (PresetBankCapabilities)obj;
         } else if (obj instanceof Hashtable) {
-        	return new PresetBankCapabilities((Hashtable)obj);
+        	return new PresetBankCapabilities((Hashtable<String, Object>)obj);
         }
         return null;
     }

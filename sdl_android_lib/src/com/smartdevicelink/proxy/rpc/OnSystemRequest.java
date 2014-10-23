@@ -10,7 +10,6 @@ import com.smartdevicelink.util.DebugTool;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +22,8 @@ public class OnSystemRequest extends RPCNotification {
         super("OnSystemRequest");
     }
 
-    public OnSystemRequest(Hashtable hash) {
+    @SuppressWarnings("unchecked")
+    public OnSystemRequest(Hashtable<String, Object> hash) {
         super(hash);
         
         //testing
@@ -56,6 +56,7 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     
+    @SuppressWarnings("unchecked")
     public Vector<String> getLegacyData() {
     	if (parameters.get(Names.data) instanceof Vector<?>) {
     		Vector<?> list = (Vector<?>)parameters.get(Names.data);
@@ -116,6 +117,7 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
  
+    @SuppressWarnings("unchecked")
     public Headers getHeader() {
     	if (httpreqparams == null) return null;
     	
@@ -125,7 +127,7 @@ public class OnSystemRequest extends RPCNotification {
             return (Headers) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Headers((Hashtable) obj);
+        		return new Headers((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.headers, e);
             }
@@ -162,19 +164,6 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
-    /*public Vector<String> getUrl() {
-        if (parameters.get(Names.url) instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>) parameters.get(Names.url);
-            if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (Vector<String>) list;
-                }
-            }
-        }
-        return null;
-    }*/
-
     public String getUrl() {
         Object o = parameters.get(Names.url);        
         if (o == null)
@@ -198,14 +187,6 @@ public class OnSystemRequest extends RPCNotification {
             parameters.remove(Names.url);
         }
     }
-    
-   /* public void setUrl(Vector<String> url) {
-        if (url != null) {
-            parameters.put(Names.url, url);
-        } else {
-            parameters.remove(Names.url);
-        }
-    }*/
 
     public FileType getFileType() {
         Object obj = parameters.get(Names.fileType);

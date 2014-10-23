@@ -8,7 +8,7 @@ import java.util.Hashtable;
 public class TouchEventCapabilities extends RPCStruct {
     public TouchEventCapabilities() {}
     
-    public TouchEventCapabilities(Hashtable hash) {
+    public TouchEventCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     

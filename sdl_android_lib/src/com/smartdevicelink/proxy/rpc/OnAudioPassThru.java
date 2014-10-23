@@ -51,7 +51,7 @@ public class OnAudioPassThru extends RPCNotification {
      *<p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */ 
-    public OnAudioPassThru(Hashtable hash) {
+    public OnAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setAPTData(byte[] aptData) {

@@ -27,7 +27,7 @@ public class ListFiles extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ListFiles(Hashtable hash) {
+    public ListFiles(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

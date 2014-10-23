@@ -29,7 +29,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PerformInteractionResponse(Hashtable hash) {
+    public PerformInteractionResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

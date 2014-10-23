@@ -94,7 +94,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public RegisterAppInterface(Hashtable hash) {
+    public RegisterAppInterface(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -103,12 +103,13 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */    
+    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
         Object obj = parameters.get(Names.sdlMsgVersion);
         if (obj instanceof SdlMsgVersion) {
         	return (SdlMsgVersion) obj;
         } else if (obj instanceof Hashtable) {
-        	return new SdlMsgVersion((Hashtable) obj);
+        	return new SdlMsgVersion((Hashtable<String, Object>) obj);
         }
         return null;
     }
@@ -139,12 +140,13 @@ public class RegisterAppInterface extends RPCRequest {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public DeviceInfo getDeviceInfo() {
         Object obj = parameters.get(Names.deviceInfo);
         if (obj instanceof DeviceInfo) {
         	return (DeviceInfo) obj;
         } else if (obj instanceof Hashtable) {
-        	return new DeviceInfo((Hashtable) obj);
+        	return new DeviceInfo((Hashtable<String, Object>) obj);
         }
         return null;
     }    
@@ -194,6 +196,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return Vector<TTSChunk> -Vector value representing the TTS string
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<TTSChunk> getTtsName() {
         if (parameters.get(Names.ttsName) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.ttsName);
@@ -204,7 +207,7 @@ public class RegisterAppInterface extends RPCRequest {
 	            } else if (obj instanceof Hashtable) {
 	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable) hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>) hashObj));
 	                }
 	                return newList;
 	            }
@@ -280,6 +283,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         1-100 elements, each element containing a voice-recognition
 	 *         synonym
 	 */    
+    @SuppressWarnings("unchecked")
     public Vector<String> getVrSynonyms() {
     	if (parameters.get(Names.vrSynonyms) instanceof Vector<?>) {
     		Vector<?> list = (Vector<?>)parameters.get(Names.vrSynonyms);
@@ -427,6 +431,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         the app
 	 * @since SmartDeviceLinke 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Vector<AppHMIType> getAppHMIType() {
         if (parameters.get(Names.appHMIType) instanceof Vector<?>) {
 	    	Vector<?> list = (Vector<?>)parameters.get(Names.appHMIType);

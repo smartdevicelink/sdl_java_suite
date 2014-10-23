@@ -32,7 +32,7 @@ public class PutFile extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PutFile(Hashtable hash) {
+    public PutFile(Hashtable<String, Object> hash) {
         super(hash);
     }
 

@@ -14,7 +14,7 @@ public class RPCRequest extends RPCMessage {
 		messageType = Names.request;
 	}
 
-	public RPCRequest(Hashtable hash) {
+	public RPCRequest(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 

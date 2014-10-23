@@ -44,11 +44,12 @@ public class RPCStruct {
 		return JsonRPCMarshaller.serializeHashtable(store);
 	}
 	
-	public JSONObject serializeJSON(byte version) throws JSONException {
+	@SuppressWarnings("unchecked")
+    public JSONObject serializeJSON(byte version) throws JSONException {
 		if (version > 1) {
 			String messageType = getMessageTypeName(store.keySet());
-			Hashtable function = (Hashtable) store.get(messageType);
-			Hashtable parameters = (Hashtable) function.get(Names.parameters);
+			Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
+			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(Names.parameters);
 			return JsonRPCMarshaller.serializeHashtable(parameters);
 		} else return JsonRPCMarshaller.serializeHashtable(store);
 	}

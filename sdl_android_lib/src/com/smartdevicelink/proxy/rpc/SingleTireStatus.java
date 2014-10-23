@@ -39,7 +39,7 @@ public class SingleTireStatus extends RPCStruct {
      * Constructs a newly allocated SingleTireStatus object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public SingleTireStatus(Hashtable hash) {
+    public SingleTireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
     

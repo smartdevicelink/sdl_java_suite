@@ -7,8 +7,8 @@ import com.smartdevicelink.util.ByteEnumer;
 
 public class SessionType extends ByteEnumer {
 
-	private static Vector theList = new Vector();
-	public static Vector getList() { return theList; } 
+	private static Vector<SessionType> theList = new Vector<SessionType>();
+	public static Vector<SessionType> getList() { return theList; } 
 	
 	byte i = 0x00;
 	

@@ -26,7 +26,7 @@ public class ChangeRegistrationResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ChangeRegistrationResponse(Hashtable hash) {
+    public ChangeRegistrationResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

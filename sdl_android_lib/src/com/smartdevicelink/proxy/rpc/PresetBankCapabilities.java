@@ -36,7 +36,7 @@ public class PresetBankCapabilities extends RPCStruct {
      * Constructs a newly allocated PresetBankCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public PresetBankCapabilities(Hashtable hash) {
+    public PresetBankCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     

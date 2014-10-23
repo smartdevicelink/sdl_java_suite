@@ -4,16 +4,14 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.util.DebugTool;
 
 public class ImageField extends RPCStruct {
     public ImageField() { }
    
-    public ImageField(Hashtable hash) {
+    public ImageField(Hashtable<String, Object> hash) {
         super(hash);
     }
     public ImageFieldName getName() {
@@ -62,13 +60,14 @@ public class ImageField extends RPCStruct {
         	store.remove(Names.imageTypeSupported);
         }         
     }
+    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
     	Object obj = store.get(Names.imageResolution);
         if (obj instanceof ImageResolution) {
             return (ImageResolution) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new ImageResolution((Hashtable) obj);
+        		return new ImageResolution((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.imageResolution, e);
             }

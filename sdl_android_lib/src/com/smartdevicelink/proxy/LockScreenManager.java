@@ -9,7 +9,8 @@ public class LockScreenManager {
 	private Boolean bUserSelected = false;
 	private Boolean bDriverDistStatus = null;
 	private HMILevel  hmiLevel = null;
-	private int iSessionID;
+	@SuppressWarnings("unused")
+    private int iSessionID;
 
 	public synchronized void setSessionID(int iVal)
 	{
