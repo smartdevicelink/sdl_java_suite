@@ -165,6 +165,8 @@ public enum ButtonName{
         	case PRESET_9:
         		returnIndex = 9;
         		break;
+            default:
+                break;
     	}
     	
     	return returnIndex;

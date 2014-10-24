@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.DebugTool;
 
@@ -13,12 +13,15 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class PerformInteractionResponse extends RPCResponse {
+    public static final String KEY_MANUAL_TEXT_ENTRY = "manualTextEntry";
+    public static final String KEY_TRIGGER_SOURCE = "triggerSource";
+    public static final String KEY_CHOICE_ID = "choiceID";
 
 	/**
 	 * Constructs a new PerformInteractionResponse object
 	 */
     public PerformInteractionResponse() {
-        super("PerformInteraction");
+        super(FunctionID.PERFORM_INTERACTION);
     }
 
 	/**
@@ -29,7 +32,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PerformInteractionResponse(Hashtable hash) {
+    public PerformInteractionResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -37,7 +40,7 @@ public class PerformInteractionResponse extends RPCResponse {
      * @return choiceID Min: 0  Max: 65535
      */   
     public Integer getChoiceID() {
-        return (Integer) parameters.get( Names.choiceID );
+        return (Integer) parameters.get( KEY_CHOICE_ID );
     }
     /**
      * Sets the application-scoped identifier that uniquely identifies this choice.
@@ -45,7 +48,9 @@ public class PerformInteractionResponse extends RPCResponse {
      */ 
     public void setChoiceID( Integer choiceID ) {
         if (choiceID != null) {
-            parameters.put(Names.choiceID, choiceID );
+            parameters.put(KEY_CHOICE_ID, choiceID );
+        } else {
+            parameters.remove(KEY_CHOICE_ID);
         }
     }
     /**
@@ -53,7 +58,7 @@ public class PerformInteractionResponse extends RPCResponse {
      * @return TriggerSource a TriggerSource object
      */    
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(Names.triggerSource);
+        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
         if (obj instanceof TriggerSource) {
             return (TriggerSource) obj;
         } else if (obj instanceof String) {
@@ -61,7 +66,7 @@ public class PerformInteractionResponse extends RPCResponse {
             try {
                 theCode = TriggerSource.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.triggerSource, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
             }
             return theCode;
         }
@@ -74,18 +79,20 @@ public class PerformInteractionResponse extends RPCResponse {
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
         if (triggerSource != null) {
-            parameters.put(Names.triggerSource, triggerSource );
+            parameters.put(KEY_TRIGGER_SOURCE, triggerSource );
+        } else {
+            parameters.remove(KEY_TRIGGER_SOURCE);
         }
     }
     
     public void setManualTextEntry(String manualTextEntry) {
         if (manualTextEntry != null) {
-            parameters.put(Names.manualTextEntry, manualTextEntry);
+            parameters.put(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
         } else {
-            parameters.remove(Names.manualTextEntry);
+            parameters.remove(KEY_MANUAL_TEXT_ENTRY);
         }
     }
     public String getManualTextEntry() {
-        return (String) parameters.get(Names.manualTextEntry);
+        return (String) parameters.get(KEY_MANUAL_TEXT_ENTRY);
     }    
 }

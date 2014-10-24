@@ -3,27 +3,29 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.util.DebugTool;
 
 public class ECallInfo extends RPCStruct {
+    public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
+    public static final String KEY_AUX_E_CALL_NOTIFICATION_STATUS = "auxECallNotificationStatus";
+    public static final String KEY_E_CALL_CONFIRMATION_STATUS = "eCallConfirmationStatus";
 
     public ECallInfo() { }
-    public ECallInfo(Hashtable hash) {
+    public ECallInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
 
     public void setECallNotificationStatus(VehicleDataNotificationStatus eCallNotificationStatus) {
         if (eCallNotificationStatus != null) {
-            store.put(Names.eCallNotificationStatus, eCallNotificationStatus);
+            store.put(KEY_E_CALL_NOTIFICATION_STATUS, eCallNotificationStatus);
         } else {
-        	store.remove(Names.eCallNotificationStatus);
+        	store.remove(KEY_E_CALL_NOTIFICATION_STATUS);
         }
     }
     public VehicleDataNotificationStatus getECallNotificationStatus() {
-        Object obj = store.get(Names.eCallNotificationStatus);
+        Object obj = store.get(KEY_E_CALL_NOTIFICATION_STATUS);
         if (obj instanceof VehicleDataNotificationStatus) {
             return (VehicleDataNotificationStatus) obj;
         } else if (obj instanceof String) {
@@ -31,7 +33,7 @@ public class ECallInfo extends RPCStruct {
             try {
                 theCode = VehicleDataNotificationStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.eCallNotificationStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_NOTIFICATION_STATUS, e);
             }
             return theCode;
         }
@@ -39,13 +41,13 @@ public class ECallInfo extends RPCStruct {
     }
     public void setAuxECallNotificationStatus(VehicleDataNotificationStatus auxECallNotificationStatus) {
         if (auxECallNotificationStatus != null) {
-            store.put(Names.auxECallNotificationStatus, auxECallNotificationStatus);
+            store.put(KEY_AUX_E_CALL_NOTIFICATION_STATUS, auxECallNotificationStatus);
         } else {
-        	store.remove(Names.auxECallNotificationStatus);
+        	store.remove(KEY_AUX_E_CALL_NOTIFICATION_STATUS);
         }
     }
     public VehicleDataNotificationStatus getAuxECallNotificationStatus() {
-        Object obj = store.get(Names.auxECallNotificationStatus);
+        Object obj = store.get(KEY_AUX_E_CALL_NOTIFICATION_STATUS);
         if (obj instanceof VehicleDataNotificationStatus) {
             return (VehicleDataNotificationStatus) obj;
         } else if (obj instanceof String) {
@@ -53,7 +55,7 @@ public class ECallInfo extends RPCStruct {
             try {
                 theCode = VehicleDataNotificationStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.auxECallNotificationStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUX_E_CALL_NOTIFICATION_STATUS, e);
             }
             return theCode;
         }
@@ -61,13 +63,13 @@ public class ECallInfo extends RPCStruct {
     }
     public void setECallConfirmationStatus(ECallConfirmationStatus eCallConfirmationStatus) {
         if (eCallConfirmationStatus != null) {
-            store.put(Names.eCallConfirmationStatus, eCallConfirmationStatus);
+            store.put(KEY_E_CALL_CONFIRMATION_STATUS, eCallConfirmationStatus);
         } else {
-        	store.remove(Names.eCallConfirmationStatus);
+        	store.remove(KEY_E_CALL_CONFIRMATION_STATUS);
         }
     }
     public ECallConfirmationStatus getECallConfirmationStatus() {
-        Object obj = store.get(Names.eCallConfirmationStatus);
+        Object obj = store.get(KEY_E_CALL_CONFIRMATION_STATUS);
         if (obj instanceof ECallConfirmationStatus) {
             return (ECallConfirmationStatus) obj;
         } else if (obj instanceof String) {
@@ -75,7 +77,7 @@ public class ECallInfo extends RPCStruct {
             try {
                 theCode = ECallConfirmationStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.eCallConfirmationStatus, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_CONFIRMATION_STATUS, e);
             }
             return theCode;
         }

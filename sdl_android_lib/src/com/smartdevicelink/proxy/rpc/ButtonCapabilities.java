@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.util.DebugTool;
 
@@ -46,6 +45,10 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class ButtonCapabilities extends RPCStruct {
+	public static final String KEY_NAME = "name";
+	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
+	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
+	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
 	/**
 	 * Constructs a newly allocated ButtonCapabilities object
 	 */
@@ -54,7 +57,7 @@ public class ButtonCapabilities extends RPCStruct {
      * Constructs a newly allocated ButtonCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public ButtonCapabilities(Hashtable hash) {
+    public ButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -62,7 +65,7 @@ public class ButtonCapabilities extends RPCStruct {
      * @return ButtonName the name of the Button
      */    
     public ButtonName getName() {
-        Object obj = store.get(Names.name);
+        Object obj = store.get(KEY_NAME);
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
@@ -70,7 +73,7 @@ public class ButtonCapabilities extends RPCStruct {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.name, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
             }
             return theCode;
         }
@@ -82,7 +85,9 @@ public class ButtonCapabilities extends RPCStruct {
      */    
     public void setName( ButtonName name ) {
         if (name != null) {
-            store.put(Names.name, name );
+            store.put(KEY_NAME, name );
+        } else {
+        	store.remove(KEY_NAME);
         }
     }
     /**
@@ -90,7 +95,7 @@ public class ButtonCapabilities extends RPCStruct {
      * @return True if support otherwise False.
      */    
     public Boolean getShortPressAvailable() {
-        return (Boolean) store.get( Names.shortPressAvailable );
+        return (Boolean) store.get( KEY_SHORT_PRESS_AVAILABLE );
     }
     /**
      * Set the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
@@ -98,7 +103,9 @@ public class ButtonCapabilities extends RPCStruct {
      */    
     public void setShortPressAvailable( Boolean shortPressAvailable ) {
         if (shortPressAvailable != null) {
-            store.put(Names.shortPressAvailable, shortPressAvailable );
+            store.put(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable );
+        } else {
+        	store.remove(KEY_SHORT_PRESS_AVAILABLE);
         }
     }
     /**
@@ -106,7 +113,7 @@ public class ButtonCapabilities extends RPCStruct {
      * @return True if support otherwise False.
      */
     public Boolean getLongPressAvailable() {
-        return (Boolean) store.get( Names.longPressAvailable );
+        return (Boolean) store.get( KEY_LONG_PRESS_AVAILABLE );
     }
     /**
      * Set the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
@@ -114,7 +121,9 @@ public class ButtonCapabilities extends RPCStruct {
      */    
     public void setLongPressAvailable( Boolean longPressAvailable ) {
         if (longPressAvailable != null) {
-            store.put(Names.longPressAvailable, longPressAvailable );
+            store.put(KEY_LONG_PRESS_AVAILABLE, longPressAvailable );
+        } else {
+        	store.remove(KEY_LONG_PRESS_AVAILABLE);
         }
     }
     /**
@@ -122,7 +131,7 @@ public class ButtonCapabilities extends RPCStruct {
      * @return True if support otherwise False.
      */    
     public Boolean getUpDownAvailable() {
-        return (Boolean) store.get( Names.upDownAvailable );
+        return (Boolean) store.get( KEY_UP_DOWN_AVAILABLE );
     }
     /**
      * Set the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
@@ -130,7 +139,9 @@ public class ButtonCapabilities extends RPCStruct {
      */    
     public void setUpDownAvailable( Boolean upDownAvailable ) {
         if (upDownAvailable != null) {
-            store.put(Names.upDownAvailable, upDownAvailable );
+            store.put(KEY_UP_DOWN_AVAILABLE, upDownAvailable );
+        } else {
+        	store.remove(KEY_UP_DOWN_AVAILABLE);
         }
     }
 }

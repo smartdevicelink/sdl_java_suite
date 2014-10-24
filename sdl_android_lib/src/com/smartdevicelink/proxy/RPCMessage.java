@@ -1,11 +1,15 @@
 package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
-import java.util.Iterator;
 
-import com.smartdevicelink.proxy.constants.Names;
 
 public class RPCMessage extends RPCStruct  {
+    public static final String KEY_REQUEST = "request";
+    public static final String KEY_RESPONSE = "response";
+    public static final String KEY_NOTIFICATION = "notification";
+    public static final String KEY_FUNCTION_NAME = "name";
+    public static final String KEY_PARAMETERS = "parameters";
+    public static final String KEY_CORRELATION_ID = "correlationID";
 
 	public RPCMessage(String functionName) {
 		this(functionName, "request");
@@ -21,34 +25,35 @@ public class RPCMessage extends RPCStruct  {
 	}
 	
 	public RPCMessage(String functionName, String messageType) {
-		function = new Hashtable();
+		function = new Hashtable<String, Object>();
 		this.messageType = messageType;
 		store.put(messageType, function);
-		parameters = new Hashtable();
-		function.put(Names.parameters, parameters);
-		function.put(Names.function_name, functionName);
+		parameters = new Hashtable<String, Object>();
+		function.put(KEY_PARAMETERS, parameters);
+		function.put(KEY_FUNCTION_NAME, functionName);
 	}
 
-	public RPCMessage(Hashtable hash) {
+	@SuppressWarnings("unchecked")
+    public RPCMessage(Hashtable<String, Object> hash) {
         store = hash;
         messageType = getMessageTypeName(hash.keySet());
-        function = (Hashtable) hash.get(messageType);
-        parameters = (Hashtable) function.get(Names.parameters);
-        if (hasKey(hash.keySet(), Names.bulkData)) {
-            setBulkData((byte[]) hash.get(Names.bulkData));
+        function = (Hashtable<String, Object>) hash.get(messageType);
+        parameters = (Hashtable<String, Object>) function.get(KEY_PARAMETERS);
+        if (hasKey(hash.keySet(), RPCStruct.KEY_BULK_DATA)) {
+            setBulkData((byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
         }
 	}
 
 	protected String messageType;
-	protected Hashtable parameters;
-	protected Hashtable function;
+	protected Hashtable<String, Object> parameters;
+	protected Hashtable<String, Object> function;
 	
 	public String getFunctionName() {
-		return (String)function.get(Names.function_name);
+		return (String)function.get(KEY_FUNCTION_NAME);
 	}
 	
 	protected void setFunctionName(String functionName) {
-		function.put(Names.function_name, functionName);
+		function.put(KEY_FUNCTION_NAME, functionName);
 	}
 
 	public String getMessageType() {

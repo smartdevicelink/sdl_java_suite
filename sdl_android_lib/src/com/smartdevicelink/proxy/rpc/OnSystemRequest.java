@@ -1,35 +1,48 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Hashtable;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
+import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
 
-import java.util.Hashtable;
-import java.util.Vector;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class OnSystemRequest extends RPCNotification {
+	public static final String KEY_URL_V1 = "URL";
+    public static final String KEY_URL = "url";
+	public static final String KEY_TIMEOUT_V1 = "Timeout";
+    public static final String KEY_TIMEOUT = "timeout";
+	public static final String KEY_HEADERS = "headers";
+	public static final String KEY_BODY = "body";
+	public static final String KEY_FILE_TYPE = "fileType";
+	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_DATA = "data";
+	public static final String KEY_OFFSET = "offset";
+	public static final String KEY_LENGTH = "length";
+
 	
 	Hashtable<String, Object> httpreqparams = null;
 	JSONObject myJSONObj = null;
 	
     public OnSystemRequest() {
-        super("OnSystemRequest");
+        super(FunctionID.ON_SYSTEM_REQUEST);
     }
 
-    public OnSystemRequest(Hashtable hash) {
+    @SuppressWarnings("unchecked")
+    public OnSystemRequest(Hashtable<String, Object> hash) {
         super(hash);
         
         //testing
         //String sJson = "{\"HTTPRequest\":{\"headers\":{\"ContentType\":\"application/json\",\"ConnectTimeout\":60,\"DoOutput\":true,\"DoInput\":true,\"UseCaches\":false,\"RequestMethod\":\"POST\",\"ReadTimeout\":60,\"InstanceFollowRedirects\":false,\"charset\":\"utf-8\",\"Content-Length\":10743},\"body\":\"{\\\"data\\\":[\\\"HQcYAAAp+Ul19L\\\"]}\"}}";
 		try {			
-			byte[] bulkData = (byte[]) hash.get(Names.bulkData);
+			byte[] bulkData = (byte[]) hash.get(RPCStruct.KEY_BULK_DATA);
 			
 			if (bulkData == null) return;
 			
@@ -46,23 +59,24 @@ public class OnSystemRequest extends RPCNotification {
     
     public void setBinData(byte[] aptData) {
         if (aptData != null) {
-            store.put(Names.bulkData, aptData);
+            store.put(RPCStruct.KEY_BULK_DATA, aptData);
         } else {
-        	store.remove(Names.bulkData);
+        	store.remove(RPCStruct.KEY_BULK_DATA);
         }
     }
     public byte[] getBinData() {
-        return (byte[]) store.get(Names.bulkData);
+        return (byte[]) store.get(RPCStruct.KEY_BULK_DATA);
     }
     
     
-    public Vector<String> getLegacyData() {
-    	if (parameters.get(Names.data) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(Names.data);
+    @SuppressWarnings("unchecked")
+    public List<String> getLegacyData() {
+    	if (parameters.get(KEY_DATA) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(KEY_DATA);
     		if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>)list;
+        			return (List<String>)list;
         		}
     		}
     	}
@@ -101,33 +115,34 @@ public class OnSystemRequest extends RPCNotification {
     
     public void setBody(String body) {
         if (body != null) {
-            parameters.put(Names.body, body);
+            parameters.put(KEY_BODY, body);
         } else {
-            parameters.remove(Names.body);
+            parameters.remove(KEY_BODY);
         }
     }
     
     
     public void setHeaders(Headers header) {
         if (header != null) {
-        	httpreqparams.put(Names.headers, header);
+        	httpreqparams.put(KEY_HEADERS, header);
         } else {
-        	httpreqparams.remove(Names.headers);
+        	httpreqparams.remove(KEY_HEADERS);
         }
     }
  
+    @SuppressWarnings("unchecked")
     public Headers getHeader() {
     	if (httpreqparams == null) return null;
     	
-    	Object obj = httpreqparams.get(Names.headers);
+    	Object obj = httpreqparams.get(KEY_HEADERS);
     	if (obj == null) return null;
         if (obj instanceof Headers) {
             return (Headers) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Headers((Hashtable) obj);
+        		return new Headers((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.headers, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEADERS, e);
             }
         }
         return null;
@@ -136,7 +151,7 @@ public class OnSystemRequest extends RPCNotification {
     
     
     public RequestType getRequestType() {
-        Object obj = parameters.get(Names.requestType);
+        Object obj = parameters.get(KEY_REQUEST_TYPE);
         if (obj == null) return null;
         if (obj instanceof RequestType) {
             return (RequestType) obj;
@@ -147,7 +162,7 @@ public class OnSystemRequest extends RPCNotification {
             } catch (Exception e) {
                 DebugTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
-                        		Names.requestType, e);
+                        		KEY_REQUEST_TYPE, e);
             }
             return theCode;
         }
@@ -156,31 +171,18 @@ public class OnSystemRequest extends RPCNotification {
 
     public void setRequestType(RequestType requestType) {
         if (requestType != null) {
-            parameters.put(Names.requestType, requestType);
+            parameters.put(KEY_REQUEST_TYPE, requestType);
         } else {
-            parameters.remove(Names.requestType);
+            parameters.remove(KEY_REQUEST_TYPE);
         }
     }
 
-    /*public Vector<String> getUrl() {
-        if (parameters.get(Names.url) instanceof Vector<?>) {
-            Vector<?> list = (Vector<?>) parameters.get(Names.url);
-            if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (Vector<String>) list;
-                }
-            }
-        }
-        return null;
-    }*/
-
     public String getUrl() {
-        Object o = parameters.get(Names.url);        
+        Object o = parameters.get(KEY_URL);        
         if (o == null)
         {
         	//try again for gen 1.1
-        	o = parameters.get(Names.URL);	
+        	o = parameters.get(KEY_URL_V1);	
         }
         if (o == null)
         	return null;
@@ -193,22 +195,14 @@ public class OnSystemRequest extends RPCNotification {
 
     public void setUrl(String url) {
         if (url != null) {
-            parameters.put(Names.url, url);
+            parameters.put(KEY_URL, url);
         } else {
-            parameters.remove(Names.url);
+            parameters.remove(KEY_URL);
         }
     }
-    
-   /* public void setUrl(Vector<String> url) {
-        if (url != null) {
-            parameters.put(Names.url, url);
-        } else {
-            parameters.remove(Names.url);
-        }
-    }*/
 
     public FileType getFileType() {
-        Object obj = parameters.get(Names.fileType);
+        Object obj = parameters.get(KEY_FILE_TYPE);
         if (obj == null) return null;
         if (obj instanceof FileType) {
             return (FileType) obj;
@@ -219,7 +213,7 @@ public class OnSystemRequest extends RPCNotification {
             } catch (Exception e) {
                 DebugTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
-                        		Names.fileType, e);
+                        		KEY_FILE_TYPE, e);
             }
             return theCode;
         }
@@ -228,14 +222,14 @@ public class OnSystemRequest extends RPCNotification {
 
     public void setFileType(FileType fileType) {
         if (fileType != null) {
-            parameters.put(Names.fileType, fileType);
+            parameters.put(KEY_FILE_TYPE, fileType);
         } else {
-            parameters.remove(Names.fileType);
+            parameters.remove(KEY_FILE_TYPE);
         }
     }
 
     public Integer getOffset() {
-        final Object o = parameters.get(Names.offset);
+        final Object o = parameters.get(KEY_OFFSET);
         
         if (o == null) return null;
         
@@ -247,17 +241,17 @@ public class OnSystemRequest extends RPCNotification {
 
     public void setOffset(Integer offset) {
         if (offset != null) {
-            parameters.put(Names.offset, offset);
+            parameters.put(KEY_OFFSET, offset);
         } else {
-            parameters.remove(Names.offset);
+            parameters.remove(KEY_OFFSET);
         }
     }
     
     public Integer getTimeout() {
-        Object o = parameters.get(Names.timeout);
+        Object o = parameters.get(KEY_TIMEOUT);
         
         if (o == null){
-        	 o = parameters.get(Names.Timeout);
+        	 o = parameters.get(KEY_TIMEOUT_V1);
         	 if (o == null) return null;
         }
         
@@ -269,14 +263,14 @@ public class OnSystemRequest extends RPCNotification {
 
     public void setTimeout(Integer timeout) {
         if (timeout != null) {
-            parameters.put(Names.timeout, timeout);
+            parameters.put(KEY_TIMEOUT, timeout);
         } else {
-            parameters.remove(Names.timeout);
+            parameters.remove(KEY_TIMEOUT);
         }
     }    
 
     public Integer getLength() {
-        final Object o = parameters.get(Names.length);
+        final Object o = parameters.get(KEY_LENGTH);
         if (o == null) return null;
         		
         if (o instanceof Integer) {
@@ -287,9 +281,9 @@ public class OnSystemRequest extends RPCNotification {
 
     public void setLength(Integer length) {
         if (length != null) {
-            parameters.put(Names.length, length);
+            parameters.put(KEY_LENGTH, length);
         } else {
-            parameters.remove(Names.length);
+            parameters.remove(KEY_LENGTH);
         }
     }
 }

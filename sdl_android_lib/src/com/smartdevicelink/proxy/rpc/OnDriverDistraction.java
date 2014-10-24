@@ -3,8 +3,10 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 
+
+
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.util.DebugTool;
 
@@ -41,17 +43,18 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class OnDriverDistraction  extends RPCNotification {
+	public static final String KEY_STATE = "state";
 	/**
 	*Constructs a newly allocated OnDriverDistraction object
 	*/ 
 	public OnDriverDistraction() {
-        super("OnDriverDistraction");
+        super(FunctionID.ON_DRIVER_DISTRACTION);
     }
 	/**
      *<p>Constructs a newly allocated OnDriverDistraction object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */	
-    public OnDriverDistraction(Hashtable hash) {
+    public OnDriverDistraction(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -59,7 +62,7 @@ public class OnDriverDistraction  extends RPCNotification {
      * @return {@linkplain DriverDistractionState} the Current driver distraction state.
      */    
     public DriverDistractionState getState() {
-        Object obj = parameters.get(Names.state);
+        Object obj = parameters.get(KEY_STATE);
         if (obj instanceof DriverDistractionState) {
         	return (DriverDistractionState)obj;
         } else if(obj instanceof String) {
@@ -67,7 +70,7 @@ public class OnDriverDistraction  extends RPCNotification {
         	try {
         		theCode = DriverDistractionState.valueForString((String) obj);
         	} catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.state, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
             }
         	return theCode;
         }    	
@@ -79,7 +82,9 @@ public class OnDriverDistraction  extends RPCNotification {
      */    
     public void setState( DriverDistractionState state ) {
         if (state != null) {
-            parameters.put(Names.state, state );
+            parameters.put(KEY_STATE, state );
+        } else {
+            parameters.remove(KEY_STATE);
         }
     }  
 }

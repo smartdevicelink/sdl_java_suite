@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
+
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
@@ -43,6 +43,9 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class AudioPassThruCapabilities extends RPCStruct {
+	public static final String KEY_SAMPLING_RATE = "samplingRate";
+	public static final String KEY_AUDIO_TYPE = "audioType";
+	public static final String KEY_BITS_PER_SAMPLE = "bitsPerSample";
 	
 	/**
 	 * Constructs a newly allocated AudioPassThruCapabilities object
@@ -53,7 +56,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * Constructs a newly allocated AudioPassThruCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public AudioPassThruCapabilities(Hashtable hash) {
+    public AudioPassThruCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -63,9 +66,9 @@ public class AudioPassThruCapabilities extends RPCStruct {
      */
     public void setSamplingRate(SamplingRate samplingRate) {
     	if (samplingRate != null) {
-    		store.put(Names.samplingRate, samplingRate);
+    		store.put(KEY_SAMPLING_RATE, samplingRate);
     	} else {
-    		store.remove(Names.samplingRate);
+    		store.remove(KEY_SAMPLING_RATE);
     	}
     }
     
@@ -74,7 +77,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return  the sampling rate for AudioPassThru
      */
     public SamplingRate getSamplingRate() {
-        Object obj = store.get(Names.samplingRate);
+        Object obj = store.get(KEY_SAMPLING_RATE);
         if (obj instanceof SamplingRate) {
             return (SamplingRate) obj;
         } else if (obj instanceof String) {
@@ -82,7 +85,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
             try {
                 theCode = SamplingRate.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.samplingRate, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SAMPLING_RATE, e);
             }
             return theCode;
         }
@@ -95,9 +98,9 @@ public class AudioPassThruCapabilities extends RPCStruct {
      */
     public void setBitsPerSample(BitsPerSample bitsPerSample) {
     	if (bitsPerSample != null) {
-    		store.put(Names.bitsPerSample, bitsPerSample);
+    		store.put(KEY_BITS_PER_SAMPLE, bitsPerSample);
     	} else {
-    		store.remove(Names.bitsPerSample);
+    		store.remove(KEY_BITS_PER_SAMPLE);
     	}
     }
     
@@ -106,7 +109,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return the sample depth in bit for AudioPassThru
      */
     public BitsPerSample getBitsPerSample() {
-        Object obj = store.get(Names.bitsPerSample);
+        Object obj = store.get(KEY_BITS_PER_SAMPLE);
         if (obj instanceof BitsPerSample) {
             return (BitsPerSample) obj;
         } else if (obj instanceof String) {
@@ -114,7 +117,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
             try {
                 theCode = BitsPerSample.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.bitsPerSample, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BITS_PER_SAMPLE, e);
             }
             return theCode;
         }
@@ -127,9 +130,9 @@ public class AudioPassThruCapabilities extends RPCStruct {
      */
     public void setAudioType(AudioType audioType) {
     	if (audioType != null) {
-    		store.put(Names.audioType, audioType);
+    		store.put(KEY_AUDIO_TYPE, audioType);
     	} else {
-    		store.remove(Names.audioType);
+    		store.remove(KEY_AUDIO_TYPE);
     	}
     }
     
@@ -138,7 +141,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return the audiotype for AudioPassThru
      */
     public AudioType getAudioType() {
-        Object obj = store.get(Names.audioType);
+        Object obj = store.get(KEY_AUDIO_TYPE);
         if (obj instanceof AudioType) {
             return (AudioType) obj;
         } else if (obj instanceof String) {
@@ -146,7 +149,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
             try {
                 theCode = AudioType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.audioType, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_TYPE, e);
             }
             return theCode;
         }

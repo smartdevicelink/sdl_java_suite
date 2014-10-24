@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.util.DebugTool;
 /**
@@ -17,11 +17,14 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class SetMediaClockTimer extends RPCRequest {
+	public static final String KEY_START_TIME = "startTime";
+	public static final String KEY_END_TIME = "endTime";
+	public static final String KEY_UPDATE_MODE = "updateMode";
 	/**
 	 * Constructs a new SetMediaClockTimer object
 	 */
     public SetMediaClockTimer() {
-        super("SetMediaClockTimer");
+        super(FunctionID.SET_MEDIA_CLOCK_TIMER);
     }
 	/**
 	 * Constructs a new SetMediaClockTimer object indicated by the Hashtable
@@ -31,7 +34,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public SetMediaClockTimer(Hashtable hash) {
+    public SetMediaClockTimer(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -40,12 +43,13 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return StartTime -a StartTime object specifying hour, minute, second
 	 *         values
 	 */    
+    @SuppressWarnings("unchecked")
     public StartTime getStartTime() {
-        Object obj = parameters.get(Names.startTime);
+        Object obj = parameters.get(KEY_START_TIME);
         if (obj instanceof StartTime) {
         	return (StartTime)obj;
         } else if (obj instanceof Hashtable) {
-        	return new StartTime((Hashtable)obj);
+        	return new StartTime((Hashtable<String, Object>)obj);
         }
         return null;
     }
@@ -64,23 +68,28 @@ public class SetMediaClockTimer extends RPCRequest {
 	 */    
     public void setStartTime( StartTime startTime ) {
         if (startTime != null) {
-            parameters.put(Names.startTime, startTime );
+            parameters.put(KEY_START_TIME, startTime );
+        } else {
+            parameters.remove(KEY_START_TIME);
         }
     }
     
+    @SuppressWarnings("unchecked")
     public StartTime getEndTime() {
-        Object obj = parameters.get(Names.endTime);
+        Object obj = parameters.get(KEY_END_TIME);
         if (obj instanceof StartTime) {
         	return (StartTime)obj;
         } else if (obj instanceof Hashtable) {
-        	return new StartTime((Hashtable)obj);
+        	return new StartTime((Hashtable<String, Object>)obj);
         }
         return null;
     }
     
     public void setEndTime( StartTime endTime ) {
         if (endTime != null) {
-            parameters.put(Names.endTime, endTime );
+            parameters.put(KEY_END_TIME, endTime );
+        } else {
+            parameters.remove(KEY_END_TIME);
         }
     }
     
@@ -90,7 +99,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return UpdateMode -a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
 	 */    
     public UpdateMode getUpdateMode() {
-        Object obj = parameters.get(Names.updateMode);
+        Object obj = parameters.get(KEY_UPDATE_MODE);
         if (obj instanceof UpdateMode) {
             return (UpdateMode) obj;
         } else if (obj instanceof String) {
@@ -98,7 +107,7 @@ public class SetMediaClockTimer extends RPCRequest {
             try {
                 theCode = UpdateMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.updateMode, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_UPDATE_MODE, e);
             }
             return theCode;
         }
@@ -120,7 +129,9 @@ public class SetMediaClockTimer extends RPCRequest {
 	 */    
     public void setUpdateMode( UpdateMode updateMode ) {
         if (updateMode != null) {
-            parameters.put(Names.updateMode, updateMode );
+            parameters.put(KEY_UPDATE_MODE, updateMode );
+        } else {
+            parameters.remove(KEY_UPDATE_MODE);
         }
     }
 }

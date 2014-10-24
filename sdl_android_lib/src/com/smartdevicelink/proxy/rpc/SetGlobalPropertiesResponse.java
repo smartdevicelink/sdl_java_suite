@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -15,7 +16,7 @@ public class SetGlobalPropertiesResponse extends RPCResponse {
 	 * Constructs a new SetGlobalPropertiesResponse object
 	 */
     public SetGlobalPropertiesResponse() {
-        super("SetGlobalProperties");
+        super(FunctionID.SET_GLOBAL_PROPERTIES);
     }
 
 	/**
@@ -26,7 +27,7 @@ public class SetGlobalPropertiesResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SetGlobalPropertiesResponse(Hashtable hash) {
+    public SetGlobalPropertiesResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

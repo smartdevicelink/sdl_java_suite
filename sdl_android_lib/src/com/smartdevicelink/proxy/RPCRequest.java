@@ -5,28 +5,26 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.constants.Names;
-
 public class RPCRequest extends RPCMessage {
 
 	public RPCRequest(String functionName) {
-		super(functionName, "request");
-		messageType = Names.request;
+		super(functionName, RPCMessage.KEY_REQUEST);
+		messageType = RPCMessage.KEY_REQUEST;
 	}
 
-	public RPCRequest(Hashtable hash) {
+	public RPCRequest(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
 	public Integer getCorrelationID() {
-		return (Integer)function.get(Names.correlationID);
+		return (Integer)function.get(RPCMessage.KEY_CORRELATION_ID);
 	}
 	
 	public void setCorrelationID(Integer correlationID) {
 		if (correlationID != null) {
-            function.put(Names.correlationID, correlationID );
-        } else if (parameters.contains(Names.correlationID)) {
-        	function.remove(Names.correlationID);
+            function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
+        } else {
+        	function.remove(RPCMessage.KEY_CORRELATION_ID);
         }
 	}
 }

@@ -1,12 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.proxy.rpc.enums.SystemAction;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Creates a full screen overlay containing a large block of formatted text that
@@ -18,12 +17,15 @@ import com.smartdevicelink.util.DebugTool;
  * <p>
  */
 public class ScrollableMessage extends RPCRequest {
+	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
+	public static final String KEY_TIMEOUT = "timeout";
+	public static final String KEY_SOFT_BUTTONS = "softButtons";
 
 	/**
 	 * Constructs a new ScrollableMessage object
 	 */
     public ScrollableMessage() {
-        super("ScrollableMessage");
+        super(FunctionID.SCROLLABLE_MESSAGE);
     }
 
 	/**
@@ -34,7 +36,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ScrollableMessage(Hashtable hash) {
+    public ScrollableMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -49,9 +51,9 @@ public class ScrollableMessage extends RPCRequest {
 	 */
     public void setScrollableMessageBody(String scrollableMessageBody) {
         if (scrollableMessageBody != null) {
-            parameters.put(Names.scrollableMessageBody, scrollableMessageBody);
+            parameters.put(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
         } else {
-        	parameters.remove(Names.scrollableMessageBody);
+        	parameters.remove(KEY_SCROLLABLE_MESSAGE_BODY);
         }
     }
 
@@ -61,7 +63,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return String -a String value
 	 */
     public String getScrollableMessageBody() {
-        return (String) parameters.get(Names.scrollableMessageBody);
+        return (String) parameters.get(KEY_SCROLLABLE_MESSAGE_BODY);
     }
 
 	/**
@@ -75,9 +77,9 @@ public class ScrollableMessage extends RPCRequest {
 	 */
     public void setTimeout(Integer timeout) {
         if (timeout != null) {
-            parameters.put(Names.timeout, timeout);
+            parameters.put(KEY_TIMEOUT, timeout);
         } else {
-        	parameters.remove(Names.timeout);
+        	parameters.remove(KEY_TIMEOUT);
         }
     }
 
@@ -87,7 +89,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return Integer -an Integer value representing an App defined timeout
 	 */
     public Integer getTimeout() {
-        return (Integer) parameters.get(Names.timeout);
+        return (Integer) parameters.get(KEY_TIMEOUT);
     }
 
 	/**
@@ -95,34 +97,35 @@ public class ScrollableMessage extends RPCRequest {
 	 * system defined "Close" SoftButton will be displayed
 	 * 
 	 * @param softButtons
-	 *            a Vector<SoftButton> value representing App defined
+	 *            a List<SoftButton> value representing App defined
 	 *            SoftButtons
 	 *            <p>
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
-            parameters.put(Names.softButtons, softButtons);
+            parameters.put(KEY_SOFT_BUTTONS, softButtons);
         } else {
-        	parameters.remove(Names.softButtons);
+        	parameters.remove(KEY_SOFT_BUTTONS);
         }
     }
 
 	/**
 	 * Gets App defined soft button
-	 * @return Vector -Vector<SoftButton> value
+	 * @return List -List<SoftButton> value
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Names.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
+    @SuppressWarnings("unchecked")
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable) hashObj));
+	                    newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
 	                }
 	                return newList;
 	            }

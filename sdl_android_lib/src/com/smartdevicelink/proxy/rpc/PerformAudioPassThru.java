@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
@@ -12,7 +13,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * This will open an audio pass thru session. By doing so the app can receive
- * audio data through the vehicle’s microphone
+ * audio data through the vehicleï¿½s microphone
  * <p>
  * Function Group: AudioPassThru
  * <p>
@@ -23,12 +24,20 @@ import com.smartdevicelink.util.DebugTool;
  * @see EndAudioPassThru
  */
 public class PerformAudioPassThru extends RPCRequest {
+	public static final String KEY_MAX_DURATION = "maxDuration";
+	public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1 = "audioPassThruDisplayText1";
+	public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2 = "audioPassThruDisplayText2";
+    public static final String KEY_MUTE_AUDIO = "muteAudio";
+    public static final String KEY_SAMPLING_RATE = "samplingRate";
+    public static final String KEY_AUDIO_TYPE = "audioType";
+    public static final String KEY_INITIAL_PROMPT = "initialPrompt";
+    public static final String KEY_BITS_PER_SAMPLE = "bitsPerSample";
 	
 	/**
 	 * Constructs a new PerformAudioPassThru object
 	 */
     public PerformAudioPassThru() {
-        super("PerformAudioPassThru");
+        super(FunctionID.PERFORM_AUDIO_PASS_THRU);
     }
 
 	/**
@@ -39,7 +48,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public PerformAudioPassThru(Hashtable hash) {
+    public PerformAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -48,7 +57,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * thru session by SDL
 	 * 
 	 * @param initialPrompt
-	 *            a Vector<TTSChunk> value represents the initial prompt which
+	 *            a List<TTSChunk> value represents the initial prompt which
 	 *            will be spoken before opening the audio pass thru session by
 	 *            SDL
 	 *            <p>
@@ -61,33 +70,34 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <li>Array Maxsize: 100</li>
 	 *            </ul>
 	 */
-    public void setInitialPrompt(Vector<TTSChunk> initialPrompt) {
+    public void setInitialPrompt(List<TTSChunk> initialPrompt) {
     	if (initialPrompt != null) {
-    		parameters.put(Names.initialPrompt, initialPrompt);
+    		parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
     	} else {
-    		parameters.remove(Names.initialPrompt);
+    		parameters.remove(KEY_INITIAL_PROMPT);
     	}
     }
 
 	/**
-	 * Gets a Vector value representing an initial prompt which will be spoken
+	 * Gets a List value representing an initial prompt which will be spoken
 	 * before opening the audio pass thru session by SDL
 	 * 
-	 * @return Vector<TTSChunk> -a Vector value representing an initial prompt
+	 * @return List<TTSChunk> -a List value representing an initial prompt
 	 *         which will be spoken before opening the audio pass thru session
 	 *         by SDL
 	 */
-    public Vector<TTSChunk> getInitialPrompt() {
-    	if (parameters.get(Names.initialPrompt) instanceof Vector<?>) {
-	        Vector<?> list = (Vector<?>)parameters.get(Names.initialPrompt);
+    @SuppressWarnings("unchecked")
+    public List<TTSChunk> getInitialPrompt() {
+    	if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof TTSChunk) {
-	                return (Vector<TTSChunk>) list;
+	                return (List<TTSChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<TTSChunk> newList = new Vector<TTSChunk>();
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable)hashObj));
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -107,9 +117,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setAudioPassThruDisplayText1(String audioPassThruDisplayText1) {
     	if (audioPassThruDisplayText1 != null) {
-    		parameters.put(Names.audioPassThruDisplayText1, audioPassThruDisplayText1);
+    		parameters.put(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
     	} else {
-    		parameters.remove(Names.audioPassThruDisplayText1);
+    		parameters.remove(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1);
     	}
     }
 
@@ -120,7 +130,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *         displayed during audio capture
 	 */
     public String getAudioPassThruDisplayText1() {
-    	return (String) parameters.get(Names.audioPassThruDisplayText1);
+    	return (String) parameters.get(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1);
     }
 
 	/**
@@ -134,9 +144,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setAudioPassThruDisplayText2(String audioPassThruDisplayText2) {
     	if (audioPassThruDisplayText2 != null) {
-    		parameters.put(Names.audioPassThruDisplayText2, audioPassThruDisplayText2);
+    		parameters.put(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
     	} else {
-    		parameters.remove(Names.audioPassThruDisplayText2);
+    		parameters.remove(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2);
     	}
     }
 
@@ -147,7 +157,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *         displayed during audio capture
 	 */
     public String getAudioPassThruDisplayText2() {
-    	return (String) parameters.get(Names.audioPassThruDisplayText2);
+    	return (String) parameters.get(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2);
     }
 
 	/**
@@ -158,9 +168,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setSamplingRate(SamplingRate samplingRate) {
     	if (samplingRate != null) {
-    		parameters.put(Names.samplingRate, samplingRate);
+    		parameters.put(KEY_SAMPLING_RATE, samplingRate);
     	} else {
-    		parameters.remove(Names.samplingRate);
+    		parameters.remove(KEY_SAMPLING_RATE);
     	}
     }
 
@@ -170,7 +180,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @return SamplingRate -a SamplingRate value
 	 */
     public SamplingRate getSamplingRate() {
-    	Object obj = parameters.get(Names.samplingRate);
+    	Object obj = parameters.get(KEY_SAMPLING_RATE);
     	if (obj instanceof SamplingRate) {
     		return (SamplingRate) obj;
     	} else if (obj instanceof String) {
@@ -178,7 +188,7 @@ public class PerformAudioPassThru extends RPCRequest {
             try {
                 theCode = SamplingRate.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.samplingRate, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SAMPLING_RATE, e);
             }
             return theCode;
     	}
@@ -196,9 +206,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setMaxDuration(Integer maxDuration) {
     	if (maxDuration != null) {
-    		parameters.put(Names.maxDuration, maxDuration);
+    		parameters.put(KEY_MAX_DURATION, maxDuration);
     	} else {
-    		parameters.remove(Names.maxDuration);
+    		parameters.remove(KEY_MAX_DURATION);
     	}
     }
 
@@ -209,7 +219,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *         recording in milliseconds
 	 */
     public int getMaxDuration() {
-    	return (Integer) parameters.get(Names.maxDuration);
+    	return (Integer) parameters.get(KEY_MAX_DURATION);
     }
 
 	/**
@@ -220,9 +230,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setBitsPerSample(BitsPerSample audioQuality) {
     	if (audioQuality != null) {
-    		parameters.put(Names.bitsPerSample, audioQuality);
+    		parameters.put(KEY_BITS_PER_SAMPLE, audioQuality);
     	} else {
-    		parameters.remove(Names.bitsPerSample);
+    		parameters.remove(KEY_BITS_PER_SAMPLE);
     	}
     }
 
@@ -232,7 +242,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @return BitsPerSample -a BitsPerSample value
 	 */
     public BitsPerSample getBitsPerSample() {
-    	Object obj = parameters.get(Names.bitsPerSample);
+    	Object obj = parameters.get(KEY_BITS_PER_SAMPLE);
     	if (obj instanceof BitsPerSample) {
     		return (BitsPerSample) obj;
     	} else if (obj instanceof String) {
@@ -240,7 +250,7 @@ public class PerformAudioPassThru extends RPCRequest {
             try {
                 theCode = BitsPerSample.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.bitsPerSample, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BITS_PER_SAMPLE, e);
             }
             return theCode;
     	}
@@ -255,9 +265,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setAudioType(AudioType audioType) {
     	if (audioType != null) {
-    		parameters.put(Names.audioType, audioType);
+    		parameters.put(KEY_AUDIO_TYPE, audioType);
     	} else {
-    		parameters.remove(Names.audioType);
+    		parameters.remove(KEY_AUDIO_TYPE);
     	}
     }
 
@@ -267,7 +277,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @return AudioType -an AudioType
 	 */
     public AudioType getAudioType() {
-    	Object obj = parameters.get(Names.audioType);
+    	Object obj = parameters.get(KEY_AUDIO_TYPE);
     	if (obj instanceof AudioType) {
     		return (AudioType) obj;
     	} else if (obj instanceof String) {
@@ -275,7 +285,7 @@ public class PerformAudioPassThru extends RPCRequest {
             try {
                 theCode = AudioType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.audioType, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_TYPE, e);
             }
             return theCode;
     	}
@@ -291,7 +301,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *         should be muted during the APT session
 	 */
     public Boolean getMuteAudio() {
-    	return (Boolean) parameters.get(Names.muteAudio);
+    	return (Boolean) parameters.get(KEY_MUTE_AUDIO);
     }
 
 	/**
@@ -307,9 +317,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 */
     public void setMuteAudio(Boolean muteAudio) {
     	if (muteAudio != null) {
-    		parameters.put(Names.muteAudio, muteAudio);
+    		parameters.put(KEY_MUTE_AUDIO, muteAudio);
     	} else {
-    		parameters.remove(Names.muteAudio);
+    		parameters.remove(KEY_MUTE_AUDIO);
     	}
     }    
 }

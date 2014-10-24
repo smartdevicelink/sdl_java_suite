@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 
 /**
@@ -13,31 +14,33 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
  * @since SmartDeviceLink 2.0
  */
 public class ReadDIDResponse extends RPCResponse {
+	public static final String KEY_DID_RESULT = "didResult";
 
     public ReadDIDResponse() {
-        super("ReadDID");
+        super(FunctionID.READ_DID);
     }
-    public ReadDIDResponse(Hashtable hash) {
+    public ReadDIDResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setDidResult(Vector<DIDResult> didResult) {
+    public void setDidResult(List<DIDResult> didResult) {
     	if (didResult != null) {
-    		parameters.put(Names.didResult, didResult);
+    		parameters.put(KEY_DID_RESULT, didResult);
     	} else {
-    		parameters.remove(Names.didResult);
+    		parameters.remove(KEY_DID_RESULT);
     	}
     }
-    public Vector<DIDResult> getDidResult() {
-        if (parameters.get(Names.didResult) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.didResult);
+    @SuppressWarnings("unchecked")
+    public List<DIDResult> getDidResult() {
+        if (parameters.get(KEY_DID_RESULT) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(KEY_DID_RESULT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof DIDResult) {
-	                return (Vector<DIDResult>) list;
+	                return (List<DIDResult>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<DIDResult> newList = new Vector<DIDResult>();
+	            	List<DIDResult> newList = new ArrayList<DIDResult>();
 	                for (Object hashObj : list) {
-	                    newList.add(new DIDResult((Hashtable)hashObj));
+	                    newList.add(new DIDResult((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

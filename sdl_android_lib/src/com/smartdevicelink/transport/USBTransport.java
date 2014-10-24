@@ -315,6 +315,7 @@ public class USBTransport extends SdlTransport {
         // TODO - put back stopUSBReading(); @see <a href="https://adc.luxoft.com/jira/browse/SmartDeviceLink-3450">SmartDeviceLink-3450</a>
     }
 
+    @SuppressWarnings("unused")
     private void stopUSBReading() {
         final State state = getState();
         switch (state) {

@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Removes a command from the Command Menu
@@ -20,12 +20,13 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see DeleteSubMenu
  */
 public class DeleteCommand extends RPCRequest {
+	public static final String KEY_CMD_ID = "cmdID";
 
 	/**
 	 * Constructs a new DeleteCommand object
 	 */
 	public DeleteCommand() {
-        super("DeleteCommand");
+        super(FunctionID.DELETE_COMMAND);
     }
 	/**
 	 * Constructs a new DeleteCommand object indicated by the Hashtable
@@ -35,7 +36,7 @@ public class DeleteCommand extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-	public DeleteCommand(Hashtable hash) {
+	public DeleteCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -46,7 +47,7 @@ public class DeleteCommand extends RPCRequest {
 	 *         the Command to be deleted from Command Menu
 	 */	
     public Integer getCmdID() {
-        return (Integer) parameters.get( Names.cmdID );
+        return (Integer) parameters.get( KEY_CMD_ID );
     }
 	/**
 	 * Sets the Command ID that identifies the Command to be deleted from Command Menu
@@ -58,7 +59,9 @@ public class DeleteCommand extends RPCRequest {
 	 */    
     public void setCmdID( Integer cmdID ) {
         if (cmdID != null) {
-            parameters.put(Names.cmdID, cmdID );
+            parameters.put(KEY_CMD_ID, cmdID );
+        } else {
+            parameters.remove(KEY_CMD_ID);
         }
     }
 }

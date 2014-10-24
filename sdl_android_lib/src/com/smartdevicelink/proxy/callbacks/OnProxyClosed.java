@@ -1,6 +1,5 @@
 package com.smartdevicelink.proxy.callbacks;
 
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
 public class OnProxyClosed extends InternalProxyMessage {
@@ -10,11 +9,11 @@ public class OnProxyClosed extends InternalProxyMessage {
 	private SdlDisconnectedReason _reason;
 	
 	public OnProxyClosed() {
-		super(Names.OnProxyClosed);
+		super(InternalProxyMessage.OnProxyClosed);
 	}
 	
 	public OnProxyClosed(String info, Exception e, SdlDisconnectedReason reason) {
-		super(Names.OnProxyClosed);
+		super(InternalProxyMessage.OnProxyClosed);
 		this._info = info;
 		this._e = e;
 		this._reason = reason;

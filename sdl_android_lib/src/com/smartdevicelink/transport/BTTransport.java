@@ -55,7 +55,8 @@ public class BTTransport extends SdlTransport {
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
 	    Field[] f = bsSocket.getClass().getDeclaredFields();
 
-	    int channel = -1;
+	    @SuppressWarnings("unused")
+        int channel = -1;
 	   
 	    BluetoothSocket mySocket = null;
 	    

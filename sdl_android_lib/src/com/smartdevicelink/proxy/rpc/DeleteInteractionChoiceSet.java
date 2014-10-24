@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Deletes an existing Choice Set identified by the parameter
@@ -21,12 +21,13 @@ import com.smartdevicelink.proxy.constants.Names;
  * @see PerformInteraction
  */
 public class DeleteInteractionChoiceSet extends RPCRequest {
+	public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
 
 	/**
 	 * Constructs a new DeleteInteractionChoiceSet object
 	 */
     public DeleteInteractionChoiceSet() {
-        super("DeleteInteractionChoiceSet");
+        super(FunctionID.DELETE_INTERACTION_CHOICE_SET);
     }
 	/**
 	 * Constructs a new DeleteInteractionChoiceSet object indicated by the
@@ -36,7 +37,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public DeleteInteractionChoiceSet(Hashtable hash) {
+    public DeleteInteractionChoiceSet(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -44,7 +45,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * @return Integer -an Integer value representing the unique Choice Set ID
 	 */    
     public Integer getInteractionChoiceSetID() {
-        return (Integer) parameters.get( Names.interactionChoiceSetID );
+        return (Integer) parameters.get( KEY_INTERACTION_CHOICE_SET_ID );
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
@@ -54,7 +55,9 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
         if (interactionChoiceSetID != null) {
-            parameters.put(Names.interactionChoiceSetID, interactionChoiceSetID );
+            parameters.put(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID );
+        } else {
+            parameters.remove(KEY_INTERACTION_CHOICE_SET_ID);
         }
     }
 }

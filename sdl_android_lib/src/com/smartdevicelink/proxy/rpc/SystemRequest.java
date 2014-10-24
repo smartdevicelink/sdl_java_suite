@@ -1,59 +1,66 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 public class SystemRequest extends RPCRequest {
+	public static final String KEY_FILE_NAME = "fileName";
+	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_DATA = "data";
+	
     public SystemRequest() {
-        super("SystemRequest");
+        super(FunctionID.SYSTEM_REQUEST);
     }
 
 	public SystemRequest(boolean bLegacy) {
-        super("EncodedSyncPData");
+        super(FunctionID.ENCODED_SYNC_P_DATA);
     }
     
-    public SystemRequest(Hashtable hash) {
+    public SystemRequest(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
-    public Vector<String> getLegacyData() {
-        if (parameters.get(Names.data) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(Names.data);
+
+    @SuppressWarnings("unchecked")    
+    public List<String> getLegacyData() {
+        if (parameters.get(KEY_DATA) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(KEY_DATA);
         	if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>) list;
+        			return (List<String>) list;
         		}
         	}
         }
     	return null;
     }
  
-    public void setLegacyData( Vector<String> data ) {
+    public void setLegacyData( List<String> data ) {
     	if ( data!= null) {
-    		parameters.put(Names.data, data );
-    	}
+    		parameters.put(KEY_DATA, data );
+    	} else {
+            parameters.remove(KEY_DATA);
+        }
     }    
             
     public String getFileName() {
-        return (String) parameters.get(Names.fileName);
+        return (String) parameters.get(KEY_FILE_NAME);
     }
     
     public void setFileName(String fileName) {
         if (fileName != null) {
-            parameters.put(Names.fileName, fileName);
+            parameters.put(KEY_FILE_NAME, fileName);
         } else {
-        	parameters.remove(Names.fileName);
+        	parameters.remove(KEY_FILE_NAME);
         }
     }    
 
     public RequestType getRequestType() {
-        Object obj = parameters.get(Names.requestType);
+        Object obj = parameters.get(KEY_REQUEST_TYPE);
         if (obj instanceof RequestType) {
             return (RequestType) obj;
         } else if (obj instanceof String) {
@@ -63,7 +70,7 @@ public class SystemRequest extends RPCRequest {
             } catch (Exception e) {
                 DebugTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
-                        		Names.requestType, e);
+                        		KEY_REQUEST_TYPE, e);
             }
             return theCode;
         }
@@ -72,9 +79,9 @@ public class SystemRequest extends RPCRequest {
 
     public void setRequestType(RequestType requestType) {
         if (requestType != null) {
-            parameters.put(Names.requestType, requestType);
+            parameters.put(KEY_REQUEST_TYPE, requestType);
         } else {
-            parameters.remove(Names.requestType);
+            parameters.remove(KEY_REQUEST_TYPE);
         }
     }
 }

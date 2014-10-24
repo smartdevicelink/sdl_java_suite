@@ -28,7 +28,9 @@ public class WiProProtocol extends AbstractProtocol {
 	int hashID = 0;
 	int messageID = 0;
 
+    @SuppressWarnings("unused")
     private int _heartbeatSendInterval_ms = 0;
+    @SuppressWarnings("unused")
     private int _heartbeatReceiveInterval_ms = 0;
 	
 	Hashtable<Integer, MessageFrameAssembler> _assemblerForMessageID = new Hashtable<Integer, MessageFrameAssembler>();
@@ -291,16 +293,16 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 	
 	protected MessageFrameAssembler getFrameAssemblerForFrame(ProtocolFrameHeader header) {
-		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(new Byte(header.getSessionID()));
+		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(Byte.valueOf(header.getSessionID()));
 		if (hashSessionID == null) {
 			hashSessionID = new Hashtable<Integer, MessageFrameAssembler>();
-			_assemblerForSessionID.put(new Byte(header.getSessionID()), hashSessionID);
+			_assemblerForSessionID.put(Byte.valueOf(header.getSessionID()), hashSessionID);
 		} // end-if
 		
-		MessageFrameAssembler ret = (MessageFrameAssembler) _assemblerForMessageID.get(new Integer(header.getMessageID()));
+		MessageFrameAssembler ret = (MessageFrameAssembler) _assemblerForMessageID.get(Integer.valueOf(header.getMessageID()));
 		if (ret == null) {
 			ret = new MessageFrameAssembler();
-			_assemblerForMessageID.put(new Integer(header.getMessageID()), ret);
+			_assemblerForMessageID.put(Integer.valueOf(header.getMessageID()), ret);
 		} // end-if
 		
 		return ret;

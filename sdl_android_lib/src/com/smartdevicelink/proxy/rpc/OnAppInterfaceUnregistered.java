@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.util.DebugTool;
 
@@ -42,17 +42,18 @@ import com.smartdevicelink.util.DebugTool;
  * @see RegisterAppInterface
  */
 public class OnAppInterfaceUnregistered extends RPCNotification {
+	public static final String KEY_REASON = "reason";
 	/**
 	*Constructs a newly allocated OnAppInterfaceUnregistered object
 	*/ 
     public OnAppInterfaceUnregistered() {
-        super("OnAppInterfaceUnregistered");
+        super(FunctionID.ON_APP_INTERFACE_UNREGISTERED);
     }
     /**
     *<p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>
     *@param hash The Hashtable to use
     */    
-    public OnAppInterfaceUnregistered(Hashtable hash) {
+    public OnAppInterfaceUnregistered(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -60,7 +61,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
      */    
     public AppInterfaceUnregisteredReason getReason() {
-        Object obj = parameters.get(Names.reason);
+        Object obj = parameters.get(KEY_REASON);
         if (obj instanceof AppInterfaceUnregisteredReason) {
             return (AppInterfaceUnregisteredReason) obj;
         } else if (obj instanceof String) {
@@ -68,7 +69,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
             try {
                 theCode = AppInterfaceUnregisteredReason.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.reason, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_REASON, e);
             }
             return theCode;
         }
@@ -80,7 +81,9 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      */    
     public void setReason( AppInterfaceUnregisteredReason reason ) {
         if (reason != null) {
-            parameters.put(Names.reason, reason );
+            parameters.put(KEY_REASON, reason );
+        } else {
+            parameters.remove(KEY_REASON);
         }
     }
 }

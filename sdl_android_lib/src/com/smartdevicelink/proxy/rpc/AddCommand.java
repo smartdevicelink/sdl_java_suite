@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -44,12 +44,16 @@ import com.smartdevicelink.util.DebugTool;
 */
 
 public class AddCommand extends RPCRequest {
+	public static final String KEY_CMD_ICON = "cmdIcon";
+	public static final String KEY_MENU_PARAMS = "menuParams";
+	public static final String KEY_CMD_ID = "cmdID";
+	public static final String KEY_VR_COMMANDS = "vrCommands";
 
 	/**
 	 * Constructs a new AddCommand object
 	 */
 	public AddCommand() {
-        super("AddCommand");
+        super(FunctionID.ADD_COMMAND);
     }
 	
 	/**
@@ -61,7 +65,7 @@ public class AddCommand extends RPCRequest {
 	* @param hash
 	*            The Hashtable to use
 	*/
-    public AddCommand(Hashtable hash) {
+    public AddCommand(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -72,7 +76,7 @@ public class AddCommand extends RPCRequest {
 	 * @return Integer -an integer representation a Unique Command ID
 	 */
     public Integer getCmdID() {
-        return (Integer) parameters.get(Names.cmdID);
+        return (Integer) parameters.get(KEY_CMD_ID);
     }
 	/**
 	 * Sets an Unique Command ID that identifies the command. Is returned in an
@@ -87,9 +91,9 @@ public class AddCommand extends RPCRequest {
 	 */
     public void setCmdID(Integer cmdID) {
         if (cmdID != null) {
-            parameters.put(Names.cmdID, cmdID);
+            parameters.put(KEY_CMD_ID, cmdID);
         } else {
-        	parameters.remove(Names.cmdID);
+            parameters.remove(KEY_CMD_ID);
         }
     }
 	/**
@@ -100,16 +104,17 @@ public class AddCommand extends RPCRequest {
 	 * 
 	 * @return MenuParams -a MenuParams object
 	 */
+    @SuppressWarnings("unchecked")
     public MenuParams getMenuParams() {
-        Object obj = parameters.get(Names.menuParams);
+        Object obj = parameters.get(KEY_MENU_PARAMS);
         if (obj instanceof MenuParams) {
         	return (MenuParams) obj;
         }
         else if (obj instanceof Hashtable) {
         	try {
-        		return new MenuParams((Hashtable) obj);
+        		return new MenuParams((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.menuParams, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_PARAMS, e);
             }
         }
         return null;
@@ -127,9 +132,9 @@ public class AddCommand extends RPCRequest {
 	 */    
     public void setMenuParams(MenuParams menuParams) {
         if (menuParams != null) {
-            parameters.put(Names.menuParams, menuParams);
+            parameters.put(KEY_MENU_PARAMS, menuParams);
         } else {
-        	parameters.remove(Names.menuParams);
+            parameters.remove(KEY_MENU_PARAMS);
         }
     }
 	/**
@@ -137,15 +142,16 @@ public class AddCommand extends RPCRequest {
 	 * Gets Voice Recognition Commands
 	 * </p>
 	 * 
-	 * @return Vector<String> -(Vector<String>) indicating one or more VR phrases
+	 * @return List<String> -(List<String>) indicating one or more VR phrases
 	 */    
-    public Vector<String> getVrCommands() {
-    	if (parameters.get(Names.vrCommands) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.vrCommands);
+    @SuppressWarnings("unchecked")
+    public List<String> getVrCommands() {
+        if (parameters.get(KEY_VR_COMMANDS) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(KEY_VR_COMMANDS);
 	    	if (list != null && list.size() > 0) {
 	    		Object obj = list.get(0);
 	    		if (obj instanceof String) {
-	    			return (Vector<String>)list;
+	    			return (List<String>)list;
 	    		}
 	    	}
     	}
@@ -162,17 +168,17 @@ public class AddCommand extends RPCRequest {
 	 * </p>
 	 * 
 	 * @param vrCommands
-	 *            Vector<String> indicating one or more VR phrases
+	 *            List<String> indicating one or more VR phrases
 	 *            <p>
 	 *            <b>Notes: </b>Optional only if menuParams is provided. If
 	 *            provided, array must contain at least one non-empty (not null,
 	 *            not zero-length, not whitespace only) element
 	 */
-    public void setVrCommands( Vector<String> vrCommands ) {
+    public void setVrCommands( List<String> vrCommands ) {
         if (vrCommands != null) {
-            parameters.put(Names.vrCommands, vrCommands );
+            parameters.put(KEY_VR_COMMANDS, vrCommands );
         } else {
-        	parameters.remove(Names.vrCommands);
+            parameters.remove(KEY_VR_COMMANDS);
         }
     }
 
@@ -182,15 +188,16 @@ public class AddCommand extends RPCRequest {
 	 * @return Image -an Image object
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Image getCmdIcon() {
-    	Object obj = parameters.get(Names.cmdIcon);
+        Object obj = parameters.get(KEY_CMD_ICON);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.cmdIcon, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CMD_ICON, e);
             }
         }
         return null;
@@ -209,9 +216,9 @@ public class AddCommand extends RPCRequest {
 	 */
     public void setCmdIcon(Image cmdIcon) {
         if (cmdIcon != null) {
-            parameters.put(Names.cmdIcon, cmdIcon);
+            parameters.put(KEY_CMD_ICON, cmdIcon);
         } else {
-        	parameters.remove(Names.cmdIcon);
+            parameters.remove(KEY_CMD_ICON);
         }
     }
 }

@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Describes the hour, minute and second values used to set the media clock.
@@ -39,6 +38,9 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 1.0
  */
 public class StartTime extends RPCStruct {
+	public static final String KEY_MINUTES = "minutes";
+	public static final String KEY_SECONDS = "seconds";
+	public static final String KEY_HOURS = "hours";
 
 	/**
 	 * Constructs a newly allocated StartTime object
@@ -48,7 +50,7 @@ public class StartTime extends RPCStruct {
      * Constructs a newly allocated StartTime object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public StartTime(Hashtable hash) {
+    public StartTime(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -57,7 +59,7 @@ public class StartTime extends RPCStruct {
      * @return hours Minvalue="0", maxvalue="59"
      */    
     public Integer getHours() {
-        return (Integer) store.get( Names.hours );
+        return (Integer) store.get( KEY_HOURS );
     }
     /**
      * Set the hour. Minvalue="0", maxvalue="59"
@@ -66,7 +68,9 @@ public class StartTime extends RPCStruct {
      */    
     public void setHours( Integer hours ) {
         if (hours != null) {
-            store.put(Names.hours, hours );
+            store.put(KEY_HOURS, hours );
+        } else {
+        	store.remove(KEY_HOURS);
         }
     }
     /**
@@ -74,7 +78,7 @@ public class StartTime extends RPCStruct {
      * @return minutes Minvalue="0", maxvalue="59"
      */    
     public Integer getMinutes() {
-        return (Integer) store.get( Names.minutes );
+        return (Integer) store.get( KEY_MINUTES );
     }
     /**
      * Set the minute. Minvalue="0", maxvalue="59".
@@ -82,7 +86,9 @@ public class StartTime extends RPCStruct {
      */    
     public void setMinutes( Integer minutes ) {
         if (minutes != null) {
-            store.put(Names.minutes, minutes );
+            store.put(KEY_MINUTES, minutes );
+        } else {
+        	store.remove(KEY_MINUTES);
         }
     }
     /**
@@ -90,7 +96,7 @@ public class StartTime extends RPCStruct {
      * @return seconds. Minvalue="0", maxvalue="59".
      */    
     public Integer getSeconds() {
-        return (Integer) store.get( Names.seconds );
+        return (Integer) store.get( KEY_SECONDS );
     }
     /**
      * Set the second. Minvalue="0", maxvalue="59".
@@ -98,7 +104,9 @@ public class StartTime extends RPCStruct {
      */    
     public void setSeconds( Integer seconds ) {
         if (seconds != null) {
-            store.put(Names.seconds, seconds );
+            store.put(KEY_SECONDS, seconds );
+        } else {
+        	store.remove(KEY_SECONDS);
         }
     }
 }

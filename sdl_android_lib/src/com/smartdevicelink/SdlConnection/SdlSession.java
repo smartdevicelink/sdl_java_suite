@@ -18,7 +18,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	
 	SdlConnection _sdlConnection = null;
 	private byte sessionId;
-	private byte wiproProcolVer;
+	@SuppressWarnings("unused")
+    private byte wiproProcolVer;
 	private ISdlConnectionListener sessionListener;
 	private BaseTransportConfig transportConfig;
     IHeartbeatMonitor _heartbeatMonitor = null;
@@ -101,7 +102,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			
 			if (connection == null) {
 				connection = new SdlConnection(this.transportConfig);
-				this.shareConnections.add(connection);
+				shareConnections.add(connection);
 			}
 		} else {
 			connection = new SdlConnection(this.transportConfig);

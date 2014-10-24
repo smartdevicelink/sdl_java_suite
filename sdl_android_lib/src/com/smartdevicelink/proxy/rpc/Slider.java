@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Creates a full screen or pop-up overlay (depending on platform) with a single
@@ -20,11 +20,16 @@ import com.smartdevicelink.proxy.constants.Names;
  */
 public class Slider extends RPCRequest {
 
+	public static final String KEY_NUM_TICKS = "numTicks";
+	public static final String KEY_SLIDER_HEADER = "sliderHeader";
+	public static final String KEY_SLIDER_FOOTER = "sliderFooter";
+	public static final String KEY_POSITION = "position";
+	public static final String KEY_TIMEOUT = "timeout";
 	/**
 	 * Constructs a new Slider object
 	 */
     public Slider() {
-        super("Slider");
+        super(FunctionID.SLIDER);
     }
 
 	/**
@@ -34,7 +39,7 @@ public class Slider extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public Slider(Hashtable hash) {
+    public Slider(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -49,9 +54,9 @@ public class Slider extends RPCRequest {
 	 */
     public void setNumTicks(Integer numTicks) {
     	if (numTicks != null) {
-    		parameters.put(Names.numTicks, numTicks);
+    		parameters.put(KEY_NUM_TICKS, numTicks);
     	} else {
-    		parameters.remove(Names.numTicks);
+    		parameters.remove(KEY_NUM_TICKS);
     	}
     }
 
@@ -62,7 +67,7 @@ public class Slider extends RPCRequest {
 	 *         items on a horizontal axis
 	 */
     public Integer getNumTicks() {
-    	return (Integer) parameters.get(Names.numTicks);
+    	return (Integer) parameters.get(KEY_NUM_TICKS);
     }
 
 	/**
@@ -76,9 +81,9 @@ public class Slider extends RPCRequest {
 	 */
     public void setPosition(Integer position) {
     	if (position != null) {
-    		parameters.put(Names.position, position);
+    		parameters.put(KEY_POSITION, position);
     	} else {
-    		parameters.remove(Names.position);
+    		parameters.remove(KEY_POSITION);
     	}
     }
 
@@ -89,7 +94,7 @@ public class Slider extends RPCRequest {
 	 *         slider control
 	 */
     public Integer getPosition() {
-    	return (Integer) parameters.get(Names.position);
+    	return (Integer) parameters.get(KEY_POSITION);
     }
 
 	/**
@@ -102,9 +107,9 @@ public class Slider extends RPCRequest {
 	 */
     public void setSliderHeader(String sliderHeader) {
     	if (sliderHeader != null) {
-    		parameters.put(Names.sliderHeader, sliderHeader);
+    		parameters.put(KEY_SLIDER_HEADER, sliderHeader);
     	} else {
-    		parameters.remove(Names.sliderHeader);
+    		parameters.remove(KEY_SLIDER_HEADER);
     	}
     }
 
@@ -114,22 +119,22 @@ public class Slider extends RPCRequest {
 	 * @return String -a String value representing a text header to display
 	 */
     public String getSliderHeader() {
-    	return (String) parameters.get(Names.sliderHeader);
+    	return (String) parameters.get(KEY_SLIDER_HEADER);
     }
 
 	/**
 	 * Sets a text footer to display
 	 * 
 	 * @param sliderFooter
-	 *            a Vector<String> value representing a text footer to display
+	 *            a List<String> value representing a text footer to display
 	 *            <p>
 	 *            <b>Notes: </b>Maxlength=500; Minvalue=1; Maxvalue=26
 	 */
-    public void setSliderFooter(Vector<String> sliderFooter) {
+    public void setSliderFooter(List<String> sliderFooter) {
     	if (sliderFooter != null) {
-    		parameters.put(Names.sliderFooter, sliderFooter);
+    		parameters.put(KEY_SLIDER_FOOTER, sliderFooter);
     	} else {
-    		parameters.remove(Names.sliderFooter);
+    		parameters.remove(KEY_SLIDER_FOOTER);
     	}
     }
 
@@ -138,13 +143,14 @@ public class Slider extends RPCRequest {
 	 * 
 	 * @return String -a String value representing a text footer to display
 	 */
-    public Vector<String> getSliderFooter() {
-        if (parameters.get(Names.sliderFooter) instanceof Vector<?>) {
-        	Vector<?> list = (Vector<?>)parameters.get(Names.sliderFooter);
+    @SuppressWarnings("unchecked")
+    public List<String> getSliderFooter() {
+        if (parameters.get(KEY_SLIDER_FOOTER) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(KEY_SLIDER_FOOTER);
         	if (list != null && list.size()>0) {
         		Object obj = list.get(0);
         		if (obj instanceof String) {
-        			return (Vector<String>) list;
+        			return (List<String>) list;
         		}
         	}
         }
@@ -161,9 +167,9 @@ public class Slider extends RPCRequest {
 	 */
     public void setTimeout(Integer timeout) {
     	if (timeout != null) {
-    		parameters.put(Names.timeout, timeout);
+    		parameters.put(KEY_TIMEOUT, timeout);
     	} else {
-    		parameters.remove(Names.timeout);
+    		parameters.remove(KEY_TIMEOUT);
     	}
     }
 
@@ -172,6 +178,6 @@ public class Slider extends RPCRequest {
 	 * @return Integer -an Integer value representing an App defined timeout
 	 */
     public Integer getTimeout() {
-    	return (Integer) parameters.get(Names.timeout);
+    	return (Integer) parameters.get(KEY_TIMEOUT);
     }
 }

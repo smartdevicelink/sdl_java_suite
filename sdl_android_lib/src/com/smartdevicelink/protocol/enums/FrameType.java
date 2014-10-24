@@ -6,8 +6,8 @@ import com.smartdevicelink.util.ByteEnumer;
 
 public class FrameType extends ByteEnumer {
 
-	private static Vector theList = new Vector();
-	public static Vector getList() { return theList; } 
+	private static Vector<FrameType> theList = new Vector<FrameType>();
+	public static Vector<FrameType> getList() { return theList; } 
 	
 	byte i = 0x00;
 	

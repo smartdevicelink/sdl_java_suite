@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Contains information about a SoftButton's capabilities.
@@ -50,6 +49,10 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class SoftButtonCapabilities extends RPCStruct {
+	public static final String KEY_IMAGE_SUPPORTED = "imageSupported";
+	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
+	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
+	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
 
 	/**
 	 * Constructs a newly allocated SoftButtonCapabilities object
@@ -60,7 +63,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * Constructs a newly allocated SoftButtonCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public SoftButtonCapabilities(Hashtable hash) {
+    public SoftButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -70,9 +73,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      */
     public void setShortPressAvailable(Boolean shortPressAvailable) {
         if (shortPressAvailable != null) {
-            store.put(Names.shortPressAvailable, shortPressAvailable);
+            store.put(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
         } else {
-        	store.remove(Names.shortPressAvailable);
+        	store.remove(KEY_SHORT_PRESS_AVAILABLE);
         }
     }
     
@@ -81,7 +84,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return whether the button supports a short press
      */
     public Boolean getShortPressAvailable() {
-        return (Boolean) store.get( Names.shortPressAvailable);
+        return (Boolean) store.get( KEY_SHORT_PRESS_AVAILABLE);
     }
     
     /**
@@ -90,9 +93,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      */
     public void setLongPressAvailable(Boolean longPressAvailable) {
         if (longPressAvailable != null) {
-            store.put(Names.longPressAvailable, longPressAvailable);
+            store.put(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
         } else {
-        	store.remove(Names.longPressAvailable);
+        	store.remove(KEY_LONG_PRESS_AVAILABLE);
         }
     }
     
@@ -101,7 +104,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return whether  the button supports a LONG press
      */
     public Boolean getLongPressAvailable() {
-        return (Boolean) store.get( Names.longPressAvailable);
+        return (Boolean) store.get( KEY_LONG_PRESS_AVAILABLE);
     }
     
     /**
@@ -110,9 +113,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      */
     public void setUpDownAvailable(Boolean upDownAvailable) {
         if (upDownAvailable != null) {
-            store.put(Names.upDownAvailable, upDownAvailable);
+            store.put(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
         } else {
-        	store.remove(Names.upDownAvailable);
+        	store.remove(KEY_UP_DOWN_AVAILABLE);
         }
     }
     
@@ -121,7 +124,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return the button supports "button down" and "button up".
      */
     public Boolean getUpDownAvailable() {
-        return (Boolean) store.get( Names.upDownAvailable);
+        return (Boolean) store.get( KEY_UP_DOWN_AVAILABLE);
     }
     
     /**
@@ -130,9 +133,9 @@ public class SoftButtonCapabilities extends RPCStruct {
      */
     public void setImageSupported(Boolean imageSupported) {
         if (imageSupported != null) {
-            store.put(Names.imageSupported, imageSupported);
+            store.put(KEY_IMAGE_SUPPORTED, imageSupported);
         } else {
-        	store.remove(Names.imageSupported);
+        	store.remove(KEY_IMAGE_SUPPORTED);
         }
     }
     
@@ -141,6 +144,6 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return the button supports referencing a static or dynamic image.
      */
     public Boolean getImageSupported() {
-        return (Boolean) store.get( Names.imageSupported);
+        return (Boolean) store.get( KEY_IMAGE_SUPPORTED);
     }
 }

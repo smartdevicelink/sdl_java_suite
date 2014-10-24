@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -15,7 +16,7 @@ public class ScrollableMessageResponse extends RPCResponse {
 	 * Constructs a new ScrollableMessageResponse object
 	 */
     public ScrollableMessageResponse() {
-        super("ScrollableMessage");
+        super(FunctionID.SCROLLABLE_MESSAGE);
     }
 
 	/**
@@ -26,7 +27,7 @@ public class ScrollableMessageResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ScrollableMessageResponse(Hashtable hash) {
+    public ScrollableMessageResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

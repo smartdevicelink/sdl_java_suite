@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
@@ -32,12 +33,23 @@ import com.smartdevicelink.util.DebugTool;
  * @see SetMediaClockTimer
  */
 public class Show extends RPCRequest {
-
+	public static final String KEY_GRAPHIC = "graphic";
+	public static final String KEY_CUSTOM_PRESETS = "customPresets";
+	public static final String KEY_MAIN_FIELD_1 = "mainField1";
+	public static final String KEY_MAIN_FIELD_2 = "mainField2";
+	public static final String KEY_MAIN_FIELD_3 = "mainField3";
+	public static final String KEY_MAIN_FIELD_4 = "mainField4";
+	public static final String KEY_STATUS_BAR = "statusBar";
+	public static final String KEY_MEDIA_CLOCK = "mediaClock";
+	public static final String KEY_ALIGNMENT = "alignment";
+	public static final String KEY_MEDIA_TRACK = "mediaTrack";
+	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
+	public static final String KEY_SOFT_BUTTONS = "softButtons";
 	/**
 	 * Constructs a new Show object
 	 */
 	public Show() {
-        super("Show");
+        super(FunctionID.SHOW);
     }
 	/**
 	 * Constructs a new Show object indicated by the Hashtable parameter
@@ -46,7 +58,7 @@ public class Show extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public Show(Hashtable hash) {
+    public Show(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
@@ -58,7 +70,7 @@ public class Show extends RPCRequest {
 	 *         display
 	 */    
     public String getMainField1() {
-        return (String) parameters.get(Names.mainField1);
+        return (String) parameters.get(KEY_MAIN_FIELD_1);
     }
 	/**
 	 * Sets the text displayed in a single-line display, or in the upper display
@@ -79,9 +91,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setMainField1(String mainField1) {
         if (mainField1 != null) {
-            parameters.put(Names.mainField1, mainField1);
+            parameters.put(KEY_MAIN_FIELD_1, mainField1);
         } else {
-        	parameters.remove(Names.mainField1);
+        	parameters.remove(KEY_MAIN_FIELD_1);
         }
     }
 	/**
@@ -91,7 +103,7 @@ public class Show extends RPCRequest {
 	 *         second display line of a two-line display
 	 */    
     public String getMainField2() {
-        return (String) parameters.get(Names.mainField2);
+        return (String) parameters.get(KEY_MAIN_FIELD_2);
     }
 	/**
 	 * Sets the text displayed on the second display line of a two-line display
@@ -113,9 +125,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setMainField2(String mainField2) {
         if (mainField2 != null) {
-            parameters.put(Names.mainField2, mainField2);
+            parameters.put(KEY_MAIN_FIELD_2, mainField2);
         } else {
-        	parameters.remove(Names.mainField2);
+        	parameters.remove(KEY_MAIN_FIELD_2);
         }
     }
 
@@ -127,7 +139,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField3() {
-        return (String) parameters.get(Names.mainField3);
+        return (String) parameters.get(KEY_MAIN_FIELD_3);
     }
 
 	/**
@@ -151,9 +163,9 @@ public class Show extends RPCRequest {
 	 */
     public void setMainField3(String mainField3) {
         if (mainField3 != null) {
-            parameters.put(Names.mainField3, mainField3);
+            parameters.put(KEY_MAIN_FIELD_3, mainField3);
         } else {
-        	parameters.remove(Names.mainField3);
+        	parameters.remove(KEY_MAIN_FIELD_3);
         }
     }
 
@@ -165,7 +177,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField4() {
-        return (String) parameters.get(Names.mainField4);
+        return (String) parameters.get(KEY_MAIN_FIELD_4);
     }
 
 	/**
@@ -189,9 +201,9 @@ public class Show extends RPCRequest {
 	 */
     public void setMainField4(String mainField4) {
         if (mainField4 != null) {
-            parameters.put(Names.mainField4, mainField4);
+            parameters.put(KEY_MAIN_FIELD_4, mainField4);
         } else {
-        	parameters.remove(Names.mainField4);
+        	parameters.remove(KEY_MAIN_FIELD_4);
         }
     }
 	/**
@@ -201,7 +213,7 @@ public class Show extends RPCRequest {
 	 * @return TextAlignment -an Enumeration value
 	 */    
     public TextAlignment getAlignment() {
-        Object obj = parameters.get(Names.alignment);
+        Object obj = parameters.get(KEY_ALIGNMENT);
         if (obj instanceof TextAlignment) {
             return (TextAlignment) obj;
         } else if (obj instanceof String) {
@@ -209,7 +221,7 @@ public class Show extends RPCRequest {
             try {
                 theCode = TextAlignment.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.alignment, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALIGNMENT, e);
             }
             return theCode;
         }
@@ -233,9 +245,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setAlignment(TextAlignment alignment) {
         if (alignment != null) {
-            parameters.put(Names.alignment, alignment);
+            parameters.put(KEY_ALIGNMENT, alignment);
         } else {
-        	parameters.remove(Names.alignment);
+        	parameters.remove(KEY_ALIGNMENT);
         }
     }
 	/**
@@ -244,7 +256,7 @@ public class Show extends RPCRequest {
 	 * @return String -the value in the Status Bar
 	 */    
     public String getStatusBar() {
-        return (String) parameters.get(Names.statusBar);
+        return (String) parameters.get(KEY_STATUS_BAR);
     }
 	/**
 	 * Sets text in the Status Bar
@@ -266,9 +278,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setStatusBar(String statusBar) {
         if (statusBar != null) {
-            parameters.put(Names.statusBar, statusBar);
+            parameters.put(KEY_STATUS_BAR, statusBar);
         } else {
-        	parameters.remove(Names.statusBar);
+        	parameters.remove(KEY_STATUS_BAR);
         }
     }
 	/**
@@ -278,7 +290,7 @@ public class Show extends RPCRequest {
 	 */ 
 	@Deprecated	 
     public String getMediaClock() {
-        return (String) parameters.get(Names.mediaClock);
+        return (String) parameters.get(KEY_MEDIA_CLOCK);
     }
 	/**
 	 * Sets the value for the MediaClock field using a format described in the
@@ -299,9 +311,9 @@ public class Show extends RPCRequest {
 	@Deprecated
     public void setMediaClock(String mediaClock) {
         if (mediaClock != null) {
-            parameters.put(Names.mediaClock, mediaClock);
+            parameters.put(KEY_MEDIA_CLOCK, mediaClock);
         } else {
-        	parameters.remove(Names.mediaClock);
+        	parameters.remove(KEY_MEDIA_CLOCK);
         }
     }
 	/**
@@ -310,7 +322,7 @@ public class Show extends RPCRequest {
 	 * @return String -a String displayed in the track field
 	 */    
     public String getMediaTrack() {
-        return (String) parameters.get(Names.mediaTrack);
+        return (String) parameters.get(KEY_MEDIA_TRACK);
     }
 	/**
 	 * Sets the text in the track field
@@ -327,9 +339,9 @@ public class Show extends RPCRequest {
 	 */    
     public void setMediaTrack(String mediaTrack) {
         if (mediaTrack != null) {
-            parameters.put(Names.mediaTrack, mediaTrack);
+            parameters.put(KEY_MEDIA_TRACK, mediaTrack);
         } else {
-        	parameters.remove(Names.mediaTrack);
+        	parameters.remove(KEY_MEDIA_TRACK);
         }
     }
 
@@ -345,9 +357,9 @@ public class Show extends RPCRequest {
 	 */
     public void setGraphic(Image graphic) {
         if (graphic != null) {
-            parameters.put(Names.graphic, graphic);
+            parameters.put(KEY_GRAPHIC, graphic);
         } else {
-        	parameters.remove(Names.graphic);
+        	parameters.remove(KEY_GRAPHIC);
         }
     }
 
@@ -358,15 +370,16 @@ public class Show extends RPCRequest {
 	 *         displays
 	 * @since SmartDeviceLink 2.0
 	 */
+    @SuppressWarnings("unchecked")
     public Image getGraphic() {
-    	Object obj = parameters.get(Names.graphic);
+    	Object obj = parameters.get(KEY_GRAPHIC);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.graphic, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GRAPHIC, e);
             }
         }
         return null;
@@ -375,22 +388,23 @@ public class Show extends RPCRequest {
     
     public void setSecondaryGraphic(Image secondaryGraphic) {
         if (secondaryGraphic != null) {
-            parameters.put(Names.secondaryGraphic, secondaryGraphic);
+            parameters.put(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
         } else {
-        	parameters.remove(Names.secondaryGraphic);
+        	parameters.remove(KEY_SECONDARY_GRAPHIC);
         }
     }
 
 
+    @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
-    	Object obj = parameters.get(Names.secondaryGraphic);
+    	Object obj = parameters.get(KEY_SECONDARY_GRAPHIC);
         if (obj instanceof Image) {
             return (Image) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new Image((Hashtable) obj);
+        		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.secondaryGraphic, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_GRAPHIC, e);
             }
         }
         return null;
@@ -400,21 +414,22 @@ public class Show extends RPCRequest {
 	/**
 	 * Gets the Soft buttons defined by the App
 	 * 
-	 * @return Vector<SoftButton> -a Vector value representing the Soft buttons
+	 * @return List<SoftButton> -a List value representing the Soft buttons
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<SoftButton> getSoftButtons() {
-        if (parameters.get(Names.softButtons) instanceof Vector<?>) {
-	    	Vector<?> list = (Vector<?>)parameters.get(Names.softButtons);
+    @SuppressWarnings("unchecked")
+    public List<SoftButton> getSoftButtons() {
+        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
+        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
 	            if (obj instanceof SoftButton) {
-	                return (Vector<SoftButton>) list;
+	                return (List<SoftButton>) list;
 	            } else if (obj instanceof Hashtable) {
-	                Vector<SoftButton> newList = new Vector<SoftButton>();
+	            	List<SoftButton> newList = new ArrayList<SoftButton>();
 	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable)hashObj));
+	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -427,7 +442,7 @@ public class Show extends RPCRequest {
 	 * Sets the the Soft buttons defined by the App
 	 * 
 	 * @param softButtons
-	 *            a Vector value represemting the Soft buttons defined by the
+	 *            a List value represemting the Soft buttons defined by the
 	 *            App
 	 *            <p>
 	 *            <b>Notes: </b><br/>
@@ -440,28 +455,29 @@ public class Show extends RPCRequest {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setSoftButtons(Vector<SoftButton> softButtons) {
+    public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
-            parameters.put(Names.softButtons, softButtons);
+            parameters.put(KEY_SOFT_BUTTONS, softButtons);
         } else {
-        	parameters.remove(Names.softButtons);
+        	parameters.remove(KEY_SOFT_BUTTONS);
         }
     }
 
 	/**
 	 * Gets the Custom Presets defined by the App
 	 * 
-	 * @return Vector<String> - a Vector value representing the Custom presets
+	 * @return List<String> - a List value representing the Custom presets
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    public Vector<String> getCustomPresets() {
-    	if (parameters.get(Names.customPresets) instanceof Vector<?>) {
-    		Vector<?> list = (Vector<?>)parameters.get(Names.customPresets);
+    @SuppressWarnings("unchecked")
+    public List<String> getCustomPresets() {
+    	if (parameters.get(KEY_CUSTOM_PRESETS) instanceof List<?>) {
+    		List<?> list = (List<?>)parameters.get(KEY_CUSTOM_PRESETS);
     		if (list != null && list.size()>0) {
     			Object obj = list.get(0);
     			if (obj instanceof String) {
-    				return (Vector<String>) list;
+    				return (List<String>) list;
     			}
     		}
     	}
@@ -472,7 +488,7 @@ public class Show extends RPCRequest {
 	 * Sets the Custom Presets defined by the App
 	 * 
 	 * @param customPresets
-	 *            a Vector value representing the Custom Presets defined by the
+	 *            a List value representing the Custom Presets defined by the
 	 *            App
 	 *            <p>
 	 *            <ul>
@@ -482,11 +498,11 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setCustomPresets(Vector<String> customPresets) {
+    public void setCustomPresets(List<String> customPresets) {
         if (customPresets != null) {
-            parameters.put(Names.customPresets, customPresets);
+            parameters.put(KEY_CUSTOM_PRESETS, customPresets);
         } else {
-        	parameters.remove(Names.customPresets);
+        	parameters.remove(KEY_CUSTOM_PRESETS);
         }
     }
 }

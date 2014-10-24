@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -12,9 +13,9 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class DeleteCommandResponse extends RPCResponse {
 
     public DeleteCommandResponse() {
-        super("DeleteCommand");
+        super(FunctionID.DELETE_COMMAND);
     }
-    public DeleteCommandResponse(Hashtable hash) {
+    public DeleteCommandResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

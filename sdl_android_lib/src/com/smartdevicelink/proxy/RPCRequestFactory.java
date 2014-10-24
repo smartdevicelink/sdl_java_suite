@@ -541,8 +541,8 @@ public class RPCRequestFactory {
 		
 		if (sdlMsgVersion == null) {
 			sdlMsgVersion = new SdlMsgVersion();
-			sdlMsgVersion.setMajorVersion(new Integer(SDL_MSG_MAJOR_VERSION));
-			sdlMsgVersion.setMinorVersion(new Integer(SDL_MSG_MINOR_VERSION));
+			sdlMsgVersion.setMajorVersion(Integer.valueOf(SDL_MSG_MAJOR_VERSION));
+			sdlMsgVersion.setMinorVersion(Integer.valueOf(SDL_MSG_MINOR_VERSION));
 		} 
 		msg.setSdlMsgVersion(sdlMsgVersion);
 		
@@ -666,7 +666,8 @@ public class RPCRequestFactory {
 		return msg;
 	}
 	
-	public static Show buildShow(String mainText1, String mainText2,
+	@SuppressWarnings("deprecation")
+    public static Show buildShow(String mainText1, String mainText2,
 			String mainText3, String mainText4,
 			String statusBar, String mediaClock, String mediaTrack,
 			Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
@@ -695,7 +696,8 @@ public class RPCRequestFactory {
 		return msg;
 	}
 		
-	public static Show buildShow(String mainText1, String mainText2,
+	@SuppressWarnings("deprecation")
+    public static Show buildShow(String mainText1, String mainText2,
 			String statusBar, String mediaClock, String mediaTrack,
 			TextAlignment alignment, Integer correlationID) {
 		Show msg = new Show();

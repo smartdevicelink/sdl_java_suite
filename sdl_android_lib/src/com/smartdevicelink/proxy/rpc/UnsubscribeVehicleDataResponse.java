@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -12,12 +12,36 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class UnsubscribeVehicleDataResponse extends RPCResponse {
+	public static final String KEY_SPEED = "speed";
+	public static final String KEY_RPM = "rpm";
+	public static final String KEY_FUEL_LEVEL = "fuelLevel";
+	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+	public static final String KEY_PRNDL = "prndl";
+	public static final String KEY_TIRE_PRESSURE = "tirePressure";
+	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ODOMETER = "odometer";
+	public static final String KEY_GPS = "gps";
+	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+	public static final String KEY_BELT_STATUS = "beltStatus";
+	public static final String KEY_BODY_INFORMATION = "bodyInformation";
+	public static final String KEY_DEVICE_STATUS = "deviceStatus";
+	public static final String KEY_DRIVER_BRAKING = "driverBraking";
+	public static final String KEY_WIPER_STATUS = "wiperStatus";
+	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+	public static final String KEY_E_CALL_INFO = "eCallInfo";
+	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+	public static final String KEY_MY_KEY = "myKey";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
 	 */
     public UnsubscribeVehicleDataResponse() {
-        super("UnsubscribeVehicleData");
+        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA);
     }
 
 	/**
@@ -28,7 +52,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public UnsubscribeVehicleDataResponse(Hashtable hash) {
+    public UnsubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
@@ -37,24 +61,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setGps(VehicleDataResult gps) {
         if (gps != null) {
-            parameters.put(Names.gps, gps);
+            parameters.put(KEY_GPS, gps);
         } else {
-        	parameters.remove(Names.gps);
+        	parameters.remove(KEY_GPS);
         }
     }
     /**
      * Gets Gps
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getGps() {
-    	Object obj = parameters.get(Names.gps);
+    	Object obj = parameters.get(KEY_GPS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.gps, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
             }
         }
         return null;
@@ -65,24 +90,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setSpeed(VehicleDataResult speed) {
         if (speed != null) {
-            parameters.put(Names.speed, speed);
+            parameters.put(KEY_SPEED, speed);
         } else {
-        	parameters.remove(Names.speed);
+        	parameters.remove(KEY_SPEED);
         }
     }
     /**
      * Gets Speed
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getSpeed() {
-    	Object obj = parameters.get(Names.speed);
+    	Object obj = parameters.get(KEY_SPEED);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.speed, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEED, e);
             }
         }
         return null;
@@ -93,24 +119,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setRpm(VehicleDataResult rpm) {
         if (rpm != null) {
-            parameters.put(Names.rpm, rpm);
+            parameters.put(KEY_RPM, rpm);
         } else {
-        	parameters.remove(Names.rpm);
+        	parameters.remove(KEY_RPM);
         }
     }
     /**
      * Gets rpm
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getRpm() {
-    	Object obj = parameters.get(Names.rpm);
+    	Object obj = parameters.get(KEY_RPM);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.rpm, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RPM, e);
             }
         }
         return null;
@@ -121,24 +148,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setFuelLevel(VehicleDataResult fuelLevel) {
         if (fuelLevel != null) {
-            parameters.put(Names.fuelLevel, fuelLevel);
+            parameters.put(KEY_FUEL_LEVEL, fuelLevel);
         } else {
-        	parameters.remove(Names.fuelLevel);
+        	parameters.remove(KEY_FUEL_LEVEL);
         }
     }
     /**
      * Gets Fuel Level
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevel() {
-    	Object obj = parameters.get(Names.fuelLevel);
+    	Object obj = parameters.get(KEY_FUEL_LEVEL);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.fuelLevel, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL, e);
             }
         }
         return null;
@@ -149,24 +177,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
         if (fuelLevel_State != null) {
-            parameters.put(Names.fuelLevel_State, fuelLevel_State);
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
         } else {
-        	parameters.remove(Names.fuelLevel_State);
+        	parameters.remove(KEY_FUEL_LEVEL_STATE);
         }
     }
     /**
      * Gets Fuel Level State
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevel_State() {
-    	Object obj = parameters.get(Names.fuelLevel_State);
+    	Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.fuelLevel_State, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
             }
         }
         return null;
@@ -177,24 +206,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setInstantFuelConsumption(VehicleDataResult instantFuelConsumption) {
         if (instantFuelConsumption != null) {
-            parameters.put(Names.instantFuelConsumption, instantFuelConsumption);
+            parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
         } else {
-        	parameters.remove(Names.instantFuelConsumption);
+        	parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
         }
     }
     /**
      * Gets Instant Fuel Comsumption
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getInstantFuelConsumption() {
-    	Object obj = parameters.get(Names.instantFuelConsumption);
+    	Object obj = parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.instantFuelConsumption, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INSTANT_FUEL_CONSUMPTION, e);
             }
         }
         return null;
@@ -205,24 +235,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
         if (externalTemperature != null) {
-            parameters.put(Names.externalTemperature, externalTemperature);
+            parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
         } else {
-        	parameters.remove(Names.externalTemperature);
+        	parameters.remove(KEY_EXTERNAL_TEMPERATURE);
         }
     }
     /**
      * Gets External Temperature
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getExternalTemperature() {
-    	Object obj = parameters.get(Names.externalTemperature);
+    	Object obj = parameters.get(KEY_EXTERNAL_TEMPERATURE);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.externalTemperature, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EXTERNAL_TEMPERATURE, e);
             }
         }
         return null;
@@ -233,24 +264,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setPrndl(VehicleDataResult prndl) {
         if (prndl != null) {
-            parameters.put(Names.prndl, prndl);
+            parameters.put(KEY_PRNDL, prndl);
         } else {
-        	parameters.remove(Names.prndl);
+        	parameters.remove(KEY_PRNDL);
         }
     }
     /**
      * Gets currently selected gear data
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
-    	Object obj = parameters.get(Names.prndl);
+    	Object obj = parameters.get(KEY_PRNDL);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.prndl, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
             }
         }
         return null;
@@ -261,24 +293,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setTirePressure(VehicleDataResult tirePressure) {
         if (tirePressure != null) {
-            parameters.put(Names.tirePressure, tirePressure);
+            parameters.put(KEY_TIRE_PRESSURE, tirePressure);
         } else {
-        	parameters.remove(Names.tirePressure);
+        	parameters.remove(KEY_TIRE_PRESSURE);
         }
     }
     /**
      * Gets Tire Pressure
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getTirePressure() {
-    	Object obj = parameters.get(Names.tirePressure);
+    	Object obj = parameters.get(KEY_TIRE_PRESSURE);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.tirePressure, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
             }
         }
         return null;
@@ -289,24 +322,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setOdometer(VehicleDataResult odometer) {
         if (odometer != null) {
-            parameters.put(Names.odometer, odometer);
+            parameters.put(KEY_ODOMETER, odometer);
         } else {
-        	parameters.remove(Names.odometer);
+        	parameters.remove(KEY_ODOMETER);
         }
     }
     /**
      * Gets Odometer
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getOdometer() {
-    	Object obj = parameters.get(Names.odometer);
+    	Object obj = parameters.get(KEY_ODOMETER);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.odometer, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ODOMETER, e);
             }
         }
         return null;
@@ -317,24 +351,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setBeltStatus(VehicleDataResult beltStatus) {
         if (beltStatus != null) {
-            parameters.put(Names.beltStatus, beltStatus);
+            parameters.put(KEY_BELT_STATUS, beltStatus);
         } else {
-        	parameters.remove(Names.beltStatus);
+        	parameters.remove(KEY_BELT_STATUS);
         }
     }
     /**
      * Gets Belt Status
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getBeltStatus() {
-    	Object obj = parameters.get(Names.beltStatus);
+    	Object obj = parameters.get(KEY_BELT_STATUS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.beltStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
             }
         }
         return null;
@@ -345,24 +380,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setBodyInformation(VehicleDataResult bodyInformation) {
         if (bodyInformation != null) {
-            parameters.put(Names.bodyInformation, bodyInformation);
+            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
         } else {
-        	parameters.remove(Names.bodyInformation);
+        	parameters.remove(KEY_BODY_INFORMATION);
         }
     }
     /**
      * Gets Body Information
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getBodyInformation() {
-    	Object obj = parameters.get(Names.bodyInformation);
+    	Object obj = parameters.get(KEY_BODY_INFORMATION);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.bodyInformation, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
             }
         }
         return null;
@@ -373,24 +409,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setDeviceStatus(VehicleDataResult deviceStatus) {
         if (deviceStatus != null) {
-            parameters.put(Names.deviceStatus, deviceStatus);
+            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
         } else {
-        	parameters.remove(Names.deviceStatus);
+        	parameters.remove(KEY_DEVICE_STATUS);
         }
     }
     /**
      * Gets Device Status
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getDeviceStatus() {
-    	Object obj = parameters.get(Names.deviceStatus);
+    	Object obj = parameters.get(KEY_DEVICE_STATUS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.deviceStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
             }
         }
         return null;
@@ -401,24 +438,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setDriverBraking(VehicleDataResult driverBraking) {
         if (driverBraking != null) {
-            parameters.put(Names.driverBraking, driverBraking);
+            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
         } else {
-        	parameters.remove(Names.driverBraking);
+        	parameters.remove(KEY_DRIVER_BRAKING);
         }
     }
     /**
      * Gets Driver Braking
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getDriverBraking() {
-    	Object obj = parameters.get(Names.driverBraking);
+    	Object obj = parameters.get(KEY_DRIVER_BRAKING);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.driverBraking, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
             }
         }
         return null;
@@ -429,24 +467,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setWiperStatus(VehicleDataResult wiperStatus) {
         if (wiperStatus != null) {
-            parameters.put(Names.wiperStatus, wiperStatus);
+            parameters.put(KEY_WIPER_STATUS, wiperStatus);
         } else {
-        	parameters.remove(Names.wiperStatus);
+        	parameters.remove(KEY_WIPER_STATUS);
         }
     }
     /**
      * Gets Wiper Status
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getWiperStatus() {
-    	Object obj = parameters.get(Names.wiperStatus);
+    	Object obj = parameters.get(KEY_WIPER_STATUS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.wiperStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
             }
         }
         return null;
@@ -457,24 +496,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setHeadLampStatus(VehicleDataResult headLampStatus) {
         if (headLampStatus != null) {
-            parameters.put(Names.headLampStatus, headLampStatus);
+            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
         } else {
-        	parameters.remove(Names.headLampStatus);
+        	parameters.remove(KEY_HEAD_LAMP_STATUS);
         }
     }
     /**
      * Gets Head Lamp Status
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getHeadLampStatus() {
-    	Object obj = parameters.get(Names.headLampStatus);
+    	Object obj = parameters.get(KEY_HEAD_LAMP_STATUS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.headLampStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
             }
         }
         return null;
@@ -485,24 +525,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setEngineTorque(VehicleDataResult engineTorque) {
         if (engineTorque != null) {
-            parameters.put(Names.engineTorque, engineTorque);
+            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
         } else {
-        	parameters.remove(Names.engineTorque);
+        	parameters.remove(KEY_ENGINE_TORQUE);
         }
     }
     /**
      * Gets Engine Torque
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getEngineTorque() {
-    	Object obj = parameters.get(Names.engineTorque);
+    	Object obj = parameters.get(KEY_ENGINE_TORQUE);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.engineTorque, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ENGINE_TORQUE, e);
             }
         }
         return null;
@@ -513,24 +554,25 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public void setAccPedalPosition(VehicleDataResult accPedalPosition) {
         if (accPedalPosition != null) {
-            parameters.put(Names.accPedalPosition, accPedalPosition);
+            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
         } else {
-        	parameters.remove(Names.accPedalPosition);
+        	parameters.remove(KEY_ACC_PEDAL_POSITION);
         }
     }
     /**
      * Gets AccPedal Position
      * @return VehicleDataResult
      */
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
-    	Object obj = parameters.get(Names.accPedalPosition);
+    	Object obj = parameters.get(KEY_ACC_PEDAL_POSITION);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.accPedalPosition, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ACC_PEDAL_POSITION, e);
             }
         }
         return null;
@@ -538,21 +580,22 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
         if (steeringWheelAngle != null) {
-            parameters.put(Names.steeringWheelAngle, steeringWheelAngle);
+            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
         } else {
-        	parameters.remove(Names.steeringWheelAngle);
+        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getSteeringWheelAngle() {
-    	Object obj = parameters.get(Names.steeringWheelAngle);
+    	Object obj = parameters.get(KEY_STEERING_WHEEL_ANGLE);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.steeringWheelAngle, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STEERING_WHEEL_ANGLE, e);
             }
         }
         return null;
@@ -560,100 +603,105 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     
     public void setECallInfo(VehicleDataResult eCallInfo) {
         if (eCallInfo != null) {
-            parameters.put(Names.eCallInfo, eCallInfo);
+            parameters.put(KEY_E_CALL_INFO, eCallInfo);
         } else {
-        	parameters.remove(Names.eCallInfo);
+        	parameters.remove(KEY_E_CALL_INFO);
         }
     }
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getECallInfo() {
-    	Object obj = parameters.get(Names.eCallInfo);
+    	Object obj = parameters.get(KEY_E_CALL_INFO);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.eCallInfo, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
             }
         }
         return null;
     }
     public void setAirbagStatus(VehicleDataResult airbagStatus) {
         if (airbagStatus != null) {
-            parameters.put(Names.airbagStatus, airbagStatus);
+            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
         } else {
-        	parameters.remove(Names.airbagStatus);
+        	parameters.remove(KEY_AIRBAG_STATUS);
         }
     }
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getAirbagStatus() {
-    	Object obj = parameters.get(Names.airbagStatus);
+    	Object obj = parameters.get(KEY_AIRBAG_STATUS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.airbagStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
             }
         }
         return null;
     }
     public void setEmergencyEvent(VehicleDataResult emergencyEvent) {
         if (emergencyEvent != null) {
-            parameters.put(Names.emergencyEvent, emergencyEvent);
+            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
         } else {
-        	parameters.remove(Names.emergencyEvent);
+        	parameters.remove(KEY_EMERGENCY_EVENT);
         }
     }
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getEmergencyEvent() {
-    	Object obj = parameters.get(Names.emergencyEvent);
+    	Object obj = parameters.get(KEY_EMERGENCY_EVENT);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.emergencyEvent, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
             }
         }
         return null;
     }
     public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
         if (clusterModeStatus != null) {
-            parameters.put(Names.clusterModeStatus, clusterModeStatus);
+            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
         } else {
-        	parameters.remove(Names.clusterModeStatus);
+        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
         }
     }
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getClusterModeStatus() {
-    	Object obj = parameters.get(Names.clusterModeStatus);
+    	Object obj = parameters.get(KEY_CLUSTER_MODE_STATUS);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.clusterModeStatus, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
             }
         }
         return null;
     }
     public void setMyKey(VehicleDataResult myKey) {
         if (myKey != null) {
-            parameters.put(Names.myKey, myKey);
+            parameters.put(KEY_MY_KEY, myKey);
         } else {
-        	parameters.remove(Names.myKey);
+        	parameters.remove(KEY_MY_KEY);
         }
     }
+    @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {
-    	Object obj = parameters.get(Names.myKey);
+    	Object obj = parameters.get(KEY_MY_KEY);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new VehicleDataResult((Hashtable) obj);
+        		return new VehicleDataResult((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + Names.myKey, e);
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
             }
         }
         return null;

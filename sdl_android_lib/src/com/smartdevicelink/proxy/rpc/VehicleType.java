@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Describes the type of vehicle the mobile phone is connected with.
@@ -59,6 +58,10 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class VehicleType extends RPCStruct {
+	public static final String KEY_MAKE = "make";
+	public static final String KEY_MODEL = "model";
+	public static final String KEY_MODEL_YEAR = "modelYear";
+	public static final String KEY_TRIM = "trim";
 
 	/**
 	 * Constructs a newly allocated VehicleType object
@@ -69,7 +72,7 @@ public class VehicleType extends RPCStruct {
      * Constructs a newly allocated VehicleType object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public VehicleType(Hashtable hash) {
+    public VehicleType(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -78,7 +81,7 @@ public class VehicleType extends RPCStruct {
      * @return the make of the vehicle
      */
     public String getMake() {
-        return (String) store.get(Names.make);
+        return (String) store.get(KEY_MAKE);
     }
     
     /**
@@ -87,9 +90,9 @@ public class VehicleType extends RPCStruct {
      */
     public void setMake(String make) {
         if (make != null) {
-            store.put(Names.make, make);
+            store.put(KEY_MAKE, make);
         } else {
-        	store.remove(Names.make);
+        	store.remove(KEY_MAKE);
         }
     }
     
@@ -98,7 +101,7 @@ public class VehicleType extends RPCStruct {
      * @return the model of the vehicle
      */
     public String getModel() {
-        return (String) store.get(Names.model);
+        return (String) store.get(KEY_MODEL);
     }
     
     /**
@@ -107,9 +110,9 @@ public class VehicleType extends RPCStruct {
      */
     public void setModel(String model) {
         if (model != null) {
-            store.put(Names.model, model);
+            store.put(KEY_MODEL, model);
         } else {
-        	store.remove(Names.model);
+        	store.remove(KEY_MODEL);
         }
     }
     
@@ -118,7 +121,7 @@ public class VehicleType extends RPCStruct {
      * @return the model year of the vehicle
      */
     public String getModelYear() {
-        return (String) store.get(Names.modelYear);
+        return (String) store.get(KEY_MODEL_YEAR);
     }
     
     /**
@@ -127,9 +130,9 @@ public class VehicleType extends RPCStruct {
      */
     public void setModelYear(String modelYear) {
         if (modelYear != null) {
-            store.put(Names.modelYear, modelYear);
+            store.put(KEY_MODEL_YEAR, modelYear);
         } else {
-        	store.remove(Names.modelYear);
+        	store.remove(KEY_MODEL_YEAR);
         }
     }
     
@@ -138,7 +141,7 @@ public class VehicleType extends RPCStruct {
      * @return the trim of the vehicle
      */
     public String getTrim() {
-        return (String) store.get(Names.trim);
+        return (String) store.get(KEY_TRIM);
     }
     
     /**
@@ -147,9 +150,9 @@ public class VehicleType extends RPCStruct {
      */
     public void setTrim(String trim) {
         if (trim != null) {
-            store.put(Names.trim, trim);
+            store.put(KEY_TRIM, trim);
         } else {
-        	store.remove(Names.trim);
+        	store.remove(KEY_TRIM);
         }
     }
 }

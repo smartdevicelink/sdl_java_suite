@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Provides update to app of which sets of functions are available
@@ -48,33 +49,35 @@ import com.smartdevicelink.proxy.constants.Names;
  * </p>
  */
 public class OnPermissionsChange extends RPCNotification {
+	public static final String KEY_PERMISSION_ITEM = "permissionItem";
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
 	public OnPermissionsChange() {
-		super("OnPermissionsChange");
+		super(FunctionID.ON_PERMISSIONS_CHANGE);
 	}
 	/**
      *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */
-	public OnPermissionsChange(Hashtable hash) {
+	public OnPermissionsChange(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 	/**
-     * <p>Returns Vector<PermissionItem> object describing change in permissions for a given set of RPCs</p>
-     * @return Vector<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
+     * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
+     * @return List<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
      */   
-	public Vector<PermissionItem> getPermissionItem() {
-		Vector<?> list = (Vector<?>)parameters.get(Names.permissionItem);
+    @SuppressWarnings("unchecked")
+	public List<PermissionItem> getPermissionItem() {
+		List<?> list = (List<?>)parameters.get(KEY_PERMISSION_ITEM);
 		if (list != null && list.size()>0) {
 			Object obj = list.get(0);
 			if(obj instanceof PermissionItem){
-				return (Vector<PermissionItem>) list;
+				return (List<PermissionItem>) list;
 			} else if(obj instanceof Hashtable) {
-				Vector<PermissionItem> newList = new Vector<PermissionItem>();
+				List<PermissionItem> newList = new ArrayList<PermissionItem>();
 				for (Object hash:list) {
-					newList.add(new PermissionItem((Hashtable)hash));
+					newList.add(new PermissionItem((Hashtable<String, Object>)hash));
 				}
 				return newList;
 			}
@@ -83,13 +86,13 @@ public class OnPermissionsChange extends RPCNotification {
 	}
     /**
      * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
-     * @param permissionItem an vector of  PermissionItem describing change in permissions for a given set of RPCs
+     * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
-	public void setPermissionItem(Vector<PermissionItem> permissionItem) {
+	public void setPermissionItem(List<PermissionItem> permissionItem) {
 		if (permissionItem != null) {
-			parameters.put(Names.permissionItem, permissionItem);
+			parameters.put(KEY_PERMISSION_ITEM, permissionItem);
 		} else {
-			parameters.remove(Names.permissionItem);
+			parameters.remove(KEY_PERMISSION_ITEM);
         }
 	}
 }

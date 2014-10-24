@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -25,7 +26,7 @@ public class UnregisterAppInterface extends RPCRequest {
 	 * Constructs a new UnregisterAppInterface object
 	 */
     public UnregisterAppInterface() {
-        super("UnregisterAppInterface");
+        super(FunctionID.UNREGISTER_APP_INTERFACE);
     }
 	/**
 	 * Constructs a new UnregisterAppInterface object indicated by the Hashtable
@@ -35,7 +36,7 @@ public class UnregisterAppInterface extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */    
-    public UnregisterAppInterface(Hashtable hash) {
+    public UnregisterAppInterface(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Contains information about on-screen preset capabilities.
@@ -26,6 +25,7 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class PresetBankCapabilities extends RPCStruct {
+	public static final String KEY_ON_SCREEN_PRESETS_AVAILABLE = "OnScreenPresetsAvailable";
 
 	/**
 	 * Constructs a newly allocated PresetBankCapabilities object
@@ -36,7 +36,7 @@ public class PresetBankCapabilities extends RPCStruct {
      * Constructs a newly allocated PresetBankCapabilities object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public PresetBankCapabilities(Hashtable hash) {
+    public PresetBankCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -46,9 +46,9 @@ public class PresetBankCapabilities extends RPCStruct {
      */
     public void setOnScreenPresetsAvailable(Boolean onScreenPresetsAvailable) {
     	if (onScreenPresetsAvailable != null) {
-    		store.put(Names.OnScreenPresetsAvailable, onScreenPresetsAvailable);
+    		store.put(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
     	} else {
-    		store.remove(Names.OnScreenPresetsAvailable);
+    		store.remove(KEY_ON_SCREEN_PRESETS_AVAILABLE);
     	}
     }
     
@@ -57,6 +57,6 @@ public class PresetBankCapabilities extends RPCStruct {
      * @return if Onscreen custom presets are available
      */
     public Boolean onScreenPresetsAvailable() {
-    	return (Boolean) store.get(Names.OnScreenPresetsAvailable);
+    	return (Boolean) store.get(KEY_ON_SCREEN_PRESETS_AVAILABLE);
     }
 }

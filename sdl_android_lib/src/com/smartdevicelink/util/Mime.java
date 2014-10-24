@@ -60,7 +60,8 @@ public class Mime {
 	} // end-method
 	
 	
-	private byte[] base64Decode(String base64String) {
+	@SuppressWarnings("unused")
+    private byte[] base64Decode(String base64String) {
 		byte[] outBytes = null;
 		byte[] base64ASCIIString = null;
 		final String ASCII_Encoding = "US-ASCII";

@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -17,7 +18,7 @@ public class ListFiles extends RPCRequest {
 	 * Constructs a new ListFiles object
 	 */
     public ListFiles() {
-        super("ListFiles");
+        super(FunctionID.LIST_FILES);
     }
 
 	/**
@@ -27,7 +28,7 @@ public class ListFiles extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ListFiles(Hashtable hash) {
+    public ListFiles(Hashtable<String, Object> hash) {
         super(hash);
     }
 }

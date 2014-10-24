@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy;
 
+import java.util.List;
 import java.util.Vector;
 
 import android.app.Service;
@@ -30,7 +31,8 @@ import com.smartdevicelink.transport.TransportType;
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	private static final String SDL_LIB_PRIVATE_TOKEN = "{DAE1A88C-6C16-4768-ACA5-6F1247EA01C2}";
+	@SuppressWarnings("unused")
+    private static final String SDL_LIB_PRIVATE_TOKEN = "{DAE1A88C-6C16-4768-ACA5-6F1247EA01C2}";
 	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL
@@ -1092,7 +1094,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @return buttonCapabilities
 	 * @throws SdlException
 	 */
-	public Vector<ButtonCapabilities> getButtonCapabilities() throws SdlException{
+	public List<ButtonCapabilities> getButtonCapabilities() throws SdlException{
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1111,7 +1113,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @return softButtonCapabilities 
 	 * @throws SdlException
 	 */
-	public Vector<SoftButtonCapabilities> getSoftButtonCapabilities() throws SdlException {
+	public List<SoftButtonCapabilities> getSoftButtonCapabilities() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1188,7 +1190,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @return hmiZoneCapabilities
 	 * @throws SdlException
 	 */
-	public Vector<HmiZoneCapabilities> getHmiZoneCapabilities() throws SdlException {
+	public List<HmiZoneCapabilities> getHmiZoneCapabilities() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1207,7 +1209,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @return speechCapabilities
 	 * @throws SdlException
 	 */
-	public Vector<SpeechCapabilities> getSpeechCapabilities() throws SdlException {
+	public List<SpeechCapabilities> getSpeechCapabilities() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1226,7 +1228,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @return PrerecordedSpeech
 	 * @throws SdlException
 	 */
-	public Vector<PrerecordedSpeech> getPrerecordedSpeech() throws SdlException {
+	public List<PrerecordedSpeech> getPrerecordedSpeech() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1302,7 +1304,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @return vrCapabilities
 	 * @throws SdlException
 	 */
-	public Vector<VrCapabilities> getVrCapabilities() throws SdlException {
+	public List<VrCapabilities> getVrCapabilities() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1334,7 +1336,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		return _vehicleType;
 	}
 	
-	public Vector<Integer> getSupportedDiagModes() throws SdlException {
+	public List<Integer> getSupportedDiagModes() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);

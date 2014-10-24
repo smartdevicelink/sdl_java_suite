@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.constants.Names;
 
 /**
  * Delete File Response is sent, when DeleteFile has been called
@@ -11,21 +11,22 @@ import com.smartdevicelink.proxy.constants.Names;
  * @since SmartDeviceLink 2.0
  */
 public class DeleteFileResponse extends RPCResponse {
+	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
     public DeleteFileResponse() {
-        super("DeleteFile");
+        super(FunctionID.DELETE_FILE);
     }
-    public DeleteFileResponse(Hashtable hash) {
+    public DeleteFileResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {
         if (spaceAvailable != null) {
-            parameters.put(Names.spaceAvailable, spaceAvailable);
+            parameters.put(KEY_SPACE_AVAILABLE, spaceAvailable);
         } else {
-        	parameters.remove(Names.spaceAvailable);
+        	parameters.remove(KEY_SPACE_AVAILABLE);
         }
     }
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(Names.spaceAvailable);
+        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
     }
 }

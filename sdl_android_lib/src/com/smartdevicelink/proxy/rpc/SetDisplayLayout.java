@@ -2,9 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.constants.Names;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Used to set an alternate display layout. If not sent, default screen for
@@ -14,12 +13,12 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class SetDisplayLayout extends RPCRequest {
-
+	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
 	/**
 	 * Constructs a new SetDisplayLayout object
 	 */
     public SetDisplayLayout() {
-        super("SetDisplayLayout");
+        super(FunctionID.SET_DISPLAY_LAYOUT);
     }
 
 	/**
@@ -30,7 +29,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public SetDisplayLayout(Hashtable hash) {
+    public SetDisplayLayout(Hashtable<String, Object> hash) {
         super(hash);
     }
 
@@ -45,9 +44,9 @@ public class SetDisplayLayout extends RPCRequest {
 	 */
     public void setDisplayLayout(String displayLayout) {
         if (displayLayout != null) {
-            parameters.put(Names.displayLayout, displayLayout);
+            parameters.put(KEY_DISPLAY_LAYOUT, displayLayout);
         } else {
-        	parameters.remove(Names.displayLayout);
+        	parameters.remove(KEY_DISPLAY_LAYOUT);
         }
     }
 
@@ -55,6 +54,6 @@ public class SetDisplayLayout extends RPCRequest {
 	 * Gets a display layout.
 	 */
     public String getDisplayLayout() {
-    	return (String) parameters.get(Names.displayLayout);
+    	return (String) parameters.get(KEY_DISPLAY_LAYOUT);
     }
 }
