@@ -43,7 +43,6 @@ public class FunctionID {
 	public static final String RESET_GLOBAL_PROPERTIES = "ResetGlobalProperties";
 	public static final String SET_APP_ICON = "SetAppIcon";
 	public static final String CHANGE_REGISTRATION = "ChangeRegistration";
-	public static final String CHANGE_LANGUAGE_REGISTRATION = "ChangeLanguageRegistration";
 	public static final String SET_DISPLAY_LAYOUT = "SetDisplayLayout";
 	public static final String ON_LANGUAGE_CHANGE = "OnLanguageChange";
 	public static final String PERFORM_AUDIO_PASS_THRU = "PerformAudioPassThru";

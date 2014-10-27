@@ -16,7 +16,7 @@ public class ChangeRegistrationResponse extends RPCResponse {
 	 * Constructs a new ChangeRegistrationResponse object
 	 */
     public ChangeRegistrationResponse() {
-        super(FunctionID.CHANGE_LANGUAGE_REGISTRATION);
+        super(FunctionID.CHANGE_REGISTRATION);
     }
 
 	/**
