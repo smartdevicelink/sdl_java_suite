@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.proxy.rpc.enums.VehicleData;
 
 /**
  * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called
@@ -12,30 +14,6 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 2.0
  */
 public class UnsubscribeVehicleDataResponse extends RPCResponse {
-	public static final String KEY_SPEED = "speed";
-	public static final String KEY_RPM = "rpm";
-	public static final String KEY_FUEL_LEVEL = "fuelLevel";
-	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
-	public static final String KEY_PRNDL = "prndl";
-	public static final String KEY_TIRE_PRESSURE = "tirePressure";
-	public static final String KEY_ENGINE_TORQUE = "engineTorque";
-	public static final String KEY_ODOMETER = "odometer";
-	public static final String KEY_GPS = "gps";
-	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
-	public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
-	public static final String KEY_BELT_STATUS = "beltStatus";
-	public static final String KEY_BODY_INFORMATION = "bodyInformation";
-	public static final String KEY_DEVICE_STATUS = "deviceStatus";
-	public static final String KEY_DRIVER_BRAKING = "driverBraking";
-	public static final String KEY_WIPER_STATUS = "wiperStatus";
-	public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
-	public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
-	public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
-	public static final String KEY_E_CALL_INFO = "eCallInfo";
-	public static final String KEY_AIRBAG_STATUS = "airbagStatus";
-	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
-	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
-	public static final String KEY_MY_KEY = "myKey";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
@@ -55,655 +33,382 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public UnsubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+    
+    public void setVehicleData(VehicleData key, VehicleDataResult value){
+        if(value == null){
+            parameters.remove(key.getJsonName());
+        }
+        else{
+            parameters.put(key.getJsonName(), value);
+        }
+    }
+    
+    public void setVehicleData(Map<VehicleData, VehicleDataResult> valueMap){
+        for(Map.Entry<VehicleData, VehicleDataResult> entry : valueMap.entrySet()){
+            setVehicleData(entry.getKey(), entry.getValue());
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getVehicleData(VehicleData key){
+        Object obj = parameters.get(key.getJsonName());
+        if(obj instanceof VehicleDataResult){
+            return (VehicleDataResult) obj;
+        }
+        else if(obj instanceof Hashtable){
+            return new VehicleDataResult((Hashtable<String, Object>) obj);
+        }
+        return null;
+    }
+    
+    public Map<VehicleData, VehicleDataResult> getVehicleData(VehicleData... keys){
+        Map<VehicleData, VehicleDataResult> result = new HashMap<VehicleData, VehicleDataResult>();
+        
+        for(VehicleData data : keys){
+            VehicleDataResult temp = getVehicleData(data);
+            result.put(data, temp);
+        }
+        
+        return result;
+    }
+    
     /**
-     * Sets Gps
+     * Sets gps
      * @param gps
      */
+    @Deprecated
     public void setGps(VehicleDataResult gps) {
-        if (gps != null) {
-            parameters.put(KEY_GPS, gps);
-        } else {
-        	parameters.remove(KEY_GPS);
-        }
+        setVehicleData(VehicleData.GPS, gps);
     }
     /**
-     * Gets Gps
-     * @return VehicleDataResult
+     * Gets gps
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getGps() {
-    	Object obj = parameters.get(KEY_GPS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.GPS);
     }
     /**
-     * Sets Speed
+     * Sets speed
      * @param speed
      */
+    @Deprecated
     public void setSpeed(VehicleDataResult speed) {
-        if (speed != null) {
-            parameters.put(KEY_SPEED, speed);
-        } else {
-        	parameters.remove(KEY_SPEED);
-        }
+        setVehicleData(VehicleData.SPEED, speed);
     }
     /**
-     * Gets Speed
-     * @return VehicleDataResult
+     * Gets speed
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getSpeed() {
-    	Object obj = parameters.get(KEY_SPEED);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEED, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.SPEED);
     }
     /**
      * Sets rpm
      * @param rpm
      */
+    @Deprecated
     public void setRpm(VehicleDataResult rpm) {
-        if (rpm != null) {
-            parameters.put(KEY_RPM, rpm);
-        } else {
-        	parameters.remove(KEY_RPM);
-        }
+        setVehicleData(VehicleData.RPM, rpm);
     }
     /**
      * Gets rpm
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getRpm() {
-    	Object obj = parameters.get(KEY_RPM);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RPM, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.RPM);
     }
     /**
      * Sets Fuel Level
      * @param fuelLevel
      */
+    @Deprecated
     public void setFuelLevel(VehicleDataResult fuelLevel) {
-        if (fuelLevel != null) {
-            parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-        } else {
-        	parameters.remove(KEY_FUEL_LEVEL);
-        }
+        setVehicleData(VehicleData.FUEL_LEVEL, fuelLevel);
     }
     /**
      * Gets Fuel Level
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getFuelLevel() {
-    	Object obj = parameters.get(KEY_FUEL_LEVEL);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.FUEL_LEVEL);
     }
     /**
      * Sets Fuel Level State
      * @param fuelLevel_State
      */
+    @Deprecated
     public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-        	parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setVehicleData(VehicleData.FUEL_LEVEL_STATE, fuelLevel_State);
     }
     /**
      * Gets Fuel Level State
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getFuelLevel_State() {
-    	Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.FUEL_LEVEL_STATE);
     }
     /**
      * Sets Instant Fuel Comsumption
      * @param instantFuelConsumption
      */
+    @Deprecated
     public void setInstantFuelConsumption(VehicleDataResult instantFuelConsumption) {
-        if (instantFuelConsumption != null) {
-            parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-        } else {
-        	parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-        }
+        setVehicleData(VehicleData.INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     /**
-     * Gets Instant Fuel Comsumption
-     * @return VehicleDataResult
+     * Gets Instant Fuel Consumption
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getInstantFuelConsumption() {
-    	Object obj = parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INSTANT_FUEL_CONSUMPTION, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.INSTANT_FUEL_CONSUMPTION);
     }
     /**
      * Sets External Temperature
      * @param externalTemperature
      */
+    @Deprecated
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
-        if (externalTemperature != null) {
-            parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-        } else {
-        	parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-        }
+        setVehicleData(VehicleData.EXTERNAL_TEMPERATURE, externalTemperature);
     }
     /**
      * Gets External Temperature
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getExternalTemperature() {
-    	Object obj = parameters.get(KEY_EXTERNAL_TEMPERATURE);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EXTERNAL_TEMPERATURE, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.EXTERNAL_TEMPERATURE);
     }
     /**
-     * Gets currently selected gear data
+     * Sets currently selected gear data
      * @param prndl
      */
+    @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
-        if (prndl != null) {
-            parameters.put(KEY_PRNDL, prndl);
-        } else {
-        	parameters.remove(KEY_PRNDL);
-        }
+        setVehicleData(VehicleData.PRNDL, prndl);
     }
     /**
      * Gets currently selected gear data
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getPrndl() {
-    	Object obj = parameters.get(KEY_PRNDL);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.PRNDL);
     }
     /**
      * Sets Tire Pressure
      * @param tirePressure
      */
+    @Deprecated
     public void setTirePressure(VehicleDataResult tirePressure) {
-        if (tirePressure != null) {
-            parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-        } else {
-        	parameters.remove(KEY_TIRE_PRESSURE);
-        }
+        setVehicleData(VehicleData.TIRE_PRESSURE, tirePressure);
     }
     /**
      * Gets Tire Pressure
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getTirePressure() {
-    	Object obj = parameters.get(KEY_TIRE_PRESSURE);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.TIRE_PRESSURE);
     }
     /**
      * Sets Odometer
      * @param odometer
      */
+    @Deprecated
     public void setOdometer(VehicleDataResult odometer) {
-        if (odometer != null) {
-            parameters.put(KEY_ODOMETER, odometer);
-        } else {
-        	parameters.remove(KEY_ODOMETER);
-        }
+        setVehicleData(VehicleData.ODOMETER, odometer);
     }
     /**
      * Gets Odometer
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getOdometer() {
-    	Object obj = parameters.get(KEY_ODOMETER);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ODOMETER, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.ODOMETER);
     }
     /**
      * Sets Belt Status
      * @param beltStatus
      */
+    @Deprecated
     public void setBeltStatus(VehicleDataResult beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        setVehicleData(VehicleData.BELT_STATUS, beltStatus);
     }
     /**
      * Gets Belt Status
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getBeltStatus() {
-    	Object obj = parameters.get(KEY_BELT_STATUS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.BELT_STATUS);
     }
     /**
      * Sets Body Information
      * @param bodyInformation
      */
+    @Deprecated
     public void setBodyInformation(VehicleDataResult bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        setVehicleData(VehicleData.BODY_INFORMATION, bodyInformation);
     }
     /**
      * Gets Body Information
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getBodyInformation() {
-    	Object obj = parameters.get(KEY_BODY_INFORMATION);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.BODY_INFORMATION);
     }
     /**
      * Sets Device Status
      * @param deviceStatus
      */
+    @Deprecated
     public void setDeviceStatus(VehicleDataResult deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        setVehicleData(VehicleData.DEVICE_STATUS, deviceStatus);
     }
     /**
      * Gets Device Status
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getDeviceStatus() {
-    	Object obj = parameters.get(KEY_DEVICE_STATUS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.DEVICE_STATUS);
     }
     /**
-     * Sets Driver Braking
+     * Sets Driver Barking
      * @param driverBraking
      */
+    @Deprecated
     public void setDriverBraking(VehicleDataResult driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        setVehicleData(VehicleData.DRIVER_BRAKING, driverBraking);
     }
     /**
-     * Gets Driver Braking
-     * @return VehicleDataResult
+     * Gets Driver Barking
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getDriverBraking() {
-    	Object obj = parameters.get(KEY_DRIVER_BRAKING);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.DRIVER_BRAKING);
     }
     /**
-     * Sets Wiper Status
+     * Sets wiper Status
      * @param wiperStatus
      */
+    @Deprecated
     public void setWiperStatus(VehicleDataResult wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        setVehicleData(VehicleData.WIPER_STATUS, wiperStatus);
     }
     /**
      * Gets Wiper Status
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getWiperStatus() {
-    	Object obj = parameters.get(KEY_WIPER_STATUS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.WIPER_STATUS);
     }
     /**
      * Sets Head Lamp Status
      * @param headLampStatus
      */
+    @Deprecated
     public void setHeadLampStatus(VehicleDataResult headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        setVehicleData(VehicleData.HEAD_LAMP_STATUS, headLampStatus);
     }
     /**
      * Gets Head Lamp Status
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getHeadLampStatus() {
-    	Object obj = parameters.get(KEY_HEAD_LAMP_STATUS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.HEAD_LAMP_STATUS);
     }
     /**
      * Sets Engine Torque
      * @param engineTorque
      */
+    @Deprecated
     public void setEngineTorque(VehicleDataResult engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        setVehicleData(VehicleData.ENGINE_TORQUE, engineTorque);
     }
     /**
      * Gets Engine Torque
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getEngineTorque() {
-    	Object obj = parameters.get(KEY_ENGINE_TORQUE);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ENGINE_TORQUE, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.ENGINE_TORQUE);
     }
     /**
      * Sets AccPedal Position
      * @param accPedalPosition
      */
+    @Deprecated
     public void setAccPedalPosition(VehicleDataResult accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        setVehicleData(VehicleData.ACC_PEDAL_POSITION, accPedalPosition);
     }
     /**
      * Gets AccPedal Position
-     * @return VehicleDataResult
+     * @return VehicleDataResult 
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getAccPedalPosition() {
-    	Object obj = parameters.get(KEY_ACC_PEDAL_POSITION);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ACC_PEDAL_POSITION, e);
-            }
-        }
-        return null;
-    }  
-    
-    public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        return getVehicleData(VehicleData.ACC_PEDAL_POSITION);
     }
 
-    @SuppressWarnings("unchecked")
+    @Deprecated
+    public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
+        setVehicleData(VehicleData.STEERING_WHEEL_ANGLE, steeringWheelAngle);
+    }
+
+    @Deprecated
     public VehicleDataResult getSteeringWheelAngle() {
-    	Object obj = parameters.get(KEY_STEERING_WHEEL_ANGLE);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STEERING_WHEEL_ANGLE, e);
-            }
-        }
-        return null;
-    }    
-    
+        return getVehicleData(VehicleData.STEERING_WHEEL_ANGLE);
+    }
+
+    @Deprecated
     public void setECallInfo(VehicleDataResult eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
+        setVehicleData(VehicleData.E_CALL_INFO, eCallInfo);
     }
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getECallInfo() {
-    	Object obj = parameters.get(KEY_E_CALL_INFO);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.E_CALL_INFO);
     }
+    @Deprecated
     public void setAirbagStatus(VehicleDataResult airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
+        setVehicleData(VehicleData.AIRBAG_STATUS, airbagStatus);
     }
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getAirbagStatus() {
-    	Object obj = parameters.get(KEY_AIRBAG_STATUS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.AIRBAG_STATUS);
     }
+    @Deprecated
     public void setEmergencyEvent(VehicleDataResult emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
+        setVehicleData(VehicleData.EMERGENCY_EVENT, emergencyEvent);
     }
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getEmergencyEvent() {
-    	Object obj = parameters.get(KEY_EMERGENCY_EVENT);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.EMERGENCY_EVENT);
     }
+    @Deprecated
     public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
+        setVehicleData(VehicleData.CLUSTER_MODE_STATUS, clusterModeStatus);
     }
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getClusterModeStatus() {
-    	Object obj = parameters.get(KEY_CLUSTER_MODE_STATUS);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
-            }
-        }
-        return null;
+        return getVehicleData(VehicleData.CLUSTER_MODE_STATUS);
     }
+    @Deprecated
     public void setMyKey(VehicleDataResult myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
+        setVehicleData(VehicleData.MY_KEY, myKey);
     }
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getMyKey() {
-    	Object obj = parameters.get(KEY_MY_KEY);
-        if (obj instanceof VehicleDataResult) {
-            return (VehicleDataResult) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
-            }
-        }
-        return null;
-    }     
+        return getVehicleData(VehicleData.MY_KEY);
+    }       
 }

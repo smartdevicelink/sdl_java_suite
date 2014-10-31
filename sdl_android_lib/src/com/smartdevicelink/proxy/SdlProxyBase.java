@@ -3981,6 +3981,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException
 	*/
+	@Deprecated
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,						
 									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
@@ -4013,7 +4014,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException
 	*/
-
+	@Deprecated
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 						   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 			 						   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
@@ -4047,6 +4048,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException
 	*/
+	@Deprecated
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 				   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 			 				   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
