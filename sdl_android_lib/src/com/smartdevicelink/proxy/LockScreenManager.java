@@ -52,7 +52,7 @@ public class LockScreenManager {
 	private synchronized LockScreenStatus getLockScreenStatus() 
 	{
 		
-		if ( hmiLevel.equals(HMILevel.HMI_NONE) )
+		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE)) )
 		{
 			return LockScreenStatus.OFF;
 		}
