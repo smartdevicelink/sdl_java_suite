@@ -377,7 +377,7 @@ public class PerformInteraction extends RPCRequest {
     
     public LayoutMode getInteractionLayout() {
         Object obj = parameters.get(KEY_INTERACTION_LAYOUT);
-        if (obj instanceof DisplayType) {
+        if (obj instanceof LayoutMode) {
             return (LayoutMode) obj;
         } else if (obj instanceof String) {
         	LayoutMode theCode = null;
