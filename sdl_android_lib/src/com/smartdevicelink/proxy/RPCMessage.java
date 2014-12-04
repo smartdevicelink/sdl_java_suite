@@ -2,8 +2,16 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
-public class RPCMessage extends RPCStruct  {
+/**
+ * The BaseRpcMessage class represents all common variables and methods that will be shared across
+ * all RPC messages in the system.
+ *
+ * @author Mike Burke
+ *
+ */
+public abstract class RPCMessage implements JsonParameters {
     public static final String KEY_REQUEST = "request";
     public static final String KEY_RESPONSE = "response";
     public static final String KEY_NOTIFICATION = "notification";
@@ -11,6 +19,25 @@ public class RPCMessage extends RPCStruct  {
     public static final String KEY_PARAMETERS = "parameters";
     public static final String KEY_CORRELATION_ID = "correlationID";
 
+    protected String messageType;
+    protected SdlCommand commandType;
+    protected Integer correlationId;
+    
+    /**
+     * Creates a base RPC message with a message type and a message name.  The name
+     * represents the RPC command to be sent.  For example, the message name for an
+     * AddCommand message would be "AddCommand".
+     * 
+     * <b>NOTE:</b> This constructor assumes a correlation ID of -1.  The correlation ID
+     * can be updated through the setCorrelationId(int corrId) method.
+     * 
+     * @param messageType The type of RPC message this object is
+     * @param messageName The name of the RPC command this message represents
+     */
+    public RPCMessage(String messageType, String messageName) {
+        this(messageType, messageName, null);
+    }
+    
 	public RPCMessage(String functionName) {
 		this(functionName, "request");
 	}
@@ -43,10 +70,6 @@ public class RPCMessage extends RPCStruct  {
             setBulkData((byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
         }
 	}
-
-	protected String messageType;
-	protected Hashtable<String, Object> parameters;
-	protected Hashtable<String, Object> function;
 	
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
