@@ -23,7 +23,6 @@ public enum VehicleData{
     FUEL_LEVEL_STATE("Fuel Level State", "fuelLevel_State", ComponentVolumeStatus.class),
     INSTANT_FUEL_CONSUMPTION("Instant Fuel Consumption", "instantFuelConsumption", Double.class),
     EXTERNAL_TEMPERATURE("External Temperature", "externalTemperature", Double.class),
-    VIN("VIN", "vin", String.class),
     PRNDL("PRNDL", "prndl", PRNDL.class),
     TIRE_PRESSURE("Tire Pressure", "tirePressure", TireStatus.class),
     ODOMETER("Odometer", "odometer", Integer.class),

@@ -15,6 +15,8 @@ import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
 public class OnVehicleData extends RPCNotification {
 
+    public static final String KEY_VIN = "vin";
+    
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA);
     }
@@ -122,11 +124,16 @@ public class OnVehicleData extends RPCNotification {
     }
     @Deprecated
     public void setVin(String vin) {
-        setVehicleData(VehicleData.VIN, vin);
+        if(vin == null){
+            this.parameters.remove(KEY_VIN);
+        }
+        else{
+            this.parameters.put(KEY_VIN, vin);
+        }
     }
     @Deprecated
     public String getVin() {
-        return (String) getVehicleData(VehicleData.VIN);
+        return (String) this.parameters.get(KEY_VIN);
     }
     @Deprecated
     public void setPrndl(PRNDL prndl) {

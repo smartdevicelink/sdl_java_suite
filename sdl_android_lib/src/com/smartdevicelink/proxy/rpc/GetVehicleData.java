@@ -7,6 +7,8 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.VehicleData;
 
 public class GetVehicleData extends RPCRequest {
+
+    public static final String KEY_VIN = "vin";
     
     public GetVehicleData() {
         super(FunctionID.GET_VEHICLE_DATA);
@@ -103,12 +105,17 @@ public class GetVehicleData extends RPCRequest {
     
     @Deprecated
     public void setVin(Boolean vin) {
-        setVehicleData(vin, VehicleData.VIN);
+        if(vin == null){
+            this.parameters.remove(KEY_VIN);
+        }
+        else{
+            this.parameters.put(KEY_VIN, vin);
+        }
     }
     
     @Deprecated
     public Boolean getVin() {
-        return getVehicleData(VehicleData.VIN);
+        return (Boolean) this.parameters.get(KEY_VIN);
     }
     
     @Deprecated
