@@ -71,7 +71,7 @@ public class ImageField extends RPCStruct {
          }
          return null;
     }
-    public void setImageTypeSupported( FileType imageTypeSupported ) {
+    public void setImageTypeSupported( List<FileType> imageTypeSupported ) {
         if (imageTypeSupported != null) {
             store.put(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported );
         }
