@@ -31,6 +31,8 @@ import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.smartdevicelink.proxy.RPCRequestFactory;
+import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
@@ -4142,7 +4144,47 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		return startRPCStream(msg);
 	}	
+
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile device.
+	 * Responses are captured through callback on IProxyListener.
+	 *
+	 * @param is - The input stream of byte data that PutFileStream will read from
+	 * @param syncFileName - The file reference name used by the putFile RPC.
+	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of the file.
+	 * A value greater than zero is used for resuming partial data chunks.
+	 * @param iLength - The total length of the file being sent.
+	 * @param fileType - The selected file type -- see the FileType enumeration for details
+	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
+	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
+	 * @throws SyncException
+	*/
+	public void PutFileStream(InputStream is, String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	{
+		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		startRPCStream(is, msg);
+	}
 	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile device.
+	 * Responses are captured through callback on IProxyListener.
+	 *
+	 * @param syncFileName - The file reference name used by the putFile RPC.
+	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of a file.
+	 * A value greater than zero is used for resuming partial data chunks.
+	 * @param iLength - The total length of the file being sent.
+	 * @param fileType - The selected file type -- see the FileType enumeration for details
+	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
+	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
+	 * @return OutputStream - The output stream of byte data that is written to by the app developer
+	 * @throws SyncException
+	*/
+	public OutputStream PutFileStream(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	{
+		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		return startRPCStream(msg);
+	}
+
 	/**
 	 *
 	 * Used to end an existing PutFileStream that was previously initiated with any PutFileStream method.
