@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 import com.smartdevicelink.util.DebugTool;
@@ -377,7 +376,7 @@ public class PerformInteraction extends RPCRequest {
     
     public LayoutMode getInteractionLayout() {
         Object obj = parameters.get(KEY_INTERACTION_LAYOUT);
-        if (obj instanceof DisplayType) {
+        if (obj instanceof LayoutMode) {
             return (LayoutMode) obj;
         } else if (obj instanceof String) {
         	LayoutMode theCode = null;
