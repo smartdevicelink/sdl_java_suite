@@ -269,7 +269,7 @@ public class SetGlobalProperties extends RPCRequest {
     @SuppressWarnings("unchecked")
     public KeyboardProperties getKeyboardProperties() {
     	Object obj = parameters.get(KEY_KEYBOARD_PROPERTIES);
-        if (obj instanceof Image) {
+        if (obj instanceof KeyboardProperties) {
             return (KeyboardProperties) obj;
         } else if (obj instanceof Hashtable) {
         	try {

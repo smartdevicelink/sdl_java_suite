@@ -1,6 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -41,22 +43,35 @@ public class ImageField extends RPCStruct {
         	store.remove(KEY_NAME);
         }        
     } 
-    public FileType getImageTypeSupported() {
-        Object obj = store.get(KEY_IMAGE_TYPE_SUPPORTED);
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-        	FileType theCode = null;
-            try {
-                theCode = FileType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
-            }
-            return theCode;
-        }
-        return null;
-    } 
-    public void setImageTypeSupported( FileType imageTypeSupported ) {
+    @SuppressWarnings("unchecked")
+	public List<FileType> getImageTypeSupported() {
+        if (store.get(KEY_IMAGE_TYPE_SUPPORTED) instanceof List<?>) {
+           List<?> list = (List<?>)store.get(KEY_IMAGE_TYPE_SUPPORTED);
+              if (list != null && list.size() > 0) {
+                  Object obj = list.get(0);
+                  if (obj instanceof FileType) {
+                      return (List<FileType>) list;
+                  } else if (obj instanceof String) {
+                      List<FileType> newList = new ArrayList<FileType>();
+                      for (Object hashObj : list) {
+                        String strFormat = (String)hashObj;
+                        FileType theCode = null;
+                          try {
+                            theCode = FileType.valueForString(strFormat);
+                          } catch (Exception e) {
+                            DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
+                        }
+                        if (theCode != null) {
+                            newList.add(theCode);
+                        }
+                    }
+                    return newList;
+                 }
+             }
+         }
+         return null;
+    }
+    public void setImageTypeSupported( List<FileType> imageTypeSupported ) {
         if (imageTypeSupported != null) {
             store.put(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported );
         }
