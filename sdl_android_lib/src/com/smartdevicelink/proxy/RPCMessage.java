@@ -1,8 +1,10 @@
 package com.smartdevicelink.proxy;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
+import com.smartdevicelink.util.JsonUtils;
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
 
 /**
  * The BaseRpcMessage class represents all common variables and methods that will be shared across
@@ -19,79 +21,90 @@ public abstract class RPCMessage implements JsonParameters {
     public static final String KEY_PARAMETERS = "parameters";
     public static final String KEY_CORRELATION_ID = "correlationID";
 
+    protected static int sdlVersion = 0; // TODO: appropriate default for sdlVersion code?
+    
     protected String messageType;
     protected SdlCommand commandType;
     protected Integer correlationId;
     
-    /**
-     * Creates a base RPC message with a message type and a message name.  The name
-     * represents the RPC command to be sent.  For example, the message name for an
-     * AddCommand message would be "AddCommand".
-     * 
-     * <b>NOTE:</b> This constructor assumes a correlation ID of -1.  The correlation ID
-     * can be updated through the setCorrelationId(int corrId) method.
-     * 
-     * @param messageType The type of RPC message this object is
-     * @param messageName The name of the RPC command this message represents
-     */
-    public RPCMessage(String messageType, String messageName) {
-        this(messageType, messageName, null);
+    public RPCMessage(String functionName) {
+        this(functionName, KEY_REQUEST);
     }
     
-	public RPCMessage(String functionName) {
-		this(functionName, "request");
-	}
+    public RPCMessage(String functionName, String messageType) {
+        this.messageType = messageType;
+        this.commandType = SdlCommand.valueForJsonName(functionName, sdlVersion);
+    }
+    
+    public RPCMessage(String type, JSONObject parameters){
+        this.messageType = type;
+        JSONObject typeJson = JsonUtils.readJsonObjectFromJsonObject(parameters, type);
+        if(typeJson != null){
+            this.correlationId = JsonUtils.readIntegerFromJsonObject(parameters, KEY_CORRELATION_ID);
+            String msgType = JsonUtils.readStringFromJsonObject(parameters, KEY_FUNCTION_NAME);
+            this.commandType = SdlCommand.valueForJsonName(msgType, sdlVersion);
+        }
+    }
 	
 	protected RPCMessage(RPCMessage rpcm) {
-		this(rpcm.store);
-	}
-	
-	protected RPCMessage(RPCStruct rpcs) {
-		this("", "");
-		this.parameters = rpcs.store;
-	}
-	
-	public RPCMessage(String functionName, String messageType) {
-		function = new Hashtable<String, Object>();
-		this.messageType = messageType;
-		store.put(messageType, function);
-		parameters = new Hashtable<String, Object>();
-		function.put(KEY_PARAMETERS, parameters);
-		function.put(KEY_FUNCTION_NAME, functionName);
-	}
-
-	@SuppressWarnings("unchecked")
-    public RPCMessage(Hashtable<String, Object> hash) {
-        store = hash;
-        messageType = getMessageTypeName(hash.keySet());
-        function = (Hashtable<String, Object>) hash.get(messageType);
-        parameters = (Hashtable<String, Object>) function.get(KEY_PARAMETERS);
-        if (hasKey(hash.keySet(), RPCStruct.KEY_BULK_DATA)) {
-            setBulkData((byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
-        }
+		this.messageType = rpcm.messageType;
+		this.commandType = rpcm.commandType;
+		this.correlationId = rpcm.correlationId;
 	}
 	
 	public String getFunctionName() {
-		return (String)function.get(KEY_FUNCTION_NAME);
+		return this.commandType.getJsonName(sdlVersion);
 	}
 	
 	protected void setFunctionName(String functionName) {
-		function.put(KEY_FUNCTION_NAME, functionName);
+		this.commandType = SdlCommand.valueForJsonName(functionName, sdlVersion);
 	}
 
 	public String getMessageType() {
 		return messageType;
 	}
 	
-	public void setParameters(String functionName, Object value) {
-		if (value != null) {
-			parameters.put(functionName, value);
-		} else {
-			parameters.remove(functionName);
-		}
+	public Integer getCorrelationID(){
+	    return this.correlationId;
 	}
 	
-	public Object getParameters(String functionName) {
-		return parameters.get(functionName);
+	public void setCorrelationID(Integer corrId){
+	    this.correlationId = corrId;
 	}
+	
+	public JSONObject toJson(int sdlVersion){
+	    JSONObject store = new JSONObject();
+	    
+	    JSONObject function = new JSONObject();
+	    
+	    switch(sdlVersion){
+	    default:
+	        JsonUtils.addToJsonObject(store, this.messageType, function);
+	        JsonUtils.addToJsonObject(function, KEY_CORRELATION_ID, this.correlationId);
+	        JsonUtils.addToJsonObject(function, KEY_FUNCTION_NAME, this.commandType.getJsonName(sdlVersion));
+	        JsonUtils.addToJsonObject(function, KEY_PARAMETERS, getJsonParameters(sdlVersion));
+	        break;
+	    }
+        
+        return store;
+	}
+    
+    public static JSONObject getParameters(String type, JSONObject fullJson){
+        JSONObject function = JsonUtils.readJsonObjectFromJsonObject(fullJson, type);
+        if(function == null){
+            return fullJson;
+        }
+
+        return JsonUtils.readJsonObjectFromJsonObject(function, KEY_PARAMETERS);
+    }
+    
+    public static SdlCommand getCommandType(JSONObject json){
+        String name = JsonUtils.readStringFromJsonObject(json, KEY_FUNCTION_NAME);
+        return SdlCommand.valueForJsonName(name, sdlVersion);
+    }
+	
+	public static void setSdlVersion(int inSdlVersion){
+	    sdlVersion = inSdlVersion;
+	}
+	
 }

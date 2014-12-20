@@ -1,14 +1,15 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.DebugTool;
-
 import java.util.Hashtable;
 import java.util.List;
 
-public class SystemRequest extends RPCRequest {
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.BulkData;
+import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.util.DebugTool;
+
+public class SystemRequest extends RPCRequest implements BulkData{
 	public static final String KEY_FILE_NAME = "fileName";
 	public static final String KEY_REQUEST_TYPE = "requestType";
 	public static final String KEY_DATA = "data";

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FunctionID {
+    
+    // TODO: migrate all this information to SdlCommand enumeration
     private static Map<String, Integer> functionIDMap = null;
     public static final String SYNC_P_DATA = "SyncPData";
 	public static final String SHOW_CONSTANT_TBT = "ShowConstantTBT";

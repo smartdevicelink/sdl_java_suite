@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
 * <p>
@@ -49,6 +50,11 @@ public class AddCommand extends RPCRequest {
 	public static final String KEY_CMD_ID = "cmdID";
 	public static final String KEY_VR_COMMANDS = "vrCommands";
 
+	private List<String> vrCommands;
+	private MenuParams menuParams;
+	private Image image;
+	private Integer commandId;
+	
 	/**
 	 * Constructs a new AddCommand object
 	 */
@@ -56,18 +62,24 @@ public class AddCommand extends RPCRequest {
         super(FunctionID.ADD_COMMAND);
     }
 	
-	/**
-	* <p>
-	* Constructs a new AddCommand object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
-	*/
-    public AddCommand(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+	public AddCommand(JSONObject jsonObject, int sdlVersion){
+	    super(jsonObject);
+	    switch(sdlVersion){
+	    default:
+	        this.commandId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);
+	        this.vrCommands = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_VR_COMMANDS);
+	        JSONObject jsonMenuParams = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_MENU_PARAMS);
+	        if(jsonMenuParams != null){
+	            this.menuParams = new MenuParams(jsonMenuParams);
+	        }
+	        JSONObject jsonImage = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_CMD_ICON);
+	        if(jsonImage != null){
+	            this.image = new Image(jsonImage);
+	        }
+	        break;
+	    }
+	}
+	
 	/**
 	 * <p>
 	 * Returns an <i>Integer</i> object representing the Command ID that you want to add
@@ -76,8 +88,9 @@ public class AddCommand extends RPCRequest {
 	 * @return Integer -an integer representation a Unique Command ID
 	 */
     public Integer getCmdID() {
-        return (Integer) parameters.get(KEY_CMD_ID);
+        return this.commandId;
     }
+    
 	/**
 	 * Sets an Unique Command ID that identifies the command. Is returned in an
 	 * <i>{@linkplain OnCommand}</i> notification to identify the command
@@ -90,12 +103,9 @@ public class AddCommand extends RPCRequest {
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000
 	 */
     public void setCmdID(Integer cmdID) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID);
-        } else {
-            parameters.remove(KEY_CMD_ID);
-        }
+        this.commandId = cmdID;
     }
+    
 	/**
 	 * <p>
 	 * Returns a <I>MenuParams</I> object which will defined the command and how
@@ -104,21 +114,10 @@ public class AddCommand extends RPCRequest {
 	 * 
 	 * @return MenuParams -a MenuParams object
 	 */
-    @SuppressWarnings("unchecked")
     public MenuParams getMenuParams() {
-        Object obj = parameters.get(KEY_MENU_PARAMS);
-        if (obj instanceof MenuParams) {
-        	return (MenuParams) obj;
-        }
-        else if (obj instanceof Hashtable) {
-        	try {
-        		return new MenuParams((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_PARAMS, e);
-            }
-        }
-        return null;
+        return this.menuParams;
     }
+    
 	/**
 	 * <p>
 	 * Sets Menu parameters<br/>
@@ -131,32 +130,20 @@ public class AddCommand extends RPCRequest {
 	 *            a menuParams object
 	 */    
     public void setMenuParams(MenuParams menuParams) {
-        if (menuParams != null) {
-            parameters.put(KEY_MENU_PARAMS, menuParams);
-        } else {
-            parameters.remove(KEY_MENU_PARAMS);
-        }
+        this.menuParams = menuParams;
     }
+    
 	/**
 	 * <p>
 	 * Gets Voice Recognition Commands
 	 * </p>
 	 * 
 	 * @return List<String> -(List<String>) indicating one or more VR phrases
-	 */    
-    @SuppressWarnings("unchecked")
+	 */
     public List<String> getVrCommands() {
-        if (parameters.get(KEY_VR_COMMANDS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_COMMANDS);
-	    	if (list != null && list.size() > 0) {
-	    		Object obj = list.get(0);
-	    		if (obj instanceof String) {
-	    			return (List<String>)list;
-	    		}
-	    	}
-    	}
-    	return null;
+        return this.vrCommands;
     }
+    
 	/**
 	 * <p>
 	 * Sets Voice Recognition Commands <br/>
@@ -175,11 +162,7 @@ public class AddCommand extends RPCRequest {
 	 *            not zero-length, not whitespace only) element
 	 */
     public void setVrCommands( List<String> vrCommands ) {
-        if (vrCommands != null) {
-            parameters.put(KEY_VR_COMMANDS, vrCommands );
-        } else {
-            parameters.remove(KEY_VR_COMMANDS);
-        }
+        this.vrCommands = vrCommands;
     }
 
 	/**
@@ -188,19 +171,8 @@ public class AddCommand extends RPCRequest {
 	 * @return Image -an Image object
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public Image getCmdIcon() {
-        Object obj = parameters.get(KEY_CMD_ICON);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CMD_ICON, e);
-            }
-        }
-        return null;
+        return this.image;
     }
 
 	/**
@@ -215,10 +187,25 @@ public class AddCommand extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCmdIcon(Image cmdIcon) {
-        if (cmdIcon != null) {
-            parameters.put(KEY_CMD_ICON, cmdIcon);
-        } else {
-            parameters.remove(KEY_CMD_ICON);
+        this.image = cmdIcon;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = new JSONObject();
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_CMD_ID, this.commandId);
+            JsonUtils.addToJsonObject(result, KEY_CMD_ICON, (this.image == null) ? null : 
+                image.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_MENU_PARAMS, (this.menuParams == null) ? null : 
+                menuParams.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_VR_COMMANDS, (this.vrCommands == null) ? null : 
+                JsonUtils.createJsonArray(this.vrCommands));
+            break;
         }
+        
+        return result;
     }
 }

@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -15,9 +15,9 @@ public class AddCommandResponse extends RPCResponse {
     public AddCommandResponse() {
         super(FunctionID.ADD_COMMAND);
     }
-
-    public AddCommandResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    public AddCommandResponse(JSONObject json, int sdlVersion){
+        super(json, sdlVersion);
     }
 }
 

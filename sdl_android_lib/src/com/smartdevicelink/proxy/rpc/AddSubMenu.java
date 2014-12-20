@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Add a SubMenu to the Command Menu
@@ -25,22 +26,27 @@ public class AddSubMenu extends RPCRequest {
 	public static final String KEY_MENU_NAME = "menuName";
 	public static final String KEY_MENU_ID = "menuID";
 
+	private Integer position, menuId;
+	private String menuName;
+	
 	/**
 	 * Constructs a new AddSubMenu object
 	 */
 	public AddSubMenu() {
         super(FunctionID.ADD_SUB_MENU);
     }
-	/**
-	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public AddSubMenu(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+	
+	public AddSubMenu(JSONObject json, int sdlVersion){
+	    super(json);
+	    switch(sdlVersion){
+	    default:
+	        this.menuId = JsonUtils.readIntegerFromJsonObject(json, KEY_MENU_ID);
+	        this.menuName = JsonUtils.readStringFromJsonObject(json, KEY_MENU_NAME);
+	        this.position = JsonUtils.readIntegerFromJsonObject(json, KEY_POSITION);
+	        break;
+	    }
+	}
+
 	/**
 	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
 	 * a sub menu
@@ -50,8 +56,9 @@ public class AddSubMenu extends RPCRequest {
 	 *         menu
 	 */
     public Integer getMenuID() {
-        return (Integer) parameters.get( KEY_MENU_ID );
+        return this.menuId;
     }
+    
 	/**
 	 * Sets a Menu ID that identifies a sub menu. This value is used in
 	 * {@linkplain AddCommand} to which SubMenu is the parent of the command
@@ -64,12 +71,9 @@ public class AddSubMenu extends RPCRequest {
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000
 	 */    
     public void setMenuID( Integer menuID ) {
-        if (menuID != null) {
-            parameters.put(KEY_MENU_ID, menuID );
-        } else {
-            parameters.remove(KEY_MENU_ID);
-        }
+        this.menuId = menuID;
     }
+    
 	/**
 	 * Returns an <i>Integer</i> object representing the position of menu
 	 * <p>
@@ -77,8 +81,9 @@ public class AddSubMenu extends RPCRequest {
 	 * @return Integer -the value representing the relative position of menus
 	 */    
     public Integer getPosition() {
-        return (Integer) parameters.get( KEY_POSITION );
+        return this.position;
     }
+    
 	/**
 	 * Sets a position of menu
 	 * 
@@ -100,20 +105,18 @@ public class AddSubMenu extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setPosition( Integer position ) {
-        if (position != null) {
-            parameters.put(KEY_POSITION, position );
-        } else {
-            parameters.remove(KEY_POSITION);
-        }
+        this.position = position;
     }
+    
 	/**
 	 * Returns String which is displayed representing this submenu item
 	 * 
 	 * @return String -a Submenu item's name
 	 */
     public String getMenuName() {
-        return (String) parameters.get( KEY_MENU_NAME );
+        return this.menuName;
     }
+    
 	/**
 	 * Sets a menuName which is displayed representing this submenu item
 	 * 
@@ -121,10 +124,21 @@ public class AddSubMenu extends RPCRequest {
 	 *            String which will be displayed representing this submenu item
 	 */    
     public void setMenuName( String menuName ) {
-        if (menuName != null) {
-            parameters.put(KEY_MENU_NAME, menuName );
-        } else {
-            parameters.remove(KEY_MENU_NAME);
+        this.menuName = menuName;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = new JSONObject();
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MENU_ID, this.menuId);
+            JsonUtils.addToJsonObject(result, KEY_MENU_NAME, this.menuName);
+            JsonUtils.addToJsonObject(result, KEY_POSITION, this.position);
+            break;
         }
+        
+        return result;
     }
 }

@@ -3,28 +3,26 @@
  */
 package com.smartdevicelink.proxy;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-public class RPCRequest extends RPCMessage {
+/**
+ * 
+ *
+ * @author Mike Burke
+ *
+ */
+public abstract class RPCRequest extends RPCMessage {
 
 	public RPCRequest(String functionName) {
 		super(functionName, RPCMessage.KEY_REQUEST);
 		messageType = RPCMessage.KEY_REQUEST;
 	}
-
-	public RPCRequest(Hashtable<String, Object> hash) {
-		super(hash);
-	}
-
-	public Integer getCorrelationID() {
-		return (Integer)function.get(RPCMessage.KEY_CORRELATION_ID);
-	}
-	
-	public void setCorrelationID(Integer correlationID) {
-		if (correlationID != null) {
-            function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
-        } else {
-        	function.remove(RPCMessage.KEY_CORRELATION_ID);
-        }
-	}
+    
+    public RPCRequest(JSONObject json){
+        super(KEY_REQUEST, json);
+    }
+    
+    public static JSONObject getParameters(JSONObject json){
+        return RPCMessage.getParameters(KEY_REQUEST, json);
+    }
 }

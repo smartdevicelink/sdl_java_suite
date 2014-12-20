@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.interfaces.BulkData;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -17,7 +17,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see DeleteFile
  * @see ListFiles
  */
-public class PutFile extends RPCRequest {
+public class PutFile extends RPCRequest implements BulkData{
 	public static final String KEY_PERSISTENT_FILE = "persistentFile";
     public static final String KEY_SYSTEM_FILE = "systemFile";
     public static final String KEY_FILE_TYPE = "fileType";

@@ -1,4 +1,4 @@
-package com.smartdevicelink.proxy;
+package com.smartdevicelink.proxy.interfaces;
 
 
 /**

@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
 
-public class AirbagStatus extends RPCStruct {
+public class AirbagStatus implements JsonParameters {
     public static final String KEY_DRIVER_AIRBAG_DEPLOYED = "driverAirbagDeployed";
     public static final String KEY_DRIVER_SIDE_AIRBAG_DEPLOYED = "driverSideAirbagDeployed";
     public static final String KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED = "driverCurtainAirbagDeployed";
@@ -16,185 +16,114 @@ public class AirbagStatus extends RPCStruct {
     public static final String KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED = "passengerCurtainAirbagDeployed";
     public static final String KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED = "passengerKneeAirbagDeployed";
 
+    private int sdlVersion = -1; // TODO: default to "SDL_VERSION_INVALID" or something pre-defined
+    
+    // TODO: refactor these strings into a HashMap<String, String> object and implement AirbagZone enum for different
+    //       airbags.  This will allow us to loop and utilize a single API instead of having multiple setter/getters
+    //       for the same type of data.  Similar to VehicleData re-design.
+    private String driverAirbagDeployed, driverSideAirbagDeployed, driverCurtainAirbagDeployed,
+        driverKneeAirbagDeployed, passengerAirbagDeployed, passengerSideAirbagDeployed, passengerCurtainAirbagDeployed,
+        passengerKneeAirbagDeployed;
+    
     public AirbagStatus() { }
-    public AirbagStatus(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    public AirbagStatus(JSONObject json, int sdlVersion){
+        this.sdlVersion = sdlVersion;
+        switch(sdlVersion){
+        default:
+            this.driverAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_DRIVER_AIRBAG_DEPLOYED);
+            this.driverSideAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
+            this.driverCurtainAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
+            this.driverKneeAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
+            this.passengerAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_PASSENGER_AIRBAG_DEPLOYED);
+            this.passengerSideAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
+            this.passengerCurtainAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
+            this.passengerKneeAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);
+            break;
+        }
     }
 
     public void setDriverAirbagDeployed(VehicleDataEventStatus driverAirbagDeployed) {
-        if (driverAirbagDeployed != null) {
-            store.put(KEY_DRIVER_AIRBAG_DEPLOYED, driverAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_AIRBAG_DEPLOYED);
-        }
+        this.driverAirbagDeployed = driverAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.driverAirbagDeployed, this.sdlVersion);
     }
+    
     public void setDriverSideAirbagDeployed(VehicleDataEventStatus driverSideAirbagDeployed) {
-        if (driverSideAirbagDeployed != null) {
-            store.put(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, driverSideAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
-        }
+        this.driverSideAirbagDeployed = driverSideAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverSideAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.driverAirbagDeployed, this.sdlVersion);
     }
+    
     public void setDriverCurtainAirbagDeployed(VehicleDataEventStatus driverCurtainAirbagDeployed) {
-        if (driverCurtainAirbagDeployed != null) {
-            store.put(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, driverCurtainAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
-        }
+        this.driverCurtainAirbagDeployed = driverCurtainAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverCurtainAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.driverCurtainAirbagDeployed, this.sdlVersion);
     }
+    
     public void setPassengerAirbagDeployed(VehicleDataEventStatus passengerAirbagDeployed) {
-        if (passengerAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_AIRBAG_DEPLOYED, passengerAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_AIRBAG_DEPLOYED);
-        }
+        this.passengerAirbagDeployed = passengerAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.passengerAirbagDeployed, this.sdlVersion);
     }
+    
     public void setPassengerCurtainAirbagDeployed(VehicleDataEventStatus passengerCurtainAirbagDeployed) {
-        if (passengerCurtainAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, passengerCurtainAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
-        }
+        this.passengerCurtainAirbagDeployed = passengerCurtainAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerCurtainAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.passengerCurtainAirbagDeployed, this.sdlVersion);
     }
+    
     public void setDriverKneeAirbagDeployed(VehicleDataEventStatus driverKneeAirbagDeployed) {
-        if (driverKneeAirbagDeployed != null) {
-            store.put(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, driverKneeAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
-        }
+        this.driverKneeAirbagDeployed = driverKneeAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverKneeAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.driverKneeAirbagDeployed, this.sdlVersion);
     }
+    
     public void setPassengerSideAirbagDeployed(VehicleDataEventStatus passengerSideAirbagDeployed) {
-        if (passengerSideAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, passengerSideAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
-        }
+        this.passengerSideAirbagDeployed = passengerSideAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerSideAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.passengerSideAirbagDeployed, this.sdlVersion);
     }
+    
     public void setPassengerKneeAirbagDeployed(VehicleDataEventStatus passengerKneeAirbagDeployed) {
-        if (passengerKneeAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, passengerKneeAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);
-        }
+        this.passengerKneeAirbagDeployed = passengerKneeAirbagDeployed.getJsonName(this.sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerKneeAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, e);
-            }
-            return theCode;
+        return VehicleDataEventStatus.valueForJsonName(this.passengerKneeAirbagDeployed, this.sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = new JSONObject();
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_AIRBAG_DEPLOYED, this.driverAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, this.driverSideAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, this.driverCurtainAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, this.driverKneeAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_PASSENGER_AIRBAG_DEPLOYED, this.passengerAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, this.passengerSideAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, this.passengerCurtainAirbagDeployed);
+            JsonUtils.addToJsonObject(result, KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, this.passengerKneeAirbagDeployed);
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

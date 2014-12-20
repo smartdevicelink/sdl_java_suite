@@ -3,9 +3,10 @@
  */
 package com.smartdevicelink.proxy;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
+
 import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Result sent by SDL after an RPC is processed, consists of four parts: 
@@ -47,6 +48,10 @@ public class RPCResponse extends RPCMessage {
 	public static final String KEY_SUCCESS = "success";
 	public static final String KEY_INFO = "info";
 	public static final String KEY_RESULT_CODE = "resultCode";
+	
+	protected String resultCode, info;
+	protected Boolean success;
+	
 	/**
 	*<p>Constructs a newly allocated RPCResponse object using function name</p>
 	*@param functionName a string that indicates the function's name
@@ -54,13 +59,7 @@ public class RPCResponse extends RPCMessage {
 	public RPCResponse(String functionName) {
 		super(functionName, RPCMessage.KEY_RESPONSE);
 	}
-	/**
-     *<p>Constructs a newly allocated RPCResponse object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
-     */   
-	public RPCResponse(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+	
 	/**
      *<p>Constructs a newly allocated RPCResponse object using a RPCMessage object</p>
      *@param rpcMsg The {@linkplain RPCMessage} to use
@@ -68,33 +67,18 @@ public class RPCResponse extends RPCMessage {
 	public RPCResponse(RPCMessage rpcMsg) {
 		super(rpcMsg);
 	}
-
-	/**
-	 * <p>
-	 * Returns correlationID the ID of the request
-	 * </p>
-	 * 
-	 * @return int  the ID of the request
-	 */
-	public Integer getCorrelationID() {
-		return (Integer)function.get(RPCMessage.KEY_CORRELATION_ID);
+	
+	public RPCResponse(JSONObject json, int sdlVersion){
+	    super(RPCMessage.KEY_RESPONSE, json);
+	    switch(sdlVersion){
+	    default:
+	        this.resultCode = JsonUtils.readStringFromJsonObject(json, KEY_RESULT_CODE);
+	        this.info = JsonUtils.readStringFromJsonObject(json, KEY_INFO);
+	        this.success = JsonUtils.readBooleanFromJsonObject(json, KEY_SUCCESS);
+	        break;
+	    }
 	}
 	
-	/**
-	 * <p>
-	 * Set the correlationID
-	 * </p>
-	 * 
-	 * @param correlationID
-	 *            the ID of the response
-	 */
-	public void setCorrelationID(Integer correlationID) {
-		if (correlationID != null) {
-            function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
-        } else {
-        	function.remove(RPCMessage.KEY_CORRELATION_ID);
-        }
-	}
 	/**
 	 * <p>
 	 * Returns Success whether the request is successfully processed
@@ -103,8 +87,9 @@ public class RPCResponse extends RPCMessage {
 	 * @return Boolean  the status of whether the request is successfully done
 	 */
 	public Boolean getSuccess() {
-        return (Boolean) parameters.get( RPCResponse.KEY_SUCCESS );
+        return this.success;
     }
+	
 	/**
 	 * <p>
 	 * Set the Success status
@@ -114,10 +99,9 @@ public class RPCResponse extends RPCMessage {
 	 *             whether the request is successfully processed
 	 */
     public void setSuccess( Boolean success ) {
-        if (success != null) {
-            parameters.put(RPCResponse.KEY_SUCCESS, success );
-        }
+        this.success = success;
     }
+    
 	/**
 	 * <p>
 	 * Returns ResultCode additional information about a response returning a failed outcome
@@ -126,20 +110,9 @@ public class RPCResponse extends RPCMessage {
 	 * @return {@linkplain Result}  the status of whether the request is successfully done
 	 */
     public Result getResultCode() {
-        Object obj = parameters.get(RPCResponse.KEY_RESULT_CODE);
-        if (obj instanceof Result) {
-            return (Result) obj;
-        } else if (obj instanceof String) {
-            Result theCode = null;
-            try {
-                theCode = Result.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RPCResponse.KEY_RESULT_CODE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return Result.valueForJsonName(this.resultCode, sdlVersion);
     }
+    
 	/**
 	 * <p>
 	 * Set the additional information about a response returning a failed outcome
@@ -149,10 +122,9 @@ public class RPCResponse extends RPCMessage {
 	 *             whether the request is successfully processed
 	 */
     public void setResultCode( Result resultCode ) {
-        if (resultCode != null) {
-            parameters.put(RPCResponse.KEY_RESULT_CODE, resultCode );
-        }
+        this.resultCode = resultCode.getJsonName(sdlVersion);
     }
+    
 	/**
 	 * <p>
 	 * Returns a string of text representing additional information returned from SDL
@@ -161,8 +133,9 @@ public class RPCResponse extends RPCMessage {
 	 * @return String  A string of text representing additional information returned from SDL
 	 */
     public String getInfo() {
-        return (String) parameters.get( RPCResponse.KEY_INFO );
+        return this.info;
     }
+    
 	/**
 	 * <p>
 	 * Set a string of text representing additional information returned from SDL
@@ -172,8 +145,21 @@ public class RPCResponse extends RPCMessage {
 	 *             a string of text representing additional information returned from SDL
 	 */
     public void setInfo( String info ) {
-        if (info != null) {
-            parameters.put(RPCResponse.KEY_INFO, info );
+        this.info = info;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = new JSONObject();
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_INFO, this.info);
+            JsonUtils.addToJsonObject(result, KEY_RESULT_CODE, this.resultCode);
+            JsonUtils.addToJsonObject(result, KEY_SUCCESS, this.success);
+            break;
         }
+        
+        return result;
     }
 }
