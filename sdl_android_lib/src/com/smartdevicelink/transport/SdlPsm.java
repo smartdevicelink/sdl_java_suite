@@ -143,25 +143,7 @@ public class SdlPsm implements IPacketStateMachine {
 			//Log.d(TAG, "Data byte 4: " + rawByte);
 			dataLength+=((int)rawByte) & 0xFF;
 			//Log.d(TAG, "Data Size: " + dataLength);
-			//We should have data length now for the pump state
-			/* we actually don't need this
-			switch(frameType){ //If all is correct we should break out of this switch statement
-			case FRAME_TYPE_SINGLE:
-			case FRAME_TYPE_CONSECUTIVE:
-				break;
-			case FRAME_TYPE_CONTROL:
-				break; //FIXME check the spec because something is off (TDK or spec).
-				//if(dataLength == 0){ //As it should be
-				//	break; 
-				//}
-			case FRAME_TYPE_FIRST:
-				if(dataLength==FIRST_FRAME_DATA_SIZE){
-					break;
-				}
-			default:
-				return ERROR_STATE;
-			}*/
-			
+			//TODO input switch statement to handle v1 frame header size
 			return MESSAGE_1_STATE;
 			
 		case MESSAGE_1_STATE:
