@@ -6,7 +6,9 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Vector;
+
 import android.util.Log;
+
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
@@ -18,7 +20,18 @@ import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.transport.*;
+import com.smartdevicelink.transport.BTTransport;
+import com.smartdevicelink.transport.BTTransportConfig;
+import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.ITransportListener;
+import com.smartdevicelink.transport.MultiplexTransport;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.SdlTransport;
+import com.smartdevicelink.transport.TCPTransport;
+import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.USBTransport;
+import com.smartdevicelink.transport.USBTransportConfig;
 
 public class SdlConnection implements IProtocolListener, ITransportListener, IStreamListener  {
 
@@ -53,7 +66,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				_transport = null;
 			}
 			
-			if (transportConfig.getTransportType() == TransportType.BLUETOOTH)
+			if(transportConfig.getTransportType() == TransportType.MULTIPLEX){
+				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
+			}
+			else if (transportConfig.getTransportType() == TransportType.BLUETOOTH)
 			{				
 				BTTransportConfig myConfig = (BTTransportConfig) transportConfig;				
 				_transport = new BTTransport(this, myConfig.getKeepSocketActive());
@@ -440,5 +456,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
     }
 
-
+	public void forceHardwareConnectEvent(com.c4.android.datatypes.TransportEnums.TransportType type){
+		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
+			((MultiplexTransport)_transport).forceHardwareConnectEvent(com.c4.android.datatypes.TransportEnums.TransportType.BLUETOOTH);
+		}
+	}
+    
 }

@@ -78,12 +78,19 @@ public abstract class AbstractProtocol {
 				offset, length, SDL_LIB_TRACE_KEY);
 		resetHeartbeat(header.getSessionType(), header.getSessionID());
 		synchronized(_frameLock) {
+			
 			byte[] frameHeader = header.assembleHeaderBytes();
-			handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
+			//handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
 			
 			if (data != null) {
-				handleProtocolMessageBytesToSend(data, offset, length);
-			} // end-if
+				byte[] fullPacket = new byte[frameHeader.length +length];
+				System.arraycopy(frameHeader, 0, fullPacket, 0, frameHeader.length);
+				System.arraycopy(data, offset, fullPacket, frameHeader.length, length);
+				//handleProtocolMessageBytesToSend(data, offset, length);
+				handleProtocolMessageBytesToSend(fullPacket, 0, fullPacket.length);
+			} else{
+				handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
+			}
 		}
 	}
 	
