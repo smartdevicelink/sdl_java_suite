@@ -10,7 +10,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
- * <p><b>Parameter List
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

@@ -36,7 +36,53 @@ import com.smartdevicelink.util.DebugTool;
 * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b>
 * </p>
-* 
+  * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+* 		<tr>
+ * 			<td>cmdID</td>
+ * 			<td> Integer</td>
+ * 			<td>unique ID of the command to add</td>
+ *                 <td>Y</td>
+ * 			<td> minvalue:0<br>maxvalue:2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>menuParams</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>buttonName</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>buttonName</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>buttonName</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
 * @since SmartDeviceLink 1.0
 * @see DeleteCommand
 * @see AddSubMenu

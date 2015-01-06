@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Describes the hour, minute and second values used to set the media clock.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

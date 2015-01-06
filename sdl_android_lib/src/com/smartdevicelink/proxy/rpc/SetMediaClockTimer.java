@@ -13,6 +13,57 @@ import com.smartdevicelink.util.DebugTool;
  * Function Group: Base <p>
  * <b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b>
  * </p>
+  * <p><b>Parameter List</b>
+ * <p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>startTime</td>
+ * 			<td>StartTime</td>
+ * 			<td>StartTime struct specifying hour, minute, second values to which media clock timer is set.</td>
+ *                 <td>N</td>
+ * 			<td> </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeoutPrompt</td>
+ * 			<td>TTSChunk</td>
+ * 			<td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
+ *                 <td>N</td>
+ * 			<td>Array must have at least one element<br>Only optional it helpPrompt has been specified<br> minsize: 1<br> maxsize: 100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>updateMode</td>
+ * 			<td>UpdateMode</td>
+ * 			<td>Specifies how the media clock/timer is to be updated (COUNTUP/COUNTDOWN/PAUSE/RESUME), based at the startTime.</td>
+ *                 <td>Y</td>
+ * 			<td>If "updateMode" is COUNTUP or COUNTDOWN, this parameter must be provided. <br>Will be ignored for PAUSE,RESUME and CLEAR</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ *
+ *  </table>
+ *  <p>
+ *<b>Response </b>
+ *<p>
+ *<b> Non-default Result Codes: </b>
+ *<p>
+ *	 SUCCESS <br>
+ *	 INVALID_DATA<br>
+ *	 OUT_OF_MEMORY<br>
+ *     TOO_MANY_PENDING_REQUESTS<br>
+ *     APPLICATION_NOT_REGISTERED<br>
+ *     GENERIC_ERROR<br>
+ *      REJECTED<br>
+ *      IGNORED <br>
  * 
  * @since SmartDeviceLink 1.0
  */

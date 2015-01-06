@@ -8,7 +8,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * Provides information about the capabilities of a SDL HMI button.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

@@ -52,7 +52,26 @@ import com.smartdevicelink.util.DebugTool;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * </p>
- * 
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>AppLink Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>buttonName</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to subscribe.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ *  </table>
+
  * @since SmartDeviceLink 1.0
  * @see UnsubscribeButton
  */

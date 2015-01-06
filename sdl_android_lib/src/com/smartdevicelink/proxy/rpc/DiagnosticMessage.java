@@ -5,20 +5,42 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+/** Non periodic vehicle diagnostic request
+ * 
+ * @since SmartDeviceLink 3.0
+ *
+ */
 
 public class DiagnosticMessage extends RPCRequest {
 	public static final String KEY_TARGET_ID = "targetID";
 	public static final String KEY_MESSAGE_LENGTH = "messageLength";
 	public static final String KEY_MESSAGE_DATA = "messageData";
+	/**
+	 * Constructs a new DiagnosticMessage object
+	 */
 
     public DiagnosticMessage() {
         super(FunctionID.DIAGNOSTIC_MESSAGE);
     }
+    /**
+	* <p>
+	* Constructs a new DiagnosticMessage object indicated by the Hashtable
+	* parameter
+	* </p>
+	* 
+	* @param hash
+	*            The Hashtable to use
+	*/
 
     public DiagnosticMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /** Sets TargetID
+     * 
+     * @param targetID
+     */
     
+
     public void setTargetID(Integer targetID) {
     	if (targetID != null) {
     		parameters.put(KEY_TARGET_ID, targetID);

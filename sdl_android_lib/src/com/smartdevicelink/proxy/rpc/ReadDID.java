@@ -15,6 +15,34 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * <p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ecuName</td>
+ * 			<td>Integer</td>
+ * 			<td>Name of ECU.</td>
+ *                 <td>Y</td>
+ * 			<td>Minvalue: 0<br>Maxvalue: 65535</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>didLocation</td>
+ * 			<td>Integer</td>
+ * 			<td>Get raw data from vehicle data DID location(s).</td>
+ *                 <td>Y</td>
+ * 			<td>Minvalue: 0<br>Maxvalue: 65535</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
  * 
  * @since SmartDeviceLink 2.0
  */
