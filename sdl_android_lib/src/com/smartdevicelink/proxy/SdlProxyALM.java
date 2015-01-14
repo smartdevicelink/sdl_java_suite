@@ -9,6 +9,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
+import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
@@ -1336,6 +1337,25 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		return _vehicleType;
 	}
 	
+	/**
+	* Gets AudioPassThruCapabilities set when application interface is registered.
+	*
+	* @return AudioPassThruCapabilities
+	* @throws SyncException
+	*/
+	public List<AudioPassThruCapabilities> getAudioPassThruCapabilities() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SYNC availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SYNC is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _audioPassThruCapabilities;
+	}
+
 	public List<Integer> getSupportedDiagModes() throws SdlException {
 		// Test if proxy has been disposed
 		if (_proxyDisposed) {
