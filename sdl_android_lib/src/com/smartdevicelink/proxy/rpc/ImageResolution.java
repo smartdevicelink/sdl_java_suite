@@ -35,7 +35,13 @@ import java.util.Hashtable;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 3.0
- *
+ * @see DisplayType
+ * @see MediaClockFormat
+ * @see TextFieldName
+ * @see ImageType 
+ * @see ImageType GetCapabilities 
+
+ *  
  */
 
 public class ImageResolution extends RPCStruct {

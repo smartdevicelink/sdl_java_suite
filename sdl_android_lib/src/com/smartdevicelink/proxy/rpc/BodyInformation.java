@@ -6,9 +6,11 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 import com.smartdevicelink.util.DebugTool;
-/** The body information including power modes.
+/** The body information including power modes. 
+ * <p>
+ * <b>Note:</b> The structure defines the information about the park brake and ignition.
  * 
-  * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -28,14 +30,14 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>ignitionStableStatus</td>
  * 			<td>IgnitionStableStatus</td>
  * 			<td>true</td>
- * 			<td>Describes, if the ignition situation is considered stableThe information about stability of the ignition switch. See IgnitionStableStatus. </td>
+ * 			<td>Describes, if the ignition situation is considered stableThe information about stability of the ignition switch. See {@linkplain IgnitionStableStatus}</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>ignitionStatus</td>
  * 			<td>IgnitionStatus</td>
  * 			<td>true</td>
- * 			<td>The information about ignition status. See IgnitionStatus.</td>
+ * 			<td>The information about ignition status. See {@linkplain  IgnitionStatus}</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>

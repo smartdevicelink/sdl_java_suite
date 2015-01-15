@@ -37,7 +37,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>Describes the carmode the vehicle is in.</td>
  *           </tr>
  * 		<tr>
- * 			<td>powerModeStatus/td>
+ * 			<td>powerModeStatus</td>
  * 			<td>PowerModeStatus</td>
  * 			<td>true</td>
  * 			<td>Describes the different powermodes</td>

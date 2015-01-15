@@ -60,29 +60,23 @@ import com.smartdevicelink.util.DebugTool;
  *                 <td>Y</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr/>
  * 		<tr>
- * 			<td>buttonName</td>
- * 			<td>ButtonName</td>
- * 			<td>Name of the button to unsubscribe.</td>
- *                 <td>Y</td>
- * 			<td></td>
+ * 			<td>vrCommands</td>
+ * 			<td>String</td>
+ * 			<td>An array of strings to be used as VR synonyms for this command.<br>    	If this array is provided, it may not be empty.</td>
+ *                 <td>N</td>
+ * 			<td>minsize:1<br> maxsize:100</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		<tr>
- * 			<td>buttonName</td>
- * 			<td>ButtonName</td>
- * 			<td>Name of the button to unsubscribe.</td>
- *                 <td>Y</td>
- * 			<td></td>
- * 			<td>SmartDeviceLink 1.0</td>
- * 		<tr>
- * 			<td>buttonName</td>
- * 			<td>ButtonName</td>
- * 			<td>Name of the button to unsubscribe.</td>
- *                 <td>Y</td>
+ * 			<td>cmdIcon</td>
+ * 			<td>Image</td>
+ * 			<td>Image struct determining whether static or dynamic icon.<br>If omitted on supported displays, no (or the default if applicable) icon shall be displayed.</td>
+ *                 <td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- *  </table>
+*  </table>
 * @since SmartDeviceLink 1.0
 * @see DeleteCommand
 * @see AddSubMenu

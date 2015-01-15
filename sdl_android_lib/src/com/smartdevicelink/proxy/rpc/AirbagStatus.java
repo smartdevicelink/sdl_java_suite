@@ -68,6 +68,20 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  *
  *  </table>
+ *  <p>
+ *  <b>Response:</b><br>
+ *  If a resultCode of "SUCCESS" is returned, the request was accepted by SDL. By the time the corresponding response is received, the Alert will have completed. 
+ *  <p>
+ *  <b> Non-default Result Codes:</b><br>
+ *  -	REJECTED<br>-	ABORTED
+ *  
+ *  
+ *  @since SmartDeviceLink 1.0
+ *  <p>
+ *  @see UpdateTurnList
+ *  @see TextFieldStruct
+ *  @see TextFieldName
+ *  @see Image
  * @see SubscribeVehicleData
  */
 public class AirbagStatus extends RPCStruct {

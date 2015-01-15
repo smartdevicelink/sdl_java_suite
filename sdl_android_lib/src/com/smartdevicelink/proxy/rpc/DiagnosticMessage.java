@@ -5,8 +5,44 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-/** Non periodic vehicle diagnostic request
+/** Non periodic vehicle diagnostic request.
  * 
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>targetID</td>
+ * 			<td>Integer</td>
+ * 			<td>Name of target ECU.</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value: 65535</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>messageLength</td>
+ * 			<td>Integer</td>
+ * 			<td>Length of message (in bytes).</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value:65535</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+
+ * 		<tr>
+ * 			<td>messageData</td>
+ * 			<td>Integer</td>
+ * 			<td>Array of bytes comprising CAN message.</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value:255<br> Min Size:1<br> Max Size:65535<br>  </td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ *  </table>
  * @since SmartDeviceLink 3.0
  *
  */

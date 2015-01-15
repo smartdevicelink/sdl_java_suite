@@ -3,6 +3,11 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * Describes different audio type options for PerformAudioPassThru
  * 
+ * @see SoftButtonCapabilities
+ * @see ButtonCapabilities
+ * @see OnButtonPress
+ * @since SmartDeviceLink 2.0
+
  */
 public enum AudioType {
 	/**

@@ -6,6 +6,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 /**
  * Various information about connecting device.
  * <p>
+ * <p>
+ * 
   * <p><b>Parameter List</b>
   * <p>
  * <table border="1" rules="all">

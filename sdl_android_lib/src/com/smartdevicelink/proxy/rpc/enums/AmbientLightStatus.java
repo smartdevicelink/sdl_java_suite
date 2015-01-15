@@ -18,6 +18,11 @@ public enum AmbientLightStatus {
 	DAY,
 	UNKNOWN,
 	INVALID;
+	/**
+     * Convert String to AmbientLightStatus
+     * @param value String
+     * @return AmbientLightStatus
+     */ 
 
     public static AmbientLightStatus valueForString(String value) {
         return valueOf(value);

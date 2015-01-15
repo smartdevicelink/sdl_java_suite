@@ -20,7 +20,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>status</td>
  * 			<td>ComponentVolumeStatus</td>
  * 			<td>Describes the volume status of a single tire
- * 					See ComponentVolumeStatus
+ * 					See {@linkplain ComponentVolumeStatus}
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>

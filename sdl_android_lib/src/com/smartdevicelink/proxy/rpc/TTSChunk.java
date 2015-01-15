@@ -15,7 +15,7 @@ import com.smartdevicelink.util.DebugTool;
  *   For example, to have SDL pronounce the word "read" as "red", rather than as when it is pronounced like "reed",
  *   the developer would use phonemes to express this desired pronounciation.
  *  <p>For more information about phonemes, see <a href="http://en.wikipedia.org/wiki/Phoneme">http://en.wikipedia.org/wiki/Phoneme</a>.
- *  <p><b> Parameter List
+ *  <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

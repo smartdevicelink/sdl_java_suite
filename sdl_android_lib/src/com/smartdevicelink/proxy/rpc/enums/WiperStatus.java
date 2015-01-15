@@ -2,7 +2,9 @@ package com.smartdevicelink.proxy.rpc.enums;
 /** This enumeration reflects the status of the wipers.
  * 
  * @since SmartDeviceLink 2.0
- *
+ * <p>
+ * @see GetVehicleData
+ * @see OnVehicleData
  */
 
 public enum WiperStatus {

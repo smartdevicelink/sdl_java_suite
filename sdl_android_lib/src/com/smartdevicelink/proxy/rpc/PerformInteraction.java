@@ -65,7 +65,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>helpPrompt</td>
  * 			<td>TTSChunk</td>
- * 			<td>An array of TTSChunks which, taken together, specify the help phrase to be spoken when the user says "help" during the VR session. <br>If this parameter is omitted, the help prompt will be constructed by SYNC from the first vrCommand of each choice of all the Choice Sets specified in the interactionChoiceSetIDList parameter. </td>
+ * 			<td>An array of TTSChunks which, taken together, specify the help phrase to be spoken when the user says "help" during the VR session. <br>If this parameter is omitted, the help prompt will be constructed by SDL from the first vrCommand of each choice of all the Choice Sets specified in the interactionChoiceSetIDList parameter. </td>
  *                 <td>N</td>
  * 			<td>minsize:1<br>maxsize:100<br><p><p>The helpPrompt specified in SetGlobalProperties is not used by PerformInteraction.</td>
  * 			<td>SmartDeviceLink 1.0</td>
@@ -81,7 +81,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>timeout</td>
  * 			<td>Integer</td>
- * 			<td>The amount of time, in milliseconds, SYNC will wait for the user to make a choice (VR or Menu). If this time elapses without the user making a choice, the timeoutPrompt will be spoken. After this timeout value has been reached, the interaction will stop and a subsequent interaction will take place after SYNC speaks the timeout prompt. If that times out as well, the interaction will end completely. If omitted, the default is 10000ms.</td>
+ * 			<td>The amount of time, in milliseconds, SDL will wait for the user to make a choice (VR or Menu). If this time elapses without the user making a choice, the timeoutPrompt will be spoken. After this timeout value has been reached, the interaction will stop and a subsequent interaction will take place after SDL speaks the timeout prompt. If that times out as well, the interaction will end completely. If omitted, the default is 10000ms.</td>
  *                 <td>N</td>
  * 			<td>minvalue:5000<br>maxvalue:100000<br>defvalue:10000</td>
  * 			<td>SmartDeviceLink 1.0</td>
@@ -89,7 +89,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>vrHelp</td>
  * 			<td>VrHelpItem</td>
- * 			<td>Ability to send suggested VR Help Items to display on-screen during Perform Interaction If omitted on supported displays, the default SYNC generated list of suggested choices will be displayed.</td>
+ * 			<td>Ability to send suggested VR Help Items to display on-screen during Perform Interaction If omitted on supported displays, the default SDL generated list of suggested choices will be displayed.</td>
  *                 <td>N</td>
  * 			<td>Min = 1<br>Max = 100</td>
  * 			<td>SmartDeviceLink 2.0</td>
@@ -97,7 +97,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>interactionLayout</td>
  * 			<td>LayoutMode</td>
- * 			<td>See LayoutMode.</td>
+ * 			<td>See {@linkplain LayoutMode}</td>
  *                 <td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 3.0</td>

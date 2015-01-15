@@ -8,15 +8,18 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.util.DebugTool;
 
 /**
- * If the app recognizes during the app registration that the Sdl HMI language
+ * If the app recognizes during the app registration that the SDL HMI language
  * (voice/TTS and/or display) does not match the app language, the app will be
  * able (but does not need) to change this registration with changeRegistration
- * prior to app being brought into focus
+ * prior to app being brought into focus.
  * <p>
  * Function Group: Base
  * <p>
  * <b>HMILevel can by any</b>
  * <p>
+ * <b>Note:</b><br>
+ * <p>
+  *  SDL will send the language value confirmed to be supported by HMI via UI.GetCapabilities.<br>
   * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * <table border="1" rules="all">
@@ -31,7 +34,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>Language</td>
  * 			<td>Language</td>
- * 			<td>Requested SYNC voice engine (VR+TTS) language registration.</td>
+ * 			<td>Requested SDL voice engine (VR+TTS) language registration.</td>
  *                 <td>Y</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 2.0</td>

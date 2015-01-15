@@ -1,6 +1,9 @@
 package com.smartdevicelink.proxy.rpc.enums;
 /** Describes the carmode the vehicle is in.
- * @Since SmartDeviceLink 2.0
+ * @see SoftButtonCapabilities
+ * @see ButtonCapabilities
+ * @see OnButtonPress
+ * @since SmartDeviceLink 2.0
  */
 
 public enum CarModeStatus {

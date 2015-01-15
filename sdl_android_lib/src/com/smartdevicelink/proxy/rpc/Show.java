@@ -89,7 +89,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>mediaClock</td>
  * 			<td>String</td>
- * 			<td>Text value for MediaClock field.<br> Has to be properly formatted by Mobile App according to Sync capabilities.<br>If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
+ * 			<td>Text value for MediaClock field.<br> Has to be properly formatted by Mobile App according to SDL capabilities.<br>If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
  *                 <td>N</td>
  * 			<td>Must be properly formatted as described in the MediaClockFormat enumeration. <br>If a value of five spaces is provided, this will clear that field on the display (i.e. the media clock timer field will not display anything) <br>Maxlength = 500</td>
  * 			<td>SmartDeviceLink 1.0</td>

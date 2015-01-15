@@ -23,7 +23,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 		<tr>
  * 			<td>displayLayout</td>
  * 			<td>string</td>
- * 			<td>Predefined or dynamically created screen layout.<br> Currently only predefined screen layouts are defined.<br> Predefined layouts include: "ONSCREEN_PRESETS"<br> Custom screen containing app-defined onscreen presets. <br>Currently defined for GEN2.</td>
+ * 			<td>Predefined or dynamically created screen layout.<br> Currently only predefined screen layouts are defined.<br> Predefined layouts include: "ONSCREEN_PRESETS"<br> Custom screen containing app-defined onscreen presets. <br></td>
  *                 <td>Y</td>
  * 			<td>maxlength: 500</td>
  * 			<td>SmartDeviceLink 2.0</td>

@@ -9,7 +9,9 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.util.DebugTool;
 
 /**
- * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
+ * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}<br>
+ * Specifies the capabilities of audio capturing: sampling rate, bits per sample, audio type.<br>
+ * 
  * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>

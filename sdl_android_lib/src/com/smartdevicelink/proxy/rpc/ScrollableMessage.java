@@ -50,6 +50,8 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>SmartDevice Link 1.0 </td>
  * 		</tr>
  *  </table>
+ *  @see  scrollableMessageBody 
+ *  @see TextFieldName
  */
 public class ScrollableMessage extends RPCRequest {
 	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";

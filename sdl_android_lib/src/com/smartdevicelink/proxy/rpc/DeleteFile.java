@@ -20,7 +20,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<th>SmartDeviceLink 2.0</th>
  * 		</tr>
  * 		<tr>
- * 			<td>syncFileName</td>
+ * 			<td>SDLFileName</td>
  * 			<td>String</td>
  * 			<td> File reference name.</td>
  *                 <td>Y</td>

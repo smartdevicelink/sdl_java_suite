@@ -6,7 +6,39 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.util.DebugTool;
-
+/**
+ * 
+ * Individual published data request result.
+ * <p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>dataType</td>
+ * 			<td>VehicleDataType</td>
+ * 			<td>Defined published data element type.</td>
+ *                 <td></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>resultCode</td>
+ * 			<td>VehicleDataResultCode</td>
+ * 			<td>Published data result code.</td>
+ *                 <td></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
+ *
+ */
 public class VehicleDataResult extends RPCStruct {
 	public static final String KEY_DATA_TYPE = "dataType";
 	public static final String KEY_RESULT_CODE = "resultCode";

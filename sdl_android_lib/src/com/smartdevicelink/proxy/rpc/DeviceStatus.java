@@ -96,6 +96,11 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 2.0
+ * <p>
+ * @see DeviceLevelStatus
+ * @see GetVehicleData
+ * @see OnVehicleData
+ * 
  */
 public class DeviceStatus extends RPCStruct {
     public static final String KEY_VOICE_REC_ON = "voiceRecOn";

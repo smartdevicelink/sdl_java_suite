@@ -7,12 +7,50 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.Hashtable;
 import java.util.List;
+/** An asynchronous request from the device; binary data can be included in hybrid part of message for some requests<br> (such as HTTP, Proprietary, or Authentication requests)
+ * <p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestType</td>
+ * 			<td>RequestType</td>
+ * 			<td>The type of system request. Note that Proprietary requests should forward the binary data to the known proprietary module on the system.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		
+ * 		<tr>
+ * 			<td>fileName</td>
+ * 			<td>String</td>
+ * 			<td>Filename of HTTP data to store in predefined system staging area.<br>Mandatory if requestType is HTTP.<br>PROPRIETARY requestType should ignore this parameter. </td>
+ *                 <td>N</td>
+ *                 <td>Max Length: 255<br></td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ *  </table>
+ * @since SmartDeviceLink 3.0
+ * <p>
+ * 
+ *
+ */
 
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
 	public static final String KEY_REQUEST_TYPE = "requestType";
 	public static final String KEY_DATA = "data";
-	
+	/**
+	 * Constructs a new SystemRequest object
+	 */ 
+
     public SystemRequest() {
         super(FunctionID.SYSTEM_REQUEST);
     }

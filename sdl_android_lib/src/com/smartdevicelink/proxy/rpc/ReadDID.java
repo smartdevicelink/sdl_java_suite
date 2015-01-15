@@ -42,6 +42,13 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Minvalue: 0<br>Maxvalue: 65535</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 			<td>appID</td>
+ * 			<td>Integer</td>
+ * 			<td>ID of the application that requested this RPC.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *  </table>
  * 
  * @since SmartDeviceLink 2.0

@@ -23,7 +23,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>name</td>
  * 			<td>ImageFieldName</td>
- * 			<td>The name that identifies the field. See ImageFieldName.</td>
+ * 			<td>The name that identifies the field.{@linkplain  ImageFieldName}</td>
  *                 <td></td>
  *                 <td></td>
  * 			<td>SmartDeviceLink 3.0 </td>
@@ -31,7 +31,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>imageTypeSupported</td>
  * 			<td>FileType</td>
- * 			<td>The image types that are supported in this field. See FileType.</td>
+ * 			<td>The image types that are supported in this field. {@linkplain FileType}</td>
  *                 <td></td>
  *                 <td>maxlength: 100</td>
  * 			<td>SmartDeviceLink 3.0 </td>
@@ -46,6 +46,13 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 3.0
+ * @see DisplayType 
+ * @see MediaClockFormat
+ * @see TextFieldName
+ * @see ImageType
+ * @see GetCapabilities
+ *
+ * 
  *
  */
 

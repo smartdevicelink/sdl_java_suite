@@ -16,7 +16,7 @@ import com.smartdevicelink.proxy.RPCNotification;
  * 			<th>Description</th>
  *                 <th>Reg.</th>
  *               <th>Notes</th>
- * 			<th>AppLink Version</th>
+ * 			<th>Version</th>
  * 		</tr>
  * 		<tr>
  * 			<td>hashID</td>

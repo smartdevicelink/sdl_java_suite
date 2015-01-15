@@ -93,7 +93,10 @@ public class OnSystemRequest extends RPCNotification {
 	
 	Hashtable<String, Object> httpreqparams = null;
 	JSONObject myJSONObj = null;
-	
+	/** Constructs a new OnSystemsRequest object
+	 * 	
+	 */
+
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST);
     }

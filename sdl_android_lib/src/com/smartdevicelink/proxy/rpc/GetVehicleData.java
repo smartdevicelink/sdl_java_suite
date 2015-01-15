@@ -178,7 +178,25 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  @since SmartDeviceLink 2.0
+ *  <p>
+ *  
+ *  <b>Response</b>
+ *  <p>
+ *  <b>Non-default Result Codes:</b><br>
+ *  SUCCESS<br>
+ *  INVALID_DATA<br>
+ *  OUT_OF_MEMORY<br>
+ *  TOO_MANY_PENDING_REQUESTS<br>
+ *  APPLICATION_NOT_REGISTERED<br>
+ *  GENERIC_ERROR<br>
+ *  REJECTED<br>
+ *  VEHICLE_DATA_NOT_ALLOWED<br>
+ *  VEHICLE_DATA_NOT_AVAILABLE<br>
+ *  USER_DISALLOWED<br>
+ * 
+ * @see SubscribeVehicleData
+ * @see UnSubscribeVehicleData
+ * @since SmartDeviceLink 2.0
  * 
  *
  */

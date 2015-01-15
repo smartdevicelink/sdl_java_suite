@@ -40,6 +40,8 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 1.0
+ * <p>
+ * @see VehicleDataResultCode
  *
  */
 

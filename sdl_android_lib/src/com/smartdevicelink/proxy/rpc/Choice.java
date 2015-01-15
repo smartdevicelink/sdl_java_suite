@@ -49,6 +49,10 @@ import com.smartdevicelink.util.DebugTool;
  * </table>
  * 
   * @since SmartDeviceLink 1.0
+  * <p>
+  * @see AddCommand
+  * @see PerformInteraction
+  * @see Image
  */
 public class Choice extends RPCStruct {
 	public static final String KEY_SECONDARY_TEXT = "secondaryText";

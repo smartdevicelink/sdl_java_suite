@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 
 /**
  * Requests the current list of resident filenames for the registered app. Not
- * supported on First generation SDL vehicles
+ * supported on First generation SDL vehicles.
  * <p>
  * 
  * @since SmartDeviceLink 2.0

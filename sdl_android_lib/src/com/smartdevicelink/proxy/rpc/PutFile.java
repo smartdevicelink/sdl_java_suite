@@ -12,6 +12,42 @@ import com.smartdevicelink.util.DebugTool;
  * Used to push a binary data onto the SDL module from a mobile device, such as
  * icons and album art
  * <p>
+  * <b> Parameter List</b>
+ * <p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>FileName</td>
+ * 			<td>String</td>
+ * 			<td>File reference name.</td>
+ *                 <td>Y</td>
+ * 			<td>Maxlength=500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Selected file type.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>persistentFile</td>
+ * 			<td>Boolean</td>
+ * 			<td>Indicates if the file is meant to persist between sessions / ignition cycles.<br> If set to TRUE,then the system will aim to persist this file through session / cycles.<br>While files with this designation will have priority over others,<br> they are subject to deletion by the system at any time.<br> In the event of automatic deletion by the system,<br> the app will receive a rejection and have to resend the file.<br> If omitted, the value will be set to false.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
  * 
  * @since SmartDeviceLink 2.0
  * @see DeleteFile

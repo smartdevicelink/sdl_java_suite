@@ -44,7 +44,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>keypressMode</td>
  * 			<td>KeypressMode</td>
  * 			<td>False</td>
- *                 <td>Ñ</td>
+ *                 <td></td>
  * 			<td>Desired keypress mode.If omitted, this value will be set to RESEND_CURRENT_ENTRY. </td>
  * 		</tr>
  * 		<tr>
@@ -65,7 +65,8 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * 
  * @since SmartDeviceLink 3.0
- *
+ *@see ButtonName
+ *@see GetCapabilities
  */
 
 

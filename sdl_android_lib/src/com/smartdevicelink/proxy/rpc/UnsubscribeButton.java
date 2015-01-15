@@ -16,7 +16,38 @@ import com.smartdevicelink.util.DebugTool;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * <p>
- * 
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>buttonName</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
+ *  <p>
+ *  <b>Response</b><br>
+ *  <p>
+ *  <b>Non-default Result Codes:</b><p>
+ *  - SUCCESS<br>
+ *  - INVALID_DATA<br>
+ *  - OUT_OF_MEMORY<br>
+ *  - TOO_MANY_PENDING_REQUESTS<br>
+ *  - APPLICATION_NOT_REGISTERED<br>
+ *  - GENERIC_ERROR     <br> 
+ *  - UNSUPPORTED_RESOURCE<br>
+ *  - IGNORED<br>
+ *  - REJECTED<br>
  * @since SmartDeviceLink 1.0
  * @see SubscribeButton
  */
