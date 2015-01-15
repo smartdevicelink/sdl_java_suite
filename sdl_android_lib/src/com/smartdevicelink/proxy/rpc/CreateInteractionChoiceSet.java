@@ -15,7 +15,40 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * </p>
- * 
+  * <p><b>Parameter List</b><br>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>interactionChoiceSetID</td>
+ * 			<td>Int32</td>
+ * 			<td>A unique ID that identifies the Choice Set</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value: 2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>choiceSet</td>
+ * 			<td>Choice[]</td>
+ * 			<td>Array of one or more elements.</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 1<br>Max Value: 100</td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ *  </table>
+ *  <p>
+ *   
+ *  <b>Note:</b><br>Second Utterance issue with CreateInteractionChoiceSet RPC. <br> Before a perform interaction
+ * is sent you MUST wait for the success from the CreateInteractionChoiceSet RPC.<br>
+ * If you do not wait the system may not recognize the first utterance from the user.
+ * </p>
+* 
  * @since SmartDeviceLink 1.0
  * @see DeleteInteractionChoiceSet
  * @see PerformInteraction

@@ -1,5 +1,9 @@
 package com.smartdevicelink.proxy.rpc.enums;
-
+/**
+ * Enumeration listing possible keyboard events.
+ * 
+ *
+ */
 public enum KeyboardEvent {
 
     KEYPRESS,

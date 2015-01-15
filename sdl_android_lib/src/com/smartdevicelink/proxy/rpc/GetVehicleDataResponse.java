@@ -10,7 +10,11 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
-
+/**
+ * Get Vehicle Data Response is sent, when GetVehicleData has been called.
+ * 
+ * @since SmartDeviceLink 2.0
+ */
 public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
@@ -38,6 +42,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 
+	/** 
+	 * Constructs a new GetVehicleDataResponse object
+	 */
 
     public GetVehicleDataResponse() {
         super(FunctionID.GET_VEHICLE_DATA);

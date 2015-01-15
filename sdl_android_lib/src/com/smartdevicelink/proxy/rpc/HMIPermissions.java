@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -31,7 +31,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>userDisallowed</td>
  * 			<td>HMILevel</td>
- * 			<td>A set of all HMI levels that are prohibated for this given RPC.
+ * 			<td>A set of all HMI levels that are prohibited for this given RPC.
  * 					<ul>
  *					<li>Min: 0</li>
  *					<li>Max: 100</li>

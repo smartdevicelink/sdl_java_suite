@@ -8,7 +8,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * Tire pressure status of a single tire.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -20,7 +20,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>status</td>
  * 			<td>ComponentVolumeStatus</td>
  * 			<td>Describes the volume status of a single tire
- * 					See ComponentVolumeStatus
+ * 					See {@linkplain ComponentVolumeStatus}
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>

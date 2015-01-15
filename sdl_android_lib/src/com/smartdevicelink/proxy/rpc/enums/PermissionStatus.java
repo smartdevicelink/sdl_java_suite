@@ -5,9 +5,21 @@ package com.smartdevicelink.proxy.rpc.enums;
  * @since SmartDeviceLink 2.0
  */
 public enum PermissionStatus {
+	/**
+	 * PermissionStatus is allowed.
+	 */
 	ALLOWED,
+	/**
+	 * PermissionStatus is disallowed.
+	 */
 	DISALLOWED,
+	/**PermissionStatus of user is disallowed.
+	 * 
+	 */
 	USER_DISALLOWED,
+	/**
+	 * PermissionStatus of user’s consent is pending.
+	 */
 	USER_CONSENT_PENDING;
 	
     /**

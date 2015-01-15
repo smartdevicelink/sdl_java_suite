@@ -67,7 +67,7 @@ import com.smartdevicelink.util.DebugTool;
  * <tr>
  * <td>customButtonID</td>
  * <td>Integer</td>
- * <td>If ButtonName is ��CUSTOM_BUTTON", this references the integer ID passed
+ * <td>If ButtonName is CUSTOM_BUTTON", this references the integer ID passed
  * by a custom button. (e.g. softButton ID)</td>
  * <td>N</td>
  * <td>Minvalue=0 Maxvalue=65536</td>

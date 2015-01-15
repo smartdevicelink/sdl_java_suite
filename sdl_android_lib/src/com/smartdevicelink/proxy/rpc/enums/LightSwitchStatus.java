@@ -1,4 +1,9 @@
 package com.smartdevicelink.proxy.rpc.enums;
+/**
+ * Status of the light switch.
+ * 
+ *
+ */
 
 public enum LightSwitchStatus {
 	OFF,

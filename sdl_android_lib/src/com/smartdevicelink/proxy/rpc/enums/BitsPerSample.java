@@ -3,8 +3,9 @@ package com.smartdevicelink.proxy.rpc.enums;
 import java.util.EnumSet;
 
 /**
- * Describes different bit depth options for PerformAudioPassThru
- * 
+ * Describes different bit depth options for PerformAudioPassThru.
+ *  @see PerformAudioPassThru
+ *  @since SmartDeviceLink 2.0
  */
 public enum BitsPerSample {
 	/**

@@ -9,7 +9,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

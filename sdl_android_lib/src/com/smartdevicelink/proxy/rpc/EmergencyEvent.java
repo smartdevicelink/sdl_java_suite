@@ -7,6 +7,66 @@ import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.util.DebugTool;
+/** Information related to an emergency event (and if it occurred).
+ * <p>
+   * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Mandatory</th>
+ * 			<th>Description</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>emergencyEventType</td>
+ * 			<td>EmergencyEventType</td>
+ * 			<td></td>
+ * 			<td>References signal "VedsEvntType_D_Ltchd". See{@linkplain EmergencyEventType}</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelCutoffStatus</td>
+ * 			<td>FuelCutoffStatus</td>
+ * 			<td></td>
+ * 			<td>References signal "RCM_FuelCutoff". See{@linkplain FuelCutoffStatus}</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rolloverEvent</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td></td>
+ * 			<td>References signal "VedsEvntRoll_D_Ltchd". See{@linkplain VehicleDataEventStatus}</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>maximumChangeVelocity</td>
+ * 			<td>Integer</td>
+ * 			<td></td>
+ * 			<td>References signal "VedsMaxDeltaV_D_Ltchd".</td>
+ * 			<td>minvalue=0<br> maxvalue=255<br> Additional reserved values:<br> 0x00 No event<br> 0xFE Not supported<br>0xFF Fault </td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *
+ * 		<tr>
+ * 			<td>multipleEvents</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td></td>
+ * 			<td>References signal "VedsMultiEvnt_D_Ltchd". See{@linkplain VehicleDataEventStatus}</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
+
+ * @see SubscribeVehicleData
+ * @since SmartDeviceLink 2.0
+ *
+ */
 
 public class EmergencyEvent extends RPCStruct {
     public static final String KEY_EMERGENCY_EVENT_TYPE = "emergencyEventType";
@@ -14,6 +74,13 @@ public class EmergencyEvent extends RPCStruct {
     public static final String KEY_ROLLOVER_EVENT = "rolloverEvent";
     public static final String KEY_MAXIMUM_CHANGE_VELOCITY = "maximumChangeVelocity";
     public static final String KEY_MULTIPLE_EVENTS = "multipleEvents";
+	
+	/** Constructs a new EmergencyEvent object indicated by the Hashtable<br>
+	 * parameter
+	 * @param hash
+	 * <p>
+	 * The hash table to use
+	 */
 
     public EmergencyEvent() { }
     public EmergencyEvent(Hashtable<String, Object> hash) {

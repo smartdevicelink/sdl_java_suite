@@ -8,7 +8,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -49,6 +49,10 @@ import com.smartdevicelink.util.DebugTool;
  * </table>
  * 
   * @since SmartDeviceLink 1.0
+  * <p>
+  * @see AddCommand
+  * @see PerformInteraction
+  * @see Image
  */
 public class Choice extends RPCStruct {
 	public static final String KEY_SECONDARY_TEXT = "secondaryText";

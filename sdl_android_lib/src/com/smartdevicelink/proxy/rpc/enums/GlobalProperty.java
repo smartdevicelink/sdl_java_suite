@@ -14,9 +14,25 @@ public enum GlobalProperty{
      */
     TIMEOUTPROMPT,
     VRHELPTITLE,
+    /**
+     * The property array of vrHelp of setGlobalProperties
+     */
+
     VRHELPITEMS,
+    /**
+     * The property in-app menu name of setGlobalProperties
+     */
+
     MENUNAME,
+    /**
+     * The property in-app menu icon of setGlobalProperties
+     */
+
     MENUICON,
+    /**
+     * The on-screen keyboard configuration of setGlobalProperties
+     */
+
     KEYBOARDPROPERTIES;
 
     /**

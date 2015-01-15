@@ -9,7 +9,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -96,6 +96,11 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 2.0
+ * <p>
+ * @see DeviceLevelStatus
+ * @see GetVehicleData
+ * @see OnVehicleData
+ * 
  */
 public class DeviceStatus extends RPCStruct {
     public static final String KEY_VOICE_REC_ON = "voiceRecOn";
