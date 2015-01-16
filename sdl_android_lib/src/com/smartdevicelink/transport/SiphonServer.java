@@ -27,10 +27,11 @@ public class SiphonServer {
 	
 	// Boolean to determine if the siphon has been initialized
 	private static Boolean m_siphonInitialized = false;
-	
+	private static Boolean m_foundOpenSocket = false;
 	private static Socket m_siphonSocket = null;
 	private static Object m_siphonLock = new Object();
 	private static ServerSocket m_listeningSocket = null;
+	private static short m_listenPort = -1;
 	private static OutputStream m_siphonSocketOutputStream = null;
 	private static SiphonServerThread m_siphonClientThread = null;
 	
@@ -41,7 +42,7 @@ public class SiphonServer {
 	private static byte m_sdlTraceMsgVersionNumber = 1;
 	
 	// Max number of ports to attempt a connection on
-	private final static Integer MAX_NUMBER_OF_PORT_ATTEMPTS = 1000;
+	private final static Integer MAX_NUMBER_OF_PORT_ATTEMPTS = 20;
 	
 	// Starting port for future port attempts
 	private final static short FIRST_PORT_TO_ATTEMPT_CONNECTION = 7474;
@@ -49,12 +50,33 @@ public class SiphonServer {
 	// Boolean to determine if formatted trace is being sent
 	private static Boolean m_sendingFormattedTrace = false;
 	
-	public static void enableSiphonServer() {
+	public static short enableSiphonServer() {
 		m_siphonEnabled = true;
+		SiphonServer.init();
+		return m_listenPort;
 	}
-	
-	public static void disableSiphonServer() {
-		m_siphonEnabled = false;
+
+	public static Boolean getSiphonEnabledStatus() {
+		return m_siphonEnabled;
+	}
+
+	public static short disableSiphonServer() {
+		if (!m_siphonEnabled) {
+			m_listenPort = -1;
+		} else {
+			m_siphonEnabled = false;
+		}
+
+		m_siphonInitialized = false;
+
+		try {
+			  SiphonServer.closeServer();
+		} catch (IOException e) {
+		 // TODO Auto-generated catch block
+		      e.printStackTrace();
+		}
+
+		return m_listenPort;
 	}
 
 	public static boolean init() {		
@@ -76,6 +98,7 @@ public class SiphonServer {
 		            m_siphonClientThread = new SiphonServerThread();
 			        m_siphonClientThread.setName("Siphon");
 			        m_siphonClientThread.setDaemon(true);
+			        m_foundOpenSocket = m_siphonClientThread.findOpenSocket(FIRST_PORT_TO_ATTEMPT_CONNECTION);
 			        m_siphonClientThread.start();
 			        
 			        m_siphonInitialized = true;
@@ -269,6 +292,7 @@ public class SiphonServer {
 	    		try {
 	    			m_listeningSocket = new ServerSocket(listenPort);
 	    			foundOpenPort = true;
+	    			m_listenPort = listenPort;
 	    		} catch (BindException ex) {
 	    			listenPort++;
 	    			if(listenPort > port + MAX_NUMBER_OF_PORT_ATTEMPTS) {
@@ -331,7 +355,7 @@ public class SiphonServer {
     	@Override
     	public void run() {
     		try	{
-    			if (findOpenSocket(FIRST_PORT_TO_ATTEMPT_CONNECTION)) {
+    			if (m_foundOpenSocket){
     				while (!isHalted) {
 	    				startServerOnPort();
     				}
