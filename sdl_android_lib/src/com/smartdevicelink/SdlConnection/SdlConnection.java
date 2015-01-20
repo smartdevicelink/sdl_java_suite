@@ -1,6 +1,9 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -14,6 +17,11 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
@@ -251,11 +259,61 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		return null;
 	}
 	
+	public void handleStreamException(String sFileName, Exception e, InputStream is, SessionType sType, byte rpcSessionID, Integer iCorrelationID)
+	{
+		StreamRPCResponse result = new StreamRPCResponse();
+		result.setSuccess(false);
+		result.setFileName(sFileName);	
+		result.setResultCode(Result.GENERIC_ERROR);
+		result.setCorrelationID(iCorrelationID);
+		String sException = "";
+		
+		if (e != null)
+			sException = e.toString();
+		
+		result.setInfo(sException);
+		
+		onStreamRPCResponse(null, result, sType, rpcSessionID);				
+		e.printStackTrace();
+		try {
+			is.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return;		
+	}
+	
+	public void startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	{
+		InputStream is = null;
+		int iSize = 0;
+		String sFileName = request.getSdlFileName();
+		try {
+			is = new FileInputStream(sLocalFile);
+			 try {
+				 iSize = is.available();
+			} catch (IOException e) {
+				handleStreamException(sFileName, e,is,sType,rpcSessionID, request.getCorrelationID());
+				return;
+			}
+		} catch (FileNotFoundException e1) {
+			handleStreamException(sFileName, e1,is,sType,rpcSessionID, request.getCorrelationID());
+			return;
+		}
+       
+		try {
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion, iSize);
+			rpcPacketizer.start();
+		} catch (Exception e) {
+            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());
+            handleStreamException(sFileName, e,is,sType,rpcSessionID,request.getCorrelationID());            
+        }			
+	}	
 	
 	
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+            mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -266,7 +324,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+			mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mPacketizer.start();
 			return os;
 		} catch (Exception e) {
@@ -411,7 +469,22 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				session.onHeartbeatTimedOut(sessionID);
 			}	
 			
-		}				
+		}
+		
+		@Override
+		public void onOnStreamRPC(IPutFileResponseListener putFileListener, OnStreamRPC rpcNote) {
+			for (SdlSession session : listenerList) {
+				session.onOnStreamRPC(putFileListener, rpcNote);
+			}
+		}
+
+		@Override
+		public void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result) {
+			for (SdlSession session : listenerList) {
+				session.onStreamRPCResponse(putFileListener,result);
+			}
+			
+		}			
 	}
 		
 	public int getRegisterCount() {
@@ -439,6 +512,21 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     		mySession._heartbeatMonitor.notifyTransportActivity();
         }
     }
+    
+	@Override
+	public void onOnStreamRPC(IPutFileResponseListener putFileListener, OnStreamRPC streamNote, SessionType sType, byte sessionID) {
+		SdlSession mySession = findSessionById(sessionID);
+    	if (mySession == null) return;    	
+    	mySession.onOnStreamRPC(putFileListener, streamNote);		
+	}
+
+	@Override
+	public void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result, SessionType sType, byte sessionID) {
+		SdlSession mySession = findSessionById(sessionID);
+    	if (mySession == null) return;    	
+    	mySession.onStreamRPCResponse(putFileListener, result);
+
+	}    
 
 
 }

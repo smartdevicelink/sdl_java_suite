@@ -10,6 +10,9 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportType;
 
@@ -215,6 +218,15 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);		
 	}
 
+	@Override
+	public void onOnStreamRPC(IPutFileResponseListener putFileListener, OnStreamRPC rpcNote) {
+		this.sessionListener.onOnStreamRPC(putFileListener, rpcNote);
+	}
 
+	@Override
+	public void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result) {
+		this.sessionListener.onStreamRPCResponse(putFileListener, result);
+	
+	}
 	
 }

@@ -54,6 +54,7 @@ import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -195,10 +196,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;
 	
+	private Vector<IPutFileResponseListener> _putFileListenerList = new Vector<IPutFileResponseListener>();
+	
 	protected byte _wiproVersion = 1;
 	
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
+	
+	private void notifyPutFileStreamError(Exception e, String info)
+	{
+		for (IPutFileResponseListener _putFileListener : _putFileListenerList) {
+			_putFileListener.onPutFileStreamError(e, info);
+		}		
+	}
+	
+	private void notifyPutFileStreamResponse(PutFileResponse msg)
+	{
+		for (IPutFileResponseListener _putFileListener : _putFileListenerList) {
+			_putFileListener.onPutFileResponse(msg);
+		}		
+	}
 	
 	// Private Class to Interface with SdlConnection
 	private class SdlInterfaceBroker implements ISdlConnectionListener {
@@ -207,6 +224,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onTransportDisconnected(String info) {
 			// proxyOnTransportDisconnect is called to alert the proxy that a requested
 			// disconnect has completed
+			notifyPutFileStreamError(null, info);
 			
 			if (_advancedLifecycleManagementEnabled) {
 				// If ALM, nothing is required to be done here
@@ -219,6 +237,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onTransportError(String info, Exception e) {
 			DebugTool.logError("Transport failure: " + info, e);
+			
+			notifyPutFileStreamError(e, info);
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
@@ -287,6 +307,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolError(String info, Exception e) {
+			notifyPutFileStreamError(e, info);
 			passErrorToProxyListener(info, e);
 		}
 
@@ -303,6 +324,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             notifyProxyClosed(msg, new SdlException(msg, SdlExceptionCause.HEARTBEAT_PAST_DUE), SdlDisconnectedReason.HB_TIMEOUT);
 			
 		}
+		
+		@Override
+		public void onOnStreamRPC(IPutFileResponseListener putFileListener, OnStreamRPC rpcNote) {
+			if (_proxyListener != null && rpcNote != null)
+				_proxyListener.onOnStreamRPC(rpcNote);
+			if (!_putFileListenerList.contains(putFileListener))
+				_putFileListenerList.add(putFileListener);			
+		}
+
+		@Override
+		public void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result) {
+			if (_proxyListener != null && result != null)
+				_proxyListener.onStreamRPCResponse(result);
+			if (putFileListener != null)
+				_putFileListenerList.remove(putFileListener);
+		}		
 	}
 
 	/**
@@ -1011,6 +1048,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			_appInterfaceRegisterd = true;
 		else
 			_appInterfaceRegisterd = false;
+		
+		_putFileListenerList.clear();
 		
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
 				
@@ -2024,10 +2063,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onPutFileResponse((PutFileResponse)msg);
+                            notifyPutFileStreamResponse(msg);
                         }
                     });
                 } else {
                     _proxyListener.onPutFileResponse((PutFileResponse)msg);
+                    notifyPutFileStreamResponse(msg);                    
                 }
             } else if (functionName.equals(FunctionID.DELETE_FILE)) {
                 // DeleteFile
@@ -2718,6 +2759,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 	}
+	
+	public boolean startPutFileStream(String sPath, PutFile msg) {
+		if (sdlSession == null) return false;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return false;
+		sdlConn.startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		return true;
+	}	
 	
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
 		if (sdlSession == null) return false;		
@@ -4216,12 +4265,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SyncException
 	*/
-	public OutputStream PutFileStream(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public OutputStream PutFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		return startRPCStream(msg);
 	}
 
+	public void PutFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	{
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		startPutFileStream(sPath, msg);
+	}
+		
 	/**
 	 *
 	 * Used to end an existing PutFileStream that was previously initiated with any PutFileStream method.
