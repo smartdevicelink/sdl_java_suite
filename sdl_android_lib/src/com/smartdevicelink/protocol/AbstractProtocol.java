@@ -23,10 +23,6 @@ public abstract class AbstractProtocol {
 		_protocolListener = protocolListener;
 	} // end-ctor
 
-	// This method receives raw bytes as they arrive from transport.  Those bytes
-	// are then collected by the protocol and assembled into complete messages and
-	// handled internally by the protocol or propagated to the protocol listener.
-	public abstract void HandleReceivedBytes(byte[] receivedBytes, int length);
 
 	// This method receives a protocol message (e.g. RPC, BULK, etc.) and processes
 	// it for transmission over the transport.  The results of this processing will
@@ -36,6 +32,9 @@ public abstract class AbstractProtocol {
 	// over which to send the message, etc.
 	public abstract void SendMessage(ProtocolMessage msg);
 
+	
+	public abstract void handledPacketReceived(SdlPacket packet);
+	
 	// This method starts a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionStarted() method will be made when the protocol
 	// session has been established.
@@ -59,11 +58,11 @@ public abstract class AbstractProtocol {
     public abstract void SendHeartBeat(byte sessionID);
 	
 	// This method is called whenever the protocol receives a complete frame
-	protected void handleProtocolFrameReceived(ProtocolFrameHeader header, byte[] data, MessageFrameAssembler assembler) {
+	protected void handleProtocolFrameReceived(SdlPacket packet, MessageFrameAssembler assembler) {
 		SdlTrace.logProtocolEvent(InterfaceActivityDirection.Receive, header, data, 
-				0, data.length, SDL_LIB_TRACE_KEY);
+				0, packet.dataSize, SDL_LIB_TRACE_KEY);
 		
-		assembler.handleFrame(header, data);
+		assembler.handleFrame(packet);
 	}
 	
     private synchronized void resetHeartbeat(SessionType sessionType, byte sessionID) {

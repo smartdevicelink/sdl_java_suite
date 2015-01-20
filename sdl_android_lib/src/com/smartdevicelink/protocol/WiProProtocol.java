@@ -171,6 +171,15 @@ public class WiProProtocol extends AbstractProtocol {
 		handleProtocolFrameToSend(header, null, 0, 0);
 	}
 
+	public void handledPacketReceived(SdlPacket packet){
+		MessageFrameAssembler assembler = getFrameAssemblerForFrame(_currentHeader);
+		handleProtocolFrameReceived(_currentHeader, _dataBuf, assembler);
+		
+		/**
+		 * TODO START HERE ON MONDAY OR TUESDAY OR WHENEVER
+		 */
+	}
+	
 	public void HandleReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
 		int receivedBytesReadPos = 0;
 		
@@ -387,8 +396,8 @@ public class WiProProtocol extends AbstractProtocol {
 			//}
 		} // end-method
 		
-		protected void handleFrame(ProtocolFrameHeader header, byte[] data) {
-			if (header.getFrameType().equals(FrameType.Control)) {
+		protected void handleFrame(SdlPacket packet) {
+			if (packet.getFrameType().equals(FrameType.Control)) {
 				handleControlFrame(header, data);
 			} else {
 				// Must be a form of data frame (single, first, consecutive, etc.)
@@ -402,12 +411,11 @@ public class WiProProtocol extends AbstractProtocol {
 			} // end-if
 		} // end-method
 		
-        private void handleProtocolHeartbeatACK(ProtocolFrameHeader header,
-                byte[] data) {
+        private void handleProtocolHeartbeatACK(SdlPacket packet) {
         		WiProProtocol.this.handleProtocolHeartbeatACK(header.getSessionType(),header.getSessionID());
         } // end-method		
 		
-		private void handleControlFrame(ProtocolFrameHeader header, byte[] data) {
+		private void handleControlFrame(SdlPacket packet) {
             if (header.getFrameData() == FrameDataControlFrameType.HeartbeatACK.getValue()) {
                 handleProtocolHeartbeatACK(header, data);
             }
@@ -440,7 +448,7 @@ public class WiProProtocol extends AbstractProtocol {
 			}
 		} // end-method
 				
-		private void handleSingleFrameMessageFrame(ProtocolFrameHeader header, byte[] data) {
+		private void handleSingleFrameMessageFrame(SdlPacket packet) {
 			ProtocolMessage message = new ProtocolMessage();
 			if (header.getSessionType() == SessionType.RPC) {
 				message.setMessageType(MessageType.RPC);

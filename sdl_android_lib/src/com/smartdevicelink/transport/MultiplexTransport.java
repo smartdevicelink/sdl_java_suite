@@ -1,11 +1,11 @@
 package com.smartdevicelink.transport;
 
-import java.util.UUID;
-
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.c4.android.transport.TransportBroker;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.protocol.SdlPacket;
 
 public class MultiplexTransport extends SdlTransport{
 	private final static String TAG = "Multiplex Transport";
@@ -54,7 +54,9 @@ public class MultiplexTransport extends SdlTransport{
 					}
 
 					@Override
-					public void onPacketReceived(byte[] packet) {
+					public void onPacketReceived(Parcelable packet) {
+						SdlPacket sdlPacket = (SdlPacket)packet;
+						
 						handleReceivedBytes(packet,packet.length);
 					}
 			

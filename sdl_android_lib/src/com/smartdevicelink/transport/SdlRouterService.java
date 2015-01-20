@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Parcelable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.c4.android.transport.IPacketStateMachine;
 import com.c4.android.transport.RouterService;
 import com.c4.android.transport.TransportConstants;
 import com.c4.android.utl.HandyDandy;
+import com.smartdevicelink.protocol.SdlPacket;
 
 public abstract class SdlRouterService extends RouterService{
 
@@ -128,9 +130,9 @@ public abstract class SdlRouterService extends RouterService{
 	
 	
 	@Override
-	public void onBytesRead(byte[] incomming, int bytesRead) {
-		Log.i(TAG, "******** Read packet with header: " + HandyDandy.bytesToHex(incomming, 12));
-		super.onBytesRead(incomming, bytesRead);
+	public void onPacketRead(Parcelable incomming, int bytesRead) {
+		Log.i(TAG, "******** Read packet with header: " +((SdlPacket)incomming).toString());
+		super.onPacketRead(incomming, bytesRead);
 	}
 	
 	
@@ -155,15 +157,15 @@ public abstract class SdlRouterService extends RouterService{
 
 	SparseArray<Long> sessionMap;
 	private Object SESSION_LOCK;
-	private static final int SESSION_ID_BYTE = 3;
+	//private static final int SESSION_ID_BYTE = 3;
 	@Override
-	public boolean sendPacketToRegisteredApp(byte[] packet) {
+	public boolean sendPacketToRegisteredApp(Parcelable packet) {
 		if(registeredApps!=null && (registeredApps.size()>0)){
     		Intent sendingPacketToClientIntent = new Intent();
     		//sendingPacketToClientIntent.setAction(whereToSendPackets);
     		sendingPacketToClientIntent.putExtra(PACKET_TO_SEND_EXTRA_NAME, packet); //FIXME this bullshit. do we check here for app id?
     		
-    		Long appid =getAppIDForSession(packet[SESSION_ID_BYTE]);
+    		Long appid =getAppIDForSession(((SdlPacket)packet).getSessionId());
     		if(appid!=null){
     			sendingPacketToClientIntent.setAction(registeredApps.get(appid).getReplyAddress());
     			sendBroadcast(sendingPacketToClientIntent);
