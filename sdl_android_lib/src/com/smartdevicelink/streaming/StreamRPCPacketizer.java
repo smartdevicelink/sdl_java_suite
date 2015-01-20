@@ -2,6 +2,7 @@ package com.smartdevicelink.streaming;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Hashtable;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -9,23 +10,35 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
-public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
+public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
-	public final static String TAG = "StreamPacketizer";
-	public final static int BUFF_READ_SIZE = 1000;
-	
-	private Thread t = null;
+	private final static int BUFF_READ_SIZE = 1000000;
+	private final static int FIRST_BUFF_READ_SIZE = 1500;
+	private Integer iInitialCorrID = 9999999;
+	//public final static int BUFF_READ_SIZE = 500000;
+	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
+	private Thread thread = null;
+	private int iFileSize = 0;
+	private String sFileName;
 
-	public StreamRPCPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) throws IOException {
+	public StreamRPCPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, int iLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
+		iFileSize = iLength;
+		iInitialCorrID = request.getCorrelationID();
 	}
 
 	public void start() throws IOException {
-		if (t == null) {
-			t = new Thread(this);
-			t.start();
+		if (thread == null) {
+			thread = new Thread(this);
+			thread.start();
 		}
 	}
 
@@ -33,9 +46,60 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 		try {
 			is.close();
 		} catch (IOException ignore) {}
-		t.interrupt();
-		t = null;
+		if (thread != null)
+		{
+			thread.interrupt();
+			thread = null;
+		}
 	}
+
+	public void handleStreamSuccess(RPCResponse rpc, InputStream is, Integer iSize)
+	{
+		StreamRPCResponse result = new StreamRPCResponse();
+		result.setSuccess(rpc.getSuccess());
+		result.setResultCode(rpc.getResultCode());
+		result.setInfo(rpc.getInfo());
+		result.setFileName(sFileName);
+		result.setFileSize(iSize);
+		result.setCorrelationID(iInitialCorrID);
+		_streamListener.onStreamRPCResponse(this, result, _session, _rpcSessionID);				
+
+		stop();
+		return;	
+	}
+	
+	public void handleStreamException(RPCResponse rpc, Exception e, String info, InputStream is)
+	{
+		StreamRPCResponse result = new StreamRPCResponse();
+		result.setFileName(sFileName);
+		result.setCorrelationID(iInitialCorrID);
+		if (rpc != null)
+		{
+			result.setSuccess(rpc.getSuccess());
+			result.setResultCode(rpc.getResultCode());
+			result.setInfo(rpc.getInfo());
+		}
+		else
+		{
+			result.setSuccess(false);
+			result.setResultCode(Result.GENERIC_ERROR);
+			String sException = "";
+			
+			if (info != null)
+				sException = info;
+			if (e != null)
+				sException = sException + " " + e.toString();
+			
+			result.setInfo(sException);
+		}
+		
+		_streamListener.onStreamRPCResponse(this, result, _session, _rpcSessionID);				
+		if (e != null)
+			e.printStackTrace();
+		stop();
+		return;
+		
+	}	
 
 	public void run() {
 		int length;
@@ -44,11 +108,29 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 			
 			int iCorrID = 0;
 			PutFile msg = (PutFile) _request;
+			sFileName = msg.getSdlFileName();
 			int iOffsetCounter = msg.getOffset();
+			_streamListener.onOnStreamRPC(this, null, _session, _rpcSessionID);
+			
+			if (iFileSize != 0)
+				msg.setLength(iFileSize);
+			
+			Integer iFileLength = msg.getLength();
+			
+			notificationList.clear();			
+			
+			Boolean bFirstIteration = true;
 			
 			while (!Thread.interrupted()) {				
-			
+				if (bFirstIteration)
+				{	
+					bFirstIteration = false;
+					length = is.read(buffer, 0, FIRST_BUFF_READ_SIZE);
+				}
+				else
+				{
 				length = is.read(buffer, 0, BUFF_READ_SIZE);				
+				}
 				
 				if (length == -1)
 					stop();
@@ -70,16 +152,46 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 					pm.setBulkData(buffer, length);
 					pm.setCorrID(msg.getCorrelationID());
 						
-			        _streamListener.sendStreamPacket(pm);
-			        
+					OnStreamRPC notification = new OnStreamRPC();
+					notification.setFileName(msg.getSdlFileName());
+					notification.setFileSize(iFileLength);										
 			        iOffsetCounter = iOffsetCounter + length;
+			        notification.setBytesComplete(iOffsetCounter);
+			        notificationList.put(msg.getCorrelationID(),notification);
+			        
 			        msg.setOffset(iOffsetCounter);
 					iCorrID = msg.getCorrelationID() + 1;
 					msg.setCorrelationID(iCorrID);
+
+			        _streamListener.sendStreamPacket(pm);
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			handleStreamException(null, e, null, is);
 		}
+	}
+
+	@Override
+	public void onPutFileResponse(PutFileResponse response) {
+		
+		OnStreamRPC streamNote = notificationList.get(response.getCorrelationID());
+		if (streamNote == null) return;
+
+		_streamListener.onOnStreamRPC(this, streamNote, _session, _rpcSessionID);
+		
+		if (!response.getSuccess())
+		{
+			handleStreamException(response, null, null, is);
+		}		
+		else if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
+		{
+			handleStreamSuccess(response, is, streamNote.getBytesComplete());
+		}
+	}
+
+	@Override
+	public void onPutFileStreamError(Exception e, String info) {
+		if (thread != null)
+			handleStreamException(null, e, info, is);
 	}
 }

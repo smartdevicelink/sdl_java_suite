@@ -1,0 +1,40 @@
+package com.smartdevicelink.proxy.rpc;
+
+import java.util.Hashtable;
+
+import com.smartdevicelink.proxy.RPCResponse;
+
+public class StreamRPCResponse extends RPCResponse {
+	public static final String KEY_FILENAME = "fileName";
+	public static final String KEY_FILESIZE = "fileSize";
+	
+    public StreamRPCResponse() {
+        super("StreamRPC");
+    }
+    public StreamRPCResponse(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+    
+	public void setFileName(String fileName) {
+    	if (fileName != null) {
+    		parameters.put(KEY_FILENAME, fileName);
+    	} else {
+    		parameters.remove(KEY_FILENAME);
+    	}
+	}
+	public String getFileName() {
+		return (String) parameters.get(KEY_FILENAME);
+	}
+	
+	public void setFileSize(Integer fileSize) {
+    	if (fileSize != null) {
+    		parameters.put(KEY_FILESIZE, fileSize);
+    	} else {
+    		parameters.remove(KEY_FILESIZE);
+    	}
+	}
+	public Integer getFileSize() {
+		return (Integer) parameters.get(KEY_FILESIZE);
+	}		
+	
+}
