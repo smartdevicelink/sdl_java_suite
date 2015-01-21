@@ -1,5 +1,7 @@
 package com.smartdevicelink.protocol;
 
+import java.nio.ByteBuffer;
+
 import com.smartdevicelink.protocol.enums.FrameType;
 
 import android.os.Parcel;
@@ -42,12 +44,15 @@ public class SdlPacket implements Parcelable{
 	public static final int FRAME_INFO_START_SERVICE 			= 0x01;
 	public static final int FRAME_INFO_START_SERVICE_ACK		= 0x02;
 	public static final int FRAME_INFO_START_SERVICE_NAK		= 0x03;
-	public static final int FRAME_INFO_END_SERVICE 			= 0x04;
+	public static final int FRAME_INFO_END_SERVICE 				= 0x04;
 	public static final int FRAME_INFO_END_SERVICE_ACK			= 0x05;
 	public static final int FRAME_INFO_END_SERVICE_NAK			= 0x06;
 	//0x07-0xFD are reserved	
-	public static final int FRAME_INFO_SERVICE_DATA_ACK		= 0xFE;
+	public static final int FRAME_INFO_SERVICE_DATA_ACK			= 0xFE;
 	public static final int FRAME_INFO_HEART_BEAT_ACK			= 0xFF;
+	
+	public static final int FRAME_INFO_FINAL_CONNESCUTIVE_FRAME	= 0x00;
+
 	//Most others
 	public static final int FRAME_INFO_RESERVED 				= 0x00;
 
@@ -80,6 +85,22 @@ public class SdlPacket implements Parcelable{
 		}
 	}
 
+	public SdlPacket(int version, boolean compression, int frameType,
+			int serviceType, int frameInfo, int sessionId,
+			int dataSize, int messageId, byte[] payload, int offset,int bytesToWrite) {
+		this.version = version;
+		this.compression = compression;
+		this.frameType = frameType;
+		this.serviceType = serviceType;
+		this.frameInfo = frameInfo;
+		this.sessionId = sessionId;
+		this.dataSize = dataSize;
+		this.messageId = messageId;
+		if(payload!=null){
+			this.payload = new byte[bytesToWrite];
+			System.arraycopy(payload, offset, this.payload, 0, bytesToWrite);
+		}
+	}
 	/**
 	 * This constructor is available as a protected method. A few defaults have been set, however a few things <b>MUST</b> be set before use. The rest will "work"
 	 * however, it won't be valid data.
@@ -151,7 +172,11 @@ public class SdlPacket implements Parcelable{
 	public int getSessionId() {
 		return sessionId;
 	}
-
+	
+	public int getMessageId() {
+		return messageId;
+	}
+	
 	public long getDataSize() {
 		return dataSize;
 	}
@@ -182,36 +207,37 @@ public class SdlPacket implements Parcelable{
 	public static byte[] constructPacket(int version, boolean compression, int frameType,
 			int serviceType, int controlFrameInfo, int sessionId,
 			int dataSize, int messageId, byte[] payload){
-		StringBuilder builder;
+		ByteBuffer builder;
 		switch(version){
 			case 1:
-				builder = new StringBuilder(HEADER_SIZE_V1 + dataSize);
+				builder = ByteBuffer.allocate(HEADER_SIZE_V1 + dataSize);
 				break;
 			default:
-				builder = new StringBuilder(HEADER_SIZE + dataSize);
+				builder = ByteBuffer.allocate(HEADER_SIZE + dataSize);
 				break;
 		}
 		
-		builder.append((byte)((version<<4) + getCompressionBit(compression) + frameType));
-		builder.append((byte)serviceType);
-		builder.append((byte)controlFrameInfo);
-		builder.append((byte)sessionId);
+		builder.put((byte)((version<<4) + getCompressionBit(compression) + frameType));
+		builder.put((byte)serviceType);
+		builder.put((byte)controlFrameInfo);
+		builder.put((byte)sessionId);
 		
-		builder.append((byte)((dataSize&0xFF000000)>>24));
-		builder.append((byte)((dataSize&0x00FF0000)>>16));
-		builder.append((byte)((dataSize&0x0000FF00)>>8));
-		builder.append((byte)((dataSize&0x000000FF)));
+		builder.put((byte)((dataSize&0xFF000000)>>24));
+		builder.put((byte)((dataSize&0x00FF0000)>>16));
+		builder.put((byte)((dataSize&0x0000FF00)>>8));
+		builder.put((byte)((dataSize&0x000000FF)));
 		
 		if(version>1){	//Version 1 did not include this part of the header
-			builder.append((byte)((messageId&0xFF000000)>>24));
-			builder.append((byte)((messageId&0x00FF0000)>>16));
-			builder.append((byte)((messageId&0x0000FF00)>>8));
-			builder.append((byte)((messageId&0x000000FF)));
+			builder.put((byte)((messageId&0xFF000000)>>24));
+			builder.put((byte)((messageId&0x00FF0000)>>16));
+			builder.put((byte)((messageId&0x0000FF00)>>8));
+			builder.put((byte)((messageId&0x000000FF)));
+		}
+		if(payload!=null && payload.length>0){
+			builder.put(payload);
 		}
 		
-		builder.append(payload);
-		
-		return builder.toString().getBytes();
+		return builder.array();
 	}
 	
 	
@@ -223,6 +249,8 @@ public class SdlPacket implements Parcelable{
 		}
 	}
 	
+
+
 @Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

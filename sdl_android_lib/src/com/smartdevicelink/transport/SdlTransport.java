@@ -1,6 +1,7 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.util.DebugTool;
@@ -29,15 +30,15 @@ public abstract class SdlTransport {
     
     // This method is called by the subclass to indicate that data has arrived from
     // the transport.
-    protected void handleReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+    protected void handleReceivedPacket(SdlPacket packet) {
 		try {
 			// Trace received data
-			if (receivedBytesLength > 0) {
+			if (packet!=null) {
 				// Send transport data to the siphon server
-				SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
-				SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
+				//FIXME SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
+				//SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
 				
-				_transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
+				_transportListener.onTransportPacketReceived(packet);
 			} // end-if
 		} catch (Exception excp) {
 			DebugTool.logError(FailurePropagating_Msg + "handleBytesFromTransport: " + excp.toString(), excp);

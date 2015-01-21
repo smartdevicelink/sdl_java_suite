@@ -55,9 +55,10 @@ public class MultiplexTransport extends SdlTransport{
 
 					@Override
 					public void onPacketReceived(Parcelable packet) {
-						SdlPacket sdlPacket = (SdlPacket)packet;
-						
-						handleReceivedBytes(packet,packet.length);
+						if(packet!=null){
+							SdlPacket sdlPacket = (SdlPacket)packet;
+							handleReceivedPacket(sdlPacket);
+						}
 					}
 			
 			

@@ -59,8 +59,8 @@ public abstract class AbstractProtocol {
 	
 	// This method is called whenever the protocol receives a complete frame
 	protected void handleProtocolFrameReceived(SdlPacket packet, MessageFrameAssembler assembler) {
-		SdlTrace.logProtocolEvent(InterfaceActivityDirection.Receive, header, data, 
-				0, packet.dataSize, SDL_LIB_TRACE_KEY);
+	//FIXME	SdlTrace.logProtocolEvent(InterfaceActivityDirection.Receive, header, data, 
+	//			0, packet.dataSize, SDL_LIB_TRACE_KEY);
 		
 		assembler.handleFrame(packet);
 	}
@@ -72,16 +72,20 @@ public abstract class AbstractProtocol {
     }
 
 	// This method is called whenever a protocol has an entire frame to send
-	protected void handleProtocolFrameToSend(ProtocolFrameHeader header, byte[] data, int offset, int length) {
-		SdlTrace.logProtocolEvent(InterfaceActivityDirection.Transmit, header, data, 
-				offset, length, SDL_LIB_TRACE_KEY);
-		resetHeartbeat(header.getSessionType(), header.getSessionID());
+    /**
+     * SdlPacket should have included payload at this point.
+     * @param header
+     */
+	protected void handlePacketToSend(SdlPacket header) {
+	//FIXME	SdlTrace.logProtocolEvent(InterfaceActivityDirection.Transmit, header, data, 
+	//			offset, length, SDL_LIB_TRACE_KEY);
+		resetHeartbeat(SessionType.valueOf((byte)header.getServiceType()), (byte)header.getSessionId());
 		synchronized(_frameLock) {
 			
-			byte[] frameHeader = header.assembleHeaderBytes();
-			//handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
+			byte[] frameHeader = header.constructPacket();
+			handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
 			
-			if (data != null) {
+			/*if (data != null) {
 				byte[] fullPacket = new byte[frameHeader.length +length];
 				System.arraycopy(frameHeader, 0, fullPacket, 0, frameHeader.length);
 				System.arraycopy(data, offset, fullPacket, frameHeader.length, length);
@@ -89,7 +93,7 @@ public abstract class AbstractProtocol {
 				handleProtocolMessageBytesToSend(fullPacket, 0, fullPacket.length);
 			} else{
 				handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
-			}
+			}*/
 		}
 	}
 	
