@@ -1035,16 +1035,34 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *  Public method to enable the siphon transport
 	 */
-	public static void enableSiphonDebug() {
-		SiphonServer.enableSiphonServer();
+	public void enableSiphonDebug() {
+
+		short enabledPortNumber = SiphonServer.enableSiphonServer();
+		String sSiphonPortNumber = "Enabled Siphon Port Number: " + enabledPortNumber;
+		Intent sendIntent = createBroadcastIntent();
+		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "enableSiphonDebug");
+		updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
+		sendBroadcastIntent(sendIntent);
 	}
+
+
 	
 	/**
 	 *  Public method to disable the Siphon Trace Server
 	 */
-	public static void disableSiphonDebug() {
-		SiphonServer.disableSiphonServer();
-	}	
+	public void disableSiphonDebug() {
+
+		short disabledPortNumber = SiphonServer.disableSiphonServer();
+		if (disabledPortNumber != -1) {
+		    String sSiphonPortNumber = "Disabled Siphon Port Number: " + disabledPortNumber;
+		    Intent sendIntent = createBroadcastIntent();
+		    updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "disableSiphonDebug");
+		    updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
+		    sendBroadcastIntent(sendIntent);
+		}
+	}
+
+	
 	
 	/**
 	 *  Public method to enable the Debug Tool
