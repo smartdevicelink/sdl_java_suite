@@ -20,10 +20,9 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
-	private final static int BUFF_READ_SIZE = 1000000;
-	private final static int FIRST_BUFF_READ_SIZE = 1500;
+	//private final static int BUFF_READ_SIZE = 1000000;
 	private Integer iInitialCorrID = 9999999;
-	//public final static int BUFF_READ_SIZE = 500000;
+	public final static int BUFF_READ_SIZE = 150000;
 	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
 	private Thread thread = null;
 	private int iFileSize = 0;
@@ -103,6 +102,11 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
 	public void run() {
 		int length;
+		byte[] msgBytes;
+		ProtocolMessage pm;
+		OnStreamRPC notification;
+		// Moves the current Thread into the background
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
 		try {
 			
@@ -119,18 +123,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			
 			notificationList.clear();			
 			
-			Boolean bFirstIteration = true;
-			
 			while (!Thread.interrupted()) {				
-				if (bFirstIteration)
-				{	
-					bFirstIteration = false;
-					length = is.read(buffer, 0, FIRST_BUFF_READ_SIZE);
-				}
-				else
-				{
+			
 				length = is.read(buffer, 0, BUFF_READ_SIZE);				
-				}
 				
 				if (length == -1)
 					stop();
@@ -140,8 +135,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					if (msg.getOffset() != 0)
 			        	msg.setLength(null); //only need to send length when offset 0
 
-					byte[] msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion);					
-					ProtocolMessage pm = new ProtocolMessage();
+					msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion);					
+					pm = new ProtocolMessage();
 					pm.setData(msgBytes);
 
 					pm.setSessionID(_rpcSessionID);
@@ -152,7 +147,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					pm.setBulkData(buffer, length);
 					pm.setCorrID(msg.getCorrelationID());
 						
-					OnStreamRPC notification = new OnStreamRPC();
+					notification = new OnStreamRPC();
 					notification.setFileName(msg.getSdlFileName());
 					notification.setFileSize(iFileLength);										
 			        iOffsetCounter = iOffsetCounter + length;
@@ -166,7 +161,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			        _streamListener.sendStreamPacket(pm);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			handleStreamException(null, e, null, is);
 		}
 	}
