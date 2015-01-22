@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
 public class OnStreamRPC extends RPCNotification {
@@ -8,7 +9,7 @@ public class OnStreamRPC extends RPCNotification {
 	public static final String KEY_FILESIZE = "fileSize";
 	
 	public OnStreamRPC() {
-		super("OnStreamRPC");
+		super(FunctionID.ON_STREAM_RPC);
 	}
 		
 	public void setFileName(String fileName) {

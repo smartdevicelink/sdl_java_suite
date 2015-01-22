@@ -66,6 +66,8 @@ public class FunctionID {
 	public static final String ON_SDL_CHOICE_CHOSEN = "OnSdlChoiceChosen";
 	
 	public static final String SEND_LOCATION = "SendLocation";
+	public static final String ON_STREAM_RPC = "OnStreamRPC";
+	public static final String STREAM_RPC = "StreamRPC";
 
     public FunctionID() {
     }

@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 public class StreamRPCResponse extends RPCResponse {
@@ -9,7 +10,7 @@ public class StreamRPCResponse extends RPCResponse {
 	public static final String KEY_FILESIZE = "fileSize";
 	
     public StreamRPCResponse() {
-        super("StreamRPC");
+        super(FunctionID.STREAM_RPC);
     }
     public StreamRPCResponse(Hashtable<String, Object> hash) {
         super(hash);
