@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
@@ -76,7 +77,8 @@ public class GetVehicleDataResponse extends RPCResponse {
     	}
     }
     public Double getSpeed() {
-    	return (Double) parameters.get(KEY_SPEED);
+    	Object object = parameters.get(KEY_SPEED);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }
     public void setRpm(Integer rpm) {
     	if (rpm != null) {
@@ -96,7 +98,8 @@ public class GetVehicleDataResponse extends RPCResponse {
     	}
     }
     public Double getFuelLevel() {
-    	return (Double) parameters.get(KEY_FUEL_LEVEL);
+    	Object object = parameters.get(KEY_FUEL_LEVEL);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
     	if (fuelLevel_State != null) {
@@ -128,7 +131,8 @@ public class GetVehicleDataResponse extends RPCResponse {
     	}
     }
     public Double getInstantFuelConsumption() {
-    	return (Double) parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+    	Object object = parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }
     public void setExternalTemperature(Double externalTemperature) {
     	if (externalTemperature != null) {
@@ -138,7 +142,8 @@ public class GetVehicleDataResponse extends RPCResponse {
     	}
     }
     public Double getExternalTemperature() {
-    	return (Double) parameters.get(KEY_EXTERNAL_TEMPERATURE);
+    	Object object = parameters.get(KEY_EXTERNAL_TEMPERATURE);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }
     public void setVin(String vin) {
     	if (vin != null) {
@@ -340,7 +345,8 @@ public class GetVehicleDataResponse extends RPCResponse {
         }
     }
     public Double getEngineTorque() {
-    	return (Double) parameters.get(KEY_ENGINE_TORQUE);
+    	Object object = parameters.get(KEY_ENGINE_TORQUE);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }
 
     public void setAccPedalPosition(Double accPedalPosition) {
@@ -351,7 +357,8 @@ public class GetVehicleDataResponse extends RPCResponse {
         }
     }
     public Double getAccPedalPosition() {
-    	return (Double) parameters.get(KEY_ACC_PEDAL_POSITION);
+    	Object object = parameters.get(KEY_ACC_PEDAL_POSITION);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }
         
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
@@ -362,7 +369,8 @@ public class GetVehicleDataResponse extends RPCResponse {
         }
     }
     public Double getSteeringWheelAngle() {
-    	return (Double) parameters.get(KEY_STEERING_WHEEL_ANGLE);
+    	Object object = parameters.get(KEY_STEERING_WHEEL_ANGLE);
+    	return SdlDataTypeConverter.ObjectToDouble(object);
     }    
 
     public void setECallInfo(ECallInfo eCallInfo) {
