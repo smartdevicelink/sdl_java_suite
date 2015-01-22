@@ -1016,6 +1016,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				sendTransportBroadcast();
 			}
 	}
+	/**
+	 * This method will fake the multiplex connection event
+	 * @param action
+	 */
+	public void forceOnConnected(){
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (sdlSession != null) {
+				sdlSession.getSdlConnection().forceHardwareConnectEvent(com.c4.android.datatypes.TransportEnums.TransportType.BLUETOOTH);
+				
+			}
+		}
+	}
 	
 	public void sendTransportBroadcast()
 	{

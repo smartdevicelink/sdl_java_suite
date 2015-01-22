@@ -9,8 +9,10 @@ import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
 
+import com.c4.android.transport.IPacketStateMachine;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.ITransportListener;
@@ -650,6 +652,12 @@ public class USBTransport extends SdlTransport {
          */
         private final String TAG = USBTransportReader.class.getSimpleName();
 
+    	SdlPsm psm;
+    	
+    	public USBTransportReader(){
+    		psm = new SdlPsm();
+    	}
+    	
         /**
          * Checks if the thread has been interrupted.
          *
@@ -667,7 +675,7 @@ public class USBTransport extends SdlTransport {
         @Override
         public void run() {
             logD("USB reader started!");
-
+            psm.reset();
             if (connect()) {
                 readFromTransport();
             }
@@ -741,13 +749,15 @@ public class USBTransport extends SdlTransport {
         private void readFromTransport() {
             final int READ_BUFFER_SIZE = 4096;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
-            int bytesRead;
+            int bytes = 0;
+            byte input;
+            boolean stateProgress = false;
 
             // read loop
             while (!isInterrupted()) {
                 try {
-                    bytesRead = mInputStream.read(buffer);
-                    if (bytesRead == -1) {
+                	input = (byte)mInputStream.read();
+                    if (input == -1) {
                         if (isInterrupted()) {
                             logI("EOF reached, and thread is interrupted");
                         } else {
@@ -766,20 +776,41 @@ public class USBTransport extends SdlTransport {
                     return;
                 }
 
-                logD("Read " + bytesRead + " bytes");
-                SdlTrace.logTransportEvent(TAG + ": read bytes", null,
-                        InterfaceActivityDirection.Receive, buffer, bytesRead,
-                        SDL_LIB_TRACE_KEY);
+                logD("Read " + input + " bytes");
+               //FIXME SdlTrace.logTransportEvent(TAG + ": read bytes", null,
+                //        InterfaceActivityDirection.Receive, buffer, bytesRead,
+                //        SDL_LIB_TRACE_KEY);
 
                 if (isInterrupted()) {
                     logI("Read some data, but thread is interrupted");
                     return;
                 }
 
-                if (bytesRead > 0) {
-                    synchronized (USBTransport.this) {
-                        handleReceivedBytes(buffer, bytesRead);
-                    }
+                synchronized (USBTransport.this) {
+                	
+                	 stateProgress = psm.handleByte(input); 
+                     if(stateProgress){ //We are trying to weed through the bad packet info until we get something
+                     	buffer[bytes]=input;
+                     	bytes++;
+                     }
+                     else if(!stateProgress){
+                     	
+                     	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                     	psm.reset();
+                     	bytes=0;
+                         buffer = new byte[READ_BUFFER_SIZE];
+                     }
+                     
+                     if(psm.getState() == IPacketStateMachine.FINISHED_STATE)
+                     {
+                     	//Log.d(TAG, "Packet formed, sending off");
+                     	handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                     	//We put a trace statement in the message read so we can avoid all the extra bytes
+                     	psm.reset();
+                     	bytes=0;
+                         buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
+
+                     }
                 }
             }
         }
