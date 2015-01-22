@@ -624,8 +624,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			return;
 		}
-		Context myContext = myService.getApplicationContext();
-		if (myContext != null) myContext.sendBroadcast(sendIntent);		
+		try
+		{
+			Context myContext = myService.getApplicationContext();
+			if (myContext != null) myContext.sendBroadcast(sendIntent);
+		}
+		catch(Exception ex)
+		{
+			//If the service or context has become unavailable unexpectedly, catch the exception and move on -- no broadcast log will occur. 
+		}
 	}
 
 	private void writeToFile(Object writeME, String fileName) {
