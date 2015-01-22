@@ -177,7 +177,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		OnStreamRPC streamNote = notificationList.get(response.getCorrelationID());
 		if (streamNote == null) return;
 
-		_streamListener.onOnStreamRPC(this, streamNote, _session, _rpcSessionID);
+		if (response.getSuccess())
+			_streamListener.onOnStreamRPC(this, streamNote, _session, _rpcSessionID);
 		
 		if (!response.getSuccess())
 		{
