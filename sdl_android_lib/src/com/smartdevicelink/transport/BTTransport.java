@@ -172,7 +172,7 @@ public class BTTransport extends SdlTransport {
 			}			
 		} catch (IOException e) {
 
-			throw new SdlException("Could not open connection to SYNC.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
+			throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 
 		} catch (Exception ex) {
 			
@@ -183,7 +183,7 @@ public class BTTransport extends SdlTransport {
 
 			if(((SdlException) ex).getSdlExceptionCause() == SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE) {
 
-				throw new SdlException("Could not open connection to SYNC.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
+				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 
 			}
 			throw new SdlException("Could not open connection to SDL.", ex, SdlExceptionCause.SDL_CONNECTION_FAILED);
