@@ -157,7 +157,7 @@ public abstract class SdlRouterService extends RouterService{
 
 	SparseArray<Long> sessionMap;
 	private Object SESSION_LOCK;
-	//private static final int SESSION_ID_BYTE = 3;
+
 	@Override
 	public boolean sendPacketToRegisteredApp(Parcelable packet) {
 		if(registeredApps!=null && (registeredApps.size()>0)){
@@ -207,7 +207,6 @@ public abstract class SdlRouterService extends RouterService{
 			return;
 		}
 		//Check first byte if 0, make to json
-		
 		char[] buffer = new char[bytes.length];
 		for(int i = 12;i<bytes.length;i++){
 			 buffer[i-12] = (char)(bytes[i] & 0xFF);
@@ -217,7 +216,6 @@ public abstract class SdlRouterService extends RouterService{
 			JSONObject object = new JSONObject(new String(buffer));
 			Log.d(TAG, "JSON: " + object.toString());
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -247,7 +245,6 @@ public abstract class SdlRouterService extends RouterService{
 
 	@Override
 	public void onTransportConnected(TransportType type) {
-		//SiphonServer.init();
 		super.onTransportConnected(type);
 		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport Connected", Toast.LENGTH_SHORT).show();
 	}
