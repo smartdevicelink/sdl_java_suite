@@ -110,11 +110,14 @@ public class DebugTool {
 	}
 	
 	protected static Boolean logToSiphon(String msg) {
-		// Initialize the SiphonServer, will be ignored if already initialized
-		SiphonServer.init();
+		if (SiphonServer.getSiphonEnabledStatus()) {
+			// Initialize the SiphonServer, will be ignored if already initialized
+			SiphonServer.init();
 		
-		// Write to the SiphonServer
-		return SiphonServer.sendSiphonLogData(msg);
+			// Write to the SiphonServer
+			return SiphonServer.sendSiphonLogData(msg);
+		}
+		return false;
 	}
 
 	protected static String getLine(Throwable ex) {
