@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
 
 /**
  * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
@@ -42,10 +42,19 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class AudioPassThruCapabilities extends RPCStruct {
+public class AudioPassThruCapabilities implements JsonParameters {
 	public static final String KEY_SAMPLING_RATE = "samplingRate";
 	public static final String KEY_AUDIO_TYPE = "audioType";
 	public static final String KEY_BITS_PER_SAMPLE = "bitsPerSample";
+
+    // TODO: need to have a better mechanism for propagating SDL version throughout the system.  Having an instance variable
+    //       doesn't make much sense, having a static variable is annoying to set for each class and reading version from
+    //       some other class creates a dependency for all JsonParameters classes.
+    private static int sdlVersion = -1; // TODO: default to "SDL_VERSION_INVALID" or something pre-defined
+	
+	private String samplingRate; // represents SamplingRate enum
+	private String bitsPerSample; // represents BitsPerSample enum
+	private String audioType; // represents AudioType enum
 	
 	/**
 	 * Constructs a newly allocated AudioPassThruCapabilities object
@@ -53,11 +62,20 @@ public class AudioPassThruCapabilities extends RPCStruct {
     public AudioPassThruCapabilities() {}
     
     /**
-     * Constructs a newly allocated AudioPassThruCapabilities object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates an AudioPassThruCapabilities object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public AudioPassThruCapabilities(Hashtable<String, Object> hash) {
-        super(hash);
+    public AudioPassThruCapabilities(JSONObject jsonObject, int sdlVersionIn){
+        sdlVersion = sdlVersionIn;
+        switch(sdlVersion){
+        default:
+            this.samplingRate = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SAMPLING_RATE);
+            this.bitsPerSample = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BITS_PER_SAMPLE);
+            this.audioType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_AUDIO_TYPE);
+            break;
+        }
     }
     
     /**
@@ -65,11 +83,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @param samplingRate the sampling rate for AudioPassThru
      */
     public void setSamplingRate(SamplingRate samplingRate) {
-    	if (samplingRate != null) {
-    		store.put(KEY_SAMPLING_RATE, samplingRate);
-    	} else {
-    		store.remove(KEY_SAMPLING_RATE);
-    	}
+    	this.samplingRate = samplingRate.getJsonName(sdlVersion);
     }
     
     /**
@@ -77,19 +91,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return  the sampling rate for AudioPassThru
      */
     public SamplingRate getSamplingRate() {
-        Object obj = store.get(KEY_SAMPLING_RATE);
-        if (obj instanceof SamplingRate) {
-            return (SamplingRate) obj;
-        } else if (obj instanceof String) {
-        	SamplingRate theCode = null;
-            try {
-                theCode = SamplingRate.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SAMPLING_RATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return SamplingRate.valueForJsonName(this.samplingRate, sdlVersion);
     }
     
     /**
@@ -97,11 +99,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @param bitsPerSample the sample depth in bit for AudioPassThru
      */
     public void setBitsPerSample(BitsPerSample bitsPerSample) {
-    	if (bitsPerSample != null) {
-    		store.put(KEY_BITS_PER_SAMPLE, bitsPerSample);
-    	} else {
-    		store.remove(KEY_BITS_PER_SAMPLE);
-    	}
+        this.bitsPerSample = bitsPerSample.getJsonName(sdlVersion);
     }
     
     /**
@@ -109,19 +107,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return the sample depth in bit for AudioPassThru
      */
     public BitsPerSample getBitsPerSample() {
-        Object obj = store.get(KEY_BITS_PER_SAMPLE);
-        if (obj instanceof BitsPerSample) {
-            return (BitsPerSample) obj;
-        } else if (obj instanceof String) {
-        	BitsPerSample theCode = null;
-            try {
-                theCode = BitsPerSample.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BITS_PER_SAMPLE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return BitsPerSample.valueForJsonName(this.bitsPerSample, sdlVersion);
     }
     
     /**
@@ -129,11 +115,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @param audioType the audiotype for AudioPassThru
      */
     public void setAudioType(AudioType audioType) {
-    	if (audioType != null) {
-    		store.put(KEY_AUDIO_TYPE, audioType);
-    	} else {
-    		store.remove(KEY_AUDIO_TYPE);
-    	}
+        this.audioType = audioType.getJsonName(sdlVersion);
     }
     
     /**
@@ -141,18 +123,21 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return the audiotype for AudioPassThru
      */
     public AudioType getAudioType() {
-        Object obj = store.get(KEY_AUDIO_TYPE);
-        if (obj instanceof AudioType) {
-            return (AudioType) obj;
-        } else if (obj instanceof String) {
-        	AudioType theCode = null;
-            try {
-                theCode = AudioType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_TYPE, e);
-            }
-            return theCode;
+        return AudioType.valueForJsonName(this.audioType, sdlVersion);
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = new JSONObject();
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_AUDIO_TYPE, this.audioType);
+            JsonUtils.addToJsonObject(result, KEY_BITS_PER_SAMPLE, this.bitsPerSample);
+            JsonUtils.addToJsonObject(result, KEY_SAMPLING_RATE, this.samplingRate);
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

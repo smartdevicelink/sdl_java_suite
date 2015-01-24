@@ -2,11 +2,13 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 import java.util.EnumSet;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * Describes different bit depth options for PerformAudioPassThru
  * 
  */
-public enum BitsPerSample {
+public enum BitsPerSample implements JsonName{
 	/**
 	 * 8 bits per sample
 	 * 
@@ -18,7 +20,9 @@ public enum BitsPerSample {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-	_16_BIT("16_BIT");
+	_16_BIT("16_BIT"),
+	
+	;
 
     String internalName;
     
@@ -37,5 +41,24 @@ public enum BitsPerSample {
             }
         }
         return null;
+    }
+    
+    public static BitsPerSample valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+        
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return this.internalName;
+        }
     }
 }

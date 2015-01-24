@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Alert Response is sent, when Alert has been called
@@ -13,6 +14,8 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class AlertResponse extends RPCResponse {
 	public static final String KEY_TRY_AGAIN_TIME = "tryAgainTime";
 
+	private Integer tryAgainTime;
+	
 	/**
 	 * Constructs a new AlertResponse object
 	 */
@@ -20,25 +23,42 @@ public class AlertResponse extends RPCResponse {
         super(FunctionID.ALERT);
     }
 
-	/**
-	 * Constructs a new AlertResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public AlertResponse(Hashtable<String, Object> hash) {
-        super(hash);
-    }
-    public Integer getTryAgainTime() {
-        return (Integer) parameters.get(KEY_TRY_AGAIN_TIME);
-    }
-    public void setTryAgainTime(Integer tryAgainTime) {
-        if (tryAgainTime != null) {
-            parameters.put(KEY_TRY_AGAIN_TIME, tryAgainTime);
-        } else {
-            parameters.remove(KEY_TRY_AGAIN_TIME);
+    /**
+     * Creates an AlertResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
+     */
+    public AlertResponse(JSONObject jsonObject, int sdlVersion) {
+        super(jsonObject, sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            this.tryAgainTime = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_TRY_AGAIN_TIME);
+            break;
         }
     }
+    
+    public Integer getTryAgainTime() {
+        return tryAgainTime;
+    }
+    
+    public void setTryAgainTime(Integer tryAgainTime) {
+        this.tryAgainTime = tryAgainTime;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_TRY_AGAIN_TIME, this.tryAgainTime);
+            break;
+        }
+        
+        return result;
+    }
+    
+    
 }

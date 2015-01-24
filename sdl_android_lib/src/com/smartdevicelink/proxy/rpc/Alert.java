@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
@@ -48,22 +52,58 @@ public class Alert extends RPCRequest {
 	public static final String KEY_TTS_CHUNKS = "ttsChunks";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
 
+	private Integer duration;
+	private String alertText1, alertText2, alertText3;
+	private Boolean playTone, progressIndicator;
+	private List<TTSChunk> ttsChunks;
+	private List<SoftButton> softButtons;
+	
 	/**
 	 * Constructs a new Alert object
 	 */    
 	public Alert() {
         super(FunctionID.ALERT);
     }
+	
 	/**
-	 * Constructs a new Alert object indicated by the Hashtable parameter
-	 * <p>
+	 * Creates an Alert object from a JSON object.
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */	
-    public Alert(Hashtable<String, Object> hash) {
-        super(hash);
+	 * @param jsonObject The JSON object to read from
+	 * @param sdlVersion The version of SDL represented in the JSON
+	 */
+    public Alert(JSONObject jsonObject, int sdlVersion){
+        super(jsonObject);
+        
+        switch(sdlVersion){
+        default:
+            this.duration = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_DURATION);
+            
+            this.alertText1 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_ALERT_TEXT_1);
+            this.alertText2 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_ALERT_TEXT_2);
+            this.alertText3 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_ALERT_TEXT_3);
+            
+            this.playTone = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PLAY_TONE);
+            this.progressIndicator = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PROGRESS_INDICATOR);
+            
+            List<JSONObject> ttsChunksArray = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_TTS_CHUNKS);
+            if(ttsChunksArray != null){
+                this.ttsChunks = new ArrayList<TTSChunk>(ttsChunksArray.size());
+                for(JSONObject ttsChunkObj : ttsChunksArray){
+                        this.ttsChunks.add(new TTSChunk(ttsChunkObj, sdlVersion));
+                }
+            }
+        
+            List<JSONObject> softButtonsArray = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_SOFT_BUTTONS);
+            if(softButtonsArray != null){
+                this.softButtons = new ArrayList<SoftButton>(softButtonsArray.size());
+                for(JSONObject softButtonObj : softButtonsArray){
+                        this.ttsChunks.add(new SoftButton(softButtonObj, sdlVersion));
+                }
+            }
+            break;
+        }
     }
+    
 	/**
 	 * Gets the text which is displayed in the first field of the display during
 	 * the Alert
@@ -72,8 +112,9 @@ public class Alert extends RPCRequest {
 	 *         in the first field during the Alert
 	 */    
     public String getAlertText1() {
-        return (String) parameters.get(KEY_ALERT_TEXT_1);
+        return this.alertText1;
     }
+    
 	/**
 	 * Sets the String to be displayed in the first field of the display during
 	 * the Alert
@@ -90,12 +131,9 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlertText1(String alertText1) {
-        if (alertText1 != null) {
-            parameters.put(KEY_ALERT_TEXT_1, alertText1);
-        } else {
-            parameters.remove(KEY_ALERT_TEXT_1);
-        }
+        this.alertText1 = alertText1;
     }
+    
 	/**
 	 * Gets the text which is displayed in the second field of the display
 	 * during the Alert
@@ -104,8 +142,9 @@ public class Alert extends RPCRequest {
 	 *         in the second field during the Alert
 	 */    
     public String getAlertText2() {
-        return (String) parameters.get(KEY_ALERT_TEXT_2);
+        return this.alertText2;
     }
+    
 	/**
 	 * Sets the String to be displayed in the second field of the display during
 	 * the Alert
@@ -123,11 +162,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlertText2(String alertText2) {
-        if (alertText2 != null) {
-            parameters.put(KEY_ALERT_TEXT_2, alertText2);
-        } else {
-            parameters.remove(KEY_ALERT_TEXT_2);
-        }
+        this.alertText2 = alertText2;
     }
 
 	/**
@@ -140,7 +175,7 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getAlertText3() {
-        return (String) parameters.get(KEY_ALERT_TEXT_3);
+        return this.alertText3;
     }
 
 	/**
@@ -162,12 +197,9 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAlertText3(String alertText3) {
-        if (alertText3 != null) {
-            parameters.put(KEY_ALERT_TEXT_3, alertText3);
-        } else {
-            parameters.remove(KEY_ALERT_TEXT_3);
-        }
+        this.alertText3 = alertText3;
     }
+    
 	/**
 	 * Gets TTSChunk[], the Array of type TTSChunk which, taken together,
 	 * specify what is to be spoken to the user
@@ -175,25 +207,10 @@ public class Alert extends RPCRequest {
 	 * @return List -a List<TTSChunk> value specify what is to be spoken to
 	 *         the user
 	 */    
-    @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsChunks() {
-        if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.ttsChunks;
     }
+    
 	/**
 	 * Sets array of type TTSChunk which, taken together, specify what is to be
 	 * spoken to the user
@@ -203,12 +220,9 @@ public class Alert extends RPCRequest {
 	 *            <b>Notes: </b>Array must have a least one element
 	 */    
     public void setTtsChunks(List<TTSChunk> ttsChunks) {
-        if (ttsChunks != null) {
-            parameters.put(KEY_TTS_CHUNKS, ttsChunks);
-        } else {
-            parameters.remove(KEY_TTS_CHUNKS);
-        }
+        this.ttsChunks = ttsChunks;
     }
+    
 	/**
 	 * Gets the duration of the displayed portion of the alert, in milliseconds
 	 * 
@@ -216,8 +230,9 @@ public class Alert extends RPCRequest {
 	 *         displayed portion of the alert, in milliseconds
 	 */    
     public Integer getDuration() {
-        return (Integer) parameters.get(KEY_DURATION);
+        return this.duration;
     }
+    
 	/**
 	 * Sets the duration of the displayed portion of the alert, in milliseconds.
 	 * After this amount of time has passed, the display fields alertText1 and
@@ -236,12 +251,9 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setDuration(Integer duration) {
-        if (duration != null) {
-            parameters.put(KEY_DURATION, duration);
-        } else {
-            parameters.remove(KEY_DURATION);
-        }
+        this.duration = duration;
     }
+    
 	/**
 	 * Gets a Boolean value representing the alert tone
 	 * 
@@ -249,8 +261,9 @@ public class Alert extends RPCRequest {
 	 *         TTS (if any) is spoken
 	 */    
     public Boolean getPlayTone() {
-        return (Boolean) parameters.get(KEY_PLAY_TONE);
+        return this.playTone;
     }
+    
 	/**
 	 * Sets whether the alert tone should be played before the TTS (if any) is
 	 * spoken
@@ -262,11 +275,7 @@ public class Alert extends RPCRequest {
 	 *            <b>Notes: </b>If omitted, default is true
 	 */    
     public void setPlayTone(Boolean playTone) {
-        if (playTone != null) {
-            parameters.put(KEY_PLAY_TONE, playTone);
-        } else {
-            parameters.remove(KEY_PLAY_TONE);
-        }
+        this.playTone = playTone;
     }
 
 	/**
@@ -276,24 +285,8 @@ public class Alert extends RPCRequest {
 	 *         object
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.softButtons;
     }
 
 	/**
@@ -311,26 +304,39 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        this.softButtons = softButtons;
     }
+    
     public Boolean getProgressIndicator() {
-        final Object obj = parameters.get(KEY_PROGRESS_INDICATOR);
-        if (obj instanceof Boolean) {
-            return (Boolean) obj;
-        }
-        return null;
+        return this.progressIndicator;
     }
+    
     public void setProgressIndicator(Boolean progressIndicator) {
-        if (progressIndicator != null) {
-            parameters.put(KEY_PROGRESS_INDICATOR, progressIndicator);
-        } else {
-            parameters.remove(KEY_PROGRESS_INDICATOR);
-        }
+        this.progressIndicator = progressIndicator;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = new JSONObject();
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_ALERT_TEXT_1, this.alertText1);
+            JsonUtils.addToJsonObject(result, KEY_ALERT_TEXT_2, this.alertText2);
+            JsonUtils.addToJsonObject(result, KEY_ALERT_TEXT_3, this.alertText3);
+            
+            JsonUtils.addToJsonObject(result, KEY_PLAY_TONE, this.playTone);
+            JsonUtils.addToJsonObject(result, KEY_PROGRESS_INDICATOR, this.progressIndicator);
+            
+            JsonUtils.addToJsonObject(result, KEY_DURATION, this.duration);
+            
+            JsonUtils.addToJsonObject(result, KEY_TTS_CHUNKS, (this.ttsChunks == null) ? null : 
+                JsonUtils.createJsonArrayOfJsonObjects(this.ttsChunks, sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTONS, (this.softButtons == null) ? null : 
+                JsonUtils.createJsonArrayOfJsonObjects(this.softButtons, sdlVersion));
+            break;
+        
+        return result;
     }    
 }

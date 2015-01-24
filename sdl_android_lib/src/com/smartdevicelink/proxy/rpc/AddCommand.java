@@ -62,20 +62,30 @@ public class AddCommand extends RPCRequest {
         super(FunctionID.ADD_COMMAND);
     }
 	
+	/**
+	 * Creates an AddCommand object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
+	 */
 	public AddCommand(JSONObject jsonObject, int sdlVersion){
 	    super(jsonObject);
 	    switch(sdlVersion){
 	    default:
 	        this.commandId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);
+	        
 	        this.vrCommands = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_VR_COMMANDS);
+	        
 	        JSONObject jsonMenuParams = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_MENU_PARAMS);
 	        if(jsonMenuParams != null){
-	            this.menuParams = new MenuParams(jsonMenuParams);
+	            this.menuParams = new MenuParams(jsonMenuParams, sdlVersion);
 	        }
+	        
 	        JSONObject jsonImage = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_CMD_ICON);
 	        if(jsonImage != null){
-	            this.image = new Image(jsonImage);
+	            this.image = new Image(jsonImage, sdlVersion);
 	        }
+	        
 	        break;
 	    }
 	}

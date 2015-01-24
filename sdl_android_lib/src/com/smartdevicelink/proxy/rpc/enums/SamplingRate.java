@@ -2,11 +2,13 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 import java.util.EnumSet;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * Describes different sampling rates for PerformAudioPassThru
  * 
  */
-public enum SamplingRate {
+public enum SamplingRate implements JsonName{
 
 	/**
 	 * Sampling rate of 8 kHz
@@ -31,7 +33,9 @@ public enum SamplingRate {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-	_44KHZ("44KHZ");
+	_44KHZ("44KHZ"),
+	
+	;
 
     String internalName;
     
@@ -50,5 +54,24 @@ public enum SamplingRate {
             }
         }
         return null;
+    }
+    
+    public static SamplingRate valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+        
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return internalName;
+        }
     }
 }
