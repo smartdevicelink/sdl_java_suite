@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import org.json.JSONObject;
 
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.util.JsonUtils;
-import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
 
-public class AirbagStatus implements JsonParameters {
+public class AirbagStatus extends RPCObject {
     public static final String KEY_DRIVER_AIRBAG_DEPLOYED = "driverAirbagDeployed";
     public static final String KEY_DRIVER_SIDE_AIRBAG_DEPLOYED = "driverSideAirbagDeployed";
     public static final String KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED = "driverCurtainAirbagDeployed";
@@ -31,7 +31,6 @@ public class AirbagStatus implements JsonParameters {
     public AirbagStatus() { }
     
     public AirbagStatus(JSONObject json, int sdlVersionIn){
-        sdlVersion = sdlVersionIn;
         switch(sdlVersion){
         default:
             this.driverAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_DRIVER_AIRBAG_DEPLOYED);
@@ -112,7 +111,7 @@ public class AirbagStatus implements JsonParameters {
     
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
-        JSONObject result = new JSONObject();
+        JSONObject result = super.getJsonParameters(sdlVersion);
         
         switch(sdlVersion){
         default:

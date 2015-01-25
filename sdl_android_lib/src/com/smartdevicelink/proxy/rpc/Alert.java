@@ -318,7 +318,7 @@ public class Alert extends RPCRequest {
 
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
-        JSONObject result = new JSONObject();
+        JSONObject result = super.getJsonParameters(sdlVersion);
         
         switch(sdlVersion){
         default:
@@ -336,6 +336,7 @@ public class Alert extends RPCRequest {
             JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTONS, (this.softButtons == null) ? null : 
                 JsonUtils.createJsonArrayOfJsonObjects(this.softButtons, sdlVersion));
             break;
+        }
         
         return result;
     }    

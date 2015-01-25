@@ -1,361 +1,203 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class BeltStatus extends RPCStruct {
-    public static final String KEY_DRIVER_BELT_DEPLOYED = "driverBeltDeployed";
-    public static final String KEY_PASSENGER_BELT_DEPLOYED = "passengerBeltDeployed";
-    public static final String KEY_PASSENGER_BUCKLE_BELTED = "passengerBuckleBelted";
+public class BeltStatus extends RPCObject {
     public static final String KEY_DRIVER_BUCKLE_BELTED = "driverBuckleBelted";
+    public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
+    public static final String KEY_PASSENGER_BUCKLE_BELTED = "passengerBuckleBelted";
     public static final String KEY_LEFT_ROW_2_BUCKLE_BELTED = "leftRow2BuckleBelted";
-    public static final String KEY_PASSENGER_CHILD_DETECTED = "passengerChildDetected";
-    public static final String KEY_RIGHT_ROW_2_BUCKLE_BELTED = "rightRow2BuckleBelted";
     public static final String KEY_MIDDLE_ROW_2_BUCKLE_BELTED = "middleRow2BuckleBelted";
-    public static final String KEY_MIDDLE_ROW_3_BUCKLE_BELTED = "middleRow3BuckleBelted";
+    public static final String KEY_RIGHT_ROW_2_BUCKLE_BELTED = "rightRow2BuckleBelted";
     public static final String KEY_LEFT_ROW_3_BUCKLE_BELTED = "leftRow3BuckleBelted";
+    public static final String KEY_MIDDLE_ROW_3_BUCKLE_BELTED = "middleRow3BuckleBelted";
     public static final String KEY_RIGHT_ROW_3_BUCKLE_BELTED = "rightRow3BuckleBelted";
     public static final String KEY_REAR_INFLATABLE_BELTED = "rearInflatableBelted";
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
+    public static final String KEY_DRIVER_BELT_DEPLOYED = "driverBeltDeployed";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
-    public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
+    public static final String KEY_PASSENGER_BELT_DEPLOYED = "passengerBeltDeployed";
+    public static final String KEY_PASSENGER_CHILD_DETECTED = "passengerChildDetected";
 
+    private String driverBeltBuckled, middleRow1BeltBuckled, passengerBeltBuckled, 
+    			   leftRow2BeltBuckled, middleRow2BeltBuckled, rightRow2BeltBuckled,
+    			   leftRow3BeltBuckled, middleRow3BeltBuckled, rightRow3BeltBuckled,
+    			   rearInflatableBuckled, rightRearInflatableBuckled,
+    			   driverBeltDeployed, passengerBeltDeployed, middleRow1BeltDeployed,
+    			   passengerChildDetected;
+    
     public BeltStatus() { }
-    public BeltStatus(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    public BeltStatus(JSONObject jsonObject, int sdlVersion) {
+        switch(sdlVersion){
+        default:
+        	this.driverBeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_DRIVER_BUCKLE_BELTED);
+        	this.middleRow1BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
+        	this.passengerBeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_PASSENGER_BUCKLE_BELTED);
+        	this.leftRow2BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LEFT_ROW_2_BUCKLE_BELTED);
+        	this.middleRow2BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
+        	this.rightRow2BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_RIGHT_ROW_2_BUCKLE_BELTED);
+        	this.leftRow3BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LEFT_ROW_3_BUCKLE_BELTED);
+        	this.middleRow3BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
+        	this.rightRow3BeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_RIGHT_ROW_3_BUCKLE_BELTED);
+        	this.rearInflatableBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_REAR_INFLATABLE_BELTED);
+        	this.rightRearInflatableBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_RIGHT_REAR_INFLATABLE_BELTED);
+        	this.driverBeltDeployed = JsonUtils.readStringFromJsonObject(jsonObject, KEY_PASSENGER_CHILD_DETECTED);
+        	this.passengerBeltDeployed = JsonUtils.readStringFromJsonObject(jsonObject, KEY_DRIVER_BELT_DEPLOYED);
+        	this.middleRow1BeltDeployed = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
+        	this.passengerChildDetected = JsonUtils.readStringFromJsonObject(jsonObject, KEY_PASSENGER_BELT_DEPLOYED);
+        	break;
+        }
     }
 
     public void setDriverBeltDeployed(VehicleDataEventStatus driverBeltDeployed) {
-        if (driverBeltDeployed != null) {
-            store.put(KEY_DRIVER_BELT_DEPLOYED, driverBeltDeployed);
-        } else {
-        	store.remove(KEY_DRIVER_BELT_DEPLOYED);
-        }
+        this.driverBeltDeployed = driverBeltDeployed.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverBeltDeployed() {
-        Object obj = store.get(KEY_DRIVER_BELT_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BELT_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.driverBeltDeployed, sdlVersion);
     }
+    
     public void setPassengerBeltDeployed(VehicleDataEventStatus passengerBeltDeployed) {
-        if (passengerBeltDeployed != null) {
-            store.put(KEY_PASSENGER_BELT_DEPLOYED, passengerBeltDeployed);
-        } else {
-        	store.remove(KEY_PASSENGER_BELT_DEPLOYED);
-        }
+    	this.passengerBeltDeployed = passengerBeltDeployed.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerBeltDeployed() {
-        Object obj = store.get(KEY_PASSENGER_BELT_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BELT_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.passengerBeltDeployed, sdlVersion);
     }
+    
     public void setPassengerBuckleBelted(VehicleDataEventStatus passengerBuckleBelted) {
-        if (passengerBuckleBelted != null) {
-            store.put(KEY_PASSENGER_BUCKLE_BELTED, passengerBuckleBelted);
-        } else {
-        	store.remove(KEY_PASSENGER_BUCKLE_BELTED);
-        }
+    	this.passengerBeltBuckled = passengerBuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerBuckleBelted() {
-        Object obj = store.get(KEY_PASSENGER_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.passengerBeltBuckled, sdlVersion);
     }
+    
     public void setDriverBuckleBelted(VehicleDataEventStatus driverBuckleBelted) {
-        if (driverBuckleBelted != null) {
-            store.put(KEY_DRIVER_BUCKLE_BELTED, driverBuckleBelted);
-        } else {
-        	store.remove(KEY_DRIVER_BUCKLE_BELTED);
-        }
+    	this.driverBeltBuckled = driverBuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverBuckleBelted() {
-        Object obj = store.get(KEY_DRIVER_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.driverBeltBuckled, sdlVersion);
     }
+    
     public void setLeftRow2BuckleBelted(VehicleDataEventStatus leftRow2BuckleBelted) {
-        if (leftRow2BuckleBelted != null) {
-            store.put(KEY_LEFT_ROW_2_BUCKLE_BELTED, leftRow2BuckleBelted);
-        } else {
-        	store.remove(KEY_LEFT_ROW_2_BUCKLE_BELTED);
-        }
+    	this.leftRow2BeltBuckled = leftRow2BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getLeftRow2BuckleBelted() {
-        Object obj = store.get(KEY_LEFT_ROW_2_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_2_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.leftRow2BeltBuckled, sdlVersion);
     }
+    
     public void setPassengerChildDetected(VehicleDataEventStatus passengerChildDetected) {
-        if (passengerChildDetected != null) {
-            store.put(KEY_PASSENGER_CHILD_DETECTED, passengerChildDetected);
-        } else {
-        	store.remove(KEY_PASSENGER_CHILD_DETECTED);
-        }
+    	this.passengerChildDetected = passengerChildDetected.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getPassengerChildDetected() {
-        Object obj = store.get(KEY_PASSENGER_CHILD_DETECTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CHILD_DETECTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.passengerChildDetected, sdlVersion);
     }
+    
     public void setRightRow2BuckleBelted(VehicleDataEventStatus rightRow2BuckleBelted) {
-        if (rightRow2BuckleBelted != null) {
-            store.put(KEY_RIGHT_ROW_2_BUCKLE_BELTED, rightRow2BuckleBelted);
-        } else {
-        	store.remove(KEY_RIGHT_ROW_2_BUCKLE_BELTED);
-        }
+    	this.rightRow2BeltBuckled = rightRow2BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getRightRow2BuckleBelted() {
-        Object obj = store.get(KEY_RIGHT_ROW_2_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_2_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.rightRow2BeltBuckled, sdlVersion);
     }
+    
     public void setMiddleRow2BuckleBelted(VehicleDataEventStatus middleRow2BuckleBelted) {
-        if (middleRow2BuckleBelted != null) {
-            store.put(KEY_MIDDLE_ROW_2_BUCKLE_BELTED, middleRow2BuckleBelted);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
-        }
+    	this.middleRow2BeltBuckled = middleRow2BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getMiddleRow2BuckleBelted() {
-        Object obj = store.get(KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_2_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.middleRow2BeltBuckled, sdlVersion);
     }
+    
     public void setMiddleRow3BuckleBelted(VehicleDataEventStatus middleRow3BuckleBelted) {
-        if (middleRow3BuckleBelted != null) {
-            store.put(KEY_MIDDLE_ROW_3_BUCKLE_BELTED, middleRow3BuckleBelted);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
-        }
+    	this.middleRow3BeltBuckled = middleRow3BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getMiddleRow3BuckleBelted() {
-        Object obj = store.get(KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_3_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.middleRow3BeltBuckled, sdlVersion);
     }
+    
     public void setLeftRow3BuckleBelted(VehicleDataEventStatus leftRow3BuckleBelted) {
-        if (leftRow3BuckleBelted != null) {
-            store.put(KEY_LEFT_ROW_3_BUCKLE_BELTED, leftRow3BuckleBelted);
-        } else {
-        	store.remove(KEY_LEFT_ROW_3_BUCKLE_BELTED);
-        }
+    	this.leftRow3BeltBuckled = leftRow3BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getLeftRow3BuckleBelted() {
-        Object obj = store.get(KEY_LEFT_ROW_3_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_3_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.leftRow3BeltBuckled, sdlVersion);
     }
+    
     public void setRightRow3BuckleBelted(VehicleDataEventStatus rightRow3BuckleBelted) {
-        if (rightRow3BuckleBelted != null) {
-            store.put(KEY_RIGHT_ROW_3_BUCKLE_BELTED, rightRow3BuckleBelted);
-        } else {
-        	store.remove(KEY_RIGHT_ROW_3_BUCKLE_BELTED);
-        }
+    	this.rightRow3BeltBuckled = rightRow3BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getRightRow3BuckleBelted() {
-        Object obj = store.get(KEY_RIGHT_ROW_3_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_3_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.rightRow3BeltBuckled, sdlVersion);
     }
+    
     public void setLeftRearInflatableBelted(VehicleDataEventStatus rearInflatableBelted) {
-        if (rearInflatableBelted != null) {
-            store.put(KEY_REAR_INFLATABLE_BELTED, rearInflatableBelted);
-        } else {
-        	store.remove(KEY_REAR_INFLATABLE_BELTED);
-        }
+    	this.rearInflatableBuckled = rearInflatableBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getLeftRearInflatableBelted() {
-        Object obj = store.get(KEY_REAR_INFLATABLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_REAR_INFLATABLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.rearInflatableBuckled, sdlVersion);
     }
+    
     public void setRightRearInflatableBelted(VehicleDataEventStatus rightRearInflatableBelted) {
-        if (rightRearInflatableBelted != null) {
-            store.put(KEY_RIGHT_REAR_INFLATABLE_BELTED, rightRearInflatableBelted);
-        } else {
-        	store.remove(KEY_RIGHT_REAR_INFLATABLE_BELTED);
-        }
+    	this.rightRearInflatableBuckled = rightRearInflatableBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getRightRearInflatableBelted() {
-        Object obj = store.get(KEY_RIGHT_REAR_INFLATABLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR_INFLATABLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.rightRearInflatableBuckled, sdlVersion);
     }
+    
     public void setMiddleRow1BeltDeployed(VehicleDataEventStatus middleRow1BeltDeployed) {
-        if (middleRow1BeltDeployed != null) {
-            store.put(KEY_MIDDLE_ROW_1_BELT_DEPLOYED, middleRow1BeltDeployed);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
-        }
+    	this.middleRow1BeltDeployed = middleRow1BeltDeployed.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getMiddleRow1BeltDeployed() {
-        Object obj = store.get(KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BELT_DEPLOYED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.middleRow1BeltDeployed, sdlVersion);
     }
+    
     public void setMiddleRow1BuckleBelted(VehicleDataEventStatus middleRow1BuckleBelted) {
-        if (middleRow1BuckleBelted != null) {
-            store.put(KEY_MIDDLE_ROW_1_BUCKLE_BELTED, middleRow1BuckleBelted);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
-        }
+    	this.middleRow1BeltBuckled = middleRow1BuckleBelted.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getMiddleRow1BuckleBelted() {
-        Object obj = store.get(KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BUCKLE_BELTED, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return VehicleDataEventStatus.valueForJsonName(this.middleRow1BeltBuckled, sdlVersion);
     }
+
+	@Override
+	public JSONObject getJsonParameters(int sdlVersion) {
+		JSONObject result = super.getJsonParameters(sdlVersion);
+		
+		switch(sdlVersion){
+		default:
+			JsonUtils.addToJsonObject(result, KEY_DRIVER_BUCKLE_BELTED, this.driverBeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_MIDDLE_ROW_1_BUCKLE_BELTED, this.middleRow1BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_PASSENGER_BUCKLE_BELTED, this.passengerBeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_LEFT_ROW_2_BUCKLE_BELTED, this.leftRow2BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_MIDDLE_ROW_2_BUCKLE_BELTED, this.middleRow2BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_RIGHT_ROW_2_BUCKLE_BELTED, this.rightRow2BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_LEFT_ROW_3_BUCKLE_BELTED, this.leftRow3BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_MIDDLE_ROW_3_BUCKLE_BELTED, this.middleRow3BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_RIGHT_ROW_3_BUCKLE_BELTED, this.rightRow3BeltBuckled);
+			JsonUtils.addToJsonObject(result, KEY_REAR_INFLATABLE_BELTED, this.rearInflatableBuckled);
+			JsonUtils.addToJsonObject(result, KEY_RIGHT_REAR_INFLATABLE_BELTED, this.rightRearInflatableBuckled);
+			JsonUtils.addToJsonObject(result, KEY_DRIVER_BELT_DEPLOYED, this.driverBeltDeployed);
+			JsonUtils.addToJsonObject(result, KEY_MIDDLE_ROW_1_BELT_DEPLOYED, this.passengerBeltDeployed);
+			JsonUtils.addToJsonObject(result, KEY_PASSENGER_BELT_DEPLOYED, this.middleRow1BeltDeployed);
+			JsonUtils.addToJsonObject(result, KEY_PASSENGER_CHILD_DETECTED, this.passengerChildDetected);
+			break;
+		}
+		
+		return result;
+	}
 }

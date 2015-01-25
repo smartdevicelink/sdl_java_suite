@@ -129,7 +129,7 @@ public class AddSubMenu extends RPCRequest {
     
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
-        JSONObject result = new JSONObject();
+        JSONObject result = super.getJsonParameters(sdlVersion);
         
         switch(sdlVersion){
         default:

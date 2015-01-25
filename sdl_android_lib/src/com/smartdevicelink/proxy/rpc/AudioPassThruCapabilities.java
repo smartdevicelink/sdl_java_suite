@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import org.json.JSONObject;
 
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.util.JsonUtils;
-import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
 
 /**
  * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
@@ -42,15 +42,10 @@ import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class AudioPassThruCapabilities implements JsonParameters {
+public class AudioPassThruCapabilities extends RPCObject {
 	public static final String KEY_SAMPLING_RATE = "samplingRate";
 	public static final String KEY_AUDIO_TYPE = "audioType";
 	public static final String KEY_BITS_PER_SAMPLE = "bitsPerSample";
-
-    // TODO: need to have a better mechanism for propagating SDL version throughout the system.  Having an instance variable
-    //       doesn't make much sense, having a static variable is annoying to set for each class and reading version from
-    //       some other class creates a dependency for all JsonParameters classes.
-    private static int sdlVersion = -1; // TODO: default to "SDL_VERSION_INVALID" or something pre-defined
 	
 	private String samplingRate; // represents SamplingRate enum
 	private String bitsPerSample; // represents BitsPerSample enum
@@ -68,7 +63,6 @@ public class AudioPassThruCapabilities implements JsonParameters {
      * @param sdlVersion The version of SDL represented in the JSON
      */
     public AudioPassThruCapabilities(JSONObject jsonObject, int sdlVersionIn){
-        sdlVersion = sdlVersionIn;
         switch(sdlVersion){
         default:
             this.samplingRate = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SAMPLING_RATE);
@@ -128,7 +122,7 @@ public class AudioPassThruCapabilities implements JsonParameters {
 
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
-        JSONObject result = new JSONObject();
+        JSONObject result = super.getJsonParameters(sdlVersion);
         
         switch(sdlVersion){
         default:

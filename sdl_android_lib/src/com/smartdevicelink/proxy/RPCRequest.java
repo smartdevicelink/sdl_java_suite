@@ -6,7 +6,8 @@ package com.smartdevicelink.proxy;
 import org.json.JSONObject;
 
 /**
- * 
+ * An RPC request is a type of message that, when sent has an expectation of
+ * receiving a response.
  *
  * @author Mike Burke
  *

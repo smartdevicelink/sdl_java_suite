@@ -5,9 +5,12 @@ package com.smartdevicelink.proxy;
 
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
-import com.smartdevicelink.util.JsonUtils;
-
+/**
+ * An RPC request is a type of message that, when sent does not receive a response.
+ *
+ * @author Mike Burke
+ *
+ */
 public abstract class RPCNotification extends RPCMessage {
 
 	public RPCNotification(String functionName) {
@@ -18,17 +21,7 @@ public abstract class RPCNotification extends RPCMessage {
 		super(rpcMsg);
 	}
     
-    public static JSONObject getParameters(String type, JSONObject fullJson){
-        JSONObject function = JsonUtils.readJsonObjectFromJsonObject(fullJson, type);
-        if(function == null){
-            return fullJson;
-        }
-
-        return JsonUtils.readJsonObjectFromJsonObject(function, KEY_PARAMETERS);
-    }
-    
-    public static SdlCommand getCommandType(JSONObject json){
-        String name = JsonUtils.readStringFromJsonObject(json, KEY_FUNCTION_NAME);
-        return SdlCommand.valueForJsonName(name, sdlVersion);
+    public static JSONObject getParameters(JSONObject json){
+        return RPCMessage.getParameters(KEY_NOTIFICATION, json);
     }
 }

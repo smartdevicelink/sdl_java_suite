@@ -202,7 +202,7 @@ public class AddCommand extends RPCRequest {
 
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
-        JSONObject result = new JSONObject();
+        JSONObject result = super.getJsonParameters(sdlVersion);
         
         switch(sdlVersion){
         default:

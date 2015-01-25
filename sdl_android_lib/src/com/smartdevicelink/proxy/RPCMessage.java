@@ -4,24 +4,25 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
-import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
 
 /**
  * The BaseRpcMessage class represents all common variables and methods that will be shared across
  * all RPC messages in the system.
+ * 
+ * The message's message type can be either request, response or notification.  The message's command
+ * type is defined in the SdlCommand enum.  The message's correlation ID represents a request number
+ * that is correlated with it's associated response.
  *
  * @author Mike Burke
  *
  */
-public abstract class RPCMessage implements JsonParameters {
+public abstract class RPCMessage extends RPCStruct {
     public static final String KEY_REQUEST = "request";
     public static final String KEY_RESPONSE = "response";
     public static final String KEY_NOTIFICATION = "notification";
     public static final String KEY_FUNCTION_NAME = "name";
     public static final String KEY_PARAMETERS = "parameters";
     public static final String KEY_CORRELATION_ID = "correlationID";
-
-    protected static int sdlVersion = 0; // TODO: appropriate default for sdlVersion code?
     
     protected String messageType;
     protected SdlCommand commandType;
@@ -72,6 +73,7 @@ public abstract class RPCMessage implements JsonParameters {
 	    this.correlationId = corrId;
 	}
 	
+	@Override
 	public JSONObject toJson(int sdlVersion){
 	    JSONObject store = new JSONObject();
 	    
@@ -102,9 +104,5 @@ public abstract class RPCMessage implements JsonParameters {
         String name = JsonUtils.readStringFromJsonObject(json, KEY_FUNCTION_NAME);
         return SdlCommand.valueForJsonName(name, sdlVersion);
     }
-	
-	public static void setSdlVersion(int inSdlVersion){
-	    sdlVersion = inSdlVersion;
-	}
 	
 }
