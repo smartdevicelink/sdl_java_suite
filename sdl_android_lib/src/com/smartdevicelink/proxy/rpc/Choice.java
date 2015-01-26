@@ -3,8 +3,11 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import org.json.JSONObject;
+
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
@@ -50,7 +53,7 @@ import com.smartdevicelink.util.DebugTool;
  * 
   * @since SmartDeviceLink 1.0
  */
-public class Choice extends RPCStruct {
+public class Choice extends RPCObject {
 	public static final String KEY_SECONDARY_TEXT = "secondaryText";
 	public static final String KEY_TERTIARY_TEXT = "tertiaryText";
 	public static final String KEY_SECONDARY_IMAGE = "secondaryImage";
@@ -58,35 +61,63 @@ public class Choice extends RPCStruct {
 	public static final String KEY_VR_COMMANDS = "vrCommands";
 	public static final String KEY_CHOICE_ID = "choiceID";
 	public static final String KEY_IMAGE = "image";
+	
+	private Integer choiceId;
+	private String name, secondaryText, tertiaryText;
+	private List<String> vrCommands;
+	private Image image, secondaryImage;
+	
 	/**
 	 * Constructs a newly allocated Choice object
 	 */
     public Choice() { }
+    
     /**
-     * Constructs a newly allocated Choice object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
-     */    
-    public Choice(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates a Choice object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
+     */
+    public Choice(JSONObject jsonObject, int sdlVersion) {
+        switch(sdlVersion){
+        default:
+            this.choiceId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CHOICE_ID);
+            this.name = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MENU_NAME);
+            this.secondaryText = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SECONDARY_TEXT);
+            this.tertiaryText = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TERTIARY_TEXT);
+            
+            this.vrCommands = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_VR_COMMANDS);
+            
+            JSONObject imageObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_IMAGE);
+            if(imageObj != null){
+                this.image = new Image(imageObj, sdlVersion);
+            }
+            
+            imageObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SECONDARY_IMAGE);
+            if(imageObj != null){
+                this.secondaryImage = new Image(imageObj, sdlVersion);
+            }
+            
+            break;
+        }
     }
+    
     /**
      * Get the application-scoped identifier that uniquely identifies this choice.
      * @return choiceID Min: 0  Max: 65535
      */    
     public Integer getChoiceID() {
-        return (Integer) store.get(KEY_CHOICE_ID);
+        return choiceId;
     }
+    
     /**
      * Set the application-scoped identifier that uniquely identifies this choice.
      * @param choiceID Min: 0  Max: 65535
      */    
     public void setChoiceID(Integer choiceID) {
-        if (choiceID != null) {
-            store.put(KEY_CHOICE_ID, choiceID);
-        } else {
-        	store.remove(KEY_CHOICE_ID);
-        }
+        this.choiceId = choiceID;
     }
+    
     /**
      * Text which appears in menu, representing this choice.
      *				<br/>Min: 1
@@ -94,8 +125,9 @@ public class Choice extends RPCStruct {
      * @return menuName the menu name
      */    
     public String getMenuName() {
-        return (String) store.get(KEY_MENU_NAME);
+        return this.name;
     }
+    
     /**
      * Text which appears in menu, representing this choice.
      *				<br/>Min: 1
@@ -103,118 +135,86 @@ public class Choice extends RPCStruct {
      * @param menuName the menu name
      */    
     public void setMenuName(String menuName) {
-        if (menuName != null) {
-            store.put(KEY_MENU_NAME, menuName);
-        } else {
-        	store.remove(KEY_MENU_NAME);
-        }
+        this.name = menuName;
     }
+    
     /**
      * Get an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
      * @return vrCommands List
      * @since SmartDeviceLink 2.0
-     */    
-    @SuppressWarnings("unchecked")
+     */
     public List<String> getVrCommands() {
-        if (store.get(KEY_VR_COMMANDS) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get( KEY_VR_COMMANDS);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
-        		}
-        	}
-        }
-        return null;
+        return this.vrCommands;
     }
+    
     /**
      * Set an array of strings to be used as VR synonyms for this choice. If this array is provided, it must have at least one non-empty element
      * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */    
     public void setVrCommands(List<String> vrCommands) {
-        if (vrCommands != null) {
-            store.put(KEY_VR_COMMANDS, vrCommands);
-        } else {
-        	store.remove(KEY_VR_COMMANDS);
-        }
+        this.vrCommands = vrCommands;
     }
+    
     /**
      * Set the image
      * @param image the image of the choice
      */    
     public void setImage(Image image) {
-        if (image != null) {
-            store.put(KEY_IMAGE, image);
-        } else {
-        	store.remove(KEY_IMAGE);
-        }
+        this.image = image;
     }
+    
     /**
      * Get the image
      * @return the image of the choice
-     */    
-    @SuppressWarnings("unchecked")
+     */
     public Image getImage() {
-    	Object obj = store.get(KEY_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
-            }
-        }
-        return null;
+    	return this.image;
     }
     
     public String getSecondaryText() {
-        return (String) store.get(KEY_SECONDARY_TEXT);
+        return this.secondaryText;
     }
 
     public void setSecondaryText(String secondaryText) {
-        if (secondaryText != null) {
-            store.put(KEY_SECONDARY_TEXT, secondaryText);
-        }
-        else {
-            store.remove(KEY_SECONDARY_TEXT);
-        }
+        this.secondaryText = secondaryText;
     }
 
     public String getTertiaryText() {
-        return (String) store.get(KEY_TERTIARY_TEXT);
+        return this.tertiaryText;
     }
 
     public void setTertiaryText(String tertiaryText) {
-        if (tertiaryText != null) {
-            store.put(KEY_TERTIARY_TEXT, tertiaryText);
-        }
-        else {
-            store.remove(KEY_TERTIARY_TEXT);
-        }        
+        this.tertiaryText = tertiaryText;
     }
 
     public void setSecondaryImage(Image image) {
-        if (image != null) {
-            store.put(KEY_SECONDARY_IMAGE, image);
-        } else {
-            store.remove(KEY_SECONDARY_IMAGE);
-        }
+        this.secondaryImage = image;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getSecondaryImage() {
-        Object obj = store.get(KEY_SECONDARY_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-            try {
-                return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_IMAGE, e);
-            }
+        return this.secondaryImage;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MENU_NAME, this.name);
+            JsonUtils.addToJsonObject(result, KEY_SECONDARY_TEXT, this.secondaryText);
+            JsonUtils.addToJsonObject(result, KEY_TERTIARY_TEXT, this.tertiaryText);
+            JsonUtils.addToJsonObject(result, KEY_CHOICE_ID, this.choiceId);
+            
+            JsonUtils.addToJsonObject(result, KEY_IMAGE, (this.image == null) ? null : 
+                this.image.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_SECONDARY_IMAGE, (this.secondaryImage == null) ? null :
+                this.secondaryImage.getJsonParameters(sdlVersion));
+            break;
         }
-        return null;
-    }      
+        
+        return result;
+    }
 }

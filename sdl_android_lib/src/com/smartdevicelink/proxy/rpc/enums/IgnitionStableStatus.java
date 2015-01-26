@@ -36,6 +36,13 @@ public enum IgnitionStableStatus implements JsonName{
         }
     }
     
+    /**
+     * Returns the enumerated value for a given string and associated SDL version.
+     * 
+     * @param name The name of the JSON string
+     * @param sdlVersion The SDL version associated with the input string
+     * @return The enumerated value for the given string or null if it wasn't found
+     */
     public static IgnitionStableStatus valueForJsonName(String jsonName, int sdlVersion){
         if(jsonName == null){
             return null;

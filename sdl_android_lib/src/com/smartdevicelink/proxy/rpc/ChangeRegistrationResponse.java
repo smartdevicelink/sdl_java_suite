@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -19,15 +19,7 @@ public class ChangeRegistrationResponse extends RPCResponse {
         super(FunctionID.CHANGE_REGISTRATION);
     }
 
-	/**
-	 * Constructs a new ChangeRegistrationResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public ChangeRegistrationResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    public ChangeRegistrationResponse(JSONObject json, int sdlVersion){
+        super(json, sdlVersion);
     }
 }
