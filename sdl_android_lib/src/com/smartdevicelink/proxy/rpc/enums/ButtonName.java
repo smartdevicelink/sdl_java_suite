@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * <p>
  * Defines logical buttons which, on a given SDL unit, would correspond to
@@ -21,7 +23,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 
  * @since SmartDeviceLink 1.0
  */
-public enum ButtonName{
+public enum ButtonName implements JsonName{
 	/**
 	 * Represents the button usually labeled "OK". A typical use of this button
 	 * is for the user to press it to make a selection.
@@ -115,7 +117,13 @@ public enum ButtonName{
 	 * 
 	 * @since SmartDeviceLink 1.0
 	 */
-	PRESET_9, CUSTOM_BUTTON, SEARCH;
+	PRESET_9,
+	
+	CUSTOM_BUTTON,
+	
+	SEARCH,
+	
+	;
 
     public static ButtonName valueForString(String value) {
         return valueOf(value);
@@ -170,5 +178,24 @@ public enum ButtonName{
     	}
     	
     	return returnIndex;
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return this.name();
+        }
+    }
+    
+    public static ButtonName valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+        
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
     }
 }

@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Provides information about the capabilities of a SDL HMI button.
@@ -44,104 +44,114 @@ import com.smartdevicelink.util.DebugTool;
  * </table>
  * @since SmartDeviceLink 1.0
  */
-public class ButtonCapabilities extends RPCStruct {
+public class ButtonCapabilities extends RPCObject {
 	public static final String KEY_NAME = "name";
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
 	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
+	
+	private String name; // represents ButtonName enum
+	private Boolean shortPressAvailable, longPressAvailable, upDownAvailable;
+	
 	/**
 	 * Constructs a newly allocated ButtonCapabilities object
 	 */
     public ButtonCapabilities() { }
+    
     /**
-     * Constructs a newly allocated ButtonCapabilities object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a ButtonCapabilities object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public ButtonCapabilities(Hashtable<String, Object> hash) {
-        super(hash);
+    public ButtonCapabilities(JSONObject jsonObject, int sdlVersion) {
+        switch(sdlVersion){
+        default:
+            this.name = JsonUtils.readStringFromJsonObject(jsonObject, KEY_NAME);
+            this.shortPressAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_SHORT_PRESS_AVAILABLE);
+            this.longPressAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_LONG_PRESS_AVAILABLE);
+            this.upDownAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_UP_DOWN_AVAILABLE);
+            break;
+        }
     }
+    
     /**
      * Get the name of theSDL HMI button.
      * @return ButtonName the name of the Button
      */    
     public ButtonName getName() {
-        Object obj = store.get(KEY_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            ButtonName theCode = null;
-            try {
-                theCode = ButtonName.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
-            }
-            return theCode;
-        }
-        return null;
+        return ButtonName.valueForJsonName(this.name, sdlVersion);
     }
+    
     /**
      * Set the name of theSDL HMI button.
      * @param name the name of button
      */    
     public void setName( ButtonName name ) {
-        if (name != null) {
-            store.put(KEY_NAME, name );
-        } else {
-        	store.remove(KEY_NAME);
-        }
+        this.name = name.getJsonName(sdlVersion);
     }
+    
     /**
      * Whether the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @return True if support otherwise False.
      */    
     public Boolean getShortPressAvailable() {
-        return (Boolean) store.get( KEY_SHORT_PRESS_AVAILABLE );
+        return this.shortPressAvailable;
     }
+    
     /**
      * Set the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @param shortPressAvailable True if support otherwise False.
      */    
     public void setShortPressAvailable( Boolean shortPressAvailable ) {
-        if (shortPressAvailable != null) {
-            store.put(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable );
-        } else {
-        	store.remove(KEY_SHORT_PRESS_AVAILABLE);
-        }
+        this.shortPressAvailable = shortPressAvailable;
     }
+    
     /**
      * Whether the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @return True if support otherwise False.
      */
     public Boolean getLongPressAvailable() {
-        return (Boolean) store.get( KEY_LONG_PRESS_AVAILABLE );
+        return this.longPressAvailable;
     }
+    
     /**
      * Set the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @param longPressAvailable True if support otherwise False.
      */    
     public void setLongPressAvailable( Boolean longPressAvailable ) {
-        if (longPressAvailable != null) {
-            store.put(KEY_LONG_PRESS_AVAILABLE, longPressAvailable );
-        } else {
-        	store.remove(KEY_LONG_PRESS_AVAILABLE);
-        }
+        this.longPressAvailable = longPressAvailable;
     }
+    
     /**
      * Whether the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
      * @return True if support otherwise False.
      */    
     public Boolean getUpDownAvailable() {
-        return (Boolean) store.get( KEY_UP_DOWN_AVAILABLE );
+        return this.upDownAvailable;
     }
+    
     /**
      * Set the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
      * @param upDownAvailable True if support otherwise False.
      */    
     public void setUpDownAvailable( Boolean upDownAvailable ) {
-        if (upDownAvailable != null) {
-            store.put(KEY_UP_DOWN_AVAILABLE, upDownAvailable );
-        } else {
-        	store.remove(KEY_UP_DOWN_AVAILABLE);
+        this.upDownAvailable = upDownAvailable;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_NAME, this.name);
+            JsonUtils.addToJsonObject(result, KEY_SHORT_PRESS_AVAILABLE, this.shortPressAvailable);
+            JsonUtils.addToJsonObject(result, KEY_LONG_PRESS_AVAILABLE, this.longPressAvailable);
+            JsonUtils.addToJsonObject(result, KEY_UP_DOWN_AVAILABLE, this.upDownAvailable);
+            break;
         }
+        
+        return result;
     }
 }

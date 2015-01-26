@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class BodyInformation extends RPCStruct {
+public class BodyInformation extends RPCObject {
     public static final String KEY_PARK_BRAKE_ACTIVE = "parkBrakeActive";
     public static final String KEY_IGNITION_STABLE_STATUS = "ignitionStableStatus";
     public static final String KEY_IGNITION_STATUS = "ignitionStatus";
@@ -16,109 +16,105 @@ public class BodyInformation extends RPCStruct {
     public static final String KEY_REAR_LEFT_DOOR_AJAR = "rearLeftDoorAjar";
     public static final String KEY_REAR_RIGHT_DOOR_AJAR = "rearRightDoorAjar";
 
+    private String ignitionStableStatus; // represents IgnitionStableStatus enum
+    private String ignitionStatus; // represents IgnitionStatus enum
+    private Boolean parkingBrakeActive, driverDoorAjar, passengerDoorAjar, 
+                    rearLeftDoorAjar, rearRightDoorAjar;
+    
     public BodyInformation() { }
-    public BodyInformation(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a BodyInformation object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
+     */
+    public BodyInformation(JSONObject jsonObject, int sdlVersion) {
+        switch(sdlVersion){
+        default:
+            this.ignitionStableStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IGNITION_STABLE_STATUS);
+            this.ignitionStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IGNITION_STATUS);
+            this.parkingBrakeActive = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PARK_BRAKE_ACTIVE);
+            this.driverDoorAjar = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_DRIVER_DOOR_AJAR);
+            this.passengerDoorAjar = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PASSENGER_DOOR_AJAR);
+            this.rearLeftDoorAjar = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_REAR_LEFT_DOOR_AJAR);
+            this.rearRightDoorAjar = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_REAR_RIGHT_DOOR_AJAR);
+            break;
+        }
     }
 
     public void setParkBrakeActive(Boolean parkBrakeActive) {
-        if (parkBrakeActive != null) {
-        	store.put(KEY_PARK_BRAKE_ACTIVE, parkBrakeActive);
-        } else {
-        	store.remove(KEY_PARK_BRAKE_ACTIVE);
-        }
+        this.parkingBrakeActive = parkBrakeActive;
     }
+    
     public Boolean getParkBrakeActive() {
-        return (Boolean) store.get(KEY_PARK_BRAKE_ACTIVE);
+        return this.parkingBrakeActive;
     }
+    
     public void setIgnitionStableStatus(IgnitionStableStatus ignitionStableStatus) {
-        if (ignitionStableStatus != null) {
-            store.put(KEY_IGNITION_STABLE_STATUS, ignitionStableStatus);
-        } else {
-        	store.remove(KEY_IGNITION_STABLE_STATUS);
-        }
+        this.ignitionStableStatus = ignitionStableStatus.getJsonName(sdlVersion);
     }
+    
     public IgnitionStableStatus getIgnitionStableStatus() {
-        Object obj = store.get(KEY_IGNITION_STABLE_STATUS);
-        if (obj instanceof IgnitionStableStatus) {
-            return (IgnitionStableStatus) obj;
-        } else if (obj instanceof String) {
-        	IgnitionStableStatus theCode = null;
-            try {
-                theCode = IgnitionStableStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STABLE_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return IgnitionStableStatus.valueForJsonName(this.ignitionStableStatus, sdlVersion);
     }
+    
     public void setIgnitionStatus(IgnitionStatus ignitionStatus) {
-        if (ignitionStatus != null) {
-            store.put(KEY_IGNITION_STATUS, ignitionStatus);
-        } else {
-        	store.remove(KEY_IGNITION_STATUS);
-        }
+        this.ignitionStatus = ignitionStatus.getJsonName(sdlVersion);
     }
+    
     public IgnitionStatus getIgnitionStatus() {
-        Object obj = store.get(KEY_IGNITION_STATUS);
-        if (obj instanceof IgnitionStatus) {
-            return (IgnitionStatus) obj;
-        } else if (obj instanceof String) {
-        	IgnitionStatus theCode = null;
-            try {
-                theCode = IgnitionStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return IgnitionStatus.valueForJsonName(this.ignitionStatus, sdlVersion);
     }
     
     public void setDriverDoorAjar(Boolean driverDoorAjar) {
-        if (driverDoorAjar != null) {
-        	store.put(KEY_DRIVER_DOOR_AJAR, driverDoorAjar);
-        } else {
-        	store.remove(KEY_DRIVER_DOOR_AJAR);
-        }
-    }    
-    public Boolean getDriverDoorAjar() {
-        return (Boolean) store.get(KEY_DRIVER_DOOR_AJAR);
+        this.driverDoorAjar = driverDoorAjar;
     }
     
+    public Boolean getDriverDoorAjar() {
+        return this.driverDoorAjar;
+    }
     
     public void setPassengerDoorAjar(Boolean passengerDoorAjar) {
-        if (passengerDoorAjar != null) {
-        	store.put(KEY_PASSENGER_DOOR_AJAR, passengerDoorAjar);
-        } else {
-        	store.remove(KEY_PASSENGER_DOOR_AJAR);
-        }
-    }    
+        this.passengerDoorAjar = passengerDoorAjar;
+    }
+    
     public Boolean getPassengerDoorAjar() {
-        return (Boolean) store.get(KEY_PASSENGER_DOOR_AJAR);
+        return this.passengerDoorAjar;
     }
     
     public void setRearLeftDoorAjar(Boolean rearLeftDoorAjar) {
-        if (rearLeftDoorAjar != null) {
-        	store.put(KEY_REAR_LEFT_DOOR_AJAR, rearLeftDoorAjar);
-        } else {
-        	store.remove(KEY_REAR_LEFT_DOOR_AJAR);
-        }
-    }    
+        this.rearLeftDoorAjar = rearLeftDoorAjar;
+    }
+
     public Boolean getRearLeftDoorAjar() {
-        return (Boolean) store.get(KEY_REAR_LEFT_DOOR_AJAR);
+        return rearLeftDoorAjar;
     }
 
     public void setRearRightDoorAjar(Boolean rearRightDoorAjar) {
-        if (rearRightDoorAjar != null) {
-        	store.put(KEY_REAR_RIGHT_DOOR_AJAR, rearRightDoorAjar);
-        } else {
-        	store.remove(KEY_REAR_RIGHT_DOOR_AJAR);
-        }
-    }    
+        this.rearRightDoorAjar = rearRightDoorAjar;
+    }
+
     public Boolean getRearRightDoorAjar() {
-        return (Boolean) store.get(KEY_REAR_RIGHT_DOOR_AJAR);
-    }     
-    
+        return rearRightDoorAjar;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_IGNITION_STABLE_STATUS, this.ignitionStableStatus);
+            JsonUtils.addToJsonObject(result, KEY_IGNITION_STATUS, this.ignitionStatus);
+            JsonUtils.addToJsonObject(result, KEY_PARK_BRAKE_ACTIVE, this.parkingBrakeActive);
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_DOOR_AJAR, this.driverDoorAjar);
+            JsonUtils.addToJsonObject(result, KEY_PASSENGER_DOOR_AJAR, this.passengerDoorAjar);
+            JsonUtils.addToJsonObject(result, KEY_REAR_LEFT_DOOR_AJAR, this.rearLeftDoorAjar);
+            JsonUtils.addToJsonObject(result, KEY_REAR_RIGHT_DOOR_AJAR, this.rearRightDoorAjar);
+            break;
+        }
+        
+        return result;
+    }
 }

@@ -23,6 +23,7 @@ public class BeltStatus extends RPCObject {
     public static final String KEY_PASSENGER_BELT_DEPLOYED = "passengerBeltDeployed";
     public static final String KEY_PASSENGER_CHILD_DETECTED = "passengerChildDetected";
 
+    // all strings represent VehicleDataEventStatus enum
     private String driverBeltBuckled, middleRow1BeltBuckled, passengerBeltBuckled, 
     			   leftRow2BeltBuckled, middleRow2BeltBuckled, rightRow2BeltBuckled,
     			   leftRow3BeltBuckled, middleRow3BeltBuckled, rightRow3BeltBuckled,
@@ -32,6 +33,12 @@ public class BeltStatus extends RPCObject {
     
     public BeltStatus() { }
     
+    /**
+     * Creates a BeltStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     * @param sdlVersion The version of SDL represented in the JSON
+     */
     public BeltStatus(JSONObject jsonObject, int sdlVersion) {
         switch(sdlVersion){
         default:
