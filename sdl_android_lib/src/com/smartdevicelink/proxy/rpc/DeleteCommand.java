@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Removes a command from the Command Menu
@@ -22,23 +23,29 @@ import com.smartdevicelink.proxy.RPCRequest;
 public class DeleteCommand extends RPCRequest {
 	public static final String KEY_CMD_ID = "cmdID";
 
+	private Integer cmdId;
+	
 	/**
 	 * Constructs a new DeleteCommand object
 	 */
 	public DeleteCommand() {
         super(FunctionID.DELETE_COMMAND);
     }
-	/**
-	 * Constructs a new DeleteCommand object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-	public DeleteCommand(Hashtable<String, Object> hash) {
-        super(hash);
+	
+    /**
+     * Creates a DeleteCommand object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+	public DeleteCommand(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.cmdId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);
+            break;
+        }
     }
+	
 	/**
 	 * Gets the Command ID that identifies the Command to be deleted from
 	 * Command Menu
@@ -47,8 +54,9 @@ public class DeleteCommand extends RPCRequest {
 	 *         the Command to be deleted from Command Menu
 	 */	
     public Integer getCmdID() {
-        return (Integer) parameters.get( KEY_CMD_ID );
+        return this.cmdId;
     }
+    
 	/**
 	 * Sets the Command ID that identifies the Command to be deleted from Command Menu
 	 * 
@@ -58,10 +66,19 @@ public class DeleteCommand extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
     public void setCmdID( Integer cmdID ) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID );
-        } else {
-            parameters.remove(KEY_CMD_ID);
+        this.cmdId = cmdID;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_CMD_ID, this.cmdId);
+            break;
         }
+        
+        return result;
     }
 }

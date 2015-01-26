@@ -25,9 +25,8 @@ public class ClusterModeStatus extends RPCObject {
      * Creates a ClusterModeStatus object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
-     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public ClusterModeStatus(JSONObject jsonObject, int sdlVersion) {
+    public ClusterModeStatus(JSONObject jsonObject) {
         switch(sdlVersion){
         default:
             this.powerModeActive = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_POWER_MODE_ACTIVE);

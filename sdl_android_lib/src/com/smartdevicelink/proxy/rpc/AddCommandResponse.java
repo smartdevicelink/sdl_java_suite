@@ -16,8 +16,13 @@ public class AddCommandResponse extends RPCResponse {
         super(FunctionID.ADD_COMMAND);
     }
     
-    public AddCommandResponse(JSONObject json, int sdlVersion){
-        super(json, sdlVersion);
+    /**
+     * Creates an AddCommandResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public AddCommandResponse(JSONObject json){
+        super(json);
     }
 }
 

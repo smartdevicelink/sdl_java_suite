@@ -15,7 +15,12 @@ public class AddSubMenuResponse extends RPCResponse {
         super(FunctionID.ADD_SUB_MENU);
     }
     
-    public AddSubMenuResponse(JSONObject json, int sdlVersion){
-        super(json, sdlVersion);
+    /**
+     * Creates an AddSubMenuResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public AddSubMenuResponse(JSONObject json){
+        super(json);
     }
 }

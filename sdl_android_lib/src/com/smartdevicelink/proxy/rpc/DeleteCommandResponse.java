@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -15,7 +15,13 @@ public class DeleteCommandResponse extends RPCResponse {
     public DeleteCommandResponse() {
         super(FunctionID.DELETE_COMMAND);
     }
-    public DeleteCommandResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a DeleteCommandResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DeleteCommandResponse(JSONObject jsonObject) {
+        super(jsonObject);
     }
 }

@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Deletes an existing Choice Set identified by the parameter
@@ -23,30 +24,37 @@ import com.smartdevicelink.proxy.RPCRequest;
 public class DeleteInteractionChoiceSet extends RPCRequest {
 	public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
 
+	private Integer interactionChoiceSetId;
+	
 	/**
 	 * Constructs a new DeleteInteractionChoiceSet object
 	 */
     public DeleteInteractionChoiceSet() {
         super(FunctionID.DELETE_INTERACTION_CHOICE_SET);
     }
-	/**
-	 * Constructs a new DeleteInteractionChoiceSet object indicated by the
-	 * Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-    public DeleteInteractionChoiceSet(Hashtable<String, Object> hash) {
-        super(hash);
+
+    /**
+     * Creates a DeleteInteractionChoiceSet object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DeleteInteractionChoiceSet(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.interactionChoiceSetId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_INTERACTION_CHOICE_SET_ID);
+            break;
+        }
     }
+    
 	/**
 	 * Gets a unique ID that identifies the Choice Set
 	 * @return Integer -an Integer value representing the unique Choice Set ID
 	 */    
     public Integer getInteractionChoiceSetID() {
-        return (Integer) parameters.get( KEY_INTERACTION_CHOICE_SET_ID );
+        return this.interactionChoiceSetId;
     }
+    
 	/**
 	 * Sets a unique ID that identifies the Choice Set
 	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
@@ -54,10 +62,19 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-        if (interactionChoiceSetID != null) {
-            parameters.put(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID );
-        } else {
-            parameters.remove(KEY_INTERACTION_CHOICE_SET_ID);
+        this.interactionChoiceSetId = interactionChoiceSetID;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_INTERACTION_CHOICE_SET_ID, this.interactionChoiceSetId);
+            break;
         }
+        
+        return result;
     }
 }

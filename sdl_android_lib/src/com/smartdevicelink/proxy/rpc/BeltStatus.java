@@ -39,7 +39,7 @@ public class BeltStatus extends RPCObject {
      * @param jsonObject The JSON object to read from
      * @param sdlVersion The version of SDL represented in the JSON
      */
-    public BeltStatus(JSONObject jsonObject, int sdlVersion) {
+    public BeltStatus(JSONObject jsonObject) {
         switch(sdlVersion){
         default:
         	this.driverBeltBuckled = JsonUtils.readStringFromJsonObject(jsonObject, KEY_DRIVER_BUCKLE_BELTED);

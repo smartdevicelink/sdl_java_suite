@@ -38,9 +38,8 @@ public class ChangeRegistration extends RPCRequest {
      * Creates a ChangeRegistration object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
-     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public ChangeRegistration(JSONObject jsonObject, int sdlVersion) {
+    public ChangeRegistration(JSONObject jsonObject) {
         super(jsonObject);
         switch(sdlVersion){
         default:

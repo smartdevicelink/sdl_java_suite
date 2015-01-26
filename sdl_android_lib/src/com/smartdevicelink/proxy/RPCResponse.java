@@ -68,7 +68,7 @@ public class RPCResponse extends RPCMessage {
 		super(rpcMsg);
 	}
 	
-	public RPCResponse(JSONObject json, int sdlVersion){
+	public RPCResponse(JSONObject json){
 	    super(RPCMessage.KEY_RESPONSE, json);
 	    switch(sdlVersion){
 	    default:

@@ -16,6 +16,12 @@ public final class JsonUtils {
     
     private JsonUtils(){}
     
+    /**
+     * Creates a JSON object from raw bytes.
+     * 
+     * @param data The raw bytes to convert to JSON
+     * @return The JSON object created from the raw bytes
+     */
     public static JSONObject createJsonObject(byte[] data){
         JSONObject result = null;
         try {
@@ -27,6 +33,13 @@ public final class JsonUtils {
         return result;
     }
     
+    /**
+     * Adds an object into a JSON object with the given key.
+     * 
+     * @param json The JSON object to add the value into
+     * @param key The key of object to put in the JSON object
+     * @param value The object to put in the JSON object
+     */
     public static void addToJsonObject(JSONObject json, String key, Object value){
         try{
             json.put(key, value);
@@ -35,7 +48,14 @@ public final class JsonUtils {
         }
     }
     
-    public static JSONArray createJsonArrayOfJsonObjects(List<? extends JsonParameters> parameterList, int sdlVersion) throws JSONException{
+    /**
+     * Creates a JSONArray containing a list of JSON objects.
+     * 
+     * @param parameterList The list of JsonParameter objects, which will be used to create a JSON object from
+     * @param sdlVersion The version of SDL used to create the JSON objects
+     * @return The resultant JSON array
+     */
+    public static JSONArray createJsonArrayOfJsonObjects(List<? extends JsonParameters> parameterList, int sdlVersion){
         JSONArray result = new JSONArray();
         
         for(JsonParameters parameter : parameterList){
@@ -45,7 +65,14 @@ public final class JsonUtils {
         return result;
     }
     
-    public static JSONArray createJsonArrayOfJsonNames(List<? extends JsonName> parameterList, int sdlVersion) throws JSONException{
+    /**
+     * Creates a JSONArray containing a list of JSON names
+     * 
+     * @param parameterList The list of JsonName objects, which will be used to create a JSON string from
+     * @param sdlVersion The version of SDL used to create the JSON strings
+     * @return The resultant JSON array
+     */
+    public static JSONArray createJsonArrayOfJsonNames(List<? extends JsonName> parameterList, int sdlVersion){
         JSONArray result = new JSONArray();
         
         for(JsonName name : parameterList){
@@ -55,7 +82,13 @@ public final class JsonUtils {
         return result;
     }
     
-    public static <T> JSONArray createJsonArray(List<T> list) throws JSONException{
+    /**
+     * Creates a JSONArray of generic objects
+     * 
+     * @param list The list of objects to add to the JSON array
+     * @return The resultant JSON array
+     */
+    public static <T> JSONArray createJsonArray(List<T> list) {
         JSONArray result = new JSONArray();
         
         for(T str : list){
@@ -65,8 +98,15 @@ public final class JsonUtils {
         return result;
     }
     
-    // this method is basically to get around the annoying JSONException that is thrown when a key doesn't exist
+    // these methods are basically to get around the annoying JSONException that is thrown when a key doesn't exist
     // in the JSON object.  this method returns null instead of throwing an exception.
+    /**
+     * Reads a generic object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static Object readObjectFromJsonObject(JSONObject json, String key){
         try {
             return json.get(key);
@@ -74,7 +114,14 @@ public final class JsonUtils {
             return null;
         }
     }
-    
+
+    /**
+     * Reads a Boolean object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static Boolean readBooleanFromJsonObject(JSONObject json, String key){
         try {
             return json.getBoolean(key);
@@ -82,7 +129,14 @@ public final class JsonUtils {
             return null;
         }
     }
-    
+
+    /**
+     * Reads a Double object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static Double readDoubleFromJsonObject(JSONObject json, String key){
         try {
             return json.getDouble(key);
@@ -90,7 +144,14 @@ public final class JsonUtils {
             return null;
         }
     }
-    
+
+    /**
+     * Reads an Integer object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static Integer readIntegerFromJsonObject(JSONObject json, String key){
         try {
             return json.getInt(key);
@@ -99,6 +160,13 @@ public final class JsonUtils {
         }
     }
 
+    /**
+     * Reads a JSON array object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static JSONArray readJsonArrayFromJsonObject(JSONObject json, String key){
         try {
             return json.getJSONArray(key);
@@ -106,7 +174,14 @@ public final class JsonUtils {
             return null;
         }
     }
-    
+
+    /**
+     * Reads a list of String objects from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static List<String> readStringListFromJsonObject(JSONObject json, String key){
         JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
         
@@ -124,7 +199,14 @@ public final class JsonUtils {
         
         return null;
     }
-    
+
+    /**
+     * Reads a list of Integer objects from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static List<Integer> readIntegerListFromJsonObject(JSONObject json, String key){
         JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
         
@@ -142,7 +224,14 @@ public final class JsonUtils {
         
         return null;
     }
-    
+
+    /**
+     * Reads a list of Double objects from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static List<Double> readDoubleListFromJsonObject(JSONObject json, String key){
         JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
         
@@ -161,6 +250,13 @@ public final class JsonUtils {
         return null;
     }
 
+    /**
+     * Reads a list of JSON objects from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static List<JSONObject> readJsonObjectListFromJsonObject(JSONObject json, String key){
         JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
         
@@ -178,7 +274,14 @@ public final class JsonUtils {
         
         return null;
     }
-    
+
+    /**
+     * Reads a JSON object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static JSONObject readJsonObjectFromJsonObject(JSONObject json, String key){
         try {
             return json.getJSONObject(key);
@@ -186,7 +289,14 @@ public final class JsonUtils {
             return null;
         }
     }
-    
+
+    /**
+     * Reads a Long object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static Long readLongFromJsonObject(JSONObject json, String key){
         try {
             return json.getLong(key);
@@ -194,7 +304,14 @@ public final class JsonUtils {
             return null;
         }
     }
-    
+
+    /**
+     * Reads a String object from a JSON object.
+     * 
+     * @param json The JSON object to read from
+     * @param key The key of the object to read
+     * @return The resultant object or null if it doesn't exist
+     */
     public static String readStringFromJsonObject(JSONObject json, String key){
         try {
             return json.getString(key);

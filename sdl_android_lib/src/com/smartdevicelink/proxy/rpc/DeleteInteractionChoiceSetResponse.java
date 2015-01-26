@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -15,7 +15,13 @@ public class DeleteInteractionChoiceSetResponse extends RPCResponse {
     public DeleteInteractionChoiceSetResponse() {
         super(FunctionID.DELETE_INTERACTION_CHOICE_SET);
     }
-    public DeleteInteractionChoiceSetResponse(Hashtable<String, Object> hash) {
-        super(hash);
+
+    /**
+     * Creates a DeleteInteractionChoiceSetResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DeleteInteractionChoiceSetResponse(JSONObject jsonObject) {
+        super(jsonObject);
     }
 }

@@ -30,7 +30,12 @@ public class AirbagStatus extends RPCObject {
     
     public AirbagStatus() { }
     
-    public AirbagStatus(JSONObject json, int sdlVersionIn){
+    /**
+     * Creates an AirbagStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public AirbagStatus(JSONObject json){
         switch(sdlVersion){
         default:
             this.driverAirbagDeployed = JsonUtils.readStringFromJsonObject(json, KEY_DRIVER_AIRBAG_DEPLOYED);

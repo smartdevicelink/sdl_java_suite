@@ -62,9 +62,8 @@ public class ButtonCapabilities extends RPCObject {
      * Creates a ButtonCapabilities object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
-     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public ButtonCapabilities(JSONObject jsonObject, int sdlVersion) {
+    public ButtonCapabilities(JSONObject jsonObject) {
         switch(sdlVersion){
         default:
             this.name = JsonUtils.readStringFromJsonObject(jsonObject, KEY_NAME);

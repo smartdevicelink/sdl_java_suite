@@ -27,9 +27,8 @@ public class BodyInformation extends RPCObject {
      * Creates a BodyInformation object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
-     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public BodyInformation(JSONObject jsonObject, int sdlVersion) {
+    public BodyInformation(JSONObject jsonObject) {
         switch(sdlVersion){
         default:
             this.ignitionStableStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IGNITION_STABLE_STATUS);

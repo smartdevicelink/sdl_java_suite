@@ -60,9 +60,8 @@ public class AudioPassThruCapabilities extends RPCObject {
      * Creates an AudioPassThruCapabilities object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
-     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public AudioPassThruCapabilities(JSONObject jsonObject, int sdlVersionIn){
+    public AudioPassThruCapabilities(JSONObject jsonObject){
         switch(sdlVersion){
         default:
             this.samplingRate = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SAMPLING_RATE);

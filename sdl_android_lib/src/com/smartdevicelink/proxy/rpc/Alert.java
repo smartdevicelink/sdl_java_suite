@@ -69,9 +69,8 @@ public class Alert extends RPCRequest {
 	 * Creates an Alert object from a JSON object.
 	 * 
 	 * @param jsonObject The JSON object to read from
-	 * @param sdlVersion The version of SDL represented in the JSON
 	 */
-    public Alert(JSONObject jsonObject, int sdlVersion){
+    public Alert(JSONObject jsonObject){
         super(jsonObject);
         
         switch(sdlVersion){
@@ -89,7 +88,7 @@ public class Alert extends RPCRequest {
             if(ttsChunksArray != null){
                 this.ttsChunks = new ArrayList<TTSChunk>(ttsChunksArray.size());
                 for(JSONObject ttsChunkObj : ttsChunksArray){
-                        this.ttsChunks.add(new TTSChunk(ttsChunkObj, sdlVersion));
+                        this.ttsChunks.add(new TTSChunk(ttsChunkObj));
                 }
             }
         
@@ -97,7 +96,7 @@ public class Alert extends RPCRequest {
             if(softButtonsArray != null){
                 this.softButtons = new ArrayList<SoftButton>(softButtonsArray.size());
                 for(JSONObject softButtonObj : softButtonsArray){
-                        this.ttsChunks.add(new SoftButton(softButtonObj, sdlVersion));
+                        this.ttsChunks.add(new SoftButton(softButtonObj));
                 }
             }
             break;

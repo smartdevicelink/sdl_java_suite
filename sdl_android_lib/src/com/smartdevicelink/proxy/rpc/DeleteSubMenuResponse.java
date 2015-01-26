@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -15,7 +15,13 @@ public class DeleteSubMenuResponse extends RPCResponse {
     public DeleteSubMenuResponse() {
         super(FunctionID.DELETE_SUB_MENU);
     }
-    public DeleteSubMenuResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a DeleteSubMenuResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DeleteSubMenuResponse(JSONObject jsonObject) {
+        super(jsonObject);
     }
 }

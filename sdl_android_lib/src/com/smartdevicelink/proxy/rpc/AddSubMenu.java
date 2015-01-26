@@ -36,7 +36,12 @@ public class AddSubMenu extends RPCRequest {
         super(FunctionID.ADD_SUB_MENU);
     }
 	
-	public AddSubMenu(JSONObject json, int sdlVersion){
+	/**
+     * Creates an AddSubMenu object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+	 */
+	public AddSubMenu(JSONObject json){
 	    super(json);
 	    switch(sdlVersion){
 	    default:

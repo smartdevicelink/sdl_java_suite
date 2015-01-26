@@ -27,10 +27,9 @@ public class AlertResponse extends RPCResponse {
      * Creates an AlertResponse object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
-     * @param sdlVersion The version of SDL represented in the JSON
      */
-    public AlertResponse(JSONObject jsonObject, int sdlVersion) {
-        super(jsonObject, sdlVersion);
+    public AlertResponse(JSONObject jsonObject) {
+        super(jsonObject);
         
         switch(sdlVersion){
         default:

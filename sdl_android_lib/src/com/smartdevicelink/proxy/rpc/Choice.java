@@ -78,7 +78,7 @@ public class Choice extends RPCObject {
      * @param jsonObject The JSON object to read from
      * @param sdlVersion The version of SDL represented in the JSON
      */
-    public Choice(JSONObject jsonObject, int sdlVersion) {
+    public Choice(JSONObject jsonObject) {
         switch(sdlVersion){
         default:
             this.choiceId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CHOICE_ID);
@@ -90,12 +90,12 @@ public class Choice extends RPCObject {
             
             JSONObject imageObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_IMAGE);
             if(imageObj != null){
-                this.image = new Image(imageObj, sdlVersion);
+                this.image = new Image(imageObj);
             }
             
             imageObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SECONDARY_IMAGE);
             if(imageObj != null){
-                this.secondaryImage = new Image(imageObj, sdlVersion);
+                this.secondaryImage = new Image(imageObj);
             }
             
             break;

@@ -19,7 +19,12 @@ public class ChangeRegistrationResponse extends RPCResponse {
         super(FunctionID.CHANGE_REGISTRATION);
     }
 
-    public ChangeRegistrationResponse(JSONObject json, int sdlVersion){
-        super(json, sdlVersion);
+    /**
+     * Creates a ChangeRegistrationResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ChangeRegistrationResponse(JSONObject json){
+        super(json);
     }
 }

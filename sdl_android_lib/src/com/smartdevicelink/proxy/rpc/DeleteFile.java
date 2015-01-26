@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Used to delete a file resident on the SDL module in the app's local cache.
@@ -17,6 +18,8 @@ import com.smartdevicelink.proxy.RPCRequest;
 public class DeleteFile extends RPCRequest {
 	public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
+	private String sdlFileName;
+	
 	/**
 	 * Constructs a new DeleteFile object
 	 */
@@ -24,15 +27,18 @@ public class DeleteFile extends RPCRequest {
         super(FunctionID.DELETE_FILE);
     }
 
-	/**
-	 * Constructs a new DeleteFile object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public DeleteFile(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a DeleteFile object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DeleteFile(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.sdlFileName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SDL_FILE_NAME);
+            break;
+        }
     }
 
 	/**
@@ -42,11 +48,7 @@ public class DeleteFile extends RPCRequest {
 	 *            a String value representing a file reference name
 	 */
     public void setSdlFileName(String sdlFileName) {
-        if (sdlFileName != null) {
-            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
-        } else {
-        	parameters.remove(KEY_SDL_FILE_NAME);
-        }
+        this.sdlFileName = sdlFileName;
     }
 
 	/**
@@ -55,6 +57,19 @@ public class DeleteFile extends RPCRequest {
 	 * @return String -a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return this.sdlFileName;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SDL_FILE_NAME, this.sdlFileName);
+            break;
+        }
+        
+        return result;
     }
 }
