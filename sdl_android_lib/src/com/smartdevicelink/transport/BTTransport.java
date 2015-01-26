@@ -170,14 +170,22 @@ public class BTTransport extends SdlTransport {
 			{
 				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 			}			
-			sComment += "Keep Server Socket Open: " + bKeepSocketActive; 
+		} catch (IOException e) {
+
+			throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
+
 		} catch (Exception ex) {
 			
 			// Test to determine if the bluetooth has been disabled since last check			
 			if (!_adapter.isEnabled()) {
 				throw new SdlException("Bluetooth adapter must be on to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED);
 			}
-			
+
+			if(((SdlException) ex).getSdlExceptionCause() == SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE) {
+
+				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
+
+			}
 			throw new SdlException("Could not open connection to SDL.", ex, SdlExceptionCause.SDL_CONNECTION_FAILED);
 		} 
 		
