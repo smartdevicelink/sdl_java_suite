@@ -157,7 +157,7 @@ public class DisplayCapabilities extends RPCStruct {
         return null;
     }
   
-    public void setImageFields( List<TextField> imageFields ) {
+    public void setImageFields( List<ImageField> imageFields ) {
         if (imageFields != null) {
             store.put(KEY_IMAGE_FIELDS, imageFields );
         }
