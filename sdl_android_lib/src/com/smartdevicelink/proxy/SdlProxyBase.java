@@ -189,6 +189,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<PrerecordedSpeech> _prerecordedSpeech = null;
 	protected List<VrCapabilities> _vrCapabilities = null;
 	protected VehicleType _vehicleType = null;
+	protected List<AudioPassThruCapabilities> _audioPassThruCapabilities = null;
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
@@ -1465,6 +1466,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_sdlMsgVersion = msg.getSdlMsgVersion();
 					_vrCapabilities = msg.getVrCapabilities();
 					_vehicleType = msg.getVehicleType();
+					_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 					_proxyVersionInfo = msg.getProxyVersionInfo();																			
 
 					if (_bAppResumeEnabled)
@@ -1613,6 +1615,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_sdlMsgVersion = msg.getSdlMsgVersion();
 				_vrCapabilities = msg.getVrCapabilities();
 				_vehicleType = msg.getVehicleType();
+				_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 				_proxyVersionInfo = msg.getProxyVersionInfo();
 				
 				if (_bAppResumeEnabled)
