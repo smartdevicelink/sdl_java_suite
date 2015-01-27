@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
@@ -18,6 +19,8 @@ public class GetDTCs extends RPCRequest {
 	public static final String KEY_DTC_MASK = "dtcMask";
 	public static final String KEY_ECU_NAME = "ecuName";
 
+	private Integer dtcMask, ecuName;
+	
 	/**
 	 * Constructs a new GetDTCs object
 	 */
@@ -25,15 +28,19 @@ public class GetDTCs extends RPCRequest {
         super(FunctionID.GET_DTCS);
     }
 
-	/**
-	 * Constructs a new GetDTCs object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public GetDTCs(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a GetDTCs object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public GetDTCs(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.dtcMask = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_DTC_MASK);
+            this.ecuName = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_ECU_NAME);
+            break;
+        }
     }
 
 	/**
@@ -46,11 +53,7 @@ public class GetDTCs extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-    	if (ecuName != null) {
-    		parameters.put(KEY_ECU_NAME, ecuName);
-    	} else {
-    		parameters.remove(KEY_ECU_NAME);
-    	}
+    	this.ecuName = ecuName;
     }
 
 	/**
@@ -60,16 +63,28 @@ public class GetDTCs extends RPCRequest {
 	 *         receive the DTC form
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(KEY_ECU_NAME);
+    	return this.ecuName;
     }
+    
     public void setDtcMask(Integer dtcMask) {
-    	if (dtcMask != null) {
-    		parameters.put(KEY_DTC_MASK, dtcMask);
-    	} else {
-    		parameters.remove(KEY_DTC_MASK);
-    	}
+    	this.dtcMask = dtcMask;
     }
+    
     public Integer getDtcMask() {
-    	return (Integer) parameters.get(KEY_DTC_MASK);
+    	return this.dtcMask;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DTC_MASK, this.dtcMask);
+            JsonUtils.addToJsonObject(result, KEY_ECU_NAME, this.ecuName);
+            break;
+        }
+        
+        return result;
     }
 }

@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Get DTCs Response is sent, when GetDTCs has been called
@@ -14,30 +16,39 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class GetDTCsResponse extends RPCResponse {
 	public static final String KEY_DTC = "dtc";
 
+	private List<String> dtc;
+	
     public GetDTCsResponse() {
         super(FunctionID.GET_DTCS);
     }
-    public GetDTCsResponse(Hashtable<String, Object> hash) {
-        super(hash);
-    }
-    @SuppressWarnings("unchecked")
-    public List<String> getDtc() {
-    	if(parameters.get(KEY_DTC) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_DTC);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof String){
-        			return (List<String>) list;
-    	}
-    }
-            }
-        return null;
-    }
-    public void setDtc(List<String> dtc) {
-        if (dtc != null) {
-            parameters.put(KEY_DTC, dtc);
-        } else {
-        	parameters.remove(KEY_DTC);
+    
+    public GetDTCsResponse(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.dtc = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_DTC);
+            break;
         }
+    }
+    
+    public List<String> getDtc() {
+    	return this.dtc;
+    }
+    
+    public void setDtc(List<String> dtc) {
+        this.dtc = dtc;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DTC, JsonUtils.createJsonArray(this.dtc));
+            break;
+        }
+        
+        return result;
     }
 }
