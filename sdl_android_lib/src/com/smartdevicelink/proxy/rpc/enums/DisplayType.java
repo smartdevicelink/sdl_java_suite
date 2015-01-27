@@ -25,7 +25,7 @@ public enum DisplayType {
             }
         }
 
-        throw new IllegalArgumentException("Unknown value " + value);
+        return null;
     }
 
     @Override
