@@ -1,65 +1,78 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 public class DiagnosticMessage extends RPCRequest {
 	public static final String KEY_TARGET_ID = "targetID";
 	public static final String KEY_MESSAGE_LENGTH = "messageLength";
 	public static final String KEY_MESSAGE_DATA = "messageData";
 
+	private Integer targetId, messageLength;
+	private List<Integer> messageData;
+	
     public DiagnosticMessage() {
         super(FunctionID.DIAGNOSTIC_MESSAGE);
     }
 
-    public DiagnosticMessage(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a DiagnosticMessage object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DiagnosticMessage(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.targetId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_TARGET_ID);
+            this.messageLength = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_MESSAGE_LENGTH);
+            this.messageData = JsonUtils.readIntegerListFromJsonObject(jsonObject, KEY_MESSAGE_DATA);
+            break;
+        }
     }
     
     public void setTargetID(Integer targetID) {
-    	if (targetID != null) {
-    		parameters.put(KEY_TARGET_ID, targetID);
-    	} else {
-    		parameters.remove(KEY_TARGET_ID);
-    	}
+    	this.targetId = targetID;
     }
+    
     public Integer getTargetID() {
-    	return (Integer) parameters.get(KEY_TARGET_ID);
-    }    
+    	return this.targetId;
+    }
 
     public void setMessageLength(Integer messageLength) {
-    	if (messageLength != null) {
-    		parameters.put(KEY_MESSAGE_LENGTH, messageLength);
-    	} else {
-    		parameters.remove(KEY_MESSAGE_LENGTH);
-    	}
+    	this.messageLength = messageLength;
     }
+    
     public Integer getMessageLength() {
-    	return (Integer) parameters.get(KEY_MESSAGE_LENGTH);
+    	return this.messageLength;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Integer> getMessageData() {
-    	if(parameters.get(KEY_MESSAGE_DATA) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
-        		}
-    		}
-    	}
-        return null;
+    	return this.messageData;
     }
     
     public void setMessageData(List<Integer> messageData) {
-        if (messageData != null) {
-            parameters.put(KEY_MESSAGE_DATA, messageData);
-        } else {
-        	parameters.remove(KEY_MESSAGE_DATA);
+        this.messageData = messageData;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_TARGET_ID, this.targetId);
+            JsonUtils.addToJsonObject(result, KEY_MESSAGE_LENGTH, this.messageLength);
+            JsonUtils.addToJsonObject(result, KEY_MESSAGE_DATA, 
+                    JsonUtils.createJsonArray(this.messageData));
+            break;
         }
-    }    
+        
+        return result;
+    }
 }

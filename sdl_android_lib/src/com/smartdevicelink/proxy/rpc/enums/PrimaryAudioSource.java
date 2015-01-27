@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * Reflects the current primary audio source of SDL (if selected).
  * @since SmartDeviceLink 2.0
  */
-public enum PrimaryAudioSource {
+public enum PrimaryAudioSource implements JsonName{
 	/**
 	 * Currently no source selected
 	 */
@@ -32,7 +34,9 @@ public enum PrimaryAudioSource {
     /**
      * Mobile app is current source
      */
-    MOBILE_APP;
+    MOBILE_APP,
+    
+    ;
 
     /**
      * Convert String to PrimaryAudioSource
@@ -41,5 +45,31 @@ public enum PrimaryAudioSource {
      */	
     public static PrimaryAudioSource valueForString(String value) {
         return valueOf(value);
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return this.name();
+        }
+    }
+    
+    /**
+     * Returns the enumerated value for a given string and associated SDL version.
+     * 
+     * @param name The name of the JSON string
+     * @param sdlVersion The SDL version associated with the input string
+     * @return The enumerated value for the given string or null if it wasn't found
+     */
+    public static PrimaryAudioSource valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+        
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
     }
 }

@@ -1,39 +1,55 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 public class DiagnosticMessageResponse extends RPCResponse {
 	public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
 
+	private List<Integer> messageDataResult;
+	
     public DiagnosticMessageResponse() {
         super(FunctionID.DIAGNOSTIC_MESSAGE);
     }
-    public DiagnosticMessageResponse(Hashtable<String, Object> hash) {
-        super(hash);
+
+    /**
+     * Creates a DiagnosticMessageResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public DiagnosticMessageResponse(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.messageDataResult = JsonUtils.readIntegerListFromJsonObject(jsonObject, KEY_MESSAGE_DATA_RESULT);
+            break;
+        }
     }
-    @SuppressWarnings("unchecked")
+    
     public List<Integer> getMessageDataResult() {
-    	if(parameters.get(KEY_MESSAGE_DATA_RESULT) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA_RESULT);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
-        		}
-    		}
-    	}
-        return null;
+    	return this.messageDataResult;
     }
     
     public void setMessageDataResult(List<Integer> messageDataResult) {
-        if (messageDataResult != null) {
-            parameters.put(KEY_MESSAGE_DATA_RESULT, messageDataResult);
-        } else {
-        	parameters.remove(KEY_MESSAGE_DATA_RESULT);
+        this.messageDataResult = messageDataResult;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MESSAGE_DATA_RESULT, 
+                    JsonUtils.createJsonArray(this.messageDataResult));
+            break;
         }
+        
+        return result;
     }
 }

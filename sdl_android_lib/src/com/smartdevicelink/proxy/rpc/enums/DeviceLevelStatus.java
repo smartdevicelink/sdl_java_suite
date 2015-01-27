@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * Reflects the reported battery status of the connected device, if reported.
  * @since SmartDeviceLink 2.0
  */
-public enum DeviceLevelStatus {
+public enum DeviceLevelStatus implements JsonName{
 	/**
 	 * Zero level bars
 	 */
@@ -28,7 +30,9 @@ public enum DeviceLevelStatus {
 	/**
 	 * Not provided
 	 */
-	NOT_PROVIDED;
+	NOT_PROVIDED,
+	
+	;
 
     /**
      * Convert String to DeviceLevelStatus
@@ -37,5 +41,31 @@ public enum DeviceLevelStatus {
      */	
     public static DeviceLevelStatus valueForString(String value) {
         return valueOf(value);
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return this.name();
+        }
+    }
+    
+    /**
+     * Returns the enumerated value for a given string and associated SDL version.
+     * 
+     * @param name The name of the JSON string
+     * @param sdlVersion The SDL version associated with the input string
+     * @return The enumerated value for the given string or null if it wasn't found
+     */
+    public static DeviceLevelStatus valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+        
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
     }
 }

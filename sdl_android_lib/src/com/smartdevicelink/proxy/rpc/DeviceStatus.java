@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
@@ -97,7 +97,7 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class DeviceStatus extends RPCStruct {
+public class DeviceStatus extends RPCObject {
     public static final String KEY_VOICE_REC_ON = "voiceRecOn";
     public static final String KEY_BT_ICON_ON = "btIconOn";
     public static final String KEY_CALL_ACTIVE = "callActive";
@@ -110,17 +110,38 @@ public class DeviceStatus extends RPCStruct {
     public static final String KEY_PRIMARY_AUDIO_SOURCE = "primaryAudioSource";
     public static final String KEY_E_CALL_EVENT_ACTIVE = "eCallEventActive";
 
+    private Boolean voiceRecOn, btIconOn, callActive, phoneRoaming, textMsgAvailable, stereoAudioMuted,
+                    monoAudioMuted, eCallEventActive;
+    private String battLevelStatus, signalLevelStatus; // represents DeviceLevelStatus enum
+    private String primaryAudioSource; // represents PrimaryAudioSource enum
+    
 	/**
 	 * Constructs a newly allocated DeviceStatus object
 	 */
     public DeviceStatus() {}
     
     /**
-     * Constructs a newly allocated DeviceStatus object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates an DeviceStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public DeviceStatus(Hashtable<String, Object> hash) {
-        super(hash);
+    public DeviceStatus(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.voiceRecOn = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_VOICE_REC_ON);
+            this.btIconOn = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_BT_ICON_ON);
+            this.callActive = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_CALL_ACTIVE);
+            this.phoneRoaming = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PHONE_ROAMING);
+            this.textMsgAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_TEXT_MSG_AVAILABLE);
+            this.stereoAudioMuted = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_STEREO_AUDIO_OUTPUT_MUTED);
+            this.monoAudioMuted = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_MONO_AUDIO_OUTPUT_MUTED);
+            this.eCallEventActive = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_E_CALL_EVENT_ACTIVE);
+
+            this.battLevelStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BATT_LEVEL_STATUS);
+            this.signalLevelStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SIGNAL_LEVEL_STATUS);
+            this.primaryAudioSource = JsonUtils.readStringFromJsonObject(jsonObject, KEY_PRIMARY_AUDIO_SOURCE);
+            break;
+        }
     }
     
     /**
@@ -128,11 +149,7 @@ public class DeviceStatus extends RPCStruct {
      * @param voiceRecOn
      */
     public void setVoiceRecOn(Boolean voiceRecOn) {
-        if (voiceRecOn != null) {
-        	store.put(KEY_VOICE_REC_ON, voiceRecOn);
-        } else {
-        	store.remove(KEY_VOICE_REC_ON);
-        }
+        this.voiceRecOn = voiceRecOn;
     }
     
     /**
@@ -140,7 +157,7 @@ public class DeviceStatus extends RPCStruct {
      * @return whether the voice recognition is on
      */
     public Boolean getVoiceRecOn() {
-        return (Boolean) store.get(KEY_VOICE_REC_ON);
+        return this.voiceRecOn;
     }
     
     /**
@@ -148,11 +165,7 @@ public class DeviceStatus extends RPCStruct {
      * @param btIconOn the bluetooth connection established
      */
     public void setBtIconOn(Boolean btIconOn) {
-        if (btIconOn != null) {
-        	store.put(KEY_BT_ICON_ON, btIconOn);
-        } else {
-        	store.remove(KEY_BT_ICON_ON);
-        }
+        this.btIconOn = btIconOn;
     }
     
     /**
@@ -160,7 +173,7 @@ public class DeviceStatus extends RPCStruct {
      * @return the bluetooth connection established
      */
     public Boolean getBtIconOn() {
-        return (Boolean) store.get(KEY_BT_ICON_ON);
+        return this.btIconOn;
     }
     
     /**
@@ -168,11 +181,7 @@ public class DeviceStatus extends RPCStruct {
      * @param callActive a call is being active
      */
     public void setCallActive(Boolean callActive) {
-        if (callActive != null) {
-        	store.put(KEY_CALL_ACTIVE, callActive);
-        } else {
-        	store.remove(KEY_CALL_ACTIVE);
-        }
+        this.callActive = callActive;
     }
     
     /**
@@ -180,7 +189,7 @@ public class DeviceStatus extends RPCStruct {
      * @return  a call is being active
      */
     public Boolean getCallActive() {
-        return (Boolean) store.get(KEY_CALL_ACTIVE);
+        return this.callActive;
     }
     
     /**
@@ -188,11 +197,7 @@ public class DeviceStatus extends RPCStruct {
      * @param phoneRoaming  the phone is in roaming mode
      */
     public void setPhoneRoaming(Boolean phoneRoaming) {
-        if (phoneRoaming != null) {
-        	store.put(KEY_PHONE_ROAMING, phoneRoaming);
-        } else {
-        	store.remove(KEY_PHONE_ROAMING);
-        }
+        this.phoneRoaming = phoneRoaming;
     }
     
     /**
@@ -200,14 +205,11 @@ public class DeviceStatus extends RPCStruct {
      * @return  the phone is in roaming mode
      */
     public Boolean getPhoneRoaming() {
-        return (Boolean) store.get(KEY_PHONE_ROAMING);
+        return this.phoneRoaming;
     }
+    
     public void setTextMsgAvailable(Boolean textMsgAvailable) {
-        if (textMsgAvailable != null) {
-        	store.put(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
-        } else {
-        	store.remove(KEY_TEXT_MSG_AVAILABLE);
-        }
+        this.textMsgAvailable = textMsgAvailable;
     }
     
     /**
@@ -215,7 +217,7 @@ public class DeviceStatus extends RPCStruct {
      * @return a textmessage is available
      */
     public Boolean getTextMsgAvailable() {
-        return (Boolean) store.get(KEY_TEXT_MSG_AVAILABLE);
+        return this.textMsgAvailable;
     }
     
     /**
@@ -223,11 +225,7 @@ public class DeviceStatus extends RPCStruct {
      * @param battLevelStatus battery level status
      */
     public void setBattLevelStatus(DeviceLevelStatus battLevelStatus) {
-        if (battLevelStatus != null) {
-        	store.put(KEY_BATT_LEVEL_STATUS, battLevelStatus);
-        } else {
-        	store.remove(KEY_BATT_LEVEL_STATUS);
-        }
+        this.battLevelStatus = battLevelStatus.getJsonName(sdlVersion);
     }
     
     /**
@@ -235,19 +233,7 @@ public class DeviceStatus extends RPCStruct {
      * @return battery level status
      */
     public DeviceLevelStatus getBattLevelStatus() {
-        Object obj = store.get(KEY_BATT_LEVEL_STATUS);
-        if (obj instanceof DeviceLevelStatus) {
-            return (DeviceLevelStatus) obj;
-        } else if (obj instanceof String) {
-        	DeviceLevelStatus theCode = null;
-            try {
-                theCode = DeviceLevelStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BATT_LEVEL_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return DeviceLevelStatus.valueForJsonName(this.battLevelStatus, sdlVersion);
     }
     
     /**
@@ -255,11 +241,7 @@ public class DeviceStatus extends RPCStruct {
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      */
     public void setStereoAudioOutputMuted(Boolean stereoAudioOutputMuted) {
-        if (stereoAudioOutputMuted != null) {
-        	store.put(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
-        } else {
-        	store.remove(KEY_STEREO_AUDIO_OUTPUT_MUTED);
-        }
+        this.stereoAudioMuted = stereoAudioOutputMuted;
     }
     
     /**
@@ -267,7 +249,7 @@ public class DeviceStatus extends RPCStruct {
      * @return the status of the stereo audio output channel
      */
     public Boolean getStereoAudioOutputMuted() {
-        return (Boolean) store.get(KEY_STEREO_AUDIO_OUTPUT_MUTED);
+        return this.stereoAudioMuted;
     }
     
     /**
@@ -275,11 +257,7 @@ public class DeviceStatus extends RPCStruct {
      * @param monoAudioOutputMuted the status of the mono audio output channel
      */
     public void setMonoAudioOutputMuted(Boolean monoAudioOutputMuted) {
-        if (monoAudioOutputMuted != null) {
-        	store.put(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
-        } else {
-        	store.remove(KEY_MONO_AUDIO_OUTPUT_MUTED);
-        }
+        this.monoAudioMuted = monoAudioOutputMuted;
     }
     
     /**
@@ -287,7 +265,7 @@ public class DeviceStatus extends RPCStruct {
      * @return the status of the mono audio output channel
      */
     public Boolean getMonoAudioOutputMuted() {
-        return (Boolean) store.get(KEY_MONO_AUDIO_OUTPUT_MUTED);
+        return this.monoAudioMuted;
     }
     
     /**
@@ -295,11 +273,7 @@ public class DeviceStatus extends RPCStruct {
      * @param signalLevelStatus signal level status
      */
     public void setSignalLevelStatus(DeviceLevelStatus signalLevelStatus) {
-        if (signalLevelStatus != null) {
-        	store.put(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
-        } else {
-        	store.remove(KEY_SIGNAL_LEVEL_STATUS);
-        }
+        this.signalLevelStatus = signalLevelStatus.getJsonName(sdlVersion);
     }
     
     /**
@@ -307,19 +281,7 @@ public class DeviceStatus extends RPCStruct {
      * @return signal level status
      */
     public DeviceLevelStatus getSignalLevelStatus() {
-        Object obj = store.get(KEY_SIGNAL_LEVEL_STATUS);
-        if (obj instanceof DeviceLevelStatus) {
-            return (DeviceLevelStatus) obj;
-        } else if (obj instanceof String) {
-        	DeviceLevelStatus theCode = null;
-            try {
-                theCode = DeviceLevelStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SIGNAL_LEVEL_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return DeviceLevelStatus.valueForJsonName(this.signalLevelStatus, sdlVersion);
     }
     
     /**
@@ -327,11 +289,7 @@ public class DeviceStatus extends RPCStruct {
      * @param primaryAudioSource the current primary audio source of SDL (if selected).
      */
     public void setPrimaryAudioSource(PrimaryAudioSource primaryAudioSource) {
-        if (primaryAudioSource != null) {
-        	store.put(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
-        } else {
-        	store.remove(KEY_PRIMARY_AUDIO_SOURCE);
-        }
+        this.primaryAudioSource = primaryAudioSource.getJsonName(sdlVersion);
     }
     
     /**
@@ -339,28 +297,37 @@ public class DeviceStatus extends RPCStruct {
      * @return  the current primary audio source of SDL (if selected).
      */
     public PrimaryAudioSource getPrimaryAudioSource() {
-        Object obj = store.get(KEY_PRIMARY_AUDIO_SOURCE);
-        if (obj instanceof PrimaryAudioSource) {
-            return (PrimaryAudioSource) obj;
-        } else if (obj instanceof String) {
-        	PrimaryAudioSource theCode = null;
-            try {
-                theCode = PrimaryAudioSource.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRIMARY_AUDIO_SOURCE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return PrimaryAudioSource.valueForJsonName(this.primaryAudioSource, sdlVersion);
     }
+    
     public void setECallEventActive(Boolean eCallEventActive) {
-        if (eCallEventActive != null) {
-        	store.put(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
-        } else {
-        	store.remove(KEY_E_CALL_EVENT_ACTIVE);
-        }
+        this.eCallEventActive = eCallEventActive;
     }
+    
     public Boolean getECallEventActive() {
-        return (Boolean) store.get(KEY_E_CALL_EVENT_ACTIVE);
+        return this.eCallEventActive;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_VOICE_REC_ON, this.voiceRecOn);
+            JsonUtils.addToJsonObject(result, KEY_BT_ICON_ON, this.btIconOn);
+            JsonUtils.addToJsonObject(result, KEY_CALL_ACTIVE, this.callActive);
+            JsonUtils.addToJsonObject(result, KEY_PHONE_ROAMING, this.phoneRoaming);
+            JsonUtils.addToJsonObject(result, KEY_TEXT_MSG_AVAILABLE, this.textMsgAvailable);
+            JsonUtils.addToJsonObject(result, KEY_BATT_LEVEL_STATUS, this.battLevelStatus);
+            JsonUtils.addToJsonObject(result, KEY_STEREO_AUDIO_OUTPUT_MUTED, this.stereoAudioMuted);
+            JsonUtils.addToJsonObject(result, KEY_MONO_AUDIO_OUTPUT_MUTED, this.monoAudioMuted);
+            JsonUtils.addToJsonObject(result, KEY_SIGNAL_LEVEL_STATUS, this.signalLevelStatus);
+            JsonUtils.addToJsonObject(result, KEY_PRIMARY_AUDIO_SOURCE, this.primaryAudioSource);
+            JsonUtils.addToJsonObject(result, KEY_E_CALL_EVENT_ACTIVE, this.eCallEventActive);
+            break;
+        }
+        
+        return result;
     }
 }
