@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * String containing hexadecimal identifier as well as other common names.
@@ -27,20 +28,29 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class DTC extends RPCStruct {
+public class DTC extends RPCObject {
 	public static final String KEY_IDENTIFIER = "identifier";
 	public static final String KEY_STATUS_BYTE = "statusByte";
+	
+	private String id, statusByte;
+	
 	/**
 	 * Constructs a newly allocated DTC object
 	 */
     public DTC() { }
     
     /**
-     * Constructs a newly allocated DTC object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a DTC object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public DTC(Hashtable<String, Object> hash) {
-        super(hash);
+    public DTC(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.id = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IDENTIFIER);
+            this.statusByte = JsonUtils.readStringFromJsonObject(jsonObject, KEY_STATUS_BYTE);
+            break;
+        }
     }
     
     /**
@@ -48,11 +58,7 @@ public class DTC extends RPCStruct {
      * @param identifier
      */
     public void setIdentifier(String identifier) {
-    	if (identifier != null) {
-    		store.put(KEY_IDENTIFIER, identifier);
-    	} else {
-    		store.remove(KEY_IDENTIFIER);
-    	}
+    	this.id = identifier;
     }
     
     /**
@@ -60,7 +66,7 @@ public class DTC extends RPCStruct {
      * @return identifier
      */
     public String getIdentifier() {
-    	return (String) store.get(KEY_IDENTIFIER);
+    	return this.id;
     }
     
     /**
@@ -68,11 +74,7 @@ public class DTC extends RPCStruct {
      * @param statusByte Hexadecimal byte string
      */
     public void setStatusByte(String statusByte) {
-    	if (statusByte != null) {
-    		store.put(KEY_STATUS_BYTE, statusByte);
-    	} else {
-    		store.remove(KEY_STATUS_BYTE);
-    	}
+    	this.statusByte = statusByte;
     }
     
     /**
@@ -80,6 +82,20 @@ public class DTC extends RPCStruct {
      * @return Hexadecimal byte string
      */
     public String getStatusByte() {
-    	return (String) store.get(KEY_STATUS_BYTE);
+    	return this.statusByte;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_IDENTIFIER, this.id);
+            JsonUtils.addToJsonObject(result, KEY_STATUS_BYTE, this.statusByte);
+            break;
+        }
+        
+        return result;
     }
 }

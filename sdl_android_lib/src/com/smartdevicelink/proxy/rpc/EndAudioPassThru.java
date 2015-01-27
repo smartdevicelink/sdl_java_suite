@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -25,14 +25,11 @@ public class EndAudioPassThru extends RPCRequest {
     }
     
     /**
-	 * Constructs a new EndAudioPassThru object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+     * Creates an EndAudioPassThru object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public EndAudioPassThru(Hashtable<String, Object> hash) {
-        super(hash);
+    public EndAudioPassThru(JSONObject jsonObject) {
+        super(jsonObject);
     }
 }

@@ -1,121 +1,98 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class EmergencyEvent extends RPCStruct {
+public class EmergencyEvent extends RPCObject {
     public static final String KEY_EMERGENCY_EVENT_TYPE = "emergencyEventType";
     public static final String KEY_FUEL_CUTOFF_STATUS = "fuelCutoffStatus";
     public static final String KEY_ROLLOVER_EVENT = "rolloverEvent";
     public static final String KEY_MAXIMUM_CHANGE_VELOCITY = "maximumChangeVelocity";
     public static final String KEY_MULTIPLE_EVENTS = "multipleEvents";
 
+    private String emergencyEventType; // represents EmergencyEvent enum
+    private String fuelCutoffStatus; // represents FuelCutoffStatus enum
+    private String rolloverEvent, multipleEvents; // represents VehicleDataEventStatus enum
+    private Integer maximumChangeVelocity;
+    
     public EmergencyEvent() { }
-    public EmergencyEvent(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates an EmergencyEvent object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public EmergencyEvent(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.emergencyEventType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_EMERGENCY_EVENT_TYPE);
+            this.fuelCutoffStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_FUEL_CUTOFF_STATUS);
+            this.rolloverEvent = JsonUtils.readStringFromJsonObject(jsonObject, KEY_ROLLOVER_EVENT);
+            this.multipleEvents = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MULTIPLE_EVENTS);
+            this.maximumChangeVelocity = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_MAXIMUM_CHANGE_VELOCITY);
+            break;
+        }
+    }
+    
+    public void setEmergencyEventType(EmergencyEventType emergencyEventType) {
+        this.emergencyEventType = emergencyEventType.getJsonName(sdlVersion);
+    }
+    
+    public EmergencyEventType getEmergencyEventType() {
+        return EmergencyEventType.valueForJsonName(this.emergencyEventType, sdlVersion);
+    }
+    
+    public void setFuelCutoffStatus(FuelCutoffStatus fuelCutoffStatus) {
+        this.fuelCutoffStatus = fuelCutoffStatus.getJsonName(sdlVersion);
+    }
+    
+    public FuelCutoffStatus getFuelCutoffStatus() {
+        return FuelCutoffStatus.valueForJsonName(this.fuelCutoffStatus, sdlVersion);
+    }
+    
+    public void setRolloverEvent(VehicleDataEventStatus rolloverEvent) {
+        this.rolloverEvent = rolloverEvent.getJsonName(sdlVersion);
+    }
+    
+    public VehicleDataEventStatus getRolloverEvent() {
+        return VehicleDataEventStatus.valueForJsonName(this.rolloverEvent, sdlVersion);
+    }
+    
+    public void setMaximumChangeVelocity(Integer maximumChangeVelocity) {
+        this.maximumChangeVelocity = maximumChangeVelocity;
+    }
+    
+    public Integer getMaximumChangeVelocity() {
+    	return this.maximumChangeVelocity;
+    }
+    
+    public void setMultipleEvents(VehicleDataEventStatus multipleEvents) {
+        this.multipleEvents = multipleEvents.getJsonName(sdlVersion);
+    }
+    
+    public VehicleDataEventStatus getMultipleEvents() {
+        return VehicleDataEventStatus.valueForJsonName(this.multipleEvents, sdlVersion);
     }
 
-    public void setEmergencyEventType(EmergencyEventType emergencyEventType) {
-        if (emergencyEventType != null) {
-            store.put(KEY_EMERGENCY_EVENT_TYPE, emergencyEventType);
-        } else {
-        	store.remove(KEY_EMERGENCY_EVENT_TYPE);
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_EMERGENCY_EVENT_TYPE, this.emergencyEventType);
+            JsonUtils.addToJsonObject(result, KEY_FUEL_CUTOFF_STATUS, this.fuelCutoffStatus);
+            JsonUtils.addToJsonObject(result, KEY_MAXIMUM_CHANGE_VELOCITY, this.maximumChangeVelocity);
+            JsonUtils.addToJsonObject(result, KEY_MULTIPLE_EVENTS, this.multipleEvents);
+            JsonUtils.addToJsonObject(result, KEY_ROLLOVER_EVENT, this.rolloverEvent);
+            break;
         }
-    }
-    public EmergencyEventType getEmergencyEventType() {
-        Object obj = store.get(KEY_EMERGENCY_EVENT_TYPE);
-        if (obj instanceof EmergencyEventType) {
-            return (EmergencyEventType) obj;
-        } else if (obj instanceof String) {
-        	EmergencyEventType theCode = null;
-            try {
-                theCode = EmergencyEventType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
-    }
-    public void setFuelCutoffStatus(FuelCutoffStatus fuelCutoffStatus) {
-        if (fuelCutoffStatus != null) {
-            store.put(KEY_FUEL_CUTOFF_STATUS, fuelCutoffStatus);
-        } else {
-        	store.remove(KEY_FUEL_CUTOFF_STATUS);
-        }
-    }
-    public FuelCutoffStatus getFuelCutoffStatus() {
-        Object obj = store.get(KEY_FUEL_CUTOFF_STATUS);
-        if (obj instanceof FuelCutoffStatus) {
-            return (FuelCutoffStatus) obj;
-        } else if (obj instanceof String) {
-        	FuelCutoffStatus theCode = null;
-            try {
-                theCode = FuelCutoffStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_CUTOFF_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
-    }
-    public void setRolloverEvent(VehicleDataEventStatus rolloverEvent) {
-        if (rolloverEvent != null) {
-            store.put(KEY_ROLLOVER_EVENT, rolloverEvent);
-        } else {
-        	store.remove(KEY_ROLLOVER_EVENT);
-        }
-    }
-    public VehicleDataEventStatus getRolloverEvent() {
-        Object obj = store.get(KEY_ROLLOVER_EVENT);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ROLLOVER_EVENT, e);
-            }
-            return theCode;
-        }
-        return null;
-    }
-    public void setMaximumChangeVelocity(Integer maximumChangeVelocity) {
-        if (maximumChangeVelocity != null) {
-            store.put(KEY_MAXIMUM_CHANGE_VELOCITY, maximumChangeVelocity);
-        } else {
-        	store.remove(KEY_MAXIMUM_CHANGE_VELOCITY);
-        }
-    }
-    public Integer getMaximumChangeVelocity() {
-    	return (Integer) store.get(KEY_MAXIMUM_CHANGE_VELOCITY);
-    }
-    public void setMultipleEvents(VehicleDataEventStatus multipleEvents) {
-        if (multipleEvents != null) {
-            store.put(KEY_MULTIPLE_EVENTS, multipleEvents);
-        } else {
-        	store.remove(KEY_MULTIPLE_EVENTS);
-        }
-    }
-    public VehicleDataEventStatus getMultipleEvents() {
-        Object obj = store.get(KEY_MULTIPLE_EVENTS);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MULTIPLE_EVENTS, e);
-            }
-            return theCode;
-        }
-        return null;
+        
+        return result;
     }
 }
