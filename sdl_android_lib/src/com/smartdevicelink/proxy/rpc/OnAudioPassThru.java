@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.interfaces.BulkData;
 
 /**
  * Binary data is in binary part of hybrid msg.
@@ -41,28 +41,42 @@ import com.smartdevicelink.proxy.RPCStruct;
  * </p>
  *
  */
-public class OnAudioPassThru extends RPCNotification {
+public class OnAudioPassThru extends RPCNotification implements BulkData{
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnAudioPassThru() {
         super(FunctionID.ON_AUDIO_PASS_THRU);
     }
+    
+    private byte[] bulkData;
+
     /**
-     *<p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
-     */ 
-    public OnAudioPassThru(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates an OnAudioPassThru object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnAudioPassThru(JSONObject jsonObject) {
+        super(jsonObject);
     }
+    
+    @Deprecated
     public void setAPTData(byte[] aptData) {
-        if (aptData != null) {
-            store.put(RPCStruct.KEY_BULK_DATA, aptData);
-        } else {
-        	store.remove(RPCStruct.KEY_BULK_DATA);
-        }
+        setBulkData(aptData);
     }
+    
+    @Deprecated
     public byte[] getAPTData() {
-        return (byte[]) store.get(RPCStruct.KEY_BULK_DATA);
+        return getBulkData();
+    }
+
+    @Override
+    public byte[] getBulkData(){
+        return this.bulkData;
+    }
+
+    @Override
+    public void setBulkData(byte[] rawData){
+        this.bulkData = rawData;
     }
 }

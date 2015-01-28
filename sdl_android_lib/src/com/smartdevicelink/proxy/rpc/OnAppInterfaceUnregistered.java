@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources 
@@ -43,47 +43,56 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class OnAppInterfaceUnregistered extends RPCNotification {
 	public static final String KEY_REASON = "reason";
+	
+	private String reason; // represents AppInterfaceUnregisteredReason enum
+	
 	/**
 	*Constructs a newly allocated OnAppInterfaceUnregistered object
 	*/ 
     public OnAppInterfaceUnregistered() {
         super(FunctionID.ON_APP_INTERFACE_UNREGISTERED);
     }
+    
     /**
-    *<p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>
-    *@param hash The Hashtable to use
-    */    
-    public OnAppInterfaceUnregistered(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates an OnAppInterfaceUnregistered object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnAppInterfaceUnregistered(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.reason = JsonUtils.readStringFromJsonObject(jsonObject, KEY_REASON);
+            break;
+        }
     }
+    
     /**
      * <p>Get the reason the registration was terminated</p>
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
      */    
     public AppInterfaceUnregisteredReason getReason() {
-        Object obj = parameters.get(KEY_REASON);
-        if (obj instanceof AppInterfaceUnregisteredReason) {
-            return (AppInterfaceUnregisteredReason) obj;
-        } else if (obj instanceof String) {
-            AppInterfaceUnregisteredReason theCode = null;
-            try {
-                theCode = AppInterfaceUnregisteredReason.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_REASON, e);
-            }
-            return theCode;
-        }
-        return null;
+        return AppInterfaceUnregisteredReason.valueForJsonName(this.reason, sdlVersion);
     }
+    
     /**
      * <p>Set the reason application's interface was terminated</p>
      * @param reason The reason application's interface registration was terminated
      */    
     public void setReason( AppInterfaceUnregisteredReason reason ) {
-        if (reason != null) {
-            parameters.put(KEY_REASON, reason );
-        } else {
-            parameters.remove(KEY_REASON);
+        this.reason = reason.getJsonName(sdlVersion);
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_REASON, this.reason);
+            break;
         }
+        
+        return result;
     }
 }

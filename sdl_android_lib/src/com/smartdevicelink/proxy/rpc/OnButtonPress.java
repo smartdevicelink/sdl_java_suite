@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * <p>
@@ -92,91 +92,78 @@ public class OnButtonPress extends RPCNotification {
 	public static final String KEY_BUTTON_PRESS_MODE = "buttonPressMode";
 	public static final String KEY_BUTTON_NAME = "buttonName";
 	public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
+    
+    private String buttonName; // represents ButtonName enum
+    private String buttonPressMode; // represents ButtonPressMode enum
+    private Integer customButtonId;
+    
 	/**
 	*Constructs a newly allocated OnButtonPress object
 	*/   
     public OnButtonPress() {
         super(FunctionID.ON_BUTTON_PRESS);
     }
+    
     /**
-	 * <p>
-	 * Constructs a newly allocated OnButtonPress object indicated by the
-	 * Hashtable parameter
-	 * </p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+     * Creates an OnButtonPress object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */    
-    public OnButtonPress(Hashtable<String, Object> hash) {
-        super(hash);
+    public OnButtonPress(JSONObject jsonObject) {
+        super(jsonObject);
     }
+    
     /**
      * <p>Returns an <i>{@linkplain ButtonName}</i> the button's name</p>
      * @return ButtonName Name of the button
      */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            ButtonName theCode = null;
-            try {
-                theCode = ButtonName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
-            }
-            return theCode;
-        }
-        return null;
+        return ButtonName.valueForJsonName(this.buttonName, sdlVersion);
     }
+    
     /**
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
      */    
     public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
-        }
+        this.buttonName = buttonName.getJsonName(sdlVersion);
     }
+    
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
      * @return ButtonPressMode whether this is a long or short button press event
      */    
     public ButtonPressMode getButtonPressMode() {
-        Object obj = parameters.get(KEY_BUTTON_PRESS_MODE);
-        if (obj instanceof ButtonPressMode) {
-            return (ButtonPressMode) obj;
-        } else if (obj instanceof String) {
-            ButtonPressMode theCode = null;
-            try {
-                theCode = ButtonPressMode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_PRESS_MODE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return ButtonPressMode.valueForJsonName(this.buttonPressMode, sdlVersion);
     }
+    
     /**
      * <p>Set the button press mode of the event</p>
      * @param buttonPressMode indicates whether this is a short or long press
      */    
     public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
-        if (buttonPressMode != null) {
-            parameters.put(KEY_BUTTON_PRESS_MODE, buttonPressMode );
-        } else {
-            parameters.remove(KEY_BUTTON_PRESS_MODE);
-        }
+        this.buttonPressMode = buttonPressMode.getJsonName(sdlVersion);
     }
+    
     public void setCustomButtonName(Integer customButtonID) {
-    	if (customButtonID != null) {
-    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    	} else {
-    		parameters.remove(KEY_CUSTOM_BUTTON_ID);
-    	}
+    	this.customButtonId = customButtonID;
     }
+    
     public Integer getCustomButtonName() {
-    	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);
+    	return this.customButtonId;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_BUTTON_NAME, this.buttonName);
+            JsonUtils.addToJsonObject(result, KEY_BUTTON_PRESS_MODE, this.buttonPressMode);
+            JsonUtils.addToJsonObject(result, KEY_CUSTOM_BUTTON_ID, this.customButtonId);
+            break;
+        }
+        
+        return result;
     }
 }

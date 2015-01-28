@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 /**
  * <p>Notifies an application that HMI conditions have changed for the application. This indicates whether the application 
  * can speak phrases, display text, perform interactions, receive button presses and events, stream audio, etc. This 
@@ -67,7 +67,11 @@ public class OnHMIStatus extends RPCNotification {
 	public static final String KEY_SYSTEM_CONTEXT = "systemContext";
 	public static final String KEY_HMI_LEVEL = "hmiLevel";
 
-    private Boolean firstRun;
+    private String hmiLevel; // represents HMILevel enum
+    private String systemContext; // represents SystemContext enum
+    private String audioStreamingState; // represents AudioStreamingState enum
+	
+    private Boolean firstRun; // NOTE: is not part of JSON protocol
 	
 	/**
 	*Constructs a newly allocated OnHMIStatus object
@@ -75,104 +79,72 @@ public class OnHMIStatus extends RPCNotification {
     public OnHMIStatus() {
         super(FunctionID.ON_HMI_STATUS);
     }
+    
     /**
-    *<p>Constructs a newly allocated OnHMIStatus object indicated by the Hashtable parameter</p>
-    *@param hash The Hashtable to use
-    */    
-    public OnHMIStatus(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates an OnHMIStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnHMIStatus(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.hmiLevel = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HMI_LEVEL);
+            this.systemContext = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SYSTEM_CONTEXT);
+            this.audioStreamingState = JsonUtils.readStringFromJsonObject(jsonObject, KEY_AUDIO_STREAMING_STATE);
+            break;
+        }
     }
+    
     /**
      * <p>Get HMILevel in effect for the application</p>
      * @return {@linkplain HMILevel} the current HMI Level in effect for the application
      */    
     public HMILevel getHmiLevel() {
-        Object obj = parameters.get(KEY_HMI_LEVEL);
-        if (obj instanceof HMILevel) {
-            return (HMILevel) obj;
-        } else if (obj instanceof String) {
-            HMILevel theCode = null;
-            try {
-                theCode = HMILevel.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_LEVEL, e);
-            }
-            return theCode;
-        }
-        return null;
+        return HMILevel.valueForJsonName(this.hmiLevel, sdlVersion);
     }
+    
     /**
      * <p>Set the HMILevel of OnHMIStatus</p>
      * @param hmiLevel the HMILevel to set
      */    
     public void setHmiLevel( HMILevel hmiLevel ) {
-        if (hmiLevel != null) {
-            parameters.put(KEY_HMI_LEVEL, hmiLevel );
-        } else {
-            parameters.remove(KEY_HMI_LEVEL);
-        }
+        this.hmiLevel = hmiLevel.getJsonName(sdlVersion);
     }
+    
     /**
      * <p>Get current state of audio streaming for the application</p>
      * @return {@linkplain AudioStreamingState} Returns current state of audio streaming for the application
      */    
     public AudioStreamingState getAudioStreamingState() {
-        Object obj = parameters.get(KEY_AUDIO_STREAMING_STATE);
-        if (obj instanceof AudioStreamingState) {
-            return (AudioStreamingState) obj;
-        } else if (obj instanceof String) {
-            AudioStreamingState theCode = null;
-            try {
-                theCode = AudioStreamingState.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_STREAMING_STATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return AudioStreamingState.valueForJsonName(this.audioStreamingState, sdlVersion);
     }
+    
     /**
      * <p>Set the audio streaming state</p>
      * @param audioStreamingState the state of audio streaming of the application
      */    
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
-        if (audioStreamingState != null) {
-            parameters.put(KEY_AUDIO_STREAMING_STATE, audioStreamingState );
-        } else {
-            parameters.remove(KEY_AUDIO_STREAMING_STATE);
-        }
+        this.audioStreamingState = audioStreamingState.getJsonName(sdlVersion);
     }
+    
     /**
      * <p>Get the System Context</p>
      * @return {@linkplain SystemContext} whether a user-initiated interaction is in-progress (VRSESSION or MENU), or not (MAIN).
      */    
     public SystemContext getSystemContext() {
-        Object obj = parameters.get(KEY_SYSTEM_CONTEXT);
-        if (obj instanceof SystemContext) {
-            return (SystemContext) obj;
-        } else if (obj instanceof String) {
-            SystemContext theCode = null;
-            try {
-                theCode = SystemContext.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_CONTEXT, e);
-            }
-            return theCode;
-        }
-        return null;
+        return SystemContext.valueForJsonName(this.systemContext, sdlVersion);
     }
+    
     /**
      * <p>Set the System Context of OnHMIStatus</p>
      * @param systemContext Indicates that a user-initiated interaction is in-progress 
      * (VRSESSION or MENU), or not (MAIN)
      */    
     public void setSystemContext( SystemContext systemContext ) {
-        if (systemContext != null) {
-            parameters.put(KEY_SYSTEM_CONTEXT, systemContext );
-        } else {
-            parameters.remove(KEY_SYSTEM_CONTEXT);
-        }
+        this.systemContext = systemContext.getJsonName(sdlVersion);
     }
+    
     /**
      * <p>Query whether it's the first run</p>
      * @return boolean whether it's the first run
@@ -180,11 +152,27 @@ public class OnHMIStatus extends RPCNotification {
     public Boolean getFirstRun() {
     	return this.firstRun;
     }
+    
     /**
      * <p>Set the firstRun value</p>
      * @param firstRun True if it is the first run, False or not
      */    
     public void setFirstRun(Boolean firstRun) {
     	this.firstRun = firstRun;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_AUDIO_STREAMING_STATE, this.audioStreamingState);
+            JsonUtils.addToJsonObject(result, KEY_HMI_LEVEL, this.hmiLevel);
+            JsonUtils.addToJsonObject(result, KEY_SYSTEM_CONTEXT, this.systemContext);
+            break;
+        }
+        
+        return result;
     }
 }

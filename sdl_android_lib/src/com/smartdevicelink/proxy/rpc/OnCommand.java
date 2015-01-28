@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * This is called when a command was selected via VR after pressing the PTT button, or selected from the menu after 
@@ -55,66 +55,76 @@ import com.smartdevicelink.util.DebugTool;
 public class OnCommand extends RPCNotification {
 	public static final String KEY_CMD_ID = "cmdID";
 	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
+	
+	private Integer cmdId;
+	private String triggerSource; // represents TriggerSource enum
+	
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnCommand() {
         super(FunctionID.ON_COMMAND);
     }
+    
     /**
-    *<p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>
-    *@param hash The Hashtable to use
-    */    
-    public OnCommand(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates an OnCommand object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */    
+    public OnCommand(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.cmdId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);
+            this.triggerSource = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TRIGGER_SOURCE);
+            break;
+        }
     }
+    
     /**
      * <p>Returns an <i>Integer</i> object representing the Command ID</p>
      * @return Integer an integer representation of this object
      */    
     public Integer getCmdID() {
-        return (Integer) parameters.get( KEY_CMD_ID );
+        return this.cmdId;
     }
+    
     /**
      * <p>Sets a Command ID</p>    
      * @param cmdID an integer object representing a Command ID
      */    
     public void setCmdID( Integer cmdID ) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID );
-        } else {
-            parameters.remove(KEY_CMD_ID);
-        }
+        this.cmdId = cmdID;
     }
+    
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
      * @return TriggerSource a TriggerSource object
      */    
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
-        if (obj instanceof TriggerSource) {
-            return (TriggerSource) obj;
-        } else if (obj instanceof String) {
-            TriggerSource theCode = null;
-            try {
-                theCode = TriggerSource.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return TriggerSource.valueForJsonName(this.triggerSource, sdlVersion);
     }
+    
     /**
      * <p>Sets TriggerSource<br/>
      * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        if (triggerSource != null) {
-            parameters.put(KEY_TRIGGER_SOURCE, triggerSource );
-        } else {
-            parameters.remove(KEY_TRIGGER_SOURCE);
+        this.triggerSource = triggerSource.getJsonName(sdlVersion);
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_CMD_ID, this.cmdId);
+            JsonUtils.addToJsonObject(result, KEY_TRIGGER_SOURCE, this.triggerSource);
+            break;
         }
+        
+        return result;
     }
 }

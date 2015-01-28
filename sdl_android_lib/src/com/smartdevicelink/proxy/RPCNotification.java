@@ -20,6 +20,10 @@ public abstract class RPCNotification extends RPCMessage {
 	public RPCNotification(RPCMessage rpcMsg) {
 		super(rpcMsg);
 	}
+	
+	public RPCNotification(JSONObject jsonObject){
+	    super(KEY_NOTIFICATION, jsonObject);
+	}
     
     public static JSONObject getParameters(JSONObject json){
         return RPCMessage.getParameters(KEY_NOTIFICATION, json);

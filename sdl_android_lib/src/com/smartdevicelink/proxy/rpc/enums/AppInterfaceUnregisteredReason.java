@@ -1,12 +1,14 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * Indicates reason why app interface was unregistered. The application is being
  * disconnected by SDL.
  * 
  * @since SmartDeviceLink 1.0
  */
-public enum AppInterfaceUnregisteredReason {
+public enum AppInterfaceUnregisteredReason implements JsonName{
 	USER_EXIT,
 	/**
 	 * Vehicle ignition turned off.
@@ -75,9 +77,37 @@ public enum AppInterfaceUnregisteredReason {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-	APP_UNAUTHORIZED;
+	APP_UNAUTHORIZED,
+	
+	;
 
     public static AppInterfaceUnregisteredReason valueForString(String value) {
         return valueOf(value);
+    }
+    
+    /**
+     * Returns the enumerated value for a given string and associated SDL version.
+     * 
+     * @param name The name of the JSON string
+     * @param sdlVersion The SDL version associated with the input string
+     * @return The enumerated value for the given string or null if it wasn't found
+     */
+    public static AppInterfaceUnregisteredReason valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+        
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return this.name();
+        }
     }
 }
