@@ -1,60 +1,57 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class HeadLampStatus extends RPCStruct {
+public class HeadLampStatus extends RPCObject {
 	public static final String KEY_AMBIENT_LIGHT_SENSOR_STATUS = "ambientLightSensorStatus";
 	public static final String KEY_HIGH_BEAMS_ON = "highBeamsOn";
     public static final String KEY_LOW_BEAMS_ON = "lowBeamsOn";
 
+    private String ambientLightStatus; // represents AmbientLightStatus enum
+    private Boolean highBeamsOn, lowBeamsOn;
+    
     public HeadLampStatus() {}
-    public HeadLampStatus(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a HeadLampStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public HeadLampStatus(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.ambientLightStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_AMBIENT_LIGHT_SENSOR_STATUS);
+            this.highBeamsOn = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_HIGH_BEAMS_ON);
+            this.lowBeamsOn = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_LOW_BEAMS_ON);
+            break;
+        }
     }
+    
     public void setAmbientLightStatus(AmbientLightStatus ambientLightSensorStatus) {
-        if (ambientLightSensorStatus != null) {
-            store.put(KEY_AMBIENT_LIGHT_SENSOR_STATUS, ambientLightSensorStatus);
-        } else {
-        	store.remove(KEY_AMBIENT_LIGHT_SENSOR_STATUS);
-        }
+        this.ambientLightStatus = ambientLightSensorStatus.getJsonName(sdlVersion);
     }
+    
     public AmbientLightStatus getAmbientLightStatus() {
-        Object obj = store.get(KEY_AMBIENT_LIGHT_SENSOR_STATUS);
-        if (obj instanceof AmbientLightStatus) {
-            return (AmbientLightStatus) obj;
-        } else if (obj instanceof String) {
-        	AmbientLightStatus theCode = null;
-            try {
-                theCode = AmbientLightStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AMBIENT_LIGHT_SENSOR_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return AmbientLightStatus.valueForJsonName(this.ambientLightStatus, sdlVersion);
     }
+    
     public void setHighBeamsOn(Boolean highBeamsOn) {
-        if (highBeamsOn != null) {
-            store.put(KEY_HIGH_BEAMS_ON, highBeamsOn);
-        } else {
-        	store.remove(KEY_HIGH_BEAMS_ON);
-        }
+        this.highBeamsOn = highBeamsOn;
     }
+    
     public Boolean getHighBeamsOn() {
-    	return (Boolean) store.get(KEY_HIGH_BEAMS_ON);
+    	return this.highBeamsOn;
     }
+    
     public void setLowBeamsOn(Boolean lowBeamsOn) {
-        if (lowBeamsOn != null) {
-            store.put(KEY_LOW_BEAMS_ON, lowBeamsOn);
-        } else {
-        	store.remove(KEY_LOW_BEAMS_ON);
-        }
+        this.lowBeamsOn = lowBeamsOn;
     }
+    
     public Boolean getLowBeamsOn() {
-    	return (Boolean) store.get(KEY_LOW_BEAMS_ON);
+    	return this.lowBeamsOn;
     }
 }

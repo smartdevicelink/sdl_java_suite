@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * List Files Response is sent, when ListFiles has been called
@@ -15,43 +17,59 @@ public class ListFilesResponse extends RPCResponse {
 	public static final String KEY_FILENAMES = "filenames";
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
+	private List<String> filenames;
+	private Integer spaceAvailable;
+	
 	/**
 	 * Constructs a new ListFilesResponse object
 	 */
     public ListFilesResponse() {
         super(FunctionID.LIST_FILES);
     }
-    public ListFilesResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a ListFilesResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ListFilesResponse(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.filenames = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_FILENAMES);
+            this.spaceAvailable = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_SPACE_AVAILABLE);
+            break;
+        }
     }
+    
     public void setFilenames(List<String> filenames) {
-        if (filenames != null) {
-            parameters.put(KEY_FILENAMES, filenames);
-        } else {
-        	parameters.remove(KEY_FILENAMES);
-        }
+        this.filenames = filenames;
     }
-    @SuppressWarnings("unchecked")
+    
     public List<String> getFilenames() {
-        if (parameters.get(KEY_FILENAMES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_FILENAMES);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
-        		}
-        	}
-        }
-    	return null;
+        return this.filenames;
     }
+    
     public void setSpaceAvailable(Integer spaceAvailable) {
-        if (spaceAvailable != null) {
-            parameters.put(KEY_SPACE_AVAILABLE, spaceAvailable);
-        } else {
-        	parameters.remove(KEY_SPACE_AVAILABLE);
-        }
+        this.spaceAvailable = spaceAvailable;
     }
+    
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
+        return this.spaceAvailable;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SPACE_AVAILABLE, this.spaceAvailable);
+            JsonUtils.addToJsonObject(result, KEY_FILENAMES, 
+                    JsonUtils.createJsonArray(this.filenames));
+            break;
+        }
+        
+        return result;
     }
 }

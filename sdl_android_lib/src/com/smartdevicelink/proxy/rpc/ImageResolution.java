@@ -1,40 +1,59 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import org.json.JSONObject;
 
-import java.util.Hashtable;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
-public class ImageResolution extends RPCStruct {
+public class ImageResolution extends RPCObject {
 	public static final String KEY_RESOLUTION_WIDTH = "resolutionWidth";
 	public static final String KEY_RESOLUTION_HEIGHT = "resolutionHeight";
 	
+	private Integer width, height;
+	
     public ImageResolution() {}
     
-    public ImageResolution(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates an ImageResolution object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ImageResolution(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.width = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_RESOLUTION_WIDTH);
+            this.height = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_RESOLUTION_HEIGHT);
+            break;
+        }
     }
     
     public void setResolutionWidth(Integer resolutionWidth) {
-        if (resolutionWidth != null) {
-            store.put(KEY_RESOLUTION_WIDTH, resolutionWidth);
-        } else {
-        	store.remove(KEY_RESOLUTION_WIDTH);
-        }
+        this.width = resolutionWidth;
     }
     
     public Integer getResolutionWidth() {
-        return (Integer) store.get(KEY_RESOLUTION_WIDTH);
+        return this.width;
     }
     
     public void setResolutionHeight(Integer resolutionHeight) {
-        if (resolutionHeight != null) {
-            store.put(KEY_RESOLUTION_HEIGHT, resolutionHeight);
-        } else {
-        	store.remove(KEY_RESOLUTION_HEIGHT);
-        }
+        this.height = resolutionHeight;
     }
     
     public Integer getResolutionHeight() {
-        return (Integer) store.get(KEY_RESOLUTION_HEIGHT);
+        return this.height;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_RESOLUTION_HEIGHT, this.height);
+            JsonUtils.addToJsonObject(result, KEY_RESOLUTION_WIDTH, this.width);
+            break;
+        }
+        
+        return result;
     }
 }

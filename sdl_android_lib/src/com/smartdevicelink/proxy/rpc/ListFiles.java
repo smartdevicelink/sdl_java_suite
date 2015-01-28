@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -21,14 +21,12 @@ public class ListFiles extends RPCRequest {
         super(FunctionID.LIST_FILES);
     }
 
-	/**
-	 * Constructs a new ListFiles object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public ListFiles(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a ListFiles object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ListFiles(JSONObject jsonObject) {
+        super(jsonObject);
     }
 }

@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
-public class Headers extends RPCStruct {
+public class Headers extends RPCObject {
 	public static final String KEY_CONTENT_TYPE = "ContentType";
 	public static final String KEY_CONNECT_TIMEOUT = "ConnectTimeout";
 	public static final String KEY_DO_OUTPUT = "DoOutput";
@@ -16,130 +17,134 @@ public class Headers extends RPCStruct {
 	public static final String KEY_CHARSET = "charset";
 	public static final String KEY_CONTENT_LENGTH = "Content-Length";
 
+	private String contentType, charset, requestMethod;
+	private Integer connectTimeout, readTimeout, contentLength;
+	private Boolean doOutput, doInput, useCaches, instanceFollowRedirects;
+	
     public Headers() { }
     
-    public Headers(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a Headers object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public Headers(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.contentType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_CONTENT_TYPE);
+            this.charset = JsonUtils.readStringFromJsonObject(jsonObject, KEY_CHARSET);
+            this.requestMethod = JsonUtils.readStringFromJsonObject(jsonObject, KEY_REQUEST_METHOD);
+            this.connectTimeout = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CONNECT_TIMEOUT);
+            this.readTimeout = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_READ_TIMEOUT);
+            this.contentLength = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CONTENT_LENGTH);
+            this.doOutput = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_DO_OUTPUT);
+            this.doInput = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_DO_INPUT);
+            this.useCaches = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_USE_CACHES);
+            this.instanceFollowRedirects = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_INSTANCE_FOLLOW_REDIRECTS);
+            break;
+        }
     }	
 	
-    public void setContentType(String contenttype) {
-        if (contenttype != null) {
-            store.put(KEY_CONTENT_TYPE, contenttype);
-        } else {
-        	store.remove(KEY_CONTENT_TYPE);
-        }
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
     
     public String getContentType() {
-        return (String) store.get(KEY_CONTENT_TYPE);
+        return this.contentType;
     }     
     
-    public void setConnectTimeout(Integer connectiontimeout) {
-        if (connectiontimeout != null) {
-            store.put(KEY_CONNECT_TIMEOUT, connectiontimeout);
-        } else {
-        	store.remove(KEY_CONNECT_TIMEOUT);
-        }
+    public void setConnectTimeout(Integer connectionTimeout) {
+        this.connectTimeout = connectionTimeout;
     }
     
     public Integer getConnectTimeout() {
-        return (Integer) store.get(KEY_CONNECT_TIMEOUT);
+        return this.connectTimeout;
     }
     
-    public void setDoOutput(Boolean dooutput) {
-        if (dooutput != null) {
-            store.put(KEY_DO_OUTPUT, dooutput);
-        } else {
-        	store.remove(KEY_DO_OUTPUT);
-        }
+    public void setDoOutput(Boolean doOutput) {
+        this.doOutput = doOutput;
     }
     
     public Boolean getDoOutput() {
-        return (Boolean) store.get(KEY_DO_OUTPUT);
+        return this.doOutput;
     }    
     
-    public void setDoInput(Boolean dooutput) {
-        if (dooutput != null) {
-            store.put(KEY_DO_INPUT, dooutput);
-        } else {
-        	store.remove(KEY_DO_INPUT);
-        }
+    public void setDoInput(Boolean doInput) {
+        this.doInput = doInput;
     }
     
     public Boolean getDoInput() {
-        return (Boolean) store.get(KEY_DO_INPUT);
+        return this.doInput;
     }       
 
-    public void setUseCaches(Boolean usescaches) {
-        if (usescaches != null) {
-            store.put(KEY_USE_CACHES, usescaches);
-        } else {
-        	store.remove(KEY_USE_CACHES);
-        }
+    public void setUseCaches(Boolean usesCaches) {
+        this.useCaches = usesCaches;
     }
     
     public Boolean getUseCaches() {
-        return (Boolean) store.get(KEY_USE_CACHES);
+        return this.useCaches;
     }      
     
-    public void setRequestMethod(String requestmethod) {
-        if (requestmethod != null) {
-            store.put(KEY_REQUEST_METHOD, requestmethod);
-        } else {
-        	store.remove(KEY_REQUEST_METHOD);
-        }
+    public void setRequestMethod(String requestMethod) {
+        this.requestMethod = requestMethod;
     }
     
     public String getRequestMethod() {
-        return (String) store.get(KEY_REQUEST_METHOD);
+        return this.requestMethod;
     }   
     
     
-    public void setReadTimeout(Integer readtimeout) {
-        if (readtimeout != null) {
-            store.put(KEY_READ_TIMEOUT, readtimeout);
-        } else {
-        	store.remove(KEY_READ_TIMEOUT);
-        }
+    public void setReadTimeout(Integer readTimeout) {
+        this.readTimeout = readTimeout;
     }
     
     public Integer getReadTimeout() {
-        return (Integer) store.get(KEY_READ_TIMEOUT);
+        return this.readTimeout;
     }
     
-    public void setInstanceFollowRedirects(Boolean instancefollowredirects) {
-        if (instancefollowredirects != null) {
-            store.put(KEY_INSTANCE_FOLLOW_REDIRECTS, instancefollowredirects);
-        } else {
-        	store.remove(KEY_INSTANCE_FOLLOW_REDIRECTS);
-        }
+    public void setInstanceFollowRedirects(Boolean instanceFollowRedirects) {
+        this.instanceFollowRedirects = instanceFollowRedirects;
     }
     
     public Boolean getInstanceFollowRedirects() {
-        return (Boolean) store.get(KEY_INSTANCE_FOLLOW_REDIRECTS);
+        return this.instanceFollowRedirects;
     }
     
     public void setCharset(String charset) {
-        if (charset != null) {
-            store.put(KEY_CHARSET, charset);
-        } else {
-        	store.remove(KEY_CHARSET);
-        }
+        this.charset = charset;
     }
     
     public String getCharset() {
-        return (String) store.get(KEY_CHARSET);
+        return this.charset;
     }
 
-    public void setContentLength(Integer contentlength) {
-        if (contentlength != null) {
-            store.put(KEY_CONTENT_LENGTH, contentlength);
-        } else {
-        	store.remove(KEY_CONTENT_LENGTH);
-        }
+    public void setContentLength(Integer contentLength) {
+        this.contentLength = contentLength;
     }
     
     public Integer getContentLength() {
-        return (Integer) store.get(KEY_CONTENT_LENGTH);
-    }    
+        return this.contentLength;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_CHARSET, this.charset);
+            JsonUtils.addToJsonObject(result, KEY_CONNECT_TIMEOUT, this.connectTimeout);
+            JsonUtils.addToJsonObject(result, KEY_CONTENT_LENGTH, this.contentLength);
+            JsonUtils.addToJsonObject(result, KEY_CONTENT_TYPE, this.contentType);
+            JsonUtils.addToJsonObject(result, KEY_DO_INPUT, this.doInput);
+            JsonUtils.addToJsonObject(result, KEY_DO_OUTPUT, this.doOutput);
+            JsonUtils.addToJsonObject(result, KEY_INSTANCE_FOLLOW_REDIRECTS, this.instanceFollowRedirects);
+            JsonUtils.addToJsonObject(result, KEY_READ_TIMEOUT, this.readTimeout);
+            JsonUtils.addToJsonObject(result, KEY_REQUEST_METHOD, this.requestMethod);
+            JsonUtils.addToJsonObject(result, KEY_USE_CACHES, this.useCaches);
+            break;
+        }
+        
+        return result;
+    }
 }

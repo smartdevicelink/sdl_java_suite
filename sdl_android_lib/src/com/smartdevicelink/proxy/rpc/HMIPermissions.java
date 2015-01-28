@@ -1,12 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import org.json.JSONObject;
+
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 /**
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
  * <p><b>Parameter List
@@ -42,53 +43,45 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class HMIPermissions extends RPCStruct {
+public class HMIPermissions extends RPCObject {
 	public static final String KEY_ALLOWED = "allowed";
 	public static final String KEY_USER_DISALLOWED = "userDisallowed";
+	
+	private List<String> allowed, userDisallowed; // represents HMILevel enum
+	
 	/**
 	 * Constructs a newly allocated HMIPermissions object
 	 */
     public HMIPermissions() { }
     
     /**
-     * Constructs a newly allocated HMIPermissions object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a HMIPermissions object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public HMIPermissions(Hashtable<String, Object> hash) {
-        super(hash);
+    public HMIPermissions(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.allowed = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_ALLOWED);
+            this.userDisallowed = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_USER_DISALLOWED);
+            break;
+        }
     }
     
     /**
      * get a set of all HMI levels that are permitted for this given RPC.
      * @return   a set of all HMI levels that are permitted for this given RPC
      */
-    @SuppressWarnings("unchecked")
     public List<HMILevel> getAllowed() {
-        if (store.get(KEY_ALLOWED) instanceof List<?>) {
-	    	List<?> list = (List<?>)store.get(KEY_ALLOWED);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
-	            } else if (obj instanceof String) {
-	            	List<HMILevel> newList = new ArrayList<HMILevel>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = null;
-	                    try {
-	                        toAdd = HMILevel.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALLOWED, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.allowed == null){
+            return null;
         }
-        return null;
+        
+        List<HMILevel> result = new ArrayList<HMILevel>(this.allowed.size());
+        for(String str : this.allowed){
+            result.add(HMILevel.valueForJsonName(str, sdlVersion));
+        }
+        return result;
     }
     
     /**
@@ -96,44 +89,31 @@ public class HMIPermissions extends RPCStruct {
      * @param allowed HMI level that is permitted for this given RPC
      */
     public void setAllowed(List<HMILevel> allowed) {
-        if (allowed != null) {
-            store.put(KEY_ALLOWED, allowed);
-        } else {
-    		store.remove(KEY_ALLOWED);
-    	}
+        if(allowed == null){
+            this.allowed = null;
+        }
+        else{
+            this.allowed = new ArrayList<String>(allowed.size());
+            for(HMILevel level : allowed){
+                this.allowed.add(level.getJsonName(sdlVersion));
+            }
+        }
     }
     
     /**
      * get a set of all HMI levels that are prohibited for this given RPC
      * @return a set of all HMI levels that are prohibited for this given RPC
      */
-    @SuppressWarnings("unchecked")
     public List<HMILevel> getUserDisallowed() {
-        if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
-	    	List<?> list = (List<?>)store.get(KEY_USER_DISALLOWED);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
-	            } else if (obj instanceof String) {
-	                List<HMILevel> newList = new ArrayList<HMILevel>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = null;
-	                    try {
-	                        toAdd = HMILevel.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_USER_DISALLOWED, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.userDisallowed == null){
+            return null;
         }
-        return null;
+        
+        List<HMILevel> result = new ArrayList<HMILevel>(this.userDisallowed.size());
+        for(String str : this.userDisallowed){
+            result.add(HMILevel.valueForJsonName(str, sdlVersion));
+        }
+        return result;
     }
     
     /**
@@ -141,10 +121,30 @@ public class HMIPermissions extends RPCStruct {
      * @param userDisallowed  HMI level that is prohibited for this given RPC
      */
     public void setUserDisallowed(List<HMILevel> userDisallowed) {
-        if (userDisallowed != null) {
-            store.put(KEY_USER_DISALLOWED, userDisallowed);
-        } else {
-    		store.remove(KEY_USER_DISALLOWED);
-    	}
+        if(userDisallowed == null){
+            this.userDisallowed = null;
+        }
+        else{
+            this.userDisallowed = new ArrayList<String>(userDisallowed.size());
+            for(HMILevel level : userDisallowed){
+                this.userDisallowed.add(level.getJsonName(sdlVersion));
+            }
+        }
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_ALLOWED, 
+                    JsonUtils.createJsonArray(this.allowed));
+            JsonUtils.addToJsonObject(result, KEY_USER_DISALLOWED, 
+                    JsonUtils.createJsonArray(this.userDisallowed));
+            break;
+        }
+        
+        return result;
     }
 }

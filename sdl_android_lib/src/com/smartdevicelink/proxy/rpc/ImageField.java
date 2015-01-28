@@ -1,89 +1,79 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class ImageField extends RPCStruct {
+public class ImageField extends RPCObject {
     public static final String KEY_IMAGE_TYPE_SUPPORTED = "imageTypeSupported";
     public static final String KEY_IMAGE_RESOLUTION = "imageResolution";
     public static final String KEY_NAME = "name";
     
+    private ImageResolution imageResolution;
+    private String imageFieldName; // represents ImageFieldName enum
+    private String imageTypeSupported; // represents FileType enum
     
     public ImageField() { }
    
-    public ImageField(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates an AddCommand object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ImageField(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.imageFieldName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_NAME);
+            this.imageTypeSupported = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IMAGE_TYPE_SUPPORTED);
+            
+            JSONObject imageResolutionObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_IMAGE_RESOLUTION);
+            if(imageResolutionObj != null){
+                this.imageResolution = new ImageResolution(imageResolutionObj);
+            }
+            break;
+        }
     }
+    
     public ImageFieldName getName() {
-        Object obj = store.get(KEY_NAME);
-        if (obj instanceof ImageFieldName) {
-            return (ImageFieldName) obj;
-        } else if (obj instanceof String) {
-        	ImageFieldName theCode = null;
-            try {
-                theCode = ImageFieldName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
-            }
-            return theCode;
-        }
-        return null;
-    } 
-    public void setName( ImageFieldName name ) {
-        if (name != null) {
-            store.put(KEY_NAME, name );
-        }
-        else {
-        	store.remove(KEY_NAME);
-        }        
-    } 
-    public FileType getImageTypeSupported() {
-        Object obj = store.get(KEY_IMAGE_TYPE_SUPPORTED);
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-        	FileType theCode = null;
-            try {
-                theCode = FileType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
-            }
-            return theCode;
-        }
-        return null;
-    } 
-    public void setImageTypeSupported( FileType imageTypeSupported ) {
-        if (imageTypeSupported != null) {
-            store.put(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported );
-        }
-        else {
-        	store.remove(KEY_IMAGE_TYPE_SUPPORTED);
-        }         
+        return ImageFieldName.valueForJsonName(this.imageFieldName, sdlVersion);
     }
-    @SuppressWarnings("unchecked")
+    
+    public void setName( ImageFieldName name ) {
+        this.imageFieldName = name.getJsonName(sdlVersion);
+    }
+    
+    public FileType getImageTypeSupported() {
+        return FileType.valueForJsonName(this.imageTypeSupported, sdlVersion);
+    }
+    
+    public void setImageTypeSupported( FileType imageTypeSupported ) {
+        this.imageTypeSupported = imageTypeSupported.getJsonName(sdlVersion);
+    }
+    
     public ImageResolution getImageResolution() {
-    	Object obj = store.get(KEY_IMAGE_RESOLUTION);
-        if (obj instanceof ImageResolution) {
-            return (ImageResolution) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ImageResolution((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_RESOLUTION, e);
-            }
-        }
-        return null;
-    } 
+    	return this.imageResolution;
+    }
+    
     public void setImageResolution( ImageResolution imageResolution ) {
-        if (imageResolution != null) {
-            store.put(KEY_IMAGE_RESOLUTION, imageResolution );
+        this.imageResolution = imageResolution;        
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_IMAGE_TYPE_SUPPORTED, this.imageTypeSupported);
+            JsonUtils.addToJsonObject(result, KEY_NAME, this.imageFieldName);
+            JsonUtils.addToJsonObject(result, KEY_IMAGE_RESOLUTION, 
+                    this.imageResolution.getJsonParameters(sdlVersion));
+            break;
         }
-        else {
-        	store.remove(KEY_IMAGE_RESOLUTION);
-        }        
-    }      
+        
+        return result;
+    }
 }

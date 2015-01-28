@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  *Specifies, which image shall be used, e.g. in Alerts or on Softbuttons provided the display supports it.
@@ -36,21 +36,30 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class Image extends RPCStruct {
+public class Image extends RPCObject {
 	public static final String KEY_VALUE = "value";
 	public static final String KEY_IMAGE_TYPE = "imageType";
 
+	private String value;
+	private String imageType; // represents ImageType enum
+	
 	/**
 	 * Constructs a newly allocated Image object
 	 */
     public Image() { }
     
     /**
-     * Constructs a newly allocated Image object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
-     */      
-    public Image(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates an Image object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public Image(JSONObject jsonObject) {
+        switch(sdlVersion){
+        default:
+            this.value = JsonUtils.readStringFromJsonObject(jsonObject, KEY_VALUE);
+            this.imageType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IMAGE_TYPE);
+            break;
+        }
     }
     
     /**
@@ -58,11 +67,7 @@ public class Image extends RPCStruct {
      * @param value either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public void setValue(String value) {
-        if (value != null) {
-            store.put(KEY_VALUE, value);
-        } else {
-        	store.remove(KEY_VALUE);
-        }
+        this.value = value;
     }
     
     /**
@@ -70,7 +75,7 @@ public class Image extends RPCStruct {
      * @return  either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public String getValue() {
-        return (String) store.get(KEY_VALUE);
+        return this.value;
     }
     
     /**
@@ -78,11 +83,7 @@ public class Image extends RPCStruct {
      * @param imageType whether it is a static or dynamic image
      */
     public void setImageType(ImageType imageType) {
-        if (imageType != null) {
-            store.put(KEY_IMAGE_TYPE, imageType);
-        } else {
-        	store.remove(KEY_IMAGE_TYPE);
-        }
+        this.imageType = imageType.getJsonName(sdlVersion);
     }
     
     /**
@@ -90,18 +91,20 @@ public class Image extends RPCStruct {
      * @return the image type
      */
     public ImageType getImageType() {
-    	Object obj = store.get(KEY_IMAGE_TYPE);
-        if (obj instanceof ImageType) {
-            return (ImageType) obj;
-        } else if (obj instanceof String) {
-        	ImageType theCode = null;
-            try {
-                theCode = ImageType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE, e);
-            }
-            return theCode;
+    	return ImageType.valueForJsonName(this.imageType, sdlVersion);
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_VALUE, this.value);
+            JsonUtils.addToJsonObject(result, KEY_IMAGE_TYPE, this.imageType);
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

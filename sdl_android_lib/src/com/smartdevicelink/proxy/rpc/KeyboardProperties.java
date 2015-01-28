@@ -1,148 +1,105 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import org.json.JSONObject;
+
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class KeyboardProperties extends RPCStruct {
+public class KeyboardProperties extends RPCObject {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
 	public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
 	public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";
 	public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
 	public static final String KEY_LANGUAGE = "language";
 	
-    private static final KeypressMode KEYPRESS_MODE_DEFAULT = KeypressMode.RESEND_CURRENT_ENTRY;
+    private static final String KEYPRESS_MODE_DEFAULT = 
+            KeypressMode.RESEND_CURRENT_ENTRY.getJsonName(sdlVersion);
 
+    private String language; // represents Language enum
+    private String keyboardLayout; // represents KeyboardLayout enum
+    private String keypressMode; // represents KeypressMode enum
+    private String autoCompleteText;
+    private List<String> limitedCharacterList;
+    
     public KeyboardProperties() {
-        store.put(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
+        this.keypressMode = KEYPRESS_MODE_DEFAULT;
     }
 
-    public KeyboardProperties(Hashtable<String, Object> hash) {
-        super(hash);
-        if (!store.containsKey(KEY_KEYPRESS_MODE)) {
-            store.put(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
-        }
+    /**
+     * Creates a KeyboardProperties object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public KeyboardProperties(JSONObject jsonObject) {
+        String temp = JsonUtils.readStringFromJsonObject(jsonObject, KEY_KEYPRESS_MODE);
+        this.keypressMode = (temp == null) ? KEYPRESS_MODE_DEFAULT : temp;
+        
+        this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);
+        this.keyboardLayout = JsonUtils.readStringFromJsonObject(jsonObject, KEY_KEYBOARD_LAYOUT);
+        this.autoCompleteText = JsonUtils.readStringFromJsonObject(jsonObject, KEY_AUTO_COMPLETE_TEXT);
+        this.limitedCharacterList = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_LIMITED_CHARACTER_LIST);
     }
 
     public Language getLanguage() {
-        Object obj = store.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_LANGUAGE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return Language.valueForJsonName(this.language, sdlVersion);
     }
 
     public void setLanguage(Language language) {
-        if (language != null) {
-            store.put(KEY_LANGUAGE, language);
-        } else {
-            store.remove(KEY_LANGUAGE);
-        }
+        this.language = language.getJsonName(sdlVersion);
     }
 
     public KeyboardLayout getKeyboardLayout() {
-        Object obj = store.get(KEY_KEYBOARD_LAYOUT);
-        if (obj instanceof KeyboardLayout) {
-            return (KeyboardLayout) obj;
-        } else if (obj instanceof String) {
-            KeyboardLayout theCode = null;
-            try {
-                theCode = KeyboardLayout.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_KEYBOARD_LAYOUT, e);
-            }
-            return theCode;
-        }
-        return null;
+        return KeyboardLayout.valueForJsonName(this.keyboardLayout, sdlVersion);
     }
 
     public void setKeyboardLayout(KeyboardLayout keyboardLayout) {
-        if (keyboardLayout != null) {
-            store.put(KEY_KEYBOARD_LAYOUT, keyboardLayout);
-        } else {
-            store.remove(KEY_KEYBOARD_LAYOUT);
-        }
+        this.keyboardLayout = keyboardLayout.getJsonName(sdlVersion);
     }
 
     public KeypressMode getKeypressMode() {
-        Object obj = store.get(KEY_KEYPRESS_MODE);
-        if (obj instanceof KeypressMode) {
-            return (KeypressMode) obj;
-        } else if (obj instanceof String) {
-            KeypressMode theCode = null;
-            try {
-                theCode = KeypressMode.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_KEYPRESS_MODE, e);
-            }
-            return theCode;
-        }
-        return KEYPRESS_MODE_DEFAULT;
+        return KeypressMode.valueForJsonName(this.keypressMode, sdlVersion);
     }
 
     public void setKeypressMode(KeypressMode keypressMode) {
-        if (keypressMode != null) {
-            store.put(KEY_KEYPRESS_MODE, keypressMode);
-        } else {
-            store.put(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
-        }
+        this.keypressMode = keypressMode.getJsonName(sdlVersion);
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getLimitedCharacterList() {
-        final Object listObj = store.get(KEY_LIMITED_CHARACTER_LIST);
-        if (listObj instanceof List<?>) {
-        	List<?> list = (List<?>) listObj;
-            if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return this.limitedCharacterList;
     }
 
     public void setLimitedCharacterList(List<String> limitedCharacterList) {
-        if (limitedCharacterList != null) {
-            store.put(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
-        } else {
-            store.remove(KEY_LIMITED_CHARACTER_LIST);
-        }
+        this.limitedCharacterList = limitedCharacterList;
     }
 
     public String getAutoCompleteText() {
-        final Object obj = store.get(KEY_AUTO_COMPLETE_TEXT);
-        if (obj instanceof String) {
-            return (String) obj;
-        }
-        return null;
+        return this.autoCompleteText;
     }
 
     public void setAutoCompleteText(String autoCompleteText) {
-        if (autoCompleteText != null) {
-            store.put(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
-        } else {
-            store.remove(KEY_AUTO_COMPLETE_TEXT);
+        this.autoCompleteText = autoCompleteText;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_AUTO_COMPLETE_TEXT, this.autoCompleteText);
+            JsonUtils.addToJsonObject(result, KEY_KEYBOARD_LAYOUT, this.keyboardLayout);
+            JsonUtils.addToJsonObject(result, KEY_KEYPRESS_MODE, this.keypressMode);
+            JsonUtils.addToJsonObject(result, KEY_LANGUAGE, this.language);
+            JsonUtils.addToJsonObject(result, KEY_LIMITED_CHARACTER_LIST, 
+                    JsonUtils.createJsonArray(this.limitedCharacterList));
+            break;
         }
+        
+        return result;
     }
 }
