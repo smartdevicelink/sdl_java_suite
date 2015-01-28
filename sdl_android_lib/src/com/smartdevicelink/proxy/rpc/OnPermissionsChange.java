@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Provides update to app of which sets of functions are available
@@ -50,49 +53,63 @@ import com.smartdevicelink.proxy.RPCNotification;
  */
 public class OnPermissionsChange extends RPCNotification {
 	public static final String KEY_PERMISSION_ITEM = "permissionItem";
+	
+	private List<PermissionItem> permissionItems;
+	
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
 	public OnPermissionsChange() {
 		super(FunctionID.ON_PERMISSIONS_CHANGE);
 	}
-	/**
-     *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
+	
+    /**
+     * Creates a OnPermissionsChange object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-	public OnPermissionsChange(Hashtable<String, Object> hash) {
-		super(hash);
-	}
+    public OnPermissionsChange(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            List<JSONObject> permissionItemObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_PERMISSION_ITEM);
+            if(permissionItemObjs != null){
+                this.permissionItems = new ArrayList<PermissionItem>(permissionItemObjs.size());
+                for(JSONObject permissionItemObj : permissionItemObjs){
+                    this.permissionItems.add(new PermissionItem(permissionItemObj));
+                }
+            }
+            break;
+        }
+    }
+	
 	/**
      * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
      * @return List<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
-     */   
-    @SuppressWarnings("unchecked")
+     */
 	public List<PermissionItem> getPermissionItem() {
-		List<?> list = (List<?>)parameters.get(KEY_PERMISSION_ITEM);
-		if (list != null && list.size()>0) {
-			Object obj = list.get(0);
-			if(obj instanceof PermissionItem){
-				return (List<PermissionItem>) list;
-			} else if(obj instanceof Hashtable) {
-				List<PermissionItem> newList = new ArrayList<PermissionItem>();
-				for (Object hash:list) {
-					newList.add(new PermissionItem((Hashtable<String, Object>)hash));
-				}
-				return newList;
-			}
-		}
-		return null;
+		return this.permissionItems;
 	}
+	
     /**
      * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
 	public void setPermissionItem(List<PermissionItem> permissionItem) {
-		if (permissionItem != null) {
-			parameters.put(KEY_PERMISSION_ITEM, permissionItem);
-		} else {
-			parameters.remove(KEY_PERMISSION_ITEM);
-        }
+		this.permissionItems = permissionItem;
 	}
+	
+	@Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_PERMISSION_ITEM, 
+                    (this.permissionItems == null) ? null : JsonUtils.createJsonArrayOfJsonObjects(this.permissionItems, sdlVersion));
+            break;
+        }
+        
+        return result;
+    }
 }

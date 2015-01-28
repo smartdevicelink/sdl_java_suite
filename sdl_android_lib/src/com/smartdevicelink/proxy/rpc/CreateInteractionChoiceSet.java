@@ -111,7 +111,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
         default:
             JsonUtils.addToJsonObject(result, KEY_INTERACTION_CHOICE_SET_ID, this.interactionChoiceSetId);
             JsonUtils.addToJsonObject(result, KEY_CHOICE_SET, 
-                    JsonUtils.createJsonArrayOfJsonObjects(this.choiceSet, sdlVersion));
+                    (this.choiceSet == null) ? null : JsonUtils.createJsonArrayOfJsonObjects(this.choiceSet, sdlVersion));
             break;
         }
         

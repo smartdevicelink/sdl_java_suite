@@ -69,7 +69,7 @@ public class DiagnosticMessage extends RPCRequest {
             JsonUtils.addToJsonObject(result, KEY_TARGET_ID, this.targetId);
             JsonUtils.addToJsonObject(result, KEY_MESSAGE_LENGTH, this.messageLength);
             JsonUtils.addToJsonObject(result, KEY_MESSAGE_DATA, 
-                    JsonUtils.createJsonArray(this.messageData));
+                    (this.messageData == null) ? null : JsonUtils.createJsonArray(this.messageData));
             break;
         }
         

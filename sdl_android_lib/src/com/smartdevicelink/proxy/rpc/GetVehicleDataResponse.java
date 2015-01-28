@@ -370,17 +370,28 @@ public class GetVehicleDataResponse extends RPCResponse {
             JsonUtils.addToJsonObject(result, KEY_DRIVER_BRAKING, this.driverBraking);
             JsonUtils.addToJsonObject(result, KEY_WIPER_STATUS, this.wiperStatus);
             
-            JsonUtils.addToJsonObject(result, KEY_TIRE_PRESSURE, this.tirePressure.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_GPS, this.gps.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_BELT_STATUS, this.beltStatus.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_BODY_INFORMATION, this.bodyInformation.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_DEVICE_STATUS, this.deviceStatus.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_HEAD_LAMP_STATUS, this.headLampStatus.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_E_CALL_INFO, this.eCallInfo.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_AIRBAG_STATUS, this.airbagStatus.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_EMERGENCY_EVENT, this.emergencyEvent.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_MY_KEY, this.myKey.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_CLUSTER_MODE_STATUS, this.clusterModeStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_TIRE_PRESSURE, 
+                    (this.tirePressure == null) ? null : this.tirePressure.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_GPS, 
+                    (this.gps == null) ? null : this.gps.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_BELT_STATUS, 
+                    (this.beltStatus == null) ? null : this.beltStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_BODY_INFORMATION, 
+                    (this.bodyInformation == null) ? null : this.bodyInformation.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_DEVICE_STATUS, 
+                    (this.deviceStatus == null) ? null : this.deviceStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_HEAD_LAMP_STATUS, 
+                    (this.headLampStatus == null) ? null : this.headLampStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_E_CALL_INFO, 
+                    (this.eCallInfo == null) ? null : this.eCallInfo.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_AIRBAG_STATUS, 
+                    (this.airbagStatus == null) ? null : this.airbagStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_EMERGENCY_EVENT, 
+                    (this.emergencyEvent == null) ? null : this.emergencyEvent.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_MY_KEY, 
+                    (this.myKey == null) ? null : this.myKey.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_CLUSTER_MODE_STATUS, 
+                    (this.clusterModeStatus == null) ? null : this.clusterModeStatus.getJsonParameters(sdlVersion));
             break;
         }
         

@@ -243,16 +243,17 @@ public class DisplayCapabilities extends RPCObject {
             JsonUtils.addToJsonObject(result, KEY_NUM_CUSTOM_PRESETS_AVAILABLE, this.numCustomPresetsAvailable);
 
             JsonUtils.addToJsonObject(result, KEY_TEMPLATES_AVAILABLE, 
-                    JsonUtils.createJsonArray(this.templatesAvailable));
+                    (this.templatesAvailable == null) ? null : JsonUtils.createJsonArray(this.templatesAvailable));
             JsonUtils.addToJsonObject(result, KEY_MEDIA_CLOCK_FORMATS, 
-                    JsonUtils.createJsonArray(this.mediaClockFormats));
+                    (this.mediaClockFormats == null) ? null : JsonUtils.createJsonArray(this.mediaClockFormats));
             
             JsonUtils.addToJsonObject(result, KEY_TEXT_FIELDS, 
-                    JsonUtils.createJsonArrayOfJsonObjects(this.textFields, sdlVersion));
+                    (this.textFields == null) ? null : JsonUtils.createJsonArrayOfJsonObjects(this.textFields, sdlVersion));
             JsonUtils.addToJsonObject(result, KEY_IMAGE_FIELDS,
-                    JsonUtils.createJsonArrayOfJsonObjects(this.imageFields, sdlVersion));
+                    (this.imageFields == null) ? null : JsonUtils.createJsonArrayOfJsonObjects(this.imageFields, sdlVersion));
             
-            JsonUtils.addToJsonObject(result, KEY_SCREEN_PARAMS, this.screenParams.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_SCREEN_PARAMS, 
+                    (this.screenParams == null) ? null : this.screenParams.getJsonParameters(sdlVersion));
             break;
         }
         

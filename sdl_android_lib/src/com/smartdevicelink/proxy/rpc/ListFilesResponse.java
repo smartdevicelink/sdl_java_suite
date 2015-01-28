@@ -66,7 +66,7 @@ public class ListFilesResponse extends RPCResponse {
         default:
             JsonUtils.addToJsonObject(result, KEY_SPACE_AVAILABLE, this.spaceAvailable);
             JsonUtils.addToJsonObject(result, KEY_FILENAMES, 
-                    JsonUtils.createJsonArray(this.filenames));
+                    (this.filenames == null) ? null : JsonUtils.createJsonArray(this.filenames));
             break;
         }
         

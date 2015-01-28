@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Provides information to what language the Sdl HMI language was changed
@@ -60,77 +60,74 @@ import com.smartdevicelink.util.DebugTool;
 public class OnLanguageChange extends RPCNotification {
 	public static final String KEY_LANGUAGE = "language";
 	public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
+	
+	private String language, hmiLanguage; // represents Language enum
+	
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnLanguageChange() {
         super(FunctionID.ON_LANGUAGE_CHANGE);
     }
+    
     /**
-     *<p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
+     * Creates a OnLanguageChange object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public OnLanguageChange(Hashtable<String, Object> hash) {
-        super(hash);
+    public OnLanguageChange(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);
+            this.hmiLanguage = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HMI_DISPLAY_LANGUAGE);
+            break;
+        }
     }
+    
     /**
      * <p>Sets language that current SDL voice engine(VR+TTS) use</p>    
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
     public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-        	parameters.remove(KEY_LANGUAGE);
-        }
+        this.language = language.getJsonName(sdlVersion);
     }
+    
     /**
      * <p>Returns language that current SDL voice engine(VR+TTS) use</p>
      * @return {@linkplain Language} language that current SDL voice engine(VR+TTS) use
      */  
     public Language getLanguage() {
-    	Object obj = parameters.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-        	Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return Language.valueForJsonName(this.language, sdlVersion);
     }
+    
     /**
      * <p>Sets language that current display use</p>    
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+        this.hmiLanguage = hmiDisplayLanguage.getJsonName(sdlVersion);
     }
+    
     /**
      * <p>Returns language that current  display use</p>
      * @return {@linkplain Language} language that current display use
      */  
     public Language getHmiDisplayLanguage() {
-    	Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-        	Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
-            }
-            return theCode;
+    	return Language.valueForJsonName(this.hmiLanguage, sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_LANGUAGE, this.language);
+            JsonUtils.addToJsonObject(result, KEY_HMI_DISPLAY_LANGUAGE, this.hmiLanguage);
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

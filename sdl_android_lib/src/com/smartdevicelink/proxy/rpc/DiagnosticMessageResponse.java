@@ -46,7 +46,7 @@ public class DiagnosticMessageResponse extends RPCResponse {
         switch(sdlVersion){
         default:
             JsonUtils.addToJsonObject(result, KEY_MESSAGE_DATA_RESULT, 
-                    JsonUtils.createJsonArray(this.messageDataResult));
+                    (this.messageDataResult == null) ? null : JsonUtils.createJsonArray(this.messageDataResult));
             break;
         }
         

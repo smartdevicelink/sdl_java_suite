@@ -139,9 +139,9 @@ public class HMIPermissions extends RPCObject {
         switch(sdlVersion){
         default:
             JsonUtils.addToJsonObject(result, KEY_ALLOWED, 
-                    JsonUtils.createJsonArray(this.allowed));
+                    (this.allowed == null) ? null : JsonUtils.createJsonArray(this.allowed));
             JsonUtils.addToJsonObject(result, KEY_USER_DISALLOWED, 
-                    JsonUtils.createJsonArray(this.userDisallowed));
+                    (this.userDisallowed == null) ? null : JsonUtils.createJsonArray(this.userDisallowed));
             break;
         }
         

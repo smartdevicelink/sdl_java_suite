@@ -96,7 +96,7 @@ public class KeyboardProperties extends RPCObject {
             JsonUtils.addToJsonObject(result, KEY_KEYPRESS_MODE, this.keypressMode);
             JsonUtils.addToJsonObject(result, KEY_LANGUAGE, this.language);
             JsonUtils.addToJsonObject(result, KEY_LIMITED_CHARACTER_LIST, 
-                    JsonUtils.createJsonArray(this.limitedCharacterList));
+                    (this.limitedCharacterList == null) ? null : JsonUtils.createJsonArray(this.limitedCharacterList));
             break;
         }
         

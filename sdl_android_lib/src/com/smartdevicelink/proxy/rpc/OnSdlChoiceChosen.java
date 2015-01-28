@@ -1,16 +1,20 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 public class OnSdlChoiceChosen extends RPCNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
 	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
+	
+	private SdlChoice choice;
+	private String triggerSource; // represents TriggerSource enum
 	
 	public class SdlSubMenu {
 		private Integer _menuID = null;
@@ -135,45 +139,59 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		}
 	}
 	
-	
-	
-
 	public OnSdlChoiceChosen() {
 		super(FunctionID.ON_SDL_CHOICE_CHOSEN);
 	}
-	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
-		super(hash);
-	}
-    public SdlChoice getSdlChoice() {
-    	return (SdlChoice) parameters.get(KEY_SDL_CHOICE);
-    }
-    public void setSdlChoice(SdlChoice sdlChoice) {
-    	if (sdlChoice != null) {
-    		parameters.put(KEY_SDL_CHOICE, sdlChoice);
-    	} else {
-            parameters.remove(KEY_SDL_CHOICE);
-        }
-    }
-    public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
-        if (obj instanceof TriggerSource) {
-            return (TriggerSource) obj;
-        } else if (obj instanceof String) {
-            TriggerSource theCode = null;
-            try {
-                theCode = TriggerSource.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
+
+    /**
+     * Creates a OnSdlChoiceChosen object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnSdlChoiceChosen(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.triggerSource = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TRIGGER_SOURCE);
+            
+            //TODO: this needs testing and modification due to duplicate classes
+            JSONObject temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SDL_CHOICE);
+            if(temp != null){
+                Choice choice = new Choice(temp);
+                this.choice = new SdlChoice(choice);
             }
-            return theCode;
+            break;
         }
-        return null;
     }
+	
+    public SdlChoice getSdlChoice() {
+    	return this.choice;
+    }
+    
+    public void setSdlChoice(SdlChoice sdlChoice) {
+    	this.choice = sdlChoice;
+    }
+    
+    public TriggerSource getTriggerSource() {
+        return TriggerSource.valueForJsonName(this.triggerSource, sdlVersion);
+    }
+    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        if (triggerSource != null) {
-            parameters.put(KEY_TRIGGER_SOURCE, triggerSource );
-        } else {
-        	parameters.remove(KEY_TRIGGER_SOURCE);
-        }
+        this.triggerSource = triggerSource.getJsonName(sdlVersion);
     }
+    
+    @Override
+public JSONObject getJsonParameters(int sdlVersion){
+    JSONObject result = super.getJsonParameters(sdlVersion);
+    
+    switch(sdlVersion){
+    default:
+        JsonUtils.addToJsonObject(result, KEY_TRIGGER_SOURCE, this.triggerSource);
+        JsonUtils.addToJsonObject(result, KEY_SDL_CHOICE, 
+                (this.choice == null) ? null : this.choice.getChoice().getJsonParameters(sdlVersion));
+        break;
+    }
+    
+    return result;
+}
 }

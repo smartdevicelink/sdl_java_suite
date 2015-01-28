@@ -70,7 +70,7 @@ public class ImageField extends RPCObject {
             JsonUtils.addToJsonObject(result, KEY_IMAGE_TYPE_SUPPORTED, this.imageTypeSupported);
             JsonUtils.addToJsonObject(result, KEY_NAME, this.imageFieldName);
             JsonUtils.addToJsonObject(result, KEY_IMAGE_RESOLUTION, 
-                    this.imageResolution.getJsonParameters(sdlVersion));
+                    (this.imageResolution == null) ? null : this.imageResolution.getJsonParameters(sdlVersion));
             break;
         }
         

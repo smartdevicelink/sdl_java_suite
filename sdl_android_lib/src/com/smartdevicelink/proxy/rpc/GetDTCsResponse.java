@@ -45,7 +45,8 @@ public class GetDTCsResponse extends RPCResponse {
         
         switch(sdlVersion){
         default:
-            JsonUtils.addToJsonObject(result, KEY_DTC, JsonUtils.createJsonArray(this.dtc));
+            JsonUtils.addToJsonObject(result, KEY_DTC, 
+                    (this.dtc == null) ? null : JsonUtils.createJsonArray(this.dtc));
             break;
         }
         
