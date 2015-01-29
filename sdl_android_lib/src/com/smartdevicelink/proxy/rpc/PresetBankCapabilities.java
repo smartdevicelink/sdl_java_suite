@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Contains information about on-screen preset capabilities.
@@ -24,20 +25,27 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class PresetBankCapabilities extends RPCStruct {
+public class PresetBankCapabilities extends RPCObject {
 	public static final String KEY_ON_SCREEN_PRESETS_AVAILABLE = "OnScreenPresetsAvailable";
 
+	private Boolean onScreenPresetsAvailable;
+	
 	/**
 	 * Constructs a newly allocated PresetBankCapabilities object
 	 */
     public PresetBankCapabilities() { }
     
     /**
-     * Constructs a newly allocated PresetBankCapabilities object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a PresetBankCapabilities object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public PresetBankCapabilities(Hashtable<String, Object> hash) {
-        super(hash);
+    public PresetBankCapabilities(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.onScreenPresetsAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_ON_SCREEN_PRESETS_AVAILABLE);
+            break;
+        }
     }
     
     /**
@@ -45,11 +53,7 @@ public class PresetBankCapabilities extends RPCStruct {
      * @param onScreenPresetsAvailable if Onscreen custom presets are available.
      */
     public void setOnScreenPresetsAvailable(Boolean onScreenPresetsAvailable) {
-    	if (onScreenPresetsAvailable != null) {
-    		store.put(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
-    	} else {
-    		store.remove(KEY_ON_SCREEN_PRESETS_AVAILABLE);
-    	}
+    	this.onScreenPresetsAvailable = onScreenPresetsAvailable;
     }
     
     /**
@@ -57,6 +61,19 @@ public class PresetBankCapabilities extends RPCStruct {
      * @return if Onscreen custom presets are available
      */
     public Boolean onScreenPresetsAvailable() {
-    	return (Boolean) store.get(KEY_ON_SCREEN_PRESETS_AVAILABLE);
+    	return this.onScreenPresetsAvailable;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_ON_SCREEN_PRESETS_AVAILABLE, this.onScreenPresetsAvailable);
+            break;
+        }
+        
+        return result;
     }
 }

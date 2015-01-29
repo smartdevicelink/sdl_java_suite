@@ -1,69 +1,80 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
-public class PermissionItem extends RPCStruct {
+public class PermissionItem extends RPCObject {
 	public static final String KEY_RPC_NAME = "rpcName";
 	public static final String KEY_HMI_PERMISSIONS = "hmiPermissions";
 	public static final String KEY_PARAMETER_PERMISSIONS = "parameterPermissions";
 
+	private String rpcName;
+	private HMIPermissions hmiPermissions;
+	private ParameterPermissions parameterPermissions;
+	
     public PermissionItem() { }
-    public PermissionItem(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a PermissionItem object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public PermissionItem(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.rpcName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_RPC_NAME);
+            
+            JSONObject hmiPermissionsObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_HMI_PERMISSIONS);
+            if(hmiPermissionsObj != null){
+                this.hmiPermissions = new HMIPermissions(hmiPermissionsObj);
+            }
+            
+            JSONObject parameterPermissionsObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_PARAMETER_PERMISSIONS);
+            if(parameterPermissionsObj != null){
+                this.parameterPermissions = new ParameterPermissions(parameterPermissionsObj);
+            }
+            break;
+        }
     }
+    
     public String getRpcName() {
-        return (String) store.get(KEY_RPC_NAME);
+        return this.rpcName;
     }
+    
     public void setRpcName(String rpcName) {
-        if (rpcName != null) {
-        	store.put(KEY_RPC_NAME, rpcName);
-        } else {
-        	store.remove(KEY_RPC_NAME);
-        }
+        this.rpcName = rpcName;
     }
-    @SuppressWarnings("unchecked")
+    
     public HMIPermissions getHMIPermissions() {
-    	Object obj = store.get(KEY_HMI_PERMISSIONS);
-        if (obj instanceof HMIPermissions) {
-            return (HMIPermissions) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new HMIPermissions((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_PERMISSIONS, e);
-            }
-        }
-        return null;
+    	return this.hmiPermissions;
     }
+    
     public void setHMIPermissions(HMIPermissions hmiPermissions) {
-        if (hmiPermissions != null) {
-        	store.put(KEY_HMI_PERMISSIONS, hmiPermissions);
-        } else {
-        	store.remove(KEY_HMI_PERMISSIONS);
-        }
+        this.hmiPermissions = hmiPermissions;
     }
-    @SuppressWarnings("unchecked")
+    
     public ParameterPermissions getParameterPermissions() {
-    	Object obj = store.get(KEY_PARAMETER_PERMISSIONS);
-        if (obj instanceof ParameterPermissions) {
-            return (ParameterPermissions) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ParameterPermissions((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PARAMETER_PERMISSIONS, e);
-            }
-        }
-        return null;
+    	return this.parameterPermissions;
     }
+    
     public void setParameterPermissions(ParameterPermissions parameterPermissions) {
-        if (parameterPermissions != null) {
-        	store.put(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
-        } else {
-        	store.remove(KEY_PARAMETER_PERMISSIONS);
-        }
+        this.parameterPermissions = parameterPermissions;
     }
+    
+    @Override
+public JSONObject getJsonParameters(int sdlVersion){
+    JSONObject result = super.getJsonParameters(sdlVersion);
+    
+    switch(sdlVersion){
+    default:
+        JsonUtils.addToJsonObject(result, KEY_RPC_NAME, this.rpcName);
+        JsonUtils.addToJsonObject(result, KEY_HMI_PERMISSIONS, (this.hmiPermissions == null) ? null :
+            this.hmiPermissions.getJsonParameters(sdlVersion));
+        break;
+    }
+    
+    return result;
+}
 }

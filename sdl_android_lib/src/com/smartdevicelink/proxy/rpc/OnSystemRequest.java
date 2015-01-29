@@ -27,6 +27,7 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_OFFSET = "offset";
 	public static final String KEY_LENGTH = "length";
 
+	// TODO: skipping this class for now until I get a better understanding of what's happening in the bulk data
 	
 	Hashtable<String, Object> httpreqparams = null;
 	JSONObject myJSONObj = null;
@@ -40,7 +41,23 @@ public class OnSystemRequest extends RPCNotification {
         super(hash);
         
         //testing
-        //String sJson = "{\"HTTPRequest\":{\"headers\":{\"ContentType\":\"application/json\",\"ConnectTimeout\":60,\"DoOutput\":true,\"DoInput\":true,\"UseCaches\":false,\"RequestMethod\":\"POST\",\"ReadTimeout\":60,\"InstanceFollowRedirects\":false,\"charset\":\"utf-8\",\"Content-Length\":10743},\"body\":\"{\\\"data\\\":[\\\"HQcYAAAp+Ul19L\\\"]}\"}}";
+        //String sJson = "{
+        //                    \"HTTPRequest\":{
+        //                        \"headers\":{
+        //                            \"ContentType\":\"application/json\",
+        //                            \"ConnectTimeout\":60,
+        //                            \"DoOutput\":true,
+        //                            \"DoInput\":true,
+        //                            \"UseCaches\":false,
+        //                            \"RequestMethod\":\"POST\",
+        //                            \"ReadTimeout\":60,
+        //                            \"InstanceFollowRedirects\":false,
+        //                            \"charset\":\"utf-8\",
+        //                            \"Content-Length\":10743
+        //                        },
+        //                        \"body\":\"{\\\"data\\\":[\\\"HQcYAAAp+Ul19L\\\"]}\"
+        //                    }
+        //                }";
 		try {			
 			byte[] bulkData = (byte[]) hash.get(RPCStruct.KEY_BULK_DATA);
 			

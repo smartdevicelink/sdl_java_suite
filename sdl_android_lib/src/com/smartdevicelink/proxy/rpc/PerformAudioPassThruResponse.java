@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -19,15 +19,13 @@ public class PerformAudioPassThruResponse extends RPCResponse {
         super(FunctionID.PERFORM_AUDIO_PASS_THRU);
     }
 
-	/**
-	 * Constructs a new PerformAudioPassThruResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public PerformAudioPassThruResponse(Hashtable<String, Object> hash) {
-        super(hash);
+
+    /**
+     * Creates a PerformAudioPassThruResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public PerformAudioPassThruResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }

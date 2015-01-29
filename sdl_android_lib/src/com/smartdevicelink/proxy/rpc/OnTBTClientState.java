@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * <p>Notifies the application of the current TBT client status on the module.</p>
@@ -41,47 +41,56 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class OnTBTClientState extends RPCNotification {
 	public static final String KEY_STATE = "state";
+	
+	private String state; // represents TBTState enum
+	
 	/**
 	*Constructs a newly allocated OnTBTClientState object
 	*/ 
     public OnTBTClientState() {
         super(FunctionID.ON_TBT_CLIENT_STATE);
     }
+    
     /**
-     *<p>Constructs a newly allocated OnTBTClientState object indicated by the Hashtable parameter</p>
-     *@param hash The Hashtable to use
-     */    
-    public OnTBTClientState(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates a OnTBTClientState object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnTBTClientState(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.state = JsonUtils.readStringFromJsonObject(jsonObject, KEY_STATE);
+            break;
+        }
     }
+    
     /**
      * <p>Called to get the current state of TBT client</p>
      * @return {@linkplain TBTState} the current state of TBT client
      */    
     public TBTState getState() {
-        Object obj = parameters.get(KEY_STATE);
-        if (obj instanceof TBTState) {
-        	return (TBTState)obj;
-        } else if(obj instanceof String) {
-        	TBTState theCode = null;
-        	try{
-        		theCode = TBTState.valueForString((String) obj);
-        	} catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
-            }
-        	return theCode;
-        }    	
-    	return null;
+        return TBTState.valueForJsonName(this.state, sdlVersion);
     }
+    
     /**
      * <p>Called to set the current state of TBT client</p>
      * @param state current state of TBT client
      */    
     public void setState( TBTState state ) {
-        if (state != null) {
-            parameters.put(KEY_STATE, state );
-        } else {
-        	parameters.remove(KEY_STATE);
-        }
+        this.state = state.getJsonName(sdlVersion);
     }
-} // end-class
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_STATE, this.state);
+            break;
+        }
+        
+        return result;
+    }
+}

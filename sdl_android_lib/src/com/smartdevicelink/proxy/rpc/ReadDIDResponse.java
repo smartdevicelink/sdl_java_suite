@@ -1,12 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.DIDResult;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Read DID Response is sent, when ReadDID has been called
@@ -16,36 +17,51 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 public class ReadDIDResponse extends RPCResponse {
 	public static final String KEY_DID_RESULT = "didResult";
 
+	private List<DIDResult> didResult;
+	
     public ReadDIDResponse() {
         super(FunctionID.READ_DID);
     }
-    public ReadDIDResponse(Hashtable<String, Object> hash) {
-        super(hash);
-    }
-    public void setDidResult(List<DIDResult> didResult) {
-    	if (didResult != null) {
-    		parameters.put(KEY_DID_RESULT, didResult);
-    	} else {
-    		parameters.remove(KEY_DID_RESULT);
-    	}
-    }
-    @SuppressWarnings("unchecked")
-    public List<DIDResult> getDidResult() {
-        if (parameters.get(KEY_DID_RESULT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DID_RESULT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof DIDResult) {
-	                return (List<DIDResult>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<DIDResult> newList = new ArrayList<DIDResult>();
-	                for (Object hashObj : list) {
-	                    newList.add(new DIDResult((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
+
+    /**
+     * Creates a ReadDIDResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ReadDIDResponse(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            List<JSONObject> didResultObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_DID_RESULT);
+            if(didResultObjs != null){
+                this.didResult = new ArrayList<DIDResult>(didResultObjs.size());
+                for(JSONObject didResultObj : didResultObjs){
+                    this.didResult.add(new DIDResult(didResultObj));
+                }
+            }
+            break;
         }
-        return null;
+    }
+
+    public void setDidResult(List<DIDResult> didResult) {
+    	this.didResult = didResult;
+    }
+    
+    public List<DIDResult> getDidResult() {
+        return this.didResult;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DID_RESULT, (this.didResult == null) ? null : 
+                JsonUtils.createJsonArrayOfJsonObjects(this.didResult, sdlVersion));
+            break;
+        }
+        
+        return result;
     }
 }

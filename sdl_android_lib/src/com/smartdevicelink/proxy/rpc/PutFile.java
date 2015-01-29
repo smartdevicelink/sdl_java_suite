@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.BulkData;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -25,7 +25,13 @@ public class PutFile extends RPCRequest implements BulkData{
     public static final String KEY_OFFSET = "offset";
     public static final String KEY_LENGTH = "length";
     
-
+    private String filename;
+    private String fileType; // represents FileType enum
+    private Boolean persistentFile, systemFile;
+    private Integer offset, length;
+    
+    private byte[] bulkData;
+    
 	/**
 	 * Constructs a new PutFile object
 	 */
@@ -33,15 +39,23 @@ public class PutFile extends RPCRequest implements BulkData{
         super(FunctionID.PUT_FILE);
     }
 
-	/**
-	 * Constructs a new PutFile object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public PutFile(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a PutFile object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public PutFile(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.filename = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SDL_FILE_NAME);
+            this.fileType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_FILE_TYPE);
+            this.persistentFile = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PERSISTENT_FILE);
+            this.systemFile = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_SYSTEM_FILE);
+            this.offset = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_OFFSET);
+            this.length = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_LENGTH);
+            break;
+        }
     }
 
 	/**
@@ -53,11 +67,7 @@ public class PutFile extends RPCRequest implements BulkData{
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
-        if (sdlFileName != null) {
-            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
-        } else {
-        	parameters.remove(KEY_SDL_FILE_NAME);
-        }
+        this.filename = sdlFileName;
     }
 
 	/**
@@ -66,7 +76,7 @@ public class PutFile extends RPCRequest implements BulkData{
 	 * @return String - a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return this.filename;
     }
 
 	/**
@@ -76,11 +86,7 @@ public class PutFile extends RPCRequest implements BulkData{
 	 *            a FileType value representing a selected file type
 	 */
     public void setFileType(FileType fileType) {
-        if (fileType != null) {
-            parameters.put(KEY_FILE_TYPE, fileType);
-        } else {
-        	parameters.remove(KEY_FILE_TYPE);
-        }
+        this.fileType = fileType.getJsonName(sdlVersion);
     }
 
 	/**
@@ -89,19 +95,7 @@ public class PutFile extends RPCRequest implements BulkData{
 	 * @return FileType -a FileType value representing a selected file type
 	 */
     public FileType getFileType() {
-        Object obj = parameters.get(KEY_FILE_TYPE);
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-        	FileType theCode = null;
-            try {
-                theCode = FileType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FILE_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return FileType.valueForJsonName(this.fileType, sdlVersion);
     }
 
 	/**
@@ -118,11 +112,7 @@ public class PutFile extends RPCRequest implements BulkData{
 	 *            a Boolean value
 	 */
     public void setPersistentFile(Boolean persistentFile) {
-        if (persistentFile != null) {
-            parameters.put(KEY_PERSISTENT_FILE, persistentFile);
-        } else {
-        	parameters.remove(KEY_PERSISTENT_FILE);
-        }
+        this.persistentFile = persistentFile;
     }
 
 	/**
@@ -133,67 +123,68 @@ public class PutFile extends RPCRequest implements BulkData{
 	 *         persist between sessions / ignition cycles
 	 */
     public Boolean getPersistentFile() {
-        return (Boolean) parameters.get(KEY_PERSISTENT_FILE);
+        return this.persistentFile;
     }
+    
+    @Deprecated
     public void setFileData(byte[] fileData) {
-        if (fileData != null) {
-            parameters.put(RPCStruct.KEY_BULK_DATA, fileData);
-        } else {
-        	parameters.remove(RPCStruct.KEY_BULK_DATA);
-        }
+        setBulkData(fileData);
     }
+    
+    @Deprecated
     public byte[] getFileData() {
-        return (byte[]) parameters.get(RPCStruct.KEY_BULK_DATA);
+        return getBulkData();
     }
     
     public void setOffset(Integer offset) {
-        if (offset != null) {
-            parameters.put(KEY_OFFSET, offset);
-        } else {
-            parameters.remove(KEY_OFFSET);
-        }
+        this.offset = offset;
     }
 
     public Integer getOffset() {
-        final Object o = parameters.get(KEY_OFFSET);
-        if (o instanceof Integer) {
-            return (Integer) o;
-        }
-
-        return null;
+        return this.offset;
     }
 
     public void setLength(Integer length) {
-        if (length != null) {
-            parameters.put(KEY_LENGTH, length);
-        } else {
-            parameters.remove(KEY_LENGTH);
-        }
+        this.length = length;
     }
 
     public Integer getLength() {
-        final Object o = parameters.get(KEY_LENGTH);
-        if (o instanceof Integer) {
-            return (Integer) o;
-        }
-
-        return null;
+        return this.length;
     }
 
     public void setSystemFile(Boolean systemFile) {
-        if (systemFile != null) {
-            parameters.put(KEY_SYSTEM_FILE, systemFile);
-        } else {
-            parameters.remove(KEY_SYSTEM_FILE);
-        }
+        this.systemFile = systemFile;
     }
 
     public Boolean getSystemFile() {
-        final Object o = parameters.get(KEY_SYSTEM_FILE);
-        if (o instanceof Boolean) {
-            return (Boolean) o;
-        }
-        else
-        	return null;
+        return this.systemFile;
     }
+
+    @Override
+    public byte[] getBulkData(){
+        return this.bulkData;
+    }
+
+    @Override
+    public void setBulkData(byte[] rawData){
+        this.bulkData = rawData;
+    }
+    
+    @Override
+public JSONObject getJsonParameters(int sdlVersion){
+    JSONObject result = super.getJsonParameters(sdlVersion);
+    
+    switch(sdlVersion){
+    default:
+        JsonUtils.addToJsonObject(result, KEY_SDL_FILE_NAME, this.filename);
+        JsonUtils.addToJsonObject(result, KEY_FILE_TYPE, this.fileType);
+        JsonUtils.addToJsonObject(result, KEY_PERSISTENT_FILE, this.persistentFile);
+        JsonUtils.addToJsonObject(result, KEY_SYSTEM_FILE, this.systemFile);
+        JsonUtils.addToJsonObject(result, KEY_OFFSET, this.offset);
+        JsonUtils.addToJsonObject(result, KEY_LENGTH, this.length);
+        break;
+    }
+    
+    return result;
+}
 }

@@ -2,6 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
+import org.json.JSONObject;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
@@ -9,6 +11,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 public class OnVehicleData extends RPCNotification {
 	public static final String KEY_SPEED = "speed";
@@ -37,431 +40,362 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 
+    // TODO: refactor this class with new VehicleData design
+    private GPSData gps;
+    private TireStatus tirePressure;
+    private BeltStatus beltStatus;
+    private BodyInformation bodyInformation;
+    private DeviceStatus deviceStatus;
+    private HeadLampStatus headLampStatus;
+    private ECallInfo eCallInfo;
+    private AirbagStatus airbagStatus;
+    private EmergencyEvent emergencyEvent;
+    private MyKey myKey;
+    private ClusterModeStatus clusterModeStatus;
+    private Double speed, fuelLevel, instantFuelConsumption, externalTemperature, engineTorque, accPedalPosition,
+        steeringWheelAngle;
+    private Integer rpm, odometer;
+    private String vin;
+    private String wiperStatus; // represents WiperStatus enum
+    private String fuelLevelState; // represents ComponentVolumeStatus enum
+    private String prndl; // represents PRNDL enum
+    private String driverBraking; // represents VehicleDataEventStatus enum
+
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA);
     }
-    public OnVehicleData(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a GetVehicleDataResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnVehicleData(JSONObject jsonObject) {
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.speed = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_SPEED);
+            this.externalTemperature = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_EXTERNAL_TEMPERATURE);
+            this.fuelLevel = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_FUEL_LEVEL);
+            this.engineTorque = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_ENGINE_TORQUE);
+            this.instantFuelConsumption = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_INSTANT_FUEL_CONSUMPTION);
+            this.accPedalPosition = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_ACC_PEDAL_POSITION);
+            this.steeringWheelAngle = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_STEERING_WHEEL_ANGLE);
+            
+            this.rpm = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_RPM);
+            this.odometer = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_ODOMETER);
+            
+            this.vin = JsonUtils.readStringFromJsonObject(jsonObject, KEY_VIN);
+            this.prndl = JsonUtils.readStringFromJsonObject(jsonObject, KEY_PRNDL);
+            this.fuelLevelState = JsonUtils.readStringFromJsonObject(jsonObject, KEY_FUEL_LEVEL_STATE);
+            this.driverBraking = JsonUtils.readStringFromJsonObject(jsonObject, KEY_DRIVER_BRAKING);
+            this.wiperStatus = JsonUtils.readStringFromJsonObject(jsonObject, KEY_WIPER_STATUS);
+            
+            JSONObject temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_TIRE_PRESSURE);
+            if(temp != null){
+                this.tirePressure = new TireStatus(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_GPS);
+            if(temp != null){
+                this.gps = new GPSData(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_BELT_STATUS);
+            if(temp != null){
+                this.beltStatus = new BeltStatus(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_BODY_INFORMATION);
+            if(temp != null){
+                this.bodyInformation = new BodyInformation(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_DEVICE_STATUS);
+            if(temp != null){
+                this.deviceStatus = new DeviceStatus(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_HEAD_LAMP_STATUS);
+            if(temp != null){
+                this.headLampStatus = new HeadLampStatus(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_E_CALL_INFO);
+            if(temp != null){
+                this.eCallInfo = new ECallInfo(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_AIRBAG_STATUS);
+            if(temp != null){
+                this.airbagStatus = new AirbagStatus(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_EMERGENCY_EVENT);
+            if(temp != null){
+                this.emergencyEvent = new EmergencyEvent(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_MY_KEY);
+            if(temp != null){
+                this.myKey = new MyKey(temp);
+            }
+            
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_CLUSTER_MODE_STATUS);
+            if(temp != null){
+                this.clusterModeStatus = new ClusterModeStatus(temp);
+            }
+            
+            break;
+        }
     }
+    
     public void setGps(GPSData gps) {
-    	if (gps != null) {
-    		parameters.put(KEY_GPS, gps);
-    	} else {
-    		parameters.remove(KEY_GPS);
-    	}
+        this.gps = gps;
     }
-    @SuppressWarnings("unchecked")
+    
     public GPSData getGps() {
-    	Object obj = parameters.get(KEY_GPS);
-        if (obj instanceof GPSData) {
-            return (GPSData) obj;
-        } else if (obj instanceof Hashtable) {
-        	GPSData theCode = null;
-            try {
-                theCode = new GPSData((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return this.gps;
     }
+    
     public void setSpeed(Double speed) {
-    	if (speed != null) {
-    		parameters.put(KEY_SPEED, speed);
-    	} else {
-    		parameters.remove(KEY_SPEED);
-    	}
+        this.speed = speed;
     }
+    
     public Double getSpeed() {
-    	return (Double) parameters.get(KEY_SPEED);
+        return this.speed;
     }
+    
     public void setRpm(Integer rpm) {
-    	if (rpm != null) {
-    		parameters.put(KEY_RPM, rpm);
-    	} else {
-    		parameters.remove(KEY_RPM);
-    	}
+        this.rpm = rpm;
     }
+    
     public Integer getRpm() {
-    	return (Integer) parameters.get(KEY_RPM);
+        return this.rpm;
     }
+    
     public void setFuelLevel(Double fuelLevel) {
-    	if (fuelLevel != null) {
-    		parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-    	} else {
-    		parameters.remove(KEY_FUEL_LEVEL);
-    	}
+        this.fuelLevel = fuelLevel;
     }
+    
     public Double getFuelLevel() {
-    	return (Double) parameters.get(KEY_FUEL_LEVEL);
+        return this.fuelLevel;
     }
+    
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-    	if (fuelLevel_State != null) {
-    		parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-    	} else {
-    		parameters.remove(KEY_FUEL_LEVEL_STATE);
-    	}
+        this.fuelLevelState = fuelLevel_State.getJsonName(sdlVersion);
     }
+    
     public ComponentVolumeStatus getFuelLevel_State() {
-        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-        	ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return ComponentVolumeStatus.valueForJsonName(this.fuelLevelState, sdlVersion);
     }
+    
     public void setInstantFuelConsumption(Double instantFuelConsumption) {
-    	if (instantFuelConsumption != null) {
-    		parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-    	} else {
-    		parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-    	}
+        this.instantFuelConsumption = instantFuelConsumption;
     }
+    
     public Double getInstantFuelConsumption() {
-    	return (Double) parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+        return this.instantFuelConsumption;
     }
+    
     public void setExternalTemperature(Double externalTemperature) {
-    	if (externalTemperature != null) {
-    		parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-    	} else {
-    		parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-    	}
+        this.externalTemperature = externalTemperature;
     }
+    
     public Double getExternalTemperature() {
-    	return (Double) parameters.get(KEY_EXTERNAL_TEMPERATURE);
+        return this.externalTemperature;
     }
+    
     public void setVin(String vin) {
-    	if (vin != null) {
-    		parameters.put(KEY_VIN, vin);
-    	} else {
-    		parameters.remove(KEY_VIN);
-    	}
+        this.vin = vin;
     }
+    
     public String getVin() {
-    	return (String) parameters.get(KEY_VIN);
+        return this.vin;
     }
+    
     public void setPrndl(PRNDL prndl) {
-    	if (prndl != null) {
-    		parameters.put(KEY_PRNDL, prndl);
-    	} else {
-    		parameters.remove(KEY_PRNDL);
-    	}
+        this.prndl = prndl.getJsonName(sdlVersion);
     }
+    
     public PRNDL getPrndl() {
-        Object obj = parameters.get(KEY_PRNDL);
-        if (obj instanceof PRNDL) {
-            return (PRNDL) obj;
-        } else if (obj instanceof String) {
-        	PRNDL theCode = null;
-            try {
-                theCode = PRNDL.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
-            }
-            return theCode;
-        }
-        return null;
+        return PRNDL.valueForJsonName(this.prndl, sdlVersion);
     }
+    
     public void setTirePressure(TireStatus tirePressure) {
-    	if (tirePressure != null) {
-    		parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-    	} else {
-    		parameters.remove(KEY_TIRE_PRESSURE);
-    	}
+        this.tirePressure = tirePressure;
     }
-    @SuppressWarnings("unchecked")
+    
     public TireStatus getTirePressure() {
-    	Object obj = parameters.get(KEY_TIRE_PRESSURE);
-        if (obj instanceof TireStatus) {
-            return (TireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new TireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
-            }
-        }
-        return null;
+        return this.tirePressure;
     }
+    
     public void setOdometer(Integer odometer) {
-    	if (odometer != null) {
-    		parameters.put(KEY_ODOMETER, odometer);
-    	} else {
-    		parameters.remove(KEY_ODOMETER);
-    	}
+        this.odometer = odometer;
     }
+    
     public Integer getOdometer() {
-    	return (Integer) parameters.get(KEY_ODOMETER);
+        return this.odometer;
     }
+    
     public void setBeltStatus(BeltStatus beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        this.beltStatus = beltStatus;
     }
-    @SuppressWarnings("unchecked")
+    
     public BeltStatus getBeltStatus() {
-    	Object obj = parameters.get(KEY_BELT_STATUS);
-        if (obj instanceof BeltStatus) {
-            return (BeltStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new BeltStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
-            }
-        }
-        return null;
+        return this.beltStatus;
     }
+    
     public void setBodyInformation(BodyInformation bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        this.bodyInformation = bodyInformation;
     }
-    @SuppressWarnings("unchecked")
+    
     public BodyInformation getBodyInformation() {
-    	Object obj = parameters.get(KEY_BODY_INFORMATION);
-        if (obj instanceof BodyInformation) {
-            return (BodyInformation) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new BodyInformation((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
-            }
-        }
-        return null;
+        return this.bodyInformation;
     }
+    
     public void setDeviceStatus(DeviceStatus deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        this.deviceStatus = deviceStatus;
     }
-    @SuppressWarnings("unchecked")
+    
     public DeviceStatus getDeviceStatus() {
-    	Object obj = parameters.get(KEY_DEVICE_STATUS);
-        if (obj instanceof DeviceStatus) {
-            return (DeviceStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new DeviceStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
-            }
-        }
-        return null;
+        return this.deviceStatus;
     }
+    
     public void setDriverBraking(VehicleDataEventStatus driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        this.driverBraking = driverBraking.getJsonName(sdlVersion);
     }
+    
     public VehicleDataEventStatus getDriverBraking() {
-        Object obj = parameters.get(KEY_DRIVER_BRAKING);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataEventStatus.valueForJsonName(this.driverBraking, sdlVersion);
     }
+    
     public void setWiperStatus(WiperStatus wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        this.wiperStatus = wiperStatus.getJsonName(sdlVersion);
     }
+    
     public WiperStatus getWiperStatus() {
-        Object obj = parameters.get(KEY_WIPER_STATUS);
-        if (obj instanceof WiperStatus) {
-            return (WiperStatus) obj;
-        } else if (obj instanceof String) {
-        	WiperStatus theCode = null;
-            try {
-                theCode = WiperStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return WiperStatus.valueForJsonName(this.wiperStatus, sdlVersion);
     }
+  
     public void setHeadLampStatus(HeadLampStatus headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        this.headLampStatus = headLampStatus;
     }
-    @SuppressWarnings("unchecked")
+    
     public HeadLampStatus getHeadLampStatus() {
-    	Object obj = parameters.get(KEY_HEAD_LAMP_STATUS);
-        if (obj instanceof HeadLampStatus) {
-            return (HeadLampStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new HeadLampStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
-            }
-        }
-        return null;
+        return this.headLampStatus;
     }
+    
     public void setEngineTorque(Double engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        this.engineTorque = engineTorque;
     }
+    
     public Double getEngineTorque() {
-    	return (Double) parameters.get(KEY_ENGINE_TORQUE);
+        return this.engineTorque;
     }
+
     public void setAccPedalPosition(Double accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        this.accPedalPosition = accPedalPosition;
     }
+    
     public Double getAccPedalPosition() {
-    	return (Double) parameters.get(KEY_ACC_PEDAL_POSITION);
+        return this.accPedalPosition;
     }
+        
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        this.steeringWheelAngle = steeringWheelAngle;
     }
+    
     public Double getSteeringWheelAngle() {
-    	return (Double) parameters.get(KEY_STEERING_WHEEL_ANGLE);
-    }
-    public void setECallInfo(ECallInfo eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public ECallInfo getECallInfo() {
-    	Object obj = parameters.get(KEY_E_CALL_INFO);
-        if (obj instanceof ECallInfo) {
-            return (ECallInfo) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ECallInfo((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
-            }
-        }
-        return null;
-    }
-    public void setAirbagStatus(AirbagStatus airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public AirbagStatus getAirbagStatus() {
-    	Object obj = parameters.get(KEY_AIRBAG_STATUS);
-        if (obj instanceof AirbagStatus) {
-            return (AirbagStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new AirbagStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
-            }
-        }
-        return null;
-    }
-    public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public EmergencyEvent getEmergencyEvent() {
-    	Object obj = parameters.get(KEY_EMERGENCY_EVENT);
-        if (obj instanceof EmergencyEvent) {
-            return (EmergencyEvent) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new EmergencyEvent((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
-            }
-        }
-        return null;
-    }
-    public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public ClusterModeStatus getClusterModeStatus() {
-    	Object obj = parameters.get(KEY_CLUSTER_MODE_STATUS);
-        if (obj instanceof ClusterModeStatus) {
-            return (ClusterModeStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ClusterModeStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
-            }
-        }
-        return null;
-    }
-    public void setMyKey(MyKey myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public MyKey getMyKey() {
-    	Object obj = parameters.get(KEY_MY_KEY);
-        if (obj instanceof MyKey) {
-            return (MyKey) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new MyKey((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
-            }
-        }
-        return null;
+        return this.steeringWheelAngle;
     }    
+
+    public void setECallInfo(ECallInfo eCallInfo) {
+        this.eCallInfo = eCallInfo;
+    }
+    
+    public ECallInfo getECallInfo() {
+        return this.eCallInfo;
+    }   
+    
+    public void setAirbagStatus(AirbagStatus airbagStatus) {
+        this.airbagStatus = airbagStatus;
+    }
+    
+    public AirbagStatus getAirbagStatus() {
+        return this.airbagStatus;
+    }   
+
+    public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
+        this.emergencyEvent = emergencyEvent;
+    }
+    
+    public EmergencyEvent getEmergencyEvent() {
+        return this.emergencyEvent;
+    }
+    
+    public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
+        this.clusterModeStatus = clusterModeStatus;
+    }
+    
+    public ClusterModeStatus getClusterModeStatus() {
+        return this.clusterModeStatus;
+    }
+    
+    public void setMyKey(MyKey myKey) {
+        this.myKey = myKey;
+    }
+    
+    public MyKey getMyKey() {
+        return this.myKey;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SPEED, this.speed);
+            JsonUtils.addToJsonObject(result, KEY_EXTERNAL_TEMPERATURE, this.externalTemperature);
+            JsonUtils.addToJsonObject(result, KEY_FUEL_LEVEL, this.fuelLevel);
+            JsonUtils.addToJsonObject(result, KEY_ENGINE_TORQUE, this.engineTorque);
+            JsonUtils.addToJsonObject(result, KEY_INSTANT_FUEL_CONSUMPTION, this.instantFuelConsumption);
+            JsonUtils.addToJsonObject(result, KEY_ACC_PEDAL_POSITION, this.accPedalPosition);
+            JsonUtils.addToJsonObject(result, KEY_STEERING_WHEEL_ANGLE, this.steeringWheelAngle);
+            JsonUtils.addToJsonObject(result, KEY_RPM, this.rpm);
+            JsonUtils.addToJsonObject(result, KEY_ODOMETER, this.odometer);
+            JsonUtils.addToJsonObject(result, KEY_VIN, this.vin);
+            JsonUtils.addToJsonObject(result, KEY_PRNDL, this.prndl);
+            JsonUtils.addToJsonObject(result, KEY_FUEL_LEVEL_STATE, this.fuelLevelState);
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_BRAKING, this.driverBraking);
+            JsonUtils.addToJsonObject(result, KEY_WIPER_STATUS, this.wiperStatus);
+            
+            JsonUtils.addToJsonObject(result, KEY_TIRE_PRESSURE, 
+                    (this.tirePressure == null) ? null : this.tirePressure.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_GPS, 
+                    (this.gps == null) ? null : this.gps.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_BELT_STATUS, 
+                    (this.beltStatus == null) ? null : this.beltStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_BODY_INFORMATION, 
+                    (this.bodyInformation == null) ? null : this.bodyInformation.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_DEVICE_STATUS, 
+                    (this.deviceStatus == null) ? null : this.deviceStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_HEAD_LAMP_STATUS, 
+                    (this.headLampStatus == null) ? null : this.headLampStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_E_CALL_INFO, 
+                    (this.eCallInfo == null) ? null : this.eCallInfo.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_AIRBAG_STATUS, 
+                    (this.airbagStatus == null) ? null : this.airbagStatus.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_EMERGENCY_EVENT, 
+                    (this.emergencyEvent == null) ? null : this.emergencyEvent.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_MY_KEY, 
+                    (this.myKey == null) ? null : this.myKey.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_CLUSTER_MODE_STATUS, 
+                    (this.clusterModeStatus == null) ? null : this.clusterModeStatus.getJsonParameters(sdlVersion));
+            break;
+        }
+        
+        return result;
+    }
 }

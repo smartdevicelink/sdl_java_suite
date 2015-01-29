@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Non periodic vehicle data read request. This is an RPC to get diagnostics
@@ -22,6 +24,9 @@ public class ReadDID extends RPCRequest {
 	public static final String KEY_ECU_NAME = "ecuName";
 	public static final String KEY_DID_LOCATION = "didLocation";
 
+	private Integer ecuName;
+	private List<Integer> didLocation;
+	
 	/**
 	 * Constructs a new ReadDID object
 	 */
@@ -29,15 +34,19 @@ public class ReadDID extends RPCRequest {
         super(FunctionID.READ_DID);
     }
 
-	/**
-	 * Constructs a new ReadDID object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public ReadDID(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a ReadDID object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ReadDID(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.ecuName = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_ECU_NAME);
+            this.didLocation = JsonUtils.readIntegerListFromJsonObject(jsonObject, KEY_DID_LOCATION);
+            break;
+        }
     }
 
 	/**
@@ -49,11 +58,7 @@ public class ReadDID extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-    	if (ecuName != null) {
-    		parameters.put(KEY_ECU_NAME, ecuName);
-    	} else {
-    		parameters.remove(KEY_ECU_NAME);
-    	}
+    	this.ecuName = ecuName;
     }
 
 	/**
@@ -63,7 +68,7 @@ public class ReadDID extends RPCRequest {
 	 *         module
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(KEY_ECU_NAME);
+    	return this.ecuName;
     }
 
 	/**
@@ -80,11 +85,7 @@ public class ReadDID extends RPCRequest {
 	 *            </ul>
 	 */
     public void setDidLocation(List<Integer> didLocation) {
-    	if (didLocation != null) {
-    		parameters.put(KEY_DID_LOCATION, didLocation);
-    	} else {
-    		parameters.remove(KEY_DID_LOCATION);
-    	}
+    	this.didLocation = didLocation;
     }
 
 	/**
@@ -93,17 +94,22 @@ public class ReadDID extends RPCRequest {
 	 * @return List<Integer> -a List<Integer> value representing raw data
 	 *         from vehicle data DID location(s)
 	 */
-    @SuppressWarnings("unchecked")
     public List<Integer> getDidLocation() {
-        if (parameters.get(KEY_DID_LOCATION) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DID_LOCATION);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof Integer) {
-                	return (List<Integer>) list;
-        		}
-        	}
-        }
-        return null;
+        return this.didLocation;
     }
+    
+    @Override
+public JSONObject getJsonParameters(int sdlVersion){
+    JSONObject result = super.getJsonParameters(sdlVersion);
+    
+    switch(sdlVersion){
+    default:
+        JsonUtils.addToJsonObject(result, KEY_ECU_NAME, this.ecuName);
+        JsonUtils.addToJsonObject(result, KEY_DID_LOCATION, (this.didLocation == null) ? null : 
+            JsonUtils.createJsonArray(this.didLocation));
+        break;
+    }
+    
+    return result;
+}
 }

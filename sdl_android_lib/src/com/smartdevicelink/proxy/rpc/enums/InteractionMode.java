@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
+
 /**
  * For application-initiated interactions (<i>{@linkplain com.smartdevicelink.proxy.rpc.PerformInteraction}</i>), this specifies
  * the mode by which the user is prompted and by which the user's selection is
@@ -7,7 +9,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 
  * @since SmartDeviceLink 1.0
  */
-public enum InteractionMode {
+public enum InteractionMode implements JsonName{
 	/**
 	 * This mode causes the interaction to occur only on the display, meaning
 	 * the choices are presented and selected only via the display. Selections
@@ -40,7 +42,9 @@ public enum InteractionMode {
 	 * selection (even if the interaction did not end with a selection being
 	 * made)
 	 */
-	BOTH;
+	BOTH,
+	
+	;
 
 	/**
 	 * Returns InteractionMode (MANUAL_ONLY, VR_ONLY or BOTH)
@@ -50,5 +54,31 @@ public enum InteractionMode {
 
     public static InteractionMode valueForString(String value) {
         return valueOf(value);
+    }
+
+    /**
+     * Returns the enumerated value for a given string and associated SDL version.
+     * 
+     * @param name The name of the JSON string
+     * @param sdlVersion The SDL version associated with the input string
+     * @return The enumerated value for the given string or null if it wasn't found
+     */
+    public static InteractionMode valueForJsonName(String name, int sdlVersion){
+        if(name == null){
+            return null;
+        }
+
+        switch(sdlVersion){
+        default:
+            return valueForString(name);
+        }
+    }
+
+    @Override
+    public String getJsonName(int sdlVersion){
+        switch(sdlVersion){
+        default:
+            return this.name();
+        }
     }
 }

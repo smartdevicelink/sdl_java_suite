@@ -1,74 +1,75 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
-import com.smartdevicelink.util.DebugTool;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import com.smartdevicelink.util.JsonUtils;
 
 public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_EVENT = "event";
 	public static final String KEY_TYPE = "type";
 	
+	private String type; // represents TouchType enum
+	private List<TouchEvent> event;
+	
     public OnTouchEvent() {
         super(FunctionID.ON_TOUCH_EVENT);
     }
-    public OnTouchEvent(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a OnTouchEvent object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public OnTouchEvent(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.type = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TYPE);
+            
+            List<JSONObject> eventObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_EVENT);
+            if(eventObjs != null){
+                this.event = new ArrayList<TouchEvent>(eventObjs.size());
+                for(JSONObject eventObj : eventObjs){
+                    this.event.add(new TouchEvent(eventObj));
+                }
+            }
+            break;
+        }
     }
     
     public void setType(TouchType type) {
-    	if (type != null) {
-    		parameters.put(KEY_TYPE, type);
-    	} else {
-    		parameters.remove(KEY_TYPE);
-    	}
+    	this.type = type.getJsonName(sdlVersion);
     }
     
     public TouchType getType() {
-        Object obj = parameters.get(KEY_TYPE);
-        if (obj instanceof TouchType) {
-            return (TouchType) obj;
-        } else if (obj instanceof String) {
-        	TouchType theCode = null;
-            try {
-                theCode = TouchType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return TouchType.valueForJsonName(this.type, sdlVersion);
     }
     
     public void setEvent(List<TouchEvent> event) {
-        if (event != null) {
-            parameters.put(KEY_EVENT, event);
-        } else {
-        	parameters.remove(KEY_EVENT);
-        }
+        this.event = event;
     }
     
-    @SuppressWarnings("unchecked")
     public List<TouchEvent> getEvent() {
-        if (parameters.get(KEY_EVENT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_EVENT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TouchEvent) {
-	                return (List<TouchEvent>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TouchEvent> newList = new ArrayList<TouchEvent>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TouchEvent((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
-	        }
+        return this.event;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_TYPE, this.type);
+            JsonUtils.addToJsonObject(result, KEY_EVENT, (this.event == null) ? null : 
+                    JsonUtils.createJsonArrayOfJsonObjects(this.event, sdlVersion));
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

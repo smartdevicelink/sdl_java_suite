@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Put File Response is sent, when PutFile has been called
@@ -13,6 +14,8 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class PutFileResponse extends RPCResponse {
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
+	private Integer spaceAvailable;
+	
 	/**
 	 * Constructs a new PutFileResponse object
 	 */
@@ -20,25 +23,38 @@ public class PutFileResponse extends RPCResponse {
         super(FunctionID.PUT_FILE);
     }
 
-	/**
-	 * Constructs a new PutFileResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public PutFileResponse(Hashtable<String, Object> hash) {
-        super(hash);
-    }
-    public void setSpaceAvailable(Integer spaceAvailable) {
-        if (spaceAvailable != null) {
-            parameters.put(KEY_SPACE_AVAILABLE, spaceAvailable);
-        } else {
-        	parameters.remove(KEY_SPACE_AVAILABLE);
+    /**
+     * Creates a PutFileResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public PutFileResponse(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.spaceAvailable = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_SPACE_AVAILABLE);
+            break;
         }
     }
+
+    public void setSpaceAvailable(Integer spaceAvailable) {
+        this.spaceAvailable = spaceAvailable;
+    }
+    
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
+        return this.spaceAvailable;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SPACE_AVAILABLE, this.spaceAvailable);
+            break;
+        }
+        
+        return result;
     }
 }
