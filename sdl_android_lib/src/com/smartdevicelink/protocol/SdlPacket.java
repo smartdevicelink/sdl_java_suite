@@ -13,9 +13,7 @@ public class SdlPacket implements Parcelable{
 	public static final int HEADER_SIZE 						= 12;
 	public static final int HEADER_SIZE_V1 						= 8;//Backwards
 
-	private static final int VERSION_MASK 						= 0xF0; //4 highest bits
 	private static final int COMPRESSION_MASK 					= 0x08; //4th lowest bit
-	private static final int FRAME_TYPE_MASK 					= 0x07; //3 lowest bits
 	
 	public static final int FRAME_TYPE_CONTROL 					= 0x00;
 	public static final int FRAME_TYPE_SINGLE 					= 0x01;
@@ -30,7 +28,7 @@ public class SdlPacket implements Parcelable{
 	public static final int SERVICE_TYPE_RPC	 				= 0x07;
 	//RESERVED 0x08 - 0x09
 	public static final int SERVICE_TYPE_PCM 					= 0x0A;
-	public static final int SERVICE_TYPE_VIDEO 				= 0x0B;
+	public static final int SERVICE_TYPE_VIDEO 					= 0x0B;
 	//RESERVED 0x0C - 0x0E
 	public static final int SERVICE_TYPE_BULK_DATA				= 0x0F;
 	//RESERVED 0x10 - 0xFF
@@ -233,6 +231,7 @@ public class SdlPacket implements Parcelable{
 			builder.put((byte)((messageId&0x0000FF00)>>8));
 			builder.put((byte)((messageId&0x000000FF)));
 		}
+		
 		if(payload!=null && payload.length>0){
 			builder.put(payload);
 		}

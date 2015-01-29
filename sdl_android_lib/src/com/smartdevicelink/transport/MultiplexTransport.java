@@ -3,7 +3,6 @@ package com.smartdevicelink.transport;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.c4.android.transport.TransportBroker;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
 
@@ -26,7 +25,7 @@ public class MultiplexTransport extends SdlTransport{
 				transportConfig.appId){
 
 					@Override
-					public boolean onHardwareConnected(com.c4.android.datatypes.TransportEnums.TransportType type) {
+					public boolean onHardwareConnected(TransportType type) {
 						if(super.onHardwareConnected(type)){
 							//Log.d(TAG, "On transport connected...");
 							if(!connected){
@@ -42,12 +41,11 @@ public class MultiplexTransport extends SdlTransport{
 					}
 
 					@Override
-					public void onHardwareDisconnected(com.c4.android.datatypes.TransportEnums.TransportType type) {
+					public void onHardwareDisconnected(TransportType type) {
 						super.onHardwareDisconnected(type);
 						if(connected){
 							//Log.d(TAG, "Handling disconnect");
 							connected = false;
-							//this.resetSession();  //TODO check to see if we can remove this
 							handleTransportError("",null); //This seems wrong, but it works
 							//handleTransportDisconnected("");  
 						}
@@ -67,7 +65,7 @@ public class MultiplexTransport extends SdlTransport{
 
 	}
 
-	public void forceHardwareConnectEvent(com.c4.android.datatypes.TransportEnums.TransportType type){
+	public void forceHardwareConnectEvent(TransportType type){
 		broker.onHardwareConnected(type);
 
 	}

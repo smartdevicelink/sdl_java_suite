@@ -1,17 +1,16 @@
 package com.smartdevicelink.transport;
 
-import android.util.Log;
-
-import com.c4.android.transport.IPacketStateMachine;
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.protocol.SdlPacket;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import android.util.Log;
+
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.SdlPacket;
 
 /**
  * General comments:
@@ -415,7 +414,7 @@ public class TCPTransport extends SdlTransport {
                             buffer = new byte[READ_BUFFER_SIZE];
                         }
                         
-                        if(psm.getState() == IPacketStateMachine.FINISHED_STATE)
+                        if(psm.getState() == SdlPsm.FINISHED_STATE)
                         {
                         	//Log.d(TAG, "Packet formed, sending off");
                         	handleReceivedPacket((SdlPacket)psm.getFormedPacket());

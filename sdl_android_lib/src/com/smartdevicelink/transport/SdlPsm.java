@@ -1,15 +1,13 @@
 package com.smartdevicelink.transport;
 
-import android.os.Parcelable;
-
-import com.c4.android.transport.IPacketStateMachine;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.util.SdlLog;
 
 
-public class SdlPsm implements IPacketStateMachine {
+public class SdlPsm{
 	private static final String TAG = "Sdl PSM";
 	//Each state represents the byte that should be incomming
+	
 	public static final int START_STATE							= 	0x0;
 	public static final int SERVICE_TYPE_STATE					= 	0x02;
 	public static final int CONTROL_FRAME_INFO_STATE			= 	0x03;
@@ -52,7 +50,6 @@ public class SdlPsm implements IPacketStateMachine {
 		reset();
 	}
 	
-	@Override
 	public boolean handleByte(byte data) {
 		//SdlLog.trace(TAG, data + " = incomming");
 		state = transitionOnInput(data,state);
@@ -215,7 +212,7 @@ public class SdlPsm implements IPacketStateMachine {
 			}else{
 				return ERROR_STATE;
 			}
-		case FINISHED_STATE: //We shouldn't be here...gtfo
+		case FINISHED_STATE: //We shouldn't be here...Should have been reset
 		default: 
 			return ERROR_STATE;
 			
@@ -223,8 +220,7 @@ public class SdlPsm implements IPacketStateMachine {
 		
 	}
 	
-	@Override
-	public Parcelable getFormedPacket(){
+	public SdlPacket getFormedPacket(){
 		if(state==FINISHED_STATE){
 			SdlLog.trace(TAG, "Finished packet.");
 			return new SdlPacket(version, compression, frameType,
@@ -235,12 +231,10 @@ public class SdlPsm implements IPacketStateMachine {
 		}
 	}
 	
-	@Override
 	public int getState() {
 		return state;
 	}
 
-	@Override
 	public void reset() {
 		version = 0;
 		state = START_STATE;

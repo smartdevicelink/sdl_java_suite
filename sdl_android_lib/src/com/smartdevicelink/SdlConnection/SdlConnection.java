@@ -450,9 +450,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
     }
 
-	public void forceHardwareConnectEvent(com.c4.android.datatypes.TransportEnums.TransportType type){
+	public void forceHardwareConnectEvent(TransportType type){
 		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
-			((MultiplexTransport)_transport).forceHardwareConnectEvent(com.c4.android.datatypes.TransportEnums.TransportType.BLUETOOTH);
+			((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 		}
 	}
     

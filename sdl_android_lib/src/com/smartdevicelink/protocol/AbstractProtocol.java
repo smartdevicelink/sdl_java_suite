@@ -83,26 +83,13 @@ public abstract class AbstractProtocol {
 		synchronized(_frameLock) {
 			
 			byte[] frameHeader = header.constructPacket();
-			handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
+			if(frameHeader!=null){
+				_protocolListener.onProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
+			}//TODO else log out error
 			
-			/*if (data != null) {
-				byte[] fullPacket = new byte[frameHeader.length +length];
-				System.arraycopy(frameHeader, 0, fullPacket, 0, frameHeader.length);
-				System.arraycopy(data, offset, fullPacket, frameHeader.length, length);
-				//handleProtocolMessageBytesToSend(data, offset, length);
-				handleProtocolMessageBytesToSend(fullPacket, 0, fullPacket.length);
-			} else{
-				handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
-			}*/
 		}
 	}
-	
-	// This method handles protocol message bytes that are ready to send.
-	// A callback is sent to the protocol listener.
-	protected void handleProtocolMessageBytesToSend(byte[] bytesToSend,
-			int offset, int length) {
-		_protocolListener.onProtocolMessageBytesToSend(bytesToSend, offset, length);
-	}
+
 	
 	// This method handles received protocol messages. 
 	protected void handleProtocolMessageReceived(ProtocolMessage message) {

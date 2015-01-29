@@ -18,13 +18,6 @@ public class WiProProtocol extends AbstractProtocol {
 	private static int HEADER_SIZE = 8;
 	private static int MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
 
-	boolean _haveHeader = false;
-	byte[] _headerBuf = new byte[HEADER_SIZE];
-	int _headerBufWritePos = 0;
-	SdlPacket _currentHeader = null;
-	byte[] _dataBuf = null;
-	int _dataBufWritePos = 0;
-	
 	int hashID = 0;
 	int messageID = 0;
 
@@ -56,32 +49,27 @@ public class WiProProtocol extends AbstractProtocol {
 			this._version = 2;
 			HEADER_SIZE = 12;
 			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
-			_headerBuf = new byte[HEADER_SIZE];
 		}
 		else if (version == 1){
 			HEADER_SIZE = 8;
 			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
-			_headerBuf = new byte[HEADER_SIZE];			
 		}
 			
 	}
 
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00);
-		sendFrameToTransport(header);
+		handlePacketToSend(header);
 	} // end-method
 
 	private void sendStartProtocolSessionACK(SessionType sessionType, byte sessionID) {
 		SdlPacket header = SdlPacketFactory.createStartSessionACK(sessionType, sessionID, 0x00, _version);
-		sendFrameToTransport(header);
+		handlePacketToSend(header);
 	} // end-method
 	
 	public void EndProtocolSession(SessionType sessionType, byte sessionID) {
 		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, _version);
-		//byte[] data = new byte[4];
-		//data = BitConverter.intToByteArray(hashID);
-		//handleProtocolFrameToSend(header, data, 0, data.length);
-		sendFrameToTransport(header);
+		handlePacketToSend(header);
 	} // end-method
 
 	public void SendMessage(ProtocolMessage protocolMsg) {	
@@ -133,7 +121,7 @@ public class WiProProtocol extends AbstractProtocol {
 				// Second four bytes are frame count.
 				System.arraycopy(BitConverter.intToByteArray(frameCount), 0, firstFrameData, 4, 4);
 				SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, _version,firstFrameData);
-
+				//Send the first frame
 				handlePacketToSend(firstHeader);
 				
 				int currentOffset = 0;
@@ -168,39 +156,29 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	private void sendFrameToTransport(SdlPacket packet) {
-		handlePacketToSend(packet);
-	}
-
 	public void handledPacketReceived(SdlPacket packet){
-		_currentHeader = packet;
 		//Check for a version difference
 		if (_version == 1) {
-			setVersion((byte)_currentHeader.version);	
+			setVersion((byte)packet.version);	
 		}
 		
-		MessageFrameAssembler assembler = getFrameAssemblerForFrame(_currentHeader);
-		//handleProtocolFrameReceived(_currentHeader, _dataBuf, assembler);
-		assembler.handleFrame(_currentHeader);
-		_currentHeader = null;
-		/**
-		 * TODO START HERE ON MONDAY OR TUESDAY OR WHENEVER
-		 */
+		MessageFrameAssembler assembler = getFrameAssemblerForFrame(packet);
+		assembler.handleFrame(packet);
 	}
 
 	
 	
-	protected MessageFrameAssembler getFrameAssemblerForFrame(SdlPacket header) {
-		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(header.getSessionId());
+	protected MessageFrameAssembler getFrameAssemblerForFrame(SdlPacket packet) {
+		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(packet.getSessionId());
 		if (hashSessionID == null) {
 			hashSessionID = new Hashtable<Integer, MessageFrameAssembler>();
-			_assemblerForSessionID.put((byte)header.getSessionId(), hashSessionID);
+			_assemblerForSessionID.put((byte)packet.getSessionId(), hashSessionID);
 		} // end-if
 		
-		MessageFrameAssembler ret = (MessageFrameAssembler) _assemblerForMessageID.get(Integer.valueOf(header.getMessageId()));
+		MessageFrameAssembler ret = (MessageFrameAssembler) _assemblerForMessageID.get(Integer.valueOf(packet.getMessageId()));
 		if (ret == null) {
 			ret = new MessageFrameAssembler();
-			_assemblerForMessageID.put(Integer.valueOf(header.getMessageId()), ret);
+			_assemblerForMessageID.put(Integer.valueOf(packet.getMessageId()), ret);
 		} // end-if
 		
 		return ret;
@@ -208,7 +186,6 @@ public class WiProProtocol extends AbstractProtocol {
 
 	protected class MessageFrameAssembler {
 		protected boolean hasFirstFrame = false;
-		protected boolean hasSecondFrame = false;
 		protected ByteArrayOutputStream accumulator = null;
 		protected int totalSize = 0;
 		protected int framesRemaining = 0;
@@ -243,7 +220,9 @@ public class WiProProtocol extends AbstractProtocol {
 					message.setCorrID(binFrameHeader.getCorrID());
 					if (binFrameHeader.getJsonSize() > 0) message.setData(binFrameHeader.getJsonData());
 					if (binFrameHeader.getBulkData() != null) message.setBulkData(binFrameHeader.getBulkData());
-				} else message.setData(accumulator.toByteArray());
+				} else{
+					message.setData(accumulator.toByteArray());
+				}
 				
 				_assemblerForMessageID.remove(packet.getMessageId());
 				
@@ -254,31 +233,18 @@ public class WiProProtocol extends AbstractProtocol {
 				} // end-catch
 				
 				hasFirstFrame = false;
-				hasSecondFrame = false;
 				accumulator = null;
 			} // end-if
 		} // end-method
 		
 		protected void handleMultiFrameMessageFrame(SdlPacket packet) {
-			//if (!hasFirstFrame) {
-			//	hasFirstFrame = true;
-			if (packet.getFrameType() == FrameType.First)
-			{
+			if (packet.getFrameType() == FrameType.First){
 				handleFirstDataFrame(packet);
 			}
-				
-			//} else if (!hasSecondFrame) {
-			//	hasSecondFrame = true;
-			//	framesRemaining--;
-			//	handleSecondFrame(header, data);
-			//} else {
-			//	framesRemaining--;
-			else
-			{
+			else{
 				handleRemainingFrame(packet);
 			}
 				
-			//}
 		} // end-method
 		
 		protected void handleFrame(SdlPacket packet) {
@@ -382,7 +348,7 @@ public class WiProProtocol extends AbstractProtocol {
 	@Override
 	public void StartProtocolService(SessionType sessionType, byte sessionID) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, sessionID);
-		sendFrameToTransport(header);
+		handlePacketToSend(header);
 		
 	}
 
@@ -401,6 +367,6 @@ public class WiProProtocol extends AbstractProtocol {
 	@Override
 	public void SendHeartBeat(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.Heartbeat, sessionID, _version);        
-        sendFrameToTransport(heartbeat);		
+        handlePacketToSend(heartbeat);		
 	}
 } // end-class

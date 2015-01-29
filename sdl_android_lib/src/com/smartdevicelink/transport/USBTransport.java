@@ -1,5 +1,12 @@
 package com.smartdevicelink.transport;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,24 +16,12 @@ import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
 
-import com.c4.android.transport.IPacketStateMachine;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.transport.ITransportListener;
-import com.smartdevicelink.transport.SdlTransport;
-import com.smartdevicelink.transport.SiphonServer;
-import com.smartdevicelink.transport.TransportType;
 import com.smartdevicelink.util.DebugTool;
-
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Class that implements USB transport.
@@ -801,7 +796,7 @@ public class USBTransport extends SdlTransport {
                          buffer = new byte[READ_BUFFER_SIZE];
                      }
                      
-                     if(psm.getState() == IPacketStateMachine.FINISHED_STATE)
+                     if(psm.getState() == SdlPsm.FINISHED_STATE)
                      {
                      	//Log.d(TAG, "Packet formed, sending off");
                      	handleReceivedPacket((SdlPacket)psm.getFormedPacket());
