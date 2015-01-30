@@ -13,7 +13,6 @@ import android.util.Log;
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	
 	private static final String TAG = "Sdl Broadcast Receiver";
-	private static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
 
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 
@@ -35,7 +34,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.i(TAG, "Sdl Receiver Activated");
+		//Log.i(TAG, "Sdl Receiver Activated");
 
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
@@ -86,7 +85,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		//So let's start up our service since no copy is running
 		Intent serviceIntent = new Intent(context, localRouterClass);
 		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){ //TODO make sure this works
-			Log.i(TAG, "Adding reply address to starting intent of Router Service: "+intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
+			//Log.i(TAG, "Adding reply address to starting intent of Router Service: "+intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
 			//serviceIntent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
 			if(serviceIntent!=null 
 					&& intent!=null 
@@ -137,7 +136,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				SharedPreferences pref = con.getSharedPreferences(
 	            		con.getPackageName()+TRANSPORT_GLOBAL_PREFS , 4);
 	            boolean connected = pref.getBoolean(IS_TRANSPORT_CONNECTED, false);
-	            Log.w(TAG, "Is Connected? Returning " + connected);
+	           // Log.w(TAG, "Is Connected? Returning " + connected);
 				return connected;
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
@@ -145,7 +144,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			}
 
 		}else{
-			Log.w("C4", "Router service isn't running, returning false.");
+			Log.w(TAG, "Router service isn't running, returning false.");
 		}
 
 		return false;

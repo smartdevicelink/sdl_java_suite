@@ -1,7 +1,8 @@
 package com.smartdevicelink.transport;
 
+import android.util.Log;
+
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.util.SdlLog;
 
 
 public class SdlPsm{
@@ -51,7 +52,7 @@ public class SdlPsm{
 	}
 	
 	public boolean handleByte(byte data) {
-		//SdlLog.trace(TAG, data + " = incomming");
+		//Log.trace(TAG, data + " = incomming");
 		state = transitionOnInput(data,state);
 		
 		if(state==ERROR_STATE){
@@ -64,7 +65,7 @@ public class SdlPsm{
 		switch(state){
 		case START_STATE:
 			version = (rawByte&(byte)VERSION_MASK)>>4;
-			SdlLog.trace(TAG, "Version: " + version);
+			//Log.trace(TAG, "Version: " + version);
 			if(version==0){ //It should never be 0
 				return ERROR_STATE;
 			}
@@ -72,7 +73,7 @@ public class SdlPsm{
 			
 			
 			frameType = rawByte&(byte)FRAME_TYPE_MASK;
-			SdlLog.trace(TAG, rawByte + " = Frame Type: " + frameType);
+			//Log.trace(TAG, rawByte + " = Frame Type: " + frameType);
 			
 			switch(version){
 			case 0:
@@ -98,7 +99,7 @@ public class SdlPsm{
 			
 		case CONTROL_FRAME_INFO_STATE:
 			controlFrameInfo = (int)(rawByte&0xFF);  
-			SdlLog.trace(TAG,"Frame Info: " + controlFrameInfo);
+			//Log.trace(TAG,"Frame Info: " + controlFrameInfo);
 			switch(frameType){
 				case SdlPacket.FRAME_TYPE_CONTROL:
 					/*if(frameInfo<FRAME_INFO_HEART_BEAT 
@@ -148,7 +149,7 @@ public class SdlPsm{
 		case DATA_SIZE_4_STATE:
 			//Log.d(TAG, "Data byte 4: " + rawByte);
 			dataLength+=((int)rawByte) & 0xFF;
-			SdlLog.trace(TAG, "Data Size: " + dataLength);
+			//Log.trace(TAG, "Data Size: " + dataLength);
 			//We should have data length now for the pump state
 			switch(frameType){ //If all is correct we should break out of this switch statement
 			case SdlPacket.FRAME_TYPE_SINGLE:
@@ -202,7 +203,7 @@ public class SdlPsm{
 		case DATA_PUMP_STATE:
 			payload[dataLength-dumpSize] = rawByte;
 			dumpSize--;
-			SdlLog.trace(TAG,rawByte + " read. Data Length remaining: " + dumpSize);
+			//Log.trace(TAG,rawByte + " read. Data Length remaining: " + dumpSize);
 			//Do we have any more bytes to read in?
 			if(dumpSize>0){
 				return DATA_PUMP_STATE;
@@ -222,7 +223,7 @@ public class SdlPsm{
 	
 	public SdlPacket getFormedPacket(){
 		if(state==FINISHED_STATE){
-			SdlLog.trace(TAG, "Finished packet.");
+			//Log.trace(TAG, "Finished packet.");
 			return new SdlPacket(version, compression, frameType,
 					serviceType, controlFrameInfo, sessionId,
 					dataLength, messageId, payload);

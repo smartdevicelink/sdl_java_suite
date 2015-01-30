@@ -34,10 +34,10 @@ public class TransportBroker {
 			@Override
 			public void onReceive(Context context, Intent intent) 
 			{
-				Log.d(TAG, whereToReply + " received an Intent, checking to see what it is");
+				//Log.d(TAG, whereToReply + " received an Intent, checking to see what it is");
 				if(intent.hasExtra(TransportConstants.HARDWARE_DISCONNECTED)){
 					//We should shut down, so call 
-					Log.d(TAG, "Being told the hardware disconected, calling onHardwareDisconnect()");
+					//Log.d(TAG, "Being told the hardware disconected, calling onHfardwareDisconnect()");
 					onHardwareDisconnected(TransportType.valueOf(intent.getStringExtra(TransportConstants.HARDWARE_DISCONNECTED)));
 				}
 				if(intent.hasExtra(TransportConstants.HARDWARE_CONNECTED)){
@@ -46,7 +46,7 @@ public class TransportBroker {
 				}
 				if(intent.hasExtra(TransportConstants.UNREGISTER_EXTRA)){
 					//We should shut down, so call 
-					Log.d(TAG, "Being told to unregister, calling onServiceUnregsiteredFromBTServer()");
+					//Log.d(TAG, "Being told to unregister, calling onServiceUnregsiteredFromBTServer()");
 									
 					sendPacketAddress = null;
 					onServiceUnregsiteredFromRouterService(intent.getIntExtra(TransportConstants.UNREGISTER_EXTRA, 0));
@@ -62,12 +62,12 @@ public class TransportBroker {
 				}
 
 				if(intent.hasExtra(REGISTER_WITH_ROUTER_ACTION)){
-					Log.d(TAG,"Being told to reregister");
+					//Log.d(TAG,"Being told to reregister");
 
 					//So the Bluetooth Service is telling us it is free now.
 					//Let's try to register again with the service. It better not deny us again! I swear!
 					if(sendPacketAddress==null){ 
-						Log.d(TAG,"The sendPacketAddress is null, attempt to register with Bluetooth Service");
+						//Log.d(TAG,"The sendPacketAddress is null, attempt to register with Bluetooth Service");
 						//Want to make sure we are connecting
 						//This should be ok to send in the case of the first service creation
 						//We should only be returned one successful intent and one refused attempt
@@ -75,7 +75,7 @@ public class TransportBroker {
 						//initBluetoothConnection();
 					}
 					else{
-						Log.d(TAG,"The sendPacketAddress is " +sendPacketAddress );
+						//Log.d(TAG,"The sendPacketAddress is " +sendPacketAddress );
 
 					}
 					return;
@@ -94,7 +94,7 @@ public class TransportBroker {
 					if(intent.hasExtra(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
 						//Keep track if we actually get this
 					}
-					Log.i(TAG, whereToReply + " Registered with the Livio Bluetooth Service!");
+					//Log.i(TAG, whereToReply + " Registered with the Sdl Bluetooth Service!");
 					if(queuedOnTransportConnect!=null){
 						onHardwareConnected(queuedOnTransportConnect);
 						queuedOnTransportConnect = null;
@@ -154,7 +154,7 @@ public class TransportBroker {
 				if(currentContext==null){
 					throw new IllegalStateException("This instance can't be started since it's local reference of context is null. Ensure when suppling a context to the TransportBroker that it is valid");
 				}
-				Log.d(TAG, "Registering our reply receiver: " + whereToReply);
+				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
 				registerWithRouterService();
 			}
 		}
@@ -243,7 +243,7 @@ public class TransportBroker {
 		}
 		
 		public void sendPacketToRouterService(char[] packet){
-			Log.d(TAG,whereToReply + " sending packet to Bluetooth Service");
+			//Log.d(TAG,whereToReply + " sending packet to Bluetooth Service");
 
 			if(sendPacketAddress==null){
 				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
@@ -287,12 +287,12 @@ public class TransportBroker {
 			}
 			Intent intent = null;
 			if(!isRouterServiceRunning(getContext()) ){
-				Log.w(TAG, "No instance of the Livio Bluetooth Service to register with");
-				Log.d(TAG,whereToReply + " starting up and registering with  Bluetooth Service");
+				Log.w(TAG, "No instance of the Sdl router service to register with");
+				//Log.d(TAG,whereToReply + " starting up and registering with  router Service");
 				intent = new Intent(START_ROUTER_SERVICE_ACTION);
 			}
 			else{
-				Log.d(TAG,whereToReply + " registering with  Bluetooth Service");
+				//Log.d(TAG,whereToReply + " registering with  router Service");
 				intent = new Intent(REGISTER_WITH_ROUTER_ACTION);
 			}
 			
@@ -304,7 +304,7 @@ public class TransportBroker {
 			
 		}
 		private void unregisterWithRouterService(){
-			Log.i(TAG, "Livio Service attempting to unregister with Livio Bluetooth Service");
+			Log.i(TAG, "Attempting to unregister with Sdl Router Service");
 			Intent unregisterWithService = new Intent();
 			unregisterWithService.setAction(REGISTER_WITH_ROUTER_ACTION);
 			unregisterWithService.putExtra(TransportConstants.UNREGISTER_EXTRA, Long.valueOf(appId));

@@ -47,7 +47,7 @@ import com.smartdevicelink.transport.SdlRouterService;
  * @author Joey Grover
  * 
  */
-public class BluetoothTransport {
+public class MultiplexBluetoothTransport {
     //finals
 	private static final String TAG = "Bluetooth Transport";
     private static final UUID SERVER_UUID= new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
@@ -94,7 +94,7 @@ public class BluetoothTransport {
     
     public static String currentlyConnectedDevice = null;
     public static String currentlyConnectedDeviceAddress = null;
-    private static BluetoothTransport serverInstance = null;
+    private static MultiplexBluetoothTransport serverInstance = null;
     //private BluetoothServerSocket serverSocket= null;
 
 
@@ -106,8 +106,8 @@ public class BluetoothTransport {
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothTransport(Handler handler) {
-    	Log.w(TAG, "Creating Bluetooth Serial Adapter");
+    public MultiplexBluetoothTransport(Handler handler) {
+    	//Log.w(TAG, "Creating Bluetooth Serial Adapter");
        // mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
@@ -137,15 +137,15 @@ public class BluetoothTransport {
 	/*
      * Let's use this method from now on to get bluetooth service
      */
-    public synchronized static BluetoothTransport getBluetoothSerialServerInstance(Handler handler){
+    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler){
 
         if(serverInstance==null){
-        	serverInstance = new BluetoothTransport(handler);
+        	serverInstance = new MultiplexBluetoothTransport(handler);
         }
        
     	return serverInstance;
     }
-    public synchronized static BluetoothTransport getBluetoothSerialServerInstance(){
+    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(){
     	return serverInstance;
     }
 
@@ -157,7 +157,7 @@ public class BluetoothTransport {
     	mSecureAcceptThread = aThread;
     }
     protected synchronized void setStateManually(int state){
-        Log.d(TAG, "Setting state from: " +mState + " to: " +state);
+        //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
         mState = state;
     }
     /**
@@ -165,7 +165,7 @@ public class BluetoothTransport {
      * @param state  An integer defining the current connection state
      */
     private synchronized void setState(int state) {
-        Log.d(TAG, "Setting state from: " +mState + " to: " +state);
+        //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
     	int previousState = mState;
         mState = state;
 
@@ -184,7 +184,7 @@ public class BluetoothTransport {
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
-    	Log.d(TAG, "Starting up Bluetooth Server to Listen");
+    	//Log.d(TAG, "Starting up Bluetooth Server to Listen");
         // Cancel any thread attempting to make a connection
         if (serverInstance.mConnectThread != null) {serverInstance.mConnectThread.cancel(); serverInstance.mConnectThread = null;}
 
@@ -199,7 +199,7 @@ public class BluetoothTransport {
         		//&& !listening
         		&& serverInstance.mAdapter != null
         		&&  serverInstance.mAdapter.isEnabled()) {
-        	Log.d(TAG, "Secure thread was null, attempting to create new");
+        	//Log.d(TAG, "Secure thread was null, attempting to create new");
         	getBluetoothSerialServerInstance().setAcceptThread(new AcceptThread(true));
             if(getBluetoothSerialServerInstance().getAcceptThread()!=null){
             	getBluetoothSerialServerInstance().setState(STATE_LISTEN);
@@ -299,7 +299,7 @@ public class BluetoothTransport {
     	getBluetoothSerialServerInstance().stop(STATE_NONE);
     }
     protected synchronized void stop(int stateToTransitionTo) {
-    	Log.d(TAG, "Attempting to close the bluetooth serial server");
+    	//Log.d(TAG, "Attempting to close the bluetooth serial server");
         if (getBluetoothSerialServerInstance().mConnectThread != null) {
         	getBluetoothSerialServerInstance().mConnectThread.cancel(); 
         	getBluetoothSerialServerInstance().mConnectThread = null;
@@ -373,7 +373,7 @@ public class BluetoothTransport {
     	getBluetoothSerialServerInstance().timeOutHandler = new Handler(); 
     	getBluetoothSerialServerInstance().socketRunable = new Runnable() {           
             public void run() {
-            	Log.e(TAG, "BLUETOOTH SOCKET CONNECT TIMEOUT - ATTEMPT TO CLOSE SOCKET");
+            	//Log.e(TAG, "BLUETOOTH SOCKET CONNECT TIMEOUT - ATTEMPT TO CLOSE SOCKET");
             	try {
 					sock.close();
 				} catch (IOException e) {
@@ -400,7 +400,7 @@ public class BluetoothTransport {
 		public AcceptThread(boolean secure) {
         	synchronized(threadLock){
             	listening = false;
-            	Log.d(TAG, "Creating an Accept Thread");
+            	//Log.d(TAG, "Creating an Accept Thread");
             	BluetoothServerSocket tmp = null;
             	mSocketType = secure ? "Secure":"Insecure";
             	// Create a new listening server socket
@@ -411,17 +411,17 @@ public class BluetoothTransport {
                 	}
             	} catch (IOException e) {
             		listening = false;
-                	Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
+                	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
                 	 //Let's try to shut down this thead
             	}catch(SecurityException e2){
-            		Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
+            		//Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
             		listening = false;
             		interrupt();
             	}
             	mmServerSocket = tmp;
             	BluetoothSocket mySock = getBTSocket(mmServerSocket);			
     			//FIXME should only log on debug
-            	Log.d(TAG, "Accepting Connections on SDP Server Port Number: " + getChannel(mySock) + "\r\n");
+            	//Log.d(TAG, "Accepting Connections on SDP Server Port Number: " + getChannel(mySock) + "\r\n");
             }
         }
         
@@ -443,7 +443,7 @@ public class BluetoothTransport {
                 		return;
                 	}
                 	listenAttempts++;
-                	Log.d(TAG, "Livio Bluetooth Accept thread is running.");
+                	Log.d(TAG, "SDL Bluetooth Accept thread is running.");
 
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -466,7 +466,7 @@ public class BluetoothTransport {
 
                 // If a connection was accepted
                 if (socket != null) {
-                    synchronized (BluetoothTransport.this) {
+                    synchronized (MultiplexBluetoothTransport.this) {
                         switch (mState) {
                         case STATE_LISTEN:
                         case STATE_CONNECTING:
@@ -519,8 +519,8 @@ public class BluetoothTransport {
         private final BluetoothDevice mmDevice;
         public ConnectThread(BluetoothDevice device) {
             mmDevice = device;
-            Log.d(TAG, "Attempting to conenct to " + device.getName());
-            Log.d(TAG, "UUID to conenct to " + SERVER_UUID.toString());
+            //Log.d(TAG, "Attempting to conenct to " + device.getName());
+            //Log.d(TAG, "UUID to conenct to " + SERVER_UUID.toString());
 
         }
 
@@ -566,13 +566,13 @@ public class BluetoothTransport {
 					//Finally if both have failed an insecure connection is attempted, though this is not available on lower SDK's
 	                boolean tryInsecure = false;
 	                boolean trySecure = false;
-	                Log.i(TAG,mmDevice.getName() + " socket connecting...");
+	                //Log.i(TAG,mmDevice.getName() + " socket connecting...");
 
 	                if(mBluetoothLevel<=1){
 	                try {
 	                	SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
 	                      Method m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-	                      Log.i(TAG,"connecting using createRfcommSocket");
+	                      //Log.i(TAG,"connecting using createRfcommSocket");
 	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, Integer.valueOf(1));
 	    					if(mmSocket!=null){
 	    						//Looper.prepare(); 
@@ -587,7 +587,7 @@ public class BluetoothTransport {
 	    					} else{trySecure = true;}
 
 	                } catch (Exception e) {
-	                      Log.e(TAG,"createRfcommSocket exception - " + e.toString());
+	                      //Log.e(TAG,"createRfcommSocket exception - " + e.toString());
 	                      SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 
 	                		trySecure = true;
@@ -601,7 +601,7 @@ public class BluetoothTransport {
 	                if(trySecure && mBluetoothLevel<=2){
 	                    try {
 	                    	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
-    	                	Log.i(TAG, "connecting using createRfcommSocketToServiceRecord ");
+    	                	//Log.i(TAG, "connecting using createRfcommSocketToServiceRecord ");
 	                         mmSocket = mmDevice.createRfcommSocketToServiceRecord(SERVER_UUID);                        
 	     					if(mmSocket!=null){
 	    						//Looper.prepare(); 
@@ -630,7 +630,7 @@ public class BluetoothTransport {
 	                    // try again using insecure comm if available
 	                    try {
 	                    	SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
-	                        Log.i(TAG,"connecting using createInsecureRfcommSocketToServiceRecord");
+	                        //Log.i(TAG,"connecting using createInsecureRfcommSocketToServiceRecord");
 	                        Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] {UUID.class});
 	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[] {SERVER_UUID});
     						//Looper.prepare(); 
@@ -655,7 +655,7 @@ public class BluetoothTransport {
 	                    // try again using insecure comm if available
 	                    try {
 	                    	SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
-	                        Log.i(TAG,"connecting using createInsecureRfcommSocket()");
+	                        //Log.i(TAG,"connecting using createInsecureRfcommSocket()");
 	                        Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocket()", new Class[] {UUID.class});
 	                        mmSocket = (BluetoothSocket) m.invoke(mmDevice, new Object[] {SERVER_UUID});
     						//Looper.prepare(); 
@@ -691,7 +691,7 @@ public class BluetoothTransport {
             // Reset the ConnectThread because we're done
             if(success)
             {
-	            synchronized (BluetoothTransport.this) {
+	            synchronized (MultiplexBluetoothTransport.this) {
 	                mConnectThread = null;
 	            }
 	
@@ -729,7 +729,7 @@ public class BluetoothTransport {
         
 
         public ConnectedWriteThread(BluetoothSocket socket) {
-        	Log.d(TAG, "Creating a Connected - Write Thread");
+        	//Log.d(TAG, "Creating a Connected - Write Thread");
             mmSocket = socket;
             OutputStream tmpOut = null;
             setName(" Livio Bluetooth Write Thread");
@@ -756,7 +756,7 @@ public class BluetoothTransport {
             	}
             	//This would be a good spot to log out all bytes received
             	mmOutStream.write(buffer, offset, count);
-            	Log.w(TAG, "Wrote out to device: bytes = "+ count);
+            	//Log.w(TAG, "Wrote out to device: bytes = "+ count);
             	//Set up ping
             	if(enablePing){//The eagle can't handle the ping bytes, so let's not do them
             		if(pingTimeOutHandler==null || pingRunable==null){
@@ -804,7 +804,7 @@ public class BluetoothTransport {
     	SdlPsm psm;
         public ConnectedThread(BluetoothSocket socket) {
         	this.psm = new SdlPsm();
-        	Log.d(TAG, "Creating a Connected - Read Thread");
+        	//Log.d(TAG, "Creating a Connected - Read Thread");
             mmSocket = socket;
             InputStream tmpIn = null;
             setName(" Livio Bluetooth Read Thread");
@@ -825,8 +825,8 @@ public class BluetoothTransport {
  //FIXME
             int bytes = 0;
             byte input = 0;
-            BluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
-            BluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
+            MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
+            MultiplexBluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
             // Keep listening to the InputStream while connected
             boolean stateProgress;
             
@@ -843,7 +843,7 @@ public class BluetoothTransport {
                     }
                     else if(!stateProgress){
                     	
-                    	Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                    	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                     	psm.reset();
                     	bytes=0;
                         buffer = new byte[2048];	//FIXME Needs to be actually the MTU
@@ -851,7 +851,7 @@ public class BluetoothTransport {
                     
                     if(psm.getState() == SdlPsm.FINISHED_STATE)
                     {
-                    	Log.d(TAG, "Packet formed, sending off");
+                    	//Log.d(TAG, "Packet formed, sending off");
                     	mHandler.obtainMessage(SdlRouterService.MESSAGE_READ, bytes, -1, psm.getFormedPacket()).sendToTarget();
                     	//We put a trace statement in the message read so we can avoid all the extra bytes
                     	psm.reset();
@@ -871,7 +871,7 @@ public class BluetoothTransport {
 
         public synchronized void cancel() {
             try {
-            	Log.d(TAG, "Calling Cancel in the Read thread");
+            	//Log.d(TAG, "Calling Cancel in the Read thread");
             	if(mmInStream!=null){
             		mmInStream.close();
             	}

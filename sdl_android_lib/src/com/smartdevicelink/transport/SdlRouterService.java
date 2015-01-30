@@ -68,7 +68,7 @@ public abstract class SdlRouterService extends Service{
     public static final int MESSAGE_TOAST = 5;
 	
     
-	private static BluetoothTransport mSerialService = null;
+	private static MultiplexBluetoothTransport mSerialService = null;
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
@@ -110,7 +110,7 @@ public abstract class SdlRouterService extends Service{
 			if(intent.getAction().equals(TransportConstants.REQUEST_BT_CLIENT_CONNECT)
 				&& intent.getBooleanExtra(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
 				&& !connectAsClient){		//We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
-				Log.d(TAG,"Attempting to connect as bt client");
+				//Log.d(TAG,"Attempting to connect as bt client");
 				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 				connectAsClient = true;
 				if(device==null || !bluetoothConnect(device)){
@@ -122,14 +122,14 @@ public abstract class SdlRouterService extends Service{
 			//Let's see if they wanted to unregister
 			if(intent.hasExtra(UNREGISTER_EXTRA)){
 				long appId = intent.getLongExtra(UNREGISTER_EXTRA, 0);
-				Log.i(TAG, appId + " has just been unregistered with Livio Bluetooth Service");
+				//Log.i(TAG, appId + " has just been unregistered with SDL Router Service");
 				registeredApps.remove(appId); //Should remove if it exists and nothing happens if it doesn't. Chill as hell.
 				return;
 			}
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
 			String tempSendBackAction =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
 			long appId = intent.getLongExtra(TransportConstants.APP_ID_EXTRA, 0);
-			Log.d(TAG, "Attempting to registered: " + appId + " at: " +tempSendBackAction );
+			//Log.d(TAG, "Attempting to registered: " + appId + " at: " +tempSendBackAction );
 			Intent registrationIntent = new Intent();
 			registrationIntent.setAction(tempSendBackAction);
 			RegisteredApp app = new RegisteredApp(appId,tempSendBackAction);
@@ -161,16 +161,16 @@ public abstract class SdlRouterService extends Service{
 
 		if(startSequenceComplete &&
 				!connectAsClient && (mSerialService ==null 
-									|| mSerialService.getState() == BluetoothTransport.STATE_NONE)){
+									|| mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE)){
 			Log.e(TAG, "Serial service not initliazed while registering app");
 			//Maybe we should try to do a connect here instead
 			Log.d(TAG, "Serial service being restarted");
 			if(mSerialService ==null){
 				Log.e(TAG, "Local copy of BT Server is null");
-				mSerialService = BluetoothTransport.getBluetoothSerialServerInstance();
+				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
 				if(mSerialService==null){
 					Log.e(TAG, "Local copy of BT Server is still null and so is global");
-					mSerialService = BluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
+					mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 
 				}
 			}
@@ -179,8 +179,8 @@ public abstract class SdlRouterService extends Service{
 		}
 
 		beingSent.putExtra(SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME, SEND_PACKET_ACTION);
-		if(BluetoothTransport.currentlyConnectedDevice!=null){
-			beingSent.putExtra(CONNECTED_DEVICE_STRING_EXTRA_NAME, BluetoothTransport.currentlyConnectedDevice);
+		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+			beingSent.putExtra(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
 		}
 
 		Log.i(TAG, app.getReplyAddress() + " has just been registered with Livio Bluetooth Service");
@@ -535,15 +535,15 @@ public abstract class SdlRouterService extends Service{
 		//init serial service
 		if(mSerialService ==null){
 			Log.d(TAG, "Local copy of BT Server is null");
-			mSerialService = BluetoothTransport.getBluetoothSerialServerInstance();
+			mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
 			if(mSerialService==null){
 				Log.d(TAG, "Local copy of BT Server is still null and so is global");
-				mSerialService = BluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
+				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 			}
 		}
 		if (mSerialService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mSerialService.getState() == BluetoothTransport.STATE_NONE || mSerialService.getState() == BluetoothTransport.STATE_ERROR) {
+            if (mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE || mSerialService.getState() == MultiplexBluetoothTransport.STATE_ERROR) {
               // Start the Bluetooth chat services
             	mSerialService.start();
             }
@@ -610,22 +610,22 @@ public abstract class SdlRouterService extends Service{
 	        public void handleMessage(Message msg) {
 	            switch (msg.what) {
 	            	case MESSAGE_DEVICE_NAME:
-	            		connectedDeviceName = msg.getData().getString(BluetoothTransport.DEVICE_NAME);
+	            		connectedDeviceName = msg.getData().getString(MultiplexBluetoothTransport.DEVICE_NAME);
 	            		break;
 	            	case MESSAGE_STATE_CHANGE:
 	            		switch (msg.arg1) {
-	            		case BluetoothTransport.STATE_CONNECTED:
+	            		case MultiplexBluetoothTransport.STATE_CONNECTED:
 	            			storeConnectedStatus(true);
 	            			alreadyUpdatedForegroundApp = false;
 	            			onTransportConnected(TransportType.BLUETOOTH); //FIXME actually check
 	            			break;
-	            		case BluetoothTransport.STATE_CONNECTING:
+	            		case MultiplexBluetoothTransport.STATE_CONNECTING:
 	            			// Currently attempting to connect - update UI?
 	            			break;
-	            		case BluetoothTransport.STATE_LISTEN:
+	            		case MultiplexBluetoothTransport.STATE_LISTEN:
 	            			storeConnectedStatus(false);
 	            			break;
-	            		case BluetoothTransport.STATE_NONE:
+	            		case MultiplexBluetoothTransport.STATE_NONE:
 	            			// We've just lost the connection - update UI?
 	            			storeConnectedStatus(false);
 	            			if(!connectAsClient && !closing){
@@ -633,10 +633,10 @@ public abstract class SdlRouterService extends Service{
 	            				onTransportDisconnected(TransportType.BLUETOOTH); //FIXME actually check
 	            			}
 	            			break;
-	            		case BluetoothTransport.STATE_ERROR:
+	            		case MultiplexBluetoothTransport.STATE_ERROR:
 	            			if(mSerialService!=null){
 	            				Log.d(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
-	            				mSerialService.setStateManually(BluetoothTransport.STATE_NONE);
+	            				mSerialService.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
 	            				mSerialService = null;
 	            			}
 	            			
@@ -662,7 +662,7 @@ public abstract class SdlRouterService extends Service{
 		public boolean writeBytesToTransport(byte[] byteArray,int offset,int count){
 			//TODO remove debug packet
 			debugPacket(byteArray);
-			if(mSerialService !=null && mSerialService.getState()==BluetoothTransport.STATE_CONNECTED){
+			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
 				mSerialService.write(byteArray,offset,count);
 				return true;
 			}else if(sendThroughAltTransport(byteArray)){
@@ -764,13 +764,13 @@ public abstract class SdlRouterService extends Service{
     		Log.d(TAG,"Connecting to device: " + device.getName().toString());
 			if(mSerialService == null || !mSerialService.isConnected())
 			{	// Set up the Bluetooth serial object				
-				mSerialService = new BluetoothTransport(mHandlerBT);
+				mSerialService = new MultiplexBluetoothTransport(mHandlerBT);
 			}
 			// We've been given a device - let's connect to it
 			if(!device.getName().equalsIgnoreCase("livio_lvc02a")) {
-				if(mSerialService.getState()!=BluetoothTransport.STATE_CONNECTING){//mSerialService.stop();
+				if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){//mSerialService.stop();
 				mSerialService.connect(device);
-					if(mSerialService.getState() == BluetoothTransport.STATE_CONNECTING){
+					if(mSerialService.getState() == MultiplexBluetoothTransport.STATE_CONNECTING){
 						return true;
 					}
 				}

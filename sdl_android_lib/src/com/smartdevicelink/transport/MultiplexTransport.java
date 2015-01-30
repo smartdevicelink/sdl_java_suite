@@ -74,7 +74,6 @@ public class MultiplexTransport extends SdlTransport{
 	 * Overridden abstract method which returns specific type of this transport.
 	 * 
 	 * @return Constant value - TransportType.BLUETOOTH.
-	 * 
 	 * @see TransportType
 	 */
 	public TransportType getTransportType() {

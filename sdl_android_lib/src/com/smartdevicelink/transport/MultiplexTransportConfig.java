@@ -2,7 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.content.Context;
 
-public final class MultiplexTransportConfig extends BaseTransportConfig{
+public class MultiplexTransportConfig extends BaseTransportConfig{
 
 	Context context;
 	String appId;
