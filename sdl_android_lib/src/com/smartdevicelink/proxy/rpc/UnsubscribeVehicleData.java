@@ -161,28 +161,55 @@ public class UnsubscribeVehicleData extends RPCRequest {
         return (Boolean) parameters.get(KEY_FUEL_LEVEL);
     }
 
-	/**
-	 * Sets a boolean value. If true, unsubscribes fuelLevel_State data
-	 * 
-	 * @param fuelLevel_State
-	 *            a boolean value
-	 */
+    /**
+     * Sets a boolean value. If true, unsubscribes fuelLevel_State data
+     * 
+     * @param fuelLevel_State
+     *            a boolean value
+     */
+    @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
         if (fuelLevel_State != null) {
             parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
         } else {
-        	parameters.remove(KEY_FUEL_LEVEL_STATE);
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
         }
     }
 
-	/**
-	 * Gets a boolean value. If true, means the fuelLevel_State data has been
-	 * unsubscribed.
-	 * 
-	 * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
-	 *         has been unsubscribed.
-	 */
+    /**
+     * Gets a boolean value. If true, means the fuelLevel_State data has been
+     * unsubscribed.
+     * 
+     * @return Boolean -a Boolean value. If true, means the fuelLevel_State data
+     *         has been unsubscribed.
+     */
+    @Deprecated
     public Boolean getFuelLevel_State() {
+        return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
+    }
+
+    /**
+     * Sets a boolean value. If true, unsubscribes fuelLevelState data
+     * 
+     * @param fuelLevelState
+     *            a boolean value
+     */
+    public void setFuelLevelState(Boolean fuelLevelState) {
+        if (fuelLevelState != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
+    }
+
+    /**
+     * Gets a boolean value. If true, means the fuelLevel_State data has been
+     * unsubscribed.
+     * 
+     * @return Boolean -a Boolean value. If true, means the fuelLevelState data
+     *         has been unsubscribed.
+     */
+    public Boolean getFuelLevelState() {
         return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
     }
 
