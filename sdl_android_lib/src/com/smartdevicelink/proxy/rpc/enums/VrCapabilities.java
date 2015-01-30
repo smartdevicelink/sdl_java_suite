@@ -26,7 +26,7 @@ public enum VrCapabilities {
     public static VrCapabilities valueForString(String value) {
         if (value.equalsIgnoreCase(TEXT.toString()))
         {
-        	return VrCapabilities.TEXT;
+        	return TEXT;
         }
         return valueOf(value);
     }
