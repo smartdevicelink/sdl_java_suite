@@ -1,14 +1,15 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -93,39 +94,75 @@ public class RegisterAppInterface extends RPCRequest {
 	public static final String KEY_VR_SYNONYMS = "vrSynonyms";
 	public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
 	public static final String KEY_HASH_ID = "hashID";
+	
+	private SdlMsgVersion sdlMessageVersion;
+	private DeviceInfo deviceInfo;
+	private String appName, ngnMediaName, hashId, appId;
+	private String languageDesired, hmiLanguageDesired; // represents Language enum
+	private List<TTSChunk> ttsName;
+	private List<String> appHmiType; // represents AppHMIType enum
+	private List<String> vrSynonyms;
+	private Boolean isMediaApplication;
+	
+	
 	/**
 	 * Constructs a new RegisterAppInterface object
 	 */
     public RegisterAppInterface() {
         super(FunctionID.REGISTER_APP_INTERFACE);
     }
-	/**
-	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-    public RegisterAppInterface(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a RegisterAppInterface object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public RegisterAppInterface(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.appName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_APP_NAME);
+            this.ngnMediaName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_NGN_MEDIA_SCREEN_APP_NAME);
+            this.hashId = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HASH_ID);
+            this.appId = JsonUtils.readStringFromJsonObject(jsonObject, KEY_APP_ID);
+            this.languageDesired = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE_DESIRED);
+            this.hmiLanguageDesired = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HMI_DISPLAY_LANGUAGE_DESIRED);
+            this.isMediaApplication = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_IS_MEDIA_APPLICATION);
+            
+            this.appHmiType = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_APP_HMI_TYPE);
+            this.vrSynonyms = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_VR_SYNONYMS);
+            
+            JSONObject sdlMessageVersionObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SDL_MSG_VERSION);
+            if(sdlMessageVersionObj != null){
+                this.sdlMessageVersion = new SdlMsgVersion(sdlMessageVersionObj);
+            }
+            
+            JSONObject deviceInfoObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_DEVICE_INFO);
+            if(deviceInfoObj != null){
+                this.deviceInfo = new DeviceInfo(deviceInfoObj);
+            }
+            
+            List<JSONObject> ttsNameObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_TTS_NAME);
+            if(ttsNameObjs != null){
+                this.ttsName = new ArrayList<TTSChunk>(ttsNameObjs.size());
+                for(JSONObject ttsNameObj : ttsNameObjs){
+                    this.ttsName.add(new TTSChunk(ttsNameObj));
+                }
+            }
+            break;
+        }
     }
+    
 	/**
 	 * Gets the version of the SDL&reg; SmartDeviceLink interface
 	 * 
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */    
-    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
-        Object obj = parameters.get(KEY_SDL_MSG_VERSION);
-        if (obj instanceof SdlMsgVersion) {
-        	return (SdlMsgVersion) obj;
-        } else if (obj instanceof Hashtable) {
-        	return new SdlMsgVersion((Hashtable<String, Object>) obj);
-        }
-        return null;
+        return this.sdlMessageVersion;
     }
+    
 	/**
 	 * Sets the version of the SDL&reg; SmartDeviceLink interface
 	 * 
@@ -146,39 +183,26 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            request) is ignored by SDL&reg;
 	 */    
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-        if (sdlMsgVersion != null) {
-            parameters.put(KEY_SDL_MSG_VERSION, sdlMsgVersion);
-        } else {
-        	parameters.remove(KEY_SDL_MSG_VERSION);
-        }
+        this.sdlMessageVersion = sdlMsgVersion;
     }
     
-    @SuppressWarnings("unchecked")
     public DeviceInfo getDeviceInfo() {
-        Object obj = parameters.get(KEY_DEVICE_INFO);
-        if (obj instanceof DeviceInfo) {
-        	return (DeviceInfo) obj;
-        } else if (obj instanceof Hashtable) {
-        	return new DeviceInfo((Hashtable<String, Object>) obj);
-        }
-        return null;
-    }    
+        return this.deviceInfo;
+    }
     
     public void setDeviceInfo(DeviceInfo deviceInfo) {
-        if (deviceInfo != null) {
-            parameters.put(KEY_DEVICE_INFO, deviceInfo);
-        } else {
-        	parameters.remove(KEY_DEVICE_INFO);
-        }
-    }    
+        this.deviceInfo = deviceInfo;
+    }
+    
 	/**
 	 * Gets Mobile Application's Name
 	 * 
 	 * @return String -a String representing the Mobile Application's Name
 	 */    
     public String getAppName() {
-        return (String) parameters.get(KEY_APP_NAME);
+        return this.appName;
     }
+    
 	/**
 	 * Sets Mobile Application's Name, This name is displayed in the SDL&reg;
 	 * Mobile Applications menu. It also serves as the unique identifier of the
@@ -196,11 +220,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAppName(String appName) {
-        if (appName != null) {
-            parameters.put(KEY_APP_NAME, appName);
-        } else {
-        	parameters.remove(KEY_APP_NAME);
-        }
+        this.appName = appName;
     }
 
 	/**
@@ -209,24 +229,8 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return List<TTSChunk> -List value representing the TTS string
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsName() {
-        if (parameters.get(KEY_TTS_NAME) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_TTS_NAME);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.ttsName;
     }
 
 	/**
@@ -248,12 +252,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setTtsName(List<TTSChunk> ttsName) {
-        if (ttsName != null) {
-            parameters.put(KEY_TTS_NAME, ttsName);
-        } else {
-        	parameters.remove(KEY_TTS_NAME);
-        }
+        this.ttsName = ttsName;
     }
+    
 	/**
 	 * Gets a String representing an abbreviated version of the mobile
 	 * applincation's name (if necessary) that will be displayed on the NGN
@@ -263,8 +264,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         mobile applincation's name
 	 */    
     public String getNgnMediaScreenAppName() {
-        return (String) parameters.get(KEY_NGN_MEDIA_SCREEN_APP_NAME);
+        return this.ngnMediaName;
     }
+    
 	/**
 	 * Sets a String representing an abbreviated version of the mobile
 	 * applincation's name (if necessary) that will be displayed on the NGN
@@ -282,12 +284,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
-        if (ngnMediaScreenAppName != null) {
-            parameters.put(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
-        } else {
-        	parameters.remove(KEY_NGN_MEDIA_SCREEN_APP_NAME);
-        }
+        this.ngnMediaName = ngnMediaScreenAppName;
     }
+    
 	/**
 	 * Gets the List<String> representing the an array of 1-100 elements, each
 	 * element containing a voice-recognition synonym
@@ -296,19 +295,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         1-100 elements, each element containing a voice-recognition
 	 *         synonym
 	 */    
-    @SuppressWarnings("unchecked")
     public List<String> getVrSynonyms() {
-    	if (parameters.get(KEY_VR_SYNONYMS) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_VR_SYNONYMS);
-    		if (list != null && list.size()>0) {
-    			Object obj = list.get(0);
-    			if (obj instanceof String) {
-    				return (List<String>) list;
-    			}
-    		}
-    	}
-        return null;
+    	return this.vrSynonyms;
     }
+    
 	/**
 	 * Sets a vrSynonyms representing the an array of 1-100 elements, each
 	 * element containing a voice-recognition synonym
@@ -327,12 +317,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        if (vrSynonyms != null) {
-            parameters.put(KEY_VR_SYNONYMS, vrSynonyms);
-        } else {
-        	parameters.remove(KEY_VR_SYNONYMS);
-        }
+        this.vrSynonyms = vrSynonyms;
     }
+    
 	/**
 	 * Gets a Boolean representing MediaApplication
 	 * 
@@ -340,8 +327,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         a media application or not
 	 */    
     public Boolean getIsMediaApplication() {
-        return (Boolean) parameters.get(KEY_IS_MEDIA_APPLICATION);
+        return this.isMediaApplication;
     }
+    
 	/**
 	 * Sets a Boolean to indicate a mobile application that is a media
 	 * application or not
@@ -350,12 +338,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a Boolean value
 	 */    
     public void setIsMediaApplication(Boolean isMediaApplication) {
-        if (isMediaApplication != null) {
-            parameters.put(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
-        } else {
-        	parameters.remove(KEY_IS_MEDIA_APPLICATION);
-        }
+        this.isMediaApplication = isMediaApplication;
     }
+    
 	/**
 	 * Gets a Language enumeration indicating what language the application
 	 * intends to use for user interaction (Display, TTS and VR)
@@ -363,20 +348,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @return Enumeration -a language enumeration
 	 */    
     public Language getLanguageDesired() {
-        Object obj = parameters.get(KEY_LANGUAGE_DESIRED);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE_DESIRED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return Language.valueForJsonName(this.languageDesired, sdlVersion);
     }
+    
 	/**
 	 * Sets an enumeration indicating what language the application intends to
 	 * use for user interaction (Display, TTS and VR)
@@ -387,11 +361,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 */    
     public void setLanguageDesired(Language languageDesired) {
-        if (languageDesired != null) {
-            parameters.put(KEY_LANGUAGE_DESIRED, languageDesired);
-        } else {
-        	parameters.remove(KEY_LANGUAGE_DESIRED);
-        }
+        this.languageDesired = languageDesired.getJsonName(sdlVersion);
     }
 
 	/**
@@ -404,19 +374,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Language getHmiDisplayLanguageDesired() {
-        Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE_DESIRED);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE_DESIRED, e);
-            }
-            return theCode;
-        }
-        return null;
+        return Language.valueForJsonName(this.hmiLanguageDesired, sdlVersion);
     }
 
 	/**
@@ -427,11 +385,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
-        if (hmiDisplayLanguageDesired != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE_DESIRED);
-        }
+        this.hmiLanguageDesired = hmiDisplayLanguageDesired.getJsonName(sdlVersion);
     }
 
 	/**
@@ -444,32 +398,17 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         the app
 	 * @since SmartDeviceLinke 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public List<AppHMIType> getAppHMIType() {
-        if (parameters.get(KEY_APP_HMI_TYPE) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_APP_HMI_TYPE);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof AppHMIType) {
-	                return (List<AppHMIType>) list;
-	            } else if (obj instanceof String) {
-	            	List<AppHMIType> newList = new ArrayList<AppHMIType>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    AppHMIType toAdd = null;
-	                    try {
-	                        toAdd = AppHMIType.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.appHmiType == null){
+            return null;
         }
-        return null;
+        
+        List<AppHMIType> result = new ArrayList<AppHMIType>(this.appHmiType.size());
+        for(String str : this.appHmiType){
+            result.add(AppHMIType.valueForJsonName(str, sdlVersion));
+        }
+        
+        return result;
     }
 
 	/**
@@ -488,23 +427,22 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppHMIType(List<AppHMIType> appHMIType) {
-        if (appHMIType != null) {
-            parameters.put(KEY_APP_HMI_TYPE, appHMIType);
+        if (appHMIType == null) {
+            this.appHmiType = null;
         } else {
-        	parameters.remove(KEY_APP_HMI_TYPE);
+        	this.appHmiType = new ArrayList<String>(appHMIType.size());
+        	for(AppHMIType type : appHMIType){
+        	    this.appHmiType.add(type.getJsonName(sdlVersion));
+        	}
         }
     }
     
     public String getHashID() {
-        return (String) parameters.get(KEY_HASH_ID);
+        return this.hashId;
     }
    
     public void setHashID(String hashID) {
-        if (hashID != null) {
-            parameters.put(KEY_HASH_ID, hashID);
-        } else {
-        	parameters.remove(KEY_HASH_ID);
-        }
+        this.hashId = hashID;
     }        
     
 	/**
@@ -515,7 +453,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getAppID() {
-        return (String) parameters.get(KEY_APP_ID);
+        return this.appId;
     }
 
 	/**
@@ -529,10 +467,40 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppID(String appID) {
-        if (appID != null) {
-            parameters.put(KEY_APP_ID, appID);
-        } else {
-        	parameters.remove(KEY_APP_ID);
+        this.appId = appID;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_APP_ID, this.appId);
+            JsonUtils.addToJsonObject(result, KEY_APP_NAME, this.appName);
+            JsonUtils.addToJsonObject(result, KEY_HASH_ID, this.hashId);
+            JsonUtils.addToJsonObject(result, KEY_HMI_DISPLAY_LANGUAGE_DESIRED, this.hmiLanguageDesired);
+            JsonUtils.addToJsonObject(result, KEY_IS_MEDIA_APPLICATION, this.isMediaApplication);
+            JsonUtils.addToJsonObject(result, KEY_LANGUAGE_DESIRED, this.languageDesired);
+            JsonUtils.addToJsonObject(result, KEY_NGN_MEDIA_SCREEN_APP_NAME, this.ngnMediaName);
+            
+            JsonUtils.addToJsonObject(result, KEY_APP_HMI_TYPE, (this.appHmiType == null) ? null : 
+                JsonUtils.createJsonArray(this.appHmiType));
+            
+            JsonUtils.addToJsonObject(result, KEY_VR_SYNONYMS, (this.vrSynonyms == null) ? null : 
+                JsonUtils.createJsonArray(this.vrSynonyms));
+    
+            JsonUtils.addToJsonObject(result, KEY_TTS_NAME, (this.ttsName == null) ? null : 
+                JsonUtils.createJsonArrayOfJsonObjects(this.ttsName, sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_DEVICE_INFO, (this.deviceInfo == null) ? null :
+                this.deviceInfo.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_SDL_MSG_VERSION, (this.sdlMessageVersion == null) ? null :
+                this.sdlMessageVersion.getJsonParameters(sdlVersion));
+            break;
         }
+        
+        return result;
     }
 }

@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -12,7 +13,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -34,23 +35,91 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
     public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
+    
+    private SdlMsgVersion sdlMsgVersion;
+    private DisplayCapabilities displayCapabilities;
+    private PresetBankCapabilities presetBankCapabilities;
+    private VehicleType vehicleType;
+    private List<ButtonCapabilities> buttonCapabilities;
+    private List<SoftButtonCapabilities> softButtonCapabilities;
+    private List<AudioPassThruCapabilities> audioPassThruCapabilities;
+    private List<String> vrCapabilities; // represents VrCapabilities enum
+    private List<String> prerecordedSpeech; // represents PrerecordedSpeech enum
+    private List<String> speechCapabilities; // represents SpeechCapabilities enum
+    private List<String> hmiZoneCapabilities; // represents HmiZoneCapabilities enum
+    private List<Integer> supportedDiagModes;
+    private String language, hmiLanguage; // represents Language enum
+    
 	/**
 	 * Constructs a new RegisterAppInterfaceResponse object
 	 */
     public RegisterAppInterfaceResponse() {
         super(FunctionID.REGISTER_APP_INTERFACE);
     }
-
-	/**
-	 * Constructs a new RegisterAppInterfaceResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public RegisterAppInterfaceResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a RegisterAppInterfaceResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public RegisterAppInterfaceResponse(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);
+            this.hmiLanguage = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HMI_DISPLAY_LANGUAGE);
+            
+            this.supportedDiagModes = JsonUtils.readIntegerListFromJsonObject(jsonObject, KEY_SUPPORTED_DIAG_MODES);
+            this.vrCapabilities = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_VR_CAPABILITIES);
+            this.prerecordedSpeech = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_PRERECORDED_SPEECH);
+            this.speechCapabilities = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_SPEECH_CAPABILITIES);
+            this.hmiZoneCapabilities = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_HMI_ZONE_CAPABILITIES);
+            
+            JSONObject sdlMsgVersionObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SDL_MSG_VERSION);
+            if(sdlMsgVersionObj != null){
+                this.sdlMsgVersion = new SdlMsgVersion(sdlMsgVersionObj);
+            }
+            
+            JSONObject displayCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_DISPLAY_CAPABILITIES);
+            if(displayCapabilitiesObj != null){
+                this.displayCapabilities = new DisplayCapabilities(displayCapabilitiesObj);
+            }
+            
+            JSONObject presetBankCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_PRESET_BANK_CAPABILITIES);
+            if(presetBankCapabilitiesObj != null){
+                this.presetBankCapabilities = new PresetBankCapabilities(presetBankCapabilitiesObj);
+            }
+            
+            JSONObject vehicleTypeObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_VEHICLE_TYPE);
+            if(vehicleTypeObj != null){
+                this.vehicleType = new VehicleType(vehicleTypeObj);
+            }
+            
+            List<JSONObject> buttonCapabilitiesObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_BUTTON_CAPABILITIES);
+            if(buttonCapabilitiesObjs != null){
+                this.buttonCapabilities = new ArrayList<ButtonCapabilities>(buttonCapabilitiesObjs.size());
+                for(JSONObject buttonCapabilitiesObj : buttonCapabilitiesObjs){
+                    this.buttonCapabilities.add(new ButtonCapabilities(buttonCapabilitiesObj));
+                }
+            }
+            
+            List<JSONObject> softButtonCapabilitiesObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_SOFT_BUTTON_CAPABILITIES);
+            if(softButtonCapabilitiesObjs != null){
+                this.softButtonCapabilities = new ArrayList<SoftButtonCapabilities>(softButtonCapabilitiesObjs.size());
+                for(JSONObject softButtonCapabilitiesObj : softButtonCapabilitiesObjs){
+                    this.softButtonCapabilities.add(new SoftButtonCapabilities(softButtonCapabilitiesObj));
+                }
+            }
+            
+            List<JSONObject> audioPassThruCapabilitiesObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_AUDIO_PASS_THRU_CAPABILITIES);
+            if(audioPassThruCapabilitiesObjs != null){
+                this.audioPassThruCapabilities = new ArrayList<AudioPassThruCapabilities>(audioPassThruCapabilitiesObjs.size());
+                for(JSONObject audioPassThruCapabilitiesObj : audioPassThruCapabilitiesObjs){
+                    this.audioPassThruCapabilities.add(new AudioPassThruCapabilities(audioPassThruCapabilitiesObj));
+                }
+            }
+            break;
+        }
     }
 
 	/**
@@ -59,15 +128,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */
-    @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
-        Object obj = parameters.get(KEY_SDL_MSG_VERSION);
-        if (obj instanceof SdlMsgVersion) {
-        	return (SdlMsgVersion)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new SdlMsgVersion((Hashtable<String, Object>)obj);
-        }
-        return null;
+        return this.sdlMsgVersion;
     }
 
 	/**
@@ -90,11 +152,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 *            request) is ignored by SDL&reg;
 	 */
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-        if (sdlMsgVersion != null) {
-            parameters.put(KEY_SDL_MSG_VERSION, sdlMsgVersion);
-        } else {
-            parameters.remove(KEY_SDL_MSG_VERSION);
-        }
+        this.sdlMsgVersion = sdlMsgVersion;
     }
 
 	/**
@@ -104,19 +162,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return Enumeration -a language enumeration
 	 */
     public Language getLanguage() {
-        Object obj = parameters.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return Language.valueForJsonName(this.language, sdlVersion);
     }
 
 	/**
@@ -129,11 +175,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 */
     public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-            parameters.remove(KEY_LANGUAGE);
-        }
+        this.language = language.getJsonName(sdlVersion);
     }
 
 	/**
@@ -146,19 +188,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Language getHmiDisplayLanguage() {
-        Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return Language.valueForJsonName(this.hmiLanguage, sdlVersion);
     }
 
 	/**
@@ -169,11 +199,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+        this.hmiLanguage = hmiDisplayLanguage.getJsonName(sdlVersion);
     }
 
 	/**
@@ -181,26 +207,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return DisplayCapabilities
 	 */
-    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
-        Object obj = parameters.get(KEY_DISPLAY_CAPABILITIES);
-        if (obj instanceof DisplayCapabilities) {
-        	return (DisplayCapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new DisplayCapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+        return this.displayCapabilities;
     }
+    
     /**
      * Sets Display Capabilities
      * @param displayCapabilities
      */
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-        if (displayCapabilities != null) {
-            parameters.put(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
-        } else {
-        	parameters.remove(KEY_DISPLAY_CAPABILITIES);
-        }
+        this.displayCapabilities = displayCapabilities;
     }
 
 	/**
@@ -208,70 +224,33 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return buttonCapabilities
 	 */
-    @SuppressWarnings("unchecked")
     public List<ButtonCapabilities> getButtonCapabilities() {
-        if (parameters.get(KEY_BUTTON_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_BUTTON_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ButtonCapabilities) {
-	                return (List<ButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.buttonCapabilities;
     }
+    
     /**
      * Sets Button Capabilities
      * @param buttonCapabilities
      */
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
-            parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
-        } else {
-        	parameters.remove(KEY_BUTTON_CAPABILITIES);
-        }
+        this.buttonCapabilities = buttonCapabilities;
     }
+    
     /**
 	 * Gets getSoftButtonCapabilities set when application interface is registered.
 	 * 
 	 * @return SoftButtonCapabilities 
 	 */
-    @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(KEY_SOFT_BUTTON_CAPABILITIES) instanceof List<?>) {
-	    	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButtonCapabilities) {
-	                return (List<SoftButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.softButtonCapabilities;
     }
+    
     /**
      * Sets softButtonCapabilities
      * @param softButtonCapabilities
      */
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
-            parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);
-        }
+        this.softButtonCapabilities = softButtonCapabilities;
     }
 
 	/**
@@ -279,26 +258,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return PresetBankCapabilities 
 	 */
-    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
-        Object obj = parameters.get(KEY_PRESET_BANK_CAPABILITIES);
-        if (obj instanceof PresetBankCapabilities) {
-        	return (PresetBankCapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new PresetBankCapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+        return this.presetBankCapabilities;
     }
+    
     /**
      * Sets presetBankCapabilities
      * @param	presetBankCapabilities
      */
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-        if (presetBankCapabilities != null) {
-            parameters.put(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
-        } else {
-        	parameters.remove(KEY_PRESET_BANK_CAPABILITIES);
-        }
+        this.presetBankCapabilities = presetBankCapabilities;
     }
 	
 	/**
@@ -306,43 +275,32 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return HmiZoneCapabilities
 	 */
-    @SuppressWarnings("unchecked")
     public List<HmiZoneCapabilities> getHmiZoneCapabilities() {
-        if (parameters.get(KEY_HMI_ZONE_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_HMI_ZONE_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HmiZoneCapabilities) {
-	                return (List<HmiZoneCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<HmiZoneCapabilities> newList = new ArrayList<HmiZoneCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HmiZoneCapabilities toAdd = null;
-	                    try {
-	                        toAdd = HmiZoneCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_ZONE_CAPABILITIES, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.hmiZoneCapabilities == null){
+            return null;
         }
-        return null;
+        
+        List<HmiZoneCapabilities> result = new ArrayList<HmiZoneCapabilities>(this.hmiZoneCapabilities.size());
+        for(String str : this.hmiZoneCapabilities){
+            result.add(HmiZoneCapabilities.valueForJsonName(str, sdlVersion));
+        }
+        
+        return result;
     }
+    
     /**
      * Sets hmiZoneCapabilities
      * @param hmiZoneCapabilities
      */
     public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
-        if (hmiZoneCapabilities != null) {
-            parameters.put(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
-        } else {
-        	parameters.remove(KEY_HMI_ZONE_CAPABILITIES);
+        if(hmiZoneCapabilities == null){
+            this.hmiZoneCapabilities = null;
+        }
+        else{
+            this.hmiZoneCapabilities = new ArrayList<String>(hmiZoneCapabilities.size());
+            for(HmiZoneCapabilities type : hmiZoneCapabilities){
+                this.hmiZoneCapabilities.add(type.getJsonName(sdlVersion));
+            }
         }
     }
 	
@@ -351,127 +309,91 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return SpeechCapabilities
 	 */
-    @SuppressWarnings("unchecked")
     public List<SpeechCapabilities> getSpeechCapabilities() {
-        if (parameters.get(KEY_SPEECH_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SPEECH_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SpeechCapabilities) {
-	                return (List<SpeechCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<SpeechCapabilities> newList = new ArrayList<SpeechCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    SpeechCapabilities toAdd = null;
-	                    try {
-	                        toAdd = SpeechCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEECH_CAPABILITIES, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.speechCapabilities == null){
+            return null;
         }
-        return null;
+        
+        List<SpeechCapabilities> result = new ArrayList<SpeechCapabilities>(this.speechCapabilities.size());
+        for(String str : this.speechCapabilities){
+            result.add(SpeechCapabilities.valueForJsonName(str, sdlVersion));
+        }
+        
+        return result;
     }
+    
     /**
      * Sets speechCapabilities
      * @param speechCapabilities
      */
     public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
-        if (speechCapabilities != null) {
-            parameters.put(KEY_SPEECH_CAPABILITIES, speechCapabilities);
-        } else {
-        	parameters.remove(KEY_SPEECH_CAPABILITIES);
+        if(speechCapabilities == null){
+            this.speechCapabilities = null;
+        }
+        else{
+            this.speechCapabilities = new ArrayList<String>(speechCapabilities.size());
+            for(SpeechCapabilities type : speechCapabilities){
+                this.speechCapabilities.add(type.getJsonName(sdlVersion));
+            }
         }
     }
-
     
-    @SuppressWarnings("unchecked")
     public List<PrerecordedSpeech> getPrerecordedSpeech() {
-        if (parameters.get(KEY_PRERECORDED_SPEECH) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_PRERECORDED_SPEECH);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof PrerecordedSpeech) {
-	                return (List<PrerecordedSpeech>) list;
-	            } else if (obj instanceof String) {
-	            	List<PrerecordedSpeech> newList = new ArrayList<PrerecordedSpeech>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    PrerecordedSpeech toAdd = null;
-	                    try {
-	                        toAdd = PrerecordedSpeech.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRERECORDED_SPEECH, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.prerecordedSpeech == null){
+            return null;
         }
-        return null;
+        
+        List<PrerecordedSpeech> result = new ArrayList<PrerecordedSpeech>(this.prerecordedSpeech.size());
+        for(String str : this.prerecordedSpeech){
+            result.add(PrerecordedSpeech.valueForJsonName(str, sdlVersion));
+        }
+        
+        return result;
     }
 
     public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
-        if (prerecordedSpeech != null) {
-            parameters.put(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
-        } else {
-        	parameters.remove(KEY_PRERECORDED_SPEECH);
+        if(prerecordedSpeech == null){
+            this.prerecordedSpeech = null;
+        }
+        else{
+            this.prerecordedSpeech = new ArrayList<String>(prerecordedSpeech.size());
+            for(PrerecordedSpeech type : prerecordedSpeech){
+                this.prerecordedSpeech.add(type.getJsonName(sdlVersion));
+            }
         }
     }
- 
     
 	/**
 	 * Gets vrCapabilities set when application interface is registered.
 	 * 
 	 * @return VrCapabilities
 	 */
-    @SuppressWarnings("unchecked")
     public List<VrCapabilities> getVrCapabilities() {
-        if (parameters.get(KEY_VR_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrCapabilities) {
-	                return (List<VrCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<VrCapabilities> newList = new ArrayList<VrCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    VrCapabilities toAdd = null;
-	                    try {
-	                        toAdd = VrCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_VR_CAPABILITIES, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+        if(this.vrCapabilities == null){
+            return null;
         }
-        return null;
+        
+        List<VrCapabilities> result = new ArrayList<VrCapabilities>(this.vrCapabilities.size());
+        for(String str : this.vrCapabilities){
+            result.add(VrCapabilities.valueForJsonName(str, sdlVersion));
+        }
+        
+        return result;
     }
+    
     /**
      * Sets VrCapabilities
      * @param vrCapabilities
      */
     public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
-        if (vrCapabilities != null) {
-            parameters.put(KEY_VR_CAPABILITIES, vrCapabilities);
-        } else {
-        	parameters.remove(KEY_VR_CAPABILITIES);
+        if(vrCapabilities == null){
+            this.vrCapabilities = null;
+        }
+        else{
+            this.vrCapabilities = new ArrayList<String>(vrCapabilities.size());
+            for(VrCapabilities type : vrCapabilities){
+                this.vrCapabilities.add(type.getJsonName(sdlVersion));
+            }
         }
     }
 	
@@ -480,26 +402,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return vehicleType 
 	 */
-    @SuppressWarnings("unchecked")
     public VehicleType getVehicleType() {
-        Object obj = parameters.get(KEY_VEHICLE_TYPE);
-        if (obj instanceof VehicleType) {
-        	return (VehicleType)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new VehicleType((Hashtable<String, Object>)obj);
-        }
-        return null;
+        return this.vehicleType;
     }
+    
     /**
      * Sets vehicleType
      * @param vehicleType
      */
     public void setVehicleType(VehicleType vehicleType) {
-        if (vehicleType != null) {
-            parameters.put(KEY_VEHICLE_TYPE, vehicleType);
-        } else {
-        	parameters.remove(KEY_VEHICLE_TYPE);
-        }
+        this.vehicleType = vehicleType;
     }
 	
 	/**
@@ -507,64 +419,80 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return AudioPassThruCapabilities 
 	 */
-    @SuppressWarnings("unchecked")
     public List<AudioPassThruCapabilities> getAudioPassThruCapabilities() {
-        if (parameters.get(KEY_AUDIO_PASS_THRU_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_AUDIO_PASS_THRU_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof AudioPassThruCapabilities) {
-	                return (List<AudioPassThruCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<AudioPassThruCapabilities> newList = new ArrayList<AudioPassThruCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new AudioPassThruCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.audioPassThruCapabilities;
     }
+    
     /**
      * Sets AudioPassThruCapabilities
      * @param audioPassThruCapabilities
      */
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
-        if (audioPassThruCapabilities != null) {
-            parameters.put(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
-        } else {
-        	parameters.remove(KEY_AUDIO_PASS_THRU_CAPABILITIES);
-        }
+        this.audioPassThruCapabilities = audioPassThruCapabilities;
     }
+    
     public String getProxyVersionInfo() {
 		if (Version.VERSION != null)
 			return  Version.VERSION;
 	
 		return null;
     }
+    
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
-        if (supportedDiagModes != null) {
-        	parameters.put(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
-        }
-        else
-        {
-        	parameters.remove(KEY_SUPPORTED_DIAG_MODES);
-        }
+        this.supportedDiagModes = supportedDiagModes;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Integer> getSupportedDiagModes() {
+        return this.supportedDiagModes;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
         
-    	if (parameters.get(KEY_SUPPORTED_DIAG_MODES) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get( KEY_SUPPORTED_DIAG_MODES);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof Integer) {
-                	return (List<Integer>) list;
-        		}
-        	}
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_LANGUAGE, this.language);
+            JsonUtils.addToJsonObject(result, KEY_HMI_DISPLAY_LANGUAGE, this.hmiLanguage);
+            
+            JsonUtils.addToJsonObject(result, KEY_VR_CAPABILITIES, (this.vrCapabilities == null) ? null :
+                JsonUtils.createJsonArray(this.vrCapabilities));
+            
+            JsonUtils.addToJsonObject(result, KEY_VEHICLE_TYPE, (this.vehicleType == null) ? null :
+                this.vehicleType.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_SUPPORTED_DIAG_MODES, (this.supportedDiagModes == null) ? null :
+                JsonUtils.createJsonArray(this.supportedDiagModes));
+            
+            JsonUtils.addToJsonObject(result, KEY_SPEECH_CAPABILITIES, (this.speechCapabilities == null) ? null :
+                JsonUtils.createJsonArray(this.speechCapabilities));
+            
+            JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTON_CAPABILITIES, (this.softButtonCapabilities == null) ? null : 
+                JsonUtils.createJsonArrayOfJsonObjects(this.softButtonCapabilities, sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_SDL_MSG_VERSION, (this.sdlMsgVersion == null) ? null :
+                this.sdlMsgVersion.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_PRESET_BANK_CAPABILITIES, (this.presetBankCapabilities == null) ? null :
+                this.presetBankCapabilities.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_PRERECORDED_SPEECH, (this.prerecordedSpeech == null) ? null : 
+                JsonUtils.createJsonArray(this.prerecordedSpeech));
+            
+            JsonUtils.addToJsonObject(result, KEY_HMI_ZONE_CAPABILITIES, (this.hmiZoneCapabilities == null) ? null :
+                JsonUtils.createJsonArray(this.hmiZoneCapabilities));
+            
+            JsonUtils.addToJsonObject(result, KEY_DISPLAY_CAPABILITIES, (this.displayCapabilities == null) ? null :
+                this.displayCapabilities.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_BUTTON_CAPABILITIES, (this.buttonCapabilities == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.buttonCapabilities, sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_AUDIO_PASS_THRU_CAPABILITIES, (this.audioPassThruCapabilities == null) ? null : 
+                JsonUtils.createJsonArrayOfJsonObjects(this.audioPassThruCapabilities, sdlVersion));
+            break;
         }
-        return null;
-    }          
+        
+        return result;
+    }
 }
