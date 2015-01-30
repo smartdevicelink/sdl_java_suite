@@ -17,9 +17,6 @@ import android.util.Log;
 public class TransportBroker {
 	
 	private static final String TAG = "SdlTransportBroker";
-	private final String ROUTER_SERVICE_CLASS_NAME;// 				= "sdlrouterservice";
-	private final String START_ROUTER_SERVICE_ACTION;
-	private final String REGISTER_WITH_ROUTER_ACTION;
 
 	private final String WHERE_TO_REPLY_PREFIX							 = "com.sdl.android.";
 	private static String appId = null,whereToReply = null, sendPacketAddress = null;;
@@ -61,7 +58,7 @@ public class TransportBroker {
 					}
 				}
 
-				if(intent.hasExtra(REGISTER_WITH_ROUTER_ACTION)){
+				if(intent.hasExtra(SdlRouterService.REGISTER_WITH_ROUTER_ACTION)){
 					//Log.d(TAG,"Being told to reregister");
 
 					//So the Bluetooth Service is telling us it is free now.
@@ -122,11 +119,8 @@ public class TransportBroker {
 		****************************************************************************************************************************************/	
 			
 		
-		public TransportBroker(Context context, String startRouterAction, String routerServiceName, String registerWithRouterAction, String appId){
+		public TransportBroker(Context context, String appId){
 			synchronized(INIT_LOCK){
-				START_ROUTER_SERVICE_ACTION = startRouterAction;
-				ROUTER_SERVICE_CLASS_NAME = routerServiceName;
-				REGISTER_WITH_ROUTER_ACTION = registerWithRouterAction;
 				//So the user should have set the AppId, lets define where the intents need to be sent
 				SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss"); //So we have a time stamp of the event
 				String timeStamp = s.format(new Date(System.currentTimeMillis()));
@@ -235,7 +229,7 @@ public class TransportBroker {
 			ActivityManager manager = (ActivityManager) context.getSystemService("activity");
 		    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 		    	//We will check to see if it contains this name, should be pretty specific
-		    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(ROUTER_SERVICE_CLASS_NAME)) { //TODO fix to look for correct name
+		    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) { //TODO fix to look for correct name
 		            return true;
 		        }
 		    }			
@@ -289,11 +283,11 @@ public class TransportBroker {
 			if(!isRouterServiceRunning(getContext()) ){
 				Log.w(TAG, "No instance of the Sdl router service to register with");
 				//Log.d(TAG,whereToReply + " starting up and registering with  router Service");
-				intent = new Intent(START_ROUTER_SERVICE_ACTION);
+				intent = new Intent(SdlRouterService.START_ROUTER_SERVICE_ACTION);
 			}
 			else{
 				//Log.d(TAG,whereToReply + " registering with  router Service");
-				intent = new Intent(REGISTER_WITH_ROUTER_ACTION);
+				intent = new Intent(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
 			}
 			
 			intent.putExtra(TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, whereToReply);
@@ -306,7 +300,7 @@ public class TransportBroker {
 		private void unregisterWithRouterService(){
 			Log.i(TAG, "Attempting to unregister with Sdl Router Service");
 			Intent unregisterWithService = new Intent();
-			unregisterWithService.setAction(REGISTER_WITH_ROUTER_ACTION);
+			unregisterWithService.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
 			unregisterWithService.putExtra(TransportConstants.UNREGISTER_EXTRA, Long.valueOf(appId));
 			currentContext.sendBroadcast(unregisterWithService);
 			sendPacketAddress = null;

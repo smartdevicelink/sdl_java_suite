@@ -19,9 +19,6 @@ public class MultiplexTransport extends SdlTransport{
 		super(transportListener);
 		
 		broker = new TransportBroker(transportConfig.context,
-				SdlRouterService.START_ROUTER_SERVICE_ACTION,
-				SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME,
-				SdlRouterService.REGISTER_WITH_ROUTER_ACTION,
 				transportConfig.appId){
 
 					@Override
