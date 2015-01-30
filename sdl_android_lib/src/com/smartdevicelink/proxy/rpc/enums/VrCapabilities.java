@@ -10,14 +10,24 @@ public enum VrCapabilities {
 	 * language.
 	 * 
 	 * @since SmartDeviceLink 1.0
-	 */   
-	Text;
+	 */
+    @Deprecated
+	Text,
+
+    /**
+     * The SDL platform is capable of recognizing spoken text in the current
+     * language.
+     * 
+     * @since SmartDeviceLink 3.0
+     */
+	TEXT,
+	;
 
     public static VrCapabilities valueForString(String value) {
-        if (value.toUpperCase().equals(VrCapabilities.Text.toString().toUpperCase()))
+        if (value.equalsIgnoreCase(TEXT.toString()))
         {
-        	return VrCapabilities.Text;
+        	return VrCapabilities.TEXT;
         }
-        return null;
+        return valueOf(value);
     }
 }
