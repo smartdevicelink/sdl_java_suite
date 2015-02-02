@@ -218,7 +218,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @return int -an int value representing the maximum duration of audio
 	 *         recording in milliseconds
 	 */
-    public int getMaxDuration() {
+    public Integer getMaxDuration() {
     	return (Integer) parameters.get(KEY_MAX_DURATION);
     }
 
