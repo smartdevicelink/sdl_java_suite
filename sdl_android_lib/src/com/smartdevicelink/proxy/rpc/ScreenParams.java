@@ -1,64 +1,70 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
-public class ScreenParams extends RPCStruct {
+public class ScreenParams extends RPCObject {
     public static final String KEY_RESOLUTION = "resolution";
     public static final String KEY_TOUCH_EVENT_AVAILABLE = "touchEventAvailable";
 
+    private ImageResolution imageResolution;
+    private TouchEventCapabilities touchEventCapabilities;
+    
 	public ScreenParams() { }
   
-    public ScreenParams(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a ScreenParams object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ScreenParams(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            JSONObject imageResolutionObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_RESOLUTION);
+            if(imageResolutionObj != null){
+                this.imageResolution = new ImageResolution(imageResolutionObj);
+            }
+            
+            JSONObject touchEventCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_TOUCH_EVENT_AVAILABLE);
+            if(touchEventCapabilitiesObj != null){
+                this.touchEventCapabilities = new TouchEventCapabilities(touchEventCapabilitiesObj);
+            }
+            break;
+        }
     }
     
-    @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
-    	Object obj = store.get(KEY_RESOLUTION);
-        if (obj instanceof ImageResolution) {
-            return (ImageResolution) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ImageResolution((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESOLUTION, e);
-            }
-        }
-        return null;
-    } 
-    public void setImageResolution( ImageResolution resolution ) {
-        if (resolution != null) {
-            store.put(KEY_RESOLUTION, resolution );
-        }
-        else {
-    		store.remove(KEY_RESOLUTION);
-    	}
+    	return this.imageResolution;
     }
-    @SuppressWarnings("unchecked")
+    
+    public void setImageResolution( ImageResolution resolution ) {
+        this.imageResolution = resolution;
+    }
+    
     public TouchEventCapabilities getTouchEventAvailable() {
-    	Object obj = store.get(KEY_TOUCH_EVENT_AVAILABLE);
-        if (obj instanceof TouchEventCapabilities) {
-            return (TouchEventCapabilities) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new TouchEventCapabilities((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TOUCH_EVENT_AVAILABLE, e);
-            }
-        }
-        return null;
-    } 
+    	return this.touchEventCapabilities;
+    }
+    
     public void setTouchEventAvailable( TouchEventCapabilities touchEventAvailable ) {
-        if (touchEventAvailable != null) {
-            store.put(KEY_TOUCH_EVENT_AVAILABLE, touchEventAvailable );
+        this.touchEventCapabilities = touchEventAvailable;        
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_RESOLUTION, (this.imageResolution == null) ? null : 
+                this.imageResolution.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_TOUCH_EVENT_AVAILABLE, (this.touchEventCapabilities == null) ? null : 
+                this.touchEventCapabilities.getJsonParameters(sdlVersion));
+            break;
         }
-        else {
-    		store.remove(KEY_TOUCH_EVENT_AVAILABLE);
-    	}        
-    }     
+        
+        return result;
+    }
 }

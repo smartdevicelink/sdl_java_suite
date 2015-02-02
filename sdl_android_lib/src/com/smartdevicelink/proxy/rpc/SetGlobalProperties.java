@@ -1,12 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 /**
  * Sets value(s) for the specified global property(ies)
  * <p>
@@ -25,23 +26,69 @@ public class SetGlobalProperties extends RPCRequest {
 	public static final String KEY_HELP_PROMPT = "helpPrompt";
 	public static final String KEY_TIMEOUT_PROMPT = "timeoutPrompt";
 	public static final String KEY_VR_HELP = "vrHelp";
+	
+	private KeyboardProperties keyboardProperties;
+	private Image menuIcon;
+	private List<VrHelpItem> vrHelp;
+	private List<TTSChunk> helpPrompt, timeoutPrompt;
+	private String vrHelpTitle, menuTitle;
+	
 	/**
 	 * Constructs a new SetGlobalProperties object
 	 */
     public SetGlobalProperties() {
         super(FunctionID.SET_GLOBAL_PROPERTIES);
     }
-	/**
-	 * Constructs a new SetGlobalProperties object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-    public SetGlobalProperties(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SetGlobalProperties object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SetGlobalProperties(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.vrHelpTitle = JsonUtils.readStringFromJsonObject(jsonObject, KEY_VR_HELP_TITLE);
+            this.menuTitle = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MENU_TITLE);
+            
+            JSONObject keyboardPropertiesObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_KEYBOARD_PROPERTIES);
+            if(keyboardPropertiesObj != null){
+                this.keyboardProperties = new KeyboardProperties(keyboardPropertiesObj);
+            }
+            
+            JSONObject menuIconObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_MENU_ICON);
+            if(menuIconObj != null){
+                this.menuIcon = new Image(menuIconObj);
+            }
+            
+            List<JSONObject> vrHelpObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_VR_HELP);
+            if(vrHelpObjs != null){
+                this.vrHelp = new ArrayList<VrHelpItem>(vrHelpObjs.size());
+                for(JSONObject vrHelpObj : vrHelpObjs){
+                    this.vrHelp.add(new VrHelpItem(vrHelpObj));
+                }
+            }
+            
+            List<JSONObject> helpPromptObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_HELP_PROMPT);
+            if(helpPromptObjs != null){
+                this.helpPrompt = new ArrayList<TTSChunk>(helpPromptObjs.size());
+                for(JSONObject helpPromptObj : helpPromptObjs){
+                    this.helpPrompt.add(new TTSChunk(helpPromptObj));
+                }
+            }
+            
+            List<JSONObject> timeoutPromptObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_TIMEOUT_PROMPT);
+            if(timeoutPromptObjs != null){
+                this.timeoutPrompt = new ArrayList<TTSChunk>(timeoutPromptObjs.size());
+                for(JSONObject timeoutPromptObj : timeoutPromptObjs){
+                    this.timeoutPrompt.add(new TTSChunk(timeoutPromptObj));
+                }
+            }
+            break;
+        }
     }
+    
 	/**
 	 * Gets a List<TTSChunk> for Help Prompt representing Array of one or more
 	 * TTSChunk elements specifying the help prompt used in an interaction
@@ -49,26 +96,11 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 * @return List<TTSChunk> -an Array of one or more TTSChunk elements
 	 *         specifying the help prompt used in an interaction started by PTT
-	 */    
-    @SuppressWarnings("unchecked")
+	 */
     public List<TTSChunk> getHelpPrompt() {
-    	if (parameters.get(KEY_HELP_PROMPT) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-    	}
-	    return null;
+        return this.helpPrompt;
     }
+    
 	/**
 	 * Sets a List<TTSChunk> for Help Prompt that Array of one or more
 	 * TTSChunk elements specifying the help prompt used in an interaction
@@ -84,12 +116,9 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-        if (helpPrompt != null) {
-            parameters.put(KEY_HELP_PROMPT, helpPrompt);
-        } else {
-            parameters.remove(KEY_HELP_PROMPT);
-        }
+        this.helpPrompt = helpPrompt;
     }
+    
 	/**
 	 * Gets a List<TTSChunk> for Timeout Prompt representing Array of one or
 	 * more TTSChunk elements specifying the help prompt used in an interaction
@@ -97,26 +126,11 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 * @return List<TTSChunk> -an Array of one or more TTSChunk elements
 	 *         specifying the help prompt used in an interaction started by PTT
-	 */    
-    @SuppressWarnings("unchecked")
+	 */
     public List<TTSChunk> getTimeoutPrompt() {
-        if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.timeoutPrompt;
     }
+    
 	/**
 	 * Sets a List<TTSChunk> for Timeout Prompt representing Array of one or
 	 * more TTSChunk elements specifying the help prompt used in an interaction
@@ -124,11 +138,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-        if (timeoutPrompt != null) {
-            parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
-        } else {
-            parameters.remove(KEY_TIMEOUT_PROMPT);
-        }
+        this.timeoutPrompt = timeoutPrompt;
     }
 
 	/**
@@ -139,7 +149,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getVrHelpTitle() {
-        return (String) parameters.get(KEY_VR_HELP_TITLE);
+        return this.vrHelpTitle;
     }
 
 	/**
@@ -159,11 +169,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelpTitle(String vrHelpTitle) {
-        if (vrHelpTitle != null) {
-            parameters.put(KEY_VR_HELP_TITLE, vrHelpTitle);
-        } else {
-        	parameters.remove(KEY_VR_HELP_TITLE);
-        }
+        this.vrHelpTitle = vrHelpTitle;
     }
 
 	/**
@@ -174,24 +180,8 @@ public class SetGlobalProperties extends RPCRequest {
 	 *         the VR help screen used in an interaction started by PTT
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public List<VrHelpItem> getVrHelp() {
-        if (parameters.get(KEY_VR_HELP) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_HELP);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrHelpItem) {
-	                return (List<VrHelpItem>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<VrHelpItem> newList = new ArrayList<VrHelpItem>();
-	                for (Object hashObj : list) {
-	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.vrHelp;
     }
 
 	/**
@@ -216,69 +206,60 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-        if (vrHelp != null) {
-            parameters.put(KEY_VR_HELP, vrHelp);
-        } else {
-        	parameters.remove(KEY_VR_HELP);
-        }
+        this.vrHelp = vrHelp;
     }
     
     public String getMenuTitle() {
-        return (String) parameters.get(KEY_MENU_TITLE);
+        return this.menuTitle;
     }
 
     public void setMenuTitle(String menuTitle) {
-        if (menuTitle != null) {
-            parameters.put(KEY_MENU_TITLE, menuTitle);
-        } else {
-        	parameters.remove(KEY_MENU_TITLE);
-        }
+        this.menuTitle = menuTitle;
     }
 
     public void setMenuIcon(Image menuIcon) {
-        if (menuIcon != null) {
-            parameters.put(KEY_MENU_ICON, menuIcon);
-        } else {
-        	parameters.remove(KEY_MENU_ICON);
-        }
+        this.menuIcon = menuIcon;
     }
 
-    @SuppressWarnings("unchecked")
     public Image getMenuIcon() {
-    	Object obj = parameters.get(KEY_MENU_ICON);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_ICON, e);
-            }
-        }
-        return null;
+    	return this.menuIcon;
     }
     
     public void setKeyboardProperties(KeyboardProperties keyboardProperties) {
-        if (keyboardProperties != null) {
-            parameters.put(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
-        } else {
-        	parameters.remove(KEY_KEYBOARD_PROPERTIES);
-        }
+        this.keyboardProperties = keyboardProperties;
     }
 
-    @SuppressWarnings("unchecked")
     public KeyboardProperties getKeyboardProperties() {
-    	Object obj = parameters.get(KEY_KEYBOARD_PROPERTIES);
-        if (obj instanceof Image) {
-            return (KeyboardProperties) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new KeyboardProperties((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_KEYBOARD_PROPERTIES, e);
-            }
+    	return this.keyboardProperties;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MENU_TITLE, this.menuTitle);
+            JsonUtils.addToJsonObject(result, KEY_VR_HELP_TITLE, this.vrHelpTitle);
+            
+            JsonUtils.addToJsonObject(result, KEY_KEYBOARD_PROPERTIES, (this.keyboardProperties == null) ? null : 
+                this.keyboardProperties.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_MENU_ICON, (this.menuIcon == null) ? null :
+                this.menuIcon.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_HELP_PROMPT, (this.helpPrompt == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.helpPrompt, sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_TIMEOUT_PROMPT, (this.timeoutPrompt == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.timeoutPrompt, sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_VR_HELP, (this.vrHelp == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.vrHelp, sdlVersion));
+            break;
         }
-        return null;
-    }    
+        
+        return result;
+    }
     
 }

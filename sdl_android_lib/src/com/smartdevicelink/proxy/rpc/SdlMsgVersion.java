@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
@@ -39,21 +40,31 @@ import com.smartdevicelink.proxy.RPCStruct;
  * </table> 
  * @since SmartDeviceLink 1.0
  */
-public class SdlMsgVersion extends RPCStruct {
+public class SdlMsgVersion extends RPCObject {
 	public static final String KEY_MAJOR_VERSION = "majorVersion";
 	public static final String KEY_MINOR_VERSION = "minorVersion";
 
+	private Integer majorVersion, minorVersion;
+	
 	/**
 	 * Constructs a newly allocated SdlMsgVersion object
 	 */
 	public SdlMsgVersion() { }
+    
     /**
-     * Constructs a newly allocated SdlMsgVersion object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
-     */    
-	public SdlMsgVersion(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates a SdlMsgVersion object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SdlMsgVersion(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.majorVersion = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_MAJOR_VERSION);
+            this.minorVersion = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_MINOR_VERSION);
+            break;
+        }
     }
+	
     /**
      * Get major version
      * 					<ul>
@@ -63,8 +74,9 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the major version
      */	
     public Integer getMajorVersion() {
-        return (Integer) store.get( KEY_MAJOR_VERSION );
+        return this.majorVersion;
     }
+    
     /**
      * Set major version
      * 					<ul>
@@ -74,12 +86,9 @@ public class SdlMsgVersion extends RPCStruct {
      * @param majorVersion minvalue="1" and maxvalue="10" 
      */    
     public void setMajorVersion( Integer majorVersion ) {
-        if (majorVersion != null) {
-            store.put(KEY_MAJOR_VERSION, majorVersion );
-        } else {
-        	store.remove(KEY_MAJOR_VERSION);
-        }
+        this.majorVersion = majorVersion;
     }
+    
     /**
      * Get minor version
      * 					<ul>
@@ -89,8 +98,9 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the minor version
      */    
     public Integer getMinorVersion() {
-        return (Integer) store.get( KEY_MINOR_VERSION );
+        return this.minorVersion;
     }
+    
     /**
      * Set minor version
      * 					<ul>
@@ -100,10 +110,20 @@ public class SdlMsgVersion extends RPCStruct {
      * @param minorVersion min: 0; max: 1000
      */
     public void setMinorVersion( Integer minorVersion ) {
-        if (minorVersion != null) {
-            store.put(KEY_MINOR_VERSION, minorVersion );
-        } else {
-        	store.remove(KEY_MINOR_VERSION);
+        this.minorVersion = minorVersion;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MAJOR_VERSION, this.majorVersion);
+            JsonUtils.addToJsonObject(result, KEY_MINOR_VERSION, this.minorVersion);
+            break;
         }
+        
+        return result;
     }
 }

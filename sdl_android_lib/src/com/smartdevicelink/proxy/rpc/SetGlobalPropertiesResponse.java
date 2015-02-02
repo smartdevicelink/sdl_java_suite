@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -18,16 +18,13 @@ public class SetGlobalPropertiesResponse extends RPCResponse {
     public SetGlobalPropertiesResponse() {
         super(FunctionID.SET_GLOBAL_PROPERTIES);
     }
-
-	/**
-	 * Constructs a new SetGlobalPropertiesResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SetGlobalPropertiesResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SetGlobalPropertiesResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SetGlobalPropertiesResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }

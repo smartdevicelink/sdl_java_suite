@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Used to set existing local file on SDL as the app's icon. Not supported on
@@ -15,22 +16,27 @@ import com.smartdevicelink.proxy.RPCRequest;
 public class SetAppIcon extends RPCRequest {
 	public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
+	private String filename;
+	
 	/**
 	 * Constructs a new SetAppIcon object
 	 */
     public SetAppIcon() {
         super(FunctionID.SET_APP_ICON);
     }
-
-	/**
-	 * Constructs a new SetAppIcon object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SetAppIcon(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SetAppIcon object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SetAppIcon(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.filename = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SDL_FILE_NAME);
+            break;
+        }
     }
 
 	/**
@@ -42,11 +48,7 @@ public class SetAppIcon extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
-        if (sdlFileName != null) {
-            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
-        } else {
-        	parameters.remove(KEY_SDL_FILE_NAME);
-        }
+        this.filename = sdlFileName;
     }
 
 	/**
@@ -54,6 +56,19 @@ public class SetAppIcon extends RPCRequest {
 	 * @return String -a String value
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return this.filename;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SDL_FILE_NAME, this.filename);
+            break;
+        }
+        
+        return result;
     }
 }

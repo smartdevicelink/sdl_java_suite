@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Creates a full screen overlay containing a large block of formatted text that
@@ -21,23 +23,38 @@ public class ScrollableMessage extends RPCRequest {
 	public static final String KEY_TIMEOUT = "timeout";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
 
+	private String body;
+	private Integer timeout;
+	private List<SoftButton> softButtons;
+	
 	/**
 	 * Constructs a new ScrollableMessage object
 	 */
     public ScrollableMessage() {
         super(FunctionID.SCROLLABLE_MESSAGE);
     }
-
-	/**
-	 * Constructs a new ScrollableMessage object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public ScrollableMessage(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a ScrollableMessage object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ScrollableMessage(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.body = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SCROLLABLE_MESSAGE_BODY);
+            this.timeout = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_TIMEOUT);
+            
+            List<JSONObject> softButtonObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_SOFT_BUTTONS);
+            if(softButtonObjs != null){
+                this.softButtons = new ArrayList<SoftButton>(softButtonObjs.size());
+                for(JSONObject softButtonObj : softButtonObjs){
+                    this.softButtons.add(new SoftButton(softButtonObj));
+                }
+            }
+            break;
+        }
     }
 
 	/**
@@ -50,11 +67,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setScrollableMessageBody(String scrollableMessageBody) {
-        if (scrollableMessageBody != null) {
-            parameters.put(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
-        } else {
-        	parameters.remove(KEY_SCROLLABLE_MESSAGE_BODY);
-        }
+        this.body = scrollableMessageBody;
     }
 
 	/**
@@ -63,7 +76,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return String -a String value
 	 */
     public String getScrollableMessageBody() {
-        return (String) parameters.get(KEY_SCROLLABLE_MESSAGE_BODY);
+        return this.body;
     }
 
 	/**
@@ -76,11 +89,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
 	 */
     public void setTimeout(Integer timeout) {
-        if (timeout != null) {
-            parameters.put(KEY_TIMEOUT, timeout);
-        } else {
-        	parameters.remove(KEY_TIMEOUT);
-        }
+        this.timeout = timeout;
     }
 
 	/**
@@ -89,7 +98,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return Integer -an Integer value representing an App defined timeout
 	 */
     public Integer getTimeout() {
-        return (Integer) parameters.get(KEY_TIMEOUT);
+        return this.timeout;
     }
 
 	/**
@@ -103,34 +112,30 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        this.softButtons = softButtons;
     }
 
 	/**
 	 * Gets App defined soft button
 	 * @return List -List<SoftButton> value
 	 */
-    @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
-	        }
+        return this.softButtons;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SCROLLABLE_MESSAGE_BODY, this.body);
+            JsonUtils.addToJsonObject(result, KEY_TIMEOUT, this.timeout);
+            JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTONS, (this.softButtons == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.softButtons, sdlVersion));
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -18,16 +18,13 @@ public class SetMediaClockTimerResponse extends RPCResponse {
     public SetMediaClockTimerResponse() {
         super(FunctionID.SET_MEDIA_CLOCK_TIMER);
     }
-
-	/**
-	 * Constructs a new SetMediaClockTimerResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SetMediaClockTimerResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SetMediaClockTimerResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SetMediaClockTimerResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }

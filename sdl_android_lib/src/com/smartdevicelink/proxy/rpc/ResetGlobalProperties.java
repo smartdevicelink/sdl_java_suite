@@ -1,13 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -26,58 +27,49 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class ResetGlobalProperties extends RPCRequest {
 	public static final String KEY_PROPERTIES = "properties";
+	
+	private List<String> properties; // represents GlobalProperty enum
+	
 	/**
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
         super(FunctionID.RESET_GLOBAL_PROPERTIES);
     }
-	/**
-	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-    public ResetGlobalProperties(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a ResetGlobalProperties object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public ResetGlobalProperties(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.properties = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_PROPERTIES);
+            break;
+        }
     }
+    
 	/**
 	 * Gets an array of one or more GlobalProperty enumeration elements
 	 * indicating which global properties to reset to their default value
 	 * 
 	 * @return List<GlobalProperty> -an array of one or more GlobalProperty
 	 *         enumeration elements
-	 */    
-    @SuppressWarnings("unchecked")
+	 */
     public List<GlobalProperty> getProperties() {
-    	if (parameters.get(KEY_PROPERTIES) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_PROPERTIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof GlobalProperty) {
-	                return (List<GlobalProperty>) list;
-	            } else if (obj instanceof String) {
-	            	List<GlobalProperty> newList = new ArrayList<GlobalProperty>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    GlobalProperty toAdd = null;
-	                    try {
-	                        toAdd = GlobalProperty.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PROPERTIES, e);
-	                    }
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
+    	if(this.properties == null){
+    	    return null;
     	}
-        return null;
+    	
+	    List<GlobalProperty> result = new ArrayList<GlobalProperty>(this.properties.size());
+	    for(String str : this.properties){
+	        result.add(GlobalProperty.valueForJsonName(str, sdlVersion));
+	    }
+	    return result;
     }
+    
 	/**
 	 * Sets an array of one or more GlobalProperty enumeration elements
 	 * indicating which global properties to reset to their default value
@@ -90,10 +82,28 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
     public void setProperties( List<GlobalProperty> properties ) {
-        if (properties != null) {
-            parameters.put(KEY_PROPERTIES, properties );
-        } else {
-        	parameters.remove(KEY_PROPERTIES);
+        if(properties == null){
+            this.properties = null;
         }
+        else{
+            this.properties = new ArrayList<String>(properties.size());
+            for(GlobalProperty item : properties){
+                this.properties.add(item.getJsonName(sdlVersion));
+            }
+        }
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_PROPERTIES, (this.properties == null) ? null :
+                    JsonUtils.createJsonArray(this.properties));
+            break;
+        }
+        
+        return result;
     }
 }

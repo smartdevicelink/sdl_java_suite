@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Used to set an alternate display layout. If not sent, default screen for
@@ -14,23 +15,28 @@ import com.smartdevicelink.proxy.RPCRequest;
  */
 public class SetDisplayLayout extends RPCRequest {
 	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
+	
+	private String displayLayout;
+	
 	/**
 	 * Constructs a new SetDisplayLayout object
 	 */
     public SetDisplayLayout() {
         super(FunctionID.SET_DISPLAY_LAYOUT);
     }
-
-	/**
-	 * Constructs a new SetDisplayLayout object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SetDisplayLayout(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SetDisplayLayout object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SetDisplayLayout(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.displayLayout = JsonUtils.readStringFromJsonObject(jsonObject, KEY_DISPLAY_LAYOUT);
+            break;
+        }
     }
 
 	/**
@@ -43,17 +49,26 @@ public class SetDisplayLayout extends RPCRequest {
 	 *            a String value representing a diaply layout
 	 */
     public void setDisplayLayout(String displayLayout) {
-        if (displayLayout != null) {
-            parameters.put(KEY_DISPLAY_LAYOUT, displayLayout);
-        } else {
-        	parameters.remove(KEY_DISPLAY_LAYOUT);
-        }
+        this.displayLayout = displayLayout;
     }
 
 	/**
 	 * Gets a display layout.
 	 */
     public String getDisplayLayout() {
-    	return (String) parameters.get(KEY_DISPLAY_LAYOUT);
+    	return this.displayLayout;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DISPLAY_LAYOUT, this.displayLayout);
+            break;
+        }
+        
+        return result;
     }
 }

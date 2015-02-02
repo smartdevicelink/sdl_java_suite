@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
@@ -18,117 +20,105 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
     public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
 
+    private DisplayCapabilities displayCapabilities;
+    private PresetBankCapabilities presetBankCapabilities;
+    private List<ButtonCapabilities> buttonCapabilities;
+    private List<SoftButtonCapabilities> softButtonCapabilities;
+    
 	/**
 	 * Constructs a new SetDisplayLayoutResponse object
 	 */
     public SetDisplayLayoutResponse() {
         super(FunctionID.SET_DISPLAY_LAYOUT);
     }
-
-	/**
-	 * Constructs a new SetDisplayLayoutResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SetDisplayLayoutResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SetDisplayLayoutResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SetDisplayLayoutResponse(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            JSONObject displayCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_DISPLAY_CAPABILITIES);
+            if(displayCapabilitiesObj != null){
+                this.displayCapabilities = new DisplayCapabilities(displayCapabilitiesObj);
+            }
+            
+            JSONObject presetBankCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_PRESET_BANK_CAPABILITIES);
+            if(presetBankCapabilitiesObj != null){
+                this.presetBankCapabilities = new PresetBankCapabilities(presetBankCapabilitiesObj);
+            }
+            
+            List<JSONObject> buttonCapabilitiesObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_BUTTON_CAPABILITIES);
+            if(buttonCapabilitiesObjs != null){
+                this.buttonCapabilities = new ArrayList<ButtonCapabilities>(buttonCapabilitiesObjs.size());
+                for(JSONObject buttonCapabilitiesObj : buttonCapabilitiesObjs){
+                    this.buttonCapabilities.add(new ButtonCapabilities(buttonCapabilitiesObj));
+                }
+            }
+            
+            List<JSONObject> softButtonCapabilitiesObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_SOFT_BUTTON_CAPABILITIES);
+            if(softButtonCapabilitiesObjs != null){
+                this.softButtonCapabilities = new ArrayList<SoftButtonCapabilities>(softButtonCapabilitiesObjs.size());
+                for(JSONObject softButtonCapabilitiesObj : softButtonCapabilitiesObjs){
+                    this.softButtonCapabilities.add(new SoftButtonCapabilities(softButtonCapabilitiesObj));
+                }
+            }
+            break;
+        }
     }
     
-    @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
-        Object obj = parameters.get(KEY_DISPLAY_CAPABILITIES);
-        if (obj instanceof DisplayCapabilities) {
-        	return (DisplayCapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new DisplayCapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+        return this.displayCapabilities;
     }
 
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-        if (displayCapabilities != null) {
-            parameters.put(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
-        } else {
-            parameters.remove(KEY_DISPLAY_CAPABILITIES);
-        }
+        this.displayCapabilities = displayCapabilities;
     }
 
-    @SuppressWarnings("unchecked")
     public List<ButtonCapabilities> getButtonCapabilities() {
-        if (parameters.get(KEY_BUTTON_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_BUTTON_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ButtonCapabilities) {
-	                return (List<ButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.buttonCapabilities;
     }
 
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
-            parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
-        } else {
-            parameters.remove(KEY_BUTTON_CAPABILITIES);
-        }
+        this.buttonCapabilities = buttonCapabilities;
     }
 
-    @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(KEY_SOFT_BUTTON_CAPABILITIES) instanceof List<?>) {
-            List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButtonCapabilities) {
-	                return (List<SoftButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.softButtonCapabilities;
     }
 
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
-            parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
-        } else {
-            parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);
-        }
+        this.softButtonCapabilities = softButtonCapabilities;
     }
 
-    @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
-        Object obj = parameters.get(KEY_PRESET_BANK_CAPABILITIES);
-        if (obj instanceof PresetBankCapabilities) {
-        	return (PresetBankCapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new PresetBankCapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+        return this.presetBankCapabilities;
     }
 
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-        if (presetBankCapabilities != null) {
-            parameters.put(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
-        } else {
-            parameters.remove(KEY_PRESET_BANK_CAPABILITIES);
-        }
+        this.presetBankCapabilities = presetBankCapabilities;
     }
     
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DISPLAY_CAPABILITIES, (this.displayCapabilities == null) ? null :
+                this.displayCapabilities.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_PRESET_BANK_CAPABILITIES, (this.presetBankCapabilities == null) ? null :
+                this.presetBankCapabilities.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_BUTTON_CAPABILITIES, (this.buttonCapabilities == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.buttonCapabilities, sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTON_CAPABILITIES, (this.softButtonCapabilities == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.softButtonCapabilities, sdlVersion));
+            break;
+        }
+        
+        return result;
+    }
 }
