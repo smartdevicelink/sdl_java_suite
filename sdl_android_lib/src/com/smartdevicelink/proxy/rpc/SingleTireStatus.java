@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Tire pressure status of a single tire.
@@ -27,20 +27,27 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class SingleTireStatus extends RPCStruct {
+public class SingleTireStatus extends RPCObject {
 	public static final String KEY_STATUS = "status";
 
+	private String status; // represents ComponentVolumeStatus enum
+	
 	/**
 	 * Constructs a newly allocated SingleTireStatus object
 	 */
     public SingleTireStatus() { }
     
     /**
-     * Constructs a newly allocated SingleTireStatus object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a SingleTireStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public SingleTireStatus(Hashtable<String, Object> hash) {
-        super(hash);
+    public SingleTireStatus(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.status = JsonUtils.readStringFromJsonObject(jsonObject, KEY_STATUS);
+            break;
+        }
     }
     
     /**
@@ -48,11 +55,7 @@ public class SingleTireStatus extends RPCStruct {
      * @param status  the volume status of a single tire
      */
     public void setStatus(ComponentVolumeStatus status) {
-    	if (status != null) {
-    		store.put(KEY_STATUS, status);
-    	} else {
-    		store.remove(KEY_STATUS);
-    	}
+    	this.status = status.getJsonName(sdlVersion);
     }
     
     /**
@@ -60,18 +63,19 @@ public class SingleTireStatus extends RPCStruct {
      * @return  the volume status of a single tire
      */
     public ComponentVolumeStatus getStatus() {
-        Object obj = store.get(KEY_STATUS);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-        	ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATUS, e);
-            }
-            return theCode;
+        return ComponentVolumeStatus.valueForJsonName(this.status, sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_STATUS, this.status);
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

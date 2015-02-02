@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -18,16 +18,12 @@ public class SubscribeButtonResponse extends RPCResponse {
     public SubscribeButtonResponse() {
         super(FunctionID.SUBSCRIBE_BUTTON);
     }
-
-	/**
-	 * Constructs a new SubscribeButtonResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SubscribeButtonResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a SubscribeButtonResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SubscribeButtonResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }

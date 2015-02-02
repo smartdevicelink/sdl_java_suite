@@ -1,13 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Updates the application's display text area, regardless of whether or not
@@ -45,22 +46,61 @@ public class Show extends RPCRequest {
 	public static final String KEY_MEDIA_TRACK = "mediaTrack";
 	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
+	
+	private String mainField1, mainField2, mainField3, mainField4, statusBar,
+	    mediaClock, mediaTrack;
+	private String alignment; // represents TextAlignment enum
+	private Image graphic, secondaryGraphic;
+	private List<String> customPresets;
+	private List<SoftButton> softButtons;
+	
 	/**
 	 * Constructs a new Show object
 	 */
 	public Show() {
         super(FunctionID.SHOW);
     }
-	/**
-	 * Constructs a new Show object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public Show(Hashtable<String, Object> hash) {
-        super(hash);
+	
+    /**
+     * Creates a Show object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public Show(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.mainField1 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MAIN_FIELD_1);
+            this.mainField2 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MAIN_FIELD_2);
+            this.mainField3 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MAIN_FIELD_3);
+            this.mainField4 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MAIN_FIELD_4);
+            this.statusBar = JsonUtils.readStringFromJsonObject(jsonObject, KEY_STATUS_BAR);
+            this.mediaClock = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MEDIA_CLOCK);
+            this.mediaTrack = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MEDIA_TRACK);
+            this.alignment = JsonUtils.readStringFromJsonObject(jsonObject, KEY_ALIGNMENT);
+            this.customPresets = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_CUSTOM_PRESETS);
+            
+            JSONObject graphicObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_GRAPHIC);
+            if(graphicObj != null){
+                this.graphic = new Image(graphicObj);
+            }
+            
+            JSONObject secondaryGraphicObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SECONDARY_GRAPHIC);
+            if(secondaryGraphicObj != null){
+                this.secondaryGraphic = new Image(secondaryGraphicObj);
+            }
+            
+            List<JSONObject> softButtonObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_SOFT_BUTTONS);
+            if(softButtonObjs != null){
+                this.softButtons = new ArrayList<SoftButton>(softButtonObjs.size());
+                for(JSONObject softButtonObj : softButtonObjs){
+                    this.softButtons.add(new SoftButton(softButtonObj));
+                }
+            }
+            break;
+        }
     }
+    
 	/**
 	 * Gets the text displayed in a single-line display, or in the upper display
 	 * line in a two-line display
@@ -70,8 +110,9 @@ public class Show extends RPCRequest {
 	 *         display
 	 */    
     public String getMainField1() {
-        return (String) parameters.get(KEY_MAIN_FIELD_1);
+        return this.mainField1;
     }
+    
 	/**
 	 * Sets the text displayed in a single-line display, or in the upper display
 	 * line in a two-line display
@@ -90,12 +131,9 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField1(String mainField1) {
-        if (mainField1 != null) {
-            parameters.put(KEY_MAIN_FIELD_1, mainField1);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_1);
-        }
+        this.mainField1 = mainField1;
     }
+    
 	/**
 	 * Gets the text displayed on the second display line of a two-line display
 	 * 
@@ -103,8 +141,9 @@ public class Show extends RPCRequest {
 	 *         second display line of a two-line display
 	 */    
     public String getMainField2() {
-        return (String) parameters.get(KEY_MAIN_FIELD_2);
+        return this.mainField2;
     }
+    
 	/**
 	 * Sets the text displayed on the second display line of a two-line display
 	 * 
@@ -124,11 +163,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField2(String mainField2) {
-        if (mainField2 != null) {
-            parameters.put(KEY_MAIN_FIELD_2, mainField2);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_2);
-        }
+        this.mainField2 = mainField2;
     }
 
 	/**
@@ -139,7 +174,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField3() {
-        return (String) parameters.get(KEY_MAIN_FIELD_3);
+        return this.mainField3;
     }
 
 	/**
@@ -162,11 +197,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField3(String mainField3) {
-        if (mainField3 != null) {
-            parameters.put(KEY_MAIN_FIELD_3, mainField3);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_3);
-        }
+        this.mainField3 = mainField3;
     }
 
 	/**
@@ -177,7 +208,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField4() {
-        return (String) parameters.get(KEY_MAIN_FIELD_4);
+        return this.mainField4;
     }
 
 	/**
@@ -200,12 +231,9 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField4(String mainField4) {
-        if (mainField4 != null) {
-            parameters.put(KEY_MAIN_FIELD_4, mainField4);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_4);
-        }
+        this.mainField4 = mainField4;
     }
+    
 	/**
 	 * Gets the alignment that Specifies how mainField1 and mainField2 text
 	 * should be aligned on display
@@ -213,20 +241,9 @@ public class Show extends RPCRequest {
 	 * @return TextAlignment -an Enumeration value
 	 */    
     public TextAlignment getAlignment() {
-        Object obj = parameters.get(KEY_ALIGNMENT);
-        if (obj instanceof TextAlignment) {
-            return (TextAlignment) obj;
-        } else if (obj instanceof String) {
-            TextAlignment theCode = null;
-            try {
-                theCode = TextAlignment.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALIGNMENT, e);
-            }
-            return theCode;
-        }
-        return null;
+        return TextAlignment.valueForJsonName(this.alignment, sdlVersion);
     }
+    
 	/**
 	 * Sets the alignment that Specifies how mainField1 and mainField2 text
 	 * should be aligned on display
@@ -244,20 +261,18 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlignment(TextAlignment alignment) {
-        if (alignment != null) {
-            parameters.put(KEY_ALIGNMENT, alignment);
-        } else {
-        	parameters.remove(KEY_ALIGNMENT);
-        }
+        this.alignment = alignment.getJsonName(sdlVersion);
     }
+    
 	/**
 	 * Gets text in the Status Bar
 	 * 
 	 * @return String -the value in the Status Bar
 	 */    
     public String getStatusBar() {
-        return (String) parameters.get(KEY_STATUS_BAR);
+        return this.statusBar;
     }
+    
 	/**
 	 * Sets text in the Status Bar
 	 * 
@@ -277,12 +292,9 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setStatusBar(String statusBar) {
-        if (statusBar != null) {
-            parameters.put(KEY_STATUS_BAR, statusBar);
-        } else {
-        	parameters.remove(KEY_STATUS_BAR);
-        }
+        this.statusBar = statusBar;
     }
+    
 	/**
 	 * Gets the String value of the MediaClock
 	 * 
@@ -290,8 +302,9 @@ public class Show extends RPCRequest {
 	 */ 
 	@Deprecated	 
     public String getMediaClock() {
-        return (String) parameters.get(KEY_MEDIA_CLOCK);
+        return this.mediaClock;
     }
+	
 	/**
 	 * Sets the value for the MediaClock field using a format described in the
 	 * MediaClockFormat enumeration
@@ -310,20 +323,18 @@ public class Show extends RPCRequest {
 	 */
 	@Deprecated
     public void setMediaClock(String mediaClock) {
-        if (mediaClock != null) {
-            parameters.put(KEY_MEDIA_CLOCK, mediaClock);
-        } else {
-        	parameters.remove(KEY_MEDIA_CLOCK);
-        }
+        this.mediaClock = mediaClock;
     }
+	
 	/**
 	 * Gets the text in the track field
 	 * 
 	 * @return String -a String displayed in the track field
 	 */    
     public String getMediaTrack() {
-        return (String) parameters.get(KEY_MEDIA_TRACK);
+        return this.mediaTrack;
     }
+    
 	/**
 	 * Sets the text in the track field
 	 * 
@@ -338,11 +349,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMediaTrack(String mediaTrack) {
-        if (mediaTrack != null) {
-            parameters.put(KEY_MEDIA_TRACK, mediaTrack);
-        } else {
-        	parameters.remove(KEY_MEDIA_TRACK);
-        }
+        this.mediaTrack = mediaTrack;
     }
 
 	/**
@@ -356,11 +363,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setGraphic(Image graphic) {
-        if (graphic != null) {
-            parameters.put(KEY_GRAPHIC, graphic);
-        } else {
-        	parameters.remove(KEY_GRAPHIC);
-        }
+        this.graphic = graphic;
     }
 
 	/**
@@ -370,44 +373,17 @@ public class Show extends RPCRequest {
 	 *         displays
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public Image getGraphic() {
-    	Object obj = parameters.get(KEY_GRAPHIC);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GRAPHIC, e);
-            }
-        }
-        return null;
+    	return this.graphic;
     }
 
     
     public void setSecondaryGraphic(Image secondaryGraphic) {
-        if (secondaryGraphic != null) {
-            parameters.put(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
-        } else {
-        	parameters.remove(KEY_SECONDARY_GRAPHIC);
-        }
+        this.secondaryGraphic = secondaryGraphic;
     }
 
-
-    @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
-    	Object obj = parameters.get(KEY_SECONDARY_GRAPHIC);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_GRAPHIC, e);
-            }
-        }
-        return null;
+    	return this.secondaryGraphic;
     }    
     
     
@@ -418,24 +394,8 @@ public class Show extends RPCRequest {
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return this.softButtons;
     }
 
 	/**
@@ -456,11 +416,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        this.softButtons = softButtons;
     }
 
 	/**
@@ -470,18 +426,8 @@ public class Show extends RPCRequest {
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
-    @SuppressWarnings("unchecked")
     public List<String> getCustomPresets() {
-    	if (parameters.get(KEY_CUSTOM_PRESETS) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_CUSTOM_PRESETS);
-    		if (list != null && list.size()>0) {
-    			Object obj = list.get(0);
-    			if (obj instanceof String) {
-    				return (List<String>) list;
-    			}
-    		}
-    	}
-        return null;
+    	return this.customPresets;
     }
 
 	/**
@@ -499,10 +445,38 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCustomPresets(List<String> customPresets) {
-        if (customPresets != null) {
-            parameters.put(KEY_CUSTOM_PRESETS, customPresets);
-        } else {
-        	parameters.remove(KEY_CUSTOM_PRESETS);
+        this.customPresets = customPresets;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MAIN_FIELD_1, this.mainField1);
+            JsonUtils.addToJsonObject(result, KEY_MAIN_FIELD_2, this.mainField2);
+            JsonUtils.addToJsonObject(result, KEY_MAIN_FIELD_3, this.mainField3);
+            JsonUtils.addToJsonObject(result, KEY_MAIN_FIELD_4, this.mainField4);
+            JsonUtils.addToJsonObject(result, KEY_STATUS_BAR, this.statusBar);
+            JsonUtils.addToJsonObject(result, KEY_MEDIA_CLOCK, this.mediaClock);
+            JsonUtils.addToJsonObject(result, KEY_MEDIA_TRACK, this.mediaTrack);
+            JsonUtils.addToJsonObject(result, KEY_ALIGNMENT, this.alignment);
+            
+            JsonUtils.addToJsonObject(result, KEY_CUSTOM_PRESETS, (this.customPresets == null) ? null :
+                JsonUtils.createJsonArray(this.customPresets));
+            
+            JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTONS, (this.softButtons == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.softButtons, sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_GRAPHIC, (this.graphic == null) ? null :
+                this.graphic.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_SECONDARY_GRAPHIC, (this.secondaryGraphic == null) ? null :
+                this.secondaryGraphic.getJsonParameters(sdlVersion));
+            break;
         }
+        
+        return result;
     }
 }

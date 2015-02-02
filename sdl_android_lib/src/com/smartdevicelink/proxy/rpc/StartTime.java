@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Describes the hour, minute and second values used to set the media clock.
@@ -37,76 +38,95 @@ import com.smartdevicelink.proxy.RPCStruct;
  * </table>
  * @since SmartDeviceLink 1.0
  */
-public class StartTime extends RPCStruct {
+public class StartTime extends RPCObject {
 	public static final String KEY_MINUTES = "minutes";
 	public static final String KEY_SECONDS = "seconds";
 	public static final String KEY_HOURS = "hours";
 
+	private Integer hours, minutes, seconds;
+	
 	/**
 	 * Constructs a newly allocated StartTime object
 	 */
 	public StartTime() { }
+	
     /**
-     * Constructs a newly allocated StartTime object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a StartTime object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public StartTime(Hashtable<String, Object> hash) {
-        super(hash);
+    public StartTime(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.hours = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_HOURS);
+            this.minutes = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_MINUTES);
+            this.seconds = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_SECONDS);
+            break;
+        }
     }
+    
     /**
      * Get the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b>Some display types only support a max value of 19. If out of range, it will be rejected.
      * @return hours Minvalue="0", maxvalue="59"
      */    
     public Integer getHours() {
-        return (Integer) store.get( KEY_HOURS );
+        return this.hours;
     }
+    
     /**
      * Set the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b>Some display types only support a max value of 19. If out of range, it will be rejected.
      * @param hours min: 0; max: 59
      */    
     public void setHours( Integer hours ) {
-        if (hours != null) {
-            store.put(KEY_HOURS, hours );
-        } else {
-        	store.remove(KEY_HOURS);
-        }
+        this.hours = hours;
     }
+    
     /**
      * Get the minute. Minvalue="0", maxvalue="59".
      * @return minutes Minvalue="0", maxvalue="59"
      */    
     public Integer getMinutes() {
-        return (Integer) store.get( KEY_MINUTES );
+        return this.minutes;
     }
+    
     /**
      * Set the minute. Minvalue="0", maxvalue="59".
      * @param minutes min: 0; max: 59
      */    
     public void setMinutes( Integer minutes ) {
-        if (minutes != null) {
-            store.put(KEY_MINUTES, minutes );
-        } else {
-        	store.remove(KEY_MINUTES);
-        }
+        this.minutes = minutes;
     }
+    
     /**
      * Get the second. Minvalue="0", maxvalue="59".
      * @return seconds. Minvalue="0", maxvalue="59".
      */    
     public Integer getSeconds() {
-        return (Integer) store.get( KEY_SECONDS );
+        return this.seconds;
     }
+    
     /**
      * Set the second. Minvalue="0", maxvalue="59".
      * @param seconds min: 0 max: 59
      */    
     public void setSeconds( Integer seconds ) {
-        if (seconds != null) {
-            store.put(KEY_SECONDS, seconds );
-        } else {
-        	store.remove(KEY_SECONDS);
+        this.seconds = seconds;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_HOURS, this.hours);
+            JsonUtils.addToJsonObject(result, KEY_MINUTES, this.minutes);
+            JsonUtils.addToJsonObject(result, KEY_SECONDS, this.seconds);
+            break;
         }
+        
+        return result;
     }
 }

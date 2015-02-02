@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -18,16 +18,13 @@ public class SpeakResponse extends RPCResponse {
     public SpeakResponse() {
         super(FunctionID.SPEAK);
     }
-
-	/**
-	 * Constructs a new SpeakResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SpeakResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SpeakResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SpeakResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }

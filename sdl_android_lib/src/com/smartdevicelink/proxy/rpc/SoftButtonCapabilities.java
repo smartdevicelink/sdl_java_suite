@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Contains information about a SoftButton's capabilities.
@@ -48,23 +49,33 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class SoftButtonCapabilities extends RPCStruct {
+public class SoftButtonCapabilities extends RPCObject {
 	public static final String KEY_IMAGE_SUPPORTED = "imageSupported";
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
 	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
 
+	private Boolean imageSupported, shortPressAvailable, longPressAvailable, upDownAvailable;
+	
 	/**
 	 * Constructs a newly allocated SoftButtonCapabilities object
 	 */
     public SoftButtonCapabilities() { }
     
     /**
-     * Constructs a newly allocated SoftButtonCapabilities object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a SoftButtonCapabilities object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public SoftButtonCapabilities(Hashtable<String, Object> hash) {
-        super(hash);
+    public SoftButtonCapabilities(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.imageSupported = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_IMAGE_SUPPORTED);
+            this.shortPressAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_SHORT_PRESS_AVAILABLE);
+            this.longPressAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_LONG_PRESS_AVAILABLE);
+            this.upDownAvailable = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_UP_DOWN_AVAILABLE);
+            break;
+        }
     }
     
     /**
@@ -72,11 +83,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @param shortPressAvailable whether the button supports a short press.
      */
     public void setShortPressAvailable(Boolean shortPressAvailable) {
-        if (shortPressAvailable != null) {
-            store.put(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
-        } else {
-        	store.remove(KEY_SHORT_PRESS_AVAILABLE);
-        }
+        this.shortPressAvailable = shortPressAvailable;
     }
     
     /**
@@ -84,7 +91,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return whether the button supports a short press
      */
     public Boolean getShortPressAvailable() {
-        return (Boolean) store.get( KEY_SHORT_PRESS_AVAILABLE);
+        return this.shortPressAvailable;
     }
     
     /**
@@ -92,11 +99,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @param longPressAvailable whether the button supports a long press
      */
     public void setLongPressAvailable(Boolean longPressAvailable) {
-        if (longPressAvailable != null) {
-            store.put(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
-        } else {
-        	store.remove(KEY_LONG_PRESS_AVAILABLE);
-        }
+        this.longPressAvailable = longPressAvailable;
     }
     
     /**
@@ -104,7 +107,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return whether  the button supports a LONG press
      */
     public Boolean getLongPressAvailable() {
-        return (Boolean) store.get( KEY_LONG_PRESS_AVAILABLE);
+        return this.longPressAvailable;
     }
     
     /**
@@ -112,11 +115,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @param upDownAvailable the button supports "button down" and "button up". 
      */
     public void setUpDownAvailable(Boolean upDownAvailable) {
-        if (upDownAvailable != null) {
-            store.put(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
-        } else {
-        	store.remove(KEY_UP_DOWN_AVAILABLE);
-        }
+        this.upDownAvailable = upDownAvailable;
     }
     
     /**
@@ -124,7 +123,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return the button supports "button down" and "button up".
      */
     public Boolean getUpDownAvailable() {
-        return (Boolean) store.get( KEY_UP_DOWN_AVAILABLE);
+        return this.upDownAvailable;
     }
     
     /**
@@ -132,11 +131,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @param imageSupported whether the button supports referencing a static or dynamic image.
      */
     public void setImageSupported(Boolean imageSupported) {
-        if (imageSupported != null) {
-            store.put(KEY_IMAGE_SUPPORTED, imageSupported);
-        } else {
-        	store.remove(KEY_IMAGE_SUPPORTED);
-        }
+        this.imageSupported = imageSupported;
     }
     
     /**
@@ -144,6 +139,22 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return the button supports referencing a static or dynamic image.
      */
     public Boolean getImageSupported() {
-        return (Boolean) store.get( KEY_IMAGE_SUPPORTED);
+        return this.imageSupported;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_IMAGE_SUPPORTED, this.imageSupported);
+            JsonUtils.addToJsonObject(result, KEY_SHORT_PRESS_AVAILABLE, this.shortPressAvailable);
+            JsonUtils.addToJsonObject(result, KEY_LONG_PRESS_AVAILABLE, this.longPressAvailable);
+            JsonUtils.addToJsonObject(result, KEY_UP_DOWN_AVAILABLE, this.upDownAvailable);
+            break;
+        }
+        
+        return result;
     }
 }

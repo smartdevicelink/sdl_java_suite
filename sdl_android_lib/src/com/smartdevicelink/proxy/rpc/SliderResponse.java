@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Slider Response is sent, when Slider has been called
@@ -13,40 +14,55 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class SliderResponse extends RPCResponse {
 	public static final String KEY_SLIDER_POSITION = "sliderPosition";
 
+	private Integer sliderPosition;
+	
 	/**
 	 * Constructs a new SliderResponse object
 	 */
     public SliderResponse() {
         super(FunctionID.SLIDER);
     }
-
-	/**
-	 * Constructs a new SliderResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SliderResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SliderResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SliderResponse(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.sliderPosition = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_SLIDER_POSITION);
+            break;
+        }
     }
+    
     /**
      * Sets an Initial position of slider control
      * @param sliderPosition
      */
     public void setSliderPosition(Integer sliderPosition) {
-    	if (sliderPosition != null) {
-    		parameters.put(KEY_SLIDER_POSITION, sliderPosition);
-    	} else {
-    		parameters.remove(KEY_SLIDER_POSITION);
-    	}
+    	this.sliderPosition = sliderPosition;
     }
+    
     /**
      * Gets an Initial position of slider control
      * @return Integer
      */
     public Integer getSliderPosition() {
-    	return (Integer) parameters.get(KEY_SLIDER_POSITION);
+    	return this.sliderPosition;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_SLIDER_POSITION, this.sliderPosition);
+            break;
+        }
+        
+        return result;
     }
 }

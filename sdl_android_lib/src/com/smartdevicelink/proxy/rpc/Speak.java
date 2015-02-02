@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Speaks a phrase over the vehicle audio system using SDL's TTS
@@ -74,6 +76,8 @@ import com.smartdevicelink.proxy.RPCRequest;
  */
 public class Speak extends RPCRequest {
 	public static final String KEY_TTS_CHUNKS = "ttsChunks";
+	
+	private List<TTSChunk> ttsChunks;
 
 	/**
 	 * Constructs a new Speak object
@@ -81,41 +85,37 @@ public class Speak extends RPCRequest {
 	public Speak() {
         super(FunctionID.SPEAK);
     }
-	/**
-	 * Constructs a new Speak object indicated by the Hashtable parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */	
-    public Speak(Hashtable<String, Object> hash) {
-        super(hash);
+	
+    /**
+     * Creates a Speak object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public Speak(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            List<JSONObject> ttsChunkObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_TTS_CHUNKS);
+            if(ttsChunkObjs != null){
+                this.ttsChunks = new ArrayList<TTSChunk>(ttsChunkObjs.size());
+                for(JSONObject ttsChunkObj : ttsChunkObjs){
+                    this.ttsChunks.add(new TTSChunk(ttsChunkObj));
+                }
+            }
+            break;
+        }
     }
+	
 	/**
 	 * Gets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
 	 * which, taken together, specify the phrase to be spoken
 	 * 
 	 * @return List<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
-	 */    
-    @SuppressWarnings("unchecked")
+	 */
     public List<TTSChunk> getTtsChunks() {
-    	if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-    	}
-        return null;
+    	return this.ttsChunks;
     }
+    
 	/**
 	 * Sets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
 	 * which, taken together, specify the phrase to be spoken
@@ -133,10 +133,20 @@ public class Speak extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setTtsChunks( List<TTSChunk> ttsChunks ) {
-        if (ttsChunks != null) {
-            parameters.put(KEY_TTS_CHUNKS, ttsChunks );
-        } else {
-            parameters.remove(KEY_TTS_CHUNKS);
+        this.ttsChunks = ttsChunks;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_TTS_CHUNKS, (this.ttsChunks == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.ttsChunks, sdlVersion));
+            break;
         }
+        
+        return result;
     }
 }

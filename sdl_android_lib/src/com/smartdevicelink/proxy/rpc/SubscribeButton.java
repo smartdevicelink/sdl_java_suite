@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 /**
  * Establishes a subscription to button notifications for HMI buttons. Buttons
  * are not necessarily physical buttons, but can also be "soft" buttons on a
@@ -58,6 +58,8 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class SubscribeButton extends RPCRequest {
 	public static final String KEY_BUTTON_NAME = "buttonName";
+	
+	private String buttonName; // represents ButtonName enum
 
 	/**
 	 * Constructs a new SubscribeButton object
@@ -65,45 +67,47 @@ public class SubscribeButton extends RPCRequest {
     public SubscribeButton() {
         super(FunctionID.SUBSCRIBE_BUTTON);
     }
-	/**
-	 * Constructs a new SubscribeButton object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-    public SubscribeButton(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SubscribeButton object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SubscribeButton(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.buttonName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BUTTON_NAME);
+            break;
+        }
     }
+    
 	/**
 	 * Gets the name of the button to subscribe to
 	 * @return ButtonName -an enum value, see <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            ButtonName theCode = null;
-            try {
-                theCode = ButtonName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
-            }
-            return theCode;
-        }
-        return null;
+        return ButtonName.valueForJsonName(this.buttonName, sdlVersion);
     }
+    
 	/**
 	 * Sets a name of the button to subscribe to
 	 * @param buttonName a <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i> value
 	 */    
     public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
+        this.buttonName = buttonName.getJsonName(sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_BUTTON_NAME, this.buttonName);
+            break;
         }
+        
+        return result;
     }
 }

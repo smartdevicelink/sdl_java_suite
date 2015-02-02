@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class SoftButton extends RPCStruct {
+public class SoftButton extends RPCObject {
 
 	public static final String KEY_IS_HIGHLIGHTED = "isHighlighted";
 	public static final String KEY_SOFT_BUTTON_ID = "softButtonID";
@@ -16,103 +16,102 @@ public class SoftButton extends RPCStruct {
 	public static final String KEY_TYPE = "type";
 	public static final String KEY_IMAGE = "image";
 	
+	private String type; // represents SoftButtonType enum
+	private String systemAction; // represents SystemAction enum
+	private String text;
+	private Image image;
+	private Boolean isHighlighted;
+	private Integer id;
+	
     public SoftButton() { }
-    public SoftButton(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SoftButton object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SoftButton(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.type = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TYPE);
+            this.systemAction = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SYSTEM_ACTION);
+            this.text = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TEXT);
+            this.isHighlighted = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_IS_HIGHLIGHTED);
+            this.id = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_SOFT_BUTTON_ID);
+            
+            JSONObject imageObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_IMAGE);
+            if(imageObj != null){
+                this.image = new Image(imageObj);
+            }
+            break;
+        }
     }
+    
     public void setType(SoftButtonType type) {
-        if (type != null) {
-            store.put(KEY_TYPE, type);
-        } else {
-        	store.remove(KEY_TYPE);
-        }
+        this.type = type.getJsonName(sdlVersion);
     }
+    
     public SoftButtonType getType() {
-    	Object obj = store.get(KEY_TYPE);
-        if (obj instanceof SoftButtonType) {
-            return (SoftButtonType) obj;
-        } else if (obj instanceof String) {
-        	SoftButtonType theCode = null;
-            try {
-                theCode = SoftButtonType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
+    	return SoftButtonType.valueForJsonName(this.type, sdlVersion);
     }
+    
     public void setText(String text) {
-        if (text != null) {
-            store.put(KEY_TEXT, text);
-        } else {
-        	store.remove(KEY_TEXT);
-        }
+        this.text = text;
     }
+    
     public String getText() {
-        return (String) store.get(KEY_TEXT);
+        return this.text;
     }
+    
     public void setImage(Image image) {
-        if (image != null) {
-            store.put(KEY_IMAGE, image);
-        } else {
-        	store.remove(KEY_IMAGE);
-        }
+        this.image = image;
     }
-    @SuppressWarnings("unchecked")
+    
     public Image getImage() {
-    	Object obj = store.get(KEY_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
-            }
-        }
-        return null;
+    	return this.image;
     }
+    
     public void setIsHighlighted(Boolean isHighlighted) {
-        if (isHighlighted != null) {
-            store.put(KEY_IS_HIGHLIGHTED, isHighlighted);
-        } else {
-        	store.remove(KEY_IS_HIGHLIGHTED);
-        }
+        this.isHighlighted = isHighlighted;
     }
+    
     public Boolean getIsHighlighted() {
-        return (Boolean) store.get(KEY_IS_HIGHLIGHTED);
+        return this.isHighlighted;
     }
+    
     public void setSoftButtonID(Integer softButtonID) {
-        if (softButtonID != null) {
-            store.put(KEY_SOFT_BUTTON_ID, softButtonID);
-        } else {
-        	store.remove(KEY_SOFT_BUTTON_ID);
-        }
+        this.id = softButtonID;
     }
+    
     public Integer getSoftButtonID() {
-        return (Integer) store.get(KEY_SOFT_BUTTON_ID);
+        return this.id;
     }
+    
     public void setSystemAction(SystemAction systemAction) {
-        if (systemAction != null) {
-            store.put(KEY_SYSTEM_ACTION, systemAction);
-        } else {
-        	store.remove(KEY_SYSTEM_ACTION);
-        }
+        this.systemAction = systemAction.getJsonName(sdlVersion);
     }
+    
     public SystemAction getSystemAction() {
-    	Object obj = store.get(KEY_SYSTEM_ACTION);
-        if (obj instanceof SystemAction) {
-            return (SystemAction) obj;
-        } else if (obj instanceof String) {
-        	SystemAction theCode = null;
-            try {
-                theCode = SystemAction.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_ACTION, e);
-            }
-            return theCode;
+    	return SystemAction.valueForJsonName(this.systemAction, sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_IS_HIGHLIGHTED, this.isHighlighted);
+            JsonUtils.addToJsonObject(result, KEY_SOFT_BUTTON_ID, this.id);
+            JsonUtils.addToJsonObject(result, KEY_SYSTEM_ACTION, this.systemAction);
+            JsonUtils.addToJsonObject(result, KEY_TEXT, this.text);
+            JsonUtils.addToJsonObject(result, KEY_TYPE, this.type);
+            
+            JsonUtils.addToJsonObject(result, KEY_IMAGE, (this.image == null) ? null :
+                this.image.getJsonParameters(sdlVersion));
+            break;
         }
-        return null;
+        
+        return result;
     }
 }
