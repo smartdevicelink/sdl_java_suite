@@ -1,18 +1,25 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.BulkData;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 public class SystemRequest extends RPCRequest implements BulkData{
 	public static final String KEY_FILE_NAME = "fileName";
 	public static final String KEY_REQUEST_TYPE = "requestType";
 	public static final String KEY_DATA = "data";
+	
+	private List<String> legacyData;
+	private String filename;
+	private String requestType; // represents RequestType enum
+	
+	private byte[] bulkData;
 	
     public SystemRequest() {
         super(FunctionID.SYSTEM_REQUEST);
@@ -22,67 +29,69 @@ public class SystemRequest extends RPCRequest implements BulkData{
         super(FunctionID.ENCODED_SYNC_P_DATA);
     }
     
-    public SystemRequest(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a SystemRequest object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SystemRequest(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.filename = JsonUtils.readStringFromJsonObject(jsonObject, KEY_FILE_NAME);
+            this.requestType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_REQUEST_TYPE);
+            this.legacyData = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_DATA);
+            break;
+        }
     }
 
-    @SuppressWarnings("unchecked")    
     public List<String> getLegacyData() {
-        if (parameters.get(KEY_DATA) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DATA);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
-        		}
-        	}
-        }
-    	return null;
+        return this.legacyData;
     }
  
     public void setLegacyData( List<String> data ) {
-    	if ( data!= null) {
-    		parameters.put(KEY_DATA, data );
-    	} else {
-            parameters.remove(KEY_DATA);
-        }
+    	this.legacyData = data;
     }    
             
     public String getFileName() {
-        return (String) parameters.get(KEY_FILE_NAME);
+        return this.filename;
     }
     
     public void setFileName(String fileName) {
-        if (fileName != null) {
-            parameters.put(KEY_FILE_NAME, fileName);
-        } else {
-        	parameters.remove(KEY_FILE_NAME);
-        }
+        this.filename = fileName;
     }    
 
     public RequestType getRequestType() {
-        Object obj = parameters.get(KEY_REQUEST_TYPE);
-        if (obj instanceof RequestType) {
-            return (RequestType) obj;
-        } else if (obj instanceof String) {
-            RequestType theCode = null;
-            try {
-                theCode = RequestType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_REQUEST_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return RequestType.valueForJsonName(this.requestType, sdlVersion);
     }
 
     public void setRequestType(RequestType requestType) {
-        if (requestType != null) {
-            parameters.put(KEY_REQUEST_TYPE, requestType);
-        } else {
-            parameters.remove(KEY_REQUEST_TYPE);
+        this.requestType = requestType.getJsonName(sdlVersion);
+    }
+
+    @Override
+    public byte[] getBulkData(){
+        return this.bulkData;
+    }
+
+    @Override
+    public void setBulkData(byte[] rawData){
+        this.bulkData = rawData;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_FILE_NAME, this.filename);
+            JsonUtils.addToJsonObject(result, KEY_REQUEST_TYPE, this.requestType);
+            JsonUtils.addToJsonObject(result, KEY_DATA, (this.legacyData == null) ? null :
+                JsonUtils.createJsonArray(this.legacyData));
+            break;
         }
+        
+        return result;
     }
 }

@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Subscribes for specific published vehicle data items. The data will be only
@@ -47,23 +48,55 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
 
+    // TODO: refactor this class with new VehicleData design
+    private Boolean speed, rpm, externalTemperature, fuelLevel, prndl, tirePressure,
+        engineTorque, odometer, gps, fuelLevelState, instantFuelConsumption, beltStatus,
+        bodyInformation, deviceStatus, driverBraking, wiperStatus, headLampStatus,
+        accPedalPosition, steeringWheelAngle, eCallInfo, airbagStatus, emergencyEvent,
+        clusterModeStatus, myKey;
+
 	/**
 	 * Constructs a new SubscribeVehicleData object
 	 */
     public SubscribeVehicleData() {
         super(FunctionID.SUBSCRIBE_VEHICLE_DATA);
     }
-
-	/**
-	 * Constructs a new SubscribeVehicleData object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public SubscribeVehicleData(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a SubscribeVehicleData object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public SubscribeVehicleData(JSONObject jsonObject){
+        super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.speed = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_SPEED);
+            this.rpm = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_RPM);
+            this.externalTemperature = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_EXTERNAL_TEMPERATURE);
+            this.fuelLevel = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_FUEL_LEVEL);
+            this.prndl = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_PRNDL);
+            this.tirePressure = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_TIRE_PRESSURE);
+            this.engineTorque = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_ENGINE_TORQUE);
+            this.odometer = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_ODOMETER);
+            this.gps = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_GPS);
+            this.fuelLevelState = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_FUEL_LEVEL_STATE);
+            this.instantFuelConsumption = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_INSTANT_FUEL_CONSUMPTION);
+            this.beltStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_BELT_STATUS);
+            this.bodyInformation = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_BODY_INFORMATION);
+            this.deviceStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_DEVICE_STATUS);
+            this.driverBraking = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_DRIVER_BRAKING);
+            this.wiperStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_WIPER_STATUS);
+            this.headLampStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_HEAD_LAMP_STATUS);
+            this.accPedalPosition = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_ACC_PEDAL_POSITION);
+            this.steeringWheelAngle = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_STEERING_WHEEL_ANGLE);
+            this.eCallInfo = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_E_CALL_INFO);
+            this.airbagStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_AIRBAG_STATUS);
+            this.emergencyEvent = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_EMERGENCY_EVENT);
+            this.clusterModeStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_CLUSTER_MODE_STATUS);
+            this.myKey = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_MY_KEY);
+            break;
+        }
     }
 
 	/**
@@ -73,11 +106,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setGps(Boolean gps) {
-        if (gps != null) {
-            parameters.put(KEY_GPS, gps);
-        } else {
-        	parameters.remove(KEY_GPS);
-        }
+        this.gps = gps;
     }
 
 	/**
@@ -87,7 +116,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         subscribed.
 	 */
     public Boolean getGps() {
-        return (Boolean) parameters.get(KEY_GPS);
+        return this.gps;
     }
 
 	/**
@@ -97,11 +126,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setSpeed(Boolean speed) {
-        if (speed != null) {
-            parameters.put(KEY_SPEED, speed);
-        } else {
-        	parameters.remove(KEY_SPEED);
-        }
+        this.speed = speed;
     }
 
 	/**
@@ -111,7 +136,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         subscribed.
 	 */
     public Boolean getSpeed() {
-        return (Boolean) parameters.get(KEY_SPEED);
+        return this.speed;
     }
 
 	/**
@@ -121,11 +146,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setRpm(Boolean rpm) {
-        if (rpm != null) {
-            parameters.put(KEY_RPM, rpm);
-        } else {
-        	parameters.remove(KEY_RPM);
-        }
+        this.rpm = rpm;
     }
 
 	/**
@@ -135,7 +156,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         subscribed.
 	 */
     public Boolean getRpm() {
-        return (Boolean) parameters.get(KEY_RPM);
+        return this.rpm;
     }
 
 	/**
@@ -145,11 +166,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setFuelLevel(Boolean fuelLevel) {
-        if (fuelLevel != null) {
-            parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-        } else {
-        	parameters.remove(KEY_FUEL_LEVEL);
-        }
+        this.fuelLevel = fuelLevel;
     }
 
 	/**
@@ -160,7 +177,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         been subscribed.
 	 */
     public Boolean getFuelLevel() {
-        return (Boolean) parameters.get(KEY_FUEL_LEVEL);
+        return this.fuelLevel;
     }
 
 	/**
@@ -170,11 +187,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setFuelLevel_State(Boolean fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-        	parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        this.fuelLevelState = fuelLevel_State;
     }
 
 	/**
@@ -185,7 +198,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getFuelLevel_State() {
-        return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
+        return this.fuelLevelState;
     }
 
 	/**
@@ -195,11 +208,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
-        if (instantFuelConsumption != null) {
-            parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-        } else {
-        	parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-        }
+        this.instantFuelConsumption = instantFuelConsumption;
     }
 
 	/**
@@ -210,7 +219,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getInstantFuelConsumption() {
-        return (Boolean) parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+        return this.instantFuelConsumption;
     }
 
 	/**
@@ -220,11 +229,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setExternalTemperature(Boolean externalTemperature) {
-        if (externalTemperature != null) {
-            parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-        } else {
-        	parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-        }
+        this.externalTemperature = externalTemperature;
     }
 
 	/**
@@ -235,7 +240,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getExternalTemperature() {
-        return (Boolean) parameters.get(KEY_EXTERNAL_TEMPERATURE);
+        return this.externalTemperature;
     }
 
 	/**
@@ -245,11 +250,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setPrndl(Boolean prndl) {
-        if (prndl != null) {
-            parameters.put(KEY_PRNDL, prndl);
-        } else {
-        	parameters.remove(KEY_PRNDL);
-        }
+        this.prndl = prndl;
     }
 
 	/**
@@ -260,7 +261,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getPrndl() {
-        return (Boolean) parameters.get(KEY_PRNDL);
+        return this.prndl;
     }
 
 	/**
@@ -270,11 +271,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setTirePressure(Boolean tirePressure) {
-        if (tirePressure != null) {
-            parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-        } else {
-        	parameters.remove(KEY_TIRE_PRESSURE);
-        }
+        this.tirePressure = tirePressure;
     }
 
 	/**
@@ -285,7 +282,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getTirePressure() {
-        return (Boolean) parameters.get(KEY_TIRE_PRESSURE);
+        return this.tirePressure;
     }
 
 	/**
@@ -295,11 +292,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setOdometer(Boolean odometer) {
-        if (odometer != null) {
-            parameters.put(KEY_ODOMETER, odometer);
-        } else {
-        	parameters.remove(KEY_ODOMETER);
-        }
+        this.odometer = odometer;
     }
 
 	/**
@@ -310,7 +303,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getOdometer() {
-        return (Boolean) parameters.get(KEY_ODOMETER);
+        return this.odometer;
     }
 
 	/**
@@ -320,11 +313,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setBeltStatus(Boolean beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        this.beltStatus = beltStatus;
     }
 
 	/**
@@ -335,7 +324,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getBeltStatus() {
-        return (Boolean) parameters.get(KEY_BELT_STATUS);
+        return this.beltStatus;
     }
 
 	/**
@@ -345,11 +334,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setBodyInformation(Boolean bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        this.bodyInformation = bodyInformation;
     }
 
 	/**
@@ -360,7 +345,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getBodyInformation() {
-        return (Boolean) parameters.get(KEY_BODY_INFORMATION);
+        return this.bodyInformation;
     }
 
 	/**
@@ -370,11 +355,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setDeviceStatus(Boolean deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        this.deviceStatus = deviceStatus;
     }
 
 	/**
@@ -385,7 +366,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getDeviceStatus() {
-        return (Boolean) parameters.get(KEY_DEVICE_STATUS);
+        return this.deviceStatus;
     }
 
 	/**
@@ -395,11 +376,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setDriverBraking(Boolean driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        this.driverBraking = driverBraking;
     }
 
 	/**
@@ -410,7 +387,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getDriverBraking() {
-        return (Boolean) parameters.get(KEY_DRIVER_BRAKING);
+        return this.driverBraking;
     }
 
 	/**
@@ -420,11 +397,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setWiperStatus(Boolean wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        this.wiperStatus = wiperStatus;
     }
 
 	/**
@@ -435,7 +408,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getWiperStatus() {
-        return (Boolean) parameters.get(KEY_WIPER_STATUS);
+        return this.wiperStatus;
     }
 
 	/**
@@ -445,11 +418,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setHeadLampStatus(Boolean headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        this.headLampStatus = headLampStatus;
     }
 
 	/**
@@ -460,7 +429,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getHeadLampStatus() {
-        return (Boolean) parameters.get(KEY_HEAD_LAMP_STATUS);
+        return this.headLampStatus;
     }
 
 	/**
@@ -470,11 +439,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setEngineTorque(Boolean engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        this.engineTorque = engineTorque;
     }
 
 	/**
@@ -485,7 +450,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getEngineTorque() {
-        return (Boolean) parameters.get(KEY_ENGINE_TORQUE);
+        return this.engineTorque;
     }
 
 	/**
@@ -495,11 +460,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *            a boolean value
 	 */
     public void setAccPedalPosition(Boolean accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        this.accPedalPosition = accPedalPosition;
     }
 
 	/**
@@ -510,69 +471,90 @@ public class SubscribeVehicleData extends RPCRequest {
 	 *         has been subscribed.
 	 */
     public Boolean getAccPedalPosition() {
-        return (Boolean) parameters.get(KEY_ACC_PEDAL_POSITION);
+        return this.accPedalPosition;
     }
   
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        this.steeringWheelAngle = steeringWheelAngle;
     }
 
     public Boolean getSteeringWheelAngle() {
-        return (Boolean) parameters.get(KEY_STEERING_WHEEL_ANGLE);
-    }    
-    public void setECallInfo(Boolean eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
+        return this.steeringWheelAngle;
     }
-    public Boolean getECallInfo() {
-        return (Boolean) parameters.get(KEY_E_CALL_INFO);
-    }
-    public void setAirbagStatus(Boolean airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
-    }
-    public Boolean getAirbagStatus() {
-        return (Boolean) parameters.get(KEY_AIRBAG_STATUS);
-    }
-    public void setEmergencyEvent(Boolean emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
-    }
-    public Boolean getEmergencyEvent() {
-        return (Boolean) parameters.get(KEY_EMERGENCY_EVENT);
-    }
-    public void setClusterModeStatus(Boolean clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
-    }
-    public Boolean getClusterModeStatus() {
-        return (Boolean) parameters.get(KEY_CLUSTER_MODE_STATUS);
-    }
-    public void setMyKey(Boolean myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
-    }
-    public Boolean getMyKey() {
-        return (Boolean) parameters.get(KEY_MY_KEY);
-    }      
     
+    public void setECallInfo(Boolean eCallInfo) {
+        this.eCallInfo = eCallInfo;
+    }
+    
+    public Boolean getECallInfo() {
+        return this.eCallInfo;
+    }
+    
+    public void setAirbagStatus(Boolean airbagStatus) {
+        this.airbagStatus = airbagStatus;
+    }
+    
+    public Boolean getAirbagStatus() {
+        return this.airbagStatus;
+    }
+    
+    public void setEmergencyEvent(Boolean emergencyEvent) {
+        this.emergencyEvent = emergencyEvent;
+    }
+    
+    public Boolean getEmergencyEvent() {
+        return this.emergencyEvent;
+    }
+    
+    public void setClusterModeStatus(Boolean clusterModeStatus) {
+        this.clusterModeStatus = clusterModeStatus;
+    }
+    
+    public Boolean getClusterModeStatus() {
+        return this.clusterModeStatus;
+    }
+    
+    public void setMyKey(Boolean myKey) {
+        this.myKey = myKey;
+    }
+    
+    public Boolean getMyKey() {
+        return this.myKey;
+    }
+
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_ACC_PEDAL_POSITION, this.accPedalPosition);
+            JsonUtils.addToJsonObject(result, KEY_AIRBAG_STATUS, this.airbagStatus);
+            JsonUtils.addToJsonObject(result, KEY_BELT_STATUS, this.beltStatus);
+            JsonUtils.addToJsonObject(result, KEY_BODY_INFORMATION, this.bodyInformation);
+            JsonUtils.addToJsonObject(result, KEY_CLUSTER_MODE_STATUS, this.clusterModeStatus);
+            JsonUtils.addToJsonObject(result, KEY_DEVICE_STATUS, this.deviceStatus);
+            JsonUtils.addToJsonObject(result, KEY_DRIVER_BRAKING, this.driverBraking);
+            JsonUtils.addToJsonObject(result, KEY_E_CALL_INFO, this.eCallInfo);
+            JsonUtils.addToJsonObject(result, KEY_EMERGENCY_EVENT, this.emergencyEvent);
+            JsonUtils.addToJsonObject(result, KEY_ENGINE_TORQUE, this.engineTorque);
+            JsonUtils.addToJsonObject(result, KEY_EXTERNAL_TEMPERATURE, this.externalTemperature);
+            JsonUtils.addToJsonObject(result, KEY_FUEL_LEVEL, this.fuelLevel);
+            JsonUtils.addToJsonObject(result, KEY_FUEL_LEVEL_STATE, this.fuelLevelState);
+            JsonUtils.addToJsonObject(result, KEY_GPS, this.gps);
+            JsonUtils.addToJsonObject(result, KEY_HEAD_LAMP_STATUS, this.headLampStatus);
+            JsonUtils.addToJsonObject(result, KEY_INSTANT_FUEL_CONSUMPTION, this.instantFuelConsumption);
+            JsonUtils.addToJsonObject(result, KEY_MY_KEY, this.myKey);
+            JsonUtils.addToJsonObject(result, KEY_ODOMETER, this.odometer);
+            JsonUtils.addToJsonObject(result, KEY_PRNDL, this.prndl);
+            JsonUtils.addToJsonObject(result, KEY_RPM, this.rpm);
+            JsonUtils.addToJsonObject(result, KEY_SPEED, this.speed);
+            JsonUtils.addToJsonObject(result, KEY_STEERING_WHEEL_ANGLE, this.steeringWheelAngle);
+            JsonUtils.addToJsonObject(result, KEY_TIRE_PRESSURE, this.tirePressure);
+            JsonUtils.addToJsonObject(result, KEY_WIPER_STATUS, this.wiperStatus);
+            break;
+        }
+        
+        return result;
+    }  
 }

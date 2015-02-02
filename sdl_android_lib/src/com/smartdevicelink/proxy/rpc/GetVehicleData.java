@@ -317,5 +317,5 @@ public class GetVehicleData extends RPCRequest {
         }
         
         return result;
-    }   
+    }
 }

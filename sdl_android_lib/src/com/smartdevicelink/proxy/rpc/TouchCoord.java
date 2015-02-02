@@ -1,40 +1,59 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import org.json.JSONObject;
 
-import java.util.Hashtable;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
-public class TouchCoord extends RPCStruct {
+public class TouchCoord extends RPCObject {
     public static final String KEY_X = "x";
     public static final String KEY_Y = "y";
+    
+    private Integer x, y;
+    
     public TouchCoord() {}
     
-    public TouchCoord(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Creates a TouchCoord object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public TouchCoord(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.x = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_X);
+            this.y = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_Y);
+            break;
+        }
     }
     
     public void setX(Integer x) {
-        if (x != null) {
-            store.put(KEY_X, x);
-        } else {
-        	store.remove(KEY_X);
-        }
+        this.x = x;
     }
     
     public Integer getX() {
-        return (Integer) store.get(KEY_X);
+        return this.x;
     }
     
     public void setY(Integer y) {
-        if (y != null) {
-            store.put(KEY_Y, y);
-        } else {
-        	store.remove(KEY_Y);
-        }
+        this.y = y;
     }
     
     public Integer getY() {
-        return (Integer) store.get(KEY_Y);
+        return this.y;
     }
     
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_X, this.x);
+            JsonUtils.addToJsonObject(result, KEY_Y, this.y);
+            break;
+        }
+        
+        return result;
+    }
 }

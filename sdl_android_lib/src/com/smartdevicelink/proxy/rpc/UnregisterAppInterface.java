@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -28,15 +28,13 @@ public class UnregisterAppInterface extends RPCRequest {
     public UnregisterAppInterface() {
         super(FunctionID.UNREGISTER_APP_INTERFACE);
     }
-	/**
-	 * Constructs a new UnregisterAppInterface object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */    
-    public UnregisterAppInterface(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a UnregisterAppInterface object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public UnregisterAppInterface(JSONObject jsonObject){
+        super(jsonObject);
     }
 }

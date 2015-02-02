@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Specifies what is to be spoken. This can be simply a text phrase, which SDL will speak according to its own rules.
@@ -38,66 +38,74 @@ import com.smartdevicelink.util.DebugTool;
  *  </table>
  * @since SmartDeviceLink 1.0
  */
-public class TTSChunk extends RPCStruct {
+public class TTSChunk extends RPCObject {
 	public static final String KEY_TEXT = "text";
 	public static final String KEY_TYPE = "type";
+	
+	private String text, type;
+	
 	/**
 	 * Constructs a newly allocated TTSChunk object
 	 */
     public TTSChunk() { }
+    
     /**
-     * Constructs a newly allocated TTSChunk object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
-     */    
-    public TTSChunk(Hashtable<String, Object> hash) {
-        super(hash);
+     * Creates a TTSChunk object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public TTSChunk(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.text = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TEXT);
+            this.type = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TYPE);
+            break;
+        }
     }
+    
     /**
      * Get text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
      * @return text to be spoken, or a phoneme specification, or the name of a pre-recorded sound
      */    
     public String getText() {
-        return (String) store.get( KEY_TEXT );
+        return this.text;
     }
+    
     /**
      * Set the text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
      * @param text to be spoken, or a phoneme specification, or the name of a pre-recorded sound.
      */    
     public void setText( String text ) {
-        if (text != null) {
-            store.put(KEY_TEXT, text );
-        } else {
-        	store.remove(KEY_TEXT);
-        }
+        this.text = text;
     }
+    
     /**
      * Get the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
      * @return the type of information in the "text" field
      */    
     public SpeechCapabilities getType() {
-        Object obj = store.get(KEY_TYPE);
-        if (obj instanceof SpeechCapabilities) {
-            return (SpeechCapabilities) obj;
-        } else if (obj instanceof String) {
-            SpeechCapabilities theCode = null;
-            try {
-                theCode = SpeechCapabilities.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return SpeechCapabilities.valueForJsonName(this.type, sdlVersion);
     }
+    
     /**
      * Set the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
      * @param type the type of information in the "text" field
      */    
     public void setType( SpeechCapabilities type ) {
-        if (type != null) {
-            store.put(KEY_TYPE, type );
-        } else {
-        	store.remove(KEY_TYPE);
+        this.type = type.getJsonName(sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_TEXT, this.text);
+            JsonUtils.addToJsonObject(result, KEY_TYPE, this.type);
+            break;
         }
+        
+        return result;
     }
 }

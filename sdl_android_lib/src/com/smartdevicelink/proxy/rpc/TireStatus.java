@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class TireStatus extends RPCStruct {
+public class TireStatus extends RPCObject {
 	public static final String KEY_PRESSURE_TELL_TALE = "pressureTellTale";
 	public static final String KEY_LEFT_FRONT = "leftFront";
 	public static final String KEY_RIGHT_FRONT = "rightFront";
@@ -15,156 +15,128 @@ public class TireStatus extends RPCStruct {
 	public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
 	public static final String KEY_RIGHT_REAR = "rightRear";
 
+	private SingleTireStatus leftFront, rightFront, leftRear, rightRear, innerLeftRear,
+	    innerRightRear;
+	private String pressureTellTale;
+	
     public TireStatus() { }
-    public TireStatus(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a TireStatus object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public TireStatus(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.pressureTellTale = JsonUtils.readStringFromJsonObject(jsonObject, KEY_PRESSURE_TELL_TALE);
+            
+            JSONObject temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_LEFT_FRONT);
+            if(temp != null){
+                this.leftFront = new SingleTireStatus(temp);
+            }
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_LEFT_REAR);
+            if(temp != null){
+                this.rightFront = new SingleTireStatus(temp);
+            }
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_RIGHT_FRONT);
+            if(temp != null){
+                this.leftRear = new SingleTireStatus(temp);
+            }
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_RIGHT_REAR);
+            if(temp != null){
+                this.rightRear = new SingleTireStatus(temp);
+            }
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_INNER_LEFT_REAR);
+            if(temp != null){
+                this.innerLeftRear = new SingleTireStatus(temp);
+            }
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_INNER_RIGHT_REAR);
+            if(temp != null){
+                this.innerRightRear = new SingleTireStatus(temp);
+            }
+            break;
+        }
     }
+    
     public void setPressureTellTale(WarningLightStatus pressureTellTale) {
-    	if (pressureTellTale != null) {
-    		store.put(KEY_PRESSURE_TELL_TALE, pressureTellTale);
-    	} else {
-    		store.remove(KEY_PRESSURE_TELL_TALE);
-    	}
+    	this.pressureTellTale = pressureTellTale.getJsonName(sdlVersion);
     }
+    
     public WarningLightStatus getPressureTellTale() {
-        Object obj = store.get(KEY_PRESSURE_TELL_TALE);
-        if (obj instanceof WarningLightStatus) {
-            return (WarningLightStatus) obj;
-        } else if (obj instanceof String) {
-        	WarningLightStatus theCode = null;
-            try {
-                theCode = WarningLightStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRESSURE_TELL_TALE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return WarningLightStatus.valueForJsonName(this.pressureTellTale, sdlVersion);
     }
+    
     public void setLeftFront(SingleTireStatus leftFront) {
-    	if (leftFront != null) {
-    		store.put(KEY_LEFT_FRONT, leftFront);
-    	} else {
-    		store.remove(KEY_LEFT_FRONT);
-    	}
+    	this.leftFront = leftFront;
     }
-    @SuppressWarnings("unchecked")
+    
     public SingleTireStatus getLeftFront() {
-    	Object obj = store.get(KEY_LEFT_FRONT);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_FRONT, e);
-            }
-        }
-        return null;
+    	return this.leftFront;
     }
+    
     public void setRightFront(SingleTireStatus rightFront) {
-    	if (rightFront != null) {
-    		store.put(KEY_RIGHT_FRONT, rightFront);
-    	} else {
-    		store.remove(KEY_RIGHT_FRONT);
-    	}
+    	this.rightFront = rightFront;
     }
-    @SuppressWarnings("unchecked")
+    
     public SingleTireStatus getRightFront() {
-    	Object obj = store.get(KEY_RIGHT_FRONT);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_FRONT, e);
-            }
-        }
-        return null;
+    	return this.rightFront;
     }
+    
     public void setLeftRear(SingleTireStatus leftRear) {
-    	if (leftRear != null) {
-    		store.put(KEY_LEFT_REAR, leftRear);
-    	} else {
-    		store.remove(KEY_LEFT_REAR);
-    	}
+    	this.leftRear = leftRear;
     }
-    @SuppressWarnings("unchecked")
+    
     public SingleTireStatus getLeftRear() {
-    	Object obj = store.get(KEY_LEFT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_REAR, e);
-            }
-        }
-        return null;
+    	return this.leftRear;
     }
+    
     public void setRightRear(SingleTireStatus rightRear) {
-    	if (rightRear != null) {
-    		store.put(KEY_RIGHT_REAR, rightRear);
-    	} else {
-    		store.remove(KEY_RIGHT_REAR);
-    	}
+    	this.rightRear = rightRear;
     }
-    @SuppressWarnings("unchecked")
+    
     public SingleTireStatus getRightRear() {
-    	Object obj = store.get(KEY_RIGHT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR, e);
-            }
-        }
-        return null;
+    	return this.rightRear;
     }
+    
     public void setInnerLeftRear(SingleTireStatus innerLeftRear) {
-    	if (innerLeftRear != null) {
-    		store.put(KEY_INNER_LEFT_REAR, innerLeftRear);
-    	} else {
-    		store.remove(KEY_INNER_LEFT_REAR);
-    	}
+    	this.innerLeftRear = innerLeftRear;
     }
-    @SuppressWarnings("unchecked")
+    
     public SingleTireStatus getInnerLeftRear() {
-    	Object obj = store.get(KEY_INNER_LEFT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_LEFT_REAR, e);
-            }
-        }
-        return null;
+    	return this.innerLeftRear;
     }
+    
     public void setInnerRightRear(SingleTireStatus innerRightRear) {
-    	if (innerRightRear != null) {
-    		store.put(KEY_INNER_RIGHT_REAR, innerRightRear);
-    	} else {
-    		store.remove(KEY_INNER_RIGHT_REAR);
-    	}
+    	this.innerRightRear = innerRightRear;
     }
-    @SuppressWarnings("unchecked")
+    
     public SingleTireStatus getInnerRightRear() {
-    	Object obj = store.get(KEY_INNER_RIGHT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_RIGHT_REAR, e);
-            }
+    	return this.innerRightRear;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_PRESSURE_TELL_TALE, this.pressureTellTale);
+            JsonUtils.addToJsonObject(result, KEY_LEFT_FRONT, (this.leftFront == null) ? null :
+                this.leftFront.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_LEFT_REAR, (this.leftRear == null) ? null :
+                this.leftFront.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_RIGHT_FRONT, (this.rightFront == null) ? null :
+                this.leftFront.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_RIGHT_REAR, (this.rightRear == null) ? null :
+                this.leftFront.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_INNER_LEFT_REAR, (this.innerLeftRear == null) ? null :
+                this.leftFront.getJsonParameters(sdlVersion));
+            JsonUtils.addToJsonObject(result, KEY_INNER_RIGHT_REAR, (this.innerRightRear == null) ? null :
+                this.leftFront.getJsonParameters(sdlVersion));
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -18,16 +18,13 @@ public class UnregisterAppInterfaceResponse extends RPCResponse {
     public UnregisterAppInterfaceResponse() {
         super(FunctionID.UNREGISTER_APP_INTERFACE);
     }
-
-	/**
-	 * Constructs a new UnregisterAppInterfaceResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public UnregisterAppInterfaceResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a UnregisterAppInterfaceResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public UnregisterAppInterfaceResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }
