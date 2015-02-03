@@ -1,13 +1,10 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
-import java.util.Collections;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 
 import android.view.MenuItem;
 
-import com.smartdevicelink.proxy.JsonName;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
@@ -86,6 +83,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
 
 /**
  * This is an enumerated list of SDL commands, complete with world-readable names that can be used
@@ -326,8 +324,10 @@ public enum SdlCommand implements JsonName{
     
     @Override
     public String getJsonName(int version){
-        // TODO: handle different SDL versions
-        return this.jsonName;
+        switch(version){
+        default:
+            return this.jsonName;
+        }
     }
     
     public Class<?> getRequestClass(){

@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
+import com.smartdevicelink.util.JsonUtils;
 
 /**
  * Describes the type of vehicle the mobile phone is connected with.
@@ -57,23 +58,33 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class VehicleType extends RPCStruct {
+public class VehicleType extends RPCObject {
 	public static final String KEY_MAKE = "make";
 	public static final String KEY_MODEL = "model";
 	public static final String KEY_MODEL_YEAR = "modelYear";
 	public static final String KEY_TRIM = "trim";
 
+	private String make, model, modelYear, trim;
+	
 	/**
 	 * Constructs a newly allocated VehicleType object
 	 */
     public VehicleType() { }
     
     /**
-     * Constructs a newly allocated VehicleType object indicated by the Hashtable parameter
-     * @param hash The Hashtable to use
+     * Creates a VehicleType object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      */
-    public VehicleType(Hashtable<String, Object> hash) {
-        super(hash);
+    public VehicleType(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.make = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MAKE);
+            this.model = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MODEL);
+            this.modelYear = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MODEL_YEAR);
+            this.trim = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TRIM);
+            break;
+        }
     }
     
     /**
@@ -81,7 +92,7 @@ public class VehicleType extends RPCStruct {
      * @return the make of the vehicle
      */
     public String getMake() {
-        return (String) store.get(KEY_MAKE);
+        return this.make;
     }
     
     /**
@@ -89,11 +100,7 @@ public class VehicleType extends RPCStruct {
      *@param make the make of the vehicle
      */
     public void setMake(String make) {
-        if (make != null) {
-            store.put(KEY_MAKE, make);
-        } else {
-        	store.remove(KEY_MAKE);
-        }
+        this.make = make;
     }
     
     /**
@@ -101,7 +108,7 @@ public class VehicleType extends RPCStruct {
      * @return the model of the vehicle
      */
     public String getModel() {
-        return (String) store.get(KEY_MODEL);
+        return this.model;
     }
     
     /**
@@ -109,11 +116,7 @@ public class VehicleType extends RPCStruct {
      * @param model the model of the vehicle
      */
     public void setModel(String model) {
-        if (model != null) {
-            store.put(KEY_MODEL, model);
-        } else {
-        	store.remove(KEY_MODEL);
-        }
+        this.model = model;
     }
     
     /**
@@ -121,7 +124,7 @@ public class VehicleType extends RPCStruct {
      * @return the model year of the vehicle
      */
     public String getModelYear() {
-        return (String) store.get(KEY_MODEL_YEAR);
+        return this.modelYear;
     }
     
     /**
@@ -129,11 +132,7 @@ public class VehicleType extends RPCStruct {
      * @param modelYear the model year of the vehicle
      */
     public void setModelYear(String modelYear) {
-        if (modelYear != null) {
-            store.put(KEY_MODEL_YEAR, modelYear);
-        } else {
-        	store.remove(KEY_MODEL_YEAR);
-        }
+        this.modelYear = modelYear;
     }
     
     /**
@@ -141,7 +140,7 @@ public class VehicleType extends RPCStruct {
      * @return the trim of the vehicle
      */
     public String getTrim() {
-        return (String) store.get(KEY_TRIM);
+        return this.trim;
     }
     
     /**
@@ -149,10 +148,22 @@ public class VehicleType extends RPCStruct {
      * @param trim the trim of the vehicle
      */
     public void setTrim(String trim) {
-        if (trim != null) {
-            store.put(KEY_TRIM, trim);
-        } else {
-        	store.remove(KEY_TRIM);
+        this.trim = trim;
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_MAKE, this.make);
+            JsonUtils.addToJsonObject(result, KEY_MODEL, this.model);
+            JsonUtils.addToJsonObject(result, KEY_MODEL_YEAR, this.modelYear);
+            JsonUtils.addToJsonObject(result, KEY_TRIM, this.trim);
+            break;
         }
+        
+        return result;
     }
 }

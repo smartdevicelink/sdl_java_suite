@@ -528,7 +528,8 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
                 this.fuelLevel.getJsonParameters(sdlVersion));
             JsonUtils.addToJsonObject(result, KEY_FUEL_LEVEL_STATE, (this.fuelLevelState == null) ? null :
                 this.fuelLevelState.getJsonParameters(sdlVersion));
-            JsonUtils.addToJsonObject(result, KEY_GPS, this.gps);
+            JsonUtils.addToJsonObject(result, KEY_GPS, (this.gps == null) ? null :
+                this.gps.getJsonParameters(sdlVersion));
             JsonUtils.addToJsonObject(result, KEY_HEAD_LAMP_STATUS, (this.headLampStatus == null) ? null :
                 this.headLampStatus.getJsonParameters(sdlVersion));
             JsonUtils.addToJsonObject(result, KEY_INSTANT_FUEL_CONSUMPTION, (this.instantFuelConsumption == null) ? null :

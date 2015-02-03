@@ -1,62 +1,62 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RPCObject;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
-public class VehicleDataResult extends RPCStruct {
+public class VehicleDataResult extends RPCObject {
 	public static final String KEY_DATA_TYPE = "dataType";
 	public static final String KEY_RESULT_CODE = "resultCode";
 
+	private String dataType; // represents VehicleDataType enum
+	private String resultCode; // represents VehicleDataResultCode enum
+	
     public VehicleDataResult() { }
-    public VehicleDataResult(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a VehicleDataResult object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public VehicleDataResult(JSONObject jsonObject){
+        switch(sdlVersion){
+        default:
+            this.dataType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_DATA_TYPE);
+            this.resultCode = JsonUtils.readStringFromJsonObject(jsonObject, KEY_RESULT_CODE);
+            break;
+        }
     }
+    
     public void setDataType(VehicleDataType dataType) {
-    	if (dataType != null) {
-    		store.put(KEY_DATA_TYPE, dataType);
-    	} else {
-    		store.remove(KEY_DATA_TYPE);
-    	}
+    	this.dataType = dataType.getJsonName(sdlVersion);
     }
+    
     public VehicleDataType getDataType() {
-        Object obj = store.get(KEY_DATA_TYPE);
-        if (obj instanceof VehicleDataType) {
-            return (VehicleDataType) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataType theCode = null;
-            try {
-                theCode = VehicleDataType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DATA_TYPE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return VehicleDataType.valueForJsonName(this.dataType, sdlVersion);
     }
+    
     public void setResultCode(VehicleDataResultCode resultCode) {
-    	if (resultCode != null) {
-    		store.put(KEY_RESULT_CODE, resultCode);
-    	} else {
-    		store.remove(KEY_RESULT_CODE);
-    	}
+    	this.resultCode = resultCode.getJsonName(sdlVersion);
     }
+    
     public VehicleDataResultCode getResultCode() {
-        Object obj = store.get(KEY_RESULT_CODE);
-        if (obj instanceof VehicleDataResultCode) {
-            return (VehicleDataResultCode) obj;
-        } else if (obj instanceof String) {
-        	VehicleDataResultCode theCode = null;
-            try {
-                theCode = VehicleDataResultCode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESULT_CODE, e);
-            }
-            return theCode;
+        return VehicleDataResultCode.valueForJsonName(this.resultCode, sdlVersion);
+    }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_DATA_TYPE, this.dataType);
+            JsonUtils.addToJsonObject(result, KEY_RESULT_CODE, this.resultCode);
+            break;
         }
-        return null;
+        
+        return result;
     }
 }

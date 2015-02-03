@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -18,16 +18,13 @@ public class UnsubscribeButtonResponse extends RPCResponse {
     public UnsubscribeButtonResponse() {
         super(FunctionID.UNSUBSCRIBE_BUTTON);
     }
-
-	/**
-	 * Constructs a new UnsubscribeButtonResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */
-    public UnsubscribeButtonResponse(Hashtable<String, Object> hash) {
-        super(hash);
+    
+    /**
+     * Creates a UnsubscribeButtonResponse object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
+     */
+    public UnsubscribeButtonResponse(JSONObject jsonObject){
+        super(jsonObject);
     }
 }
