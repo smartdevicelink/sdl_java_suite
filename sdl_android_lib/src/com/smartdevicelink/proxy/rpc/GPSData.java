@@ -336,7 +336,7 @@ public class GPSData extends RPCObject {
     }
     
     public void setCompassDirection(CompassDirection compassDirection) {
-    	this.compassDirection = compassDirection.getJsonName(sdlVersion);
+    	this.compassDirection = (compassDirection == null) ? null : compassDirection.getJsonName(sdlVersion);
     }
     
     public CompassDirection getCompassDirection() {
@@ -423,7 +423,7 @@ public class GPSData extends RPCObject {
     }
     
     public void setDimension(Dimension dimension) {
-    	this.dimension = dimension.getJsonName(sdlVersion);
+    	this.dimension = (dimension == null) ? null : dimension.getJsonName(sdlVersion);
     }
     
     public Dimension getDimension() {

@@ -50,7 +50,7 @@ public class KeyboardProperties extends RPCObject {
     }
 
     public void setLanguage(Language language) {
-        this.language = language.getJsonName(sdlVersion);
+        this.language = (language == null) ? null : language.getJsonName(sdlVersion);
     }
 
     public KeyboardLayout getKeyboardLayout() {
@@ -58,7 +58,7 @@ public class KeyboardProperties extends RPCObject {
     }
 
     public void setKeyboardLayout(KeyboardLayout keyboardLayout) {
-        this.keyboardLayout = keyboardLayout.getJsonName(sdlVersion);
+        this.keyboardLayout = (keyboardLayout == null) ? null : keyboardLayout.getJsonName(sdlVersion);
     }
 
     public KeypressMode getKeypressMode() {
@@ -66,7 +66,7 @@ public class KeyboardProperties extends RPCObject {
     }
 
     public void setKeypressMode(KeypressMode keypressMode) {
-        this.keypressMode = keypressMode.getJsonName(sdlVersion);
+        this.keypressMode = (keypressMode == null) ? null : keypressMode.getJsonName(sdlVersion);
     }
 
     public List<String> getLimitedCharacterList() {

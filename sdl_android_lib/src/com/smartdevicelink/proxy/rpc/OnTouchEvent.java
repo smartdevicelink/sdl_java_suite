@@ -43,7 +43,7 @@ public class OnTouchEvent extends RPCNotification {
     }
     
     public void setType(TouchType type) {
-    	this.type = type.getJsonName(sdlVersion);
+    	this.type = (type == null) ? null : type.getJsonName(sdlVersion);
     }
     
     public TouchType getType() {

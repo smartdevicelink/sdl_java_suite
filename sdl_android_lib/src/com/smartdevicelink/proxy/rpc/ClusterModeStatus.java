@@ -46,7 +46,7 @@ public class ClusterModeStatus extends RPCObject {
     }
     
     public void setPowerModeQualificationStatus(PowerModeQualificationStatus powerModeQualificationStatus) {
-        this.powerModeQualificationStatus = powerModeQualificationStatus.getJsonName(sdlVersion);
+        this.powerModeQualificationStatus = (powerModeQualificationStatus == null) ? null : powerModeQualificationStatus.getJsonName(sdlVersion);
     }
     
     public PowerModeQualificationStatus getPowerModeQualificationStatus() {
@@ -54,7 +54,7 @@ public class ClusterModeStatus extends RPCObject {
     }
     
     public void setCarModeStatus(CarModeStatus carModeStatus) {
-        this.carModeStatus = carModeStatus.getJsonName(sdlVersion);
+        this.carModeStatus = (carModeStatus == null) ? null : carModeStatus.getJsonName(sdlVersion);
     }
     
     public CarModeStatus getCarModeStatus() {
@@ -62,7 +62,7 @@ public class ClusterModeStatus extends RPCObject {
     }
     
     public void setPowerModeStatus(PowerModeStatus powerModeStatus) {
-        this.powerModeStatus = powerModeStatus.getJsonName(sdlVersion);
+        this.powerModeStatus = (powerModeStatus == null) ? null : powerModeStatus.getJsonName(sdlVersion);
     }
     
     public PowerModeStatus getPowerModeStatus() {

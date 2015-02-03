@@ -56,7 +56,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a language value
 	 */
     public void setLanguage(Language language) {
-        this.language = language.getJsonName(sdlVersion);
+        this.language = (language == null) ? null : language.getJsonName(sdlVersion);
     }
 
 	/**
@@ -75,7 +75,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a Language value
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        this.hmiLanguage = hmiDisplayLanguage.getJsonName(sdlVersion);
+        this.hmiLanguage = (hmiDisplayLanguage == null) ? null : hmiDisplayLanguage.getJsonName(sdlVersion);
     }
 
 	/**

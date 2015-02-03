@@ -126,7 +126,7 @@ public class DisplayCapabilities extends RPCObject {
      * @param displayType the display type
      */    
     public void setDisplayType( DisplayType displayType ) {
-        this.displayType = displayType.getJsonName(sdlVersion);
+        this.displayType = (displayType == null) ? null : displayType.getJsonName(sdlVersion);
     }
     
     /**

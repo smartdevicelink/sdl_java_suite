@@ -39,7 +39,7 @@ public class OnKeyboardInput extends RPCNotification {
     }
 
     public void setEvent(KeyboardEvent event) {
-        this.event = event.getJsonName(sdlVersion);
+        this.event = (event == null) ? null : event.getJsonName(sdlVersion);
     }
 
     public void setData(String data) {

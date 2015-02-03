@@ -177,21 +177,21 @@ public class OnSdlChoiceChosen extends RPCNotification {
     }
     
     public void setTriggerSource( TriggerSource triggerSource ) {
-        this.triggerSource = triggerSource.getJsonName(sdlVersion);
+        this.triggerSource = (triggerSource == null) ? null : triggerSource.getJsonName(sdlVersion);
     }
     
     @Override
-public JSONObject getJsonParameters(int sdlVersion){
-    JSONObject result = super.getJsonParameters(sdlVersion);
-    
-    switch(sdlVersion){
-    default:
-        JsonUtils.addToJsonObject(result, KEY_TRIGGER_SOURCE, this.triggerSource);
-        JsonUtils.addToJsonObject(result, KEY_SDL_CHOICE, 
-                (this.choice == null) ? null : this.choice.getChoice().getJsonParameters(sdlVersion));
-        break;
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_TRIGGER_SOURCE, this.triggerSource);
+            JsonUtils.addToJsonObject(result, KEY_SDL_CHOICE, 
+                    (this.choice == null) ? null : this.choice.getChoice().getJsonParameters(sdlVersion));
+            break;
+        }
+        
+        return result;
     }
-    
-    return result;
-}
 }

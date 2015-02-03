@@ -33,7 +33,7 @@ public class DIDResult extends RPCObject {
     }
     
     public void setResultCode(VehicleDataResultCode resultCode) {
-    	this.resultCode = resultCode.getJsonName(sdlVersion);
+    	this.resultCode = (resultCode == null) ? null : resultCode.getJsonName(sdlVersion);
     }
     
     public VehicleDataResultCode getResultCode() {

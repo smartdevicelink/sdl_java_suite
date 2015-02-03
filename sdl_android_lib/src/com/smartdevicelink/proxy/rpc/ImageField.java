@@ -42,7 +42,7 @@ public class ImageField extends RPCObject {
     }
     
     public void setName( ImageFieldName name ) {
-        this.imageFieldName = name.getJsonName(sdlVersion);
+        this.imageFieldName = (name == null) ? null : name.getJsonName(sdlVersion);
     }
     
     public FileType getImageTypeSupported() {
@@ -50,7 +50,7 @@ public class ImageField extends RPCObject {
     }
     
     public void setImageTypeSupported( FileType imageTypeSupported ) {
-        this.imageTypeSupported = imageTypeSupported.getJsonName(sdlVersion);
+        this.imageTypeSupported = (imageTypeSupported == null) ? null : imageTypeSupported.getJsonName(sdlVersion);
     }
     
     public ImageResolution getImageResolution() {

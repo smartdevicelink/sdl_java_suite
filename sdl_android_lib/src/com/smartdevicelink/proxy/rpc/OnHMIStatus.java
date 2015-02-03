@@ -109,7 +109,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param hmiLevel the HMILevel to set
      */    
     public void setHmiLevel( HMILevel hmiLevel ) {
-        this.hmiLevel = hmiLevel.getJsonName(sdlVersion);
+        this.hmiLevel = (hmiLevel == null) ? null : hmiLevel.getJsonName(sdlVersion);
     }
     
     /**
@@ -125,7 +125,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param audioStreamingState the state of audio streaming of the application
      */    
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
-        this.audioStreamingState = audioStreamingState.getJsonName(sdlVersion);
+        this.audioStreamingState = (audioStreamingState == null) ? null : audioStreamingState.getJsonName(sdlVersion);
     }
     
     /**
@@ -142,7 +142,7 @@ public class OnHMIStatus extends RPCNotification {
      * (VRSESSION or MENU), or not (MAIN)
      */    
     public void setSystemContext( SystemContext systemContext ) {
-        this.systemContext = systemContext.getJsonName(sdlVersion);
+        this.systemContext = (systemContext == null) ? null : systemContext.getJsonName(sdlVersion);
     }
     
     /**

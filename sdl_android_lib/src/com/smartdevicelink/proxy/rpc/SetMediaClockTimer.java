@@ -114,7 +114,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setUpdateMode( UpdateMode updateMode ) {
-        this.updateMode = updateMode.getJsonName(sdlVersion);
+        this.updateMode = (updateMode == null) ? null : updateMode.getJsonName(sdlVersion);
     }
     
     @Override

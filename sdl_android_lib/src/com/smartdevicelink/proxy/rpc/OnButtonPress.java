@@ -126,7 +126,7 @@ public class OnButtonPress extends RPCNotification {
      * @param buttonName name of the button
      */    
     public void setButtonName( ButtonName buttonName ) {
-        this.buttonName = buttonName.getJsonName(sdlVersion);
+        this.buttonName = (buttonName == null) ? null : buttonName.getJsonName(sdlVersion);
     }
     
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
@@ -141,7 +141,7 @@ public class OnButtonPress extends RPCNotification {
      * @param buttonPressMode indicates whether this is a short or long press
      */    
     public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
-        this.buttonPressMode = buttonPressMode.getJsonName(sdlVersion);
+        this.buttonPressMode = (buttonPressMode == null) ? null : buttonPressMode.getJsonName(sdlVersion);
     }
     
     public void setCustomButtonName(Integer customButtonID) {

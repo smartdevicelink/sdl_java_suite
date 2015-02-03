@@ -51,7 +51,7 @@ public class BodyInformation extends RPCObject {
     }
     
     public void setIgnitionStableStatus(IgnitionStableStatus ignitionStableStatus) {
-        this.ignitionStableStatus = ignitionStableStatus.getJsonName(sdlVersion);
+        this.ignitionStableStatus = (ignitionStableStatus == null) ? null : ignitionStableStatus.getJsonName(sdlVersion);
     }
     
     public IgnitionStableStatus getIgnitionStableStatus() {
@@ -59,7 +59,7 @@ public class BodyInformation extends RPCObject {
     }
     
     public void setIgnitionStatus(IgnitionStatus ignitionStatus) {
-        this.ignitionStatus = ignitionStatus.getJsonName(sdlVersion);
+        this.ignitionStatus = (ignitionStatus == null) ? null : ignitionStatus.getJsonName(sdlVersion);
     }
     
     public IgnitionStatus getIgnitionStatus() {

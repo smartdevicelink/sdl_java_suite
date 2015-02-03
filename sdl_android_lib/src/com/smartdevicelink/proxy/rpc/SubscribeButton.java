@@ -95,7 +95,7 @@ public class SubscribeButton extends RPCRequest {
 	 * @param buttonName a <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i> value
 	 */    
     public void setButtonName( ButtonName buttonName ) {
-        this.buttonName = buttonName.getJsonName(sdlVersion);
+        this.buttonName = (buttonName == null) ? null : buttonName.getJsonName(sdlVersion);
     }
     
     @Override

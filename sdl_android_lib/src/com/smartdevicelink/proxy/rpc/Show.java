@@ -261,7 +261,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlignment(TextAlignment alignment) {
-        this.alignment = alignment.getJsonName(sdlVersion);
+        this.alignment = (alignment == null) ? null : alignment.getJsonName(sdlVersion);
     }
     
 	/**

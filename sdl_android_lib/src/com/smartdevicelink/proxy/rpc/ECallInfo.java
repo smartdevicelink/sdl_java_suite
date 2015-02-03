@@ -33,7 +33,7 @@ public class ECallInfo extends RPCObject {
     }
 
     public void setECallNotificationStatus(VehicleDataNotificationStatus eCallNotificationStatus) {
-        this.eCallNotificationStatus = eCallNotificationStatus.getJsonName(sdlVersion);
+        this.eCallNotificationStatus = (eCallNotificationStatus == null) ? null : eCallNotificationStatus.getJsonName(sdlVersion);
     }
     
     public VehicleDataNotificationStatus getECallNotificationStatus() {
@@ -41,7 +41,7 @@ public class ECallInfo extends RPCObject {
     }
     
     public void setAuxECallNotificationStatus(VehicleDataNotificationStatus auxECallNotificationStatus) {
-        this.auxECallNotificationStatus = auxECallNotificationStatus.getJsonName(sdlVersion);
+        this.auxECallNotificationStatus = (auxECallNotificationStatus == null) ? null : auxECallNotificationStatus.getJsonName(sdlVersion);
     }
     
     public VehicleDataNotificationStatus getAuxECallNotificationStatus() {
@@ -49,7 +49,7 @@ public class ECallInfo extends RPCObject {
     }
     
     public void setECallConfirmationStatus(ECallConfirmationStatus eCallConfirmationStatus) {
-        this.eCallConfirmationstatus = eCallConfirmationStatus.getJsonName(sdlVersion);
+        this.eCallConfirmationstatus = (eCallConfirmationStatus == null) ? null : eCallConfirmationStatus.getJsonName(sdlVersion);
     }
     
     public ECallConfirmationStatus getECallConfirmationStatus() {

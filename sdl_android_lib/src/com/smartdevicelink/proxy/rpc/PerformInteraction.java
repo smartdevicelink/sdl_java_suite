@@ -172,7 +172,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            MANUAL_ONLY or BOTH)
 	 */    
     public void setInteractionMode(InteractionMode interactionMode) {
-        this.interactionMode = interactionMode.getJsonName(sdlVersion);
+        this.interactionMode = (interactionMode == null) ? null : interactionMode.getJsonName(sdlVersion);
     }
     
 	/**
@@ -324,7 +324,7 @@ public class PerformInteraction extends RPCRequest {
     }
   
     public void setInteractionLayout( LayoutMode interactionLayout ) {
-        this.interactionLayout = interactionLayout.getJsonName(sdlVersion);
+        this.interactionLayout = (interactionLayout == null) ? null : interactionLayout.getJsonName(sdlVersion);
     }
     
     @Override

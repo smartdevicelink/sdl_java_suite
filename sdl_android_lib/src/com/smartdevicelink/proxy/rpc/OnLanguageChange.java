@@ -90,7 +90,7 @@ public class OnLanguageChange extends RPCNotification {
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
     public void setLanguage(Language language) {
-        this.language = language.getJsonName(sdlVersion);
+        this.language = (language == null) ? null : language.getJsonName(sdlVersion);
     }
     
     /**
@@ -106,7 +106,7 @@ public class OnLanguageChange extends RPCNotification {
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        this.hmiLanguage = hmiDisplayLanguage.getJsonName(sdlVersion);
+        this.hmiLanguage = (hmiDisplayLanguage == null) ? null : hmiDisplayLanguage.getJsonName(sdlVersion);
     }
     
     /**

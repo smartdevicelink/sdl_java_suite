@@ -3,7 +3,6 @@ package com.smartdevicelink.streaming;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
@@ -58,7 +57,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 					if (msg.getOffset() != 0)
 			        	msg.setLength(null); //only need to send length when offset 0
 
-					byte[] msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion);					
+					byte[] msgBytes = msg.toJson(_wiproVersion).toString().getBytes();
 					ProtocolMessage pm = new ProtocolMessage();
 					pm.setData(msgBytes);
 

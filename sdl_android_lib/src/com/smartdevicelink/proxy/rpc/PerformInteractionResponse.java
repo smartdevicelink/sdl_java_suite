@@ -74,7 +74,7 @@ public class PerformInteractionResponse extends RPCResponse {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        this.triggerSource = triggerSource.getJsonName(sdlVersion);
+        this.triggerSource = (triggerSource == null) ? null : triggerSource.getJsonName(sdlVersion);
     }
     
     public void setManualTextEntry(String manualTextEntry) {

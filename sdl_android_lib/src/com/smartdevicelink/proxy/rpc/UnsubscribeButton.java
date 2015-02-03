@@ -64,7 +64,7 @@ public class UnsubscribeButton extends RPCRequest {
 	 *            {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public void setButtonName( ButtonName buttonName ) {
-        this.buttonName = buttonName.getJsonName(sdlVersion);
+        this.buttonName = (buttonName == null) ? null : buttonName.getJsonName(sdlVersion);
     }
     
     @Override

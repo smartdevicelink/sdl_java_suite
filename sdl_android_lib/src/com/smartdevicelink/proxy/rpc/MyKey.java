@@ -27,7 +27,7 @@ public class MyKey extends RPCObject {
     }
 
     public void setE911Override(VehicleDataStatus e911Override) {
-        this.e911Override = e911Override.getJsonName(sdlVersion);
+        this.e911Override = (e911Override == null) ? null : e911Override.getJsonName(sdlVersion);
     }
     
     public VehicleDataStatus getE911Override() {

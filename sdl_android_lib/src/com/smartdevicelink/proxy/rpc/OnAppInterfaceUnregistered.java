@@ -80,7 +80,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      * @param reason The reason application's interface registration was terminated
      */    
     public void setReason( AppInterfaceUnregisteredReason reason ) {
-        this.reason = reason.getJsonName(sdlVersion);
+        this.reason = (reason == null) ? null : reason.getJsonName(sdlVersion);
     }
 
     @Override

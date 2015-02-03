@@ -92,7 +92,7 @@ public class TTSChunk extends RPCObject {
      * @param type the type of information in the "text" field
      */    
     public void setType( SpeechCapabilities type ) {
-        this.type = type.getJsonName(sdlVersion);
+        this.type = (type == null) ? null : type.getJsonName(sdlVersion);
     }
     
     @Override

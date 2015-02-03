@@ -48,7 +48,7 @@ public class SoftButton extends RPCObject {
     }
     
     public void setType(SoftButtonType type) {
-        this.type = type.getJsonName(sdlVersion);
+        this.type = (type == null) ? null : type.getJsonName(sdlVersion);
     }
     
     public SoftButtonType getType() {
@@ -88,7 +88,7 @@ public class SoftButton extends RPCObject {
     }
     
     public void setSystemAction(SystemAction systemAction) {
-        this.systemAction = systemAction.getJsonName(sdlVersion);
+        this.systemAction = (systemAction == null) ? null : systemAction.getJsonName(sdlVersion);
     }
     
     public SystemAction getSystemAction() {

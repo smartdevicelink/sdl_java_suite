@@ -86,7 +86,7 @@ public class PutFile extends RPCRequest implements BulkData{
 	 *            a FileType value representing a selected file type
 	 */
     public void setFileType(FileType fileType) {
-        this.fileType = fileType.getJsonName(sdlVersion);
+        this.fileType = (fileType == null) ? null : fileType.getJsonName(sdlVersion);
     }
 
 	/**

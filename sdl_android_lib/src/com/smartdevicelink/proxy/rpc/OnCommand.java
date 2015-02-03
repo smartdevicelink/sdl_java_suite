@@ -111,7 +111,7 @@ public class OnCommand extends RPCNotification {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        this.triggerSource = triggerSource.getJsonName(sdlVersion);
+        this.triggerSource = (triggerSource == null) ? null : triggerSource.getJsonName(sdlVersion);
     }
 
     @Override

@@ -55,7 +55,7 @@ public class SingleTireStatus extends RPCObject {
      * @param status  the volume status of a single tire
      */
     public void setStatus(ComponentVolumeStatus status) {
-    	this.status = status.getJsonName(sdlVersion);
+    	this.status = (status == null) ? null : status.getJsonName(sdlVersion);
     }
     
     /**

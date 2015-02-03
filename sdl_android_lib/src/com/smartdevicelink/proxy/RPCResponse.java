@@ -122,7 +122,7 @@ public class RPCResponse extends RPCMessage {
 	 *             whether the request is successfully processed
 	 */
     public void setResultCode( Result resultCode ) {
-        this.resultCode = resultCode.getJsonName(sdlVersion);
+        this.resultCode = (resultCode == null) ? null : resultCode.getJsonName(sdlVersion);
     }
     
 	/**

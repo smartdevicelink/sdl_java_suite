@@ -87,7 +87,7 @@ public class ButtonCapabilities extends RPCObject {
      * @param name the name of button
      */    
     public void setName( ButtonName name ) {
-        this.name = name.getJsonName(sdlVersion);
+        this.name = (name == null) ? null : name.getJsonName(sdlVersion);
     }
     
     /**

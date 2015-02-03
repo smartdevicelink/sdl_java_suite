@@ -225,7 +225,7 @@ public class DeviceStatus extends RPCObject {
      * @param battLevelStatus battery level status
      */
     public void setBattLevelStatus(DeviceLevelStatus battLevelStatus) {
-        this.battLevelStatus = battLevelStatus.getJsonName(sdlVersion);
+        this.battLevelStatus = (battLevelStatus == null) ? null : battLevelStatus.getJsonName(sdlVersion);
     }
     
     /**
@@ -273,7 +273,7 @@ public class DeviceStatus extends RPCObject {
      * @param signalLevelStatus signal level status
      */
     public void setSignalLevelStatus(DeviceLevelStatus signalLevelStatus) {
-        this.signalLevelStatus = signalLevelStatus.getJsonName(sdlVersion);
+        this.signalLevelStatus = (signalLevelStatus == null) ? null : signalLevelStatus.getJsonName(sdlVersion);
     }
     
     /**
@@ -289,7 +289,7 @@ public class DeviceStatus extends RPCObject {
      * @param primaryAudioSource the current primary audio source of SDL (if selected).
      */
     public void setPrimaryAudioSource(PrimaryAudioSource primaryAudioSource) {
-        this.primaryAudioSource = primaryAudioSource.getJsonName(sdlVersion);
+        this.primaryAudioSource = (primaryAudioSource == null) ? null : primaryAudioSource.getJsonName(sdlVersion);
     }
     
     /**

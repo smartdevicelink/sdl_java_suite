@@ -98,7 +98,7 @@ public class TextField extends RPCObject {
      * @param name the name of TextField
      */    
     public void setName( TextFieldName name ) {
-        this.name = name.getJsonName(sdlVersion);
+        this.name = (name == null) ? null : name.getJsonName(sdlVersion);
     }
     
     /**
@@ -114,7 +114,7 @@ public class TextField extends RPCObject {
      * @param characterSet - the character set
      */    
     public void setCharacterSet( CharacterSet characterSet ) {
-        this.charSet = characterSet.getJsonName(sdlVersion);
+        this.charSet = (characterSet == null) ? null : characterSet.getJsonName(sdlVersion);
     }
     
     /**

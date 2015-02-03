@@ -40,7 +40,7 @@ public class EmergencyEvent extends RPCObject {
     }
     
     public void setEmergencyEventType(EmergencyEventType emergencyEventType) {
-        this.emergencyEventType = emergencyEventType.getJsonName(sdlVersion);
+        this.emergencyEventType = (emergencyEventType == null) ? null : emergencyEventType.getJsonName(sdlVersion);
     }
     
     public EmergencyEventType getEmergencyEventType() {
@@ -48,7 +48,7 @@ public class EmergencyEvent extends RPCObject {
     }
     
     public void setFuelCutoffStatus(FuelCutoffStatus fuelCutoffStatus) {
-        this.fuelCutoffStatus = fuelCutoffStatus.getJsonName(sdlVersion);
+        this.fuelCutoffStatus = (fuelCutoffStatus == null) ? null : fuelCutoffStatus.getJsonName(sdlVersion);
     }
     
     public FuelCutoffStatus getFuelCutoffStatus() {
@@ -56,7 +56,7 @@ public class EmergencyEvent extends RPCObject {
     }
     
     public void setRolloverEvent(VehicleDataEventStatus rolloverEvent) {
-        this.rolloverEvent = rolloverEvent.getJsonName(sdlVersion);
+        this.rolloverEvent = (rolloverEvent == null) ? null : rolloverEvent.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getRolloverEvent() {
@@ -72,7 +72,7 @@ public class EmergencyEvent extends RPCObject {
     }
     
     public void setMultipleEvents(VehicleDataEventStatus multipleEvents) {
-        this.multipleEvents = multipleEvents.getJsonName(sdlVersion);
+        this.multipleEvents = (multipleEvents == null) ? null : multipleEvents.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getMultipleEvents() {

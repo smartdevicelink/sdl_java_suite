@@ -76,7 +76,7 @@ public class AudioPassThruCapabilities extends RPCObject {
      * @param samplingRate the sampling rate for AudioPassThru
      */
     public void setSamplingRate(SamplingRate samplingRate) {
-    	this.samplingRate = samplingRate.getJsonName(sdlVersion);
+    	this.samplingRate = (samplingRate == null) ? null : samplingRate.getJsonName(sdlVersion);
     }
     
     /**
@@ -92,7 +92,7 @@ public class AudioPassThruCapabilities extends RPCObject {
      * @param bitsPerSample the sample depth in bit for AudioPassThru
      */
     public void setBitsPerSample(BitsPerSample bitsPerSample) {
-        this.bitsPerSample = bitsPerSample.getJsonName(sdlVersion);
+        this.bitsPerSample = (bitsPerSample == null) ? null : bitsPerSample.getJsonName(sdlVersion);
     }
     
     /**
@@ -108,7 +108,7 @@ public class AudioPassThruCapabilities extends RPCObject {
      * @param audioType the audiotype for AudioPassThru
      */
     public void setAudioType(AudioType audioType) {
-        this.audioType = audioType.getJsonName(sdlVersion);
+        this.audioType = (audioType == null) ? null : audioType.getJsonName(sdlVersion);
     }
     
     /**

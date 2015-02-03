@@ -175,7 +175,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 */
     public void setLanguage(Language language) {
-        this.language = language.getJsonName(sdlVersion);
+        this.language = (language == null) ? null : language.getJsonName(sdlVersion);
     }
 
 	/**
@@ -199,7 +199,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        this.hmiLanguage = hmiDisplayLanguage.getJsonName(sdlVersion);
+        this.hmiLanguage = (hmiDisplayLanguage == null) ? null : hmiDisplayLanguage.getJsonName(sdlVersion);
     }
 
 	/**

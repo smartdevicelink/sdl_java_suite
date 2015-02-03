@@ -1,10 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -96,7 +94,7 @@ public class Alert extends RPCRequest {
             if(softButtonsArray != null){
                 this.softButtons = new ArrayList<SoftButton>(softButtonsArray.size());
                 for(JSONObject softButtonObj : softButtonsArray){
-                        this.ttsChunks.add(new SoftButton(softButtonObj));
+                        this.softButtons.add(new SoftButton(softButtonObj));
                 }
             }
             break;

@@ -164,7 +164,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a SamplingRate value representing a 8 or 16 or 22 or 24 khz
 	 */
     public void setSamplingRate(SamplingRate samplingRate) {
-    	this.samplingRate = samplingRate.getJsonName(sdlVersion);
+    	this.samplingRate = (samplingRate == null) ? null : samplingRate.getJsonName(sdlVersion);
     }
 
 	/**
@@ -206,7 +206,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a BitsPerSample value representing 8 bit or 16 bit
 	 */
     public void setBitsPerSample(BitsPerSample audioQuality) {
-    	this.bitsPerSample = audioQuality.getJsonName(sdlVersion);
+    	this.bitsPerSample = (audioQuality == null) ? null : audioQuality.getJsonName(sdlVersion);
     }
 
 	/**
@@ -225,7 +225,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            an audioType
 	 */
     public void setAudioType(AudioType audioType) {
-    	this.audioType = audioType.getJsonName(sdlVersion);
+    	this.audioType = (audioType == null) ? null : audioType.getJsonName(sdlVersion);
     }
 
 	/**

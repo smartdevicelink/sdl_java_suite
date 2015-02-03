@@ -31,7 +31,7 @@ public class VehicleDataResult extends RPCObject {
     }
     
     public void setDataType(VehicleDataType dataType) {
-    	this.dataType = dataType.getJsonName(sdlVersion);
+    	this.dataType = (dataType == null) ? null : dataType.getJsonName(sdlVersion);
     }
     
     public VehicleDataType getDataType() {
@@ -39,7 +39,7 @@ public class VehicleDataResult extends RPCObject {
     }
     
     public void setResultCode(VehicleDataResultCode resultCode) {
-    	this.resultCode = resultCode.getJsonName(sdlVersion);
+    	this.resultCode = (resultCode == null) ? null : resultCode.getJsonName(sdlVersion);
     }
     
     public VehicleDataResultCode getResultCode() {

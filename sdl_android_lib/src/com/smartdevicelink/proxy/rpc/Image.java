@@ -83,7 +83,7 @@ public class Image extends RPCObject {
      * @param imageType whether it is a static or dynamic image
      */
     public void setImageType(ImageType imageType) {
-        this.imageType = imageType.getJsonName(sdlVersion);
+        this.imageType = (imageType == null) ? null : imageType.getJsonName(sdlVersion);
     }
     
     /**

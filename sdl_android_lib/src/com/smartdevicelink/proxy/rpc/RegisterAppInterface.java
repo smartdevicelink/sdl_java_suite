@@ -361,7 +361,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 */    
     public void setLanguageDesired(Language languageDesired) {
-        this.languageDesired = languageDesired.getJsonName(sdlVersion);
+        this.languageDesired = (languageDesired == null) ? null : languageDesired.getJsonName(sdlVersion);
     }
 
 	/**
@@ -385,7 +385,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
-        this.hmiLanguageDesired = hmiDisplayLanguageDesired.getJsonName(sdlVersion);
+        this.hmiLanguageDesired = (hmiDisplayLanguageDesired == null) ? null : hmiDisplayLanguageDesired.getJsonName(sdlVersion);
     }
 
 	/**

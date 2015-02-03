@@ -32,7 +32,7 @@ public class HeadLampStatus extends RPCObject {
     }
     
     public void setAmbientLightStatus(AmbientLightStatus ambientLightSensorStatus) {
-        this.ambientLightStatus = ambientLightSensorStatus.getJsonName(sdlVersion);
+        this.ambientLightStatus = (ambientLightSensorStatus == null) ? null : ambientLightSensorStatus.getJsonName(sdlVersion);
     }
     
     public AmbientLightStatus getAmbientLightStatus() {

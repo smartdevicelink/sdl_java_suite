@@ -66,7 +66,7 @@ public class SystemRequest extends RPCRequest implements BulkData{
     }
 
     public void setRequestType(RequestType requestType) {
-        this.requestType = requestType.getJsonName(sdlVersion);
+        this.requestType = (requestType == null) ? null : requestType.getJsonName(sdlVersion);
     }
 
     @Override

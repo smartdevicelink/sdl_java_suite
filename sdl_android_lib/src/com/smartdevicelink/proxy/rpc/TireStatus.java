@@ -60,7 +60,7 @@ public class TireStatus extends RPCObject {
     }
     
     public void setPressureTellTale(WarningLightStatus pressureTellTale) {
-    	this.pressureTellTale = pressureTellTale.getJsonName(sdlVersion);
+    	this.pressureTellTale = (pressureTellTale == null) ? null : pressureTellTale.getJsonName(sdlVersion);
     }
     
     public WarningLightStatus getPressureTellTale() {

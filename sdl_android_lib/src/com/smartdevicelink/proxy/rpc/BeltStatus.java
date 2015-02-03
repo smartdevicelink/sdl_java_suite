@@ -62,7 +62,7 @@ public class BeltStatus extends RPCObject {
     }
 
     public void setDriverBeltDeployed(VehicleDataEventStatus driverBeltDeployed) {
-        this.driverBeltDeployed = driverBeltDeployed.getJsonName(sdlVersion);
+        this.driverBeltDeployed = (driverBeltDeployed == null) ? null : driverBeltDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverBeltDeployed() {
@@ -70,7 +70,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setPassengerBeltDeployed(VehicleDataEventStatus passengerBeltDeployed) {
-    	this.passengerBeltDeployed = passengerBeltDeployed.getJsonName(sdlVersion);
+    	this.passengerBeltDeployed = (passengerBeltDeployed == null) ? null : passengerBeltDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerBeltDeployed() {
@@ -78,7 +78,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setPassengerBuckleBelted(VehicleDataEventStatus passengerBuckleBelted) {
-    	this.passengerBeltBuckled = passengerBuckleBelted.getJsonName(sdlVersion);
+    	this.passengerBeltBuckled = (passengerBuckleBelted == null) ? null : passengerBuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerBuckleBelted() {
@@ -86,7 +86,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setDriverBuckleBelted(VehicleDataEventStatus driverBuckleBelted) {
-    	this.driverBeltBuckled = driverBuckleBelted.getJsonName(sdlVersion);
+    	this.driverBeltBuckled = (driverBuckleBelted == null) ? null : driverBuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverBuckleBelted() {
@@ -94,7 +94,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setLeftRow2BuckleBelted(VehicleDataEventStatus leftRow2BuckleBelted) {
-    	this.leftRow2BeltBuckled = leftRow2BuckleBelted.getJsonName(sdlVersion);
+    	this.leftRow2BeltBuckled = (leftRow2BuckleBelted == null) ? null : leftRow2BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getLeftRow2BuckleBelted() {
@@ -102,7 +102,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setPassengerChildDetected(VehicleDataEventStatus passengerChildDetected) {
-    	this.passengerChildDetected = passengerChildDetected.getJsonName(sdlVersion);
+    	this.passengerChildDetected = (passengerChildDetected == null) ? null : passengerChildDetected.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerChildDetected() {
@@ -110,7 +110,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setRightRow2BuckleBelted(VehicleDataEventStatus rightRow2BuckleBelted) {
-    	this.rightRow2BeltBuckled = rightRow2BuckleBelted.getJsonName(sdlVersion);
+    	this.rightRow2BeltBuckled = (rightRow2BuckleBelted == null) ? null : rightRow2BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getRightRow2BuckleBelted() {
@@ -118,7 +118,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setMiddleRow2BuckleBelted(VehicleDataEventStatus middleRow2BuckleBelted) {
-    	this.middleRow2BeltBuckled = middleRow2BuckleBelted.getJsonName(sdlVersion);
+    	this.middleRow2BeltBuckled = (middleRow2BuckleBelted == null) ? null : middleRow2BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getMiddleRow2BuckleBelted() {
@@ -126,7 +126,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setMiddleRow3BuckleBelted(VehicleDataEventStatus middleRow3BuckleBelted) {
-    	this.middleRow3BeltBuckled = middleRow3BuckleBelted.getJsonName(sdlVersion);
+    	this.middleRow3BeltBuckled = (middleRow3BuckleBelted == null) ? null : middleRow3BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getMiddleRow3BuckleBelted() {
@@ -134,7 +134,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setLeftRow3BuckleBelted(VehicleDataEventStatus leftRow3BuckleBelted) {
-    	this.leftRow3BeltBuckled = leftRow3BuckleBelted.getJsonName(sdlVersion);
+    	this.leftRow3BeltBuckled = (leftRow3BuckleBelted == null) ? null : leftRow3BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getLeftRow3BuckleBelted() {
@@ -142,7 +142,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setRightRow3BuckleBelted(VehicleDataEventStatus rightRow3BuckleBelted) {
-    	this.rightRow3BeltBuckled = rightRow3BuckleBelted.getJsonName(sdlVersion);
+    	this.rightRow3BeltBuckled = (rightRow3BuckleBelted == null) ? null : rightRow3BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getRightRow3BuckleBelted() {
@@ -150,7 +150,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setLeftRearInflatableBelted(VehicleDataEventStatus rearInflatableBelted) {
-    	this.rearInflatableBuckled = rearInflatableBelted.getJsonName(sdlVersion);
+    	this.rearInflatableBuckled = (rearInflatableBelted == null) ? null : rearInflatableBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getLeftRearInflatableBelted() {
@@ -158,7 +158,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setRightRearInflatableBelted(VehicleDataEventStatus rightRearInflatableBelted) {
-    	this.rightRearInflatableBuckled = rightRearInflatableBelted.getJsonName(sdlVersion);
+    	this.rightRearInflatableBuckled = (rightRearInflatableBelted == null) ? null : rightRearInflatableBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getRightRearInflatableBelted() {
@@ -166,7 +166,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setMiddleRow1BeltDeployed(VehicleDataEventStatus middleRow1BeltDeployed) {
-    	this.middleRow1BeltDeployed = middleRow1BeltDeployed.getJsonName(sdlVersion);
+    	this.middleRow1BeltDeployed = (middleRow1BeltDeployed == null) ? null : middleRow1BeltDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getMiddleRow1BeltDeployed() {
@@ -174,7 +174,7 @@ public class BeltStatus extends RPCObject {
     }
     
     public void setMiddleRow1BuckleBelted(VehicleDataEventStatus middleRow1BuckleBelted) {
-    	this.middleRow1BeltBuckled = middleRow1BuckleBelted.getJsonName(sdlVersion);
+    	this.middleRow1BeltBuckled = (middleRow1BuckleBelted == null) ? null : middleRow1BuckleBelted.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getMiddleRow1BuckleBelted() {

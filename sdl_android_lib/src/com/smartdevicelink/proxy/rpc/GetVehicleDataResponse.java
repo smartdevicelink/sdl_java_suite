@@ -182,7 +182,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
     
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-    	this.fuelLevelState = fuelLevel_State.getJsonName(sdlVersion);
+    	this.fuelLevelState = (fuelLevel_State == null) ? null : fuelLevel_State.getJsonName(sdlVersion);
     }
     
     public ComponentVolumeStatus getFuelLevel_State() {
@@ -214,7 +214,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
     
     public void setPrndl(PRNDL prndl) {
-    	this.prndl = prndl.getJsonName(sdlVersion);
+    	this.prndl = (prndl == null) ? null : prndl.getJsonName(sdlVersion);
     }
     
     public PRNDL getPrndl() {
@@ -262,7 +262,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
     
     public void setDriverBraking(VehicleDataEventStatus driverBraking) {
-        this.driverBraking = driverBraking.getJsonName(sdlVersion);
+        this.driverBraking = (driverBraking == null) ? null : driverBraking.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverBraking() {
@@ -270,7 +270,7 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
     
     public void setWiperStatus(WiperStatus wiperStatus) {
-        this.wiperStatus = wiperStatus.getJsonName(sdlVersion);
+        this.wiperStatus = (wiperStatus == null) ? null : wiperStatus.getJsonName(sdlVersion);
     }
     
     public WiperStatus getWiperStatus() {

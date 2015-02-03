@@ -78,7 +78,7 @@ public class OnDriverDistraction  extends RPCNotification {
      * @param state the current driver distraction state
      */    
     public void setState( DriverDistractionState state ) {
-        this.state = state.getJsonName(sdlVersion);
+        this.state = (state == null) ? null : state.getJsonName(sdlVersion);
     }
 
     @Override

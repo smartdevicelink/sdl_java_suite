@@ -78,7 +78,7 @@ public class OnTBTClientState extends RPCNotification {
      * @param state current state of TBT client
      */    
     public void setState( TBTState state ) {
-        this.state = state.getJsonName(sdlVersion);
+        this.state = (state == null) ? null : state.getJsonName(sdlVersion);
     }
     
     @Override

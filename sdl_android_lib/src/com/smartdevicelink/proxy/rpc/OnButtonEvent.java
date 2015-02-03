@@ -128,7 +128,7 @@ public class OnButtonEvent extends RPCNotification {
      * @param buttonName name of the button
      */    
     public void setButtonName(ButtonName buttonName) {
-        this.buttonName = buttonName.getJsonName(sdlVersion);
+        this.buttonName = (buttonName == null) ? null : buttonName.getJsonName(sdlVersion);
     }
     
     /**
@@ -145,7 +145,7 @@ public class OnButtonEvent extends RPCNotification {
      * @see ButtonEventMode
      */    
     public void setButtonEventMode(ButtonEventMode buttonEventMode) {
-        this.buttonEventMode = buttonEventMode.getJsonName(sdlVersion);
+        this.buttonEventMode = (buttonEventMode == null) ? null : buttonEventMode.getJsonName(sdlVersion);
     }
     
     public void setCustomButtonID(Integer customButtonID) {

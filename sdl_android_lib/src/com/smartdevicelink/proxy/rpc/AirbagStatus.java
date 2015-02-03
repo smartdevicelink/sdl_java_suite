@@ -51,7 +51,7 @@ public class AirbagStatus extends RPCObject {
     }
 
     public void setDriverAirbagDeployed(VehicleDataEventStatus driverAirbagDeployed) {
-        this.driverAirbagDeployed = driverAirbagDeployed.getJsonName(sdlVersion);
+        this.driverAirbagDeployed = (driverAirbagDeployed == null) ? null : driverAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverAirbagDeployed() {
@@ -59,7 +59,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setDriverSideAirbagDeployed(VehicleDataEventStatus driverSideAirbagDeployed) {
-        this.driverSideAirbagDeployed = driverSideAirbagDeployed.getJsonName(sdlVersion);
+        this.driverSideAirbagDeployed = (driverSideAirbagDeployed == null) ? null : driverSideAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverSideAirbagDeployed() {
@@ -67,7 +67,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setDriverCurtainAirbagDeployed(VehicleDataEventStatus driverCurtainAirbagDeployed) {
-        this.driverCurtainAirbagDeployed = driverCurtainAirbagDeployed.getJsonName(sdlVersion);
+        this.driverCurtainAirbagDeployed = (driverCurtainAirbagDeployed == null) ? null : driverCurtainAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverCurtainAirbagDeployed() {
@@ -75,7 +75,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setPassengerAirbagDeployed(VehicleDataEventStatus passengerAirbagDeployed) {
-        this.passengerAirbagDeployed = passengerAirbagDeployed.getJsonName(sdlVersion);
+        this.passengerAirbagDeployed = (passengerAirbagDeployed == null) ? null : passengerAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerAirbagDeployed() {
@@ -83,7 +83,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setPassengerCurtainAirbagDeployed(VehicleDataEventStatus passengerCurtainAirbagDeployed) {
-        this.passengerCurtainAirbagDeployed = passengerCurtainAirbagDeployed.getJsonName(sdlVersion);
+        this.passengerCurtainAirbagDeployed = (passengerCurtainAirbagDeployed == null) ? null : passengerCurtainAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerCurtainAirbagDeployed() {
@@ -91,7 +91,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setDriverKneeAirbagDeployed(VehicleDataEventStatus driverKneeAirbagDeployed) {
-        this.driverKneeAirbagDeployed = driverKneeAirbagDeployed.getJsonName(sdlVersion);
+        this.driverKneeAirbagDeployed = (driverKneeAirbagDeployed == null) ? null : driverKneeAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getDriverKneeAirbagDeployed() {
@@ -99,7 +99,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setPassengerSideAirbagDeployed(VehicleDataEventStatus passengerSideAirbagDeployed) {
-        this.passengerSideAirbagDeployed = passengerSideAirbagDeployed.getJsonName(sdlVersion);
+        this.passengerSideAirbagDeployed = (passengerSideAirbagDeployed == null) ? null : passengerSideAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerSideAirbagDeployed() {
@@ -107,7 +107,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public void setPassengerKneeAirbagDeployed(VehicleDataEventStatus passengerKneeAirbagDeployed) {
-        this.passengerKneeAirbagDeployed = passengerKneeAirbagDeployed.getJsonName(sdlVersion);
+        this.passengerKneeAirbagDeployed = (passengerKneeAirbagDeployed == null) ? null : passengerKneeAirbagDeployed.getJsonName(sdlVersion);
     }
     
     public VehicleDataEventStatus getPassengerKneeAirbagDeployed() {

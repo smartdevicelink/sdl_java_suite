@@ -52,7 +52,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	}
 	
 	public void setShowLockScreen(LockScreenStatus showLockScreen) {
-		this.lockScreenStatus = showLockScreen.getJsonName(sdlVersion);
+		this.lockScreenStatus = (showLockScreen == null) ? null : showLockScreen.getJsonName(sdlVersion);
 	}
 	
 	public Boolean getUserSelected() {
@@ -68,7 +68,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	}
 	
 	public void setHMILevel(HMILevel setHMILevel) {
-		this.hmiLevel = setHMILevel.getJsonName(sdlVersion);
+		this.hmiLevel = (setHMILevel == null) ? null : setHMILevel.getJsonName(sdlVersion);
 	}
 	
 	@Override
