@@ -9,28 +9,27 @@ import junit.framework.TestCase;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 
 public class DeviceLevelStatusTests extends TestCase{
-	//TODO: sample enum test class
 	
 	public void testValidEnums () {	
 		String example = "ZERO_LEVEL_BARS";
-		DeviceLevelStatus deviceEnumZeroLevel = DeviceLevelStatus.valueForString(example);
+		DeviceLevelStatus enumZeroLevel = DeviceLevelStatus.valueForString(example);
 		example = "ONE_LEVEL_BARS";
-		DeviceLevelStatus deviceEnumOneLevel = DeviceLevelStatus.valueForString(example);
+		DeviceLevelStatus enumOneLevel = DeviceLevelStatus.valueForString(example);
 		example = "TWO_LEVEL_BARS";
-		DeviceLevelStatus deviceEnumTwoLevel = DeviceLevelStatus.valueForString(example);
+		DeviceLevelStatus enumTwoLevel = DeviceLevelStatus.valueForString(example);
 		example = "THREE_LEVEL_BARS";
-		DeviceLevelStatus deviceEnumThreeLevel = DeviceLevelStatus.valueForString(example);
+		DeviceLevelStatus enumThreeLevel = DeviceLevelStatus.valueForString(example);
 		example = "FOUR_LEVEL_BARS";
-		DeviceLevelStatus deviceEnumFourLevel = DeviceLevelStatus.valueForString(example);
+		DeviceLevelStatus enumFourLevel = DeviceLevelStatus.valueForString(example);
 		example = "NOT_PROVIDED";
-		DeviceLevelStatus deviceEnumNotProvided = DeviceLevelStatus.valueForString(example);
+		DeviceLevelStatus enumNotProvided = DeviceLevelStatus.valueForString(example);
 				
-		assertNotNull("ZERO_LEVEL_BARS returned null", deviceEnumZeroLevel);
-		assertNotNull("ONE_LEVEL_BARS returned null", deviceEnumOneLevel);
-		assertNotNull("TWO_LEVEL_BARS returned null", deviceEnumTwoLevel);
-		assertNotNull("THREE_LEVEL_BARS returned null", deviceEnumThreeLevel);
-		assertNotNull("FOUR_LEVEL_BARS returned null", deviceEnumFourLevel);
-		assertNotNull("NOT_PROVIDED returned null", deviceEnumNotProvided);
+		assertNotNull("ZERO_LEVEL_BARS returned null", enumZeroLevel);
+		assertNotNull("ONE_LEVEL_BARS returned null", enumOneLevel);
+		assertNotNull("TWO_LEVEL_BARS returned null", enumTwoLevel);
+		assertNotNull("THREE_LEVEL_BARS returned null", enumThreeLevel);
+		assertNotNull("FOUR_LEVEL_BARS returned null", enumFourLevel);
+		assertNotNull("NOT_PROVIDED returned null", enumNotProvided);
 	}
 	
 	public void testInvalidEnum () {
