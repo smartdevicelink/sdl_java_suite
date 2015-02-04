@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 
-public class TBTStateTests extends TestCase {
+public class TbtStateTests extends TestCase {
 	
 	public void testValidEnums () {	
 		String example = "ROUTE_UPDATE_REQUEST";

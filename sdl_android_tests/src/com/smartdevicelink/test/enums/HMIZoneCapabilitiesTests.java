@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 
-public class HMIZoneCapabilitiesTests extends TestCase {
+public class HmiZoneCapabilitiesTests extends TestCase {
 
 	public void testValidEnums () {	
 		String example = "FRONT";

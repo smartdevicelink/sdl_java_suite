@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 
-public class PRNDLTests extends TestCase {
+public class PrndlTests extends TestCase {
 
 	public void testValidEnums () {	
 		String example = "PARK";

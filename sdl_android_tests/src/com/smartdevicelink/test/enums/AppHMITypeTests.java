@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 
-public class AppHMITypeTests extends TestCase {
+public class AppHmiTypeTests extends TestCase {
 
 	public void testValidEnums () {	
 		String example = "DEFAULT";

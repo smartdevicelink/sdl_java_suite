@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 import junit.framework.TestCase;
 
-public class HMILevelTests extends TestCase {
+public class HmiLevelTests extends TestCase {
 
 	public void testValidEnums () {	
 		String example = "FULL";
