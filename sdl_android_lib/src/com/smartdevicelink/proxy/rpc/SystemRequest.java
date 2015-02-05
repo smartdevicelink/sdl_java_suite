@@ -33,9 +33,13 @@ public class SystemRequest extends RPCRequest implements BulkData{
      * Creates a SystemRequest object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
+     * @param bulkData The bulk data for this object
      */
-    public SystemRequest(JSONObject jsonObject){
+    public SystemRequest(JSONObject jsonObject, byte[] bulkData){
         super(jsonObject);
+        
+        this.bulkData = bulkData;
+        
         switch(sdlVersion){
         default:
             this.filename = JsonUtils.readStringFromJsonObject(jsonObject, KEY_FILE_NAME);

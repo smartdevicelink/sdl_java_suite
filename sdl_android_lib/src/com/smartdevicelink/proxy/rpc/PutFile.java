@@ -43,9 +43,13 @@ public class PutFile extends RPCRequest implements BulkData{
      * Creates a PutFile object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
+     * @param bulkData The bulk data for this object
      */
-    public PutFile(JSONObject jsonObject){
+    public PutFile(JSONObject jsonObject, byte[] bulkData){
         super(jsonObject);
+        
+        this.bulkData = bulkData;
+        
         switch(sdlVersion){
         default:
             this.filename = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SDL_FILE_NAME);
