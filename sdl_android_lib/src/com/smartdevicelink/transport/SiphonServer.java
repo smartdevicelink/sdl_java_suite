@@ -72,7 +72,6 @@ public class SiphonServer {
 		try {
 			  SiphonServer.closeServer();
 		} catch (IOException e) {
-		 // TODO Auto-generated catch block
 		      e.printStackTrace();
 		}
 
