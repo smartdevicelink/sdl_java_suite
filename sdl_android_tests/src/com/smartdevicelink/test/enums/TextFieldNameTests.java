@@ -93,6 +93,7 @@ public class TextFieldNameTests extends TestCase {
 			fail("Sample string did not throw an IllegalArgumentException");
 		}
 		catch (IllegalArgumentException exception) {
+			//If the method throws this exception then this test will be shown as passed.
 		}
 	}
 	
@@ -103,6 +104,7 @@ public class TextFieldNameTests extends TestCase {
 			fail("Sample string did not throw a NullPointerException");
 		}
 		catch (NullPointerException exception) {
+			//If the method throws this exception then this test will be shown as passed.
 		}
 	}	
 	
