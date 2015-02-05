@@ -1,7 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -10,7 +8,6 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
-import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.JsonUtils;
 
 public class OnVehicleData extends RPCNotification {

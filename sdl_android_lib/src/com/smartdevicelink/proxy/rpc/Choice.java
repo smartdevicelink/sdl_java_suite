@@ -1,12 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.RPCObject;
-import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
