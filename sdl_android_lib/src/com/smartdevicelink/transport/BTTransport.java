@@ -195,7 +195,10 @@ public class BTTransport extends SdlTransport {
 		_transportReader.start();
 		
 		// Initialize the SiphonServer
-		SiphonServer.init();
+		if (SiphonServer.getSiphonEnabledStatus()) {
+			SiphonServer.init();
+		}
+
 	} // end-method
 
 	public void disconnect() {
