@@ -55,6 +55,15 @@ public class OnAudioPassThru extends RPCNotification implements BulkData{
      * Creates an OnAudioPassThru object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
+     */
+    public OnAudioPassThru(JSONObject jsonObject) {
+        this(jsonObject, null);
+    }
+
+    /**
+     * Creates an OnAudioPassThru object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      * @param bulkData The bulk data for this object
      */
     public OnAudioPassThru(JSONObject jsonObject, byte[] bulkData) {

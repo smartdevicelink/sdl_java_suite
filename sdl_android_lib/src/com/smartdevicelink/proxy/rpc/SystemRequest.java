@@ -33,6 +33,15 @@ public class SystemRequest extends RPCRequest implements BulkData{
      * Creates a SystemRequest object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
+     */
+    public SystemRequest(JSONObject jsonObject){
+        this(jsonObject, null);
+    }
+    
+    /**
+     * Creates a SystemRequest object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      * @param bulkData The bulk data for this object
      */
     public SystemRequest(JSONObject jsonObject, byte[] bulkData){

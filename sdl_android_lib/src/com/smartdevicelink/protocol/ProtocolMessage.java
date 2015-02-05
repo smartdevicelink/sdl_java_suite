@@ -2,6 +2,7 @@ package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
 
 public class ProtocolMessage {
 	private byte version = 1;
@@ -117,5 +118,19 @@ public class ProtocolMessage {
 
 	public void setJsonSize(int _jsonSize) {
 		this._jsonSize = _jsonSize;
+	}
+	
+	public String getRpcMessageType(){
+        if(_rpcType == 0x00){
+            return RPCMessage.KEY_REQUEST;
+        }
+        else if(_rpcType == 0x01){
+            return RPCMessage.KEY_RESPONSE;
+        }
+        else if(_rpcType == 0x02){
+            return RPCMessage.KEY_NOTIFICATION;
+        }
+
+        return null;
 	}
 } // end-class

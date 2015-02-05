@@ -10,11 +10,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -43,7 +44,6 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
@@ -158,10 +158,12 @@ import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.MessageType;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
@@ -177,6 +179,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.TransportType;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.JsonUtils;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
@@ -1301,55 +1304,70 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	/************* Functions used by the Message Dispatching Queues ****************/
 	private void dispatchIncomingMessage(ProtocolMessage message) {
-		try{
-			// Dispatching logic
-			if (message.getSessionType().equals(SessionType.RPC)) {
-				try {
-					if (_wiproVersion == 1) {
-						if (message.getVersion() > 1) setWiProVersion(message.getVersion());
-					}
-					
-					Hashtable<String, Object> hash = new Hashtable<String, Object>();
-					if (_wiproVersion > 1) {
-						Hashtable<String, Object> hashTemp = new Hashtable<String, Object>();
-						hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
-						if (message.getJsonSize() > 0) {
-							final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-							//hashTemp.put(Names.parameters, mhash.get(Names.parameters));
-							hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
-						}
-
-						String functionName = FunctionID.getFunctionName(message.getFunctionID());
-						if (functionName != null) {
-							hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
-						} else {
-							DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionID: " + message.getFunctionID());
-							return;
-						}
-						if (message.getRPCType() == 0x00) {
-							hash.put(RPCMessage.KEY_REQUEST, hashTemp);
-						} else if (message.getRPCType() == 0x01) {
-							hash.put(RPCMessage.KEY_RESPONSE, hashTemp);
-						} else if (message.getRPCType() == 0x02) {
-							hash.put(RPCMessage.KEY_NOTIFICATION, hashTemp);
-						}
-						if (message.getBulkData() != null) hash.put(BulkData.BULK_DATA, message.getBulkData());
-					} else {
-						final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-						hash = mhash;
-					}
-					handleRPCMessage(hash);							
-				} catch (final Exception excp) {
-					DebugTool.logError("Failure handling protocol message: " + excp.toString(), excp);
-					passErrorToProxyListener("Error handing incoming protocol message.", excp);
-				} // end-catch
-			} else {
-				// Handle other protocol message types here
+		// Dispatching logic
+		if (message.getSessionType().equals(SessionType.RPC)) {
+			if (_wiproVersion == 1 && message.getVersion() > 1) {
+				setWiProVersion(message.getVersion());
 			}
-		} catch (final Exception e) {
-			// Pass error to application through listener 
-			DebugTool.logError("Error handing proxy event.", e);
-			passErrorToProxyListener("Error handing incoming protocol message.", e);
+			
+			JSONObject json = JsonUtils.createJsonObject(message.getData());
+			String functionName = null, messageType = null;
+			int version = (int) _wiproVersion;
+			
+			// TODO: this stuff should really be handled a layer above this class.  ProtocolMessage
+			//       should contain the same information regardless of connected SDL version.
+			switch(version){
+			case 1:
+			    // in version 1, the ProtocolMessage doesn't contain the function name and message type
+			    // so we need to read the JSON to find out what it is.
+			    
+			    JSONObject function = null;
+			    
+			    for(MessageType type : EnumSet.allOf(MessageType.class)){
+			        String typeStr = type.getJsonName(version);
+                    function = JsonUtils.readJsonObjectFromJsonObject(json, typeStr);
+                    if(function != null){
+                        functionName = JsonUtils.readStringFromJsonObject(function, RPCMessage.KEY_FUNCTION_NAME);
+                        messageType = typeStr;
+                        break;
+                    }
+			    }
+			    break;
+			case 2:
+			    // in version 2, function ID and message type are in the Protocol Message
+			    functionName = FunctionID.getFunctionName(message.getFunctionID());
+			    messageType = message.getRpcMessageType();
+			    break;
+			default:
+			    break;
+			}
+			
+			if(functionName == null){
+			    return;
+			}
+			
+			SdlCommand commandType = SdlCommand.valueForJsonName(functionName, version);
+			Class<?> messageClass = SdlCommand.getClassType(commandType, messageType);
+			RPCMessage rpcMessage = null;
+			
+			try{
+			    if(message.getBulkData() != null){
+			        // message with bulk data
+			        Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class, byte[].class);
+			        rpcMessage = (RPCMessage) jsonConstructor.newInstance(json, message.getBulkData());
+			    }
+			    else{
+			        // message without bulk data
+			        Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class);
+			        rpcMessage = (RPCMessage) jsonConstructor.newInstance(json);
+			    }
+			    
+			    handleRPCMessage(rpcMessage);
+			} catch(Exception e){
+			    e.printStackTrace();
+			}
+		} else {
+			// Handle other protocol message types here
 		}
 	}
 	
@@ -1366,7 +1384,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String sReturn = null;		
 		try
 		{
-			sReturn = msg.serializeJSON(getWiProVersion()).toString(2);
+		    sReturn = msg.toJson(getWiProVersion()).toString(2);
 		}
 		catch (final Exception e) 
 		{
@@ -1478,16 +1496,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	// Private sendPRCRequest method. All RPCRequests are funneled through this method after
 		// error checking. 
 	private void sendRPCRequestPrivate(RPCRequest request) throws SdlException {
-			try {
+		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
-						
-			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
+
+			byte[] msgBytes = request.toJson(_wiproVersion).toString().getBytes();
 	
 			ProtocolMessage pm = new ProtocolMessage();
 			pm.setData(msgBytes);
 			if (sdlSession != null)
 				pm.setSessionID(sdlSession.getSessionId());
-			pm.setMessageType(MessageType.RPC);
+			pm.setMessageType(com.smartdevicelink.protocol.enums.MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionID(request.getFunctionName()));
 			if (request.getCorrelationID() == null)
@@ -1496,8 +1514,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
 			}
 			pm.setCorrID(request.getCorrelationID());
-			if (request.getBulkData() != null) 
-				pm.setBulkData(request.getBulkData());
+			if (request instanceof BulkData && ((BulkData)request).getBulkData() != null){ 
+				pm.setBulkData(((BulkData)request).getBulkData());
+			}
 			
 			// Queue this outgoing message
 			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
@@ -1511,8 +1530,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
-	private void handleRPCMessage(Hashtable<String, Object> hash) {
-		RPCMessage rpcMsg = new RPCMessage(hash);
+	private void handleRPCMessage(RPCMessage rpcMsg) {
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 		
@@ -1520,13 +1538,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
 
 			// Check to ensure response is not from an internal message (reserved correlation ID)
-			if (isCorrelationIDProtected((new RPCResponse(hash)).getCorrelationID())) {
+			if (isCorrelationIDProtected(rpcMsg.getCorrelationID())) {
 				// This is a response generated from an internal message, it can be trapped here
 				// The app should not receive a response for a request it did not send
-				if ((new RPCResponse(hash)).getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID 
+				if (rpcMsg.getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID 
 						&& _advancedLifecycleManagementEnabled 
 						&& functionName.equals(FunctionID.REGISTER_APP_INTERFACE)) {
-					final RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse(hash);
+					final RegisterAppInterfaceResponse msg = (RegisterAppInterfaceResponse) rpcMsg;
 					if (msg.getSuccess()) {
 						_appInterfaceRegisterd = true;
 					}
@@ -1613,12 +1631,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
 					}
-				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
+				} else if (rpcMsg.getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)) {
 						
 					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
 					
-					final OnSystemRequest msg = new OnSystemRequest(hash);
+					final OnSystemRequest msg = (OnSystemRequest) rpcMsg;
 					
 					// If url is not null, then send to URL
 					if ( (msg.getUrl() != null) )
@@ -1634,11 +1652,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						handleOffboardTransmissionThread.start();
 					}					
 				}
-				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
+				else if (rpcMsg.getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ENCODED_SYNC_P_DATA)) {
 
 					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
-					final SystemRequestResponse msg = new SystemRequestResponse(hash);
+					final SystemRequestResponse msg = (SystemRequestResponse) rpcMsg;
 					
 					Intent sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
@@ -1649,9 +1667,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					updateBroadcastIntent(sendIntent, "CORRID", msg.getCorrelationID());
 					sendBroadcastIntent(sendIntent);
 				}
-				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
+				else if (rpcMsg.getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.SYSTEM_REQUEST)) {
-					final SystemRequestResponse msg = new SystemRequestResponse(hash);
+					final SystemRequestResponse msg = (SystemRequestResponse) rpcMsg;
 					
 					Intent sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
@@ -1669,7 +1687,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						synchronized(APP_INTERFACE_REGISTERED_LOCK) {
 							APP_INTERFACE_REGISTERED_LOCK.notify();
 						}
-						final UnregisterAppInterfaceResponse msg = new UnregisterAppInterfaceResponse(hash);
+						final UnregisterAppInterfaceResponse msg = (UnregisterAppInterfaceResponse) rpcMsg;
 						Intent sendIntent = createBroadcastIntent();
 						updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE);
 						updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
@@ -1684,7 +1702,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			
 			if (functionName.equals(FunctionID.REGISTER_APP_INTERFACE)) {
-				final RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse(hash);
+				final RegisterAppInterfaceResponse msg = (RegisterAppInterfaceResponse) rpcMsg;
 				if (msg.getSuccess()) {
 					_appInterfaceRegisterd = true;
 				}
@@ -1762,7 +1780,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.SPEAK)) {
 				// SpeakResponse
 				
-				final SpeakResponse msg = new SpeakResponse(hash);
+				final SpeakResponse msg = (SpeakResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1777,7 +1795,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ALERT)) {
 				// AlertResponse
 				
-				final AlertResponse msg = new AlertResponse(hash);
+				final AlertResponse msg = (AlertResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1792,7 +1810,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.SHOW)) {
 				// ShowResponse
 				
-				final ShowResponse msg = new ShowResponse(hash);
+				final ShowResponse msg = (ShowResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1807,7 +1825,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ADD_COMMAND)) {
 				// AddCommand
 				
-				final AddCommandResponse msg = new AddCommandResponse(hash);
+				final AddCommandResponse msg = (AddCommandResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1822,7 +1840,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.DELETE_COMMAND)) {
 				// DeleteCommandResponse
 				
-				final DeleteCommandResponse msg = new DeleteCommandResponse(hash);
+				final DeleteCommandResponse msg = (DeleteCommandResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1837,7 +1855,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ADD_SUB_MENU)) {
 				// AddSubMenu
 				
-				final AddSubMenuResponse msg = new AddSubMenuResponse(hash);
+				final AddSubMenuResponse msg = (AddSubMenuResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1852,7 +1870,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.DELETE_SUB_MENU)) {
 				// DeleteSubMenu
 				
-				final DeleteSubMenuResponse msg = new DeleteSubMenuResponse(hash);
+				final DeleteSubMenuResponse msg = (DeleteSubMenuResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1867,7 +1885,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.SUBSCRIBE_BUTTON)) {
 				// SubscribeButton
 				
-				final SubscribeButtonResponse msg = new SubscribeButtonResponse(hash);
+				final SubscribeButtonResponse msg = (SubscribeButtonResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1882,7 +1900,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.UNSUBSCRIBE_BUTTON)) {
 				// UnsubscribeButton
 				
-				final UnsubscribeButtonResponse msg = new UnsubscribeButtonResponse(hash);
+				final UnsubscribeButtonResponse msg = (UnsubscribeButtonResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1897,7 +1915,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.SET_MEDIA_CLOCK_TIMER)) {
 				// SetMediaClockTimer
 				
-				final SetMediaClockTimerResponse msg = new SetMediaClockTimerResponse(hash);
+				final SetMediaClockTimerResponse msg = (SetMediaClockTimerResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1911,7 +1929,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.ENCODED_SYNC_P_DATA)) {
 				
-				final SystemRequestResponse msg = new SystemRequestResponse(hash);
+				final SystemRequestResponse msg = (SystemRequestResponse) rpcMsg;
 				
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
@@ -1936,7 +1954,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}  else if (functionName.equals(FunctionID.CREATE_INTERACTION_CHOICE_SET)) {
 				// CreateInteractionChoiceSet
 				
-				final CreateInteractionChoiceSetResponse msg = new CreateInteractionChoiceSetResponse(hash);
+				final CreateInteractionChoiceSetResponse msg = (CreateInteractionChoiceSetResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1951,7 +1969,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.DELETE_INTERACTION_CHOICE_SET)) {
 				// DeleteInteractionChoiceSet
 				
-				final DeleteInteractionChoiceSetResponse msg = new DeleteInteractionChoiceSetResponse(hash);
+				final DeleteInteractionChoiceSetResponse msg = (DeleteInteractionChoiceSetResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1966,7 +1984,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.PERFORM_INTERACTION)) {
 				// PerformInteraction
 				
-				final PerformInteractionResponse msg = new PerformInteractionResponse(hash);
+				final PerformInteractionResponse msg = (PerformInteractionResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1981,7 +1999,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.SET_GLOBAL_PROPERTIES)) {
 				// SetGlobalPropertiesResponse 
 				
-				final SetGlobalPropertiesResponse msg = new SetGlobalPropertiesResponse(hash);
+				final SetGlobalPropertiesResponse msg = (SetGlobalPropertiesResponse) rpcMsg;
 				if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -1996,7 +2014,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.RESET_GLOBAL_PROPERTIES)) {
 				// ResetGlobalProperties				
 				
-				final ResetGlobalPropertiesResponse msg = new ResetGlobalPropertiesResponse(hash);
+				final ResetGlobalPropertiesResponse msg = (ResetGlobalPropertiesResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2016,7 +2034,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					APP_INTERFACE_REGISTERED_LOCK.notify();
 				}
 				
-				final UnregisterAppInterfaceResponse msg = new UnregisterAppInterfaceResponse(hash);
+				final UnregisterAppInterfaceResponse msg = (UnregisterAppInterfaceResponse) rpcMsg;
 				
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE);
@@ -2051,7 +2069,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				notifyProxyClosed("UnregisterAppInterfaceResponse", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
 			} else if (functionName.equals(FunctionID.GENERIC_RESPONSE)) {
 				// GenericResponse (Usually and error)
-				final GenericResponse msg = new GenericResponse(hash);
+				final GenericResponse msg = (GenericResponse) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2065,7 +2083,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.SLIDER)) {
                 // Slider
-                final SliderResponse msg = new SliderResponse(hash);
+                final SliderResponse msg = (SliderResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2079,7 +2097,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.PUT_FILE)) {
                 // PutFile
-                final PutFileResponse msg = new PutFileResponse(hash);
+                final PutFileResponse msg = (PutFileResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2093,7 +2111,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.DELETE_FILE)) {
                 // DeleteFile
-                final DeleteFileResponse msg = new DeleteFileResponse(hash);
+                final DeleteFileResponse msg = (DeleteFileResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2107,7 +2125,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.LIST_FILES)) {
                 // ListFiles
-                final ListFilesResponse msg = new ListFilesResponse(hash);
+                final ListFilesResponse msg = (ListFilesResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2121,7 +2139,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.SET_APP_ICON)) {
                 // SetAppIcon
-                final SetAppIconResponse msg = new SetAppIconResponse(hash);
+                final SetAppIconResponse msg = (SetAppIconResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2135,7 +2153,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.SCROLLABLE_MESSAGE)) {
                 // ScrollableMessage
-                final ScrollableMessageResponse msg = new ScrollableMessageResponse(hash);
+                final ScrollableMessageResponse msg = (ScrollableMessageResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2149,7 +2167,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.CHANGE_REGISTRATION)) {
                 // ChangeLanguageRegistration
-                final ChangeRegistrationResponse msg = new ChangeRegistrationResponse(hash);
+                final ChangeRegistrationResponse msg = (ChangeRegistrationResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2163,7 +2181,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT)) {
                 // SetDisplayLayout
-                final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
+                final SetDisplayLayoutResponse msg = (SetDisplayLayoutResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2177,7 +2195,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.PERFORM_AUDIO_PASS_THRU)) {
                 // PerformAudioPassThru
-                final PerformAudioPassThruResponse msg = new PerformAudioPassThruResponse(hash);
+                final PerformAudioPassThruResponse msg = (PerformAudioPassThruResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2191,7 +2209,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.END_AUDIO_PASS_THRU)) {
                 // EndAudioPassThru
-                final EndAudioPassThruResponse msg = new EndAudioPassThruResponse(hash);
+                final EndAudioPassThruResponse msg = (EndAudioPassThruResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2205,7 +2223,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.SUBSCRIBE_VEHICLE_DATA)) {
             	// SubscribeVehicleData
-                final SubscribeVehicleDataResponse msg = new SubscribeVehicleDataResponse(hash);
+                final SubscribeVehicleDataResponse msg = (SubscribeVehicleDataResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2219,7 +2237,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.UNSUBSCRIBE_VEHICLE_DATA)) {
             	// UnsubscribeVehicleData
-                final UnsubscribeVehicleDataResponse msg = new UnsubscribeVehicleDataResponse(hash);
+                final UnsubscribeVehicleDataResponse msg = (UnsubscribeVehicleDataResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2233,7 +2251,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.GET_VEHICLE_DATA)) {
            		// GetVehicleData
-                final GetVehicleDataResponse msg = new GetVehicleDataResponse(hash);
+                final GetVehicleDataResponse msg = (GetVehicleDataResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2246,7 +2264,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         _proxyListener.onGetVehicleDataResponse((GetVehicleDataResponse)msg);   
                     }            	               
             } else if (functionName.equals(FunctionID.READ_DID)) {
-                final ReadDIDResponse msg = new ReadDIDResponse(hash);
+                final ReadDIDResponse msg = (ReadDIDResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2259,7 +2277,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onReadDIDResponse((ReadDIDResponse)msg);   
                 }            	            	
             } else if (functionName.equals(FunctionID.GET_DTCS)) {
-                final GetDTCsResponse msg = new GetDTCsResponse(hash);
+                final GetDTCsResponse msg = (GetDTCsResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2272,7 +2290,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onGetDTCsResponse((GetDTCsResponse)msg);   
                 }
             } else if (functionName.equals(FunctionID.DIAGNOSTIC_MESSAGE)) {
-                final DiagnosticMessageResponse msg = new DiagnosticMessageResponse(hash);
+                final DiagnosticMessageResponse msg = (DiagnosticMessageResponse) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2287,7 +2305,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } 
             else if (functionName.equals(FunctionID.SYSTEM_REQUEST)) {
 
-   				final SystemRequestResponse msg = new SystemRequestResponse(hash);
+   				final SystemRequestResponse msg = (SystemRequestResponse) rpcMsg;
    				if (_callbackToUIThread) {
    					// Run in UI thread
    					_mainUIHandler.post(new Runnable() {
@@ -2309,11 +2327,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} // end-if
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCNotification(rpcMsg), SDL_LIB_TRACE_KEY);
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, (RPCNotification) rpcMsg, SDL_LIB_TRACE_KEY);
 			if (functionName.equals(FunctionID.ON_HMI_STATUS)) {
 				// OnHMIStatus
 				
-				final OnHMIStatus msg = new OnHMIStatus(hash);
+				final OnHMIStatus msg = (OnHMIStatus) rpcMsg;
 
 				//setup lockscreeninfo
 				if (sdlSession != null)
@@ -2342,7 +2360,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_COMMAND)) {
 				// OnCommand
 				
-				final OnCommand msg = new OnCommand(hash);
+				final OnCommand msg = (OnCommand) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2357,7 +2375,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_DRIVER_DISTRACTION)) {
 				// OnDriverDistration
 				
-				final OnDriverDistraction msg = new OnDriverDistraction(hash);
+				final OnDriverDistraction msg = (OnDriverDistraction) rpcMsg;
 				
 				//setup lockscreeninfo
 				if (sdlSession != null)
@@ -2386,7 +2404,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)) {
 				
-				final OnSystemRequest msg = new OnSystemRequest(hash);
+				final OnSystemRequest msg = (OnSystemRequest) rpcMsg;
 
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_SYSTEM_REQUEST);
@@ -2428,7 +2446,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_PERMISSIONS_CHANGE)) {
 				//OnPermissionsChange
 				
-				final OnPermissionsChange msg = new OnPermissionsChange(hash);
+				final OnPermissionsChange msg = (OnPermissionsChange) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2443,7 +2461,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_TBT_CLIENT_STATE)) {
 				// OnTBTClientState
 				
-				final OnTBTClientState msg = new OnTBTClientState(hash);
+				final OnTBTClientState msg = (OnTBTClientState) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2458,7 +2476,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_BUTTON_PRESS)) {
 				// OnButtonPress
 				
-				final OnButtonPress msg = new OnButtonPress(hash);
+				final OnButtonPress msg = (OnButtonPress) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2473,7 +2491,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT)) {
 				// OnButtonEvent
 				
-				final OnButtonEvent msg = new OnButtonEvent(hash);
+				final OnButtonEvent msg = (OnButtonEvent) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2488,7 +2506,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE)) {
 				// OnLanguageChange
 				
-				final OnLanguageChange msg = new OnLanguageChange(hash);
+				final OnLanguageChange msg = (OnLanguageChange) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2503,7 +2521,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_HASH_CHANGE)) {
 				// OnLanguageChange
 				
-				final OnHashChange msg = new OnHashChange(hash);
+				final OnHashChange msg = (OnHashChange) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2526,7 +2544,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_SYSTEM_REQUEST)) {
 					// OnSystemRequest
 					
-					final OnSystemRequest msg = new OnSystemRequest(hash);
+					final OnSystemRequest msg = (OnSystemRequest) rpcMsg;
 					
 					if ( (msg.getUrl() != null) &&
 						 (msg.getRequestType() == RequestType.PROPRIETARY) &&
@@ -2556,7 +2574,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 			} else if (functionName.equals(FunctionID.ON_AUDIO_PASS_THRU)) {
 				// OnAudioPassThru
-				final OnAudioPassThru msg = new OnAudioPassThru(hash);
+				final OnAudioPassThru msg = (OnAudioPassThru) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2570,7 +2588,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }				
 			} else if (functionName.equals(FunctionID.ON_VEHICLE_DATA)) {
 				// OnVehicleData
-                final OnVehicleData msg = new OnVehicleData(hash);
+                final OnVehicleData msg = (OnVehicleData) rpcMsg;
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2591,7 +2609,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					APP_INTERFACE_REGISTERED_LOCK.notify();
 				}
 				
-				final OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered(hash);
+				final OnAppInterfaceUnregistered msg = (OnAppInterfaceUnregistered) rpcMsg;
 								
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_APP_INTERFACE_UNREGISTERED);
@@ -2618,7 +2636,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} 
 			else if (functionName.equals(FunctionID.ON_KEYBOARD_INPUT)) {
-				final OnKeyboardInput msg = new OnKeyboardInput(hash);
+				final OnKeyboardInput msg = (OnKeyboardInput) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2632,7 +2650,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 			else if (functionName.equals(FunctionID.ON_TOUCH_EVENT)) {
-				final OnTouchEvent msg = new OnTouchEvent(hash);
+				final OnTouchEvent msg = (OnTouchEvent) rpcMsg;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {

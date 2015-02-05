@@ -43,6 +43,15 @@ public class OnSystemRequest extends RPCNotification implements BulkData{
      * Creates a OnSystemRequest object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
+     */
+    public OnSystemRequest(JSONObject jsonObject){
+        this(jsonObject, null);
+    }
+    
+    /**
+     * Creates a OnSystemRequest object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      * @param bulkData The bulk data for this object
      */
     public OnSystemRequest(JSONObject jsonObject, byte[] bulkData){

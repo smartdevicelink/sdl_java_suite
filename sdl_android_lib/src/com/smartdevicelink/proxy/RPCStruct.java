@@ -29,11 +29,11 @@ public abstract class RPCStruct implements JsonParameters {
 		return new JSONObject();
 	}
 	
-	/* default */static void setSdlVersion(int sdlVersionIn){
+	public static void setSdlVersion(int sdlVersionIn){
 		sdlVersion = sdlVersionIn;
 	}
 	
-	protected static int getSdlVersion(){
+	public static int getSdlVersion(){
 		return sdlVersion;
 	}
 

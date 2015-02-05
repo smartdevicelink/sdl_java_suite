@@ -43,6 +43,15 @@ public class PutFile extends RPCRequest implements BulkData{
      * Creates a PutFile object from a JSON object.
      * 
      * @param jsonObject The JSON object to read from
+     */
+    public PutFile(JSONObject jsonObject){
+        this(jsonObject, null);
+    }
+
+    /**
+     * Creates a PutFile object from a JSON object.
+     * 
+     * @param jsonObject The JSON object to read from
      * @param bulkData The bulk data for this object
      */
     public PutFile(JSONObject jsonObject, byte[] bulkData){

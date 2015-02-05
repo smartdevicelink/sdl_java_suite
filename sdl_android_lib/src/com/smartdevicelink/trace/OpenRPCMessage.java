@@ -1,26 +1,31 @@
 package com.smartdevicelink.trace;
 
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.JsonUtils;
 
-class OpenRPCMessage extends RPCMessage {
-	private OpenRPCMessage() {super("");}
+class OpenRPCMessage {
+    private RPCStruct struct;
+    
 	public OpenRPCMessage(RPCMessage rpcm) {
-		super(rpcm);
+		this.struct = rpcm;
 	} // end-method
-
-	public OpenRPCMessage(RPCStruct rpcs) {
-		super(rpcs);
-	} // end-method
+	public OpenRPCMessage(RPCStruct rpcs){
+	    this.struct = rpcs;
+	}
 
 	public String msgDump() {
 		StringBuilder pd = new StringBuilder();
 		
-		pd.append(this.getFunctionName() + " " + this.getMessageType());
+		if(this.struct instanceof RPCMessage){
+		    RPCMessage temp = (RPCMessage) this.struct;
+		    pd.append(temp.getFunctionName() + " " + temp.getMessageType());
+		}
 		
 		msgDump(pd);
 
@@ -30,22 +35,23 @@ class OpenRPCMessage extends RPCMessage {
 	public void msgDump(StringBuilder pd) {
 		pd.append("[");
 
-		dumpParams(parameters, pd);
+		dumpParams(this.struct.toJson(RPCStruct.getSdlVersion()), pd);
 		
 		pd.append("]");
 
 		return;
 	} // end-method
 
-	private void dumpParams(Hashtable<String, Object> ht, StringBuilder pd) {
-		Iterator<String> keySet = ht.keySet().iterator();
+	private void dumpParams(JSONObject json, StringBuilder pd) {
+	    @SuppressWarnings("unchecked")
+        Iterator<String> keySet = json.keys();
 		Object obj = null;
 		String key = "";
 		boolean isFirstParam = true;
 
 		while (keySet.hasNext()) {
 			key = (String)keySet.next();
-			obj = ht.get(key);
+			obj = JsonUtils.readObjectFromJsonObject(json, key);
 			if (isFirstParam) {
 				isFirstParam = false;
 			} else {
@@ -57,14 +63,9 @@ class OpenRPCMessage extends RPCMessage {
 		} // end-while
 	} // end-method
 	
-	@SuppressWarnings("unchecked")
     private void dumpParamNode(String key, Object obj, StringBuilder pd) {
 
-		if (obj instanceof Hashtable) {
-			pd.append("[");
-			dumpParams((Hashtable<String, Object>)obj, pd);
-			pd.append("]");
-		} else if (obj instanceof RPCStruct) {
+		if (obj instanceof RPCStruct) {
 			pd.append("[");
 			OpenRPCMessage orpcm = new OpenRPCMessage((RPCStruct)obj);
 			orpcm.msgDump(pd);
