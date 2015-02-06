@@ -1,23 +1,26 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.utils.Logger;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
+import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
 public class CreateInteractionChoiceSetTests extends BaseRpcTests{
 
-    private static final String TAG = "CreateInteractionChoiceSetTests";
+    //private static final String TAG = "CreateInteractionChoiceSetTests";
     
     private static final int    CHOICE_SET_ID          = 16164;
     private static final int    CHOICE1_ID             = 5163;
@@ -103,9 +106,8 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
 
         assertNotSame("Choice list was not defensive copied.", choiceList, copy);
         assertEquals("Choice list size didn't match expected size.", choiceList.size(), copy.size());
-
         for(int i = 0; i < copy.size(); i++){
-            log("validating choice at index " + i + ": \"" + choiceList.get(i) + "\" vs. \"" + copy.get(i) + "\"");
+            //log("validating choice at index " + i + ": \"" + choiceList.get(i) + "\" vs. \"" + copy.get(i) + "\"");
             assertTrue("Choice at index " + i + " didn't match expected value.",
                     Validator.validateChoice(choiceList.get(i), copy.get(i)));
         }
@@ -120,9 +122,37 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
         assertNull("Choice list wasn't set, but getter method returned an object.", msg.getChoiceSet());
         assertNull("Choice set ID wasn't set, but getter method returned an object.", msg.getInteractionChoiceSetID());
     }
-    
-    private static void log(String msg){
-        Logger.log(TAG, msg);
-    }
+
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			CreateInteractionChoiceSet cmd = new CreateInteractionChoiceSet(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			assertEquals("Interaction choice set ID doesn't match input ID", 
+					JsonUtils.readIntegerFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
+			
+			JSONArray choiceSetArray = JsonUtils.readJsonArrayFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_CHOICE_SET);
+			for (int index = 0; index < choiceSetArray.length(); index++) {
+				Choice chunk = new Choice(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)choiceSetArray.get(index)) );
+				assertTrue("Choice list doesn't match input Choice list",  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
+			}
+			
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }    
 
 }
