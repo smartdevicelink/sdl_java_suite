@@ -261,7 +261,9 @@ public class SdlPacket implements Parcelable{
 		builder.append(	"\nFrameInfo:  " +frameInfo);
 		builder.append(	"\nSessionId:  " +sessionId);
 		builder.append(	"\nDataSize:  " +dataSize);
-		builder.append(	"\nMessageId:  " +messageId);
+		if(version>1){
+			builder.append(	"\nMessageId:  " +messageId);
+		}
 		builder.append("\n***** Sdl Packet  End******");
 
 

@@ -43,7 +43,7 @@ public class SdlPsm{
 	int controlFrameInfo;	
 	int sessionId;			
 	int dumpSize, dataLength;
-	int messageId;
+	int messageId = 0;
 	
 	byte[] payload;
 	
@@ -175,8 +175,16 @@ public class SdlPsm{
 			default:
 				return ERROR_STATE;
 			}
-			
-			return MESSAGE_1_STATE;
+			if(version==1){ //Version 1 packets will not have message id's
+				if(dataLength == 0){
+					return FINISHED_STATE; //We are done if we don't have any payload
+				}
+				payload = new byte[dataLength];
+				dumpSize = dataLength;
+				return DATA_PUMP_STATE;
+			}else{
+				return MESSAGE_1_STATE;
+			}
 			
 		case MESSAGE_1_STATE:
 			messageId += ((int)(rawByte& 0xFF))<<24; //3 bytes x 8 bits
