@@ -111,6 +111,13 @@ public class OnButtonPress extends RPCNotification {
      */    
     public OnButtonPress(JSONObject jsonObject) {
         super(jsonObject);
+        switch(sdlVersion){
+        default:
+            this.buttonName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BUTTON_NAME);
+            this.buttonPressMode = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BUTTON_PRESS_MODE);
+            this.customButtonId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CUSTOM_BUTTON_ID);
+            break;
+        }
     }
     
     /**

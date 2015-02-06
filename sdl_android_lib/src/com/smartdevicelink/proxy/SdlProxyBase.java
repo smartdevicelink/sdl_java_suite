@@ -1311,6 +1311,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			
 			JSONObject json = JsonUtils.createJsonObject(message.getData());
+            
+            Log.d("dispatchIncomingMessage", json.toString());
 			String functionName = null, messageType = null;
 			int version = (int) _wiproVersion;
 			
@@ -1360,6 +1362,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			        // message without bulk data
 			        Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class);
 			        rpcMessage = (RPCMessage) jsonConstructor.newInstance(json);
+			    }
+			    
+			    if(_wiproVersion == 2){
+			        rpcMessage.setFunctionName(functionName);
+			        rpcMessage.setCorrelationID(message.getCorrID());
+			        rpcMessage.setMessageType(message.getRpcMessageType());
 			    }
 			    
 			    handleRPCMessage(rpcMessage);
@@ -1499,7 +1507,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
 
-			byte[] msgBytes = request.toJson(_wiproVersion).toString().getBytes();
+			String jsonStr = null;
+			
+			if(_wiproVersion == 2){
+			    jsonStr = request.getJsonParameters(_wiproVersion).toString();
+			}
+			else{
+	            jsonStr = request.toJson(_wiproVersion).toString();
+			}
+			
+			Log.d("sendRPCRequestPrivate", jsonStr);
+			
+            byte[] msgBytes = jsonStr.getBytes();
 	
 			ProtocolMessage pm = new ProtocolMessage();
 			pm.setData(msgBytes);

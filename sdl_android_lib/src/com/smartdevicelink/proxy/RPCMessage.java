@@ -30,6 +30,7 @@ public abstract class RPCMessage extends RPCStruct {
     
     public RPCMessage(String functionName) {
         this(functionName, KEY_REQUEST);
+        this.commandType = SdlCommand.valueForJsonName(functionName, sdlVersion);
     }
     
     public RPCMessage(String functionName, String messageType) {
@@ -63,6 +64,10 @@ public abstract class RPCMessage extends RPCStruct {
 
 	public String getMessageType() {
 		return messageType;
+	}
+	
+	public void setMessageType(String msgType){
+	    this.messageType = msgType;
 	}
 	
 	public Integer getCorrelationID(){

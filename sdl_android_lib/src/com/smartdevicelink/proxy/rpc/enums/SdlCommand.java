@@ -40,10 +40,14 @@ import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnHashChange;
+import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
+import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
+import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
@@ -77,6 +81,8 @@ import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
@@ -299,6 +305,11 @@ public enum SdlCommand implements JsonName{
     REGISTER_APP_INTERFACE("RegisterAppInterface", RegisterAppInterface.class, RegisterAppInterfaceResponse.class, null),
     UNREGISTER_APP_INTERFACE("UnregisterAppInterface", UnregisterAppInterface.class, UnregisterAppInterfaceResponse.class, null),
     SET_DISPLAY_LAYOUT("SetDisplayLayout", SetDisplayLayout.class, SetDisplayLayoutResponse.class, null),
+    ON_HASH_CHANGE("OnHashChange", null, null, OnHashChange.class),
+    ON_SYSTEM_REQUEST("OnSystemRequest", null, null, OnSystemRequest.class),
+    SYSTEM_REQUEST("SystemRequest", SystemRequest.class, SystemRequestResponse.class, null),
+    ON_KEYBOARD_INPUT("OnKeyboardInput", null, null, OnKeyboardInput.class),
+    ON_TOUCH_EVENT("OnTouchEvent", null, null, OnTouchEvent.class),
     
     
     //Future commands go here.
