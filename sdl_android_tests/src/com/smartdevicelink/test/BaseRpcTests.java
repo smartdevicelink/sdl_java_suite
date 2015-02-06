@@ -99,7 +99,7 @@ public abstract class BaseRpcTests extends TestCase{
             // do nothing 
         }
     }
-
+    
     private JSONObject buildJsonStore() throws JSONException{
         JSONObject result = new JSONObject(), command = new JSONObject();
 
