@@ -2074,6 +2074,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT)) {
                 // SetDisplayLayout
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
+                
+                // successfully changed display layout - update layout capabilities
+                if(msg.getSuccess()){
+                    _displayCapabilities = msg.getDisplayCapabilities();
+                    _buttonCapabilities = msg.getButtonCapabilities();
+                    _presetBankCapabilities = msg.getPresetBankCapabilities();
+                    _softButtonCapabilities = msg.getSoftButtonCapabilities();
+                }
+                
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
