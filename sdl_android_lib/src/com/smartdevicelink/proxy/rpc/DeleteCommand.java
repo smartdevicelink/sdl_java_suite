@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -38,7 +39,8 @@ public class DeleteCommand extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
 	public DeleteCommand(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DELETE_COMMAND, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.cmdId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);

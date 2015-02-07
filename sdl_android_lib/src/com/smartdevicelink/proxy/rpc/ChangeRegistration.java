@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -40,7 +41,8 @@ public class ChangeRegistration extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public ChangeRegistration(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.CHANGE_REGISTRATION, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);

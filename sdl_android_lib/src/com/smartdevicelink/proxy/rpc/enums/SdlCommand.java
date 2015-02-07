@@ -24,6 +24,8 @@ import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DiagnosticMessage;
+import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
@@ -43,6 +45,7 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnHashChange;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
+import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
@@ -310,7 +313,8 @@ public enum SdlCommand implements JsonName{
     SYSTEM_REQUEST("SystemRequest", SystemRequest.class, SystemRequestResponse.class, null),
     ON_KEYBOARD_INPUT("OnKeyboardInput", null, null, OnKeyboardInput.class),
     ON_TOUCH_EVENT("OnTouchEvent", null, null, OnTouchEvent.class),
-    
+    DIAGNOSTIC_MESSAGE("DiagnosticMessage", DiagnosticMessage.class, DiagnosticMessageResponse.class, null),
+    ON_LOCK_SCREEN_STATUS("OnLockScreenStatus", null, null, OnLockScreenStatus.class),
     
     //Future commands go here.
     

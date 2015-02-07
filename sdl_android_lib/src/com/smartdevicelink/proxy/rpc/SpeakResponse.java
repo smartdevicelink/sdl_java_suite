@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Speak Response is sent, when Speak has been called
@@ -25,6 +26,6 @@ public class SpeakResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public SpeakResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SPEAK, jsonObject);
     }
 }

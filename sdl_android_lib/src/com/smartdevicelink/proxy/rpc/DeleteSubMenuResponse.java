@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Delete SubMenu Response is sent, when DeleteSubMenu has been called
@@ -22,6 +23,6 @@ public class DeleteSubMenuResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public DeleteSubMenuResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DELETE_SUB_MENU, jsonObject);
     }
 }

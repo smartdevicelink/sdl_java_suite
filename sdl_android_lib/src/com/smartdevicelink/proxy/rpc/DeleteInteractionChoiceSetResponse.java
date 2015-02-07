@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Delete Interaction ChoiceSet Response is sent, when DeleteInteractionChoiceSet has been called
@@ -22,6 +23,6 @@ public class DeleteInteractionChoiceSetResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public DeleteInteractionChoiceSetResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DELETE_INTERACTION_CHOICE_SET, jsonObject);
     }
 }

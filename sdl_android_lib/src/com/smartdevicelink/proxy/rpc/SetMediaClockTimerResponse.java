@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Set Media Clock Timer Response is sent, when SetMediaClockTimer has been called
@@ -25,6 +26,6 @@ public class SetMediaClockTimerResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public SetMediaClockTimerResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SET_MEDIA_CLOCK_TIMER, jsonObject);
     }
 }

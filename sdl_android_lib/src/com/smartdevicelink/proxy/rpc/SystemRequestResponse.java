@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 public class SystemRequestResponse extends RPCResponse {
     public SystemRequestResponse() {
@@ -16,6 +17,6 @@ public class SystemRequestResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public SystemRequestResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SYSTEM_REQUEST, jsonObject);
     }
 }

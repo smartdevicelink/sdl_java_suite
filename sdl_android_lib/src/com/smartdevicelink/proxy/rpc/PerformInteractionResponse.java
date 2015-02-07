@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.JsonUtils;
 
@@ -34,7 +35,8 @@ public class PerformInteractionResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public PerformInteractionResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.PERFORM_INTERACTION, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.choiceId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CHOICE_ID);

@@ -8,6 +8,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.BulkData;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 public class SystemRequest extends RPCRequest implements BulkData{
@@ -45,7 +46,8 @@ public class SystemRequest extends RPCRequest implements BulkData{
      * @param bulkData The bulk data for this object
      */
     public SystemRequest(JSONObject jsonObject, byte[] bulkData){
-        super(jsonObject);
+        super(SdlCommand.SYSTEM_REQUEST, jsonObject);
+        jsonObject = getParameters(jsonObject);
         
         this.bulkData = bulkData;
         

@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Requests the current list of resident filenames for the registered app. Not
@@ -27,6 +28,6 @@ public class ListFiles extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public ListFiles(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.LIST_FILES, jsonObject);
     }
 }

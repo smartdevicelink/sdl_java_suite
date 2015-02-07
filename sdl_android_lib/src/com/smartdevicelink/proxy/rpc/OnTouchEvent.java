@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.util.JsonUtils;
 
@@ -26,7 +27,8 @@ public class OnTouchEvent extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnTouchEvent(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.ON_TOUCH_EVENT, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.type = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TYPE);

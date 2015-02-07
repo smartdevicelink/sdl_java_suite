@@ -9,6 +9,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 /**
  * Performs an application-initiated interaction in which the user can select a
@@ -58,7 +59,8 @@ public class PerformInteraction extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public PerformInteraction(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.PERFORM_INTERACTION, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.initialText = JsonUtils.readStringFromJsonObject(jsonObject, KEY_INITIAL_TEXT);

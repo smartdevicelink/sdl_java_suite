@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.util.JsonUtils;
 /**
@@ -86,7 +87,8 @@ public class OnHMIStatus extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnHMIStatus(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.ON_HMI_STATUS, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.hmiLevel = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HMI_LEVEL);

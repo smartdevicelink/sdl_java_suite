@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 public class OnLockScreenStatus extends RPCNotification {
@@ -27,7 +28,8 @@ public class OnLockScreenStatus extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnLockScreenStatus(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.ON_LOCK_SCREEN_STATUS, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.driverDistractionStatus = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_DRIVER_DISTRACTION);

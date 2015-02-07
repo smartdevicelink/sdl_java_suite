@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Create Interaction ChoiceSet Response is sent, when CreateInteractionChoiceSet
@@ -23,6 +24,6 @@ public class CreateInteractionChoiceSetResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public CreateInteractionChoiceSetResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.CREATE_INTERACTION_CHOICE_SET, jsonObject);
     }
 }

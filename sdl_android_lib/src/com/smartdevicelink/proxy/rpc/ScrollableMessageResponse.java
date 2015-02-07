@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Scrollable Message Response is sent, when ScrollableMessage has been called
@@ -25,6 +26,6 @@ public class ScrollableMessageResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public ScrollableMessageResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SCROLLABLE_MESSAGE, jsonObject);
     }
 }

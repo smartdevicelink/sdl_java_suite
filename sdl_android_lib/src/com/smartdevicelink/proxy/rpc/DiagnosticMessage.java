@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 public class DiagnosticMessage extends RPCRequest {
@@ -26,7 +27,8 @@ public class DiagnosticMessage extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public DiagnosticMessage(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DIAGNOSTIC_MESSAGE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.targetId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_TARGET_ID);

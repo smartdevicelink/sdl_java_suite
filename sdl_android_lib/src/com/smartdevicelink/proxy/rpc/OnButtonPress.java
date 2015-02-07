@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -110,7 +111,8 @@ public class OnButtonPress extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */    
     public OnButtonPress(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.ON_BUTTON_PRESS, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.buttonName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BUTTON_NAME);

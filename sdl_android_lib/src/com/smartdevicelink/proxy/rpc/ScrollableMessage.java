@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -40,7 +41,8 @@ public class ScrollableMessage extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public ScrollableMessage(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SCROLLABLE_MESSAGE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.body = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SCROLLABLE_MESSAGE_BODY);

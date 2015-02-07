@@ -38,14 +38,10 @@ public abstract class RPCMessage extends RPCStruct {
         this.commandType = SdlCommand.valueForJsonName(functionName, sdlVersion);
     }
     
-    public RPCMessage(String type, JSONObject parameters){
+    public RPCMessage(String type, SdlCommand commandType, JSONObject parameters){
         this.messageType = type;
-        JSONObject typeJson = JsonUtils.readJsonObjectFromJsonObject(parameters, type);
-        if(typeJson != null){
-            this.correlationId = JsonUtils.readIntegerFromJsonObject(parameters, KEY_CORRELATION_ID);
-            String msgType = JsonUtils.readStringFromJsonObject(parameters, KEY_FUNCTION_NAME);
-            this.commandType = SdlCommand.valueForJsonName(msgType, sdlVersion);
-        }
+        this.commandType = commandType;
+        this.correlationId = JsonUtils.readIntegerFromJsonObject(parameters, KEY_CORRELATION_ID);
     }
 	
 	protected RPCMessage(RPCMessage rpcm) {
@@ -98,11 +94,17 @@ public abstract class RPCMessage extends RPCStruct {
     
     public static JSONObject getParameters(String type, JSONObject fullJson){
         JSONObject function = JsonUtils.readJsonObjectFromJsonObject(fullJson, type);
-        if(function == null){
+        if(function != null){
+            fullJson = function;
+        }
+        
+        JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(fullJson, KEY_PARAMETERS);
+        if(parameters == null){
             return fullJson;
         }
-
-        return JsonUtils.readJsonObjectFromJsonObject(function, KEY_PARAMETERS);
+        else{
+            return parameters;
+        }
     }
     
     public static SdlCommand getCommandType(JSONObject json){

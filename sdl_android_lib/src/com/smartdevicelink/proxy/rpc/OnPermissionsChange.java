@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -68,7 +69,8 @@ public class OnPermissionsChange extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnPermissionsChange(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.ON_PERMISSIONS_CHANGE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             List<JSONObject> permissionItemObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_PERMISSION_ITEM);

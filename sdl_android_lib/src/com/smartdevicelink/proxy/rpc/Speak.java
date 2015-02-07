@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -92,7 +93,8 @@ public class Speak extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public Speak(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SPEAK, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             List<JSONObject> ttsChunkObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_TTS_CHUNKS);

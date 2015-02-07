@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -33,7 +34,8 @@ public class DeleteFile extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public DeleteFile(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DELETE_FILE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.sdlFileName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_SDL_FILE_NAME);

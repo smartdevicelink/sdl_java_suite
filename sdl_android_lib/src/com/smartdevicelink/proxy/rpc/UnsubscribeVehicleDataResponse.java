@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -57,7 +58,8 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public UnsubscribeVehicleDataResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.UNSUBSCRIBE_VEHICLE_DATA, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             JSONObject temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_SPEED);

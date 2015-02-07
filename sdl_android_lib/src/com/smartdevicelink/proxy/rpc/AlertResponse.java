@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -29,8 +30,8 @@ public class AlertResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public AlertResponse(JSONObject jsonObject) {
-        super(jsonObject);
-        
+        super(SdlCommand.ALERT, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.tryAgainTime = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_TRY_AGAIN_TIME);

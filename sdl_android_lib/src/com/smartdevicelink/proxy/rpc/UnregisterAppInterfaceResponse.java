@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Unregister AppInterface Response is sent, when UnregisterAppInterface has been called
@@ -25,6 +26,6 @@ public class UnregisterAppInterfaceResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public UnregisterAppInterfaceResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.UNREGISTER_APP_INTERFACE, jsonObject);
     }
 }

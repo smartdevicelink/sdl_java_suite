@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -69,8 +70,8 @@ public class Alert extends RPCRequest {
 	 * @param jsonObject The JSON object to read from
 	 */
     public Alert(JSONObject jsonObject){
-        super(jsonObject);
-        
+        super(SdlCommand.ALERT, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.duration = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_DURATION);

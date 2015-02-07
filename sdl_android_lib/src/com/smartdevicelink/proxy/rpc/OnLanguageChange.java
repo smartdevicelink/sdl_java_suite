@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -76,7 +77,8 @@ public class OnLanguageChange extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnLanguageChange(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.ON_LANGUAGE_CHANGE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);

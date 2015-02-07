@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -33,7 +34,8 @@ public class ListFilesResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public ListFilesResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.LIST_FILES, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.filenames = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_FILENAMES);

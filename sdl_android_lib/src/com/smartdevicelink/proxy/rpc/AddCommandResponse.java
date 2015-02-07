@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Add Command Response is sent, when AddCommand has been called
@@ -22,7 +23,7 @@ public class AddCommandResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public AddCommandResponse(JSONObject json){
-        super(json);
+        super(SdlCommand.ADD_COMMAND, json);
     }
 }
 

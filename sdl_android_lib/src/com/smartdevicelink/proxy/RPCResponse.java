@@ -6,6 +6,7 @@ package com.smartdevicelink.proxy;
 import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -68,13 +69,14 @@ public class RPCResponse extends RPCMessage {
 		super(rpcMsg);
 	}
 	
-	public RPCResponse(JSONObject json){
-	    super(RPCMessage.KEY_RESPONSE, json);
+	public RPCResponse(SdlCommand commandType, JSONObject jsonObject){
+	    super(RPCMessage.KEY_RESPONSE, commandType, jsonObject);
+        jsonObject = getParameters(jsonObject);
 	    switch(sdlVersion){
 	    default:
-	        this.resultCode = JsonUtils.readStringFromJsonObject(json, KEY_RESULT_CODE);
-	        this.info = JsonUtils.readStringFromJsonObject(json, KEY_INFO);
-	        this.success = JsonUtils.readBooleanFromJsonObject(json, KEY_SUCCESS);
+	        this.resultCode = JsonUtils.readStringFromJsonObject(jsonObject, KEY_RESULT_CODE);
+	        this.info = JsonUtils.readStringFromJsonObject(jsonObject, KEY_INFO);
+	        this.success = JsonUtils.readBooleanFromJsonObject(jsonObject, KEY_SUCCESS);
 	        break;
 	    }
 	}
@@ -161,5 +163,9 @@ public class RPCResponse extends RPCMessage {
         }
         
         return result;
+    }
+    
+    public static JSONObject getParameters(JSONObject json){
+        return RPCMessage.getParameters(KEY_RESPONSE, json);
     }
 }

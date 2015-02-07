@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -68,7 +69,8 @@ public class AddCommand extends RPCRequest {
      * @param jsonObject The JSON object to read from
 	 */
 	public AddCommand(JSONObject jsonObject){
-	    super(jsonObject);
+	    super(SdlCommand.ADD_COMMAND, jsonObject);
+	    jsonObject = getParameters(jsonObject);
 	    switch(sdlVersion){
 	    default:
 	        this.commandId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);

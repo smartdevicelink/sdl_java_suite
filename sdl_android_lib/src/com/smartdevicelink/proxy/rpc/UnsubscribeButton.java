@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -38,7 +39,8 @@ public class UnsubscribeButton extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public UnsubscribeButton(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.UNSUBSCRIBE_BUTTON, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.buttonName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_BUTTON_NAME);

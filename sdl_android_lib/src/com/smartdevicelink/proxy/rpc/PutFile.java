@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.BulkData;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -55,7 +56,8 @@ public class PutFile extends RPCRequest implements BulkData{
      * @param bulkData The bulk data for this object
      */
     public PutFile(JSONObject jsonObject, byte[] bulkData){
-        super(jsonObject);
+        super(SdlCommand.PUT_FILE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         
         this.bulkData = bulkData;
         

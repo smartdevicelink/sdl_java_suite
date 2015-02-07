@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 public class SetAppIconResponse extends RPCResponse {
 
@@ -17,6 +18,6 @@ public class SetAppIconResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public SetAppIconResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SET_APP_ICON, jsonObject);
     }
 }

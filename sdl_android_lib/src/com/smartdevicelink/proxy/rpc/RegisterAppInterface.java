@@ -9,6 +9,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
@@ -118,7 +119,8 @@ public class RegisterAppInterface extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public RegisterAppInterface(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.REGISTER_APP_INTERFACE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.appName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_APP_NAME);

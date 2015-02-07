@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Perform Audio Pass Thru Response is sent, when PerformAudioPassThru has been called
@@ -26,6 +27,6 @@ public class PerformAudioPassThruResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public PerformAudioPassThruResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.PERFORM_AUDIO_PASSTHRU, jsonObject);
     }
 }

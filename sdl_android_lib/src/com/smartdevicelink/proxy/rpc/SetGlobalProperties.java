@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 /**
  * Sets value(s) for the specified global property(ies)
@@ -46,7 +47,8 @@ public class SetGlobalProperties extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public SetGlobalProperties(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SET_GLOBAL_PROPERTIES, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.vrHelpTitle = JsonUtils.readStringFromJsonObject(jsonObject, KEY_VR_HELP_TITLE);

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -29,7 +30,8 @@ public class ReadDIDResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public ReadDIDResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.READ_DIDS, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             List<JSONObject> didResultObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_DID_RESULT);

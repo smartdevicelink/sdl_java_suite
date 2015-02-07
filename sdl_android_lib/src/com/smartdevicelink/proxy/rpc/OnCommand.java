@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.JsonUtils;
 
@@ -72,7 +73,8 @@ public class OnCommand extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */    
     public OnCommand(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.ON_COMMAND, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.cmdId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_CMD_ID);

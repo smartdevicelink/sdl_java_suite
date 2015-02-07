@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -41,13 +42,14 @@ public class AddSubMenu extends RPCRequest {
      * 
      * @param jsonObject The JSON object to read from
 	 */
-	public AddSubMenu(JSONObject json){
-	    super(json);
+	public AddSubMenu(JSONObject jsonObject){
+	    super(SdlCommand.ADD_SUBMENU, jsonObject);
+        jsonObject = getParameters(jsonObject);
 	    switch(sdlVersion){
 	    default:
-	        this.menuId = JsonUtils.readIntegerFromJsonObject(json, KEY_MENU_ID);
-	        this.menuName = JsonUtils.readStringFromJsonObject(json, KEY_MENU_NAME);
-	        this.position = JsonUtils.readIntegerFromJsonObject(json, KEY_POSITION);
+	        this.menuId = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_MENU_ID);
+	        this.menuName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_MENU_NAME);
+	        this.position = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_POSITION);
 	        break;
 	    }
 	}

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -45,7 +46,8 @@ public class Slider extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public Slider(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SLIDER, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.numTicks = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_NUM_TICKS);

@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Show Response is sent, when Show has been called
@@ -25,6 +26,6 @@ public class ShowResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public ShowResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SHOW, jsonObject);
     }
 }

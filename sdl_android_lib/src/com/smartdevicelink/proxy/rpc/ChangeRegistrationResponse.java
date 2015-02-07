@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Change Registration Response is sent, when ChangeRegistration has been called
@@ -25,6 +26,6 @@ public class ChangeRegistrationResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public ChangeRegistrationResponse(JSONObject json){
-        super(json);
+        super(SdlCommand.CHANGE_REGISTRATION, json);
     }
 }

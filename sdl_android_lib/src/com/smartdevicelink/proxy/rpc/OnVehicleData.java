@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.JsonUtils;
@@ -68,7 +69,8 @@ public class OnVehicleData extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnVehicleData(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.ON_VEHICLE_DATA, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.speed = JsonUtils.readDoubleFromJsonObject(jsonObject, KEY_SPEED);

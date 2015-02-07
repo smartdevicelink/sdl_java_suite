@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -26,7 +27,8 @@ public class DeleteFileResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public DeleteFileResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DELETE_FILE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.spaceAvailable = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_SPACE_AVAILABLE);

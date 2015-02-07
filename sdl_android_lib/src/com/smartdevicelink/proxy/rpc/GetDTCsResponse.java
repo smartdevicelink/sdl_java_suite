@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -23,7 +24,8 @@ public class GetDTCsResponse extends RPCResponse {
     }
     
     public GetDTCsResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.GET_DTCS, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.dtc = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_DTC);

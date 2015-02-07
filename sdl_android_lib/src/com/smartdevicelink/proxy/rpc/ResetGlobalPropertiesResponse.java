@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Reset Global Properties Response is sent, when ResetGlobalProperties has been called
@@ -25,6 +26,6 @@ public class ResetGlobalPropertiesResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public ResetGlobalPropertiesResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.RESET_GLOBAL_PROPERTIES, jsonObject);
     }
 }

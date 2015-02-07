@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Sub scribeButton Response is sent, when SubscribeButton has been called
@@ -24,6 +25,6 @@ public class SubscribeButtonResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public SubscribeButtonResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.SUBSCRIBE_BUTTON, jsonObject);
     }
 }

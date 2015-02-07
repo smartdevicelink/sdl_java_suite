@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Add SubMenu Response is sent, when AddSubMenu has been called
@@ -21,6 +22,6 @@ public class AddSubMenuResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public AddSubMenuResponse(JSONObject json){
-        super(json);
+        super(SdlCommand.ADD_SUBMENU, json);
     }
 }

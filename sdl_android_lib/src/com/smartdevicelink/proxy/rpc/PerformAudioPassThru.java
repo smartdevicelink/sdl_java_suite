@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 /**
@@ -55,7 +56,8 @@ public class PerformAudioPassThru extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public PerformAudioPassThru(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.PERFORM_AUDIO_PASSTHRU, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.text1 = JsonUtils.readStringFromJsonObject(jsonObject, KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1);

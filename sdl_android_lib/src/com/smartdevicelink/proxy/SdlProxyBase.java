@@ -1310,70 +1310,102 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				setWiProVersion(message.getVersion());
 			}
 			
-			JSONObject json = JsonUtils.createJsonObject(message.getData());
-            
-            Log.d("dispatchIncomingMessage", json.toString());
-			String functionName = null, messageType = null;
-			int version = (int) _wiproVersion;
+            /*
+             * The top-level JSON object will look something like this:
+             * {
+             *   "request":{
+             *     "name":"AddCommand",
+             *     "correlationID":1089;
+             *     "parameters":{
+             *       MESSAGE PARAMETERS GO HERE
+             *     }
+             *   }
+             * }
+             * 
+             * In SDL "Gen1", this entire structure will be passed in the protocol message
+             * getData() section.  The protocol message will not read this structure, so
+             * the protocol message variables for correlation ID, function name and message type
+             * my be incorrect.
+             * 
+             * In SDL "Gen2"+, only the parameters section of the message will be passed in the
+             * getData() section.  The protocol message will have read the structure, extracting
+             * the correlationID, function name and message type into the protocol message variables.
+             * 
+             * Therefore, this method must take 2 approaches to parsing the data:
+             * 
+             * GEN1 -
+             *         - Read correlation id, function name and message type from JSON structure
+             *         - Read parameters from JSON structure and create RPC message from that
+             *         
+             * GEN2 -
+             *         - Read correlation id, function name and message type from Protocol Message
+             *         - Create RPC message from JSON structure without modification
+             *         
+             * The real solution to this problem is to handle GEN1 and GEN2 in similar ways in the Protocol Message
+             * class so that this method doesn't have to do weird logic checking and handle 2 different cases.  I think
+             * the GEN1 approach is the correct approach in this case, according to the current architecture of the project.
+             */
 			
-			// TODO: this stuff should really be handled a layer above this class.  ProtocolMessage
-			//       should contain the same information regardless of connected SDL version.
-			switch(version){
-			case 1:
-			    // in version 1, the ProtocolMessage doesn't contain the function name and message type
-			    // so we need to read the JSON to find out what it is.
-			    
-			    JSONObject function = null;
-			    
-			    for(MessageType type : EnumSet.allOf(MessageType.class)){
-			        String typeStr = type.getJsonName(version);
-                    function = JsonUtils.readJsonObjectFromJsonObject(json, typeStr);
-                    if(function != null){
-                        functionName = JsonUtils.readStringFromJsonObject(function, RPCMessage.KEY_FUNCTION_NAME);
+			int version = (int) _wiproVersion;
+			JSONObject json = JsonUtils.createJsonObject(message.getData());
+			Log.d("dispatchIncomingMessage", "original json: " + json.toString());
+            JSONObject rpcJson = new JSONObject();
+            
+            String functionName = null, messageType = null;
+            
+            if(version == 1){
+                for(MessageType type : EnumSet.allOf(MessageType.class)){
+                    String typeStr = type.getJsonName(version);
+                    rpcJson = JsonUtils.readJsonObjectFromJsonObject(json, typeStr);
+                    if(rpcJson != null){
+                        functionName = JsonUtils.readStringFromJsonObject(rpcJson, RPCMessage.KEY_FUNCTION_NAME);
                         messageType = typeStr;
                         break;
                     }
-			    }
-			    break;
-			case 2:
-			    // in version 2, function ID and message type are in the Protocol Message
-			    functionName = FunctionID.getFunctionName(message.getFunctionID());
-			    messageType = message.getRpcMessageType();
-			    break;
-			default:
-			    break;
-			}
+                }
+            }
+            else{
+                functionName = FunctionID.getFunctionName(message.getFunctionID());
+                messageType = message.getRpcMessageType();
+                JsonUtils.addToJsonObject(rpcJson, RPCMessage.KEY_FUNCTION_NAME, functionName);
+                JsonUtils.addToJsonObject(rpcJson, RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
+                JsonUtils.addToJsonObject(rpcJson, RPCMessage.KEY_PARAMETERS, json);
+            }
+
+            Log.d("dispatchIncomingMessage", "modified RPC json: " + rpcJson.toString());
+            Log.d("dispatchIncomingMessage", "function name: " + functionName);
+            Log.d("dispatchIncomingMessage", "message type: " + messageType);
+            
+			// rpcJson should be holding the correct JSON structure to create RPC objects from at this point
 			
 			if(functionName == null){
 			    return;
 			}
-			
-			SdlCommand commandType = SdlCommand.valueForJsonName(functionName, version);
-			Class<?> messageClass = SdlCommand.getClassType(commandType, messageType);
-			RPCMessage rpcMessage = null;
-			
-			try{
-			    if(message.getBulkData() != null){
-			        // message with bulk data
-			        Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class, byte[].class);
-			        rpcMessage = (RPCMessage) jsonConstructor.newInstance(json, message.getBulkData());
-			    }
-			    else{
-			        // message without bulk data
-			        Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class);
-			        rpcMessage = (RPCMessage) jsonConstructor.newInstance(json);
-			    }
-			    
-			    if(_wiproVersion == 2){
-			        rpcMessage.setFunctionName(functionName);
-			        rpcMessage.setCorrelationID(message.getCorrID());
-			        rpcMessage.setMessageType(message.getRpcMessageType());
-			    }
-			    
-			    handleRPCMessage(rpcMessage);
-			} catch(Exception e){
-			    e.printStackTrace();
-			}
+            
+            SdlCommand commandType = SdlCommand.valueForJsonName(functionName, version);
+            Log.d("dispatchIncomingMessage", "command type: " + commandType);
+            Class<?> messageClass = SdlCommand.getClassType(commandType, messageType);
+            Log.d("dispatchIncomingMessage", "message class: " + messageClass);
+            RPCMessage rpcMessage = null;
+            
+            try{
+                if(message.getBulkData() != null){
+                    // message with bulk data
+                    Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class, byte[].class);
+                    rpcMessage = (RPCMessage) jsonConstructor.newInstance(rpcJson, message.getBulkData());
+                }
+                else{
+                    // message without bulk data
+                    Constructor<?> jsonConstructor = messageClass.getConstructor(JSONObject.class);
+                    rpcMessage = (RPCMessage) jsonConstructor.newInstance(rpcJson);
+                }
+                
+                Log.d("dispatchIncomingMessage", "created rpc object: " + rpcMessage);
+                
+                handleRPCMessage(rpcMessage);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
 		} else {
 			// Handle other protocol message types here
 		}

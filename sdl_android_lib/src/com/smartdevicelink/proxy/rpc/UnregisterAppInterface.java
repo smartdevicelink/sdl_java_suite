@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Terminates an application's interface registration. This causes SDL&reg; to
@@ -35,6 +36,6 @@ public class UnregisterAppInterface extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public UnregisterAppInterface(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.UNREGISTER_APP_INTERFACE, jsonObject);
     }
 }

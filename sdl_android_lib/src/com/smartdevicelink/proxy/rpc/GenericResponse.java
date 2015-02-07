@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Generic Response is sent, when the name of a received msg cannot be
@@ -22,6 +23,6 @@ public class GenericResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public GenericResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.GENERIC_RESPONSE, jsonObject);
     }
 }

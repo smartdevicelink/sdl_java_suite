@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.BulkData;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.util.JsonUtils;
 
 public class OnSystemRequest extends RPCNotification implements BulkData{
@@ -55,7 +56,8 @@ public class OnSystemRequest extends RPCNotification implements BulkData{
      * @param bulkData The bulk data for this object
      */
     public OnSystemRequest(JSONObject jsonObject, byte[] bulkData){
-        super(jsonObject);
+        super(SdlCommand.ON_SYSTEM_REQUEST, jsonObject);
+        jsonObject = getParameters(jsonObject);
         
         this.bulkData = bulkData;
         try{

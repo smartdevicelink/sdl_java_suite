@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * When this request is invoked, the audio capture stops
@@ -30,6 +31,6 @@ public class EndAudioPassThru extends RPCRequest {
      * @param jsonObject The JSON object to read from
      */
     public EndAudioPassThru(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.END_AUDIO_PASSTHRU, jsonObject);
     }
 }

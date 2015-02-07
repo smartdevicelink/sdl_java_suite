@@ -149,7 +149,8 @@ public class OnSdlChoiceChosen extends RPCNotification {
      * @param jsonObject The JSON object to read from
      */
     public OnSdlChoiceChosen(JSONObject jsonObject){
-        super(jsonObject);
+        super(com.smartdevicelink.proxy.rpc.enums.SdlCommand.ON_SDL_CHOICE_CHOSEN, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.triggerSource = JsonUtils.readStringFromJsonObject(jsonObject, KEY_TRIGGER_SOURCE);

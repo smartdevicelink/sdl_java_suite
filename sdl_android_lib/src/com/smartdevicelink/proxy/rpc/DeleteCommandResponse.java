@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Delete Command Response is sent, when DeleteCommand has been called
@@ -22,6 +23,6 @@ public class DeleteCommandResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public DeleteCommandResponse(JSONObject jsonObject) {
-        super(jsonObject);
+        super(SdlCommand.DELETE_COMMAND, jsonObject);
     }
 }

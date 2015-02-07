@@ -11,6 +11,7 @@ import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.util.JsonUtils;
@@ -63,7 +64,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param jsonObject The JSON object to read from
      */
     public RegisterAppInterfaceResponse(JSONObject jsonObject){
-        super(jsonObject);
+        super(SdlCommand.REGISTER_APP_INTERFACE, jsonObject);
+        jsonObject = getParameters(jsonObject);
         switch(sdlVersion){
         default:
             this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);

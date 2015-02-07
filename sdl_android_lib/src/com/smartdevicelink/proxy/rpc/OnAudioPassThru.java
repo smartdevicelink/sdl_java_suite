@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.BulkData;
+import com.smartdevicelink.proxy.rpc.enums.SdlCommand;
 
 /**
  * Binary data is in binary part of hybrid msg.
@@ -67,7 +68,7 @@ public class OnAudioPassThru extends RPCNotification implements BulkData{
      * @param bulkData The bulk data for this object
      */
     public OnAudioPassThru(JSONObject jsonObject, byte[] bulkData) {
-        super(jsonObject);
+        super(SdlCommand.ON_AUDIO_PASS_THRU, jsonObject);
         this.bulkData = bulkData;
     }
     
