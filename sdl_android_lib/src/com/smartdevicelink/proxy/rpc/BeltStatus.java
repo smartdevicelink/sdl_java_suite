@@ -199,7 +199,7 @@ public class BeltStatus extends RPCObject {
 			JsonUtils.addToJsonObject(result, KEY_REAR_INFLATABLE_BELTED, this.rearInflatableBuckled);
 			JsonUtils.addToJsonObject(result, KEY_RIGHT_REAR_INFLATABLE_BELTED, this.rightRearInflatableBuckled);
 			JsonUtils.addToJsonObject(result, KEY_DRIVER_BELT_DEPLOYED, this.driverBeltDeployed);
-			JsonUtils.addToJsonObject(result, KEY_MIDDLE_ROW_1_BELT_DEPLOYED, this.passengerBeltDeployed);
+			JsonUtils.addToJsonObject(result, KEY_MIDDLE_ROW_1_BELT_DEPLOYED, this.middleRow1BeltDeployed);
 			JsonUtils.addToJsonObject(result, KEY_PASSENGER_BELT_DEPLOYED, this.middleRow1BeltDeployed);
 			JsonUtils.addToJsonObject(result, KEY_PASSENGER_CHILD_DETECTED, this.passengerChildDetected);
 			break;

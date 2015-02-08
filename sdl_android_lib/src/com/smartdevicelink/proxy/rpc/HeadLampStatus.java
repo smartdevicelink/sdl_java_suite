@@ -54,4 +54,19 @@ public class HeadLampStatus extends RPCObject {
     public Boolean getLowBeamsOn() {
     	return this.lowBeamsOn;
     }
+    
+    @Override
+    public JSONObject getJsonParameters(int sdlVersion){
+        JSONObject result = super.getJsonParameters(sdlVersion);
+        
+        switch(sdlVersion){
+        default:
+            JsonUtils.addToJsonObject(result, KEY_AMBIENT_LIGHT_SENSOR_STATUS, this.ambientLightStatus);
+            JsonUtils.addToJsonObject(result, KEY_HIGH_BEAMS_ON, this.highBeamsOn);
+            JsonUtils.addToJsonObject(result, KEY_LOW_BEAMS_ON, this.lowBeamsOn);
+            break;
+        }
+        
+        return result;
+    }
 }

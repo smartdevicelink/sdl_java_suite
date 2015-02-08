@@ -63,7 +63,7 @@ public class AirbagStatus extends RPCObject {
     }
     
     public VehicleDataEventStatus getDriverSideAirbagDeployed() {
-        return VehicleDataEventStatus.valueForJsonName(this.driverAirbagDeployed, sdlVersion);
+        return VehicleDataEventStatus.valueForJsonName(this.driverSideAirbagDeployed, sdlVersion);
     }
     
     public void setDriverCurtainAirbagDeployed(VehicleDataEventStatus driverCurtainAirbagDeployed) {

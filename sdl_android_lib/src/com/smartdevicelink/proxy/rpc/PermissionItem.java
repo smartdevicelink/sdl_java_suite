@@ -72,6 +72,8 @@ public JSONObject getJsonParameters(int sdlVersion){
         JsonUtils.addToJsonObject(result, KEY_RPC_NAME, this.rpcName);
         JsonUtils.addToJsonObject(result, KEY_HMI_PERMISSIONS, (this.hmiPermissions == null) ? null :
             this.hmiPermissions.getJsonParameters(sdlVersion));
+        JsonUtils.addToJsonObject(result, KEY_PARAMETER_PERMISSIONS, (this.parameterPermissions == null) ? null :
+            this.parameterPermissions.getJsonParameters(sdlVersion));
         break;
     }
     

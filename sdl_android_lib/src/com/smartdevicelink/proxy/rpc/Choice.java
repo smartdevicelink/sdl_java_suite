@@ -210,6 +210,9 @@ public class Choice extends RPCObject {
             
             JsonUtils.addToJsonObject(result, KEY_SECONDARY_IMAGE, (this.secondaryImage == null) ? null :
                 this.secondaryImage.getJsonParameters(sdlVersion));
+            
+            JsonUtils.addToJsonObject(result, KEY_VR_COMMANDS, (this.vrCommands == null) ? null :
+                JsonUtils.createJsonArray(this.vrCommands));
             break;
         }
         
