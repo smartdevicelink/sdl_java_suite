@@ -2,27 +2,35 @@ package com.smartdevicelink.test.rpc.responses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -39,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
@@ -479,4 +488,111 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		assertNull("Prerecorded speech wasn't set, but getter method returned an object.", msg.getPrerecordedSpeech());
 		assertNull("Supported diag modes wasn't set, but getter method returned an object.", msg.getSupportedDiagModes());
 	}
+	
+	//TODO: what to do about getProxyVersionInfo?
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			RegisterAppInterfaceResponse cmd = new RegisterAppInterfaceResponse(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			
+			JSONObject vehicleTypeObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_VEHICLE_TYPE);
+			VehicleType vehicleType = new VehicleType(JsonRPCMarshaller.deserializeJSONObject(vehicleTypeObj));
+			assertTrue("Vehicle type doesn't match input vehicle type",  Validator.validateVehicleType(vehicleType, cmd.getVehicleType()));
+			
+			JSONArray speechCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_SPEECH_CAPABILITIES);
+			for (int index = 0; index < speechCapabilitiesArray.length(); index++) {
+				SpeechCapabilities speechCapability = SpeechCapabilities.valueForString( speechCapabilitiesArray.get(index).toString() );
+				assertEquals("Speech capabilities item doesn't match input capabilities item", speechCapability, cmd.getSpeechCapabilities().get(index));
+			}
+			
+			JSONArray vrCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_VR_CAPABILITIES);
+			for (int index = 0; index < vrCapabilitiesArray.length(); index++) {
+				VrCapabilities vrCapability = VrCapabilities.valueForString( vrCapabilitiesArray.get(index).toString() );
+				assertEquals("VR capabilities item doesn't match input capabilities item", vrCapability, cmd.getVrCapabilities().get(index));
+			}
+			
+			JSONArray audioPassThruCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_AUDIO_PASS_THRU_CAPABILITIES);
+			List<AudioPassThruCapabilities> audioPassThruCapabilitiesList = new ArrayList<AudioPassThruCapabilities>();
+			for (int index = 0; index < audioPassThruCapabilitiesArray.length(); index++) {
+				AudioPassThruCapabilities audioPassThruCapability = 
+						new AudioPassThruCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)audioPassThruCapabilitiesArray.get(index) ));
+				audioPassThruCapabilitiesList.add(audioPassThruCapability);
+			}
+			assertTrue("Audio pass-through capabilities list doesn't match input capabilities list",  
+					Validator.validateAudioPassThruCapabilities(audioPassThruCapabilitiesList, cmd.getAudioPassThruCapabilities() ));
+			
+			JSONArray hmiZoneCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_HMI_ZONE_CAPABILITIES);
+			for (int index = 0; index < hmiZoneCapabilitiesArray.length(); index++) {
+				HmiZoneCapabilities hmiZoneCapability = HmiZoneCapabilities.valueForString( hmiZoneCapabilitiesArray.get(index).toString() );
+				assertEquals("HMI zone capabilities item doesn't match input capabilities item", hmiZoneCapability, cmd.getHmiZoneCapabilities().get(index));
+			}
+			
+			JSONArray prerecordedSpeechArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_PRERECORDED_SPEECH);
+			for (int index = 0; index < prerecordedSpeechArray.length(); index++) {
+				PrerecordedSpeech prerecordedSpeech = PrerecordedSpeech.valueForString( prerecordedSpeechArray.get(index).toString() );
+				assertEquals("Pre-recorded speech item doesn't match input speech item", prerecordedSpeech, cmd.getPrerecordedSpeech().get(index));
+			}
+			
+			List<Integer> supportedDiagnosticModesList = JsonUtils.readIntegerListFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_SUPPORTED_DIAG_MODES);
+			List<Integer> testDiagnosticModesList = cmd.getSupportedDiagModes();
+			assertEquals("Supported diagnostic modes list length not same as reference modes list length", supportedDiagnosticModesList.size(), testDiagnosticModesList.size());
+			assertTrue("Supported diagnostic modes list doesn't match input modes list", Validator.validateIntegerList(supportedDiagnosticModesList, testDiagnosticModesList));
+			
+			JSONObject sdlMsgVersionObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_SDL_MSG_VERSION);
+			SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(JsonRPCMarshaller.deserializeJSONObject(sdlMsgVersionObj));
+			assertTrue("SDL message version doesn't match input version",  Validator.validateSdlMsgVersion(sdlMsgVersion, cmd.getSdlMsgVersion()) );
+			
+			assertEquals("Language doesn't match input language", 
+					JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_LANGUAGE), cmd.getLanguage().toString());
+			
+			JSONArray buttonCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_BUTTON_CAPABILITIES);
+			List<ButtonCapabilities> buttonCapabilitiesList = new ArrayList<ButtonCapabilities>();
+			for (int index = 0; index < audioPassThruCapabilitiesArray.length(); index++) {
+				ButtonCapabilities buttonCapability = new ButtonCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)buttonCapabilitiesArray.get(index) ));
+				buttonCapabilitiesList.add(buttonCapability);
+			}
+			assertTrue("Button capabilities list doesn't match input capabilities list",  
+					Validator.validateButtonCapabilities(buttonCapabilitiesList, cmd.getButtonCapabilities() ));
+			
+			JSONObject displayCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_DISPLAY_CAPABILITIES);
+			DisplayCapabilities displayCapabilities = new DisplayCapabilities(JsonRPCMarshaller.deserializeJSONObject(displayCapabilitiesObj));
+			assertTrue("Display capabilities doesn't match input capabilities",  Validator.validateDisplayCapabilities(displayCapabilities, cmd.getDisplayCapabilities()) );
+			
+			assertEquals("HMI Language doesn't match input language", 
+					JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_HMI_DISPLAY_LANGUAGE), cmd.getHmiDisplayLanguage().toString());
+			
+			JSONArray softButtonCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_SOFT_BUTTON_CAPABILITIES);
+			List<SoftButtonCapabilities> softButtonCapabilitiesList = new ArrayList<SoftButtonCapabilities>();
+			for (int index = 0; index < softButtonCapabilitiesArray.length(); index++) {
+				SoftButtonCapabilities softButtonCapability = 
+						new SoftButtonCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonCapabilitiesArray.get(index) ));
+				softButtonCapabilitiesList.add(softButtonCapability);
+			}
+			assertTrue("Soft button capabilities list doesn't match input capabilities list",  
+					Validator.validateSoftButtonCapabilities(softButtonCapabilitiesList, cmd.getSoftButtonCapabilities() ));
+			
+			JSONObject presetBankCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_PRESET_BANK_CAPABILITIES);
+			PresetBankCapabilities presetBankCapabilities = new PresetBankCapabilities(JsonRPCMarshaller.deserializeJSONObject(presetBankCapabilitiesObj));
+			assertTrue("Preset bank capabilities doesn't match input capabilities",  Validator.validatePresetBankCapabilities(presetBankCapabilities, cmd.getPresetBankCapabilities()) );
+			
+			
+
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
 }

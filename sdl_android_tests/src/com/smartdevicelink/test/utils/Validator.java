@@ -124,6 +124,23 @@ public class Validator{
 
         return true;
     }
+    
+    public static boolean validateIntegerList(List<Integer> intList1, List<Integer> intList2){
+        if(intList1 == null){
+            return ( intList2 == null );
+        }
+        if(intList2 == null){
+            return ( intList1 == null );
+        }
+
+        for(int i = 0; i < intList1.size(); i++){
+            if(!intList1.get(i).equals(intList2.get(i))){
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public static boolean validateSoftButtons(List<SoftButton> list1, List<SoftButton> list2){
         if(list1 == null){

@@ -1,0 +1,29 @@
+{
+  "request":{
+    "name":"PerformAudioPassThru",
+    "correlationID":133,
+    "parameters":{
+      "maxDuration":5,
+      "audioPassThruDisplayText1":"Text 1",
+      "audioPassThruDisplayText2":"Text 2",
+      "muteAudio":true,
+      "samplingRate":"8KHZ",
+      "audioType":"PCM",
+      "initialPrompt":[
+        {
+          "text":"TEXT",
+          "type":"Hello"
+        },
+        {
+          "text":"TEXT",
+          "type":"Goodbye"
+        }
+      ],
+      "bitsPerSample":"8_BIT"
+    }
+  },
+  "response":{
+    "name":"PerformAudioPassThruResponse",
+    "correlationID":134
+  }
+}
