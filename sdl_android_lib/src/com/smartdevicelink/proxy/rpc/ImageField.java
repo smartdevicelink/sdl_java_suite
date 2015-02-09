@@ -1,5 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.RPCObject;
@@ -14,7 +17,7 @@ public class ImageField extends RPCObject {
     
     private ImageResolution imageResolution;
     private String imageFieldName; // represents ImageFieldName enum
-    private String imageTypeSupported; // represents FileType enum
+    private List<String> imageTypeSupported; // represents FileType enum
     
     public ImageField() { }
    
@@ -27,7 +30,7 @@ public class ImageField extends RPCObject {
         switch(sdlVersion){
         default:
             this.imageFieldName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_NAME);
-            this.imageTypeSupported = JsonUtils.readStringFromJsonObject(jsonObject, KEY_IMAGE_TYPE_SUPPORTED);
+            this.imageTypeSupported = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_IMAGE_TYPE_SUPPORTED);
             
             JSONObject imageResolutionObj = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_IMAGE_RESOLUTION);
             if(imageResolutionObj != null){
@@ -45,12 +48,28 @@ public class ImageField extends RPCObject {
         this.imageFieldName = (name == null) ? null : name.getJsonName(sdlVersion);
     }
     
-    public FileType getImageTypeSupported() {
-        return FileType.valueForJsonName(this.imageTypeSupported, sdlVersion);
+    public List<FileType> getImageTypeSupported() {
+        if(this.imageTypeSupported == null){
+            return null;
+        }
+        
+        List<FileType> result = new ArrayList<FileType>(this.imageTypeSupported.size());
+        for(String str : this.imageTypeSupported){
+            result.add(FileType.valueForJsonName(str, sdlVersion));
+        }
+        return result;
     }
     
-    public void setImageTypeSupported( FileType imageTypeSupported ) {
-        this.imageTypeSupported = (imageTypeSupported == null) ? null : imageTypeSupported.getJsonName(sdlVersion);
+    public void setImageTypeSupported( List<FileType> imageTypeSupported ) {
+        if(imageTypeSupported == null){
+            this.imageTypeSupported = null;
+        }
+        else{
+            this.imageTypeSupported = new ArrayList<String>(imageTypeSupported.size());
+            for(FileType type : imageTypeSupported){
+                this.imageTypeSupported.add(type.getJsonName(sdlVersion));
+            }
+        }
     }
     
     public ImageResolution getImageResolution() {

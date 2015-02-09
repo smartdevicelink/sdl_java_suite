@@ -35,11 +35,11 @@ public class TireStatus extends RPCObject {
             if(temp != null){
                 this.leftFront = new SingleTireStatus(temp);
             }
-            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_LEFT_REAR);
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_RIGHT_FRONT);
             if(temp != null){
                 this.rightFront = new SingleTireStatus(temp);
             }
-            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_RIGHT_FRONT);
+            temp = JsonUtils.readJsonObjectFromJsonObject(jsonObject, KEY_LEFT_REAR);
             if(temp != null){
                 this.leftRear = new SingleTireStatus(temp);
             }
