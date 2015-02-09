@@ -1,0 +1,75 @@
+{
+  "request":{
+    "name":"PerformInteraction",
+    "correlationID":135,
+    "parameters":{
+      "initialText":"Initial Text",
+      "interactionMode":"VR_ONLY",
+      "interactionChoiceSetIDList":[
+        442,
+        2352,
+        4623,
+        8954
+      ],
+      "interactionLayout":"ICON_ONLY",
+      "initialPrompt":[
+        {
+          "text":"TEXT",
+          "type":"Hello"
+        },
+        {
+          "text":"TEXT",
+          "type":"Goodbye"
+        }
+      ],
+      "helpPrompt":[
+        {
+          "text":"TEXT",
+          "type":"Hello2"
+        },
+        {
+          "text":"TEXT",
+          "type":"Goodbye2"
+        }
+      ],
+      "timeoutPrompt":[
+        {
+          "text":"TEXT",
+          "type":"Hello3"
+        },
+        {
+          "text":"TEXT",
+          "type":"Goodbye3"
+        }
+      ],
+      "timeout":0,
+      "vrHelp":[
+        {
+          "position":7,
+          "text":"Voice Recognition Text",
+          "image":{
+            "value":"image.png",
+            "imageType":"DYNAMIC"
+          }
+        },
+        {
+          "position":3,
+          "text":"Voice Recognition Text 2",
+          "image":{
+            "value":"image2.png",
+            "imageType":"STATIC"
+          }
+        }
+      ]
+    }
+  },
+  "response":{
+    "name":"PerformInteractionResponse",
+    "correlationID":136,
+    "parameters":{
+      "manualTextEntry":"Text Entry",
+      "triggerSource":"MENU",
+      "choiceID":45,
+    }
+  }
+}

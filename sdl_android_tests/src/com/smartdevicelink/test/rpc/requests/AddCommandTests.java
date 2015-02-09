@@ -164,10 +164,10 @@ public class AddCommandTests extends BaseRpcTests{
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			
-			List<String> vrCommands = JsonUtils.readStringListFromJsonObject(parameters, AddCommand.KEY_VR_COMMANDS);
-			List<String> testVrCommands = cmd.getVrCommands();
-			assertEquals("VR Command list length not same as reference VR command list", vrCommands.size(), testVrCommands.size());
-			assertTrue("String list doesn't match input string list", Validator.validateStringList(vrCommands, testVrCommands));
+			List<String> vrCommandsList = JsonUtils.readStringListFromJsonObject(parameters, AddCommand.KEY_VR_COMMANDS);
+			List<String> testCommandsList = cmd.getVrCommands();
+			assertEquals("VR command list length not same as reference VR command list length", vrCommandsList.size(), testCommandsList.size());
+			assertTrue("VR command list doesn't match input command list", Validator.validateStringList(vrCommandsList, testCommandsList));
 			
 			assertEquals("Command ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(parameters, AddCommand.KEY_CMD_ID), cmd.getCmdID());
 			

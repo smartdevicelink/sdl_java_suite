@@ -2,12 +2,14 @@ package com.smartdevicelink.test.rpc.requests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.TTSChunkFactory;
@@ -19,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
@@ -217,4 +220,72 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 		assertNull("Is media app wasn't set, but getter method returned an object.", msg.getIsMediaApplication());
 		assertNull("Device info wasn't set, but getter method returned an object.", msg.getDeviceInfo());
 	}
+	
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			RegisterAppInterface cmd = new RegisterAppInterface(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			
+			JSONArray ttsNameArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterface.KEY_TTS_NAME);
+			List<TTSChunk> ttsNameList = new ArrayList<TTSChunk>();
+			for (int index = 0; index < ttsNameArray.length(); index++) {
+	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)ttsNameArray.get(index)) );
+	        	ttsNameList.add(chunk);
+			}
+			assertTrue("TTSName list doesn't match input TTSName list",  Validator.validateTtsChunks(ttsNameList, cmd.getTtsName()));
+			
+			assertEquals("HMI display language desired doesn't match input language desired", 
+					JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_HMI_DISPLAY_LANGUAGE_DESIRED), cmd.getHmiDisplayLanguageDesired().toString());
+			
+			JSONArray appHmiTypeArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterface.KEY_APP_HMI_TYPE);
+			for (int index = 0; index < appHmiTypeArray.length(); index++) {
+				AppHMIType appHmiTypeItem = AppHMIType.valueForString( appHmiTypeArray.get(index).toString() );
+				assertEquals("App HMI type item doesn't match input HMI type", appHmiTypeItem, cmd.getAppHMIType().get(index) );
+			}
+			
+			assertEquals("App ID doesn't match input ID", JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_APP_ID), cmd.getAppID());
+			assertEquals("Language desired doesn't match input language", 
+					JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_LANGUAGE_DESIRED), cmd.getLanguageDesired().toString());
+			
+			JSONObject deviceInfoObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterface.KEY_DEVICE_INFO);
+			DeviceInfo deviceInfo = new DeviceInfo(JsonRPCMarshaller.deserializeJSONObject(deviceInfoObj));
+			assertTrue("Device info doesn't match input device info",  Validator.validateDeviceInfo(deviceInfo, cmd.getDeviceInfo()) );
+			
+			assertEquals("App name doesn't match input name", 
+					JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_APP_NAME), cmd.getAppName());
+			assertEquals("NGN media screen app name doesn't match input name", 
+					JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_NGN_MEDIA_SCREEN_APP_NAME), cmd.getNgnMediaScreenAppName());
+			assertEquals("Media application doesn't match input media application", 
+					JsonUtils.readBooleanFromJsonObject(parameters, RegisterAppInterface.KEY_IS_MEDIA_APPLICATION), cmd.getIsMediaApplication());
+
+			List<String> vrSynonymsList = JsonUtils.readStringListFromJsonObject(parameters, RegisterAppInterface.KEY_VR_SYNONYMS);
+			List<String> testSynonymsList = cmd.getVrSynonyms();
+			assertEquals("VR synonym list length not same as reference VR synonym list", vrSynonymsList.size(), testSynonymsList.size());
+			assertTrue("VR synonym list doesn't match input synonym list", Validator.validateStringList(vrSynonymsList, testSynonymsList));
+			
+			JSONObject sdlMsgVersionObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterface.KEY_SDL_MSG_VERSION);
+			SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(JsonRPCMarshaller.deserializeJSONObject(sdlMsgVersionObj));
+			assertTrue("SDL message version doesn't match input version",  Validator.validateSdlMsgVersion(sdlMsgVersion, cmd.getSdlMsgVersion()) );
+			
+			assertEquals("Hash ID doesn't match input ID", JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_HASH_ID), cmd.getHashID());
+			
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
+	
 }

@@ -1,16 +1,20 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.ReadDID;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.utils.Validator;
 
 public class ReadDIDTest extends BaseRpcTests {
 	
@@ -74,4 +78,35 @@ public class ReadDIDTest extends BaseRpcTests {
 		assertNull("Did locations wasn't set, but getter method returned an object.", msg.getDidLocation());
 	}
 
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			ReadDID cmd = new ReadDID(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			assertEquals("ECU name doesn't match input name", JsonUtils.readIntegerFromJsonObject(parameters, ReadDID.KEY_ECU_NAME), cmd.getEcuName());
+
+			List<Integer> didLocationList = JsonUtils.readIntegerListFromJsonObject(parameters, ReadDID.KEY_DID_LOCATION);
+			List<Integer> testLocationList = cmd.getDidLocation();
+			assertEquals("DID location list length not same as reference location list length", didLocationList.size(), testLocationList.size());
+			assertTrue("DID location list doesn't match input location list", Validator.validateIntegerList(didLocationList, testLocationList));
+			
+			
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
+	
 }

@@ -38,7 +38,6 @@ public class OnAudioPassThruTests extends BaseRpcTests{
 
     public void testBulkData(){
         byte[] copy = ( (OnAudioPassThru) msg ).getBulkData();
-        assertNotSame("Bulk data was not defensive copied.", BULK_DATA, copy);
         assertEquals("Bulk data size didn't match expected size.", BULK_DATA.length, copy.length);
         assertTrue("Input value didn't match expected value.", Validator.validateBulkData(BULK_DATA, copy));
     }

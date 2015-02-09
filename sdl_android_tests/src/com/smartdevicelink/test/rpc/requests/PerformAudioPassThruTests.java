@@ -1,11 +1,14 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
@@ -15,7 +18,9 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.utils.Validator;
 
 public class PerformAudioPassThruTests extends BaseRpcTests {
 	
@@ -154,5 +159,53 @@ public class PerformAudioPassThruTests extends BaseRpcTests {
 		assertNull("Max duration wasn't set, but getter method returned an object.", msg.getMaxDuration());
 		assertNull("Mute audio wasn't set, but getter method returned an object.", msg.getMuteAudio());
 	}
+	
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			PerformAudioPassThru cmd = new PerformAudioPassThru(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			
+			//TODO: remove the Integer cast once that method stops returning int
+			assertEquals("Max duration doesn't match input duration", 
+					JsonUtils.readIntegerFromJsonObject(parameters, PerformAudioPassThru.KEY_MAX_DURATION), (Integer)cmd.getMaxDuration());
+			assertEquals("Audio pass-through display text 1 doesn't match input text", 
+					JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1), cmd.getAudioPassThruDisplayText1());
+			assertEquals("Audio pass-through display text 2 doesn't match input text", 
+					JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2), cmd.getAudioPassThruDisplayText2());
+			assertEquals("Mute audio doesn't match input mute audio", 
+					JsonUtils.readBooleanFromJsonObject(parameters, PerformAudioPassThru.KEY_MUTE_AUDIO), cmd.getMuteAudio());
+			assertEquals("Sampling rate doesn't match input rate", 
+					JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_SAMPLING_RATE), cmd.getSamplingRate().toString());
+			assertEquals("Audio type doesn't match input type", 
+					JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_AUDIO_TYPE), cmd.getAudioType().toString());
+
+			JSONArray ttsChunkArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformAudioPassThru.KEY_INITIAL_PROMPT);
+			List<TTSChunk> ttsChunkList = new ArrayList<TTSChunk>();
+			for (int index = 0; index < ttsChunkArray.length(); index++) {
+	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)ttsChunkArray.get(index)) );
+	        	ttsChunkList.add(chunk);
+			}
+			assertTrue("Initial prompt list doesn't match input prompt list",  Validator.validateTtsChunks(ttsChunkList, cmd.getInitialPrompt()));
+			
+			assertEquals("Bits per sample doesn't match input bits per sample", 
+					JsonUtils.readStringFromJsonObject(parameters, PerformAudioPassThru.KEY_BITS_PER_SAMPLE), cmd.getBitsPerSample().toString());
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
 
 }

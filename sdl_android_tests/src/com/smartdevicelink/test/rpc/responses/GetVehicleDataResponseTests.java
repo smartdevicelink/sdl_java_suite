@@ -1,5 +1,6 @@
 package com.smartdevicelink.test.rpc.responses;
 
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.json.JSONException;
@@ -26,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 import com.smartdevicelink.test.utils.VehicleDataHelper;
@@ -537,4 +539,104 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
         assertNull("Cluster mode status wasn't set, but getter method returned an object.", msg.getClusterModeStatus());
         assertNull("My key wasn't set, but getter method returned an object.", msg.getMyKey());
     }
+    
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			GetVehicleDataResponse cmd = new GetVehicleDataResponse(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			assertEquals("Speed doesn't match input speed", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_SPEED), cmd.getSpeed());
+			assertEquals("Rpm doesn't match input rpm", 
+					JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_RPM), cmd.getRpm());
+			assertEquals("External temperature doesn't match input temperature", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
+			assertEquals("Fuel level doesn't match input level", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL), cmd.getFuelLevel());
+			assertEquals("VIN doesn't match input VIN", 
+					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_VIN), cmd.getVin());
+			assertEquals("PRNDL doesn't match input PRDNL", 
+					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_PRNDL), cmd.getPrndl().toString());
+			
+			JSONObject tireStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_TIRE_PRESSURE);
+			TireStatus tireStatus = new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tireStatusObj));
+			assertTrue("Tire pressure doesn't match input pressure", Validator.validateTireStatus(tireStatus, cmd.getTirePressure()) );
+			
+			assertEquals("Engine torque doesn't match input torque", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals("Odometer doesn't match input odometer", 
+					JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_ODOMETER), cmd.getOdometer());
+			
+			JSONObject gpsDataObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_GPS);
+			GPSData gpsData = new GPSData(JsonRPCMarshaller.deserializeJSONObject(gpsDataObj));
+			assertTrue("GPS doesn't match input GPS", Validator.validateGpsData(gpsData, cmd.getGps()) );
+			
+			assertEquals("Fuel level state doesn't match input state", 
+					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevel_State().toString());
+			assertEquals("Instant fuel consumption doesn't match input consumption", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
+			
+			JSONObject beltStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_BELT_STATUS);
+			BeltStatus beltStatus = new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltStatusObj));
+			assertTrue("Belt status doesn't match input status", Validator.validateBeltStatus(beltStatus, cmd.getBeltStatus()) );
+			
+			JSONObject bodyInformationObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_BODY_INFORMATION);
+			BodyInformation bodyInformation = new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInformationObj));
+			assertTrue("Body information doesn't match input information", Validator.validateBodyInformation(bodyInformation, cmd.getBodyInformation()) );
+			
+			JSONObject deviceStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_DEVICE_STATUS);
+			DeviceStatus deviceStatus = new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceStatusObj));
+			assertTrue("Device status doesn't match input status", Validator.validateDeviceStatus(deviceStatus, cmd.getDeviceStatus()) );
+			
+			assertEquals("Driver braking doesn't match input braking", 
+					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_DRIVER_BRAKING), cmd.getDriverBraking().toString());
+			assertEquals("Wiper status doesn't match input status", 
+					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_WIPER_STATUS), cmd.getWiperStatus().toString());
+			
+			JSONObject headLampStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_HEAD_LAMP_STATUS);
+			HeadLampStatus headLampStatus = new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampStatusObj));
+			assertTrue("Head lamp status doesn't match input status", Validator.validateHeadLampStatus(headLampStatus, cmd.getHeadLampStatus()) );
+			
+			assertEquals("Acceleration pedal position doesn't match input position", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
+			assertEquals("Steering wheel angle doesn't match input angle", 
+					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
+			
+			JSONObject eCallInfoObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_E_CALL_INFO);
+			ECallInfo eCallInfo = new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(eCallInfoObj));
+			assertTrue("Emergency call info doesn't match input info", Validator.validateECallInfo(eCallInfo, cmd.getECallInfo()) );
+			
+			JSONObject airbagStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_AIRBAG_STATUS);
+			AirbagStatus airbagStatus = new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagStatusObj));
+			assertTrue("Airbag status doesn't match input status", Validator.validateAirbagStatus(airbagStatus, cmd.getAirbagStatus()) );
+			
+			JSONObject emergencyEventObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_EMERGENCY_EVENT);
+			EmergencyEvent emergencyEvent = new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyEventObj));
+			assertTrue("Emergency event doesn't match input event", Validator.validateEmergencyEvent(emergencyEvent, cmd.getEmergencyEvent()) );
+			
+			JSONObject clusterModeStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_CLUSTER_MODE_STATUS);
+			ClusterModeStatus clusterModeStatus = new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeStatusObj));
+			assertTrue("Cluster mode status doesn't match input status", Validator.validateClusterModeStatus(clusterModeStatus, cmd.getClusterModeStatus()) );
+			
+			JSONObject myKeyObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_MY_KEY);
+			MyKey myKey = new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObj));
+			assertTrue("My key doesn't match input key", Validator.validateMyKey(myKey, cmd.getMyKey()) );
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
+    
 }

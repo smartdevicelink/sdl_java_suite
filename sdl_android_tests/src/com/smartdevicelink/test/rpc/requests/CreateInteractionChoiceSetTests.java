@@ -145,7 +145,7 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
 			JSONArray choiceSetArray = JsonUtils.readJsonArrayFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_CHOICE_SET);
 			for (int index = 0; index < choiceSetArray.length(); index++) {
 				Choice chunk = new Choice(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)choiceSetArray.get(index)) );
-				assertTrue("Choice list doesn't match input Choice list",  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
+				assertTrue("Choice item doesn't match input Choice item",  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
 			}
 			
 		} 
