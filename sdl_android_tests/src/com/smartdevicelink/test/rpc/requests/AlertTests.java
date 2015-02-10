@@ -12,34 +12,86 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
 public class AlertTests extends BaseRpcTests{
-	//TODO: doesn't test ttsChunks list or SoftButtons list
     private static final int     DURATION           = 500;
     private static final String  ALERT_TEXT_1       = "Line #1";
     private static final String  ALERT_TEXT_2       = "Line #2";
     private static final String  ALERT_TEXT_3       = "Line #3";
     private static final boolean PLAY_TONE          = true;
     private static final boolean PROGRESS_INDICATOR = true;
+    
+    private static final List<TTSChunk> TTS_CHUNK_LIST = new ArrayList<TTSChunk>();
+	private static final String TTS_CHUNK_TEXT_1 = "Welcome to the jungle";
+	private static final SpeechCapabilities TTS_CHUNK_SPEECH_1 = SpeechCapabilities.TEXT;
+	private static final String TTS_CHUNK_TEXT_2 = "Say a command";
+	private static final SpeechCapabilities TTS_CHUNK_SPEECH_2 = SpeechCapabilities.LHPLUS_PHONEMES;
 
+    private static final List<SoftButton> SOFT_BUTTON_LIST = new ArrayList<SoftButton>();
+    private static final Boolean SOFT_BUTTON_HIGHLIGHTED = true;
+    private static final Integer SOFT_BUTTON_ID = 236;
+	private static final SystemAction SOFT_BUTTON_SYSTEM_ACTION = SystemAction.STEAL_FOCUS;
+    private static final String SOFT_BUTTON_TEXT = "Hello";
+    private static final SoftButtonType SOFT_BUTTON_KEY_TYPE = SoftButtonType.SBT_TEXT;
+    
+    private static final Image SOFT_BUTTON_IMAGE = new Image();
+    private static final String SOFT_BUTTON_VALUE = "buttonImage.jpg";
+    private static final ImageType SOFT_BUTTON_IMAGE_TYPE = ImageType.STATIC;
+    //TODO: everytime this method is called two additional tts chunks and one additional soft button is added to the lists.
+    //this is the cause for the failing of the testJson tests. ensure that this doesn't happen (fixed if defensive copying works?)
+    //the same problem is for ScrollableMessageTest
     @Override
     protected RPCMessage createMessage(){
         Alert msg = new Alert();
 
+        createCustomObjects();
+        
         msg.setDuration(DURATION);
         msg.setAlertText1(ALERT_TEXT_1);
         msg.setAlertText2(ALERT_TEXT_2);
         msg.setAlertText3(ALERT_TEXT_3);
         msg.setPlayTone(PLAY_TONE);
         msg.setProgressIndicator(PROGRESS_INDICATOR);
-
+        msg.setTtsChunks(TTS_CHUNK_LIST);
+        msg.setSoftButtons(SOFT_BUTTON_LIST);
+        
         return msg;
     }
+    
+	public void createCustomObjects() {
+		TTSChunk ttsChunk = new TTSChunk();
+		ttsChunk.setText(TTS_CHUNK_TEXT_1);
+		ttsChunk.setType(TTS_CHUNK_SPEECH_1);
+		TTS_CHUNK_LIST.add(ttsChunk);
+		
+		ttsChunk = new TTSChunk();
+		ttsChunk.setText(TTS_CHUNK_TEXT_2);
+		ttsChunk.setType(TTS_CHUNK_SPEECH_2);
+		TTS_CHUNK_LIST.add(ttsChunk);
+		
+		SOFT_BUTTON_IMAGE.setValue(SOFT_BUTTON_VALUE);
+		SOFT_BUTTON_IMAGE.setImageType(SOFT_BUTTON_IMAGE_TYPE);
+		
+		SoftButton softButton = new SoftButton();
+		softButton.setIsHighlighted(SOFT_BUTTON_HIGHLIGHTED);
+		softButton.setSoftButtonID(SOFT_BUTTON_ID);
+		softButton.setSystemAction(SOFT_BUTTON_SYSTEM_ACTION);
+		softButton.setText(SOFT_BUTTON_TEXT);
+		softButton.setType(SOFT_BUTTON_KEY_TYPE);
+		softButton.setImage(SOFT_BUTTON_IMAGE);
+		SOFT_BUTTON_LIST.add(softButton);
+	}
 
     @Override
     protected String getMessageType(){
@@ -54,14 +106,37 @@ public class AlertTests extends BaseRpcTests{
     @Override
     protected JSONObject getExpectedParameters(int sdlVersion){
         JSONObject result = new JSONObject();
-
+        JSONArray ttsChunks = new JSONArray();
+        JSONArray softButtons = new JSONArray();
+        
         try{
+        	JSONObject ttsChunk = new JSONObject();
+			ttsChunk.put(TTSChunk.KEY_TEXT, TTS_CHUNK_TEXT_1);
+			ttsChunk.put(TTSChunk.KEY_TYPE, TTS_CHUNK_SPEECH_1);
+			ttsChunks.put(ttsChunk);
+			
+			ttsChunk = new JSONObject();
+			ttsChunk.put(TTSChunk.KEY_TEXT, TTS_CHUNK_TEXT_2);
+			ttsChunk.put(TTSChunk.KEY_TYPE, TTS_CHUNK_SPEECH_2);
+			ttsChunks.put(ttsChunk);
+			
+			JSONObject softButton = new JSONObject();
+			softButton.put(SoftButton.KEY_IS_HIGHLIGHTED , SOFT_BUTTON_HIGHLIGHTED);
+			softButton.put(SoftButton.KEY_SOFT_BUTTON_ID, SOFT_BUTTON_ID);
+			softButton.put(SoftButton.KEY_SYSTEM_ACTION, SOFT_BUTTON_SYSTEM_ACTION);
+			softButton.put(SoftButton.KEY_TEXT, SOFT_BUTTON_TEXT);
+			softButton.put(SoftButton.KEY_TYPE, SOFT_BUTTON_KEY_TYPE);
+			softButton.put(SoftButton.KEY_IMAGE, SOFT_BUTTON_IMAGE);
+			softButtons.put(softButton);
+        	
             result.put(Alert.KEY_DURATION, DURATION);
             result.put(Alert.KEY_ALERT_TEXT_1, ALERT_TEXT_1);
             result.put(Alert.KEY_ALERT_TEXT_2, ALERT_TEXT_2);
             result.put(Alert.KEY_ALERT_TEXT_3, ALERT_TEXT_3);
             result.put(Alert.KEY_PLAY_TONE, PLAY_TONE);
             result.put(Alert.KEY_PROGRESS_INDICATOR, PROGRESS_INDICATOR);
+            result.put(Alert.KEY_TTS_CHUNKS, ttsChunks);
+            result.put(Alert.KEY_SOFT_BUTTONS, softButtons);
         }catch(JSONException e){
             /* do nothing */
         }
@@ -99,6 +174,21 @@ public class AlertTests extends BaseRpcTests{
         assertEquals("Progress indicator didn't match input progress indicator.", PROGRESS_INDICATOR, progressIndicator);
     }
 
+	public void testTtsChunks () {
+		List<TTSChunk> copy = ( (Alert) msg ).getTtsChunks();
+		
+		assertNotSame("TTS Chunks list was not defensive copied", TTS_CHUNK_LIST, copy);
+		assertTrue("Input value didn't match expected value.", Validator.validateTtsChunks(TTS_CHUNK_LIST, copy));
+
+	}
+	
+	public void testSoftButtons () {
+		List<SoftButton> copy = ( (Alert) msg ).getSoftButtons();
+		
+		assertNotSame("Soft buttons list was not defensive copied", SOFT_BUTTON_LIST, copy);
+		assertTrue("Input value didn't match expected value.", Validator.validateSoftButtons(SOFT_BUTTON_LIST, copy));
+	}
+    
     public void testNull(){
         Alert msg = new Alert();
         assertNotNull("Null object creation failed.", msg);
@@ -111,6 +201,8 @@ public class AlertTests extends BaseRpcTests{
         assertNull("Duration wasn't set, but getter method returned an object.", msg.getDuration());
         assertNull("Play tone wasn't set, but getter method returned an object.", msg.getPlayTone());
         assertNull("Progress indicator wasn't set, but getter method returned an object.", msg.getProgressIndicator());
+        assertNull("TTS chunks wasn't set, but getter method returned an object.", msg.getTtsChunks());
+        assertNull("Soft buttons wasn't set, but getter method returned an object.", msg.getSoftButtons());
     }
     
     public void testJsonConstructor () {
@@ -143,6 +235,14 @@ public class AlertTests extends BaseRpcTests{
 	        	ttsChunkList.add(chunk);
 			}
 			assertTrue("TTSChunk list doesn't match input TTSChunk list",  Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
+			
+			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, Alert.KEY_SOFT_BUTTONS);
+			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
+			for (int index = 0; index < softButtonArray.length(); index++) {
+				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
+				softButtonList.add(chunk);
+			}
+			assertTrue("Soft button list doesn't match input button list",  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
 			
 						
 		} 
