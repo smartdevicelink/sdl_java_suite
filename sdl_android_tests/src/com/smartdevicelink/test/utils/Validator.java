@@ -40,8 +40,10 @@ import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
+import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 public class Validator{
@@ -61,6 +63,18 @@ public class Validator{
         return ( menuParams1.getMenuName().equals(menuParams2.getMenuName())
                 && menuParams1.getParentID() == menuParams2.getParentID() && menuParams1.getPosition() == menuParams2
                 .getPosition() );
+    }
+    
+    public static boolean validateVehicleDataResult(VehicleDataResult result1, VehicleDataResult result2){
+        if(result1 == null){
+            return ( result2 == null );
+        }
+        if(result2 == null){
+            return ( result1 == null );
+        }
+
+        return ( result1.getDataType().equals(result2.getDataType())
+                && result1.getResultCode().equals(result2.getResultCode()) );
     }
 
     public static boolean validateBulkData(byte[] array1, byte[] array2){
@@ -356,8 +370,7 @@ public class Validator{
         if(item2 == null){
             return ( item1 == null );
         }
-
-        if(item1.getImageTypeSupported() != item2.getImageTypeSupported()){
+        if(! (validateFileTypes(item1.getImageTypeSupported(), item2.getImageTypeSupported()) )){
             return false;
         }
         if(item1.getName() != item2.getName()){
@@ -368,6 +381,27 @@ public class Validator{
         }
 
         return true;
+    }
+    
+    public static boolean validateFileTypes (List<FileType> item1, List<FileType> item2) {
+    	if (item1 == null) {
+    		return ( item2 == null );
+    	}
+    	if (item2 == null) {
+    		return ( item1 == null );
+    	}
+    	
+    	if (item1.size() != item2.size()) {
+    		return false;
+    	}
+    	
+    	for (int i = 0; i < item1.size(); i++) {
+    		if (item1.get(i) != item2.get(i)) {
+    			return false;
+    		}
+    	}
+    	
+    	return true;
     }
 
     public static boolean validateGpsData(GPSData item1, GPSData item2){
