@@ -1,0 +1,17 @@
+{
+  "request":{
+    "name":"ResetGlobalProperties",
+    "correlationID":143,
+    "parameters":{
+      "properties":[
+        "HELPPROMPT",
+        "VRHELPTITLE",
+        "VRHELPITEMS"
+      ]
+    }
+  },
+  "response":{
+    "name":"ResetGlobalPropertiesResponse",
+    "correlationID":144
+  }
+}

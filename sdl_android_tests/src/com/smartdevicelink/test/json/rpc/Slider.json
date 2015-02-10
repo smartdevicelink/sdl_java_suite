@@ -1,0 +1,25 @@
+{
+  "request":{
+    "name":"Slider",
+    "correlationID":157,
+    "parameters":{
+      "numTicks":6,
+      "sliderHeader":"Example Header",
+      "sliderFooter":[
+        "Header Line 1",
+        "Header Line 2",
+        "Header Line 3",
+        "Header Line 4"
+      ],
+      "position":11,
+      "timeout":30000,
+    }
+  },
+  "response":{
+    "name":"SliderResponse",
+    "correlationID":158,
+    "parameters":{
+      "sliderPosition":4
+    }
+  }
+}

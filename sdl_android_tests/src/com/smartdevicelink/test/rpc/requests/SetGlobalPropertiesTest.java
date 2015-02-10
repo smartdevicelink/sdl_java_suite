@@ -2,12 +2,14 @@ package com.smartdevicelink.test.rpc.requests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.TTSChunkFactory;
@@ -22,6 +24,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
@@ -235,5 +238,66 @@ public class SetGlobalPropertiesTest extends BaseRpcTests {
 		assertNull("Keyboard properties wasn't set, but getter method returned an object.", msg.getKeyboardProperties());
 		assertNull("Help title wasn't set, but getter method returned an object.", msg.getVrHelpTitle());
 	}
+	
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			SetGlobalProperties cmd = new SetGlobalProperties(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			assertEquals("VR help title doesn't match input title", 
+					JsonUtils.readStringFromJsonObject(parameters, SetGlobalProperties.KEY_VR_HELP_TITLE), cmd.getVrHelpTitle());
+			assertEquals("Menu title doesn't match input title", 
+					JsonUtils.readStringFromJsonObject(parameters, SetGlobalProperties.KEY_MENU_TITLE), cmd.getMenuTitle());
+			
+			JSONObject menuIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, SetGlobalProperties.KEY_MENU_ICON);
+			Image referenceMenuIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(menuIcon));
+			assertTrue("Menu icon doesn't match expected menu icon", Validator.validateImage(referenceMenuIcon, cmd.getMenuIcon()));
+			
+			JSONObject keyboardProperties = JsonUtils.readJsonObjectFromJsonObject(parameters, SetGlobalProperties.KEY_KEYBOARD_PROPERTIES);
+			KeyboardProperties referenceKeyboardProperties = new KeyboardProperties(JsonRPCMarshaller.deserializeJSONObject(keyboardProperties));
+			assertTrue("Keyboard properties doesn't match expected properties", 
+					Validator.validateKeyboardProperties(referenceKeyboardProperties, cmd.getKeyboardProperties()));
+			
+			JSONArray helpPromptArray = JsonUtils.readJsonArrayFromJsonObject(parameters, SetGlobalProperties.KEY_HELP_PROMPT);
+			List<TTSChunk> helpPromptList = new ArrayList<TTSChunk>();
+			for (int index = 0; index < helpPromptArray.length(); index++) {
+	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)helpPromptArray.get(index)) );
+	        	helpPromptList.add(chunk);
+			}
+			assertTrue("Help prompt doesn't match input help prompt",  Validator.validateTtsChunks(helpPromptList, cmd.getHelpPrompt()));
+			
+			JSONArray timeoutPromptArray = JsonUtils.readJsonArrayFromJsonObject(parameters, SetGlobalProperties.KEY_TIMEOUT_PROMPT);
+			List<TTSChunk> timeoutPromptList = new ArrayList<TTSChunk>();
+			for (int index = 0; index < timeoutPromptArray.length(); index++) {
+				TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)timeoutPromptArray.get(index)) );
+				timeoutPromptList.add(chunk);
+			}
+			assertTrue("Timeout prompt doesn't match input timeout prompt",  Validator.validateTtsChunks(timeoutPromptList, cmd.getTimeoutPrompt()));
+			
+			JSONArray vrHelpArray = JsonUtils.readJsonArrayFromJsonObject(parameters, SetGlobalProperties.KEY_VR_HELP);
+			List<VrHelpItem> vrHelpList = new ArrayList<VrHelpItem>();
+			for (int index = 0; index < vrHelpArray.length(); index++) {
+				VrHelpItem chunk = new VrHelpItem(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)vrHelpArray.get(index)) );
+				vrHelpList.add(chunk);
+			}
+			assertTrue("VR help list doesn't match input help list",  Validator.validateVrHelpItems(vrHelpList, cmd.getVrHelp()));
+			
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
 
 }

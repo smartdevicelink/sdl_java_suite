@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -27,7 +26,11 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class RegisterAppInterfaceTest extends BaseRpcTests {
 
-	private List<TTSChunk> ttsNames;
+	private List<TTSChunk> TTS_CHUNK_LIST = new ArrayList<TTSChunk>();
+	private static final String TTS_CHUNK_TEXT_1 = "Welcome to the jungle";
+	private static final SpeechCapabilities TTS_CHUNK_SPEECH_1 = SpeechCapabilities.TEXT;
+	private static final String TTS_CHUNK_TEXT_2 = "Say a command";
+	private static final SpeechCapabilities TTS_CHUNK_SPEECH_2 = SpeechCapabilities.LHPLUS_PHONEMES;
 	
 	private static final List<AppHMIType> APP_HMI_TYPES = Arrays.asList(new AppHMIType[]{ AppHMIType.DEFAULT, AppHMIType.SOCIAL });	
 	private static final SdlMsgVersion SDL_VERSION = new SdlMsgVersion();
@@ -54,7 +57,7 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 		msg.setLanguageDesired(LANGUAGE_DESIRED);
 		msg.setHmiDisplayLanguageDesired(HMI_LANGUAGE_DESIRED);
 		msg.setHashID(HASH_ID);
-		msg.setTtsName(ttsNames);
+		msg.setTtsName(TTS_CHUNK_LIST);
 		msg.setVrSynonyms(VR_SYNONYMS);
 		msg.setAppHMIType(APP_HMI_TYPES);
 		msg.setIsMediaApplication(IS_MEDIA_APP);
@@ -64,9 +67,15 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 	}
 	
 	public void createCustomObjects () {
-		ttsNames = new ArrayList<TTSChunk>(2);
-		ttsNames.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle"));
-        ttsNames.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Say a command"));
+		TTSChunk ttsChunk = new TTSChunk();
+		ttsChunk.setText(TTS_CHUNK_TEXT_1);
+		ttsChunk.setType(TTS_CHUNK_SPEECH_1);
+		TTS_CHUNK_LIST.add(ttsChunk);
+		
+		ttsChunk = new TTSChunk();
+		ttsChunk.setText(TTS_CHUNK_TEXT_2);
+		ttsChunk.setType(TTS_CHUNK_SPEECH_2);
+		TTS_CHUNK_LIST.add(ttsChunk);
         
 		SDL_VERSION.setMajorVersion(1);
 		SDL_VERSION.setMinorVersion(0);
@@ -96,13 +105,13 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 		JSONArray  ttsChunks   = new JSONArray();
 
 		try {
-			ttsChunk.put(TTSChunk.KEY_TEXT, "Welcome to the jungle");
-			ttsChunk.put(TTSChunk.KEY_TYPE, SpeechCapabilities.TEXT);
+			ttsChunk.put(TTSChunk.KEY_TEXT, TTS_CHUNK_TEXT_1);
+			ttsChunk.put(TTSChunk.KEY_TYPE, TTS_CHUNK_SPEECH_1);
 			ttsChunks.put(ttsChunk);
 			
 			ttsChunk = new JSONObject();
-			ttsChunk.put(TTSChunk.KEY_TEXT, "Say a command");
-			ttsChunk.put(TTSChunk.KEY_TYPE, SpeechCapabilities.TEXT);
+			ttsChunk.put(TTSChunk.KEY_TEXT, TTS_CHUNK_TEXT_2);
+			ttsChunk.put(TTSChunk.KEY_TYPE, TTS_CHUNK_SPEECH_2);
 			ttsChunks.put(ttsChunk);
 						
 			result.put(RegisterAppInterface.KEY_SDL_MSG_VERSION, SDL_VERSION.serializeJSON());
@@ -172,8 +181,8 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 		List<TTSChunk> copy = ( (RegisterAppInterface) msg).getTtsName();
 		
 		assertNotNull("Tts names were null.", copy);
-		assertNotSame("Tts names items were not defensive copied.", ttsNames, copy);
-		assertTrue("Tts names items didn't match input data.", Validator.validateTtsChunks(ttsNames, copy));
+		assertNotSame("Tts names items were not defensive copied.", TTS_CHUNK_LIST, copy);
+		assertTrue("Tts names items didn't match input data.", Validator.validateTtsChunks(TTS_CHUNK_LIST, copy));
 	}
 	
 	public void testVrSynonyms () {

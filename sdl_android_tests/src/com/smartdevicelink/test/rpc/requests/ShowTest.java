@@ -1,12 +1,14 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -17,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
@@ -263,4 +266,58 @@ public class ShowTest extends BaseRpcTests {
 		assertNull("Soft buttons wasn't set, but getter method returned an object.", msg.getSoftButtons());		
 	}
 
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			Show cmd = new Show(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			
+			JSONObject graphic = JsonUtils.readJsonObjectFromJsonObject(parameters, Show.KEY_GRAPHIC);
+			Image referenceGraphic = new Image(JsonRPCMarshaller.deserializeJSONObject(graphic));
+			assertTrue("Graphic doesn't match expected graphic", Validator.validateImage(referenceGraphic, cmd.getGraphic()));
+			
+			List<String> customPresetsList = JsonUtils.readStringListFromJsonObject(parameters, Show.KEY_CUSTOM_PRESETS);
+			List<String> testPresetsList = cmd.getCustomPresets();
+			assertEquals("Custom presets list length not same as reference presets list length", customPresetsList.size(), testPresetsList.size());
+			assertTrue("Custom presets list doesn't match input presets list", Validator.validateStringList(customPresetsList, testPresetsList));
+
+			assertEquals("Main field 1 doesn't match input field", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MAIN_FIELD_1), cmd.getMainField1());
+			assertEquals("Main field 2 doesn't match input field", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MAIN_FIELD_2), cmd.getMainField2());
+			assertEquals("Main field 3 doesn't match input field", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MAIN_FIELD_3), cmd.getMainField3());
+			assertEquals("Main field 4 doesn't match input field", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MAIN_FIELD_4), cmd.getMainField4());
+			assertEquals("Status bar doesn't match input status bar", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_STATUS_BAR), cmd.getStatusBar());
+			assertEquals("Media clock doesn't match input clock", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MEDIA_CLOCK), cmd.getMediaClock());
+			assertEquals("Key alignment doesn't match input alignment", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_ALIGNMENT), cmd.getAlignment().toString());
+			assertEquals("Media track doesn't match input track", JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MEDIA_TRACK), cmd.getMediaTrack());
+
+			JSONObject secondaryGraphic = JsonUtils.readJsonObjectFromJsonObject(parameters, Show.KEY_SECONDARY_GRAPHIC);
+			Image referenceSecondaryGraphic = new Image(JsonRPCMarshaller.deserializeJSONObject(secondaryGraphic));
+			assertTrue("Secondary graphic doesn't match expected graphic", Validator.validateImage(referenceSecondaryGraphic, cmd.getSecondaryGraphic()));
+			
+			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, Show.KEY_SOFT_BUTTONS);
+			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
+			for (int index = 0; index < softButtonArray.length(); index++) {
+				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
+				softButtonList.add(chunk);
+			}
+			assertTrue("Soft button list doesn't match input button list",  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+			
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
+	
 }

@@ -1,0 +1,20 @@
+{
+  "request":{
+    "name":"SystemRequest",
+    "correlationID":165,
+    "parameters":{
+      "fileName":"fileName.txt",
+      "requestType":"AUTH_CHALLENGE",
+      "data":[
+        "data1",
+        "data2",
+        "data3",
+        "data4"
+      ]
+    }
+  },
+  "response":{
+    "name":"SystemRequestResponse",
+    "correlationID":166
+  }
+}
