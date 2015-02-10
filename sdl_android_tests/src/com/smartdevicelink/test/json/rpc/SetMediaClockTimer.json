@@ -1,0 +1,23 @@
+{
+  "request":{
+    "name":"SetMediaClockTimer",
+    "correlationID":153,
+    "parameters":{
+      "startTime":{
+        "minutes":49,
+        "seconds":37,
+        "hours":12
+      },
+      "endTime":{
+        "minutes":55,
+        "seconds":19,
+        "hours":12
+      },
+      "updateMode":"COUNTDOWN"
+    }
+  },
+  "response":{
+    "name":"SetMediaClockTimerResponse",
+    "correlationID":154
+  }
+}

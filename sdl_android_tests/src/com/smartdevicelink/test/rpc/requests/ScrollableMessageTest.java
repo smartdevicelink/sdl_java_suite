@@ -1,17 +1,22 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.ScrollableMessage;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.utils.Validator;
 
 public class ScrollableMessageTest extends BaseRpcTests {
 
@@ -23,18 +28,22 @@ public class ScrollableMessageTest extends BaseRpcTests {
     
 	@Override
 	protected RPCMessage createMessage() {
-		SoftButton softButton = new SoftButton();
-		softButton.setText(SOFT_BUTTON_TEXT);
-		softButton.setIsHighlighted(SOFT_BUTTON_HIGHLIGHTED);
-		SOFT_BUTTON_LIST.add(softButton);
-		
 		ScrollableMessage msg = new ScrollableMessage();
 
+		createCustomObjects();
+		
 		msg.setTimeout(TIMEOUT);
 		msg.setSoftButtons(SOFT_BUTTON_LIST);
 		msg.setScrollableMessageBody(MESSAGE);
 
 		return msg;
+	}
+	
+	public void createCustomObjects() {
+		SoftButton softButton = new SoftButton();
+		softButton.setText(SOFT_BUTTON_TEXT);
+		softButton.setIsHighlighted(SOFT_BUTTON_HIGHLIGHTED);
+		SOFT_BUTTON_LIST.add(softButton);
 	}
 
 	@Override
@@ -96,4 +105,40 @@ public class ScrollableMessageTest extends BaseRpcTests {
 		assertNull("Timeout wasn't set, but getter method returned an object.", msg.getTimeout());
 		assertNull("Soft button wasn't set, but getter method returned an object.", msg.getSoftButtons());
 	}
+	
+    public void testJsonConstructor () {
+    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	assertNotNull("Command object is null", commandJson);
+    	
+		try {
+			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
+			ScrollableMessage cmd = new ScrollableMessage(hash);
+			
+			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
+			assertNotNull("Command type doesn't match expected message type", body);
+			
+			// test everything in the body
+			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+
+			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
+			assertEquals("Scrollable message body doesn't match input body", 
+					JsonUtils.readStringFromJsonObject(parameters, ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY), cmd.getScrollableMessageBody());
+			assertEquals("Timeout doesn't match input timeout", JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_TIMEOUT), cmd.getTimeout());
+
+			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ScrollableMessage.KEY_SOFT_BUTTONS);
+			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
+			for (int index = 0; index < softButtonArray.length(); index++) {
+				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
+				softButtonList.add(chunk);
+			}
+			assertTrue("Soft button list doesn't match input button list",  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+			
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+    	
+    }
+	
 }

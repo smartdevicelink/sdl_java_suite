@@ -559,7 +559,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			
 			JSONArray buttonCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_BUTTON_CAPABILITIES);
 			List<ButtonCapabilities> buttonCapabilitiesList = new ArrayList<ButtonCapabilities>();
-			for (int index = 0; index < audioPassThruCapabilitiesArray.length(); index++) {
+			for (int index = 0; index < buttonCapabilitiesArray.length(); index++) {
 				ButtonCapabilities buttonCapability = new ButtonCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)buttonCapabilitiesArray.get(index) ));
 				buttonCapabilitiesList.add(buttonCapability);
 			}
