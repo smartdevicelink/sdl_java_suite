@@ -195,7 +195,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getLongitudeDegrees() {
     	Object object = store.get(KEY_LONGITUDE_DEGREES);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -216,7 +216,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getLatitudeDegrees() {
     	Object object = store.get(KEY_LATITUDE_DEGREES);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -378,7 +378,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getPdop() {
     	Object object = store.get(KEY_PDOP);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -399,7 +399,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getHdop() {
     	Object object = store.get(KEY_HDOP);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -420,7 +420,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getVdop() {
     	Object object = store.get(KEY_VDOP);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -503,7 +503,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getAltitude() {
     	Object object = store.get(KEY_ALTITUDE);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -523,7 +523,7 @@ public class GPSData extends RPCStruct {
      */
     public Double getHeading() {
     	Object object = store.get(KEY_HEADING);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -544,6 +544,6 @@ public class GPSData extends RPCStruct {
      */
     public Double getSpeed() {
     	Object object = store.get(KEY_SPEED);
-    	return SdlDataTypeConverter.ObjectToDouble(object);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
 }
