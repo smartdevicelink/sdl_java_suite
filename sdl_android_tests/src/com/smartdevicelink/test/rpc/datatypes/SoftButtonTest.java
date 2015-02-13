@@ -23,6 +23,8 @@ public class SoftButtonTest extends TestCase {
 	private static final String TEXT = "text";
 	private static final SystemAction SYS_ACTION = SystemAction.DEFAULT_ACTION;
 	private static final Image IMAGE = new Image();
+	private static final ImageType IMAGE_TYPE = ImageType.DYNAMIC;
+	private static final ImageType IMAGE_TYPE_CHANGED = ImageType.STATIC;
 	private static final Boolean IS_HIGHLIGHTED = false;
 	private static final Integer ID = 0;
 	
@@ -31,7 +33,7 @@ public class SoftButtonTest extends TestCase {
 	@Override
 	public void setUp() {
 		IMAGE.setValue(Image.KEY_VALUE);
-		IMAGE.setImageType(ImageType.DYNAMIC);
+		IMAGE.setImageType(IMAGE_TYPE);
 		
 		msg = new SoftButton();
 		
@@ -65,9 +67,27 @@ public class SoftButtonTest extends TestCase {
 	public void testImage () {
 		Image copy = msg.getImage();
 		
-		assertNotSame("Image was not defensive copied", IMAGE, copy);
 	    assertTrue("Input value didn't match expected value.", Validator.validateImage(IMAGE, copy));
 	}
+	
+    public void testGetImage(){
+    	Image copy1 = msg.getImage();
+    	copy1.setImageType(IMAGE_TYPE_CHANGED); 
+    	Image copy2 = msg.getImage();
+    	
+    	assertNotSame("Image was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
+    }
+    
+    public void testSetImage(){
+    	Image copy1 = msg.getImage();   	
+    	msg.setImage(copy1);
+    	copy1.setImageType(IMAGE_TYPE_CHANGED);
+    	Image copy2 = msg.getImage();
+    	
+    	assertNotSame("Image was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
+    }
 	
 	public void testIsHighlighted () {
 		Boolean copy = msg.getIsHighlighted();

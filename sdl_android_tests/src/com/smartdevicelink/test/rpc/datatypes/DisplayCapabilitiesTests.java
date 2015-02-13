@@ -14,10 +14,12 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
@@ -41,25 +43,38 @@ public class DisplayCapabilitiesTests extends TestCase{
     private static final boolean                TOUCH_AVAILABLE                = true;
     private static final boolean                MULTI_TOUCH_AVAILABLE          = false;
     private static final boolean                DOUBLE_PRESS_AVAILABLE         = false;
-
+    private static final int                    SCREEN_IMAGE_RESOLUTION_HEIGHT_CHANGED = 2160;
+    private static final boolean                MULTI_TOUCH_AVAILABLE_CHANGED          = true;
+    
     // textFields constants
     private static final TextFieldName[]        TEXT_FIELD_NAMES               = new TextFieldName[] {
             TextFieldName.alertText1, TextFieldName.alertText2, TextFieldName.mainField1 };
     private static final int[]                  TEXT_FIELD_WIDTHS              = new int[] { 25, 25, 30 };
     private static final int                    TEXT_FIELD_ROWS                = 1;
     private static final CharacterSet           CHARACTER_SET                  = CharacterSet.TYPE2SET;
-
+    private static final TextFieldName			TEXT_FIELD_NAME_CHANGED 	   = TextFieldName.statusBar;
+    
+    
     // imageFields constants
     private static final ImageFieldName[]       IMAGE_FIELD_NAMES              = new ImageFieldName[] {
             ImageFieldName.appIcon, ImageFieldName.graphic, ImageFieldName.softButtonImage };
     private static final FileType[]             IMAGE_FILE_TYPES               = new FileType[] { FileType.GRAPHIC_PNG,
             FileType.GRAPHIC_JPEG, FileType.GRAPHIC_BMP                       };
     private static final ImageResolution[]      IMAGE_RESOLUTIONS              = new ImageResolution[3];
-
+    private static final Integer				IMAGE_RESOLUTION_ITEM_1_WIDTH  = 20;
+    private static final Integer				IMAGE_RESOLUTION_ITEM_1_HEIGHT = 20;
+    private static final ImageFieldName 		IMAGE_FIELD_NAME_CHANGED	   = ImageFieldName.showConstantTBTIcon;
+    private static final FileType				IMAGE_FILE_TYPE_CHANGED		   = FileType.AUDIO_MP3;
+    private static final Integer				IMAGE_RESOLUTION_HEIGHT_CHANGED= 45;
+    
+    
     private static final List<String>           TEMPLATES_AVAILABLE            = Arrays.asList(new String[] { "Media",
             "Navigation", "Productivity"                                      });
+    private static final String 				TEMPLATES_ITEM_CHANGED		   = "Nothing";
+    
     private static final List<MediaClockFormat> MEDIA_CLOCK_FORMATS            = Arrays.asList(new MediaClockFormat[] { MediaClockFormat.CLOCK1 });
-
+    private static final MediaClockFormat 		MEDIA_CLOCK_FORMAT_CHANGED 	   = MediaClockFormat.CLOCK3;
+    
     private DisplayCapabilities                 msg;
 
     private ScreenParams                        screenParams;
@@ -70,8 +85,8 @@ public class DisplayCapabilitiesTests extends TestCase{
 
     @Override
     public void setUp(){
-    	IMAGE_RESOLUTIONS[0].setResolutionWidth(20);
-    	IMAGE_RESOLUTIONS[0].setResolutionHeight(20);
+    	IMAGE_RESOLUTIONS[0].setResolutionWidth(IMAGE_RESOLUTION_ITEM_1_WIDTH);
+    	IMAGE_RESOLUTIONS[0].setResolutionHeight(IMAGE_RESOLUTION_ITEM_1_HEIGHT);
     	IMAGE_RESOLUTIONS[1].setResolutionWidth(30);
     	IMAGE_RESOLUTIONS[1].setResolutionHeight(30);
     	IMAGE_RESOLUTIONS[2].setResolutionWidth(10);
@@ -145,13 +160,38 @@ public class DisplayCapabilitiesTests extends TestCase{
 
     public void testScreenParams(){
         ScreenParams copy = msg.getScreenParams();
-        assertNotSame("ScreenParams value was not defensive copied.", screenParams, copy);
+
         assertTrue("Input value didn't match expected value.", Validator.validateScreenParams(screenParams, copy));
     }
 
+    public void testGetScreenParams(){
+    	ScreenParams copy1 = msg.getScreenParams();
+    	ImageResolution imageResolution1 = copy1.getImageResolution();
+    	imageResolution1.setResolutionHeight(SCREEN_IMAGE_RESOLUTION_HEIGHT_CHANGED);
+    	TouchEventCapabilities touchEvent1 = copy1.getTouchEventAvailable();
+    	touchEvent1.setMultiTouchAvailable(MULTI_TOUCH_AVAILABLE_CHANGED);
+    	ScreenParams copy2 = msg.getScreenParams();
+    	
+    	assertNotSame("Screen parameters were not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateScreenParams(copy1, copy2));
+    }
+    
+    public void testSetScreenParams(){
+    	ScreenParams copy1 = msg.getScreenParams();
+    	ImageResolution imageResolution1 = copy1.getImageResolution();
+    	TouchEventCapabilities touchEvent1 = copy1.getTouchEventAvailable();
+    	msg.setScreenParams(copy1);
+    	imageResolution1.setResolutionHeight(SCREEN_IMAGE_RESOLUTION_HEIGHT_CHANGED);
+    	touchEvent1.setMultiTouchAvailable(MULTI_TOUCH_AVAILABLE_CHANGED);
+    	ScreenParams copy2 = msg.getScreenParams();
+    	
+    	assertNotSame("Screen parameters were not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateScreenParams(copy1, copy2));
+    }
+    
     public void testTemplatesAvailable(){
         List<String> copy = msg.getTemplatesAvailable();
-        assertNotSame("Templates available value wasn't defensive copied.", TEMPLATES_AVAILABLE, copy);
+
         assertEquals("Templates available size didn't match expected size.", TEMPLATES_AVAILABLE.size(), copy.size());
 
         for(int i = 0; i < TEMPLATES_AVAILABLE.size(); i++){
@@ -159,10 +199,29 @@ public class DisplayCapabilitiesTests extends TestCase{
                     copy.get(i));
         }
     }
+    
+    public void testGetTemplatesAvailable() {
+    	List<String> copy1 = msg.getTemplatesAvailable();
+    	copy1.set(0, TEMPLATES_ITEM_CHANGED);
+    	List<String> copy2 = msg.getTemplatesAvailable();
+    	
+    	assertNotSame("Templates list was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
+    }
+    
+    public void testSetTemplatesAvailable() {
+    	List<String> copy1 = msg.getTemplatesAvailable();
+    	msg.setTemplatesAvailable(copy1);
+    	copy1.set(0, TEMPLATES_ITEM_CHANGED);
+    	List<String> copy2 = msg.getTemplatesAvailable();
+    	
+    	assertNotSame("Templates list was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
+    }
 
     public void testMediaClockFormats(){
         List<MediaClockFormat> copy = msg.getMediaClockFormats();
-        assertNotSame("Media clock formats value wasn't defensive copied.", MEDIA_CLOCK_FORMATS, copy);
+
         assertEquals("Media clock formats size didn't match expected size.", MEDIA_CLOCK_FORMATS.size(), copy.size());
 
         for(int i = 0; i < MEDIA_CLOCK_FORMATS.size(); i++){
@@ -171,9 +230,33 @@ public class DisplayCapabilitiesTests extends TestCase{
         }
     }
 
+    public void testGetMediaClockFormats() {
+    	List<MediaClockFormat> copy1 = msg.getMediaClockFormats();
+    	copy1.set(0, MEDIA_CLOCK_FORMAT_CHANGED);
+    	List<MediaClockFormat> copy2 = msg.getMediaClockFormats();
+    	
+    	assertNotSame("Templates list was not defensive copied", copy1, copy2);
+    	assertEquals("Media clock formats list lengths do not match", copy1.size(), copy2.size());
+		for (int index = 0; index < copy1.size(); index++) {
+			assertEquals("Input value didn't match expected value", copy1.get(index), copy2.get(index));
+		}
+    }
+    
+    public void testSetMediaClockFormats() {
+    	List<MediaClockFormat> copy1 = msg.getMediaClockFormats();
+    	msg.setMediaClockFormats(copy1);
+    	copy1.set(0, MEDIA_CLOCK_FORMAT_CHANGED);
+    	List<MediaClockFormat> copy2 = msg.getMediaClockFormats();
+    	
+    	assertNotSame("Templates list was not defensive copied", copy1, copy2);
+    	assertEquals("Media clock formats list lengths do not match", copy1.size(), copy2.size());
+		for (int index = 0; index < copy1.size(); index++) {
+			assertEquals("Input value didn't match expected value", copy1.get(index), copy2.get(index));
+		}
+    }
+
     public void testTextFields(){
         List<TextField> copy = msg.getTextFields();
-        assertNotSame("Text fields value wasn't defensive copied.", textFields, copy);
         assertEquals("Text fields size didn't match expected size.", textFields.size(), copy.size());
 
         for(int i = 0; i < textFields.size(); i++){
@@ -181,16 +264,133 @@ public class DisplayCapabilitiesTests extends TestCase{
                     Validator.validateTextFields(textFields.get(i), copy.get(i)));
         }
     }
+    
+    public void testGetTextFields() {
+    	List<TextField> copy1 = msg.getTextFields();
+    	TextField firstItem = copy1.get(0);
+    	firstItem.setName(TEXT_FIELD_NAME_CHANGED);
+    	List<TextField> copy2 = msg.getTextFields();
+    	
+    	assertNotSame("Text field list was not defensive copied", copy1, copy2);
+    	//test the first object for different values, and test the rest of the objects in the list for same values
+    	TextField textFieldFirst1 = copy1.get(0);
+    	TextField textFieldFirst2 = copy2.get(0);
+		
+		assertNotSame("Text field was not defensive copied", textFieldFirst1, textFieldFirst2);
+		assertFalse("Text field objects matched", Validator.validateTextFields(textFieldFirst1, textFieldFirst2));
+		
+    	for (int index = 1; index < copy1.size(); index++) {
+    		TextField textFieldCopy1 = copy1.get(index);
+    		TextField textFieldCopy2 = copy2.get(index);
+    		assertTrue("Input value didn't match expected value", Validator.validateTextFields(textFieldCopy1, textFieldCopy2));
+    	}
+    }
+    
+    public void testSetTextFields() {
+    	List<TextField> copy1 = msg.getTextFields();
+    	TextField firstItem = copy1.get(0);
+    	msg.setTextFields(copy1);
+    	firstItem.setName(TEXT_FIELD_NAME_CHANGED);
+    	List<TextField> copy2 = msg.getTextFields();
+    	
+    	assertNotSame("Text field list was not defensive copied", copy1, copy2);
+    	//test the first object for different values, and test the rest of the objects in the list for same values
+    	TextField textFieldFirst1 = copy1.get(0);
+    	TextField textFieldFirst2 = copy2.get(0);
+		
+		assertNotSame("Text field was not defensive copied", textFieldFirst1, textFieldFirst2);
+		assertFalse("Text field objects matched", Validator.validateTextFields(textFieldFirst1, textFieldFirst2));
+		
+    	for (int index = 1; index < copy1.size(); index++) {
+    		TextField textFieldCopy1 = copy1.get(index);
+    		TextField textFieldCopy2 = copy2.get(index);
+    		assertTrue("Input value didn't match expected value", Validator.validateTextFields(textFieldCopy1, textFieldCopy2));
+    	}
+    }
 
     public void testImageFields(){
         List<ImageField> copy = msg.getImageFields();
-        assertNotSame("Text fields value wasn't defensive copied.", imageFields, copy);
         assertEquals("Text fields size didn't match expected size.", imageFields.size(), copy.size());
 
         for(int i = 0; i < imageFields.size(); i++){
             assertTrue("Text field data at index " + i + " didn't match expected data.",
                     Validator.validateImageFields(imageFields.get(i), copy.get(i)));
         }
+    }
+    
+    public void testGetImageFields() {
+    	List<ImageField> copy1 = msg.getImageFields();
+    	ImageField firstImageField = copy1.get(0);
+    	List<FileType> firstFileTypeInFirstImageField = firstImageField.getImageTypeSupported();
+    	ImageResolution firstImageResolution = firstImageField.getImageResolution();
+    	firstImageField.setName(IMAGE_FIELD_NAME_CHANGED);
+    	firstFileTypeInFirstImageField.set(0, IMAGE_FILE_TYPE_CHANGED);
+    	firstImageResolution.setResolutionHeight(IMAGE_RESOLUTION_HEIGHT_CHANGED);
+    	List<ImageField> copy2 = msg.getImageFields();
+    	
+    	assertNotSame("Image field list was not defensive copied", copy1, copy2);
+    	//test the first object for different values, and test the rest of the objects in the list for same values
+    	ImageField imageFieldFirst1 = copy1.get(0);
+    	ImageField imageFieldFirst2 = copy2.get(0);
+		
+		assertNotSame("Image field was not defensive copied", imageFieldFirst1, imageFieldFirst2);
+		
+		List<FileType> firstFileTypeImageField1 = imageFieldFirst1.getImageTypeSupported();
+		List<FileType> firstFileTypeImageField2 = imageFieldFirst2.getImageTypeSupported();
+		ImageResolution firstImageResolution1 = imageFieldFirst1.getImageResolution();
+		ImageResolution firstImageResolution2 = imageFieldFirst2.getImageResolution();
+		assertNotSame("First file type list was not defensive copied", firstFileTypeImageField1, firstFileTypeImageField2);
+		assertNotSame("First image resolution was not defensive copied", firstImageResolution1, firstImageResolution2);
+		
+		assertFalse("Image field objects matched", Validator.validateImageFields(imageFieldFirst1, imageFieldFirst2));
+		
+    	for (int index = 1; index < copy1.size(); index++) {
+    		ImageField imageFieldCopy1 = copy1.get(index);
+    		ImageField imageFieldCopy2 = copy2.get(index);
+    		
+    		assertNotSame("Image field was not defensive copied", imageFieldFirst1, imageFieldFirst2);
+    		assertNotSame("First file type list was not defensive copied", firstFileTypeImageField1, firstFileTypeImageField2);
+    		assertNotSame("First image resolution was not defensive copied", firstImageResolution1, firstImageResolution2);
+    		assertTrue("Input value didn't match expected value", Validator.validateImageFields(imageFieldCopy1, imageFieldCopy2));
+    	}
+    }
+    
+    public void testSetImageFields() {
+    	List<ImageField> copy1 = msg.getImageFields();
+    	ImageField firstImageField = copy1.get(0);
+    	List<FileType> firstFileTypeInFirstImageField = firstImageField.getImageTypeSupported();
+    	ImageResolution firstImageResolution = firstImageField.getImageResolution();
+    	msg.setImageFields(copy1);
+    	firstImageField.setName(IMAGE_FIELD_NAME_CHANGED);
+    	firstFileTypeInFirstImageField.set(0, IMAGE_FILE_TYPE_CHANGED);
+    	firstImageResolution.setResolutionHeight(IMAGE_RESOLUTION_HEIGHT_CHANGED);
+    	List<ImageField> copy2 = msg.getImageFields();
+    	
+    	assertNotSame("Image field list was not defensive copied", copy1, copy2);
+    	//test the first object for different values, and test the rest of the objects in the list for same values
+    	ImageField imageFieldFirst1 = copy1.get(0);
+    	ImageField imageFieldFirst2 = copy2.get(0);
+		
+		assertNotSame("Image field was not defensive copied", imageFieldFirst1, imageFieldFirst2);
+		
+		List<FileType> firstFileTypeImageField1 = imageFieldFirst1.getImageTypeSupported();
+		List<FileType> firstFileTypeImageField2 = imageFieldFirst2.getImageTypeSupported();
+		ImageResolution firstImageResolution1 = imageFieldFirst1.getImageResolution();
+		ImageResolution firstImageResolution2 = imageFieldFirst2.getImageResolution();
+		assertNotSame("First file type list was not defensive copied", firstFileTypeImageField1, firstFileTypeImageField2);
+		assertNotSame("First image resolution was not defensive copied", firstImageResolution1, firstImageResolution2);
+		
+		assertFalse("Image field objects matched", Validator.validateImageFields(imageFieldFirst1, imageFieldFirst2));
+		
+    	for (int index = 1; index < copy1.size(); index++) {
+    		ImageField imageFieldCopy1 = copy1.get(index);
+    		ImageField imageFieldCopy2 = copy2.get(index);
+    		
+    		assertNotSame("Image field was not defensive copied", imageFieldFirst1, imageFieldFirst2);
+    		assertNotSame("First file type list was not defensive copied", firstFileTypeImageField1, firstFileTypeImageField2);
+    		assertNotSame("First image resolution was not defensive copied", firstImageResolution1, firstImageResolution2);
+    		assertTrue("Input value didn't match expected value", Validator.validateImageFields(imageFieldCopy1, imageFieldCopy2));
+    	}
     }
     
     public void testJson(){
