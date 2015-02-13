@@ -70,12 +70,15 @@ public class DisplayCapabilitiesTests extends TestCase{
 
     @Override
     public void setUp(){
+        IMAGE_RESOLUTIONS[0] = new ImageResolution();
     	IMAGE_RESOLUTIONS[0].setResolutionWidth(20);
     	IMAGE_RESOLUTIONS[0].setResolutionHeight(20);
+        IMAGE_RESOLUTIONS[1] = new ImageResolution();
     	IMAGE_RESOLUTIONS[1].setResolutionWidth(30);
     	IMAGE_RESOLUTIONS[1].setResolutionHeight(30);
+        IMAGE_RESOLUTIONS[2] = new ImageResolution();
     	IMAGE_RESOLUTIONS[2].setResolutionWidth(10);
-    	IMAGE_RESOLUTIONS[3].setResolutionHeight(10);
+    	IMAGE_RESOLUTIONS[2].setResolutionHeight(10);
     	
     	msg = new DisplayCapabilities();
 

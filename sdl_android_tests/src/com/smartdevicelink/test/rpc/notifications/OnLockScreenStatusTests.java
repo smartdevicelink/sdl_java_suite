@@ -45,8 +45,7 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, Boolean.valueOf(DRIVER_DISTRACTED)
-                    .toString());
+            result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, DRIVER_DISTRACTED);
             //TODO: is OnHMIStatus correct class for this variable?
             result.put(OnHMIStatus.KEY_HMI_LEVEL, HMI_LEVEL);
             result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, SHOW_LOCK_SCREEN);

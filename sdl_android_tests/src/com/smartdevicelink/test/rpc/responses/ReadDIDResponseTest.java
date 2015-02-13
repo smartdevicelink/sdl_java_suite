@@ -42,8 +42,8 @@ public class ReadDIDResponseTest extends BaseRpcTests {
 		item1.setResultCode(VehicleDataResultCode.SUCCESS);
 		
 		DIDResult item2 = new DIDResult();
-		item1.setData("info");
-		item1.setResultCode(VehicleDataResultCode.IGNORED);
+		item2.setData("info");
+		item2.setResultCode(VehicleDataResultCode.IGNORED);
 		didResults.add(item1);
 		didResults.add(item2);
 	}

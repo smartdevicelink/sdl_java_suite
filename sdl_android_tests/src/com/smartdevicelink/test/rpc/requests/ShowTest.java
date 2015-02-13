@@ -67,7 +67,7 @@ public class ShowTest extends BaseRpcTests {
 	}
 	
 	private void createCustomObjects () {
-		softButtons = new ArrayList<SoftButton>(2);
+		softButtons = new ArrayList<SoftButton>(3);
 
         SoftButton button = new SoftButton();
         button.setType(SoftButtonType.SBT_TEXT);
@@ -80,7 +80,7 @@ public class ShowTest extends BaseRpcTests {
         button = new SoftButton();
         button.setType(SoftButtonType.SBT_BOTH);
         button.setIsHighlighted(false);
-        button.setSoftButtonID(100);
+        button.setSoftButtonID(101);
         button.setText("123ABC");
         button.setSystemAction(SystemAction.STEAL_FOCUS);
         softButtons.add(button);   
@@ -127,11 +127,16 @@ public class ShowTest extends BaseRpcTests {
             softButtons.put(softButton);
 
             softButton = new JSONObject();
-            softButton.put(SoftButton.KEY_SOFT_BUTTON_ID, 100);
+            softButton.put(SoftButton.KEY_SOFT_BUTTON_ID, 101);
             softButton.put(SoftButton.KEY_IS_HIGHLIGHTED, false);
             softButton.put(SoftButton.KEY_SYSTEM_ACTION, SystemAction.STEAL_FOCUS);
             softButton.put(SoftButton.KEY_TEXT, "123ABC");
             softButton.put(SoftButton.KEY_TYPE, SoftButtonType.SBT_BOTH);
+            softButtons.put(softButton);
+            
+            softButton = new JSONObject();
+            softButton.put(SoftButton.KEY_IS_HIGHLIGHTED, SOFT_BUTTON_HIGHLIGHTED);
+            softButton.put(SoftButton.KEY_TEXT, SOFT_BUTTON_TEXT);
 
             JSONObject image = new JSONObject();
             image.put(Image.KEY_IMAGE_TYPE, ImageType.DYNAMIC);
