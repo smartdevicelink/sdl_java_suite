@@ -189,6 +189,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<PrerecordedSpeech> _prerecordedSpeech = null;
 	protected List<VrCapabilities> _vrCapabilities = null;
 	protected VehicleType _vehicleType = null;
+	protected List<AudioPassThruCapabilities> _audioPassThruCapabilities = null;
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
@@ -624,8 +625,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			return;
 		}
-		Context myContext = myService.getApplicationContext();
-		if (myContext != null) myContext.sendBroadcast(sendIntent);		
+		try
+		{
+			Context myContext = myService.getApplicationContext();
+			if (myContext != null) myContext.sendBroadcast(sendIntent);
+		}
+		catch(Exception ex)
+		{
+			//If the service or context has become unavailable unexpectedly, catch the exception and move on -- no broadcast log will occur. 
+		}
 	}
 
 	private void writeToFile(Object writeME, String fileName) {
@@ -1465,6 +1473,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_sdlMsgVersion = msg.getSdlMsgVersion();
 					_vrCapabilities = msg.getVrCapabilities();
 					_vehicleType = msg.getVehicleType();
+					_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 					_proxyVersionInfo = msg.getProxyVersionInfo();																			
 
 					if (_bAppResumeEnabled)
@@ -1613,6 +1622,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_sdlMsgVersion = msg.getSdlMsgVersion();
 				_vrCapabilities = msg.getVrCapabilities();
 				_vehicleType = msg.getVehicleType();
+				_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 				_proxyVersionInfo = msg.getProxyVersionInfo();
 				
 				if (_bAppResumeEnabled)

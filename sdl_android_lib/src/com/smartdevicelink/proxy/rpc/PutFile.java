@@ -136,14 +136,10 @@ public class PutFile extends RPCRequest {
         return (Boolean) parameters.get(KEY_PERSISTENT_FILE);
     }
     public void setFileData(byte[] fileData) {
-        if (fileData != null) {
-            parameters.put(RPCStruct.KEY_BULK_DATA, fileData);
-        } else {
-        	parameters.remove(RPCStruct.KEY_BULK_DATA);
-        }
+        setBulkData(fileData);
     }
     public byte[] getFileData() {
-        return (byte[]) parameters.get(RPCStruct.KEY_BULK_DATA);
+        return getBulkData();
     }
     
     public void setOffset(Integer offset) {
