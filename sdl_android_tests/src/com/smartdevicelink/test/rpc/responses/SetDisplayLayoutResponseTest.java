@@ -85,8 +85,25 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 						
 			result.put(SetDisplayLayoutResponse.KEY_DISPLAY_CAPABILITIES, DISPLAY_CAPABILITIES.serializeJSON());
 			result.put(SetDisplayLayoutResponse.KEY_PRESET_BANK_CAPABILITIES, presetBank);
-			result.put(SetDisplayLayoutResponse.KEY_BUTTON_CAPABILITIES, JsonUtils.createJsonArray(BUTTON_CAPABILITIES_LIST)); // more?
-			result.put(SetDisplayLayoutResponse.KEY_SOFT_BUTTON_CAPABILITIES, JsonUtils.createJsonArray(SOFT_BUTTON_CAPABILITIES_LIST)); //more?
+			
+			JSONObject buttonCapabilitiesObj = new JSONObject();
+			JSONArray buttonCapabilitiesArray = new JSONArray();
+            buttonCapabilitiesObj.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, true);
+            buttonCapabilitiesObj.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, false);
+            buttonCapabilitiesObj.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, true);
+            buttonCapabilitiesArray.put(buttonCapabilitiesObj);
+			
+			result.put(SetDisplayLayoutResponse.KEY_BUTTON_CAPABILITIES, buttonCapabilitiesArray);
+            
+            JSONObject softButtonCapabilitiesObj = new JSONObject();
+            JSONArray softButtonCapabilitiesArray = new JSONArray();
+            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, true);
+            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, true);
+            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, false);
+            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, false);
+            softButtonCapabilitiesArray.put(softButtonCapabilitiesObj);
+			
+			result.put(SetDisplayLayoutResponse.KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilitiesArray);
 			
 		} catch (JSONException e) {
 			/* do nothing */

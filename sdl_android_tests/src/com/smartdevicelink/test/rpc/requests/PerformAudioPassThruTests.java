@@ -83,6 +83,12 @@ public class PerformAudioPassThruTests extends BaseRpcTests {
 			result.put(PerformAudioPassThru.KEY_AUDIO_TYPE,      AUDIO_TYPE);
 			result.put(PerformAudioPassThru.KEY_SAMPLING_RATE,   SAMPLING_RATE);
 			result.put(PerformAudioPassThru.KEY_BITS_PER_SAMPLE, BITS_PER_SAMPLE);
+			
+			JSONObject initialPromptObj = new JSONObject();
+			initialPromptObj.put(TTSChunk.KEY_TYPE, TEST_SPEECH);
+			initialPromptObj.put(TTSChunk.KEY_TEXT, HELLO_STRING);
+			JSONArray initialPromptArray = new JSONArray();
+			initialPromptArray.put(initialPromptObj);
 			result.put(PerformAudioPassThru.KEY_INITIAL_PROMPT,  JsonUtils.createJsonArray(INITIAL_PROMPT));
 			
 		} catch (JSONException e) {

@@ -40,7 +40,7 @@ public final class JsonUtils {
 		JSONArray result = new JSONArray();
 		
 		for(Enum<?> name : parameterList){
-			result.put(name.name());
+			result.put(name);
 		}
 		
 		return result;

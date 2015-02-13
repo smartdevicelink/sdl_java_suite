@@ -266,7 +266,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			audioPass = new JSONObject();
 			audioPass.put(AudioPassThruCapabilities.KEY_AUDIO_TYPE,      AudioType.PCM);
 			audioPass.put(AudioPassThruCapabilities.KEY_SAMPLING_RATE,   SamplingRate._16KHZ);
-			audioPass.put(AudioPassThruCapabilities.KEY_BITS_PER_SAMPLE, BitsPerSample._8_BIT);
+			audioPass.put(AudioPassThruCapabilities.KEY_BITS_PER_SAMPLE, BitsPerSample._16_BIT);
 			audioPasses.put(audioPass);
 			
 			softButton.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED,       false);
@@ -281,12 +281,19 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			softButton.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE,  false);
 			softButton.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, false);
 			softButtons.put(softButton);
-			
-			button.put(ButtonCapabilities.KEY_NAME,           ButtonName.OK);
-			button.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE,     false);
-			button.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE,  true);
-			button.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, true);
-			buttons.put(button);
+            
+            button.put(ButtonCapabilities.KEY_NAME,           ButtonName.OK);
+            button.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE,     false);
+            button.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE,  true);
+            button.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, true);
+            buttons.put(button);
+            
+            button = new JSONObject();
+            button.put(ButtonCapabilities.KEY_NAME,           ButtonName.CUSTOM_BUTTON);
+            button.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE,     false);
+            button.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE,  false);
+            button.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, false);
+            buttons.put(button);
 			
 			button = new JSONObject();
 			button.put(ButtonCapabilities.KEY_NAME,           ButtonName.CUSTOM_BUTTON);
@@ -297,9 +304,11 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			resolution.put(ImageResolution.KEY_RESOLUTION_HEIGHT, 10);
 			resolution.put(ImageResolution.KEY_RESOLUTION_WIDTH,  10);
 			//TODO: correct value to put in? ImageFieldName.appIcon.name()
-			image.put(ImageField.KEY_NAME,                 ImageFieldName.appIcon.name());
+			image.put(ImageField.KEY_NAME,                 ImageFieldName.appIcon);
 			image.put(ImageField.KEY_IMAGE_RESOLUTION,     resolution);
-			image.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, FileType.BINARY);
+			JSONArray imageTypes = new JSONArray();
+			imageTypes.put(FileType.BINARY);
+			image.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, imageTypes);
 			images.put(image);
 			
 			resolution = new JSONObject();
@@ -307,9 +316,11 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			resolution.put(ImageResolution.KEY_RESOLUTION_WIDTH,  50);
 			//TODO: correct value to put in? ImageFieldName.graphic.name()
 			image = new JSONObject();
-			image.put(ImageField.KEY_NAME,                 ImageFieldName.graphic.name());
+			image.put(ImageField.KEY_NAME,                 ImageFieldName.graphic);
 			image.put(ImageField.KEY_IMAGE_RESOLUTION,     resolution);
-			image.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, FileType.GRAPHIC_JPEG);
+			imageTypes = new JSONArray();
+			imageTypes.put(FileType.GRAPHIC_JPEG);
+			image.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, imageTypes);
 			images.put(image);	
 			
 			touch.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE,        true);

@@ -63,7 +63,13 @@ public class ScrollableMessageTest extends BaseRpcTests {
 		try {
 			result.put(ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY, MESSAGE);
 			result.put(ScrollableMessage.KEY_TIMEOUT, TIMEOUT);
-			result.put(ScrollableMessage.KEY_SOFT_BUTTONS, JsonUtils.createJsonArray(SOFT_BUTTON_LIST));
+			
+			JSONObject softButtonObj = new JSONObject();
+			softButtonObj.put(SoftButton.KEY_TEXT, SOFT_BUTTON_TEXT);
+			softButtonObj.put(SoftButton.KEY_IS_HIGHLIGHTED, SOFT_BUTTON_HIGHLIGHTED);
+			JSONArray softButtonArray = new JSONArray();
+			softButtonArray.put(softButtonObj);
+			result.put(ScrollableMessage.KEY_SOFT_BUTTONS, softButtonArray);
 			
 		} catch (JSONException e) {
 			/* do nothing */

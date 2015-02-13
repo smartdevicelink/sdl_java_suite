@@ -101,20 +101,17 @@ public class DisplayCapabilitiesTests extends TestCase{
     }
 
     private void createCustomObjects(){
-    	ImageResolution imageResolutionForImageFields1 = new ImageResolution();
-    	imageResolutionForImageFields1.setResolutionWidth(IMAGE_RESOLUTION_ITEM_1_WIDTH);
-    	imageResolutionForImageFields1.setResolutionHeight(IMAGE_RESOLUTION_ITEM_1_HEIGHT);
-    	IMAGE_RESOLUTIONS[0] = imageResolutionForImageFields1;
+    	IMAGE_RESOLUTIONS[0] = new ImageResolution();
+    	IMAGE_RESOLUTIONS[0].setResolutionWidth(IMAGE_RESOLUTION_ITEM_1_WIDTH);
+    	IMAGE_RESOLUTIONS[0].setResolutionHeight(IMAGE_RESOLUTION_ITEM_1_HEIGHT);
     	
-    	ImageResolution imageResolutionForImageFields2 = new ImageResolution();
-    	imageResolutionForImageFields2.setResolutionWidth(IMAGE_RESOLUTION_ITEM_2_WIDTH);
-    	imageResolutionForImageFields2.setResolutionHeight(IMAGE_RESOLUTION_ITEM_2_HEIGHT);
-    	IMAGE_RESOLUTIONS[1] = imageResolutionForImageFields2;
+    	IMAGE_RESOLUTIONS[1] = new ImageResolution();
+    	IMAGE_RESOLUTIONS[1].setResolutionWidth(IMAGE_RESOLUTION_ITEM_2_WIDTH);
+    	IMAGE_RESOLUTIONS[1].setResolutionHeight(IMAGE_RESOLUTION_ITEM_2_HEIGHT);
     	
-    	ImageResolution imageResolutionForImageFields3 = new ImageResolution();
-    	imageResolutionForImageFields3.setResolutionWidth(IMAGE_RESOLUTION_ITEM_3_WIDTH);
-    	imageResolutionForImageFields3.setResolutionHeight(IMAGE_RESOLUTION_ITEM_3_HEIGHT);
-    	IMAGE_RESOLUTIONS[2] = imageResolutionForImageFields3;
+    	IMAGE_RESOLUTIONS[2] = new ImageResolution();
+    	IMAGE_RESOLUTIONS[2].setResolutionWidth(IMAGE_RESOLUTION_ITEM_3_WIDTH);
+    	IMAGE_RESOLUTIONS[2].setResolutionHeight(IMAGE_RESOLUTION_ITEM_3_HEIGHT);
     	
         imageResolution = new ImageResolution();
         imageResolution.setResolutionWidth(SCREEN_IMAGE_RESOLUTION_WIDTH);
@@ -325,12 +322,6 @@ public class DisplayCapabilitiesTests extends TestCase{
         assertEquals("Text fields size didn't match expected size.", imageFields.size(), copy.size());
        
         for(int i = 0; i < imageFields.size(); i++){
-        	try {
-				System.out.println(imageFields.get(i).serializeJSON());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-        	
             assertTrue("Text field data at index " + i + " didn't match expected data.",
                     Validator.validateImageFields(imageFields.get(i), copy.get(i)));
         }

@@ -97,30 +97,37 @@ public class OnTouchEventTests extends BaseRpcTests{
     protected JSONObject getExpectedParameters(int sdlVersion){
         JSONObject result = new JSONObject();
         JSONObject coordJsonObject, eventJsonObject;
-        JSONArray eventJsonArray = new JSONArray();
+        JSONArray eventJsonArray = new JSONArray(), tsArray = new JSONArray();
 
         try{
             coordJsonObject = new JSONObject();
             eventJsonObject = new JSONObject();
             
+            JSONArray coordArray = new JSONArray();
             coordJsonObject.put(TouchCoord.KEY_X, X_1);
             coordJsonObject.put(TouchCoord.KEY_Y, Y_1);
+            coordArray.put(coordJsonObject);
             
-            eventJsonObject.put(TouchEvent.KEY_C, coordJsonObject);
+            eventJsonObject.put(TouchEvent.KEY_C, coordArray);
             eventJsonObject.put(TouchEvent.KEY_ID, ID_1);
-            eventJsonObject.put(TouchEvent.KEY_TS, TIMESTAMP_1);
+            tsArray.put(TIMESTAMP_1);
+            eventJsonObject.put(TouchEvent.KEY_TS, tsArray);
             
             eventJsonArray.put(eventJsonObject);
 
             coordJsonObject = new JSONObject();
             eventJsonObject = new JSONObject();
+            coordArray = new JSONArray();
             
             coordJsonObject.put(TouchCoord.KEY_X, X_2);
             coordJsonObject.put(TouchCoord.KEY_Y, Y_2);
+            coordArray.put(coordJsonObject);
             
-            eventJsonObject.put(TouchEvent.KEY_C, coordJsonObject);
+            eventJsonObject.put(TouchEvent.KEY_C, coordArray);
             eventJsonObject.put(TouchEvent.KEY_ID, ID_2);
-            eventJsonObject.put(TouchEvent.KEY_TS, TIMESTAMP_2);
+            tsArray = new JSONArray();
+            tsArray.put(TIMESTAMP_2);
+            eventJsonObject.put(TouchEvent.KEY_TS, tsArray);
 
             eventJsonArray.put(eventJsonObject);
             

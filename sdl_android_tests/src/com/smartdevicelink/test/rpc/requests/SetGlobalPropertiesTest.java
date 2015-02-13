@@ -153,7 +153,7 @@ public class SetGlobalPropertiesTest extends BaseRpcTests {
 			vrHelpItems.put(vrHelpItem);
 			
 			image = new JSONObject();
-			image.put(Image.KEY_IMAGE_TYPE, ImageType.STATIC);
+			image.put(Image.KEY_IMAGE_TYPE, ImageType.DYNAMIC);
 			image.put(Image.KEY_VALUE, "value");
 			
 			keyboard.put(KeyboardProperties.KEY_LANGUAGE, Language.EN_US);
