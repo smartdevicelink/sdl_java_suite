@@ -807,12 +807,12 @@ public class Validator{
         if(item2 == null){
             return ( item1 == null );
         }
-        
+        /*
         if(item1 == item2){
             log("validatePermissionItem", "Items are the same object.  No defensive copy took place.");
             return false;
         }
-
+		*/
         if(!item1.getRpcName().equals(item2.getRpcName())){
             return false;
         }
@@ -835,27 +835,18 @@ public class Validator{
         if(item2 == null){
             return ( item1 == null );
         }
-        
+        /*
         if(item1 == item2){
             log("validateHmiPermissions", "Items are the same object.  No defensive copy took place.");
             return false;
         }
-
-        List<HMILevel> item1Array = item1.getAllowed();
-        List<HMILevel> item2Array = item2.getAllowed();
-
-        if(item1Array.size() != item2Array.size()){
+         */
+        if(!validateHmiLevelLists(item1.getAllowed(), item2.getAllowed())){
             return false;
         }
 
-        for(int i = 0; i < item1Array.size(); i++){
-            if(item1Array.get(i) != item2Array.get(i)){
-                return false;
-            }
-        }
-
-        item1Array = item1.getUserDisallowed();
-        item2Array = item2.getUserDisallowed();
+        List<HMILevel> item1Array = item1.getUserDisallowed();
+        List<HMILevel> item2Array = item2.getUserDisallowed();
 
         if(item1Array.size() != item2Array.size()){
             return false;
@@ -869,6 +860,19 @@ public class Validator{
 
         return true;
     }
+    
+    public static boolean validateHmiLevelLists(List<HMILevel> item1Array, List<HMILevel> item2Array) {
+        if(item1Array.size() != item2Array.size()){
+            return false;
+        }
+
+        for(int i = 0; i < item1Array.size(); i++){
+            if(item1Array.get(i) != item2Array.get(i)){
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static boolean validateParameterPermissions(ParameterPermissions item1, ParameterPermissions item2){
         if(item1 == null){
@@ -877,12 +881,12 @@ public class Validator{
         if(item2 == null){
             return ( item1 == null );
         }
-        
+        /*
         if(item1 == item2){
             log("validateParameterPermissions", "Items are the same object.  No defensive copy took place.");
             return false;
         }
-
+		*/
         if(!validateStringList(item1.getAllowed(), item2.getAllowed())){
             return false;
         }
