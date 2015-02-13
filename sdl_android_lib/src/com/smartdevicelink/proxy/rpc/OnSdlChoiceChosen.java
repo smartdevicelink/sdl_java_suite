@@ -91,7 +91,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		private Choice _choice = null;
 		
 		// Constructor
-		SdlChoice(Choice choice) {
+		public SdlChoice(Choice choice) {
 			_choice = choice;
 		}
 		
