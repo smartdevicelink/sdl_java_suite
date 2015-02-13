@@ -18,11 +18,12 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class KeyboardPropertiesTests extends TestCase{
 
-    private static final String         AUTO_COMPLETE_TEXT = "ducking";
-    private static final Language       LANGUAGE           = Language.AR_SA;
-    private static final KeyboardLayout KEYBOARD_LAYOUT    = KeyboardLayout.QWERTY;
-    private static final KeypressMode   KEYPRESS_MODE      = KeypressMode.SINGLE_KEYPRESS;
-    private static final List<String>   LIMITED_CHAR_LIST  = Arrays.asList(new String[] { "R", "S", "T", "L", "N", "E" });
+    private static final String         AUTO_COMPLETE_TEXT 			= "ducking";
+    private static final Language       LANGUAGE           			= Language.AR_SA;
+    private static final KeyboardLayout KEYBOARD_LAYOUT    			= KeyboardLayout.QWERTY;
+    private static final KeypressMode   KEYPRESS_MODE      			= KeypressMode.SINGLE_KEYPRESS;
+    private static final List<String>   LIMITED_CHAR_LIST  			= Arrays.asList(new String[] { "R", "S", "T", "L", "N", "E" });
+    private static final String 		LIMITED_CHAR_ITEM_CHANGED 	= "O";
 
     private KeyboardProperties          msg;
 
@@ -59,9 +60,28 @@ public class KeyboardPropertiesTests extends TestCase{
 
     public void testLimitedCharacterList(){
         List<String> copy = msg.getLimitedCharacterList();
-        assertNotSame("Input value wasn't defensive copied.", LIMITED_CHAR_LIST, copy);
+
         assertEquals("Input value size didn't match expected size.", LIMITED_CHAR_LIST.size(), copy.size());
         assertTrue("Input value didn't match expected value.", Validator.validateStringList(LIMITED_CHAR_LIST, copy));
+    }
+    
+    public void testGetLimitedCharacterList() {
+    	List<String> copy1 = msg.getLimitedCharacterList();
+    	copy1.set(0, LIMITED_CHAR_ITEM_CHANGED);
+    	List<String> copy2 = msg.getLimitedCharacterList();
+    	
+    	assertNotSame("Limited character list was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
+    }
+    
+    public void testSetLimitedCharacterList() {
+    	List<String> copy1 = msg.getLimitedCharacterList();
+    	msg.setLimitedCharacterList(copy1);
+    	copy1.set(0, LIMITED_CHAR_ITEM_CHANGED);
+    	List<String> copy2 = msg.getLimitedCharacterList();
+    	
+    	assertNotSame("Limited character list was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
     }
 
     public void testJson(){

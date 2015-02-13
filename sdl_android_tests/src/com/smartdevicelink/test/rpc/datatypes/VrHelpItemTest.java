@@ -19,14 +19,17 @@ public class VrHelpItemTest extends TestCase {
 
 	private static final String TEXT = "text";
 	private static final Image IMAGE = new Image();
+	private static final String IMAGE_VALUE = Image.KEY_VALUE;
+	private static final ImageType IMAGE_TYPE = ImageType.DYNAMIC;
+	private static final ImageType IMAGE_TYPE_CHANGED = ImageType.STATIC;
 	private static final Integer POSITION = 0;
 	
 	private VrHelpItem msg;
 
 	@Override
 	public void setUp() {
-		IMAGE.setValue(Image.KEY_VALUE);
-		IMAGE.setImageType(ImageType.DYNAMIC);
+		IMAGE.setValue(IMAGE_VALUE);
+		IMAGE.setImageType(IMAGE_TYPE);
 		
 		msg = new VrHelpItem();
 		
@@ -45,9 +48,27 @@ public class VrHelpItemTest extends TestCase {
 	public void testImage () {
 		Image copy = msg.getImage();
 		
-		assertNotSame("Image was not defensive copied", IMAGE, copy);
 	    assertTrue("Input value didn't match expected value.", Validator.validateImage(IMAGE, copy));
 	}
+	
+    public void testGetImage(){
+    	Image copy1 = msg.getImage();
+    	copy1.setImageType(IMAGE_TYPE_CHANGED); 
+    	Image copy2 = msg.getImage();
+    	
+    	assertNotSame("Image was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
+    }
+    
+    public void testSetImage(){
+    	Image copy1 = msg.getImage();   	
+    	msg.setImage(copy1);
+    	copy1.setImageType(IMAGE_TYPE_CHANGED);
+    	Image copy2 = msg.getImage();
+    	
+    	assertNotSame("Image was not defensive copied", copy1, copy2);
+    	assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
+    }
 	
 	public void testPosition () {
 		Integer copy = msg.getPosition();
