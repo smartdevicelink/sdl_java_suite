@@ -47,22 +47,22 @@ public class AppHmiTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "deFaUlt";
 		try {
-			AppHMIType.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    AppHMIType temp = AppHMIType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			AppHMIType.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    AppHMIType temp = AppHMIType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

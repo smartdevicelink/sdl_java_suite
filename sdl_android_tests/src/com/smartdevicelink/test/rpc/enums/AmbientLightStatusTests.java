@@ -41,24 +41,24 @@ public class AmbientLightStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "niGHt";
 		try {
-			AmbientLightStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    AmbientLightStatus temp = AmbientLightStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+			fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			AmbientLightStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    AmbientLightStatus temp = AmbientLightStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
-	}	
+	}
 	
 	public void testListEnum() {
  		List<AmbientLightStatus> enumValueList = Arrays.asList(AmbientLightStatus.values());

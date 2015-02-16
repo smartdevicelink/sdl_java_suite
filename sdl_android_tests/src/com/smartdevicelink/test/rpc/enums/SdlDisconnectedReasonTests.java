@@ -77,22 +77,22 @@ public class SdlDisconnectedReasonTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "uSer_ExiT";
 		try {
-			SdlDisconnectedReason.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    SdlDisconnectedReason temp = SdlDisconnectedReason.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			SdlDisconnectedReason.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    SdlDisconnectedReason temp = SdlDisconnectedReason.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

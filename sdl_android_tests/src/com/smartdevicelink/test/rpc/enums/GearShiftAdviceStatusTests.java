@@ -35,22 +35,22 @@ public class GearShiftAdviceStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "no_INdICaTIon";
 		try {
-			GearShiftAdviceStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    GearShiftAdviceStatus temp = GearShiftAdviceStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			GearShiftAdviceStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    GearShiftAdviceStatus temp = GearShiftAdviceStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

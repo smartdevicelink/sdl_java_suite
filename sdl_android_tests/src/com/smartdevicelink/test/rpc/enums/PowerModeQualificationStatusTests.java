@@ -29,22 +29,22 @@ public class PowerModeQualificationStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "poweR_moDE_UndEfiNEd";
 		try {
-			PowerModeQualificationStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    PowerModeQualificationStatus temp = PowerModeQualificationStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			PowerModeQualificationStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    PowerModeQualificationStatus temp = PowerModeQualificationStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

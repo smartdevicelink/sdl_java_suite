@@ -23,22 +23,22 @@ public class DriverDistractionStateTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "dD_oN";
 		try {
-			DriverDistractionState.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    DriverDistractionState temp = DriverDistractionState.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			DriverDistractionState.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    DriverDistractionState temp = DriverDistractionState.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

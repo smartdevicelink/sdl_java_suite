@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 
 public class SdlInterfaceAvailabilityTests extends TestCase {
-	/*
+
 	public void testValidEnums () {	
 		String example = "SDL_INTERFACE_AVAILABLE";
 		SdlInterfaceAvailability enumSdlInterfaceAvailable = SdlInterfaceAvailability.valueForString(example);
@@ -23,25 +23,25 @@ public class SdlInterfaceAvailabilityTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "sdL_inTERFacE_AvaIlAble";
 		try {
-			SdlInterfaceAvailability.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    SdlInterfaceAvailability temp = SdlInterfaceAvailability.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			SdlInterfaceAvailability.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    SdlInterfaceAvailability temp = SdlInterfaceAvailability.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
-	}	
-	*/
+	}
+
 	public void testListEnum() {
  		List<SdlInterfaceAvailability> enumValueList = Arrays.asList(SdlInterfaceAvailability.values());
 

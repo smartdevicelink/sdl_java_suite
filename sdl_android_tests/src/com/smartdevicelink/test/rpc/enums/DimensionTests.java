@@ -23,42 +23,27 @@ public class DimensionTests extends TestCase {
 		assertNotNull("3D returned null", enum3D);
 	}
 
-	//use this test if it's supposed to throw an exception
 	public void testInvalidEnum () {
 		String example = "no_FiX";
 		try {
-			Dimension.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    Dimension temp = Dimension.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
-	}
-	
-	//use this test if it's supposed to return null
-	public void testInvalidEnum2 () {
-		String example = "no_FiX";
-		Dimension result = Dimension.valueForString(example);
-		assertNull("Invalid string didn't return null", result);
 	}
 	
 	//use this test if it's supposed to throw an exception
 	public void testNullEnum () {
 		String example = null;
 		try {
-			Dimension.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    Dimension temp = Dimension.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
-	}	
-	
-	//use this test if it's supposed to return null
-	public void testNullEnum2 () {
-		String example = null;
-		Dimension result = Dimension.valueForString(example);
-		assertNull("Null string didn't return null", result);
 	}
 	
 	public void testListEnum() {

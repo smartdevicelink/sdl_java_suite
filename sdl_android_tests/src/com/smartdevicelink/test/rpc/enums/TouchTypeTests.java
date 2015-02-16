@@ -26,22 +26,22 @@ public class TouchTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "bEgIn";
 		try {
-			TouchType.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    TouchType temp = TouchType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			TouchType.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    TouchType temp = TouchType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

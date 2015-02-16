@@ -36,22 +36,22 @@ public class ComponentVolumeStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "unKNowN";
 		try {
-			ComponentVolumeStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    ComponentVolumeStatus temp = ComponentVolumeStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			ComponentVolumeStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    ComponentVolumeStatus temp = ComponentVolumeStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

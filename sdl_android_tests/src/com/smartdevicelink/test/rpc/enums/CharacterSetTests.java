@@ -29,22 +29,22 @@ public class CharacterSetTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "tyPe2SeT";
 		try {
-			CharacterSet.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    CharacterSet temp = CharacterSet.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			CharacterSet.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    CharacterSet temp = CharacterSet.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

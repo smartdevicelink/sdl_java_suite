@@ -29,22 +29,22 @@ public class WarningLightStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "OfF";
 		try {
-			WarningLightStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    WarningLightStatus temp = WarningLightStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			WarningLightStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    WarningLightStatus temp = WarningLightStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

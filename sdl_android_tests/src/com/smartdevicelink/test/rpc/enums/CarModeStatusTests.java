@@ -29,22 +29,22 @@ public class CarModeStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "noRmaL";
 		try {
-			CarModeStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    CarModeStatus temp = CarModeStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			CarModeStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    CarModeStatus temp = CarModeStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

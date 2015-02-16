@@ -26,22 +26,22 @@ public class MessageTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "reQuesT";
 		try {
-			MessageType.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    MessageType temp = MessageType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			MessageType.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    MessageType temp = MessageType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

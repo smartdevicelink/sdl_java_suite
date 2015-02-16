@@ -32,22 +32,22 @@ public class SpeechCapabilitiesTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "teXT";
 		try {
-			SpeechCapabilities.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    SpeechCapabilities temp = SpeechCapabilities.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			SpeechCapabilities.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    SpeechCapabilities temp = SpeechCapabilities.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

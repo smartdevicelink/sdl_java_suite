@@ -38,22 +38,22 @@ public class ECallConfirmationStatusTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "noRMal";
 		try {
-			ECallConfirmationStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    ECallConfirmationStatus temp = ECallConfirmationStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			ECallConfirmationStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    ECallConfirmationStatus temp = ECallConfirmationStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

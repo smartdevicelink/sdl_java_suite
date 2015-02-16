@@ -30,38 +30,24 @@ public class HmiLevelTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "fUlL";
 		try {
-			HMILevel.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    HMILevel temp = HMILevel.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
-	}
-	
-	//use this test if it's supposed to return null
-	public void testInvalidEnum2 () {
-		String example = "no_FiX";
-		HMILevel result = HMILevel.valueForString(example);
-		assertNull("Invalid string didn't return null", result);
 	}
 	
 	//use this test if it's supposed to throw an exception
 	public void testNullEnum () {
 		String example = null;
 		try {
-			HMILevel.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    HMILevel temp = HMILevel.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
-	}	
-	
-	//use this test if it's supposed to return null
-	public void testNullEnum2 () {
-		String example = null;
-		HMILevel result = HMILevel.valueForString(example);
-		assertNull("Null string didn't return null", result);
 	}
 	
 	public void testListEnum() {

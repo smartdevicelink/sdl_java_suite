@@ -49,38 +49,24 @@ public class DisplayTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "cId";
 		try {
-			DisplayType.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    DisplayType temp = DisplayType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
-	}
-	
-	//use this test if it's supposed to return null
-	public void testInvalidEnum2 () {
-		String example = "cId";
-		DisplayType result = DisplayType.valueForString(example);
-		assertNull("Invalid string didn't return null", result);
 	}
 	
 	//use this test if it's supposed to throw an exception
 	public void testNullEnum () {
 		String example = null;
 		try {
-			DisplayType.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    DisplayType temp = DisplayType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
-	}	
-	
-	//use this test if it's supposed to return null
-	public void testNullEnum2 () {
-		String example = null;
-		DisplayType result = DisplayType.valueForString(example);
-		assertNull("Null string didn't return null", result);
 	}
 	
 	public void testListEnum() {

@@ -23,22 +23,22 @@ public class ButtonEventModeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "buTTonUp";
 		try {
-			ButtonEventMode.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+			ButtonEventMode temp = ButtonEventMode.valueForString(example);
+			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			ButtonEventMode.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    ButtonEventMode temp = ButtonEventMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}	
 	

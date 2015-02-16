@@ -35,22 +35,22 @@ public class DeviceLevelStatusTests extends TestCase{
 	public void testInvalidEnum () {
 		String example = "onE_LeVeL_barS";
 		try {
-			DeviceLevelStatus.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    DeviceLevelStatus temp = DeviceLevelStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			DeviceLevelStatus.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    DeviceLevelStatus temp = DeviceLevelStatus.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

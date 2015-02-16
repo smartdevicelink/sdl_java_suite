@@ -27,38 +27,24 @@ public class SoftButtonTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "teXT";
 		try {
-			SoftButtonType.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    SoftButtonType temp = SoftButtonType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
-	}
-	
-	//use this test if it's supposed to return null
-	public void testInvalidEnum2 () {
-		String example = "no_FiX";
-		SoftButtonType result = SoftButtonType.valueForString(example);
-		assertNull("Invalid string didn't return null", result);
 	}
 	
 	//use this test if it's supposed to throw an exception
 	public void testNullEnum () {
 		String example = null;
 		try {
-			SoftButtonType.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    SoftButtonType temp = SoftButtonType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
-	}	
-	
-	//use this test if it's supposed to return null
-	public void testNullEnum2 () {
-		String example = null;
-		SoftButtonType result = SoftButtonType.valueForString(example);
-		assertNull("Null string didn't return null", result);
 	}
 	
 	public void testListEnum() {

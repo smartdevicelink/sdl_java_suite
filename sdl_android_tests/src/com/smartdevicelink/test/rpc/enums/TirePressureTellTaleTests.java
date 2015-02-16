@@ -26,22 +26,22 @@ public class TirePressureTellTaleTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "oFf";
 		try {
-			TirePressureTellTale.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    TirePressureTellTale temp = TirePressureTellTale.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			TirePressureTellTale.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    TirePressureTellTale temp = TirePressureTellTale.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

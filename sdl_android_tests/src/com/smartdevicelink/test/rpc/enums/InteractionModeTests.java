@@ -26,22 +26,22 @@ public class InteractionModeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "maNuAL_OnlY";
 		try {
-			InteractionMode.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    InteractionMode temp = InteractionMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			InteractionMode.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    InteractionMode temp = InteractionMode.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

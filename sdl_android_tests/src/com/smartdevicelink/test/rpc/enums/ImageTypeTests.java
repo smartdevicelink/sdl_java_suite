@@ -23,22 +23,22 @@ public class ImageTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "sTatIc";
 		try {
-			ImageType.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    ImageType temp = ImageType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			ImageType.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    ImageType temp = ImageType.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

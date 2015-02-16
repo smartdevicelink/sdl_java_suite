@@ -17,13 +17,12 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.rpc.enums.SdlCommand;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
 public class OnPermissionsChangeTests extends BaseRpcTests{
 
-    private static final String RPC_NAME = SdlCommand.ADD_COMMAND.name();
+    private static final String RPC_NAME = FunctionID.ADD_COMMAND;
     private final List<HMILevel> HMI_ALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
     private final List<HMILevel> HMI_DISALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE});
     private final List<String> PARAMETERS_ALLOWED = Arrays.asList(new String[]{AddCommand.KEY_CMD_ICON,

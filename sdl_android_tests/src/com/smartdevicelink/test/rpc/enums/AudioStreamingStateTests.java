@@ -27,22 +27,22 @@ public class AudioStreamingStateTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "aUDibLE";
 		try {
-			AudioStreamingState.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    AudioStreamingState temp = AudioStreamingState.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			AudioStreamingState.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    AudioStreamingState temp = AudioStreamingState.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
 	

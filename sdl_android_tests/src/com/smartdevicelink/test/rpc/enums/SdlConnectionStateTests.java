@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 
 public class SdlConnectionStateTests extends TestCase {
-	/*
+
 	public void testValidEnums () {	
 		String example = "SDL_CONNECTED";
 		SdlConnectionState enumConnected = SdlConnectionState.valueForString(example);
@@ -23,25 +23,25 @@ public class SdlConnectionStateTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "sDL_ConNEctED";
 		try {
-			SdlConnectionState.valueForString(example);
-			fail("Sample string did not throw an IllegalArgumentException");
+		    SdlConnectionState temp = SdlConnectionState.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 	
 	public void testNullEnum () {
 		String example = null;
 		try {
-			SdlConnectionState.valueForString(example);
-			fail("Sample string did not throw a NullPointerException");
+		    SdlConnectionState temp = SdlConnectionState.valueForString(example);
+            assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-			//If the method throws this exception then this test will be shown as passed.
+            fail("Null string throws NullPointerException.");
 		}
 	}	
-	*/
+
 	public void testListEnum() {
  		List<SdlConnectionState> enumValueList = Arrays.asList(SdlConnectionState.values());
 
