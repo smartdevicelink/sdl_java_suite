@@ -23,15 +23,12 @@ public class ChoiceTests extends TestCase{
     //private static final String TAG = "ChoiceTests";
     
     private static final ImageType IMAGE_TYPE     		= ImageType.DYNAMIC;
-    private static final ImageType IMAGE_TYPE_CHANGED    = ImageType.STATIC;
     private static final String    IMAGE_NAME     		= "image1.png";
     private static final ImageType IMAGE2_TYPE    		= ImageType.DYNAMIC;
-    private static final ImageType IMAGE2_TYPE_CHANGED  = ImageType.STATIC;
     private static final String    IMAGE2_NAME    		= "image2.png";
     private static final String    VR_COMMAND1    		= "Say a command";
     private static final String    VR_COMMAND2    		= "Voice Rec";
     private static final String    VR_COMMAND3    		= "PERFORM COMMAND";
-    private static final String    VR_COMMAND_CHANGED   = "Unexpected command";
     private static final int       CHOICE_ID     		= 16135;
     private static final String    MENU_NAME      		= "Choice Line #1";
     private static final String    SECONDARY_TEXT 		= "Choice Line #2";
@@ -73,74 +70,17 @@ public class ChoiceTests extends TestCase{
         
         assertTrue("Input value didn't match expected value.", Validator.validateImage(image1, copy));
     }
-    
-    public void testGetImage1(){
-    	Image copy1 = msg.getImage();
-    	copy1.setImageType(IMAGE_TYPE_CHANGED); 
-    	Image copy2 = msg.getImage();
-    	
-    	assertNotSame("Image was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
-    }
-    
-    public void testSetImage1(){
-    	Image copy1 = msg.getImage();   	
-    	msg.setImage(copy1);
-    	copy1.setImageType(IMAGE_TYPE_CHANGED);
-    	Image copy2 = msg.getImage();
-    	
-    	assertNotSame("Image was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
-    }
 
     public void testImage2(){
         Image copy = msg.getSecondaryImage();
         
         assertTrue("Input value didn't match expected value.", Validator.validateImage(image2, copy));
     }
-    
-	public void testGetImage2(){
-		Image copy1 = msg.getSecondaryImage();
-		copy1.setImageType(IMAGE2_TYPE_CHANGED);
-		Image copy2 = msg.getSecondaryImage();
-		
-		assertNotSame("Secondary image was not defensive copied", copy1, copy2);
-		assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
-	}
-	
-	public void testSetImage2(){
-		Image copy1 = msg.getSecondaryImage();
-		msg.setSecondaryImage(copy1);
-		copy1.setImageType(IMAGE2_TYPE_CHANGED);
-		Image copy2 = msg.getSecondaryImage();
-		
-		assertNotSame("Secondary image was not defensive copied", copy1, copy2);
-		assertFalse("Copies have the same values", Validator.validateImage(copy1, copy2));
-	}
 
     public void testVrCommands(){
         List<String> copy = msg.getVrCommands();
         assertTrue("Input value didn't match expected value.", Validator.validateStringList(vrCommands, copy));
     }
-    
-	public void testGetVrCommands(){
-		List<String> copy1 = msg.getVrCommands();
-		copy1.set(0, VR_COMMAND_CHANGED);
-		List<String> copy2 = msg.getVrCommands();
-		
-		assertNotSame("VR commands were not defensive copied", copy1, copy2);
-		assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
-	}
-	
-	public void testSetVrCommands(){
-		List<String> copy1 = msg.getVrCommands();
-		msg.setVrCommands(copy1);
-		copy1.set(0, VR_COMMAND_CHANGED);
-		List<String> copy2 = msg.getVrCommands();
-		
-		assertNotSame("VR commands were not defensive copied", copy1, copy2);
-		assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
-	}
 
     public void testChoiceID(){
         int copy = msg.getChoiceID();

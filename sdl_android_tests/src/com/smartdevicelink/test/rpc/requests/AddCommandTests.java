@@ -108,9 +108,6 @@ public class AddCommandTests extends BaseRpcTests{
 
         assertNotNull("Menu parameters were null.", copy);
 
-        // make sure a copy of the params was made
-        assertNotSame("Menu parameters were not defensive copied.", menuParams, copy);
-
         // MenuParams doesn't override equals, so have to do a manual compare of all variables
         assertTrue("Menu parameters did not match input menu parameters.",
                 Validator.validateMenuParams(menuParams, copy));
@@ -120,7 +117,6 @@ public class AddCommandTests extends BaseRpcTests{
         Image copy = ( (AddCommand) msg ).getCmdIcon();
 
         assertNotNull("Image was null.", copy);
-        assertNotSame("Image was not defensive copied.", image, copy);
 
         // Image doesn't override equals, so have to do a manual compare of all variables
         assertTrue("Image did not match input image.", Validator.validateImage(copy, image));
@@ -130,7 +126,6 @@ public class AddCommandTests extends BaseRpcTests{
         List<String> copy = ( (AddCommand) msg ).getVrCommands();
 
         assertNotNull("VR commands was null.", copy);
-        assertNotSame("VR commands was not defensive copied.", vrCommands, copy);
         assertEquals("VR commands size doesn't match input size.", vrCommands.size(), copy.size());
         assertTrue("VR commands did not match input VR commands.", Validator.validateStringList(copy, vrCommands));
     }

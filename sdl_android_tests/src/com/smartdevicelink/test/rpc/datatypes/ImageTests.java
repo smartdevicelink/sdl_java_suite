@@ -41,7 +41,6 @@ public class ImageTests extends TestCase{
 
     public void testBulkData(){
         byte[] copy = msg.getBulkData();
-        assertNotSame("Bulk data was not defensive copied.", IMAGE_DATA, copy);
         assertEquals("Bulk data size didn't match expected size.", IMAGE_DATA.length, copy.length);
         assertTrue("Input value didn't match expected value.", Validator.validateBulkData(IMAGE_DATA, copy));
     }

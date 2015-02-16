@@ -16,9 +16,7 @@ import com.smartdevicelink.test.utils.Validator;
 public class ParameterPermissionsTests extends TestCase{
 
     private final List<String> ALLOWED = Arrays.asList(new String[]{"param1, param3"});
-    private static final String ALLOWED_ITEM_CHANGED = "weird string";
     private final List<String> USER_DISALLOWED = Arrays.asList(new String[]{"param2"});
-    private static final String USER_DISALLOWED_ITEM_CHANGED = "don't use me";
     
     private ParameterPermissions msg;
 
@@ -36,48 +34,10 @@ public class ParameterPermissionsTests extends TestCase{
     	assertTrue("Input value didn't match expected value.", Validator.validateStringList(ALLOWED, copy));
     }
     
-    public void testGetAllowed() {
-    	List<String> copy1 = msg.getAllowed();
-    	copy1.set(0, ALLOWED_ITEM_CHANGED);
-    	List<String> copy2 = msg.getAllowed();
-    	
-    	assertNotSame("Allowed list was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
-    }
-    
-    public void testSetAllowed() {
-    	List<String> copy1 = msg.getAllowed();
-    	msg.setAllowed(copy1);
-    	copy1.set(0, ALLOWED_ITEM_CHANGED);
-    	List<String> copy2 = msg.getAllowed();
-    	
-    	assertNotSame("Allowed list was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
-    }
-    
     public void testUserDisallowed () {
     	List<String> copy = msg.getUserDisallowed();
     	
     	assertTrue("Input value didn't match expected value.", Validator.validateStringList(USER_DISALLOWED, copy));
-    }
-    
-    public void testGetUserDisallowed() {
-    	List<String> copy1 = msg.getUserDisallowed();
-    	copy1.set(0, USER_DISALLOWED_ITEM_CHANGED);
-    	List<String> copy2 = msg.getUserDisallowed();
-    	
-    	assertNotSame("User disallowed list was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
-    }
-    
-    public void testSetUserDisallowed() {
-    	List<String> copy1 = msg.getUserDisallowed();
-    	msg.setUserDisallowed(copy1);
-    	copy1.set(0, USER_DISALLOWED_ITEM_CHANGED);
-    	List<String> copy2 = msg.getUserDisallowed();
-    	
-    	assertNotSame("User disallowed list was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateStringList(copy1, copy2));
     }
     
     public void testJson(){

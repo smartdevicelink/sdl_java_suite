@@ -74,7 +74,6 @@ public class SliderTest extends BaseRpcTests {
 	public void testFooter () {
 		List<String> copy = ( (Slider) msg ).getSliderFooter();
 		
-		assertNotSame("Footer was not defensive copied", FOOTER, copy);
 	    assertTrue("Input value didn't match expected value.", Validator.validateStringList(FOOTER, copy));
 	}
 	

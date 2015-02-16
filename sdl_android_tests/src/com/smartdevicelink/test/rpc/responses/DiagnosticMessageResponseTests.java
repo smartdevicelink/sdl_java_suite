@@ -57,7 +57,6 @@ public class DiagnosticMessageResponseTests extends BaseRpcTests{
     public void testMessageData(){
         List<Integer> cmdId = ( (DiagnosticMessageResponse) msg ).getMessageDataResult();
 
-        assertNotSame("Message data was not defensive copied.", MESSAGE_DATA_RESULT, cmdId);
         assertEquals("Array size didn't match expected size.", MESSAGE_DATA_RESULT.size(), cmdId.size());
 
         for(int i = 0; i < MESSAGE_DATA_RESULT.size(); i++){

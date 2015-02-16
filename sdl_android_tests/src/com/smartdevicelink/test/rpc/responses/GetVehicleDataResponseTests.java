@@ -118,7 +118,6 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
     
     public void testTirePressure() {
     	TireStatus copy = ( (GetVehicleDataResponse) msg).getTirePressure();
-    	assertNotSame("Tire pressure was not defensive copied", VehicleDataHelper.TIRE_PRESSURE, copy);
     	assertTrue("Tire pressure does not match input tire pressure", Validator.validateTireStatus(VehicleDataHelper.TIRE_PRESSURE, copy));
     }
     
@@ -134,7 +133,6 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
     
     public void testGps() {
     	GPSData copy = ( (GetVehicleDataResponse) msg).getGps();
-    	assertNotSame("GPS was not defensive copied", VehicleDataHelper.TIRE_PRESSURE, copy);
     	assertTrue("GPS does not match input GPS", Validator.validateGpsData(VehicleDataHelper.GPS, copy));
     }
     
@@ -150,19 +148,16 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
     
     public void testBeltStatus() {
     	BeltStatus copy = ( (GetVehicleDataResponse) msg).getBeltStatus();
-    	assertNotSame("Belt status was not defensive copied", VehicleDataHelper.BELT_STATUS, copy);
     	assertTrue("Belt status does not match input belt status", Validator.validateBeltStatus(VehicleDataHelper.BELT_STATUS, copy));
     }
     
     public void testBodyInformation() {
     	BodyInformation copy = ( (GetVehicleDataResponse) msg).getBodyInformation();
-    	assertNotSame("Body information was not defensive copied", VehicleDataHelper.BODY_INFORMATION, copy);
     	assertTrue("Body information does not match input body information", Validator.validateBodyInformation(VehicleDataHelper.BODY_INFORMATION, copy));
     }
     
     public void testDeviceStatus() {
     	DeviceStatus copy = ( (GetVehicleDataResponse) msg).getDeviceStatus();
-    	assertNotSame("Device status was not defensive copied", VehicleDataHelper.DEVICE_STATUS, copy);
     	assertTrue("Device status does not match input device status", Validator.validateDeviceStatus(VehicleDataHelper.DEVICE_STATUS, copy));
     }
     
@@ -178,7 +173,6 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
     
     public void testHeadLampStatus() {
     	HeadLampStatus copy = ( (GetVehicleDataResponse) msg).getHeadLampStatus();
-    	assertNotSame("Head lamp status was not defensive copied", VehicleDataHelper.HEAD_LAMP_STATUS, copy);
     	assertTrue("Head lamp status does not match input head lamp status", Validator.validateHeadLampStatus(VehicleDataHelper.HEAD_LAMP_STATUS, copy));
     }
     
@@ -194,31 +188,26 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
     
     public void testECallInfo() {
     	ECallInfo copy = ( (GetVehicleDataResponse) msg).getECallInfo();
-    	assertNotSame("Emergency call info was not defensive copied", VehicleDataHelper.E_CALL_INFO, copy);
     	assertTrue("Emergency call info does not match input emergency call info", Validator.validateECallInfo(VehicleDataHelper.E_CALL_INFO, copy));
     }
     
     public void testAirbagStatus() {
     	AirbagStatus copy = ( (GetVehicleDataResponse) msg).getAirbagStatus();
-    	assertNotSame("Airbag status was not defensive copied", VehicleDataHelper.AIRBAG_STATUS, copy);
     	assertTrue("Airbag status does not match input airbag status", Validator.validateAirbagStatus(VehicleDataHelper.AIRBAG_STATUS, copy));
     }
     
     public void testEmergencyEvent() {
     	EmergencyEvent copy = ( (GetVehicleDataResponse) msg).getEmergencyEvent();
-    	assertNotSame("Emergency event was not defensive copied", VehicleDataHelper.EMERGENCY_EVENT, copy);
     	assertTrue("Emergency event does not match input emergency event", Validator.validateEmergencyEvent(VehicleDataHelper.EMERGENCY_EVENT, copy));
     }
     
     public void testClusterModeStatus() {
     	ClusterModeStatus copy = ( (GetVehicleDataResponse) msg).getClusterModeStatus();
-    	assertNotSame("Cluster mode status was not defensive copied", VehicleDataHelper.CLUSTER_MODE_STATUS, copy);
     	assertTrue("Cluster mode status does not match cluster mode status", Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, copy));
     }
     
     public void testMyKey() {
     	MyKey copy = ( (GetVehicleDataResponse) msg).getMyKey();
-    	assertNotSame("My key was not defensive copied", VehicleDataHelper.MY_KEY, copy);
     	assertTrue("My key does not match my key", Validator.validateMyKey(VehicleDataHelper.MY_KEY, copy));
     }
 

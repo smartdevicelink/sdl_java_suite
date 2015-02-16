@@ -22,16 +22,12 @@ public class PermissionItemTest extends TestCase {
 	private static final ParameterPermissions PARAMETER_PERMISSIONS = new ParameterPermissions();
 	private static final String PARAMETER_ALLOWED_ITEM1 = "param1";
 	private static final String PARAMETER_ALLOWED_ITEM2 = "param2";
-	private static final String PARAMETER_ALLOWED_ITEM_CHANGED = "strange";
 	private static final String PARAMETER_DISALLOWED_ITEM1 = "no";
 	private static final String PARAMETER_DISALLOWED_ITEM2 = "nope";
-	private static final String PARAMETER_DISALLOWED_ITEM_CHANGED = "sure";
 	private static final HMILevel HMI_ALLOWED_ITEM1 = HMILevel.HMI_NONE;
 	private static final HMILevel HMI_ALLOWED_ITEM2 = HMILevel.HMI_FULL;
-	private static final HMILevel HMI_ALLOWED_ITEM_CHANGED = HMILevel.HMI_BACKGROUND;
 	private static final HMILevel HMI_DISALLOWED_ITEM1 = HMILevel.HMI_NONE;
 	private static final HMILevel HMI_DISALLOWED_ITEM2 = HMILevel.HMI_FULL;
-	private static final HMILevel HMI_DISALLOWED_ITEM_CHANGED = HMILevel.HMI_BACKGROUND;
 
 	
 	
@@ -65,53 +61,11 @@ public class PermissionItemTest extends TestCase {
     	assertTrue("Input value didn't match expected value.", Validator.validateHmiPermissions(HMI_PERMISSIONS, copy));
 	}
 	
-    public void testGetHmiPermissions() {
-    	HMIPermissions copy1 = msg.getHMIPermissions();
-    	copy1.setAllowed(Arrays.asList(new HMILevel[]{ HMI_ALLOWED_ITEM_CHANGED }));
-    	copy1.setUserDisallowed(Arrays.asList(new HMILevel[]{ HMI_DISALLOWED_ITEM_CHANGED }));
-    	HMIPermissions copy2 = msg.getHMIPermissions();
-    	
-    	assertNotSame("HMI permissions were not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateHmiPermissions(copy1, copy2));
-    }
-    
-    public void testSetHmiPermissions() {
-    	HMIPermissions copy1 = msg.getHMIPermissions();
-    	msg.setHMIPermissions(copy1);
-    	copy1.setAllowed(Arrays.asList(new HMILevel[]{ HMI_ALLOWED_ITEM_CHANGED }));
-    	copy1.setUserDisallowed(Arrays.asList(new HMILevel[]{ HMI_DISALLOWED_ITEM_CHANGED }));
-    	HMIPermissions copy2 = msg.getHMIPermissions();
-    	
-    	assertNotSame("HMI permissions were not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateHmiPermissions(copy1, copy2));
-    }
-	
 	public void testParameterPermisisons() {
 		ParameterPermissions copy = msg.getParameterPermissions();
 		
     	assertTrue("Input value didn't match expected value.", Validator.validateParameterPermissions(PARAMETER_PERMISSIONS, copy));
 	}
-	
-    public void testGetParameterPermisisons() {
-    	ParameterPermissions copy1 = msg.getParameterPermissions();
-    	copy1.setAllowed(Arrays.asList(new String[]{ PARAMETER_ALLOWED_ITEM_CHANGED }));
-    	copy1.setUserDisallowed(Arrays.asList(new String[]{ PARAMETER_DISALLOWED_ITEM_CHANGED }));
-    	ParameterPermissions copy2 = msg.getParameterPermissions();
-    	
-    	assertNotSame("Parameter permissions was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateParameterPermissions(copy1, copy2));
-    }
-    
-    public void testSetParameterPermisisons() {
-    	ParameterPermissions copy1 = msg.getParameterPermissions();
-    	msg.setParameterPermissions(copy1);
-    	copy1.setAllowed(Arrays.asList(new String[]{ PARAMETER_ALLOWED_ITEM_CHANGED }));
-    	copy1.setUserDisallowed(Arrays.asList(new String[]{ PARAMETER_DISALLOWED_ITEM_CHANGED }));
-    	ParameterPermissions copy2 = msg.getParameterPermissions();
-    	
-    	assertNotSame("Parameter permissions was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateParameterPermissions(copy1, copy2));
-    }
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();

@@ -170,7 +170,6 @@ public class PerformInteractionTest extends BaseRpcTests {
 		List<TTSChunk> copy = ( (PerformInteraction) msg).getInitialPrompt();
 		
 		assertNotNull("Initial prompt were null.", copy);
-		assertNotSame("Initial prompt were not defensive copied.", initialPrompt, copy);
 		assertTrue("Intial prompt didn't match input TTS chunks.", Validator.validateTtsChunks(initialPrompt, copy));
 	}
 	
@@ -178,7 +177,6 @@ public class PerformInteractionTest extends BaseRpcTests {
 		List<TTSChunk> copy = ( (PerformInteraction) msg).getHelpPrompt();
 		
 		assertNotNull("Help prompt were null.", copy);
-		assertNotSame("Help prompt were not defensive copied.", helpPrompt, copy);
 		assertTrue("Help prompt didn't match input TTS chunks.", Validator.validateTtsChunks(helpPrompt, copy));
 	}
 	
@@ -186,7 +184,6 @@ public class PerformInteractionTest extends BaseRpcTests {
 		List<TTSChunk> copy = ( (PerformInteraction) msg).getTimeoutPrompt();
 		
 		assertNotNull("Timeout prompt were null.", copy);
-		assertNotSame("Timeout prompt were not defensive copied.", timeoutPrompt, copy);
 		assertTrue("Timeout prompt didn't match input TTS chunks.", Validator.validateTtsChunks(timeoutPrompt, copy));
 	}
 	
@@ -194,7 +191,6 @@ public class PerformInteractionTest extends BaseRpcTests {
 		List<VrHelpItem> copy = ( (PerformInteraction) msg).getVrHelp();
 		
 		assertNotNull("Vr help were null.", copy);
-		assertNotSame("Vr help items were not defensive copied.", vrHelp, copy);
 		assertTrue("Vr help items didn't match input data.", Validator.validateVrHelpItems(vrHelp, copy));
 	}
 	

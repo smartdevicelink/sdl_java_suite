@@ -137,7 +137,6 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 	public void testSdlVersion() {
 		SdlMsgVersion copy = ( (RegisterAppInterface) msg).getSdlMsgVersion();
 		
-		assertNotSame("Initial prompt was not defensive copied.", SDL_VERSION, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateSdlMsgVersion(SDL_VERSION,copy));
 	}
 	
@@ -181,7 +180,6 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 		List<TTSChunk> copy = ( (RegisterAppInterface) msg).getTtsName();
 		
 		assertNotNull("Tts names were null.", copy);
-		assertNotSame("Tts names items were not defensive copied.", TTS_CHUNK_LIST, copy);
 		assertTrue("Tts names items didn't match input data.", Validator.validateTtsChunks(TTS_CHUNK_LIST, copy));
 	}
 	
@@ -206,7 +204,6 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 	public void testDeviceInfo () {
 		DeviceInfo copy = ( (RegisterAppInterface) msg).getDeviceInfo();
 		
-		assertNotSame("Initial prompt was not defensive copied.", DEVICE_INFO, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateDeviceInfo(DEVICE_INFO,copy));
 	}
 

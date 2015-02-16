@@ -12,17 +12,14 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
 
 public class HMIPermissionsTests extends TestCase{
 
     private final List<HMILevel> ALLOWED_LIST        = Arrays.asList(new HMILevel[] { HMILevel.HMI_FULL,
             HMILevel.HMI_BACKGROUND                       });
-    private static final HMILevel ALLOWED_ITEM_CHANGED        = HMILevel.HMI_BACKGROUND;
     	
     private final List<HMILevel> USER_DISALLOWED_LIST = Arrays.asList(new HMILevel[] { HMILevel.HMI_LIMITED,
             HMILevel.HMI_NONE                             });
-    private static final HMILevel USER_DISALLOWED_ITEM_CHANGED = HMILevel.HMI_FULL;
 
     private HMIPermissions              msg;
 
@@ -43,25 +40,6 @@ public class HMIPermissionsTests extends TestCase{
             assertEquals("Input value didn't match expected value.", ALLOWED_LIST.get(i), copy.get(i));
         }
     }
-    
-    public void testGetAllowed() {
-    	List<HMILevel> copy1 = msg.getAllowed();
-    	copy1.set(0, ALLOWED_ITEM_CHANGED);
-    	List<HMILevel> copy2 = msg.getAllowed();
-    	
-    	assertNotSame("Allowed lists were not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateHmiLevelLists(copy1, copy2));
-    }
-    
-    public void testSetAllowed() {
-    	List<HMILevel> copy1 = msg.getAllowed();
-    	msg.setAllowed(copy1);
-    	copy1.set(0, ALLOWED_ITEM_CHANGED);
-    	List<HMILevel> copy2 = msg.getAllowed();
-    	
-    	assertNotSame("Allowed lists were not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateHmiLevelLists(copy1, copy2));
-    }
 
     public void testUserDisallowed(){
         List<HMILevel> copy = msg.getUserDisallowed();
@@ -71,25 +49,6 @@ public class HMIPermissionsTests extends TestCase{
         for(int i = 0; i < USER_DISALLOWED_LIST.size(); i++){
             assertEquals("Input value didn't match expected value.", USER_DISALLOWED_LIST.get(i), copy.get(i));
         }
-    }
-    
-    public void testGetUserDisallowed() {
-    	List<HMILevel> copy1 = msg.getUserDisallowed();
-    	copy1.set(0, USER_DISALLOWED_ITEM_CHANGED);
-    	List<HMILevel> copy2 = msg.getUserDisallowed();
-    	
-    	assertNotSame("Allowed lists were not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateHmiLevelLists(copy1, copy2));
-    }
-    
-    public void testSetUserDisallowed() {
-    	List<HMILevel> copy1 = msg.getUserDisallowed();
-    	msg.setUserDisallowed(copy1);
-    	copy1.set(0, USER_DISALLOWED_ITEM_CHANGED);
-    	List<HMILevel> copy2 = msg.getUserDisallowed();
-    	
-    	assertNotSame("User disallowed lists were not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateHmiLevelLists(copy1, copy2));
     }
 
     public void testJson(){

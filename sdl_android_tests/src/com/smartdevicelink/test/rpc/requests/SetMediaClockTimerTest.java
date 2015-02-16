@@ -83,14 +83,12 @@ public class SetMediaClockTimerTest extends BaseRpcTests {
 	public void testStartTime() {
 		StartTime copy = ( (SetMediaClockTimer) msg ).getStartTime();
 		
-		assertNotSame("End time was not defensive copied", START_TIME, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateStartTime(START_TIME, copy));
 	}
 	
 	public void testEndTime() {
 		StartTime copy = ( (SetMediaClockTimer) msg ).getEndTime();
 		
-		assertNotSame("End time was not defensive copied", END_TIME, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateStartTime(END_TIME, copy));
 	}
 	

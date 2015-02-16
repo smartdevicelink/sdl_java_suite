@@ -104,7 +104,6 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
     public void testChoiceList(){
         List<Choice> copy = ( (CreateInteractionChoiceSet) msg ).getChoiceSet();
 
-        assertNotSame("Choice list was not defensive copied.", choiceList, copy);
         assertEquals("Choice list size didn't match expected size.", choiceList.size(), copy.size());
         for(int i = 0; i < copy.size(); i++){
             //log("validating choice at index " + i + ": \"" + choiceList.get(i) + "\" vs. \"" + copy.get(i) + "\"");

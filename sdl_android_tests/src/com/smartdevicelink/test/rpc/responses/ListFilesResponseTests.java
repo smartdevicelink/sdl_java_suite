@@ -58,7 +58,6 @@ public class ListFilesResponseTests extends BaseRpcTests{
 
     public void testFilenames(){
         List<String> filenames = ( (ListFilesResponse) msg ).getFilenames();
-        assertNotSame("Filenames wasn't defensive copied.", FILENAMES, filenames);
         assertEquals("Filenames size didn't match expected size.", FILENAMES.size(), filenames.size());
         assertTrue("Filenames didn't match input filenames.", Validator.validateStringList(FILENAMES, filenames));
     }

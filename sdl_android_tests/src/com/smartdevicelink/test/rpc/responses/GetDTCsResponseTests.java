@@ -56,7 +56,6 @@ public class GetDTCsResponseTests extends BaseRpcTests{
     public void testDtcList(){
         List<String> cmdId = ( (GetDTCsResponse) msg ).getDtc();
 
-        assertNotSame("DTC list wasn't defensive copied.", DTC_LIST, cmdId);
         assertEquals("DTC list size didn't match expected size.", DTC_LIST.size(), cmdId.size());
 
         for(int i = 0; i < DTC_LIST.size(); i++){

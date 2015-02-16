@@ -93,7 +93,6 @@ public class ScrollableMessageTest extends BaseRpcTests {
 	public void testSoftButton () {
 		List<SoftButton> copy = ( (ScrollableMessage) msg ).getSoftButtons();
 
-		assertNotSame("Variable under test was not defensive copied.", SOFT_BUTTON_LIST, copy);
 		assertEquals("List size didn't match expected size.", SOFT_BUTTON_LIST.size(), copy.size());
 		
 		for (int i = 0; i < SOFT_BUTTON_LIST.size(); i++) {

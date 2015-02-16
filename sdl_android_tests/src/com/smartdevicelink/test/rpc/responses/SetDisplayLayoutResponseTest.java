@@ -115,21 +115,18 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 	public void testDisplayCapabilities() {
 		DisplayCapabilities copy = ( (SetDisplayLayoutResponse) msg ).getDisplayCapabilities();
 		
-		assertNotSame("Display capabilities was not defensive copied", DISPLAY_CAPABILITIES, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateDisplayCapabilities(DISPLAY_CAPABILITIES, copy));
 	}
 	
 	public void testPresetBankCapabilities() {
 		PresetBankCapabilities copy = ( (SetDisplayLayoutResponse) msg ).getPresetBankCapabilities();
 		
-		assertNotSame("Preset bank capabilities was not defensive copied", PRESET_BANK_CAPABILITIES, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validatePresetBankCapabilities(PRESET_BANK_CAPABILITIES, copy));
 	}
 	
 	public void testButtonCapabilities () {
 		List<ButtonCapabilities> copy = ( (SetDisplayLayoutResponse) msg ).getButtonCapabilities();
 		
-		assertNotSame("Variable under test was not defensive copied.", BUTTON_CAPABILITIES_LIST, copy);
 		assertEquals("List size didn't match expected size.", BUTTON_CAPABILITIES_LIST.size(), copy.size());
 		
 		for (int i = 0; i < BUTTON_CAPABILITIES_LIST.size(); i++) {
@@ -140,7 +137,6 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 	public void testSoftButtonCapabilities () {
 		List<SoftButtonCapabilities> copy = ( (SetDisplayLayoutResponse) msg ).getSoftButtonCapabilities();
 		
-		assertNotSame("Variable under test was not defensive copied.", SOFT_BUTTON_CAPABILITIES_LIST, copy);
 		assertEquals("List size didn't match expected size.", SOFT_BUTTON_CAPABILITIES_LIST.size(), copy.size());
 		
 		for (int i = 0; i < SOFT_BUTTON_CAPABILITIES_LIST.size(); i++) {

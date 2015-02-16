@@ -218,21 +218,18 @@ public class ShowTest extends BaseRpcTests {
 	public void testImage1 () {
 		Image copy = ( (Show) msg ).getGraphic();
 		
-		assertNotSame("Image 1 was not defensive copied", IMAGE_1, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateImage(IMAGE_1, copy));
 	}
 	
 	public void testImage2 () {
 		Image copy = ( (Show) msg ).getSecondaryGraphic();
 		
-		assertNotSame("Image 2 was not defensive copied", IMAGE_2, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateImage(IMAGE_2, copy));
 	}
 	
 	public void testCustomPresets () {
 		List<String> copy = ( (Show) msg ).getCustomPresets();
 		
-		assertNotSame("Custom presets was not defensive copied", CUSTOM_PRESETS, copy);
 		assertEquals("List size didn't match expected size.", CUSTOM_PRESETS.size(), copy.size());
 		
 		for (int i = 0; i < CUSTOM_PRESETS.size(); i++) {
@@ -249,7 +246,6 @@ public class ShowTest extends BaseRpcTests {
 	public void testSoftButtons () {
 		List<SoftButton> copy = ( (Show) msg ).getSoftButtons();
 		
-		assertNotSame("Custom presets was not defensive copied", softButtons, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateSoftButtons(softButtons, copy));
 	}
 	

@@ -147,12 +147,10 @@ public class OnTouchEventTests extends BaseRpcTests{
     
     public void testEvent(){
         List<TouchEvent> data = ( (OnTouchEvent) msg ).getEvent();
-        assertNotSame("List object wasn't defensive copied.", touchEvents, data);
         assertEquals("List size didn't match expected size.", touchEvents.size(), data.size());
         for(int i=0; i<touchEvents.size(); i++){
             TouchEvent referenceEvent = touchEvents.get(i);
             TouchEvent dataEvent = data.get(i);
-            assertNotSame("Data object wasn't defensive copied.", referenceEvent, dataEvent);
             assertTrue("", Validator.validateTouchEvent(referenceEvent, dataEvent));
         }
     }

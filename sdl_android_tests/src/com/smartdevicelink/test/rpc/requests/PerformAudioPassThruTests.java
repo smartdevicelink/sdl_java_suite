@@ -100,7 +100,6 @@ public class PerformAudioPassThruTests extends BaseRpcTests {
 
 	public void testInitialPrompt () {
 		List<TTSChunk> copy = ( (PerformAudioPassThru) msg ).getInitialPrompt();
-		assertNotSame("Initial prompt was not defensive copied.", INITIAL_PROMPT, copy);
 		assertEquals("List size didn't match expected size.", INITIAL_PROMPT.size(), copy.size());
 		
 		for (int i = 0; i < INITIAL_PROMPT.size(); i++) {

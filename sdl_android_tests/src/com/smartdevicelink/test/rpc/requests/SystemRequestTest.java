@@ -65,7 +65,6 @@ public class SystemRequestTest extends BaseRpcTests {
 	public void testLegacyData () {
 		List<String> copy = ( (SystemRequest) msg ).getLegacyData();
 		
-		assertNotSame("Legacy data was not defensive copied", LEGACY_DATA, copy);
 	    assertTrue("Input value didn't match expected value.", Validator.validateStringList(LEGACY_DATA, copy));
 	}
 	
@@ -84,7 +83,6 @@ public class SystemRequestTest extends BaseRpcTests {
 	public void testBulkData(){
 	    byte[] copy = ( (SystemRequest) msg ).getBulkData();
 	    
-	    assertNotSame("Bulk data was not defensive copied.", copy, BULK_DATA);
 	    assertTrue("Input value didn't match expected value.", Validator.validateBulkData(copy, BULK_DATA));
 	}
 

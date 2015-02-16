@@ -177,7 +177,6 @@ public class AlertTests extends BaseRpcTests{
 	public void testTtsChunks () {
 		List<TTSChunk> copy = ( (Alert) msg ).getTtsChunks();
 		
-		assertNotSame("TTS Chunks list was not defensive copied", TTS_CHUNK_LIST, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateTtsChunks(TTS_CHUNK_LIST, copy));
 
 	}
@@ -185,7 +184,6 @@ public class AlertTests extends BaseRpcTests{
 	public void testSoftButtons () {
 		List<SoftButton> copy = ( (Alert) msg ).getSoftButtons();
 		
-		assertNotSame("Soft buttons list was not defensive copied", SOFT_BUTTON_LIST, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateSoftButtons(SOFT_BUTTON_LIST, copy));
 	}
     

@@ -379,7 +379,6 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 	public void testSdlMsgVersion () {
 		SdlMsgVersion copy = ( (RegisterAppInterfaceResponse) msg ).getSdlMsgVersion();
 		
-		assertNotSame("Initial prompt was not defensive copied.", SDL_MSG_VERSION, copy);
 		assertTrue("Data didn't match input data.", Validator.validateSdlMsgVersion(SDL_MSG_VERSION, copy));
 	}
 	
@@ -399,21 +398,18 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		DisplayCapabilities copy = ( (RegisterAppInterfaceResponse) msg ).getDisplayCapabilities();
 		
 		assertNotNull("Display capabilities prompt were null.", copy);
-		assertNotSame("Display capabilities was not defensive copied.", displayCapabilities, copy);
 		assertTrue("Data didn't match input data.", Validator.validateDisplayCapabilities(displayCapabilities, copy));
 	}
 	
 	public void testPresetBankCapabilities () {
 		PresetBankCapabilities copy = ( (RegisterAppInterfaceResponse) msg ).getPresetBankCapabilities();
 		
-		assertNotSame("Initial prompt was not defensive copied.", PRESET_BANK_CAPABILITIES, copy);
 		assertTrue("Data didn't match input data.", Validator.validatePresetBankCapabilities(PRESET_BANK_CAPABILITIES, copy));
 	}
 	
 	public void testVehicleType () {
 		VehicleType copy = ( (RegisterAppInterfaceResponse) msg ).getVehicleType();
 		
-		assertNotSame("Initial prompt was not defensive copied.", VEHICLE_TYPE, copy);
 		assertTrue("Data didn't match input data.", Validator.validateVehicleType(VEHICLE_TYPE, copy));
 	}
 	
@@ -421,7 +417,6 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		List<ButtonCapabilities> copy = ( (RegisterAppInterfaceResponse) msg ).getButtonCapabilities();
 		
 		assertNotNull("Button capabilties were null.", copy);
-		assertNotSame("Button capabilities were not defensive copied.", buttonCapabilities, copy);
 		assertTrue("Button capabilities didn't match input.", Validator.validateButtonCapabilities(buttonCapabilities, copy));
 	}
 	
@@ -429,7 +424,6 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		List<SoftButtonCapabilities> copy = ( (RegisterAppInterfaceResponse) msg ).getSoftButtonCapabilities();
 		
 		assertNotNull("Soft button capabilties were null.", copy);
-		assertNotSame("Soft button capabilities were not defensive copied.", softButtonCapabilities, copy);
 		assertTrue("Soft button capabilities didn't match input.", Validator.validateSoftButtonCapabilities(softButtonCapabilities, copy));
 	}
 
@@ -437,7 +431,6 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		List<AudioPassThruCapabilities> copy = ( (RegisterAppInterfaceResponse) msg ).getAudioPassThruCapabilities();
 		
 		assertNotNull("Audio pass thru capabilties were null.", copy);
-		assertNotSame("Audio pass thru capabilities were not defensive copied.", audioPassThruCapabilities, copy);
 		assertTrue("Audio pass thru capabilities didn't match input.", Validator.validateAudioPassThruCapabilities(audioPassThruCapabilities, copy));
 		
 	}

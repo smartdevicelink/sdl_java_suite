@@ -60,7 +60,6 @@ public class ResetGlobalPropertiesTest extends BaseRpcTests {
 	public void testProperties() {
 		List<GlobalProperty> copy = ( (ResetGlobalProperties) msg ).getProperties();
 		
-        assertNotSame("Variable under test was not defensive copied.", PROPERTIES, copy);
         assertEquals("List size didn't match expected size.", PROPERTIES.size(), copy.size());
 
         for(int i = 0; i < PROPERTIES.size(); i++){

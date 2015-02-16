@@ -19,13 +19,11 @@ public class ScreenParamsTest extends TestCase {
 	private static final ImageResolution IMAGE_RESOLUTION 				 = new ImageResolution();
 	private static final Integer 		 IMAGE_RESOLUTION_WIDTH 	 	 = 640;
 	private static final Integer 		 IMAGE_RESOLUTION_HEIGHT 		 = 480;
-	private static final Integer 		 IMAGE_RESOLUTION_HEIGHT_CHANGED = 7;
 	
 	private static final TouchEventCapabilities TOUCH_EVENT_CAPABILITIES = new TouchEventCapabilities();
     private static final boolean         PRESS_AVAILABLE                 = true;
     private static final boolean         MULTI_TOUCH_AVAILABLE           = true;
     private static final boolean         DOUBLE_PRESS_AVAILABLE          = true;
-    private static final boolean         DOUBLE_PRESS_AVAILABLE_CHANGED  = false;
 	    
 	private ScreenParams msg;
 
@@ -53,49 +51,11 @@ public class ScreenParamsTest extends TestCase {
 		assertTrue("Input value didn't match expected value.", Validator.validateImageResolution(IMAGE_RESOLUTION, copy));
 	}
 	
-    public void testGetImageResolution(){
-    	ImageResolution copy1 = msg.getImageResolution();
-    	copy1.setResolutionHeight(IMAGE_RESOLUTION_HEIGHT_CHANGED); 
-    	ImageResolution copy2 = msg.getImageResolution();
-    	
-    	assertNotSame("Image resolution was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateImageResolution(copy1, copy2));
-    }
-    
-    public void testSetImageResolution(){
-    	ImageResolution copy1 = msg.getImageResolution();
-    	msg.setImageResolution(copy1);
-    	copy1.setResolutionHeight(IMAGE_RESOLUTION_HEIGHT_CHANGED); 
-    	ImageResolution copy2 = msg.getImageResolution();
-    	
-    	assertNotSame("Image resolution was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateImageResolution(copy1, copy2));
-    }
-	
 	public void testTouchEventCapabilities () {
 		TouchEventCapabilities copy = msg.getTouchEventAvailable();
 		
 		assertTrue("Input value didn't match expected value.", Validator.validateTouchEventCapabilities(TOUCH_EVENT_CAPABILITIES, copy));
 	}
-	
-    public void testGetTouchEventCapabilities(){
-    	TouchEventCapabilities copy1 = msg.getTouchEventAvailable();
-    	copy1.setDoublePressAvailable(DOUBLE_PRESS_AVAILABLE_CHANGED); 
-    	TouchEventCapabilities copy2 = msg.getTouchEventAvailable();
-    	
-    	assertNotSame("Touch event capabilities was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateTouchEventCapabilities(copy1, copy2));
-    }
-    
-    public void testSetTouchEventCapabilities(){
-    	TouchEventCapabilities copy1 = msg.getTouchEventAvailable();
-    	msg.setTouchEventAvailable(copy1);
-    	copy1.setDoublePressAvailable(DOUBLE_PRESS_AVAILABLE_CHANGED); 
-    	TouchEventCapabilities copy2 = msg.getTouchEventAvailable();
-    	
-    	assertNotSame("Touch event capabilities was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateTouchEventCapabilities(copy1, copy2));
-    }
     
 	public void testJson() {
 		JSONObject reference = new JSONObject();

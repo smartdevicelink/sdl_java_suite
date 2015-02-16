@@ -23,7 +23,6 @@ public class ImageFieldTests extends TestCase{
 
     private static final int            RESOLUTION_HEIGHT    		= 1920;
     private static final int            RESOLUTION_WIDTH     		= 1080;
-    private static final int            RESOLUTION_WIDTH_CHANGED	= 840;
     private static final FileType       IMAGE_TYPE_SUPPORTED 		= FileType.GRAPHIC_PNG;
     private static final ImageFieldName IMAGE_FIELD_NAME     		= ImageFieldName.choiceImage;
 
@@ -48,25 +47,6 @@ public class ImageFieldTests extends TestCase{
     public void testImageResolution(){
         ImageResolution copy = msg.getImageResolution();
         assertTrue("Input value didn't match expected value.", Validator.validateImageResolution(imageResolution, copy));
-    }
-    
-    public void testGetImageResolution() {
-    	ImageResolution copy1 = msg.getImageResolution();
-    	copy1.setResolutionWidth(RESOLUTION_WIDTH_CHANGED);
-    	ImageResolution copy2 = msg.getImageResolution();
-    	
-    	assertNotSame("Image resolution was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateImageResolution(copy1, copy2));
-    }
-    
-    public void testSetImageResolution() {
-    	ImageResolution copy1 = msg.getImageResolution();
-    	msg.setImageResolution(copy1);
-    	copy1.setResolutionWidth(RESOLUTION_WIDTH_CHANGED);
-    	ImageResolution copy2 = msg.getImageResolution();
-    	
-    	assertNotSame("Image resolution was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateImageResolution(copy1, copy2));
     }
 
     public void testImageTypeSupported(){

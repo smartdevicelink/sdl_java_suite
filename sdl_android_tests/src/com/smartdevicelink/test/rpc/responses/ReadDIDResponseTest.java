@@ -87,7 +87,6 @@ public class ReadDIDResponseTest extends BaseRpcTests {
 		List<DIDResult> copy = ( (ReadDIDResponse) msg ).getDidResult();
 		
 		assertNotNull("Did results were null.", copy);
-		assertNotSame("Did results were not defensive copied.", didResults, copy);
 		assertTrue("Did results didn't match input data.", Validator.validateDIDResults(didResults, copy));
 	}
 

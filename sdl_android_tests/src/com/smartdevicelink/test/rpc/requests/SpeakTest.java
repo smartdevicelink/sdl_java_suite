@@ -80,7 +80,6 @@ public class SpeakTest extends BaseRpcTests {
 	public void testTtsChunks() {
 		List<TTSChunk> copy = ( (Speak) msg ).getTtsChunks();
 		
-		assertNotSame("Tts chunks was not defensive copied", ttsChunks, copy);
 	    assertTrue("Input value didn't match expected value.", Validator.validateTtsChunks(ttsChunks, copy));
 	}
 

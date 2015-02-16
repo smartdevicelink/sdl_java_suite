@@ -24,7 +24,6 @@ public class TouchEventTest extends TestCase {
 	private static final Integer TS_ITEM_2 = 3;
 	private static final Integer TS_ITEM_3 = 5;
 	private static final Integer TS_ITEM_4 = 7;
-	private static final Integer TS_ITEM_CHANGED = 40;
     private final List<Integer> TS_LIST = Arrays.asList(new Integer[]{TS_ITEM_1, TS_ITEM_2, TS_ITEM_3, TS_ITEM_4});
     
     
@@ -32,7 +31,6 @@ public class TouchEventTest extends TestCase {
 	private final TouchCoord TOUCH_COORDINATE = new TouchCoord();
 	private static final Integer TOUCH_COORDINATE_VALUE_X = 3;
 	private static final Integer TOUCH_COORDINATE_VALUE_Y = 6;
-	private static final Integer TOUCH_COORDINATE_VALUE_Y_CHANGED = 8;
 	
 	private final TouchCoord TOUCH_COORDINATE_2 = new TouchCoord();
 	private static final Integer TOUCH_COORDINATE_VALUE_X_2 = 2;
@@ -68,25 +66,6 @@ public class TouchEventTest extends TestCase {
     	assertTrue("Input value didn't match expected value.", Validator.validateIntegerList(TS_LIST, copy));
 	}
 	
-    public void testGetTimestamp() {
-    	List<Integer> copy1 = msg.getTs();
-    	copy1.set(0, TS_ITEM_CHANGED);
-    	List<Integer> copy2 = msg.getTs();
-    	
-    	assertNotSame("Timestamp list was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateIntegerList(copy1, copy2));
-    }
-    
-    public void testSetTimestamp() {
-    	List<Integer> copy1 = msg.getTs();
-    	msg.setTs(copy1);
-    	copy1.set(0, TS_ITEM_CHANGED);
-    	List<Integer> copy2 = msg.getTs();
-    	
-    	assertNotSame("Timestamp list was not defensive copied", copy1, copy2);
-    	assertFalse("Copies have the same values", Validator.validateIntegerList(copy1, copy2));
-    }
-	
 	public void testTouchCoordinate () {
 		List<TouchCoord> coordTest = msg.getC();
 		
@@ -96,53 +75,6 @@ public class TouchEventTest extends TestCase {
 			assertTrue("Input value didn't match expected value", Validator.validateTouchCoord(C_LIST.get(index), coordTest.get(index)));
 		}
 	}
-	
-    public void testGetTouchCoordinate() {
-    	List<TouchCoord> copy1 = msg.getC();
-    	TouchCoord firstItem = copy1.get(0);
-    	firstItem.setY(TOUCH_COORDINATE_VALUE_Y_CHANGED);
-    	List<TouchCoord> copy2 = msg.getC();
-    	
-    	assertNotSame("Touch coordinate list was not defensive copied", copy1, copy2);
-    	//test the first object for different values, and test the rest of the objects in the list for same values
-		TouchCoord touchFirst1 = copy1.get(0);
-		TouchCoord touchFirst2 = copy2.get(0);
-		
-		assertNotSame("Touch coordinate was not defensive copied", touchFirst1, touchFirst2);
-		assertFalse("Touch coordinate objects matched", Validator.validateTouchCoord(touchFirst1, touchFirst2));
-		
-    	for (int index = 1; index < copy1.size(); index++) {
-    		TouchCoord touchCopy1 = copy1.get(index);
-    		TouchCoord touchCopy2 = copy2.get(index);
-    		
-    		assertNotSame("Touch coordinate was not defensive copied", touchCopy1, touchCopy2);
-    		assertTrue("Input value didn't match expected value", Validator.validateTouchCoord(touchCopy1, touchCopy2));
-    	}
-    }
-    
-    public void testSetTouchCoordinate() {
-    	List<TouchCoord> copy1 = msg.getC();
-    	TouchCoord firstItem = copy1.get(0);
-    	msg.setC(copy1);
-    	firstItem.setY(TOUCH_COORDINATE_VALUE_Y_CHANGED);
-    	List<TouchCoord> copy2 = msg.getC();
-    	
-    	assertNotSame("Touch coordinate list was not defensive copied", copy1, copy2);
-    	//test the first object for different values, and test the rest of the objects in the list for same values
-		TouchCoord touchFirst1 = copy1.get(0);
-		TouchCoord touchFirst2 = copy2.get(0);
-		
-		assertNotSame("Touch coordinate was not defensive copied", touchFirst1, touchFirst2);
-		assertFalse("Touch coordinate objects matched", Validator.validateTouchCoord(touchFirst1, touchFirst2));
-		
-    	for (int index = 1; index < copy1.size(); index++) {
-    		TouchCoord touchCopy1 = copy1.get(index);
-    		TouchCoord touchCopy2 = copy2.get(index);
-    		
-    		assertNotSame("Touch coordinate was not defensive copied", touchCopy1, touchCopy2);
-    		assertTrue("Input value didn't match expected value", Validator.validateTouchCoord(touchCopy1, touchCopy2));
-    	}
-    }
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();

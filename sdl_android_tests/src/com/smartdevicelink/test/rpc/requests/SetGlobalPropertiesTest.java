@@ -180,7 +180,6 @@ public class SetGlobalPropertiesTest extends BaseRpcTests {
 	public void testHelpPrompt () {
 		List<TTSChunk> copy = ( (SetGlobalProperties) msg ).getHelpPrompt();
 		
-		assertNotSame("Help prompt was not defensive copied", helpPrompt, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateTtsChunks(helpPrompt, copy));
 	}
 	
@@ -193,14 +192,12 @@ public class SetGlobalPropertiesTest extends BaseRpcTests {
 	public void testMenuIcon () {
 		Image copy = ( (SetGlobalProperties) msg ).getMenuIcon();
 		
-		assertNotSame("Image was not defensive copied", MENU_ICON, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateImage(MENU_ICON, copy));
 	}
 	
 	public void testVrHelp () {
 		List<VrHelpItem> copy = ( (SetGlobalProperties) msg ).getVrHelp();
 		
-		assertNotSame("Vr help was not defensive copied", vrHelp, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateVrHelpItems(vrHelp, copy));
 	}
 	
@@ -213,14 +210,12 @@ public class SetGlobalPropertiesTest extends BaseRpcTests {
 	public void testTimeoutPrompt () {
 		List<TTSChunk> copy = ( (SetGlobalProperties) msg ).getTimeoutPrompt();
 		
-		assertNotSame("Timeout prompt was not defensive copied", timeoutPrompt, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateTtsChunks(timeoutPrompt, copy));
 	}
 	
 	public void testKeyboardProperties () {
 		KeyboardProperties copy = ( (SetGlobalProperties) msg ).getKeyboardProperties();
 		
-		assertNotSame("Keyboard properties was not defensive copied", keyboardProperties, copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateKeyboardProperties(keyboardProperties, copy));
 	}
 
