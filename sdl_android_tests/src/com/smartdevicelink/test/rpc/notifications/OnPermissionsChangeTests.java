@@ -28,7 +28,7 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
     private final List<HMILevel> HMI_DISALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE});
     private final List<String> PARAMETERS_ALLOWED = Arrays.asList(new String[]{AddCommand.KEY_CMD_ICON,
             AddCommand.KEY_CMD_ID, AddCommand.KEY_MENU_PARAMS, AddCommand.KEY_VR_COMMANDS});
-    private static final List<String> PARAMETERS_DISALLOWED = Arrays.asList(new String[]{AddCommand.KEY_MENU_PARAMS, AddCommand.KEY_VR_COMMANDS});
+    private final List<String> PARAMETERS_DISALLOWED = Arrays.asList(new String[]{AddCommand.KEY_MENU_PARAMS, AddCommand.KEY_VR_COMMANDS});
     private static final String RPC_NAME_CHANGED = "illegal";
     private static final HMILevel HMI_ALLOWED_CHANGED = HMILevel.HMI_BACKGROUND;
     private static final HMILevel HMI_DISALLOWED_CHANGED = HMILevel.HMI_LIMITED;
