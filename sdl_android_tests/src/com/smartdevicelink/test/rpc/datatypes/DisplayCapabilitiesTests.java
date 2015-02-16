@@ -60,6 +60,10 @@ public class DisplayCapabilitiesTests extends TestCase{
     private static final ImageResolution[]      IMAGE_RESOLUTIONS              = new ImageResolution[3];
     private static final Integer				IMAGE_RESOLUTION_ITEM_1_WIDTH  = 20;
     private static final Integer				IMAGE_RESOLUTION_ITEM_1_HEIGHT = 20;
+    private static final Integer				IMAGE_RESOLUTION_ITEM_2_WIDTH  = 30;
+    private static final Integer				IMAGE_RESOLUTION_ITEM_2_HEIGHT = 30;
+    private static final Integer				IMAGE_RESOLUTION_ITEM_3_WIDTH  = 40;
+    private static final Integer				IMAGE_RESOLUTION_ITEM_3_HEIGHT = 40;
     private static final ImageFieldName 		IMAGE_FIELD_NAME_CHANGED	   = ImageFieldName.showConstantTBTIcon;
     private static final FileType				IMAGE_FILE_TYPE_CHANGED		   = FileType.AUDIO_MP3;
     private static final Integer				IMAGE_RESOLUTION_HEIGHT_CHANGED= 45;
@@ -81,17 +85,7 @@ public class DisplayCapabilitiesTests extends TestCase{
     private TouchEventCapabilities              touchEventCapabilities;
 
     @Override
-    public void setUp(){
-        IMAGE_RESOLUTIONS[0] = new ImageResolution();
-    	IMAGE_RESOLUTIONS[0].setResolutionWidth(IMAGE_RESOLUTION_ITEM_1_WIDTH);
-    	IMAGE_RESOLUTIONS[0].setResolutionHeight(IMAGE_RESOLUTION_ITEM_1_HEIGHT);
-        IMAGE_RESOLUTIONS[1] = new ImageResolution();
-    	IMAGE_RESOLUTIONS[1].setResolutionWidth(30);
-    	IMAGE_RESOLUTIONS[1].setResolutionHeight(30);
-        IMAGE_RESOLUTIONS[2] = new ImageResolution();
-    	IMAGE_RESOLUTIONS[2].setResolutionWidth(10);
-    	IMAGE_RESOLUTIONS[2].setResolutionHeight(10);
-    	
+    public void setUp(){    	
     	msg = new DisplayCapabilities();
 
         createCustomObjects();
@@ -107,6 +101,18 @@ public class DisplayCapabilitiesTests extends TestCase{
     }
 
     private void createCustomObjects(){
+    	IMAGE_RESOLUTIONS[0] = new ImageResolution();
+    	IMAGE_RESOLUTIONS[0].setResolutionWidth(IMAGE_RESOLUTION_ITEM_1_WIDTH);
+    	IMAGE_RESOLUTIONS[0].setResolutionHeight(IMAGE_RESOLUTION_ITEM_1_HEIGHT);
+    	
+    	IMAGE_RESOLUTIONS[1] = new ImageResolution();
+    	IMAGE_RESOLUTIONS[1].setResolutionWidth(IMAGE_RESOLUTION_ITEM_2_WIDTH);
+    	IMAGE_RESOLUTIONS[1].setResolutionHeight(IMAGE_RESOLUTION_ITEM_2_HEIGHT);
+    	
+    	IMAGE_RESOLUTIONS[2] = new ImageResolution();
+    	IMAGE_RESOLUTIONS[2].setResolutionWidth(IMAGE_RESOLUTION_ITEM_3_WIDTH);
+    	IMAGE_RESOLUTIONS[2].setResolutionHeight(IMAGE_RESOLUTION_ITEM_3_HEIGHT);
+    	
         imageResolution = new ImageResolution();
         imageResolution.setResolutionWidth(SCREEN_IMAGE_RESOLUTION_WIDTH);
         imageResolution.setResolutionHeight(SCREEN_IMAGE_RESOLUTION_HEIGHT);
@@ -134,11 +140,14 @@ public class DisplayCapabilitiesTests extends TestCase{
         for(int i = 0; i < IMAGE_FIELD_NAMES.length; i++){
         	ImageField imageField = new ImageField();
         	imageField.setName(IMAGE_FIELD_NAMES[i]);
-        	//TODO: check if this fix is correct
+
         	List<FileType> fileList = new ArrayList<FileType>();
-        	fileList.add(IMAGE_FILE_TYPES[i]);
+        	for(int j = 0; j < IMAGE_FILE_TYPES.length; j++){
+        		fileList.add(IMAGE_FILE_TYPES[j]);
+        	}
         	imageField.setImageTypeSupported(fileList);
         	imageField.setImageResolution(IMAGE_RESOLUTIONS[i]);
+        	
             imageFields.add(imageField);
         }
     }
@@ -311,7 +320,7 @@ public class DisplayCapabilitiesTests extends TestCase{
     public void testImageFields(){
         List<ImageField> copy = msg.getImageFields();
         assertEquals("Text fields size didn't match expected size.", imageFields.size(), copy.size());
-
+       
         for(int i = 0; i < imageFields.size(); i++){
             assertTrue("Text field data at index " + i + " didn't match expected data.",
                     Validator.validateImageFields(imageFields.get(i), copy.get(i)));
