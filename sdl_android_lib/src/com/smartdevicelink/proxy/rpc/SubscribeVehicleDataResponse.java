@@ -175,11 +175,42 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Sets Fuel Level State
      * @param fuelLevel_State
      */
+    @Deprecated
     public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
         if (fuelLevel_State != null) {
             parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
         } else {
-        	parameters.remove(KEY_FUEL_LEVEL_STATE);
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
+    }
+    /**
+     * Gets Fuel Level State
+     * @return VehicleDataResult 
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getFuelLevel_State() {
+        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
+        if (obj instanceof VehicleDataResult) {
+            return (VehicleDataResult) obj;
+        } else if (obj instanceof Hashtable) {
+            try {
+                return new VehicleDataResult((Hashtable<String, Object>) obj);
+            } catch (Exception e) {
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+            }
+        }
+        return null;
+    }
+    /**
+     * Sets Fuel Level State
+     * @param fuelLevelState
+     */
+    public void setFuelLevelState(VehicleDataResult fuelLevelState) {
+        if (fuelLevelState != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
         }
     }
     /**
@@ -187,16 +218,12 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @return VehicleDataResult 
      */
     @SuppressWarnings("unchecked")
-    public VehicleDataResult getFuelLevel_State() {
-    	Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
+    public VehicleDataResult getFuelLevelState() {
+        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
         if (obj instanceof VehicleDataResult) {
             return (VehicleDataResult) obj;
         } else if (obj instanceof Hashtable) {
-        	try {
-        		return new VehicleDataResult((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
+            return new VehicleDataResult((Hashtable<String, Object>) obj);
         }
         return null;
     }

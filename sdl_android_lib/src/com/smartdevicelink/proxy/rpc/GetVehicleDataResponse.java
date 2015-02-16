@@ -101,23 +101,47 @@ public class GetVehicleDataResponse extends RPCResponse {
     	Object object = parameters.get(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
+    @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-    	if (fuelLevel_State != null) {
-    		parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-    	} else {
-    		parameters.remove(KEY_FUEL_LEVEL_STATE);
-    	}
+        if (fuelLevel_State != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
     }
+    @Deprecated
     public ComponentVolumeStatus getFuelLevel_State() {
         Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
         if (obj instanceof ComponentVolumeStatus) {
             return (ComponentVolumeStatus) obj;
         } else if (obj instanceof String) {
-        	ComponentVolumeStatus theCode = null;
+            ComponentVolumeStatus theCode = null;
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+            }
+            return theCode;
+        }
+        return null;
+    }
+    public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
+        if (fuelLevelState != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
+    }
+    public ComponentVolumeStatus getFuelLevelState() {
+        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
+        if (obj instanceof ComponentVolumeStatus) {
+            return (ComponentVolumeStatus) obj;
+        } else if (obj instanceof String) {
+            ComponentVolumeStatus theCode = null;
+            try {
+                theCode = ComponentVolumeStatus.valueForString((String) obj);
+            } catch (Exception e) {
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
             }
             return theCode;
         }
