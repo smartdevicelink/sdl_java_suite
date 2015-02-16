@@ -22,7 +22,7 @@ public class SliderTest extends BaseRpcTests {
 	private static final Integer POSITION = 0;
 	private static final Integer TIMEOUT = 0;
 	private static final String HEADER = "header";
-	private static final List<String> FOOTER = Arrays.asList(new String[]{"param1","param2"});
+	private final List<String> FOOTER = Arrays.asList(new String[]{"param1","param2"});
 
 	@Override
 	protected RPCMessage createMessage() {

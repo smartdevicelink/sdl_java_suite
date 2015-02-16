@@ -25,16 +25,16 @@ public class TouchEventTest extends TestCase {
 	private static final Integer TS_ITEM_3 = 5;
 	private static final Integer TS_ITEM_4 = 7;
 	private static final Integer TS_ITEM_CHANGED = 40;
-    private static final List<Integer> TS_LIST = Arrays.asList(new Integer[]{TS_ITEM_1, TS_ITEM_2, TS_ITEM_3, TS_ITEM_4});
+    private final List<Integer> TS_LIST = Arrays.asList(new Integer[]{TS_ITEM_1, TS_ITEM_2, TS_ITEM_3, TS_ITEM_4});
     
     
-    private static final List<TouchCoord> C_LIST = new ArrayList<TouchCoord>();
-	private static final TouchCoord TOUCH_COORDINATE = new TouchCoord();
+    private final List<TouchCoord> C_LIST = new ArrayList<TouchCoord>();
+	private final TouchCoord TOUCH_COORDINATE = new TouchCoord();
 	private static final Integer TOUCH_COORDINATE_VALUE_X = 3;
 	private static final Integer TOUCH_COORDINATE_VALUE_Y = 6;
 	private static final Integer TOUCH_COORDINATE_VALUE_Y_CHANGED = 8;
 	
-	private static final TouchCoord TOUCH_COORDINATE_2 = new TouchCoord();
+	private final TouchCoord TOUCH_COORDINATE_2 = new TouchCoord();
 	private static final Integer TOUCH_COORDINATE_VALUE_X_2 = 2;
 	private static final Integer TOUCH_COORDINATE_VALUE_Y_2 = 8;
 	

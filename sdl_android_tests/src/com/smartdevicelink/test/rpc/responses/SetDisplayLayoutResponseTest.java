@@ -26,8 +26,8 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 
 	private DisplayCapabilities DISPLAY_CAPABILITIES = new DisplayCapabilities();
 	private static final PresetBankCapabilities PRESET_BANK_CAPABILITIES = new PresetBankCapabilities();
-	private static final List<ButtonCapabilities> BUTTON_CAPABILITIES_LIST = new ArrayList<ButtonCapabilities>();
-	private static final List<SoftButtonCapabilities> SOFT_BUTTON_CAPABILITIES_LIST = new ArrayList<SoftButtonCapabilities>();
+	private final List<ButtonCapabilities> BUTTON_CAPABILITIES_LIST = new ArrayList<ButtonCapabilities>();
+	private final List<SoftButtonCapabilities> SOFT_BUTTON_CAPABILITIES_LIST = new ArrayList<SoftButtonCapabilities>();
 	private static final Boolean BUTTON_CAPABILITIES_TRUE = true;
 	private static final Boolean BUTTON_CAPABILITIES_FALSE = false;
 	private static final Boolean SOFT_BUTTON_CAPABILITIES_TRUE = true;
@@ -46,7 +46,7 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 		return msg;
 	}
 	
-	public void createCustomObjects () { 
+	private void createCustomObjects () { 
 		ButtonCapabilities buttonCapabailities = new ButtonCapabilities();
 		buttonCapabailities.setUpDownAvailable(BUTTON_CAPABILITIES_TRUE);
 		buttonCapabailities.setLongPressAvailable(BUTTON_CAPABILITIES_TRUE);

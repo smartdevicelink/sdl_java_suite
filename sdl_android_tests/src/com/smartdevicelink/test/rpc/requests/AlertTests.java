@@ -32,13 +32,13 @@ public class AlertTests extends BaseRpcTests{
     private static final boolean PLAY_TONE          = true;
     private static final boolean PROGRESS_INDICATOR = true;
     
-    private static final List<TTSChunk> TTS_CHUNK_LIST = new ArrayList<TTSChunk>();
+    private final List<TTSChunk> TTS_CHUNK_LIST = new ArrayList<TTSChunk>();
 	private static final String TTS_CHUNK_TEXT_1 = "Welcome to the jungle";
 	private static final SpeechCapabilities TTS_CHUNK_SPEECH_1 = SpeechCapabilities.TEXT;
 	private static final String TTS_CHUNK_TEXT_2 = "Say a command";
 	private static final SpeechCapabilities TTS_CHUNK_SPEECH_2 = SpeechCapabilities.LHPLUS_PHONEMES;
 
-    private static final List<SoftButton> SOFT_BUTTON_LIST = new ArrayList<SoftButton>();
+    private final List<SoftButton> SOFT_BUTTON_LIST = new ArrayList<SoftButton>();
     private static final Boolean SOFT_BUTTON_HIGHLIGHTED = true;
     private static final Integer SOFT_BUTTON_ID = 236;
 	private static final SystemAction SOFT_BUTTON_SYSTEM_ACTION = SystemAction.STEAL_FOCUS;
@@ -69,7 +69,7 @@ public class AlertTests extends BaseRpcTests{
         return msg;
     }
     
-	public void createCustomObjects() {
+	private void createCustomObjects() {
 		TTSChunk ttsChunk = new TTSChunk();
 		ttsChunk.setText(TTS_CHUNK_TEXT_1);
 		ttsChunk.setType(TTS_CHUNK_SPEECH_1);
@@ -126,7 +126,7 @@ public class AlertTests extends BaseRpcTests{
 			softButton.put(SoftButton.KEY_SYSTEM_ACTION, SOFT_BUTTON_SYSTEM_ACTION);
 			softButton.put(SoftButton.KEY_TEXT, SOFT_BUTTON_TEXT);
 			softButton.put(SoftButton.KEY_TYPE, SOFT_BUTTON_KEY_TYPE);
-			softButton.put(SoftButton.KEY_IMAGE, SOFT_BUTTON_IMAGE);
+			softButton.put(SoftButton.KEY_IMAGE, SOFT_BUTTON_IMAGE.serializeJSON());
 			softButtons.put(softButton);
         	
             result.put(Alert.KEY_DURATION, DURATION);

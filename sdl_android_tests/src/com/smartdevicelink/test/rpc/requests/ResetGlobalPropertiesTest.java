@@ -19,7 +19,7 @@ import com.smartdevicelink.test.utils.JsonUtils;
 
 public class ResetGlobalPropertiesTest extends BaseRpcTests {
 
-	private static final List<GlobalProperty> PROPERTIES = new ArrayList<GlobalProperty>();
+	private final List<GlobalProperty> PROPERTIES = new ArrayList<GlobalProperty>();
 
 	@Override
 	protected RPCMessage createMessage() {

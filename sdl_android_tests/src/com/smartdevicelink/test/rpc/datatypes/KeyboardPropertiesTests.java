@@ -22,7 +22,7 @@ public class KeyboardPropertiesTests extends TestCase{
     private static final Language       LANGUAGE           			= Language.AR_SA;
     private static final KeyboardLayout KEYBOARD_LAYOUT    			= KeyboardLayout.QWERTY;
     private static final KeypressMode   KEYPRESS_MODE      			= KeypressMode.SINGLE_KEYPRESS;
-    private static final List<String>   LIMITED_CHAR_LIST  			= Arrays.asList(new String[] { "R", "S", "T", "L", "N", "E" });
+    private final List<String>   LIMITED_CHAR_LIST  			= Arrays.asList(new String[] { "R", "S", "T", "L", "N", "E" });
     private static final String 		LIMITED_CHAR_ITEM_CHANGED 	= "O";
 
     private KeyboardProperties          msg;

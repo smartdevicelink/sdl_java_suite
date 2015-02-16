@@ -24,9 +24,9 @@ import com.smartdevicelink.test.utils.Validator;
 public class OnPermissionsChangeTests extends BaseRpcTests{
 
     private static final String RPC_NAME = SdlCommand.ADD_COMMAND.name();
-    private static final List<HMILevel> HMI_ALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
-    private static final List<HMILevel> HMI_DISALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE});
-    private static final List<String> PARAMETERS_ALLOWED = Arrays.asList(new String[]{AddCommand.KEY_CMD_ICON,
+    private final List<HMILevel> HMI_ALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
+    private final List<HMILevel> HMI_DISALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE});
+    private final List<String> PARAMETERS_ALLOWED = Arrays.asList(new String[]{AddCommand.KEY_CMD_ICON,
             AddCommand.KEY_CMD_ID, AddCommand.KEY_MENU_PARAMS, AddCommand.KEY_VR_COMMANDS});
     private static final List<String> PARAMETERS_DISALLOWED = Arrays.asList(new String[]{AddCommand.KEY_MENU_PARAMS, AddCommand.KEY_VR_COMMANDS});
     private static final String RPC_NAME_CHANGED = "illegal";
@@ -34,8 +34,6 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
     private static final HMILevel HMI_DISALLOWED_CHANGED = HMILevel.HMI_LIMITED;
     private static final String PARAMETERS_ALLOWED_CHANGED = "Changed parameter";
     private static final String PARAMETERS_DISALLOWED_CHANGED = "Don't include me";
-    
-    
     private List<PermissionItem> permissionList;
     private PermissionItem permissionItem;
     private HMIPermissions hmiPermissions;

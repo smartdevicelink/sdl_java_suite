@@ -35,14 +35,15 @@ public class ShowTest extends BaseRpcTests {
 	private static final TextAlignment TEXT_ALIGNMENT = TextAlignment.CENTERED;
 	private static final Image IMAGE_1 = new Image();
 	private static final Image IMAGE_2 = new Image();
-	private static final List<String> CUSTOM_PRESETS = new ArrayList<String>();
+	private final List<String> CUSTOM_PRESETS = new ArrayList<String>();
 	private static final String SOFT_BUTTON_TEXT = "Hello";
 	private static final Boolean SOFT_BUTTON_HIGHLIGHTED = true;
 	private static final String CUSTOM_PRESET_SAMPLE = "Custom Preset 1";
 	
 	private List<SoftButton> softButtons = new ArrayList<SoftButton>();
     
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	protected RPCMessage createMessage() {
 		CUSTOM_PRESETS.add(CUSTOM_PRESET_SAMPLE);
 		
@@ -202,7 +203,8 @@ public class ShowTest extends BaseRpcTests {
 	}
 	
 	public void testMediaClock () {
-		String copy = ( (Show) msg ).getMediaClock();
+		@SuppressWarnings("deprecation")
+        String copy = ( (Show) msg ).getMediaClock();
 		
 		assertEquals("Data didn't match input data.", MEDIA_CLOCK, copy);
 	}
@@ -251,7 +253,8 @@ public class ShowTest extends BaseRpcTests {
 		assertTrue("Input value didn't match expected value.", Validator.validateSoftButtons(softButtons, copy));
 	}
 	
-	public void testNull() {
+	@SuppressWarnings("deprecation")
+    public void testNull() {
 		Show msg = new Show();
 		assertNotNull("Null object creation failed.", msg);
 
@@ -271,6 +274,7 @@ public class ShowTest extends BaseRpcTests {
 		assertNull("Soft buttons wasn't set, but getter method returned an object.", msg.getSoftButtons());		
 	}
 
+    @SuppressWarnings("deprecation")
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
     	assertNotNull("Command object is null", commandJson);

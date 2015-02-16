@@ -86,6 +86,10 @@ public abstract class BaseRpcTests extends TestCase{
             JSONObject reference = buildJsonStore();
             JSONObject underTest = msg.serializeJSON();
 
+            System.out.println("testJson");
+            System.out.println("REFERENCE: " + reference.toString(2));
+            System.out.println("UNDER TEST: " + underTest.toString(2));
+
             assertEquals("Size of JSON under test didn't match expected size.", reference.length(), underTest.length());
 
             // loop through all values and verifies they match the RPCMessage parameters
@@ -135,10 +139,15 @@ public abstract class BaseRpcTests extends TestCase{
     }
     
     private void testJsonArray(JSONArray reference, JSONArray underTest, String key) throws JSONException{
+        System.out.println("testJsonArray for key: " + key);
         assertEquals("Size of JSON array didn't match expected size.", reference.length(), underTest.length());
         int len = reference.length();
         for(int i=0; i<len; i++){
             Object array1Obj = reference.get(i), array2Obj = underTest.get(i);
+            System.out.println("testJsonArray");
+            System.out.println("KEY: " + key);
+            System.out.println("REFERENCE: " + array1Obj + " " + array1Obj.getClass());
+            System.out.println("UNDER TEST: " + array2Obj + " " + array2Obj.getClass());
             if(array1Obj instanceof JSONObject){
                 testJsonParameters((JSONObject) array1Obj, (JSONObject) array2Obj);
             }

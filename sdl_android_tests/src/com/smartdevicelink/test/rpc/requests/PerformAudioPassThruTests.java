@@ -24,7 +24,7 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class PerformAudioPassThruTests extends BaseRpcTests {
 	
-	private static final List<TTSChunk> INITIAL_PROMPT  = new ArrayList<TTSChunk>();
+	private final List<TTSChunk> INITIAL_PROMPT  = new ArrayList<TTSChunk>();
 	private static final String TEXT_1                  = "Text 1";
 	private static final String TEXT_2                  = "Text 2";
 	private static final SamplingRate SAMPLING_RATE     = SamplingRate._8KHZ;
@@ -54,7 +54,7 @@ public class PerformAudioPassThruTests extends BaseRpcTests {
 		return msg;
 	}
 	
-	public void createCustomObjects () { 
+	private void createCustomObjects () { 
 		ttsChunk = new TTSChunk();
 		ttsChunk.setType(TEST_SPEECH);
 		ttsChunk.setText(HELLO_STRING);
@@ -89,7 +89,7 @@ public class PerformAudioPassThruTests extends BaseRpcTests {
 			initialPromptObj.put(TTSChunk.KEY_TEXT, HELLO_STRING);
 			JSONArray initialPromptArray = new JSONArray();
 			initialPromptArray.put(initialPromptObj);
-			result.put(PerformAudioPassThru.KEY_INITIAL_PROMPT,  JsonUtils.createJsonArray(INITIAL_PROMPT));
+			result.put(PerformAudioPassThru.KEY_INITIAL_PROMPT,  initialPromptArray);
 			
 		} catch (JSONException e) {
 			/* do nothing */

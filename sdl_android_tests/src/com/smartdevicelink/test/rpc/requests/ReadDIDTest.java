@@ -19,7 +19,7 @@ import com.smartdevicelink.test.utils.Validator;
 public class ReadDIDTest extends BaseRpcTests {
 	
 	private static final Integer ECU_NAME = -1;
-	private static final List<Integer> DID_LOCATIONS = Arrays.asList(new Integer[]{-1,-2});
+	private final List<Integer> DID_LOCATIONS = Arrays.asList(new Integer[]{-1,-2});
 	
 	@Override
 	protected RPCMessage createMessage() {

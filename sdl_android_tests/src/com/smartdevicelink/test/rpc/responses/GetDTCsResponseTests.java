@@ -18,7 +18,7 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class GetDTCsResponseTests extends BaseRpcTests{
 
-    private static final List<String> DTC_LIST = Arrays.asList(new String[] { "0x1FED: Tire Pressure Low",
+    private final List<String> DTC_LIST = Arrays.asList(new String[] { "0x1FED: Tire Pressure Low",
             "0x84F2: Passenger Window Open Circuit Fault" });
 
     @Override

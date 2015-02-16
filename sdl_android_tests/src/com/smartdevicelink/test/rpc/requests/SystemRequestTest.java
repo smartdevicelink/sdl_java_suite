@@ -19,7 +19,7 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class SystemRequestTest extends BaseRpcTests {
 
-	private static final List<String> LEGACY_DATA = Arrays.asList(new String[]{"param1","param2"});
+	private final List<String> LEGACY_DATA = Arrays.asList(new String[]{"param1","param2"});
 	private static final String FILE_NAME = "fileName";
 	private static final RequestType REQUEST_TYPE = RequestType.AUTH_ACK;
 	private static final byte[] BULK_DATA = new byte[]{0x00, 0x01, 0x02};

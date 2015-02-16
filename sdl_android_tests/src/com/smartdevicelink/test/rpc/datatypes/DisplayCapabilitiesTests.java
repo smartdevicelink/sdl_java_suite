@@ -69,11 +69,11 @@ public class DisplayCapabilitiesTests extends TestCase{
     private static final Integer				IMAGE_RESOLUTION_HEIGHT_CHANGED= 45;
     
     
-    private static final List<String>           TEMPLATES_AVAILABLE            = Arrays.asList(new String[] { "Media",
+    private final List<String>           TEMPLATES_AVAILABLE            = Arrays.asList(new String[] { "Media",
             "Navigation", "Productivity"                                      });
     private static final String 				TEMPLATES_ITEM_CHANGED		   = "Nothing";
     
-    private static final List<MediaClockFormat> MEDIA_CLOCK_FORMATS            = Arrays.asList(new MediaClockFormat[] { MediaClockFormat.CLOCK1 });
+    private final List<MediaClockFormat> MEDIA_CLOCK_FORMATS            = Arrays.asList(new MediaClockFormat[] { MediaClockFormat.CLOCK1 });
     private static final MediaClockFormat 		MEDIA_CLOCK_FORMAT_CHANGED 	   = MediaClockFormat.CLOCK3;
     
     private DisplayCapabilities                 msg;

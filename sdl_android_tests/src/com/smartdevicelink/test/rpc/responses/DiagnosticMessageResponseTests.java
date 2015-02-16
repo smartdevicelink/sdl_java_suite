@@ -18,7 +18,7 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class DiagnosticMessageResponseTests extends BaseRpcTests{
 
-    private static final List<Integer> MESSAGE_DATA_RESULT = Arrays.asList(new Integer[] { 1, 1, 3, 5, 8, 13, 21, 34,
+    private final List<Integer> MESSAGE_DATA_RESULT = Arrays.asList(new Integer[] { 1, 1, 3, 5, 8, 13, 21, 34,
             55, 89                                        });
 
     @Override
