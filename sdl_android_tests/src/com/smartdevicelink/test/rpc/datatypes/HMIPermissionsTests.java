@@ -16,11 +16,11 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class HMIPermissionsTests extends TestCase{
 
-    private static final List<HMILevel> ALLOWED_LIST        = Arrays.asList(new HMILevel[] { HMILevel.HMI_FULL,
+    private final List<HMILevel> ALLOWED_LIST        = Arrays.asList(new HMILevel[] { HMILevel.HMI_FULL,
             HMILevel.HMI_BACKGROUND                       });
     private static final HMILevel ALLOWED_ITEM_CHANGED        = HMILevel.HMI_BACKGROUND;
     	
-    private static final List<HMILevel> USER_DISALLOWED_LIST = Arrays.asList(new HMILevel[] { HMILevel.HMI_LIMITED,
+    private final List<HMILevel> USER_DISALLOWED_LIST = Arrays.asList(new HMILevel[] { HMILevel.HMI_LIMITED,
             HMILevel.HMI_NONE                             });
     private static final HMILevel USER_DISALLOWED_ITEM_CHANGED = HMILevel.HMI_FULL;
 

@@ -26,11 +26,11 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
 
 	//TODO: correct solution in RPC_NAME value?
     private static final String RPC_NAME = SdlCommand.ADD_COMMAND.name();
-    private static final List<HMILevel> HMI_ALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
-    private static final List<HMILevel> HMI_DISALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE});
-    private static final List<String> PARAMETERS_ALLOWED = Arrays.asList(new String[]{AddCommand.KEY_CMD_ICON,
+    private final List<HMILevel> HMI_ALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
+    private final List<HMILevel> HMI_DISALLOWED = Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE});
+    private final List<String> PARAMETERS_ALLOWED = Arrays.asList(new String[]{AddCommand.KEY_CMD_ICON,
             AddCommand.KEY_CMD_ID, AddCommand.KEY_MENU_PARAMS, AddCommand.KEY_VR_COMMANDS});
-    private static final List<String> PARAMETERS_DISALLOWED = Collections.emptyList();
+    private final List<String> PARAMETERS_DISALLOWED = Collections.emptyList();
     
     private List<PermissionItem> permissionList;
     private PermissionItem permissionItem;

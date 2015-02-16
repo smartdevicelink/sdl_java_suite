@@ -12,25 +12,19 @@ import org.json.JSONObject;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -53,13 +47,13 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 
-	private static final List<PrerecordedSpeech>   PRERECORDED_SPEECH = 
+	private final List<PrerecordedSpeech>   PRERECORDED_SPEECH = 
 			Arrays.asList(new PrerecordedSpeech[]{ PrerecordedSpeech.POSITIVE_JINGLE, PrerecordedSpeech.NEGATIVE_JINGLE });
-	private static final List<HmiZoneCapabilities> HMI_ZONE_CAPABILITIES = 
+	private final List<HmiZoneCapabilities> HMI_ZONE_CAPABILITIES = 
 			Arrays.asList(new HmiZoneCapabilities[]{ HmiZoneCapabilities.BACK, HmiZoneCapabilities.FRONT });
-	private static final List<SpeechCapabilities>  SPEECH_CAPABILITIES = 
+	private final List<SpeechCapabilities>  SPEECH_CAPABILITIES = 
 			Arrays.asList(new SpeechCapabilities[]{ SpeechCapabilities.SILENCE, SpeechCapabilities.TEXT });
-	private static final List<VrCapabilities>      VR_CAPABILITIES = 
+	private final List<VrCapabilities>      VR_CAPABILITIES = 
 			Arrays.asList(new VrCapabilities[]{ VrCapabilities.Text });
 	
 	private DisplayCapabilities             displayCapabilities;

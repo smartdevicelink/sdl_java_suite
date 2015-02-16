@@ -22,7 +22,7 @@ public class ScrollableMessageTest extends BaseRpcTests {
 
 	private static final String MESSAGE = "message";
 	private static final Integer TIMEOUT = 0;
-	private static final List<SoftButton> SOFT_BUTTON_LIST = new ArrayList<SoftButton>();
+	private final List<SoftButton> SOFT_BUTTON_LIST = new ArrayList<SoftButton>();
 	private static final String SOFT_BUTTON_TEXT = "Hello";
 	private static final Boolean SOFT_BUTTON_HIGHLIGHTED = true;
     
@@ -39,7 +39,7 @@ public class ScrollableMessageTest extends BaseRpcTests {
 		return msg;
 	}
 	
-	public void createCustomObjects() {
+	private void createCustomObjects() {
 		SoftButton softButton = new SoftButton();
 		softButton.setText(SOFT_BUTTON_TEXT);
 		softButton.setIsHighlighted(SOFT_BUTTON_HIGHLIGHTED);

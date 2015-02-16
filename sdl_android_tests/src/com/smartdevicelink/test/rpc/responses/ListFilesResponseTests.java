@@ -18,7 +18,7 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class ListFilesResponseTests extends BaseRpcTests{
 
-    private static final List<String> FILENAMES       = Arrays.asList(new String[] { "turn_left.png", "turn_right.png",
+    private final List<String> FILENAMES       = Arrays.asList(new String[] { "turn_left.png", "turn_right.png",
             "proceed.png", "ding.mp3"                });
     private static final int          SPACE_AVAILABLE = 684355;
 

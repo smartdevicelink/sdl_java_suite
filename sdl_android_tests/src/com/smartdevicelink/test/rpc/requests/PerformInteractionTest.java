@@ -38,7 +38,7 @@ public class PerformInteractionTest extends BaseRpcTests {
 	private static final String           INITIAL_TEXT       = "initialText";
 	private static final LayoutMode       INTERACTION_LAYOUT = LayoutMode.ICON_ONLY;
 	private static final InteractionMode  MODE               = InteractionMode.VR_ONLY;	
-	private static final List<Integer>    CHOICE_SET_IDS     = Arrays.asList(new Integer[]{0,1});
+	private final List<Integer>    CHOICE_SET_IDS     = Arrays.asList(new Integer[]{0,1});
 	
 	// VrHelpItem Constants
 	private final Image IMAGE_1  = new Image();

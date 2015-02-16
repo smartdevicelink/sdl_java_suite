@@ -23,7 +23,7 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
     private static final String        SECONDARY      = "Second text";
     private static final String        TERTIARY       = "Third text";
     private static final int           ID             = 61413;
-    private static final List<String>  VR_COMMANDS    = Arrays.asList(new String[] { "Choice 1", "One" });
+    private final List<String>  VR_COMMANDS    = Arrays.asList(new String[] { "Choice 1", "One" });
 
     private Choice                     choice;
 

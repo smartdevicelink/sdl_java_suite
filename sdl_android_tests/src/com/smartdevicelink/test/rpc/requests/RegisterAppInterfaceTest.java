@@ -32,7 +32,7 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 	private static final String TTS_CHUNK_TEXT_2 = "Say a command";
 	private static final SpeechCapabilities TTS_CHUNK_SPEECH_2 = SpeechCapabilities.LHPLUS_PHONEMES;
 	
-	private static final List<AppHMIType> APP_HMI_TYPES = Arrays.asList(new AppHMIType[]{ AppHMIType.DEFAULT, AppHMIType.SOCIAL });	
+	private final List<AppHMIType> APP_HMI_TYPES = Arrays.asList(new AppHMIType[]{ AppHMIType.DEFAULT, AppHMIType.SOCIAL });	
 	private static final SdlMsgVersion SDL_VERSION = new SdlMsgVersion();
 	private static final String APP_NAME = "appName";
 	private static final String MEDIA_SCREEN_APP_NAME = "mediaScreenAppName";
@@ -40,7 +40,7 @@ public class RegisterAppInterfaceTest extends BaseRpcTests {
 	private static final Language LANGUAGE_DESIRED = Language.EN_US;
 	private static final Language HMI_LANGUAGE_DESIRED = Language.EN_US;
 	private static final String HASH_ID = "hashId";
-	private static final List<String> VR_SYNONYMS = Arrays.asList(new String[]{"param1","param2"});
+	private final List<String> VR_SYNONYMS = Arrays.asList(new String[]{"param1","param2"});
 	private static final Boolean IS_MEDIA_APP = true;
 	private static final DeviceInfo DEVICE_INFO = new DeviceInfo();
 	

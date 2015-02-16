@@ -15,9 +15,9 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class ParameterPermissionsTests extends TestCase{
 
-    private static final List<String> ALLOWED = Arrays.asList(new String[]{"param1, param3"});
+    private final List<String> ALLOWED = Arrays.asList(new String[]{"param1, param3"});
     private static final String ALLOWED_ITEM_CHANGED = "weird string";
-    private static final List<String> USER_DISALLOWED = Arrays.asList(new String[]{"param2"});
+    private final List<String> USER_DISALLOWED = Arrays.asList(new String[]{"param2"});
     private static final String USER_DISALLOWED_ITEM_CHANGED = "don't use me";
     
     private ParameterPermissions msg;
