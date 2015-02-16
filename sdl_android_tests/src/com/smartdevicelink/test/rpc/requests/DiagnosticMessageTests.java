@@ -20,7 +20,7 @@ public class DiagnosticMessageTests extends BaseRpcTests{
 
     private static final int           TARGET_ID      = 48531;
     private final List<Integer> MESSAGE_DATA   = Arrays.asList(new Integer[] { 1, 1, 2, 3, 5, 8, 13, 21, 34 });
-    private static final int           MESSAGE_LENGTH = MESSAGE_DATA.size();
+    private final int           MESSAGE_LENGTH = MESSAGE_DATA.size();
 
     @Override
     protected RPCMessage createMessage(){
