@@ -357,9 +357,14 @@ public class DisplayCapabilitiesTests extends TestCase{
     		ImageField imageFieldCopy1 = copy1.get(index);
     		ImageField imageFieldCopy2 = copy2.get(index);
     		
-    		assertNotSame("Image field was not defensive copied", imageFieldFirst1, imageFieldFirst2);
-    		assertNotSame("First file type list was not defensive copied", firstFileTypeImageField1, firstFileTypeImageField2);
-    		assertNotSame("First image resolution was not defensive copied", firstImageResolution1, firstImageResolution2);
+    		List<FileType> firstFileTypeImageFieldCopy1 = imageFieldCopy1.getImageTypeSupported();
+    		List<FileType> firstFileTypeImageFieldCopy2 = imageFieldCopy2.getImageTypeSupported();
+    		ImageResolution firstImageResolutionCopy1 = imageFieldCopy1.getImageResolution();
+    		ImageResolution firstImageResolutionCopy2 = imageFieldCopy2.getImageResolution();
+    		
+    		assertNotSame("Image field was not defensive copied", imageFieldCopy1, imageFieldCopy2);
+    		assertNotSame("First file type list was not defensive copied", firstFileTypeImageFieldCopy1, firstFileTypeImageFieldCopy2);
+    		assertNotSame("First image resolution was not defensive copied", firstImageResolutionCopy1, firstImageResolutionCopy2);
     		assertTrue("Input value didn't match expected value", Validator.validateImageFields(imageFieldCopy1, imageFieldCopy2));
     	}
     }
@@ -395,9 +400,14 @@ public class DisplayCapabilitiesTests extends TestCase{
     		ImageField imageFieldCopy1 = copy1.get(index);
     		ImageField imageFieldCopy2 = copy2.get(index);
     		
-    		assertNotSame("Image field was not defensive copied", imageFieldFirst1, imageFieldFirst2);
-    		assertNotSame("First file type list was not defensive copied", firstFileTypeImageField1, firstFileTypeImageField2);
-    		assertNotSame("First image resolution was not defensive copied", firstImageResolution1, firstImageResolution2);
+    		List<FileType> fileTypeImageFieldCopy1 = imageFieldCopy1.getImageTypeSupported();
+    		List<FileType> fileTypeImageFieldCopy2 = imageFieldCopy2.getImageTypeSupported();
+    		ImageResolution imageResolutionCopy1 = imageFieldCopy1.getImageResolution();
+    		ImageResolution imageResolutionCopy2 = imageFieldCopy2.getImageResolution();
+    		
+    		assertNotSame("Image field was not defensive copied", imageFieldCopy1, imageFieldCopy2);
+    		assertNotSame("First file type list was not defensive copied", fileTypeImageFieldCopy1, fileTypeImageFieldCopy2);
+    		assertNotSame("First image resolution was not defensive copied", imageResolutionCopy1, imageResolutionCopy2);
     		assertTrue("Input value didn't match expected value", Validator.validateImageFields(imageFieldCopy1, imageFieldCopy2));
     	}
     }

@@ -115,7 +115,7 @@ public class TouchEventTest extends TestCase {
     		TouchCoord touchCopy1 = copy1.get(index);
     		TouchCoord touchCopy2 = copy2.get(index);
     		
-    		assertNotSame("Touch coordinate was not defensive copied", touchFirst1, touchFirst2);
+    		assertNotSame("Touch coordinate was not defensive copied", touchCopy1, touchCopy2);
     		assertTrue("Input value didn't match expected value", Validator.validateTouchCoord(touchCopy1, touchCopy2));
     	}
     }
@@ -139,7 +139,7 @@ public class TouchEventTest extends TestCase {
     		TouchCoord touchCopy1 = copy1.get(index);
     		TouchCoord touchCopy2 = copy2.get(index);
     		
-    		assertNotSame("Touch coordinate was not defensive copied", touchFirst1, touchFirst2);
+    		assertNotSame("Touch coordinate was not defensive copied", touchCopy1, touchCopy2);
     		assertTrue("Input value didn't match expected value", Validator.validateTouchCoord(touchCopy1, touchCopy2));
     	}
     }
