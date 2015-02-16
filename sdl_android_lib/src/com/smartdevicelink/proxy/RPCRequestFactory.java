@@ -775,7 +775,8 @@ public class RPCRequestFactory {
 		return msg;
 	}	
 	
-	public static SubscribeVehicleData BuildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+	@SuppressWarnings("deprecation")
+    public static SubscribeVehicleData BuildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 																 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 																 boolean driverBraking, Integer correlationID) 
@@ -800,7 +801,8 @@ public class RPCRequestFactory {
 		return msg;
 	}
 
-	public static UnsubscribeVehicleData BuildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+	@SuppressWarnings("deprecation")
+    public static UnsubscribeVehicleData BuildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																	 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 																	 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 																	 boolean driverBraking, Integer correlationID) 
@@ -825,7 +827,8 @@ public class RPCRequestFactory {
 		return msg;		
 	}
 	
-	public static GetVehicleData BuildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+	@SuppressWarnings("deprecation")
+    public static GetVehicleData BuildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 			 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 			 boolean driverBraking, Integer correlationID)

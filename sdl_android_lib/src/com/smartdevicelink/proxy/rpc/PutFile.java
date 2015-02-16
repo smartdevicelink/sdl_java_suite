@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.util.DebugTool;
 
