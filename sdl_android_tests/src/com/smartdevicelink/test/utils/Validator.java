@@ -907,16 +907,24 @@ public class Validator{
         }
         
         if(item1 == item2){
-            return false;
+            return true;
         }
-        //TODO: correct fix?
-        if(!validateTouchCoord(item1.getC().get(0), item2.getC().get(0))){
-            return false;
+        
+        List<TouchCoord> tc1 = item1.getC();
+        List<TouchCoord> tc2 = item2.getC();
+        List<Integer> ts1 = item1.getTs();
+        List<Integer> ts2 = item2.getTs();
+        
+        for(int i=0; i<tc1.size(); i++){
+            if( ! validateTouchCoord(tc1.get(i), tc2.get(i)) ){
+                return false;
+            }
+            if(ts1.get(i) != ts2.get(i)){
+                return false;
+            }
         }
+        
         if(item1.getId() != item2.getId()){
-            return false;
-        }
-        if(item1.getTs() != item2.getTs()){
             return false;
         }
         
