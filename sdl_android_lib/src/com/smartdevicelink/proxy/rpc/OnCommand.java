@@ -155,16 +155,14 @@ public class OnCommand extends RPCNotification {
 			if (other.cmdId != null) { 
 				return false;
 			}
-		} 
-		else if (!cmdId.equals(other.cmdId)) { 
+		} else if (!cmdId.equals(other.cmdId)) { 
 			return false;
 		}
 		if (triggerSource == null) {
 			if (other.triggerSource != null) { 
 				return false;
 			}
-		}
-		else if (!triggerSource.equals(other.triggerSource)) { 
+		} else if (!triggerSource.equals(other.triggerSource)) { 
 			return false;
 		}
 		return true;

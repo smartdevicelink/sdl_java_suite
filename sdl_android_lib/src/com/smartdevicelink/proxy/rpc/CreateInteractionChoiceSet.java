@@ -144,16 +144,14 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 			if (other.choiceSet != null) { 
 				return false;
 			}
-		} 
-		else if (!choiceSet.equals(other.choiceSet)) { 
+		} else if (!choiceSet.equals(other.choiceSet)) { 
 			return false;
 		}
 		if (interactionChoiceSetId == null) {
 			if (other.interactionChoiceSetId != null) { 
 				return false;
 			}
-		} 
-		else if (!interactionChoiceSetId.equals(other.interactionChoiceSetId)) { 
+		} else if (!interactionChoiceSetId.equals(other.interactionChoiceSetId)) { 
 			return false;
 		}
 		return true;

@@ -94,24 +94,21 @@ public class TouchEventCapabilities extends RPCObject {
 			if (other.doublePressAvailable != null) { 
 				return false;
 			}
-		}
-		else if (!doublePressAvailable.equals(other.doublePressAvailable)) { 
+		} else if (!doublePressAvailable.equals(other.doublePressAvailable)) { 
 			return false;
 		}
 		if (multiTouchAvailable == null) {
 			if (other.multiTouchAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!multiTouchAvailable.equals(other.multiTouchAvailable)) { 
+		} else if (!multiTouchAvailable.equals(other.multiTouchAvailable)) { 
 			return false;
 		}
 		if (pressAvailable == null) {
 			if (other.pressAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!pressAvailable.equals(other.pressAvailable)) { 
+		} else if (!pressAvailable.equals(other.pressAvailable)) { 
 			return false;
 		}
 		return true;

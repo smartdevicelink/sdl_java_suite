@@ -102,8 +102,7 @@ public class PresetBankCapabilities extends RPCObject {
 			if (other.onScreenPresetsAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!onScreenPresetsAvailable.equals(other.onScreenPresetsAvailable)) { 
+		} else if (!onScreenPresetsAvailable.equals(other.onScreenPresetsAvailable)) { 
 			return false;
 		}
 		return true;

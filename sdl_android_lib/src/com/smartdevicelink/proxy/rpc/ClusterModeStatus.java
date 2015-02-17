@@ -112,32 +112,28 @@ public class ClusterModeStatus extends RPCObject {
 			if (other.carModeStatus != null) { 
 				return false;
 			}
-		}
-		else if (!carModeStatus.equals(other.carModeStatus)) { 
+		} else if (!carModeStatus.equals(other.carModeStatus)) { 
 			return false;
 		}
 		if (powerModeActive == null) {
 			if (other.powerModeActive != null) { 
 				return false;
 			}
-		} 
-		else if (!powerModeActive.equals(other.powerModeActive)){ 
+		} else if (!powerModeActive.equals(other.powerModeActive)){ 
 			return false;
 		}
 		if (powerModeQualificationStatus == null) {
 			if (other.powerModeQualificationStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!powerModeQualificationStatus.equals(other.powerModeQualificationStatus)) { 
+		} else if (!powerModeQualificationStatus.equals(other.powerModeQualificationStatus)) { 
 			return false;
 		}
 		if (powerModeStatus == null) {
 			if (other.powerModeStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!powerModeStatus.equals(other.powerModeStatus)) { 
+		} else if (!powerModeStatus.equals(other.powerModeStatus)) { 
 			return false;
 		}
 		return true;

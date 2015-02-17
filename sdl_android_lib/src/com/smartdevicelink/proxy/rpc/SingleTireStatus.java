@@ -103,8 +103,7 @@ public class SingleTireStatus extends RPCObject {
 			if (other.status != null) { 
 				return false;
 			}
-		}
-		else if (!status.equals(other.status)) { 
+		} else if (!status.equals(other.status)) { 
 			return false;
 		}
 		return true;

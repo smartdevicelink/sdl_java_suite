@@ -147,56 +147,49 @@ public class BodyInformation extends RPCObject {
 			if (other.driverDoorAjar != null) { 
 				return false;
 			}
-		}
-		else if (!driverDoorAjar.equals(other.driverDoorAjar)) { 
+		} else if (!driverDoorAjar.equals(other.driverDoorAjar)) { 
 			return false;
 		}
 		if (ignitionStableStatus == null) {
 			if (other.ignitionStableStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!ignitionStableStatus.equals(other.ignitionStableStatus)) { 
+		} else if (!ignitionStableStatus.equals(other.ignitionStableStatus)) { 
 			return false;
 		}
 		if (ignitionStatus == null) {
 			if (other.ignitionStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!ignitionStatus.equals(other.ignitionStatus)) { 
+		} else if (!ignitionStatus.equals(other.ignitionStatus)) { 
 			return false;
 		}
 		if (parkingBrakeActive == null) {
 			if (other.parkingBrakeActive != null) { 
 				return false;
 			}
-		} 
-		else if (!parkingBrakeActive.equals(other.parkingBrakeActive)) { 
+		} else if (!parkingBrakeActive.equals(other.parkingBrakeActive)) { 
 			return false;
 		}
 		if (passengerDoorAjar == null) {
 			if (other.passengerDoorAjar != null) { 
 				return false;
 			}
-		}
-		else if (!passengerDoorAjar.equals(other.passengerDoorAjar)) { 
+		} else if (!passengerDoorAjar.equals(other.passengerDoorAjar)) { 
 			return false;
 		}
 		if (rearLeftDoorAjar == null) {
 			if (other.rearLeftDoorAjar != null) { 
 				return false;
 			}
-		} 
-		else if (!rearLeftDoorAjar.equals(other.rearLeftDoorAjar)) { 
+		} else if (!rearLeftDoorAjar.equals(other.rearLeftDoorAjar)) { 
 			return false;
 		}
 		if (rearRightDoorAjar == null) {
 			if (other.rearRightDoorAjar != null) { 
 				return false;
 			}
-		} 
-		else if (!rearRightDoorAjar.equals(other.rearRightDoorAjar)) { 
+		} else if (!rearRightDoorAjar.equals(other.rearRightDoorAjar)) { 
 			return false;
 		}
 		return true;

@@ -541,96 +541,84 @@ public class RegisterAppInterface extends RPCRequest {
 			if (other.appHmiType != null) { 
 				return false;
 			}
-		}
-		else if (!appHmiType.equals(other.appHmiType)) { 
+		} else if (!appHmiType.equals(other.appHmiType)) { 
 			return false;
 		}
 		if (appId == null) {
 			if (other.appId != null) { 
 				return false;
 			}
-		} 
-		else if (!appId.equals(other.appId)) { 
+		} else if (!appId.equals(other.appId)) { 
 			return false;
 		}
 		if (appName == null) {
 			if (other.appName != null) { 
 				return false;
 			}
-		}
-		else if (!appName.equals(other.appName)) { 
+		} else if (!appName.equals(other.appName)) { 
 			return false; 
 		}
 		if (deviceInfo == null) {
 			if (other.deviceInfo != null) { 
 				return false;
 			}
-		} 
-		else if (!deviceInfo.equals(other.deviceInfo)) { 
+		} else if (!deviceInfo.equals(other.deviceInfo)) { 
 			return false;
 		}
 		if (hashId == null) {
 			if (other.hashId != null) { 
 				return false;
 			}
-		}
-		else if (!hashId.equals(other.hashId)) { 
+		} else if (!hashId.equals(other.hashId)) { 
 			return false;
 		}
 		if (hmiLanguageDesired == null) {
 			if (other.hmiLanguageDesired != null) { 
 				return false;
 			}
-		} 
-		else if (!hmiLanguageDesired.equals(other.hmiLanguageDesired)) { 
+		} else if (!hmiLanguageDesired.equals(other.hmiLanguageDesired)) { 
 			return false;
 		}
 		if (isMediaApplication == null) {
 			if (other.isMediaApplication != null) { 
 				return false;
 			}
-		}
-		else if (!isMediaApplication.equals(other.isMediaApplication)) { 
+		} else if (!isMediaApplication.equals(other.isMediaApplication)) { 
 			return false;
 		}
 		if (languageDesired == null) {
 			if (other.languageDesired != null) { 
 				return false;
 			}
-		}
-		else if (!languageDesired.equals(other.languageDesired)) { 
+		} else if (!languageDesired.equals(other.languageDesired)) { 
 			return false;
 		}
 		if (ngnMediaName == null) {
 			if (other.ngnMediaName != null) { 
 				return false;
 			}
-		} 
-		else if (!ngnMediaName.equals(other.ngnMediaName)) { 
+		} else if (!ngnMediaName.equals(other.ngnMediaName)) { 
 			return false;
 		}
 		if (sdlMessageVersion == null) {
 			if (other.sdlMessageVersion != null) { 
 				return false;
 			}
-		} 
-		else if (!sdlMessageVersion.equals(other.sdlMessageVersion)) { 
+		} else if (!sdlMessageVersion.equals(other.sdlMessageVersion)) { 
 			return false;
 		}
 		if (ttsName == null) {
 			if (other.ttsName != null) { 
 				return false;
 			}
-		} 
-		else if (!ttsName.equals(other.ttsName)) { 
+		} else if (!ttsName.equals(other.ttsName)) { 
 			return false;
 		}
 		if (vrSynonyms == null) {
 			if (other.vrSynonyms != null) { 
 				return false;
 			}
-		} 
-		else if (!vrSynonyms.equals(other.vrSynonyms)) { 
+		} else if (!vrSynonyms.equals(other.vrSynonyms)) { 
 			return false;
 		}
 		return true;

@@ -103,8 +103,7 @@ public class DeleteSubMenu extends RPCRequest {
 			if (other.menuId != null) { 
 				return false;
 			}
-		} 
-		else if (!menuId.equals(other.menuId)) { 
+		} else if (!menuId.equals(other.menuId)) { 
 			return false;
 		}
 		return true;

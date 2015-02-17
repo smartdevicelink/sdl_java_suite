@@ -108,24 +108,21 @@ public class TouchEvent extends RPCObject {
 			if (other.id != null) { 
 				return false;
 			}
-		}
-		else if (!id.equals(other.id)) { 
+		} else if (!id.equals(other.id)) { 
 			return false;
 		}
 		if (timeStamps == null) {
 			if (other.timeStamps != null) { 
 				return false;
 			}
-		} 
-		else if (!timeStamps.equals(other.timeStamps)) { 
+		} else if (!timeStamps.equals(other.timeStamps)) { 
 			return false;
 		}
 		if (touchCoords == null) {
 			if (other.touchCoords != null) { 
 				return false;
 			}
-		} 
-		else if (!touchCoords.equals(other.touchCoords)) { 
+		} else if (!touchCoords.equals(other.touchCoords)) { 
 			return false;
 		}
 		return true;

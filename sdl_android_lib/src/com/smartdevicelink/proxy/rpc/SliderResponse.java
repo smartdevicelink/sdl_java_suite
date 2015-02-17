@@ -92,8 +92,7 @@ public class SliderResponse extends RPCResponse {
 			if (other.sliderPosition != null) { 
 				return false;
 			}
-		} 
-		else if (!sliderPosition.equals(other.sliderPosition)) { 
+		} else if (!sliderPosition.equals(other.sliderPosition)) { 
 			return false;
 		}
 		return true;

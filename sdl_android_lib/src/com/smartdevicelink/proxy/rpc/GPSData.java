@@ -548,144 +548,126 @@ public class GPSData extends RPCObject {
 			if (other.actual != null) { 
 				return false;
 			}
-		}
-		else if (!actual.equals(other.actual)) { 
+		} else if (!actual.equals(other.actual)) { 
 			return false;
 		}
 		if (altitude == null) {
 			if (other.altitude != null) { 
 				return false;
 			}
-		}
-		else if (!altitude.equals(other.altitude)) { 
+		} else if (!altitude.equals(other.altitude)) { 
 			return false;
 		}
 		if (compassDirection == null) {
 			if (other.compassDirection != null) { 
 				return false;
 			}
-		}
-		else if (!compassDirection.equals(other.compassDirection)) { 
+		} else if (!compassDirection.equals(other.compassDirection)) { 
 			return false;
 		}
 		if (day == null) {
 			if (other.day != null) { 
 				return false;
 			}
-		} 
-		else if (!day.equals(other.day)) { 
+		} else if (!day.equals(other.day)) { 
 			return false;
 		}
 		if (dimension == null) {
 			if (other.dimension != null) { 
 				return false;
 			}
-		}
-		else if (!dimension.equals(other.dimension)) { 
+		} else if (!dimension.equals(other.dimension)) { 
 			return false;
 		}
 		if (hdop == null) {
 			if (other.hdop != null) { 
 				return false;
 			}
-		} 
-		else if (!hdop.equals(other.hdop)) { 
+		} else if (!hdop.equals(other.hdop)) { 
 			return false;
 		}
 		if (heading == null) {
 			if (other.heading != null) { 
 				return false;
 			}
-		} 
-		else if (!heading.equals(other.heading)) { 
+		} else if (!heading.equals(other.heading)) { 
 			return false;
 		}
 		if (hours == null) {
 			if (other.hours != null) { 
 				return false;
 			}
-		} 
-		else if (!hours.equals(other.hours)) { 
+		} else if (!hours.equals(other.hours)) { 
 			return false;
 		}
 		if (latitude == null) {
 			if (other.latitude != null) { 
 				return false;
 			}
-		} 
-		else if (!latitude.equals(other.latitude)) { 
+		} else if (!latitude.equals(other.latitude)) { 
 			return false;
 		}
 		if (longitude == null) {
 			if (other.longitude != null) { 
 				return false;
 			}
-		}
-		else if (!longitude.equals(other.longitude)) { 
+		} else if (!longitude.equals(other.longitude)) { 
 			return false;
 		}
 		if (minutes == null) {
 			if (other.minutes != null) { 
 				return false;
 			}
-		}
-		else if (!minutes.equals(other.minutes)) { 
+		} else if (!minutes.equals(other.minutes)) { 
 			return false;
 		}
 		if (month == null) {
 			if (other.month != null) { 
 				return false;
 			}
-		}
-		else if (!month.equals(other.month)) { 
+		} else if (!month.equals(other.month)) { 
 			return false;
 		}
 		if (pdop == null) {
 			if (other.pdop != null) { 
 				return false;
 			}
-		} 
-		else if (!pdop.equals(other.pdop)) { 
+		} else if (!pdop.equals(other.pdop)) { 
 			return false;
 		}
 		if (satellites == null) {
 			if (other.satellites != null) { 
 				return false;
 			}
-		} 
-		else if (!satellites.equals(other.satellites)) { 
+		} else if (!satellites.equals(other.satellites)) { 
 			return false;
 		}
 		if (seconds == null) {
 			if (other.seconds != null) { 
 				return false;
 			}
-		}
-		else if (!seconds.equals(other.seconds)) { 
+		} else if (!seconds.equals(other.seconds)) { 
 			return false;
 		}
 		if (speed == null) {
 			if (other.speed != null) { 
 				return false;
 			}
-		}
-		else if (!speed.equals(other.speed)) { 
+		} else if (!speed.equals(other.speed)) { 
 			return false;
 		}
 		if (vdop == null) {
 			if (other.vdop != null) { 
 				return false;
 			}
-		} 
-		else if (!vdop.equals(other.vdop)) { 
+		} else if (!vdop.equals(other.vdop)) { 
 			return false;
 		}
 		if (year == null) {
 			if (other.year != null) { 
 				return false;
 			}
-		} 
-		else if (!year.equals(other.year)) { 
+		} else if (!year.equals(other.year)) { 
 			return false;
 		}
 		return true;

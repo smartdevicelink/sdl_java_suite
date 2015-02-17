@@ -134,16 +134,14 @@ public class TTSChunk extends RPCObject {
 			if (other.text != null) { 
 				return false;
 			}
-		} 
-		else if (!text.equals(other.text)) { 
+		} else if (!text.equals(other.text)) { 
 			return false;
 		}
 		if (type == null) {
 			if (other.type != null) { 
 				return false;
 			}
-		} 
-		else if (!type.equals(other.type)) { 
+		} else if (!type.equals(other.type)) { 
 			return false;
 		}
 		return true;

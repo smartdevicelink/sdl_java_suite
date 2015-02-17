@@ -133,16 +133,14 @@ public class Image extends RPCObject {
 			if (other.imageType != null) { 
 				return false;
 			}
-		} 
-		else if (!imageType.equals(other.imageType)) { 
+		} else if (!imageType.equals(other.imageType)) { 
 			return false;
 		}
 		if (value == null) {
 			if (other.value != null) { 
 				return false;
 			}
-		} 
-		else if (!value.equals(other.value)) { 
+		} else if (!value.equals(other.value)) { 
 			return false;
 		}
 		return true;

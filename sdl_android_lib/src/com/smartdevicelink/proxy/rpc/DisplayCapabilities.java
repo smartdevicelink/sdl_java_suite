@@ -291,64 +291,56 @@ public class DisplayCapabilities extends RPCObject {
 			if (other.displayType != null) { 
 				return false;
 			}
-		} 
-		else if (!displayType.equals(other.displayType)) { 
+		} else if (!displayType.equals(other.displayType)) { 
 			return false;
 		}
 		if (graphicSupported == null) {
 			if (other.graphicSupported != null) { 
 				return false;
 			}
-		}
-		else if (!graphicSupported.equals(other.graphicSupported)) { 
+		} else if (!graphicSupported.equals(other.graphicSupported)) { 
 			return false;
 		}
 		if (imageFields == null) {
 			if (other.imageFields != null) { 
 				return false;
 			}
-		}
-		else if (!imageFields.equals(other.imageFields)) { 
+		} else if (!imageFields.equals(other.imageFields)) { 
 			return false;
 		}
 		if (mediaClockFormats == null) {
 			if (other.mediaClockFormats != null) { 
 				return false;
 			}
-		}
-		else if (!mediaClockFormats.equals(other.mediaClockFormats)) { 
+		} else if (!mediaClockFormats.equals(other.mediaClockFormats)) { 
 			return false;
 		}
 		if (numCustomPresetsAvailable == null) {
 			if (other.numCustomPresetsAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!numCustomPresetsAvailable.equals(other.numCustomPresetsAvailable)) { 
+		} else if (!numCustomPresetsAvailable.equals(other.numCustomPresetsAvailable)) { 
 			return false;
 		}
 		if (screenParams == null) {
 			if (other.screenParams != null) { 
 				return false;
 			}
-		} 
-		else if (!screenParams.equals(other.screenParams)) { 
+		} else if (!screenParams.equals(other.screenParams)) { 
 			return false;
 		}
 		if (templatesAvailable == null) {
 			if (other.templatesAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!templatesAvailable.equals(other.templatesAvailable)) { 
+		} else if (!templatesAvailable.equals(other.templatesAvailable)) { 
 			return false;
 		}
 		if (textFields == null) {
 			if (other.textFields != null) { 
 				return false;
 			}
-		}
-		else if (!textFields.equals(other.textFields)) { 
+		} else if (!textFields.equals(other.textFields)) { 
 			return false;
 		}
 		return true;

@@ -277,8 +277,7 @@ public class OnSystemRequest extends RPCNotification implements BulkData{
 			if (other.body != null) { 
 				return false;
 			}
-		}
-		else if (!body.equals(other.body)) { 
+		} else if (!body.equals(other.body)) { 
 			return false;
 		}
 		if (!Arrays.equals(bulkData, other.bulkData)) { 
@@ -288,72 +287,63 @@ public class OnSystemRequest extends RPCNotification implements BulkData{
 			if (other.bulkDataJson != null) { 
 				return false;
 			}
-		}
-		else if (!bulkDataJson.equals(other.bulkDataJson)) { 
+		} else if (!bulkDataJson.equals(other.bulkDataJson)) { 
 			return false;
 		}
 		if (fileType == null) {
 			if (other.fileType != null) { 
 				return false;
 			}
-		} 
-		else if (!fileType.equals(other.fileType)) { 
+		} else if (!fileType.equals(other.fileType)) { 
 			return false;
 		}
 		if (headers == null) {
 			if (other.headers != null) { 
 				return false;
 			}
-		} 
-		else if (!headers.equals(other.headers)) { 
+		} else if (!headers.equals(other.headers)) { 
 			return false;
 		}
 		if (legacyData == null) {
 			if (other.legacyData != null) { 
 				return false;
 			}
-		} 
-		else if (!legacyData.equals(other.legacyData)) { 
+		} else if (!legacyData.equals(other.legacyData)) { 
 			return false;
 		}
 		if (length == null) {
 			if (other.length != null) { 
 				return false;
 			}
-		} 
-		else if (!length.equals(other.length)) { 
+		} else if (!length.equals(other.length)) { 
 			return false;
 		}
 		if (offset == null) {
 			if (other.offset != null) { 
 				return false;
 			}
-		} 
-		else if (!offset.equals(other.offset)) { 
+		} else if (!offset.equals(other.offset)) { 
 			return false;
 		}
 		if (requestType == null) {
 			if (other.requestType != null) { 
 				return false;
 			}
-		} 
-		else if (!requestType.equals(other.requestType)) { 
+		} else if (!requestType.equals(other.requestType)) { 
 			return false;
 		}
 		if (timeout == null) {
 			if (other.timeout != null) { 
 				return false;
 			}
-		}
-		else if (!timeout.equals(other.timeout)) { 
+		} else if (!timeout.equals(other.timeout)) { 
 			return false;
 		}
 		if (url == null) {
 			if (other.url != null) { 
 				return false;
 			}
-		} 
-		else if (!url.equals(other.url)) { 
+		} else if (!url.equals(other.url)) { 
 			return false;
 		}
 		return true;

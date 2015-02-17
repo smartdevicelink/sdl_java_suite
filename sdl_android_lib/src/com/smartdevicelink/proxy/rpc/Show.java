@@ -517,96 +517,84 @@ public class Show extends RPCRequest {
 			if (other.alignment != null) { 
 				return false;
 			}
-		}
-		else if (!alignment.equals(other.alignment)) { 
+		} else if (!alignment.equals(other.alignment)) { 
 			return false;
 		}
 		if (customPresets == null) {
 			if (other.customPresets != null) { 
 				return false;
 			}
-		} 
-		else if (!customPresets.equals(other.customPresets)) { 
+		} else if (!customPresets.equals(other.customPresets)) { 
 			return false;
 		}
 		if (graphic == null) {
 			if (other.graphic != null) { 
 				return false;
 			}
-		} 
-		else if (!graphic.equals(other.graphic)) { 
+		} else if (!graphic.equals(other.graphic)) { 
 			return false;
 		}
 		if (mainField1 == null) {
 			if (other.mainField1 != null) { 
 				return false;
 			}
-		} 
-		else if (!mainField1.equals(other.mainField1)) { 
+		} else if (!mainField1.equals(other.mainField1)) { 
 			return false;
 		}
 		if (mainField2 == null) {
 			if (other.mainField2 != null) { 
 				return false;
 			}
-		}
-		else if (!mainField2.equals(other.mainField2)) { 
+		} else if (!mainField2.equals(other.mainField2)) { 
 			return false;
 		}
 		if (mainField3 == null) {
 			if (other.mainField3 != null) { 
 				return false;
 			}
-		} 
-		else if (!mainField3.equals(other.mainField3)) { 
+		} else if (!mainField3.equals(other.mainField3)) { 
 			return false;
 		}
 		if (mainField4 == null) {
 			if (other.mainField4 != null) { 
 				return false;
 			}
-		} 
-		else if (!mainField4.equals(other.mainField4)) { 
+		} else if (!mainField4.equals(other.mainField4)) { 
 			return false;
 		}
 		if (mediaClock == null) {
 			if (other.mediaClock != null) { 
 				return false;
 			}
-		}
-		else if (!mediaClock.equals(other.mediaClock)) { 
+		} else if (!mediaClock.equals(other.mediaClock)) { 
 			return false;
 		}
 		if (mediaTrack == null) {
 			if (other.mediaTrack != null) { 
 				return false;
 			}
-		} 
-		else if (!mediaTrack.equals(other.mediaTrack)) { 
+		} else if (!mediaTrack.equals(other.mediaTrack)) { 
 			return false;
 		}
 		if (secondaryGraphic == null) {
 			if (other.secondaryGraphic != null) { 
 				return false;
 			}
-		}
-		else if (!secondaryGraphic.equals(other.secondaryGraphic)) { 
+		} else if (!secondaryGraphic.equals(other.secondaryGraphic)) { 
 			return false;
 		}
 		if (softButtons == null) {
 			if (other.softButtons != null) { 
 				return false;
 			}
-		} 
-		else if (!softButtons.equals(other.softButtons)) { 
+		} else if (!softButtons.equals(other.softButtons)) { 
 			return false;
 		}
 		if (statusBar == null) {
 			if (other.statusBar != null) { 
 				return false;
 			}
-		} 
-		else if (!statusBar.equals(other.statusBar)) { 
+		} else if (!statusBar.equals(other.statusBar)) { 
 			return false;
 		}
 		return true;

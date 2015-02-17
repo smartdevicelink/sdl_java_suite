@@ -99,8 +99,7 @@ public class DeleteFile extends RPCRequest {
 			if (other.sdlFileName != null) { 
 				return false;
 			}
-		} 
-		else if (!sdlFileName.equals(other.sdlFileName)) { 
+		} else if (!sdlFileName.equals(other.sdlFileName)) { 
 			return false;
 		}
 		return true;

@@ -158,16 +158,14 @@ public class OnLanguageChange extends RPCNotification {
 			if (other.hmiLanguage != null) { 
 				return false;
 			}
-		} 
-		else if (!hmiLanguage.equals(other.hmiLanguage)) { 
+		} else if (!hmiLanguage.equals(other.hmiLanguage)) { 
 			return false;
 		}
 		if (language == null) {
 			if (other.language != null) { 
 				return false;
 			}
-		} 
-		else if (!language.equals(other.language)) { 
+		} else if (!language.equals(other.language)) { 
 			return false;
 		}
 		return true;

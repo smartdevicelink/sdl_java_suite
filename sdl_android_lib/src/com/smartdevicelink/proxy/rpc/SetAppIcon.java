@@ -98,8 +98,7 @@ public class SetAppIcon extends RPCRequest {
 			if (other.filename != null) { 
 				return false;
 			}
-		} 
-		else if (!filename.equals(other.filename)) { 
+		} else if (!filename.equals(other.filename)) { 
 			return false;
 		}
 		return true;

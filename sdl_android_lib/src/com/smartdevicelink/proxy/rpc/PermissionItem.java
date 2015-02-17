@@ -106,24 +106,21 @@ public class PermissionItem extends RPCObject {
 			if (other.hmiPermissions != null) { 
 				return false;
 			}
-		} 
-		else if (!hmiPermissions.equals(other.hmiPermissions)) { 
+		} else if (!hmiPermissions.equals(other.hmiPermissions)) { 
 			return false;
 		}
 		if (parameterPermissions == null) {
 			if (other.parameterPermissions != null) { 
 				return false;
 			}
-		} 
-		else if (!parameterPermissions.equals(other.parameterPermissions)) { 
+		} else if (!parameterPermissions.equals(other.parameterPermissions)) { 
 			return false;
 		}
 		if (rpcName == null) {
 			if (other.rpcName != null) { 
 				return false;
 			}
-		}
-		else if (!rpcName.equals(other.rpcName)) { 
+		} else if (!rpcName.equals(other.rpcName)) { 
 			return false;
 		}
 		return true;

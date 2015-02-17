@@ -82,16 +82,14 @@ public class ImageResolution extends RPCObject {
 			if (other.height != null) { 
 				return false;
 			}
-		} 
-		else if (!height.equals(other.height)) { 
+		} else if (!height.equals(other.height)) { 
 			return false;
 		}
 		if (width == null) {
 			if (other.width != null) { 
 				return false;
 			}
-		} 
-		else if (!width.equals(other.width)) { 
+		} else if (!width.equals(other.width)) { 
 			return false;
 		}
 		return true;

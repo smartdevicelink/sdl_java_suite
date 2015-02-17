@@ -79,8 +79,7 @@ public class DiagnosticMessageResponse extends RPCResponse {
 			if (other.messageDataResult != null) { 
 				return false;
 			}
-		}
-		else if (!messageDataResult.equals(other.messageDataResult)) { 
+		} else if (!messageDataResult.equals(other.messageDataResult)) { 
 			return false;
 		}
 		return true;

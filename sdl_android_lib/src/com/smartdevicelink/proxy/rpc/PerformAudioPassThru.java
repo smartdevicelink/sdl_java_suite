@@ -323,64 +323,56 @@ public JSONObject getJsonParameters(int sdlVersion){
 			if (other.audioType != null) { 
 				return false;
 			}
-		} 
-		else if (!audioType.equals(other.audioType)) { 
+		} else if (!audioType.equals(other.audioType)) { 
 			return false;
 		}
 		if (bitsPerSample == null) {
 			if (other.bitsPerSample != null) { 
 				return false;
 			}
-		} 
-		else if (!bitsPerSample.equals(other.bitsPerSample)) { 
+		} else if (!bitsPerSample.equals(other.bitsPerSample)) { 
 			return false;
 		}
 		if (initialPrompt == null) {
 			if (other.initialPrompt != null) { 
 				return false;
 			}
-		} 
-		else if (!initialPrompt.equals(other.initialPrompt)) { 
+		} else if (!initialPrompt.equals(other.initialPrompt)) { 
 			return false;
 		}
 		if (maxDuration == null) {
 			if (other.maxDuration != null) { 
 				return false;
 			}
-		} 
-		else if (!maxDuration.equals(other.maxDuration)) { 
+		} else if (!maxDuration.equals(other.maxDuration)) { 
 			return false;
 		}
 		if (muteAudio == null) {
 			if (other.muteAudio != null) { 
 				return false;
 			}
-		} 
-		else if (!muteAudio.equals(other.muteAudio)) { 
+		} else if (!muteAudio.equals(other.muteAudio)) { 
 			return false;
 		}
 		if (samplingRate == null) {
 			if (other.samplingRate != null) { 
 				return false;
 			}
-		} 
-		else if (!samplingRate.equals(other.samplingRate)) { 
+		} else if (!samplingRate.equals(other.samplingRate)) { 
 			return false;
 		}
 		if (text1 == null) {
 			if (other.text1 != null) { 
 				return false;
 			}
-		} 
-		else if (!text1.equals(other.text1)) { 
+		} else if (!text1.equals(other.text1)) { 
 			return false;
 		}
 		if (text2 == null) {
 			if (other.text2 != null) { 
 				return false;
 			}
-		} 
-		else if (!text2.equals(other.text2)) { 
+		} else if (!text2.equals(other.text2)) { 
 			return false;
 		}
 		return true;

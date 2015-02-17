@@ -144,48 +144,42 @@ public class SoftButton extends RPCObject {
 			if (other.id != null) { 
 				return false;
 			}
-		} 
-		else if (!id.equals(other.id)) { 
+		} else if (!id.equals(other.id)) { 
 			return false;
 		}
 		if (image == null) {
 			if (other.image != null) { 
 				return false;
 			}
-		}
-		else if (!image.equals(other.image)) { 
+		} else if (!image.equals(other.image)) { 
 			return false;
 		}
 		if (isHighlighted == null) {
 			if (other.isHighlighted != null) { 
 				return false;
 			}
-		} 
-		else if (!isHighlighted.equals(other.isHighlighted)) { 
+		} else if (!isHighlighted.equals(other.isHighlighted)) { 
 			return false;
 		}
 		if (systemAction == null) {
 			if (other.systemAction != null) { 
 				return false;
 			}
-		}
-		else if (!systemAction.equals(other.systemAction)) { 
+		} else if (!systemAction.equals(other.systemAction)) { 
 			return false;
 		}
 		if (text == null) {
 			if (other.text != null) { 
 				return false;
 			}
-		} 
-		else if (!text.equals(other.text)) { 
+		} else if (!text.equals(other.text)) { 
 			return false;
 		}
 		if (type == null) {
 			if (other.type != null) { 
 				return false;
 			}
-		} 
-		else if (!type.equals(other.type)) { 
+		} else if (!type.equals(other.type)) { 
 			return false;
 		}
 		return true;

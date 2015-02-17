@@ -76,8 +76,7 @@ public class OnHashChange extends RPCNotification {
 			if (other.hash != null) { 
 				return false;
 			}
-		} 
-		else if (!hash.equals(other.hash)) { 
+		} else if (!hash.equals(other.hash)) { 
 			return false;
 		}
 		return true;

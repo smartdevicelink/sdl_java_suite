@@ -162,24 +162,21 @@ public class SetMediaClockTimer extends RPCRequest {
 			if (other.endTime != null) { 
 				return false;
 			}
-		} 
-		else if (!endTime.equals(other.endTime)) { 
+		} else if (!endTime.equals(other.endTime)) { 
 			return false;
 		}
 		if (startTime == null) {
 			if (other.startTime != null) { 
 				return false;
 			}
-		} 
-		else if (!startTime.equals(other.startTime)) { 
+		} else if (!startTime.equals(other.startTime)) { 
 			return false;
 		}
 		if (updateMode == null) {
 			if (other.updateMode != null) { 
 				return false;
 			}
-		} 
-		else if (!updateMode.equals(other.updateMode)) { 
+		} else if (!updateMode.equals(other.updateMode)) { 
 			return false;
 		}
 		return true;

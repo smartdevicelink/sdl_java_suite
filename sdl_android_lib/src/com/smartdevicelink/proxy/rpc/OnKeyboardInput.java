@@ -97,16 +97,14 @@ public class OnKeyboardInput extends RPCNotification {
 			if (other.data != null) { 
 				return false;
 			}
-		} 
-		else if (!data.equals(other.data)) { 
+		} else if (!data.equals(other.data)) { 
 			return false;
 		}
 		if (event == null) {
 			if (other.event != null) { 
 				return false;
 			}
-		} 
-		else if (!event.equals(other.event)) { 
+		} else if (!event.equals(other.event)) { 
 			return false;
 		}
 		return true;

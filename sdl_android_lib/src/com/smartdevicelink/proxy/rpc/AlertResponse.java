@@ -84,8 +84,7 @@ public class AlertResponse extends RPCResponse {
 			if (other.tryAgainTime != null) { 
 				return false;
 			}
-		} 
-		else if (!tryAgainTime.equals(other.tryAgainTime)) { 
+		} else if (!tryAgainTime.equals(other.tryAgainTime)) { 
 			return false;
 		}
 		return true;

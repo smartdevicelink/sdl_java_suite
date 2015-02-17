@@ -448,200 +448,175 @@ public class GetVehicleDataResponse extends RPCResponse {
 			if (other.accPedalPosition != null) { 
 				return false;
 			}
-		} 
-		else if (!accPedalPosition.equals(other.accPedalPosition)) { 
+		} else if (!accPedalPosition.equals(other.accPedalPosition)) { 
 			return false;
 		}
 		if (airbagStatus == null) {
 			if (other.airbagStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!airbagStatus.equals(other.airbagStatus)) { 
+		} else if (!airbagStatus.equals(other.airbagStatus)) { 
 			return false;
 		}
 		if (beltStatus == null) {
 			if (other.beltStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!beltStatus.equals(other.beltStatus)) { 
+		} else if (!beltStatus.equals(other.beltStatus)) { 
 			return false;
 		}
 		if (bodyInformation == null) {
 			if (other.bodyInformation != null) { 
 				return false;
 			}
-		}
-		else if (!bodyInformation.equals(other.bodyInformation)) { 
+		} else if (!bodyInformation.equals(other.bodyInformation)) { 
 			return false;
 		}
 		if (clusterModeStatus == null) {
 			if (other.clusterModeStatus != null) { 
 				return false;
 			}
-		}
-		else if (!clusterModeStatus.equals(other.clusterModeStatus)) { 
+		} else if (!clusterModeStatus.equals(other.clusterModeStatus)) { 
 			return false;
 		}
 		if (deviceStatus == null) {
 			if (other.deviceStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!deviceStatus.equals(other.deviceStatus)) { 
+		} else if (!deviceStatus.equals(other.deviceStatus)) { 
 			return false;
 		}
 		if (driverBraking == null) {
 			if (other.driverBraking != null) { 
 				return false;
 			}
-		}
-		else if (!driverBraking.equals(other.driverBraking)) { 
+		} else if (!driverBraking.equals(other.driverBraking)) { 
 			return false;
 		}
 		if (eCallInfo == null) {
 			if (other.eCallInfo != null) { 
 				return false;
 			}
-		} 
-		else if (!eCallInfo.equals(other.eCallInfo)) { 
+		} else if (!eCallInfo.equals(other.eCallInfo)) { 
 			return false;
 		}
 		if (emergencyEvent == null) {
 			if (other.emergencyEvent != null) { 
 				return false;
 			}
-		} 
-		else if (!emergencyEvent.equals(other.emergencyEvent)) { 
+		} else if (!emergencyEvent.equals(other.emergencyEvent)) { 
 			return false;
 		}
 		if (engineTorque == null) {
 			if (other.engineTorque != null) { 
 				return false;
 			}
-		}
-		else if (!engineTorque.equals(other.engineTorque)) { 
+		} else if (!engineTorque.equals(other.engineTorque)) { 
 			return false;
 		}
 		if (externalTemperature == null) {
 			if (other.externalTemperature != null) { 
 				return false;
 			}
-		} 
-		else if (!externalTemperature.equals(other.externalTemperature)) { 
+		} else if (!externalTemperature.equals(other.externalTemperature)) { 
 			return false;
 		}
 		if (fuelLevel == null) {
 			if (other.fuelLevel != null) { 
 				return false;
 			}
-		}
-		else if (!fuelLevel.equals(other.fuelLevel)) { 
+		} else if (!fuelLevel.equals(other.fuelLevel)) { 
 			return false;
 		}
 		if (fuelLevelState == null) {
 			if (other.fuelLevelState != null) { 
 				return false;
 			}
-		} 
-		else if (!fuelLevelState.equals(other.fuelLevelState)) { 
+		} else if (!fuelLevelState.equals(other.fuelLevelState)) { 
 			return false;
 		}
 		if (gps == null) {
 			if (other.gps != null) { 
 				return false;
 			}
-		} 
-		else if (!gps.equals(other.gps)) { 
+		} else if (!gps.equals(other.gps)) { 
 			return false;
 		}
 		if (headLampStatus == null) {
 			if (other.headLampStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!headLampStatus.equals(other.headLampStatus)) { 
+		} else if (!headLampStatus.equals(other.headLampStatus)) { 
 			return false;
 		}
 		if (instantFuelConsumption == null) {
 			if (other.instantFuelConsumption != null) { 
 				return false;
 			}
-		} 
-		else if (!instantFuelConsumption.equals(other.instantFuelConsumption)) { 
+		} else if (!instantFuelConsumption.equals(other.instantFuelConsumption)) { 
 			return false;
 		}
 		if (myKey == null) {
 			if (other.myKey != null) { 
 				return false;
 			}
-		} 
-		else if (!myKey.equals(other.myKey)) { 
+		} else if (!myKey.equals(other.myKey)) { 
 			return false;
 		}
 		if (odometer == null) {
 			if (other.odometer != null) { 
 				return false;
 			}
-		}
-		else if (!odometer.equals(other.odometer)) { 
+		} else if (!odometer.equals(other.odometer)) { 
 			return false;
 		}
 		if (prndl == null) {
 			if (other.prndl != null) { 
 				return false;
 			}
-		}
-		else if (!prndl.equals(other.prndl)) { 
+		} else if (!prndl.equals(other.prndl)) { 
 			return false;
 		}
 		if (rpm == null) {
 			if (other.rpm != null) { 
 				return false;
 			}
-		}
-		else if (!rpm.equals(other.rpm)) { 
+		} else if (!rpm.equals(other.rpm)) { 
 			return false;
 		}
 		if (speed == null) {
 			if (other.speed != null) { 
 				return false;
 			}
-		}
-		else if (!speed.equals(other.speed)) { 
+		} else if (!speed.equals(other.speed)) { 
 			return false;
 		}
 		if (steeringWheelAngle == null) {
 			if (other.steeringWheelAngle != null) { 
 				return false;
 			}
-		}
-		else if (!steeringWheelAngle.equals(other.steeringWheelAngle)) { 
+		} else if (!steeringWheelAngle.equals(other.steeringWheelAngle)) { 
 			return false;
 		}
 		if (tirePressure == null) {
 			if (other.tirePressure != null) { 
 				return false;
 			}
-		} 
-		else if (!tirePressure.equals(other.tirePressure)) { 
+		} else if (!tirePressure.equals(other.tirePressure)) { 
 			return false;
 		}
 		if (vin == null) {
 			if (other.vin != null) { 
 				return false;
 			}
-		} 
-		else if (!vin.equals(other.vin)) { 
+		} else if (!vin.equals(other.vin)) { 
 			return false;
 		}
 		if (wiperStatus == null) {
 			if (other.wiperStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!wiperStatus.equals(other.wiperStatus)) { 
+		} else if (!wiperStatus.equals(other.wiperStatus)) { 
 			return false;
 		}
 		return true;

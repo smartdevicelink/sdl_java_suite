@@ -108,8 +108,7 @@ public class DeleteCommand extends RPCRequest {
 			if (other.cmdId != null) { 
 				return false;
 			}
-		} 
-		else if (!cmdId.equals(other.cmdId)) { 
+		} else if (!cmdId.equals(other.cmdId)) { 
 			return false;
 		}
 		return true;

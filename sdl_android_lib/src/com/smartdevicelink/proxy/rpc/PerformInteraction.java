@@ -388,72 +388,63 @@ public class PerformInteraction extends RPCRequest {
 			if (other.choiceSetIds != null) { 
 				return false;
 			}
-		}
-		else if (!choiceSetIds.equals(other.choiceSetIds)) { 
+		} else if (!choiceSetIds.equals(other.choiceSetIds)) { 
 			return false;
 		}
 		if (helpPrompt == null) {
 			if (other.helpPrompt != null){ 
 				return false;
 			}
-		} 
-		else if (!helpPrompt.equals(other.helpPrompt)) { 
+		} else if (!helpPrompt.equals(other.helpPrompt)) { 
 			return false;
 		}
 		if (initialPrompt == null) {
 			if (other.initialPrompt != null) { 
 				return false;
 			}
-		} 
-		else if (!initialPrompt.equals(other.initialPrompt)) { 
+		} else if (!initialPrompt.equals(other.initialPrompt)) { 
 			return false;
 		}
 		if (initialText == null) {
 			if (other.initialText != null) { 
 				return false;
 			}
-		} 
-		else if (!initialText.equals(other.initialText)) { 
+		} else if (!initialText.equals(other.initialText)) { 
 			return false;
 		}
 		if (interactionLayout == null) {
 			if (other.interactionLayout != null) { 
 				return false;
 			}
-		} 
-		else if (!interactionLayout.equals(other.interactionLayout)) { 
+		} else if (!interactionLayout.equals(other.interactionLayout)) { 
 			return false;
 		}
 		if (interactionMode == null) {
 			if (other.interactionMode != null) { 
 				return false;
 			}
-		} 
-		else if (!interactionMode.equals(other.interactionMode)) { 
+		} else if (!interactionMode.equals(other.interactionMode)) { 
 			return false;
 		}
 		if (timeout == null) {
 			if (other.timeout != null) { 
 				return false;
 			}
-		} 
-		else if (!timeout.equals(other.timeout)) { 
+		} else if (!timeout.equals(other.timeout)) { 
 			return false;
 		}
 		if (timeoutPrompt == null) {
 			if (other.timeoutPrompt != null) { 
 				return false;
 			}
-		} 
-		else if (!timeoutPrompt.equals(other.timeoutPrompt)) { 
+		} else if (!timeoutPrompt.equals(other.timeoutPrompt)) { 
 			return false;
 		}
 		if (vrHelp == null) {
 			if (other.vrHelp != null) { 
 				return false;
 			}
-		} 
-		else if (!vrHelp.equals(other.vrHelp)) { 
+		} else if (!vrHelp.equals(other.vrHelp)) { 
 			return false;
 		}
 		return true;

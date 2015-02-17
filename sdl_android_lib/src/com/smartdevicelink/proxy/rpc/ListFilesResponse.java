@@ -108,8 +108,7 @@ public class ListFilesResponse extends RPCResponse {
 			if (other.spaceAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!spaceAvailable.equals(other.spaceAvailable)) { 
+		} else if (!spaceAvailable.equals(other.spaceAvailable)) { 
 			return false;
 		}
 		return true;

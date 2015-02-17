@@ -249,56 +249,49 @@ public class Choice extends RPCObject {
 			if (other.choiceId != null) { 
 				return false;
 			}
-		} 
-		else if (!choiceId.equals(other.choiceId)) { 
+		} else if (!choiceId.equals(other.choiceId)) { 
 			return false;
 		}
 		if (image == null) {
 			if (other.image != null) { 
 				return false;
 			}
-		} 
-		else if (!image.equals(other.image)) { 
+		} else if (!image.equals(other.image)) { 
 			return false;
 		}
 		if (name == null) {
 			if (other.name != null) { 
 				return false;
 			}
-		} 
-		else if (!name.equals(other.name)) { 
+		} else if (!name.equals(other.name)) { 
 			return false;
 		}
 		if (secondaryImage == null) {
 			if (other.secondaryImage != null) { 
 				return false;
 			}
-		} 
-		else if (!secondaryImage.equals(other.secondaryImage)) { 
+		} else if (!secondaryImage.equals(other.secondaryImage)) { 
 			return false;
 		}
 		if (secondaryText == null) {
 			if (other.secondaryText != null) { 
 				return false;
 			}
-		} 
-		else if (!secondaryText.equals(other.secondaryText)) { 
+		} else if (!secondaryText.equals(other.secondaryText)) { 
 			return false;
 		}
 		if (tertiaryText == null) {
 			if (other.tertiaryText != null) { 
 				return false;
 			}
-		} 
-		else if (!tertiaryText.equals(other.tertiaryText)) { 
+		} else if (!tertiaryText.equals(other.tertiaryText)) { 
 			return false;
 		}
 		if (vrCommands == null) {
 			if (other.vrCommands != null) { 
 				return false;
 			}
-		}
-		else if (!vrCommands.equals(other.vrCommands)) { 
+		} else if (!vrCommands.equals(other.vrCommands)) { 
 			return false;
 		}
 		return true;

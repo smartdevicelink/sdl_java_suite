@@ -170,56 +170,49 @@ public class TireStatus extends RPCObject {
 			if (other.innerLeftRear != null) { 
 				return false;
 			}
-		} 
-		else if (!innerLeftRear.equals(other.innerLeftRear)) { 
+		} else if (!innerLeftRear.equals(other.innerLeftRear)) { 
 			return false;
 		}
 		if (innerRightRear == null) {
 			if (other.innerRightRear != null) { 
 				return false;
 			}
-		} 
-		else if (!innerRightRear.equals(other.innerRightRear)) { 
+		} else if (!innerRightRear.equals(other.innerRightRear)) { 
 			return false;
 		}
 		if (leftFront == null) {
 			if (other.leftFront != null) { 
 				return false;
 			}
-		} 
-		else if (!leftFront.equals(other.leftFront)) { 
+		} else if (!leftFront.equals(other.leftFront)) { 
 			return false;
 		}
 		if (leftRear == null) {
 			if (other.leftRear != null) { 
 				return false;
 			}
-		} 
-		else if (!leftRear.equals(other.leftRear)) { 
+		} else if (!leftRear.equals(other.leftRear)) { 
 			return false;
 		}
 		if (pressureTellTale == null) {
 			if (other.pressureTellTale != null) { 
 				return false;
 			}
-		} 
-		else if (!pressureTellTale.equals(other.pressureTellTale)) { 
+		} else if (!pressureTellTale.equals(other.pressureTellTale)) { 
 			return false;
 		}
 		if (rightFront == null) {
 			if (other.rightFront != null) { 
 				return false;
 			}
-		} 
-		else if (!rightFront.equals(other.rightFront)) { 
+		} else if (!rightFront.equals(other.rightFront)) { 
 			return false;
 		}
 		if (rightRear == null) {
 			if (other.rightRear != null) { 
 				return false;
 			}
-		} 
-		else if (!rightRear.equals(other.rightRear)) { 
+		} else if (!rightRear.equals(other.rightRear)) { 
 			return false;
 		}
 		return true;

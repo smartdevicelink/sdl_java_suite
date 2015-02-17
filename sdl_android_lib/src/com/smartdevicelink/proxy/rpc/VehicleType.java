@@ -194,32 +194,28 @@ public class VehicleType extends RPCObject {
 			if (other.make != null) { 
 				return false;
 			}
-		} 
-		else if (!make.equals(other.make)) { 
+		} else if (!make.equals(other.make)) { 
 			return false;
 		}
 		if (model == null) {
 			if (other.model != null) { 
 				return false;
 			}
-		} 
-		else if (!model.equals(other.model)) { 
+		} else if (!model.equals(other.model)) { 
 			return false;
 		}
 		if (modelYear == null) {
 			if (other.modelYear != null) { 
 				return false;
 			}
-		} 
-		else if (!modelYear.equals(other.modelYear)) { 
+		} else if (!modelYear.equals(other.modelYear)) { 
 			return false;
 		}
 		if (trim == null) {
 			if (other.trim != null) { 
 				return false;
 			}
-		} 
-		else if (!trim.equals(other.trim)) { 
+		} else if (!trim.equals(other.trim)) { 
 			return false;
 		}
 		return true;

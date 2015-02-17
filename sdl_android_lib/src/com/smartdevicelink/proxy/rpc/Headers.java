@@ -181,80 +181,70 @@ public class Headers extends RPCObject {
 			if (other.charset != null) { 
 				return false;
 			}
-		}
-		else if (!charset.equals(other.charset)) { 
+		} else if (!charset.equals(other.charset)) { 
 			return false;
 		}
 		if (connectTimeout == null) {
 			if (other.connectTimeout != null) { 
 				return false;
 			}
-		} 
-		else if (!connectTimeout.equals(other.connectTimeout)) { 
+		} else if (!connectTimeout.equals(other.connectTimeout)) { 
 			return false;
 		}
 		if (contentLength == null) {
 			if (other.contentLength != null) { 
 				return false;
 			}
-		}
-		else if (!contentLength.equals(other.contentLength)) { 
+		} else if (!contentLength.equals(other.contentLength)) { 
 			return false;
 		}
 		if (contentType == null) {
 			if (other.contentType != null) { 
 				return false;
 			}
-		} 
-		else if (!contentType.equals(other.contentType)) { 
+		} else if (!contentType.equals(other.contentType)) { 
 			return false;
 		}
 		if (doInput == null) {
 			if (other.doInput != null) { 
 				return false;
 			}
-		}
-		else if (!doInput.equals(other.doInput)) { 
+		} else if (!doInput.equals(other.doInput)) { 
 			return false;
 		}
 		if (doOutput == null) {
 			if (other.doOutput != null) { 
 				return false;
 			}
-		}
-		else if (!doOutput.equals(other.doOutput)) { 
+		} else if (!doOutput.equals(other.doOutput)) { 
 			return false;
 		}
 		if (instanceFollowRedirects == null) {
 			if (other.instanceFollowRedirects != null) { 
 				return false;
 			}
-		}
-		else if (!instanceFollowRedirects.equals(other.instanceFollowRedirects)) { 
+		} else if (!instanceFollowRedirects.equals(other.instanceFollowRedirects)) { 
 			return false;
 		}
 		if (readTimeout == null) {
 			if (other.readTimeout != null) { 
 				return false;
 			}
-		}
-		else if (!readTimeout.equals(other.readTimeout)) { 
+		} else if (!readTimeout.equals(other.readTimeout)) { 
 			return false;
 		}
 		if (requestMethod == null) {
 			if (other.requestMethod != null) { 
 				return false;
 			}
-		} 
-		else if (!requestMethod.equals(other.requestMethod)) { 
+		} else if (!requestMethod.equals(other.requestMethod)) { 
 			return false;
 		}
 		if (useCaches == null) {
 			if (other.useCaches != null) { 
 				return false;
 			}
-		} 
-		else if (!useCaches.equals(other.useCaches)) { 
+		} else if (!useCaches.equals(other.useCaches)) { 
 			return false;
 		}
 		return true;

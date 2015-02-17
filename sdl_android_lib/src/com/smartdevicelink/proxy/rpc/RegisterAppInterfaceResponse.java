@@ -535,111 +535,97 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 			if (other.audioPassThruCapabilities != null) { 
 				return false;
 			}
-		}
-		else if (!audioPassThruCapabilities.equals(other.audioPassThruCapabilities))
+		} else if (!audioPassThruCapabilities.equals(other.audioPassThruCapabilities))
 			return false;
 		if (buttonCapabilities == null) {
 			if (other.buttonCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!buttonCapabilities.equals(other.buttonCapabilities)) { 
+		} else if (!buttonCapabilities.equals(other.buttonCapabilities)) { 
 			return false;
 		}
 		if (displayCapabilities == null) {
 			if (other.displayCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!displayCapabilities.equals(other.displayCapabilities)) { 
+		} else if (!displayCapabilities.equals(other.displayCapabilities)) { 
 			return false;
 		}
 		if (hmiLanguage == null) {
 			if (other.hmiLanguage != null) { 
 				return false;
 			}
-		}
-		else if (!hmiLanguage.equals(other.hmiLanguage)) { 
+		} else if (!hmiLanguage.equals(other.hmiLanguage)) { 
 			return false;
 		}
 		if (hmiZoneCapabilities == null) {
 			if (other.hmiZoneCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!hmiZoneCapabilities.equals(other.hmiZoneCapabilities)) { 
+		} else if (!hmiZoneCapabilities.equals(other.hmiZoneCapabilities)) { 
 			return false;
 		}
 		if (language == null) {
 			if (other.language != null) { 
 				return false;
 			}
-		} 
-		else if (!language.equals(other.language)) { 
+		} else if (!language.equals(other.language)) { 
 			return false; 
 		}
 		if (prerecordedSpeech == null) {
 			if (other.prerecordedSpeech != null) { 
 				return false;
 			}
-		} 
-		else if (!prerecordedSpeech.equals(other.prerecordedSpeech)) { 
+		} else if (!prerecordedSpeech.equals(other.prerecordedSpeech)) { 
 			return false;
 		}
 		if (presetBankCapabilities == null) {
 			if (other.presetBankCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!presetBankCapabilities.equals(other.presetBankCapabilities)) { 
+		} else if (!presetBankCapabilities.equals(other.presetBankCapabilities)) { 
 			return false;
 		}
 		if (sdlMsgVersion == null) {
 			if (other.sdlMsgVersion != null) { 
 				return false;
 			}
-		} 
-		else if (!sdlMsgVersion.equals(other.sdlMsgVersion)) { 
+		} else if (!sdlMsgVersion.equals(other.sdlMsgVersion)) { 
 			return false;
 		}
 		if (softButtonCapabilities == null) {
 			if (other.softButtonCapabilities != null) { 
 				return false;
 			}
-		}
-		else if (!softButtonCapabilities.equals(other.softButtonCapabilities)) { 
+		} else if (!softButtonCapabilities.equals(other.softButtonCapabilities)) { 
 			return false;
 		}
 		if (speechCapabilities == null) {
 			if (other.speechCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!speechCapabilities.equals(other.speechCapabilities)) { 
+		} else if (!speechCapabilities.equals(other.speechCapabilities)) { 
 			return false;
 		}
 		if (supportedDiagModes == null) {
 			if (other.supportedDiagModes != null) { 
 				return false;
 			}
-		} 
-		else if (!supportedDiagModes.equals(other.supportedDiagModes)) { 
+		} else if (!supportedDiagModes.equals(other.supportedDiagModes)) { 
 			return false;
 		}
 		if (vehicleType == null) {
 			if (other.vehicleType != null) { 
 				return false;
 			}
-		} 
-		else if (!vehicleType.equals(other.vehicleType)) { 
+		} else if (!vehicleType.equals(other.vehicleType)) { 
 			return false;
 		}
 		if (vrCapabilities == null) {
 			if (other.vrCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!vrCapabilities.equals(other.vrCapabilities)) { 
+		} else if (!vrCapabilities.equals(other.vrCapabilities)) { 
 			return false;
 		}
 		return true;

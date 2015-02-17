@@ -200,32 +200,28 @@ public class TextField extends RPCObject {
 			if (other.charSet != null) { 
 				return false;
 			}
-		}
-		else if (!charSet.equals(other.charSet)) { 
+		} else if (!charSet.equals(other.charSet)) { 
 			return false;
 		}
 		if (name == null) {
 			if (other.name != null) { 
 				return false;
 			}
-		} 
-		else if (!name.equals(other.name)) { 
+		} else if (!name.equals(other.name)) { 
 			return false;
 		}
 		if (rows == null) {
 			if (other.rows != null) { 
 				return false;
 			}
-		}
-		else if (!rows.equals(other.rows)) { 
+		} else if (!rows.equals(other.rows)) { 
 			return false;
 		}
 		if (width == null) {
 			if (other.width != null) { 
 				return false;
 			}
-		}
-		else if (!width.equals(other.width)) { 
+		} else if (!width.equals(other.width)) { 
 			return false;
 		}
 		return true;

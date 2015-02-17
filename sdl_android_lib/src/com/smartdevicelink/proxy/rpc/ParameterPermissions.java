@@ -142,16 +142,14 @@ public class ParameterPermissions extends RPCObject {
 			if (other.allowed != null) { 
 				return false;
 			}
-		} 
-		else if (!allowed.equals(other.allowed)) { 
+		} else if (!allowed.equals(other.allowed)) { 
 			return false;
 		}
 		if (userDisallowed == null) {
 			if (other.userDisallowed != null) { 
 				return false;
 			}
-		}
-		else if (!userDisallowed.equals(other.userDisallowed)) { 
+		} else if (!userDisallowed.equals(other.userDisallowed)) { 
 			return false;
 		}
 		return true;

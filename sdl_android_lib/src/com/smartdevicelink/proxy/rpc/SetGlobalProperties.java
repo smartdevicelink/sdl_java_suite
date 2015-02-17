@@ -294,56 +294,49 @@ public class SetGlobalProperties extends RPCRequest {
 			if (other.helpPrompt != null) { 
 				return false;
 			}
-		}
-		else if (!helpPrompt.equals(other.helpPrompt)) { 
+		} else if (!helpPrompt.equals(other.helpPrompt)) { 
 			return false;
 		}
 		if (keyboardProperties == null) {
 			if (other.keyboardProperties != null) { 
 				return false;
 			}
-		}
-		else if (!keyboardProperties.equals(other.keyboardProperties)) { 
+		} else if (!keyboardProperties.equals(other.keyboardProperties)) { 
 			return false;
 		}
 		if (menuIcon == null) {
 			if (other.menuIcon != null) { 
 				return false;
 			}
-		} 
-		else if (!menuIcon.equals(other.menuIcon)) { 
+		} else if (!menuIcon.equals(other.menuIcon)) { 
 			return false;
 		}
 		if (menuTitle == null) {
 			if (other.menuTitle != null) { 
 				return false;
 			}
-		} 
-		else if (!menuTitle.equals(other.menuTitle)) { 
+		} else if (!menuTitle.equals(other.menuTitle)) { 
 			return false;
 		}
 		if (timeoutPrompt == null) {
 			if (other.timeoutPrompt != null) { 
 				return false;
 			}
-		} 
-		else if (!timeoutPrompt.equals(other.timeoutPrompt)) { 
+		} else if (!timeoutPrompt.equals(other.timeoutPrompt)) { 
 			return false;
 		}
 		if (vrHelp == null) {
 			if (other.vrHelp != null) { 
 				return false;
 			}
-		} 
-		else if (!vrHelp.equals(other.vrHelp)) { 
+		} else if (!vrHelp.equals(other.vrHelp)) { 
 			return false;
 		}
 		if (vrHelpTitle == null) {
 			if (other.vrHelpTitle != null) { 
 				return false;
 			}
-		} 
-		else if (!vrHelpTitle.equals(other.vrHelpTitle)) { 
+		} else if (!vrHelpTitle.equals(other.vrHelpTitle)) { 
 			return false;
 		}
 		return true;

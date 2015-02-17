@@ -176,8 +176,7 @@ public class Speak extends RPCRequest {
 			if (other.ttsChunks != null) { 
 				return false;
 			}
-		} 
-		else if (!ttsChunks.equals(other.ttsChunks)) { 
+		} else if (!ttsChunks.equals(other.ttsChunks)) { 
 			return false;
 		}
 		return true;

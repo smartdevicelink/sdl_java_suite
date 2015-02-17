@@ -185,32 +185,28 @@ public class SoftButtonCapabilities extends RPCObject {
 			if (other.imageSupported != null) { 
 				return false;
 			}
-		}
-		else if (!imageSupported.equals(other.imageSupported)) { 
+		} else if (!imageSupported.equals(other.imageSupported)) { 
 			return false;
 		}
 		if (longPressAvailable == null) {
 			if (other.longPressAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!longPressAvailable.equals(other.longPressAvailable)) { 
+		} else if (!longPressAvailable.equals(other.longPressAvailable)) { 
 			return false;
 		}
 		if (shortPressAvailable == null) {
 			if (other.shortPressAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!shortPressAvailable.equals(other.shortPressAvailable)) { 
+		} else if (!shortPressAvailable.equals(other.shortPressAvailable)) { 
 			return false;
 		}
 		if (upDownAvailable == null) {
 			if (other.upDownAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!upDownAvailable.equals(other.upDownAvailable)) { 
+		} else if (!upDownAvailable.equals(other.upDownAvailable)) { 
 			return false;
 		}
 		return true;

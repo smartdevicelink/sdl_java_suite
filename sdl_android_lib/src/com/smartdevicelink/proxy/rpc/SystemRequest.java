@@ -141,24 +141,21 @@ public class SystemRequest extends RPCRequest implements BulkData{
 			if (other.filename != null) { 
 				return false;
 			}
-		} 
-		else if (!filename.equals(other.filename)) { 
+		} else if (!filename.equals(other.filename)) { 
 			return false;
 		}
 		if (legacyData == null) {
 			if (other.legacyData != null) { 
 				return false;
 			}
-		} 
-		else if (!legacyData.equals(other.legacyData)) { 
+		} else if (!legacyData.equals(other.legacyData)) { 
 			return false;
 		}
 		if (requestType == null) {
 			if (other.requestType != null) { 
 				return false;
 			}
-		} 
-		else if (!requestType.equals(other.requestType)) { 
+		} else if (!requestType.equals(other.requestType)) { 
 			return false;
 		}
 		return true;

@@ -175,24 +175,21 @@ public class AddSubMenu extends RPCRequest {
 			if (other.menuId != null) { 
 				return false;
 			}
-		} 
-		else if (!menuId.equals(other.menuId)) { 
+		} else if (!menuId.equals(other.menuId)) { 
 			return false;
 		}
 		if (menuName == null) {
 			if (other.menuName != null){ 
 				return false;
 			}
-		} 
-		else if (!menuName.equals(other.menuName)) { 
+		} else if (!menuName.equals(other.menuName)) { 
 			return false;
 		}
 		if (position == null) {
 			if (other.position != null){ 
 				return false;
 			}
-		} 
-		else if (!position.equals(other.position)) { 
+		} else if (!position.equals(other.position)) { 
 			return false;
 		}
 		return true;

@@ -133,8 +133,7 @@ public class ResetGlobalProperties extends RPCRequest {
 			if (other.properties != null) { 
 				return false;
 			}
-		}
-		else if (!properties.equals(other.properties)) { 
+		} else if (!properties.equals(other.properties)) { 
 			return false;
 		}
 		return true;

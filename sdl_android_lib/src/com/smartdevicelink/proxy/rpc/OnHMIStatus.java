@@ -205,32 +205,28 @@ public class OnHMIStatus extends RPCNotification {
 			if (other.audioStreamingState != null) { 
 				return false;
 			}
-		} 
-		else if (!audioStreamingState.equals(other.audioStreamingState)) { 
+		} else if (!audioStreamingState.equals(other.audioStreamingState)) { 
 			return false;
 		}
 		if (firstRun == null) {
 			if (other.firstRun != null) { 
 				return false;
 			}
-		} 
-		else if (!firstRun.equals(other.firstRun)) { 
+		} else if (!firstRun.equals(other.firstRun)) { 
 			return false;
 		}
 		if (hmiLevel == null) {
 			if (other.hmiLevel != null) { 
 				return false;
 			}
-		}
-		else if (!hmiLevel.equals(other.hmiLevel)) { 
+		} else if (!hmiLevel.equals(other.hmiLevel)) { 
 			return false;
 		}
 		if (systemContext == null) {
 			if (other.systemContext != null) { 
 				return false;
 			}
-		} 
-		else if (!systemContext.equals(other.systemContext)) { 
+		} else if (!systemContext.equals(other.systemContext)) { 
 			return false;
 		}
 		return true;

@@ -104,24 +104,21 @@ public class DiagnosticMessage extends RPCRequest {
 			if (other.messageData != null) { 
 				return false;
 			}
-		}
-		else if (!messageData.equals(other.messageData)) { 
+		} else if (!messageData.equals(other.messageData)) { 
 			return false;
 		}
 		if (messageLength == null) {
 			if (other.messageLength != null) { 
 				return false;
 			}
-		}
-		else if (!messageLength.equals(other.messageLength)) { 
+		} else if (!messageLength.equals(other.messageLength)) { 
 			return false;
 		}
 		if (targetId == null) {
 			if (other.targetId != null) { 
 				return false;
 			}
-		} 
-		else if (!targetId.equals(other.targetId)) { 
+		} else if (!targetId.equals(other.targetId)) { 
 			return false;
 		}
 		return true;

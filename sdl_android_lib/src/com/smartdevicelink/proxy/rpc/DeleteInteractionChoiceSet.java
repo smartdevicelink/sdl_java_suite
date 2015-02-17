@@ -104,8 +104,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 			if (other.interactionChoiceSetId != null) { 
 				return false;
 			}
-		} 
-		else if (!interactionChoiceSetId.equals(other.interactionChoiceSetId)) { 
+		} else if (!interactionChoiceSetId.equals(other.interactionChoiceSetId)) { 
 			return false;
 		}
 		return true;

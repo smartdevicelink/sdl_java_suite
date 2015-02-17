@@ -199,24 +199,21 @@ public class OnButtonEvent extends RPCNotification {
 			if (other.buttonEventMode != null) { 
 				return false;
 			}
-		}
-		else if (!buttonEventMode.equals(other.buttonEventMode)) { 
+		} else if (!buttonEventMode.equals(other.buttonEventMode)) { 
 			return false;
 		}
 		if (buttonName == null) {
 			if (other.buttonName != null) { 
 				return false;
 			}
-		} 
-		else if (!buttonName.equals(other.buttonName)) { 
+		} else if (!buttonName.equals(other.buttonName)) { 
 			return false;
 		}
 		if (customButtonId == null) {
 			if (other.customButtonId != null) { 
 				return false;
 			}
-		} 
-		else if (!customButtonId.equals(other.customButtonId)) { 
+		} else if (!customButtonId.equals(other.customButtonId)) { 
 			return false;
 		}
 		return true;

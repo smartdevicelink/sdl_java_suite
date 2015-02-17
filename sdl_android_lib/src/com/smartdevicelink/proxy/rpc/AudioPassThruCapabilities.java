@@ -160,24 +160,21 @@ public class AudioPassThruCapabilities extends RPCObject {
 			if (other.audioType != null) { 
 				return false;
 			}
-		} 
-		else if (!audioType.equals(other.audioType)) { 
+		} else if (!audioType.equals(other.audioType)) { 
 			return false;
 		}
 		if (bitsPerSample == null) {
 			if (other.bitsPerSample != null) { 
 				return false;
 			}
-		} 
-		else if (!bitsPerSample.equals(other.bitsPerSample)) { 
+		} else if (!bitsPerSample.equals(other.bitsPerSample)) { 
 			return false;
 		}
 		if (samplingRate == null) {
 			if (other.samplingRate != null) { 
 				return false;
 			}
-		} 
-		else if (!samplingRate.equals(other.samplingRate)) { 
+		} else if (!samplingRate.equals(other.samplingRate)) { 
 			return false;
 		}
 		return true;

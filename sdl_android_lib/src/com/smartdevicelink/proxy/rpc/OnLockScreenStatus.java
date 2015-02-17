@@ -123,32 +123,28 @@ public class OnLockScreenStatus extends RPCNotification {
 			if (other.driverDistractionStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!driverDistractionStatus.equals(other.driverDistractionStatus)) { 
+		} else if (!driverDistractionStatus.equals(other.driverDistractionStatus)) { 
 			return false;
 		}
 		if (hmiLevel == null) {
 			if (other.hmiLevel != null) { 
 				return false;
 			}
-		} 
-		else if (!hmiLevel.equals(other.hmiLevel)) { 
+		} else if (!hmiLevel.equals(other.hmiLevel)) { 
 			return false;
 		}
 		if (lockScreenStatus == null) {
 			if (other.lockScreenStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!lockScreenStatus.equals(other.lockScreenStatus)) { 
+		} else if (!lockScreenStatus.equals(other.lockScreenStatus)) { 
 			return false;
 		}
 		if (userSelected == null) {
 			if (other.userSelected != null) { 
 				return false;
 			}
-		} 
-		else if (!userSelected.equals(other.userSelected)) { 
+		} else if (!userSelected.equals(other.userSelected)) { 
 			return false;
 		}
 		return true;

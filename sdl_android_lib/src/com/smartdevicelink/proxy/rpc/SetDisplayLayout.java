@@ -98,8 +98,7 @@ public class SetDisplayLayout extends RPCRequest {
 			if (other.displayLayout != null) { 
 				return false;
 			}
-		}
-		else if (!displayLayout.equals(other.displayLayout)) { 
+		} else if (!displayLayout.equals(other.displayLayout)) { 
 			return false;
 		}
 		return true;

@@ -93,16 +93,14 @@ public class ScreenParams extends RPCObject {
 			if (other.imageResolution != null) { 
 				return false;
 			}
-		} 
-		else if (!imageResolution.equals(other.imageResolution)) { 
+		} else if (!imageResolution.equals(other.imageResolution)) { 
 			return false;
 		}
 		if (touchEventCapabilities == null) {
 			if (other.touchEventCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!touchEventCapabilities.equals(other.touchEventCapabilities)) { 
+		} else if (!touchEventCapabilities.equals(other.touchEventCapabilities)) { 
 			return false;
 		}
 		return true;

@@ -96,24 +96,21 @@ public class HeadLampStatus extends RPCObject {
 			if (other.ambientLightStatus != null) { 
 				return false;
 			}
-		} 
-		else if (!ambientLightStatus.equals(other.ambientLightStatus)) { 
+		} else if (!ambientLightStatus.equals(other.ambientLightStatus)) { 
 			return false;
 		}
 		if (highBeamsOn == null) {
 			if (other.highBeamsOn != null) { 
 				return false;
 			}
-		} 
-		else if (!highBeamsOn.equals(other.highBeamsOn)) { 
+		} else if (!highBeamsOn.equals(other.highBeamsOn)) { 
 			return false;
 		}
 		if (lowBeamsOn == null) {
 			if (other.lowBeamsOn != null) { 
 				return false;
 			}
-		} 
-		else if (!lowBeamsOn.equals(other.lowBeamsOn)) { 
+		} else if (!lowBeamsOn.equals(other.lowBeamsOn)) { 
 			return false;
 		}
 		return true;

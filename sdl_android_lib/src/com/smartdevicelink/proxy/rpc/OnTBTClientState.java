@@ -120,8 +120,7 @@ public class OnTBTClientState extends RPCNotification {
 			if (other.state != null) { 
 				return false;
 			}
-		}
-		else if (!state.equals(other.state)) { 
+		} else if (!state.equals(other.state)) { 
 			return false;
 		}
 		return true;

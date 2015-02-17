@@ -79,8 +79,7 @@ public class GetDTCsResponse extends RPCResponse {
 			if (other.dtc != null) { 
 				return false;
 			}
-		} 
-		else if (!dtc.equals(other.dtc)) { 
+		} else if (!dtc.equals(other.dtc)) { 
 			return false;
 		}
 		return true;

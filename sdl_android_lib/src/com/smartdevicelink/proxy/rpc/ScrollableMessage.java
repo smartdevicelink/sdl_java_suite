@@ -167,24 +167,21 @@ public class ScrollableMessage extends RPCRequest {
 			if (other.body != null) { 
 				return false;
 			}
-		} 
-		else if (!body.equals(other.body)) { 
+		} else if (!body.equals(other.body)) { 
 			return false;
 		}
 		if (softButtons == null) {
 			if (other.softButtons != null) { 
 				return false;
 			}
-		}
-		else if (!softButtons.equals(other.softButtons)) { 
+		} else if (!softButtons.equals(other.softButtons)) { 
 			return false;
 		}
 		if (timeout == null) {
 			if (other.timeout != null) { 
 				return false;
 			}
-		} 
-		else if (!timeout.equals(other.timeout)) { 
+		} else if (!timeout.equals(other.timeout)) { 
 			return false;
 		}
 		return true;

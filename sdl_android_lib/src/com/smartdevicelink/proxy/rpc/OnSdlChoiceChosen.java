@@ -440,16 +440,14 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			if (other.choice != null) { 
 				return false;
 			}
-		} 
-		else if (!choice.equals(other.choice)) { 
+		} else if (!choice.equals(other.choice)) { 
 			return false;
 		}
 		if (triggerSource == null) {
 			if (other.triggerSource != null) { 
 				return false;
 			}
-		} 
-		else if (!triggerSource.equals(other.triggerSource)) { 
+		} else if (!triggerSource.equals(other.triggerSource)) { 
 			return false;
 		}
 		return true;

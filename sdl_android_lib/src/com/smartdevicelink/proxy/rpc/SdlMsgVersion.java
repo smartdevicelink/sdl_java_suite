@@ -152,16 +152,14 @@ public class SdlMsgVersion extends RPCObject {
 			if (other.majorVersion != null) { 
 				return false;
 			}
-		}
-		else if (!majorVersion.equals(other.majorVersion)) { 
+		} else if (!majorVersion.equals(other.majorVersion)) { 
 			return false;
 		}
 		if (minorVersion == null) {
 			if (other.minorVersion != null) { 
 				return false;
 			}
-		} 
-		else if (!minorVersion.equals(other.minorVersion)) { 
+		} else if (!minorVersion.equals(other.minorVersion)) { 
 			return false;
 		}
 		return true;

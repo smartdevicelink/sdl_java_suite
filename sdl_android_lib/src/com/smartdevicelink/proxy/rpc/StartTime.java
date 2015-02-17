@@ -156,24 +156,21 @@ public class StartTime extends RPCObject {
 			if (other.hours != null) { 
 				return false;
 			}
-		} 
-		else if (!hours.equals(other.hours)) { 
+		} else if (!hours.equals(other.hours)) { 
 			return false;
 		}
 		if (minutes == null) {
 			if (other.minutes != null) { 
 				return false;
 			}
-		} 
-		else if (!minutes.equals(other.minutes)) { 
+		} else if (!minutes.equals(other.minutes)) { 
 			return false;
 		}
 		if (seconds == null) {
 			if (other.seconds != null) { 
 				return false;
 			}
-		} 
-		else if (!seconds.equals(other.seconds)) { 
+		} else if (!seconds.equals(other.seconds)) { 
 			return false;
 		}
 		return true;

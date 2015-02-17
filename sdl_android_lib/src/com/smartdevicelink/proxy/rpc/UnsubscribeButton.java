@@ -106,8 +106,7 @@ public class UnsubscribeButton extends RPCRequest {
 			if (other.buttonName != null) { 
 				return false;
 			}
-		} 
-		else if (!buttonName.equals(other.buttonName)) { 
+		} else if (!buttonName.equals(other.buttonName)) { 
 			return false;
 		}
 		return true;

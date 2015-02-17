@@ -71,8 +71,7 @@ public class MyKey extends RPCObject {
 			if (other.e911Override != null) { 
 				return false;
 			}
-		} 
-		else if (!e911Override.equals(other.e911Override)) { 
+		} else if (!e911Override.equals(other.e911Override)) { 
 			return false;
 		}
 		return true;

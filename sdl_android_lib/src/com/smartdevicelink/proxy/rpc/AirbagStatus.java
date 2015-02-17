@@ -165,64 +165,56 @@ public class AirbagStatus extends RPCObject {
 			if (other.driverAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!driverAirbagDeployed.equals(other.driverAirbagDeployed)) { 
+		} else if (!driverAirbagDeployed.equals(other.driverAirbagDeployed)) { 
 			return false;
 		}
 		if (driverCurtainAirbagDeployed == null) {
 			if (other.driverCurtainAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!driverCurtainAirbagDeployed.equals(other.driverCurtainAirbagDeployed)) { 
+		} else if (!driverCurtainAirbagDeployed.equals(other.driverCurtainAirbagDeployed)) { 
 			return false;
 		}
 		if (driverKneeAirbagDeployed == null) {
 			if (other.driverKneeAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!driverKneeAirbagDeployed.equals(other.driverKneeAirbagDeployed)) { 
+		} else if (!driverKneeAirbagDeployed.equals(other.driverKneeAirbagDeployed)) { 
 			return false;
 		}
 		if (driverSideAirbagDeployed == null) {
 			if (other.driverSideAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!driverSideAirbagDeployed.equals(other.driverSideAirbagDeployed)) { 
+		} else if (!driverSideAirbagDeployed.equals(other.driverSideAirbagDeployed)) { 
 			return false;
 		}
 		if (passengerAirbagDeployed == null) {
 			if (other.passengerAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!passengerAirbagDeployed.equals(other.passengerAirbagDeployed)) { 
+		} else if (!passengerAirbagDeployed.equals(other.passengerAirbagDeployed)) { 
 			return false;
 		}
 		if (passengerCurtainAirbagDeployed == null) {
 			if (other.passengerCurtainAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!passengerCurtainAirbagDeployed.equals(other.passengerCurtainAirbagDeployed)) { 
+		} else if (!passengerCurtainAirbagDeployed.equals(other.passengerCurtainAirbagDeployed)) { 
 			return false;
 		}
 		if (passengerKneeAirbagDeployed == null) {
 			if (other.passengerKneeAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!passengerKneeAirbagDeployed.equals(other.passengerKneeAirbagDeployed)) { 
+		} else if (!passengerKneeAirbagDeployed.equals(other.passengerKneeAirbagDeployed)) { 
 			return false;
 		}
 		if (passengerSideAirbagDeployed == null) {
 			if (other.passengerSideAirbagDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!passengerSideAirbagDeployed.equals(other.passengerSideAirbagDeployed)) { 
+		} else if (!passengerSideAirbagDeployed.equals(other.passengerSideAirbagDeployed)) { 
 			return false;
 		}
 		return true;

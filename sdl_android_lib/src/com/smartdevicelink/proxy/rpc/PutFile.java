@@ -238,48 +238,42 @@ public JSONObject getJsonParameters(int sdlVersion){
 			if (other.fileType != null) { 
 				return false;
 			}
-		} 
-		else if (!fileType.equals(other.fileType)) { 
+		} else if (!fileType.equals(other.fileType)) { 
 			return false;
 		}
 		if (filename == null) {
 			if (other.filename != null) { 
 				return false;
 			}
-		} 
-		else if (!filename.equals(other.filename)) { 
+		} else if (!filename.equals(other.filename)) { 
 			return false;
 		}
 		if (length == null) {
 			if (other.length != null) { 
 				return false;
 			}
-		} 
-		else if (!length.equals(other.length)) { 
+		} else if (!length.equals(other.length)) { 
 			return false;
 		}
 		if (offset == null) {
 			if (other.offset != null) { 
 				return false;
 			}
-		} 
-		else if (!offset.equals(other.offset)) { 
+		} else if (!offset.equals(other.offset)) { 
 			return false;
 		}
 		if (persistentFile == null) {
 			if (other.persistentFile != null) { 
 				return false;
 			}
-		} 
-		else if (!persistentFile.equals(other.persistentFile)) { 
+		} else if (!persistentFile.equals(other.persistentFile)) { 
 			return false;
 		}
 		if (systemFile == null) {
 			if (other.systemFile != null) { 
 				return false;
 			}
-		} 
-		else if (!systemFile.equals(other.systemFile)) { 
+		} else if (!systemFile.equals(other.systemFile)) { 
 			return false;
 		}
 		return true;

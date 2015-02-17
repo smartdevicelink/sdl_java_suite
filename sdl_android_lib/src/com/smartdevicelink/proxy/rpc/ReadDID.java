@@ -140,16 +140,14 @@ public class ReadDID extends RPCRequest {
 			if (other.didLocation != null) { 
 				return false;
 			}
-		} 
-		else if (!didLocation.equals(other.didLocation)) { 
+		} else if (!didLocation.equals(other.didLocation)) { 
 			return false;
 		}
 		if (ecuName == null) {
 			if (other.ecuName != null) { 
 				return false;
 			}
-		} 
-		else if (!ecuName.equals(other.ecuName)) { 
+		} else if (!ecuName.equals(other.ecuName)) { 
 			return false;
 		}
 		return true;

@@ -370,64 +370,56 @@ public class Alert extends RPCRequest {
 			if (other.alertText1 != null) { 
 				return false;
 			}
-		} 
-		else if (!alertText1.equals(other.alertText1)) { 
+		} else if (!alertText1.equals(other.alertText1)) { 
 			return false;
 		}
 		if (alertText2 == null) {
 			if (other.alertText2 != null) { 
 				return false;
 			}
-		} 
-		else if (!alertText2.equals(other.alertText2)) { 
+		} else if (!alertText2.equals(other.alertText2)) { 
 			return false;
 		}
 		if (alertText3 == null) {
 			if (other.alertText3 != null) { 
 				return false;
 			}
-		} 
-		else if (!alertText3.equals(other.alertText3)) { 
+		} else if (!alertText3.equals(other.alertText3)) { 
 			return false;
 		}
 		if (duration == null) {
 			if (other.duration != null) { 
 				return false;
 			}
-		} 
-		else if (!duration.equals(other.duration)) { 
+		} else if (!duration.equals(other.duration)) { 
 			return false;
 		}
 		if (playTone == null) {
 			if (other.playTone != null) { 
 				return false;
 			}
-		} 
-		else if (!playTone.equals(other.playTone)) { 
+		} else if (!playTone.equals(other.playTone)) { 
 			return false;
 		}
 		if (progressIndicator == null) {
 			if (other.progressIndicator != null) { 
 				return false;
 			}
-		} 
-		else if (!progressIndicator.equals(other.progressIndicator)) { 
+		} else if (!progressIndicator.equals(other.progressIndicator)) { 
 			return false;
 		}
 		if (softButtons == null) {
 			if (other.softButtons != null) { 
 				return false;
 			}
-		} 
-		else if (!softButtons.equals(other.softButtons)) { 
+		} else if (!softButtons.equals(other.softButtons)) { 
 			return false;
 		}
 		if (ttsChunks == null) {
 			if (other.ttsChunks != null) { 
 				return false;
 			}
-		} 
-		else if (!ttsChunks.equals(other.ttsChunks)) { 
+		} else if (!ttsChunks.equals(other.ttsChunks)) { 
 			return false;
 		}
 		return true;

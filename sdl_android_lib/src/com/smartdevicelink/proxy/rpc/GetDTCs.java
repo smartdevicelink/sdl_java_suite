@@ -115,16 +115,14 @@ public class GetDTCs extends RPCRequest {
 			if (other.dtcMask != null) { 
 				return false;
 			}
-		} 
-		else if (!dtcMask.equals(other.dtcMask)) { 
+		} else if (!dtcMask.equals(other.dtcMask)) { 
 			return false;
 		}
 		if (ecuName == null) {
 			if (other.ecuName != null) { 
 				return false;
 			}
-		} 
-		else if (!ecuName.equals(other.ecuName)) { 
+		} else if (!ecuName.equals(other.ecuName)) { 
 			return false;
 		}
 		return true;

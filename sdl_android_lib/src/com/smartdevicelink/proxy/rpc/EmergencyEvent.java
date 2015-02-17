@@ -124,40 +124,35 @@ public class EmergencyEvent extends RPCObject {
 			if (other.emergencyEventType != null) { 
 				return false;
 			}
-		} 
-		else if (!emergencyEventType.equals(other.emergencyEventType)) { 
+		} else if (!emergencyEventType.equals(other.emergencyEventType)) { 
 			return false;
 		}
 		if (fuelCutoffStatus == null) {
 			if (other.fuelCutoffStatus != null) { 
 				return false;
 			}
-		}
-		else if (!fuelCutoffStatus.equals(other.fuelCutoffStatus)) { 
+		} else if (!fuelCutoffStatus.equals(other.fuelCutoffStatus)) { 
 			return false;
 		}
 		if (maximumChangeVelocity == null) {
 			if (other.maximumChangeVelocity != null) { 
 				return false;
 			}
-		}
-		else if (!maximumChangeVelocity.equals(other.maximumChangeVelocity)) { 
+		} else if (!maximumChangeVelocity.equals(other.maximumChangeVelocity)) { 
 			return false;
 		}
 		if (multipleEvents == null) {
 			if (other.multipleEvents != null) { 
 				return false;
 			}
-		} 
-		else if (!multipleEvents.equals(other.multipleEvents)) { 
+		} else if (!multipleEvents.equals(other.multipleEvents)) { 
 			return false;
 		}
 		if (rolloverEvent == null) {
 			if (other.rolloverEvent != null) { 
 				return false;
 			}
-		}
-		else if (!rolloverEvent.equals(other.rolloverEvent)) { 
+		} else if (!rolloverEvent.equals(other.rolloverEvent)) { 
 			return false;
 		}
 		return true;

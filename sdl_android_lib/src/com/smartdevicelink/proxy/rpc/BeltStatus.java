@@ -246,120 +246,105 @@ public class BeltStatus extends RPCObject {
 			if (other.driverBeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!driverBeltBuckled.equals(other.driverBeltBuckled)) { 
+		} else if (!driverBeltBuckled.equals(other.driverBeltBuckled)) { 
 			return false;
 		}
 		if (driverBeltDeployed == null) {
 			if (other.driverBeltDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!driverBeltDeployed.equals(other.driverBeltDeployed)) { 
+		} else if (!driverBeltDeployed.equals(other.driverBeltDeployed)) { 
 			return false;
 		}
 		if (leftRow2BeltBuckled == null) {
 			if (other.leftRow2BeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!leftRow2BeltBuckled.equals(other.leftRow2BeltBuckled)) { 
+		} else if (!leftRow2BeltBuckled.equals(other.leftRow2BeltBuckled)) { 
 			return false;
 		}
 		if (leftRow3BeltBuckled == null) {
 			if (other.leftRow3BeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!leftRow3BeltBuckled.equals(other.leftRow3BeltBuckled)) { 
+		} else if (!leftRow3BeltBuckled.equals(other.leftRow3BeltBuckled)) { 
 			return false;
 		}
 		if (middleRow1BeltBuckled == null) {
 			if (other.middleRow1BeltBuckled != null) { 
 				return false;
 			}
-		}
-		else if (!middleRow1BeltBuckled.equals(other.middleRow1BeltBuckled)) { 
+		} else if (!middleRow1BeltBuckled.equals(other.middleRow1BeltBuckled)) { 
 			return false;
 		}
 		if (middleRow1BeltDeployed == null) {
 			if (other.middleRow1BeltDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!middleRow1BeltDeployed.equals(other.middleRow1BeltDeployed)) { 
+		} else if (!middleRow1BeltDeployed.equals(other.middleRow1BeltDeployed)) { 
 			return false;
 		}
 		if (middleRow2BeltBuckled == null) {
 			if (other.middleRow2BeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!middleRow2BeltBuckled.equals(other.middleRow2BeltBuckled)) { 
+		} else if (!middleRow2BeltBuckled.equals(other.middleRow2BeltBuckled)) { 
 			return false;
 		}
 		if (middleRow3BeltBuckled == null) {
 			if (other.middleRow3BeltBuckled != null) { 
 				return false;
 			}
-		}
-		else if (!middleRow3BeltBuckled.equals(other.middleRow3BeltBuckled)) { 
+		} else if (!middleRow3BeltBuckled.equals(other.middleRow3BeltBuckled)) { 
 			return false;
 		}
 		if (passengerBeltBuckled == null) {
 			if (other.passengerBeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!passengerBeltBuckled.equals(other.passengerBeltBuckled)) { 
+		} else if (!passengerBeltBuckled.equals(other.passengerBeltBuckled)) { 
 			return false;
 		}
 		if (passengerBeltDeployed == null) {
 			if (other.passengerBeltDeployed != null) { 
 				return false;
 			}
-		} 
-		else if (!passengerBeltDeployed.equals(other.passengerBeltDeployed)) { 
+		} else if (!passengerBeltDeployed.equals(other.passengerBeltDeployed)) { 
 			return false;
 		}
 		if (passengerChildDetected == null) {
 			if (other.passengerChildDetected != null) { 
 				return false;
 			}
-		}
-		else if (!passengerChildDetected.equals(other.passengerChildDetected)) { 
+		}else if (!passengerChildDetected.equals(other.passengerChildDetected)) { 
 			return false;
 		}
 		if (rearInflatableBuckled == null) {
 			if (other.rearInflatableBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!rearInflatableBuckled.equals(other.rearInflatableBuckled)) { 
+		} else if (!rearInflatableBuckled.equals(other.rearInflatableBuckled)) { 
 			return false;
 		}
 		if (rightRearInflatableBuckled == null) {
 			if (other.rightRearInflatableBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!rightRearInflatableBuckled.equals(other.rightRearInflatableBuckled)) { 
+		} else if (!rightRearInflatableBuckled.equals(other.rightRearInflatableBuckled)) { 
 			return false;
 		}
 		if (rightRow2BeltBuckled == null) {
 			if (other.rightRow2BeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!rightRow2BeltBuckled.equals(other.rightRow2BeltBuckled)) { 
+		} else if (!rightRow2BeltBuckled.equals(other.rightRow2BeltBuckled)) { 
 			return false;
 		}
 		if (rightRow3BeltBuckled == null) {
 			if (other.rightRow3BeltBuckled != null) { 
 				return false;
 			}
-		} 
-		else if (!rightRow3BeltBuckled.equals(other.rightRow3BeltBuckled)) { 
+		} else if (!rightRow3BeltBuckled.equals(other.rightRow3BeltBuckled)) { 
 			return false;
 		}
 		return true;

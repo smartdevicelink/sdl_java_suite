@@ -97,24 +97,21 @@ public class DIDResult extends RPCObject {
 			if (other.data != null) { 
 				return false;
 			}
-		} 
-		else if (!data.equals(other.data)) { 
+		} else if (!data.equals(other.data)) { 
 			return false;
 		}
 		if (didLocation == null) {
 			if (other.didLocation != null) { 
 				return false;
 			}
-		} 
-		else if (!didLocation.equals(other.didLocation)) { 
+		} else if (!didLocation.equals(other.didLocation)) { 
 			return false;
 		}
 		if (resultCode == null) {
 			if (other.resultCode != null) { 
 				return false;
 			}
-		}
-		else if (!resultCode.equals(other.resultCode)) { 
+		} else if (!resultCode.equals(other.resultCode)) { 
 			return false;
 		}
 		return true;

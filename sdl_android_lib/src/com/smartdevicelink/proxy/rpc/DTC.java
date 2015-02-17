@@ -124,16 +124,14 @@ public class DTC extends RPCObject {
 			if (other.id != null) { 
 				return false;
 			}
-		} 
-		else if (!id.equals(other.id)) { 
+		} else if (!id.equals(other.id)) { 
 			return false;
 		}
 		if (statusByte == null) {
 			if (other.statusByte != null) { 
 				return false;
 			}
-		} 
-		else if (!statusByte.equals(other.statusByte)) { 
+		} else if (!statusByte.equals(other.statusByte)) { 
 			return false;
 		}
 		return true;

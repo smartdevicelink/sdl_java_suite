@@ -122,8 +122,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
 			if (other.reason != null) { 
 				return false;
 			}
-		} 
-		else if (!reason.equals(other.reason)) { 
+		} else if (!reason.equals(other.reason)) { 
 			return false;
 		}
 		return true;

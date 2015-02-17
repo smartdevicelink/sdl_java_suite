@@ -87,16 +87,14 @@ public class VehicleDataResult extends RPCObject {
 			if (other.dataType != null) { 
 				return false;
 			}
-		}
-		else if (!dataType.equals(other.dataType)) { 
+		} else if (!dataType.equals(other.dataType)) { 
 			return false;
 		}
 		if (resultCode == null) {
 			if (other.resultCode != null) { 
 				return false;
 			}
-		}
-		else if (!resultCode.equals(other.resultCode)) { 
+		} else if (!resultCode.equals(other.resultCode)) { 
 			return false;
 		}
 		return true;

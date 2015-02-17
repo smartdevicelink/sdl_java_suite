@@ -122,24 +122,21 @@ public class ImageField extends RPCObject {
 			if (other.imageFieldName != null) { 
 				return false;
 			}
-		}
-		else if (!imageFieldName.equals(other.imageFieldName)) { 
+		} else if (!imageFieldName.equals(other.imageFieldName)) { 
 			return false;
 		}
 		if (imageResolution == null) {
 			if (other.imageResolution != null) { 
 				return false;
 			}
-		} 
-		else if (!imageResolution.equals(other.imageResolution)) { 
+		} else if (!imageResolution.equals(other.imageResolution)) { 
 			return false;
 		}
 		if (imageTypeSupported == null) {
 			if (other.imageTypeSupported != null) { 
 				return false;
 			}
-		}
-		else if (!imageTypeSupported.equals(other.imageTypeSupported)) { 
+		} else if (!imageTypeSupported.equals(other.imageTypeSupported)) { 
 			return false;
 		}
 		return true;

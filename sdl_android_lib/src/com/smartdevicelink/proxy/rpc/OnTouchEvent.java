@@ -98,16 +98,14 @@ public class OnTouchEvent extends RPCNotification {
 			if (other.event != null) { 
 				return false;
 			}
-		} 
-		else if (!event.equals(other.event)) { 
+		} else if (!event.equals(other.event)) { 
 			return false;
 		}
 		if (type == null) {
 			if (other.type != null) { 
 				return false;
 			}
-		} 
-		else if (!type.equals(other.type)) { 
+		} else if (!type.equals(other.type)) { 
 			return false;
 		}
 		return true;

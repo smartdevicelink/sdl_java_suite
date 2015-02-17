@@ -181,32 +181,28 @@ public class ButtonCapabilities extends RPCObject {
 			if (other.longPressAvailable != null) { 
 				return false;
 			}
-		}
-		else if (!longPressAvailable.equals(other.longPressAvailable)) { 
+		} else if (!longPressAvailable.equals(other.longPressAvailable)) { 
 			return false;
 		}
 		if (name == null) {
 			if (other.name != null) { 
 				return false;
 			}
-		} 
-		else if (!name.equals(other.name)) { 
+		} else if (!name.equals(other.name)) { 
 			return false;
 		}
 		if (shortPressAvailable == null) {
 			if (other.shortPressAvailable != null) { 
 				return false;
 			}
-		}
-		else if (!shortPressAvailable.equals(other.shortPressAvailable)) { 
+		} else if (!shortPressAvailable.equals(other.shortPressAvailable)) { 
 			return false;
 		}
 		if (upDownAvailable == null) {
 			if (other.upDownAvailable != null) { 
 				return false;
 			}
-		} 
-		else if (!upDownAvailable.equals(other.upDownAvailable)) { 
+		} else if (!upDownAvailable.equals(other.upDownAvailable)) { 
 			return false;
 		}
 		return true;

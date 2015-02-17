@@ -138,8 +138,7 @@ public class OnPermissionsChange extends RPCNotification {
 			if (other.permissionItems != null) { 
 				return false;
 			}
-		} 
-		else if (!permissionItems.equals(other.permissionItems)) { 
+		} else if (!permissionItems.equals(other.permissionItems)) { 
 			return false;
 		}
 		return true;

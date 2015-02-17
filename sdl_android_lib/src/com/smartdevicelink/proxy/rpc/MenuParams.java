@@ -197,24 +197,21 @@ public class MenuParams extends RPCObject {
 			if (other.menuName != null) { 
 				return false;
 			}
-		} 
-		else if (!menuName.equals(other.menuName)) { 
+		} else if (!menuName.equals(other.menuName)) { 
 			return false;
 		}
 		if (parentId == null) {
 			if (other.parentId != null) { 
 				return false;
 			}
-		} 
-		else if (!parentId.equals(other.parentId)) { 
+		} else if (!parentId.equals(other.parentId)) { 
 			return false;
 		}
 		if (position == null) {
 			if (other.position != null) { 
 				return false;
 			}
-		} 
-		else if (!position.equals(other.position)) { 
+		} else if (!position.equals(other.position)) { 
 			return false;
 		}
 		return true;

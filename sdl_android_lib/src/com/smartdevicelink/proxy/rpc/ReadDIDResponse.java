@@ -91,8 +91,7 @@ public class ReadDIDResponse extends RPCResponse {
 			if (other.didResult != null) { 
 				return false;
 			}
-		} 
-		else if (!didResult.equals(other.didResult)) { 
+		} else if (!didResult.equals(other.didResult)) { 
 			return false;
 		}
 		return true;

@@ -101,24 +101,21 @@ public class VrHelpItem extends RPCObject {
 			if (other.image != null) { 
 				return false;
 			}
-		} 
-		else if (!image.equals(other.image)) { 
+		} else if (!image.equals(other.image)) { 
 			return false;
 		}
 		if (position == null) {
 			if (other.position != null) { 
 				return false;
 			}
-		} 
-		else if (!position.equals(other.position)) { 
+		} else if (!position.equals(other.position)) { 
 			return false;
 		}
 		if (text == null) {
 			if (other.text != null) { 
 				return false;
 			}
-		} 
-		else if (!text.equals(other.text)) { 
+		} else if (!text.equals(other.text)) { 
 			return false;
 		}
 		return true;

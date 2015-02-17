@@ -151,32 +151,28 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 			if (other.buttonCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!buttonCapabilities.equals(other.buttonCapabilities)) { 
+		} else if (!buttonCapabilities.equals(other.buttonCapabilities)) { 
 			return false;
 		}
 		if (displayCapabilities == null) {
 			if (other.displayCapabilities != null) { 
 				return false;
 			}
-		}
-		else if (!displayCapabilities.equals(other.displayCapabilities)) { 
+		} else if (!displayCapabilities.equals(other.displayCapabilities)) { 
 			return false;
 		}
 		if (presetBankCapabilities == null) {
 			if (other.presetBankCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!presetBankCapabilities.equals(other.presetBankCapabilities)) { 
+		} else if (!presetBankCapabilities.equals(other.presetBankCapabilities)) { 
 			return false;
 		}
 		if (softButtonCapabilities == null) {
 			if (other.softButtonCapabilities != null) { 
 				return false;
 			}
-		} 
-		else if (!softButtonCapabilities.equals(other.softButtonCapabilities)) { 
+		} else if (!softButtonCapabilities.equals(other.softButtonCapabilities)) { 
 			return false;
 		}
 		return true;

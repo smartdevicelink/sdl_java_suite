@@ -247,32 +247,28 @@ public class AddCommand extends RPCRequest {
 			if (other.commandId != null) {
 				return false;
 			}
-		} 
-		else if (!commandId.equals(other.commandId)) {
+		} else if (!commandId.equals(other.commandId)) {
 			return false;
 		}
 		if (image == null) {
 			if (other.image != null) {
 				return false;
 			}
-		} 
-		else if (!image.equals(other.image)) {
+		} else if (!image.equals(other.image)) {
 			return false;
 		}
 		if (menuParams == null) {
 			if (other.menuParams != null) {
 				return false;
 			}
-		} 
-		else if (!menuParams.equals(other.menuParams)) {
+		} else if (!menuParams.equals(other.menuParams)) {
 			return false;
 		}
 		if (vrCommands == null) {
 			if (other.vrCommands != null) {
 				return false;
 			}
-		} 
-		else if (!vrCommands.equals(other.vrCommands)) {
+		} else if (!vrCommands.equals(other.vrCommands)) {
 			return false;
 		}
 		return true;

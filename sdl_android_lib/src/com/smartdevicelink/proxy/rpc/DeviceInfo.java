@@ -131,48 +131,42 @@ public class DeviceInfo extends RPCObject {
 			if (other.carrier != null) { 
 				return false;
 			}
-		}
-		else if (!carrier.equals(other.carrier)) { 
+		} else if (!carrier.equals(other.carrier)) { 
 			return false;
 		}
 		if (firmware == null) {
 			if (other.firmware != null) { 
 				return false;
 			}
-		}
-		else if (!firmware.equals(other.firmware)) { 
+		} else if (!firmware.equals(other.firmware)) { 
 			return false;
 		}
 		if (hardware == null) {
 			if (other.hardware != null) { 
 				return false;
 			}
-		}
-		else if (!hardware.equals(other.hardware)) { 
+		} else if (!hardware.equals(other.hardware)) { 
 			return false;
 		}
 		if (maxNumberRfcommPorts == null) {
 			if (other.maxNumberRfcommPorts != null) { 
 				return false;
 			}
-		} 
-		else if (!maxNumberRfcommPorts.equals(other.maxNumberRfcommPorts)) { 
+		} else if (!maxNumberRfcommPorts.equals(other.maxNumberRfcommPorts)) { 
 			return false;
 		}
 		if (os == null) {
 			if (other.os != null) { 
 				return false;
 			}
-		} 
-		else if (!os.equals(other.os)) { 
+		} else if (!os.equals(other.os)) { 
 			return false;
 		}
 		if (osVersion == null) {
 			if (other.osVersion != null) { 
 				return false;
 			}
-		} 
-		else if (!osVersion.equals(other.osVersion)) { 
+		} else if (!osVersion.equals(other.osVersion)) { 
 			return false;
 		}
 		return true;
