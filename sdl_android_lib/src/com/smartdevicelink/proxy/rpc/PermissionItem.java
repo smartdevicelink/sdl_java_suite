@@ -64,19 +64,68 @@ public class PermissionItem extends RPCObject {
     }
     
     @Override
-public JSONObject getJsonParameters(int sdlVersion){
-    JSONObject result = super.getJsonParameters(sdlVersion);
-    
-    switch(sdlVersion){
-    default:
-        JsonUtils.addToJsonObject(result, KEY_RPC_NAME, this.rpcName);
-        JsonUtils.addToJsonObject(result, KEY_HMI_PERMISSIONS, (this.hmiPermissions == null) ? null :
-            this.hmiPermissions.getJsonParameters(sdlVersion));
-        JsonUtils.addToJsonObject(result, KEY_PARAMETER_PERMISSIONS, (this.parameterPermissions == null) ? null :
-            this.parameterPermissions.getJsonParameters(sdlVersion));
-        break;
-    }
-    
-    return result;
-}
+	public JSONObject getJsonParameters(int sdlVersion){
+	    JSONObject result = super.getJsonParameters(sdlVersion);
+	    
+	    switch(sdlVersion){
+	    default:
+	        JsonUtils.addToJsonObject(result, KEY_RPC_NAME, this.rpcName);
+	        JsonUtils.addToJsonObject(result, KEY_HMI_PERMISSIONS, (this.hmiPermissions == null) ? null :
+	            this.hmiPermissions.getJsonParameters(sdlVersion));
+	        JsonUtils.addToJsonObject(result, KEY_PARAMETER_PERMISSIONS, (this.parameterPermissions == null) ? null :
+	            this.parameterPermissions.getJsonParameters(sdlVersion));
+	        break;
+	    }
+	    
+	    return result;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((hmiPermissions == null) ? 0 : hmiPermissions.hashCode());
+		result = prime * result + ((parameterPermissions == null) ? 0 : parameterPermissions.hashCode());
+		result = prime * result + ((rpcName == null) ? 0 : rpcName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PermissionItem other = (PermissionItem) obj;
+		if (hmiPermissions == null) {
+			if (other.hmiPermissions != null) { 
+				return false;
+			}
+		} 
+		else if (!hmiPermissions.equals(other.hmiPermissions)) { 
+			return false;
+		}
+		if (parameterPermissions == null) {
+			if (other.parameterPermissions != null) { 
+				return false;
+			}
+		} 
+		else if (!parameterPermissions.equals(other.parameterPermissions)) { 
+			return false;
+		}
+		if (rpcName == null) {
+			if (other.rpcName != null) { 
+				return false;
+			}
+		}
+		else if (!rpcName.equals(other.rpcName)) { 
+			return false;
+		}
+		return true;
+	}
 }

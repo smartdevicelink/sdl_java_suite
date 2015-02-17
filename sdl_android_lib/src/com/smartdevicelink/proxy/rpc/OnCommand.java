@@ -129,4 +129,44 @@ public class OnCommand extends RPCNotification {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cmdId == null) ? 0 : cmdId.hashCode());
+		result = prime * result + ((triggerSource == null) ? 0 : triggerSource.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnCommand other = (OnCommand) obj;
+		if (cmdId == null) {
+			if (other.cmdId != null) { 
+				return false;
+			}
+		} 
+		else if (!cmdId.equals(other.cmdId)) { 
+			return false;
+		}
+		if (triggerSource == null) {
+			if (other.triggerSource != null) { 
+				return false;
+			}
+		}
+		else if (!triggerSource.equals(other.triggerSource)) { 
+			return false;
+		}
+		return true;
+	}
 }

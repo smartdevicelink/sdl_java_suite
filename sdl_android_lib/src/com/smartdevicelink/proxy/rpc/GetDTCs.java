@@ -89,4 +89,44 @@ public class GetDTCs extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dtcMask == null) ? 0 : dtcMask.hashCode());
+		result = prime * result + ((ecuName == null) ? 0 : ecuName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		GetDTCs other = (GetDTCs) obj;
+		if (dtcMask == null) {
+			if (other.dtcMask != null) { 
+				return false;
+			}
+		} 
+		else if (!dtcMask.equals(other.dtcMask)) { 
+			return false;
+		}
+		if (ecuName == null) {
+			if (other.ecuName != null) { 
+				return false;
+			}
+		} 
+		else if (!ecuName.equals(other.ecuName)) { 
+			return false;
+		}
+		return true;
+	}
 }

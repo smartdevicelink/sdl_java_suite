@@ -151,4 +151,35 @@ public class Speak extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ttsChunks == null) ? 0 : ttsChunks.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Speak other = (Speak) obj;
+		if (ttsChunks == null) {
+			if (other.ttsChunks != null) { 
+				return false;
+			}
+		} 
+		else if (!ttsChunks.equals(other.ttsChunks)) { 
+			return false;
+		}
+		return true;
+	}
 }

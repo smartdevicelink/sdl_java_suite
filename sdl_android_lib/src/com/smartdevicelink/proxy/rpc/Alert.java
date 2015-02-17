@@ -337,5 +337,99 @@ public class Alert extends RPCRequest {
         }
         
         return result;
-    }    
+    }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((alertText1 == null) ? 0 : alertText1.hashCode());
+		result = prime * result + ((alertText2 == null) ? 0 : alertText2.hashCode());
+		result = prime * result + ((alertText3 == null) ? 0 : alertText3.hashCode());
+		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
+		result = prime * result + ((playTone == null) ? 0 : playTone.hashCode());
+		result = prime * result + ((progressIndicator == null) ? 0 : progressIndicator.hashCode());
+		result = prime * result + ((softButtons == null) ? 0 : softButtons.hashCode());
+		result = prime * result + ((ttsChunks == null) ? 0 : ttsChunks.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Alert other = (Alert) obj;
+		if (alertText1 == null) {
+			if (other.alertText1 != null) { 
+				return false;
+			}
+		} 
+		else if (!alertText1.equals(other.alertText1)) { 
+			return false;
+		}
+		if (alertText2 == null) {
+			if (other.alertText2 != null) { 
+				return false;
+			}
+		} 
+		else if (!alertText2.equals(other.alertText2)) { 
+			return false;
+		}
+		if (alertText3 == null) {
+			if (other.alertText3 != null) { 
+				return false;
+			}
+		} 
+		else if (!alertText3.equals(other.alertText3)) { 
+			return false;
+		}
+		if (duration == null) {
+			if (other.duration != null) { 
+				return false;
+			}
+		} 
+		else if (!duration.equals(other.duration)) { 
+			return false;
+		}
+		if (playTone == null) {
+			if (other.playTone != null) { 
+				return false;
+			}
+		} 
+		else if (!playTone.equals(other.playTone)) { 
+			return false;
+		}
+		if (progressIndicator == null) {
+			if (other.progressIndicator != null) { 
+				return false;
+			}
+		} 
+		else if (!progressIndicator.equals(other.progressIndicator)) { 
+			return false;
+		}
+		if (softButtons == null) {
+			if (other.softButtons != null) { 
+				return false;
+			}
+		} 
+		else if (!softButtons.equals(other.softButtons)) { 
+			return false;
+		}
+		if (ttsChunks == null) {
+			if (other.ttsChunks != null) { 
+				return false;
+			}
+		} 
+		else if (!ttsChunks.equals(other.ttsChunks)) { 
+			return false;
+		}
+		return true;
+	}    
 }

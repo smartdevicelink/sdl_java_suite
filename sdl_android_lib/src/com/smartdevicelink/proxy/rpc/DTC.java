@@ -98,4 +98,44 @@ public class DTC extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((statusByte == null) ? 0 : statusByte.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DTC other = (DTC) obj;
+		if (id == null) {
+			if (other.id != null) { 
+				return false;
+			}
+		} 
+		else if (!id.equals(other.id)) { 
+			return false;
+		}
+		if (statusByte == null) {
+			if (other.statusByte != null) { 
+				return false;
+			}
+		} 
+		else if (!statusByte.equals(other.statusByte)) { 
+			return false;
+		}
+		return true;
+	}
 }

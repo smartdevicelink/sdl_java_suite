@@ -506,4 +506,188 @@ public class GPSData extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((actual == null) ? 0 : actual.hashCode());
+		result = prime * result + ((altitude == null) ? 0 : altitude.hashCode());
+		result = prime * result + ((compassDirection == null) ? 0 : compassDirection.hashCode());
+		result = prime * result + ((day == null) ? 0 : day.hashCode());
+		result = prime * result + ((dimension == null) ? 0 : dimension.hashCode());
+		result = prime * result + ((hdop == null) ? 0 : hdop.hashCode());
+		result = prime * result + ((heading == null) ? 0 : heading.hashCode());
+		result = prime * result + ((hours == null) ? 0 : hours.hashCode());
+		result = prime * result + ((latitude == null) ? 0 : latitude.hashCode());
+		result = prime * result + ((longitude == null) ? 0 : longitude.hashCode());
+		result = prime * result + ((minutes == null) ? 0 : minutes.hashCode());
+		result = prime * result + ((month == null) ? 0 : month.hashCode());
+		result = prime * result + ((pdop == null) ? 0 : pdop.hashCode());
+		result = prime * result + ((satellites == null) ? 0 : satellites.hashCode());
+		result = prime * result + ((seconds == null) ? 0 : seconds.hashCode());
+		result = prime * result + ((speed == null) ? 0 : speed.hashCode());
+		result = prime * result + ((vdop == null) ? 0 : vdop.hashCode());
+		result = prime * result + ((year == null) ? 0 : year.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		GPSData other = (GPSData) obj;
+		if (actual == null) {
+			if (other.actual != null) { 
+				return false;
+			}
+		}
+		else if (!actual.equals(other.actual)) { 
+			return false;
+		}
+		if (altitude == null) {
+			if (other.altitude != null) { 
+				return false;
+			}
+		}
+		else if (!altitude.equals(other.altitude)) { 
+			return false;
+		}
+		if (compassDirection == null) {
+			if (other.compassDirection != null) { 
+				return false;
+			}
+		}
+		else if (!compassDirection.equals(other.compassDirection)) { 
+			return false;
+		}
+		if (day == null) {
+			if (other.day != null) { 
+				return false;
+			}
+		} 
+		else if (!day.equals(other.day)) { 
+			return false;
+		}
+		if (dimension == null) {
+			if (other.dimension != null) { 
+				return false;
+			}
+		}
+		else if (!dimension.equals(other.dimension)) { 
+			return false;
+		}
+		if (hdop == null) {
+			if (other.hdop != null) { 
+				return false;
+			}
+		} 
+		else if (!hdop.equals(other.hdop)) { 
+			return false;
+		}
+		if (heading == null) {
+			if (other.heading != null) { 
+				return false;
+			}
+		} 
+		else if (!heading.equals(other.heading)) { 
+			return false;
+		}
+		if (hours == null) {
+			if (other.hours != null) { 
+				return false;
+			}
+		} 
+		else if (!hours.equals(other.hours)) { 
+			return false;
+		}
+		if (latitude == null) {
+			if (other.latitude != null) { 
+				return false;
+			}
+		} 
+		else if (!latitude.equals(other.latitude)) { 
+			return false;
+		}
+		if (longitude == null) {
+			if (other.longitude != null) { 
+				return false;
+			}
+		}
+		else if (!longitude.equals(other.longitude)) { 
+			return false;
+		}
+		if (minutes == null) {
+			if (other.minutes != null) { 
+				return false;
+			}
+		}
+		else if (!minutes.equals(other.minutes)) { 
+			return false;
+		}
+		if (month == null) {
+			if (other.month != null) { 
+				return false;
+			}
+		}
+		else if (!month.equals(other.month)) { 
+			return false;
+		}
+		if (pdop == null) {
+			if (other.pdop != null) { 
+				return false;
+			}
+		} 
+		else if (!pdop.equals(other.pdop)) { 
+			return false;
+		}
+		if (satellites == null) {
+			if (other.satellites != null) { 
+				return false;
+			}
+		} 
+		else if (!satellites.equals(other.satellites)) { 
+			return false;
+		}
+		if (seconds == null) {
+			if (other.seconds != null) { 
+				return false;
+			}
+		}
+		else if (!seconds.equals(other.seconds)) { 
+			return false;
+		}
+		if (speed == null) {
+			if (other.speed != null) { 
+				return false;
+			}
+		}
+		else if (!speed.equals(other.speed)) { 
+			return false;
+		}
+		if (vdop == null) {
+			if (other.vdop != null) { 
+				return false;
+			}
+		} 
+		else if (!vdop.equals(other.vdop)) { 
+			return false;
+		}
+		if (year == null) {
+			if (other.year != null) { 
+				return false;
+			}
+		} 
+		else if (!year.equals(other.year)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -67,4 +67,44 @@ public class ScreenParams extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((imageResolution == null) ? 0 : imageResolution.hashCode());
+		result = prime * result + ((touchEventCapabilities == null) ? 0 : touchEventCapabilities.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ScreenParams other = (ScreenParams) obj;
+		if (imageResolution == null) {
+			if (other.imageResolution != null) { 
+				return false;
+			}
+		} 
+		else if (!imageResolution.equals(other.imageResolution)) { 
+			return false;
+		}
+		if (touchEventCapabilities == null) {
+			if (other.touchEventCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!touchEventCapabilities.equals(other.touchEventCapabilities)) { 
+			return false;
+		}
+		return true;
+	}
 }

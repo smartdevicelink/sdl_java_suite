@@ -285,4 +285,104 @@ public JSONObject getJsonParameters(int sdlVersion){
     
     return result;
 }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((audioType == null) ? 0 : audioType.hashCode());
+		result = prime * result
+				+ ((bitsPerSample == null) ? 0 : bitsPerSample.hashCode());
+		result = prime * result
+				+ ((initialPrompt == null) ? 0 : initialPrompt.hashCode());
+		result = prime * result
+				+ ((maxDuration == null) ? 0 : maxDuration.hashCode());
+		result = prime * result
+				+ ((muteAudio == null) ? 0 : muteAudio.hashCode());
+		result = prime * result
+				+ ((samplingRate == null) ? 0 : samplingRate.hashCode());
+		result = prime * result + ((text1 == null) ? 0 : text1.hashCode());
+		result = prime * result + ((text2 == null) ? 0 : text2.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PerformAudioPassThru other = (PerformAudioPassThru) obj;
+		if (audioType == null) {
+			if (other.audioType != null) { 
+				return false;
+			}
+		} 
+		else if (!audioType.equals(other.audioType)) { 
+			return false;
+		}
+		if (bitsPerSample == null) {
+			if (other.bitsPerSample != null) { 
+				return false;
+			}
+		} 
+		else if (!bitsPerSample.equals(other.bitsPerSample)) { 
+			return false;
+		}
+		if (initialPrompt == null) {
+			if (other.initialPrompt != null) { 
+				return false;
+			}
+		} 
+		else if (!initialPrompt.equals(other.initialPrompt)) { 
+			return false;
+		}
+		if (maxDuration == null) {
+			if (other.maxDuration != null) { 
+				return false;
+			}
+		} 
+		else if (!maxDuration.equals(other.maxDuration)) { 
+			return false;
+		}
+		if (muteAudio == null) {
+			if (other.muteAudio != null) { 
+				return false;
+			}
+		} 
+		else if (!muteAudio.equals(other.muteAudio)) { 
+			return false;
+		}
+		if (samplingRate == null) {
+			if (other.samplingRate != null) { 
+				return false;
+			}
+		} 
+		else if (!samplingRate.equals(other.samplingRate)) { 
+			return false;
+		}
+		if (text1 == null) {
+			if (other.text1 != null) { 
+				return false;
+			}
+		} 
+		else if (!text1.equals(other.text1)) { 
+			return false;
+		}
+		if (text2 == null) {
+			if (other.text2 != null) { 
+				return false;
+			}
+		} 
+		else if (!text2.equals(other.text2)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -118,4 +118,44 @@ public class CreateInteractionChoiceSet extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((choiceSet == null) ? 0 : choiceSet.hashCode());
+		result = prime * result + ((interactionChoiceSetId == null) ? 0 : interactionChoiceSetId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		CreateInteractionChoiceSet other = (CreateInteractionChoiceSet) obj;
+		if (choiceSet == null) {
+			if (other.choiceSet != null) { 
+				return false;
+			}
+		} 
+		else if (!choiceSet.equals(other.choiceSet)) { 
+			return false;
+		}
+		if (interactionChoiceSetId == null) {
+			if (other.interactionChoiceSetId != null) { 
+				return false;
+			}
+		} 
+		else if (!interactionChoiceSetId.equals(other.interactionChoiceSetId)) { 
+			return false;
+		}
+		return true;
+	}
 }

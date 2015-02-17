@@ -46,4 +46,35 @@ public class MyKey extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((e911Override == null) ? 0 : e911Override.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		MyKey other = (MyKey) obj;
+		if (e911Override == null) {
+			if (other.e911Override != null) { 
+				return false;
+			}
+		} 
+		else if (!e911Override.equals(other.e911Override)) { 
+			return false;
+		}
+		return true;
+	}
 }

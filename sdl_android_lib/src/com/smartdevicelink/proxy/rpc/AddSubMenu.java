@@ -148,4 +148,53 @@ public class AddSubMenu extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((menuId == null) ? 0 : menuId.hashCode());
+		result = prime * result + ((menuName == null) ? 0 : menuName.hashCode());
+		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		AddSubMenu other = (AddSubMenu) obj;
+		if (menuId == null) {
+			if (other.menuId != null) { 
+				return false;
+			}
+		} 
+		else if (!menuId.equals(other.menuId)) { 
+			return false;
+		}
+		if (menuName == null) {
+			if (other.menuName != null){ 
+				return false;
+			}
+		} 
+		else if (!menuName.equals(other.menuName)) { 
+			return false;
+		}
+		if (position == null) {
+			if (other.position != null){ 
+				return false;
+			}
+		} 
+		else if (!position.equals(other.position)) { 
+			return false;
+		}
+		return true;
+	}
 }

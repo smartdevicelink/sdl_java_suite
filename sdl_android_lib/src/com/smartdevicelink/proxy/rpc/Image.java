@@ -107,4 +107,44 @@ public class Image extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((imageType == null) ? 0 : imageType.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Image other = (Image) obj;
+		if (imageType == null) {
+			if (other.imageType != null) { 
+				return false;
+			}
+		} 
+		else if (!imageType.equals(other.imageType)) { 
+			return false;
+		}
+		if (value == null) {
+			if (other.value != null) { 
+				return false;
+			}
+		} 
+		else if (!value.equals(other.value)) { 
+			return false;
+		}
+		return true;
+	}
 }

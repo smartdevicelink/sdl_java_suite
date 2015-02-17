@@ -112,4 +112,35 @@ public class SubscribeButton extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((buttonName == null) ? 0 : buttonName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SubscribeButton other = (SubscribeButton) obj;
+		if (buttonName == null) {
+			if (other.buttonName != null) { 
+				return false;
+			}
+		} 
+		else if (!buttonName.equals(other.buttonName)) { 
+			return false;
+		}
+		return true;
+	}
 }

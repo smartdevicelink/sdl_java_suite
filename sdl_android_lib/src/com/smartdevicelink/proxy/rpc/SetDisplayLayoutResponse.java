@@ -123,4 +123,62 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((buttonCapabilities == null) ? 0 : buttonCapabilities.hashCode());
+		result = prime * result + ((displayCapabilities == null) ? 0 : displayCapabilities.hashCode());
+		result = prime * result + ((presetBankCapabilities == null) ? 0 : presetBankCapabilities.hashCode());
+		result = prime * result + ((softButtonCapabilities == null) ? 0 : softButtonCapabilities.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SetDisplayLayoutResponse other = (SetDisplayLayoutResponse) obj;
+		if (buttonCapabilities == null) {
+			if (other.buttonCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!buttonCapabilities.equals(other.buttonCapabilities)) { 
+			return false;
+		}
+		if (displayCapabilities == null) {
+			if (other.displayCapabilities != null) { 
+				return false;
+			}
+		}
+		else if (!displayCapabilities.equals(other.displayCapabilities)) { 
+			return false;
+		}
+		if (presetBankCapabilities == null) {
+			if (other.presetBankCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!presetBankCapabilities.equals(other.presetBankCapabilities)) { 
+			return false;
+		}
+		if (softButtonCapabilities == null) {
+			if (other.softButtonCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!softButtonCapabilities.equals(other.softButtonCapabilities)) { 
+			return false;
+		}
+		return true;
+	}
 }

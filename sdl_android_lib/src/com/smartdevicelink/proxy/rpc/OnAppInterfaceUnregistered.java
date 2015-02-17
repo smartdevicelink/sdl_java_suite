@@ -97,4 +97,35 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnAppInterfaceUnregistered other = (OnAppInterfaceUnregistered) obj;
+		if (reason == null) {
+			if (other.reason != null) { 
+				return false;
+			}
+		} 
+		else if (!reason.equals(other.reason)) { 
+			return false;
+		}
+		return true;
+	}
 }

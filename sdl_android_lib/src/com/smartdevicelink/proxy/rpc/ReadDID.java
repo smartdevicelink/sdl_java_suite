@@ -101,17 +101,57 @@ public class ReadDID extends RPCRequest {
     }
     
     @Override
-public JSONObject getJsonParameters(int sdlVersion){
-    JSONObject result = super.getJsonParameters(sdlVersion);
-    
-    switch(sdlVersion){
-    default:
-        JsonUtils.addToJsonObject(result, KEY_ECU_NAME, this.ecuName);
-        JsonUtils.addToJsonObject(result, KEY_DID_LOCATION, (this.didLocation == null) ? null : 
-            JsonUtils.createJsonArray(this.didLocation));
-        break;
-    }
-    
-    return result;
-}
+	public JSONObject getJsonParameters(int sdlVersion){
+	    JSONObject result = super.getJsonParameters(sdlVersion);
+	    
+	    switch(sdlVersion){
+	    default:
+	        JsonUtils.addToJsonObject(result, KEY_ECU_NAME, this.ecuName);
+	        JsonUtils.addToJsonObject(result, KEY_DID_LOCATION, (this.didLocation == null) ? null : 
+	            JsonUtils.createJsonArray(this.didLocation));
+	        break;
+	    }
+	    
+	    return result;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((didLocation == null) ? 0 : didLocation.hashCode());
+		result = prime * result + ((ecuName == null) ? 0 : ecuName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ReadDID other = (ReadDID) obj;
+		if (didLocation == null) {
+			if (other.didLocation != null) { 
+				return false;
+			}
+		} 
+		else if (!didLocation.equals(other.didLocation)) { 
+			return false;
+		}
+		if (ecuName == null) {
+			if (other.ecuName != null) { 
+				return false;
+			}
+		} 
+		else if (!ecuName.equals(other.ecuName)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -241,4 +242,120 @@ public class OnSystemRequest extends RPCNotification implements BulkData{
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((body == null) ? 0 : body.hashCode());
+		result = prime * result + Arrays.hashCode(bulkData);
+		result = prime * result + ((bulkDataJson == null) ? 0 : bulkDataJson.hashCode());
+		result = prime * result + ((fileType == null) ? 0 : fileType.hashCode());
+		result = prime * result + ((headers == null) ? 0 : headers.hashCode());
+		result = prime * result + ((legacyData == null) ? 0 : legacyData.hashCode());
+		result = prime * result + ((length == null) ? 0 : length.hashCode());
+		result = prime * result + ((offset == null) ? 0 : offset.hashCode());
+		result = prime * result + ((requestType == null) ? 0 : requestType.hashCode());
+		result = prime * result + ((timeout == null) ? 0 : timeout.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnSystemRequest other = (OnSystemRequest) obj;
+		if (body == null) {
+			if (other.body != null) { 
+				return false;
+			}
+		}
+		else if (!body.equals(other.body)) { 
+			return false;
+		}
+		if (!Arrays.equals(bulkData, other.bulkData)) { 
+			return false;
+		}
+		if (bulkDataJson == null) {
+			if (other.bulkDataJson != null) { 
+				return false;
+			}
+		}
+		else if (!bulkDataJson.equals(other.bulkDataJson)) { 
+			return false;
+		}
+		if (fileType == null) {
+			if (other.fileType != null) { 
+				return false;
+			}
+		} 
+		else if (!fileType.equals(other.fileType)) { 
+			return false;
+		}
+		if (headers == null) {
+			if (other.headers != null) { 
+				return false;
+			}
+		} 
+		else if (!headers.equals(other.headers)) { 
+			return false;
+		}
+		if (legacyData == null) {
+			if (other.legacyData != null) { 
+				return false;
+			}
+		} 
+		else if (!legacyData.equals(other.legacyData)) { 
+			return false;
+		}
+		if (length == null) {
+			if (other.length != null) { 
+				return false;
+			}
+		} 
+		else if (!length.equals(other.length)) { 
+			return false;
+		}
+		if (offset == null) {
+			if (other.offset != null) { 
+				return false;
+			}
+		} 
+		else if (!offset.equals(other.offset)) { 
+			return false;
+		}
+		if (requestType == null) {
+			if (other.requestType != null) { 
+				return false;
+			}
+		} 
+		else if (!requestType.equals(other.requestType)) { 
+			return false;
+		}
+		if (timeout == null) {
+			if (other.timeout != null) { 
+				return false;
+			}
+		}
+		else if (!timeout.equals(other.timeout)) { 
+			return false;
+		}
+		if (url == null) {
+			if (other.url != null) { 
+				return false;
+			}
+		} 
+		else if (!url.equals(other.url)) { 
+			return false;
+		}
+		return true;
+	}
 }

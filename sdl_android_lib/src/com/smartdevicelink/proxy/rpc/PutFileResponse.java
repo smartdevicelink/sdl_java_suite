@@ -59,4 +59,34 @@ public class PutFileResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((spaceAvailable == null) ? 0 : spaceAvailable.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PutFileResponse other = (PutFileResponse) obj;
+		if (spaceAvailable == null) {
+			if (other.spaceAvailable != null) { 
+				return false;
+			}
+		} else if (!spaceAvailable.equals(other.spaceAvailable)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -263,5 +263,90 @@ public class SetGlobalProperties extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((helpPrompt == null) ? 0 : helpPrompt.hashCode());
+		result = prime * result + ((keyboardProperties == null) ? 0 : keyboardProperties.hashCode());
+		result = prime * result + ((menuIcon == null) ? 0 : menuIcon.hashCode());
+		result = prime * result + ((menuTitle == null) ? 0 : menuTitle.hashCode());
+		result = prime * result + ((timeoutPrompt == null) ? 0 : timeoutPrompt.hashCode());
+		result = prime * result + ((vrHelp == null) ? 0 : vrHelp.hashCode());
+		result = prime * result + ((vrHelpTitle == null) ? 0 : vrHelpTitle.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SetGlobalProperties other = (SetGlobalProperties) obj;
+		if (helpPrompt == null) {
+			if (other.helpPrompt != null) { 
+				return false;
+			}
+		}
+		else if (!helpPrompt.equals(other.helpPrompt)) { 
+			return false;
+		}
+		if (keyboardProperties == null) {
+			if (other.keyboardProperties != null) { 
+				return false;
+			}
+		}
+		else if (!keyboardProperties.equals(other.keyboardProperties)) { 
+			return false;
+		}
+		if (menuIcon == null) {
+			if (other.menuIcon != null) { 
+				return false;
+			}
+		} 
+		else if (!menuIcon.equals(other.menuIcon)) { 
+			return false;
+		}
+		if (menuTitle == null) {
+			if (other.menuTitle != null) { 
+				return false;
+			}
+		} 
+		else if (!menuTitle.equals(other.menuTitle)) { 
+			return false;
+		}
+		if (timeoutPrompt == null) {
+			if (other.timeoutPrompt != null) { 
+				return false;
+			}
+		} 
+		else if (!timeoutPrompt.equals(other.timeoutPrompt)) { 
+			return false;
+		}
+		if (vrHelp == null) {
+			if (other.vrHelp != null) { 
+				return false;
+			}
+		} 
+		else if (!vrHelp.equals(other.vrHelp)) { 
+			return false;
+		}
+		if (vrHelpTitle == null) {
+			if (other.vrHelpTitle != null) { 
+				return false;
+			}
+		} 
+		else if (!vrHelpTitle.equals(other.vrHelpTitle)) { 
+			return false;
+		}
+		return true;
+	}
     
 }

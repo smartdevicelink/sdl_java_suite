@@ -330,4 +330,125 @@ public class DeviceStatus extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((battLevelStatus == null) ? 0 : battLevelStatus.hashCode());
+		result = prime * result + ((btIconOn == null) ? 0 : btIconOn.hashCode());
+		result = prime * result + ((callActive == null) ? 0 : callActive.hashCode());
+		result = prime * result + ((eCallEventActive == null) ? 0 : eCallEventActive.hashCode());
+		result = prime * result + ((monoAudioMuted == null) ? 0 : monoAudioMuted.hashCode());
+		result = prime * result + ((phoneRoaming == null) ? 0 : phoneRoaming.hashCode());
+		result = prime * result + ((primaryAudioSource == null) ? 0 : primaryAudioSource.hashCode());
+		result = prime * result + ((signalLevelStatus == null) ? 0 : signalLevelStatus.hashCode());
+		result = prime * result + ((stereoAudioMuted == null) ? 0 : stereoAudioMuted.hashCode());
+		result = prime * result + ((textMsgAvailable == null) ? 0 : textMsgAvailable.hashCode());
+		result = prime * result + ((voiceRecOn == null) ? 0 : voiceRecOn.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DeviceStatus other = (DeviceStatus) obj;
+		if (battLevelStatus == null) {
+			if (other.battLevelStatus != null) { 
+				return false;
+			}
+		}
+		else if (!battLevelStatus.equals(other.battLevelStatus)) { 
+			return false;
+		}
+		if (btIconOn == null) {
+			if (other.btIconOn != null) { 
+				return false;
+			}
+		}
+		else if (!btIconOn.equals(other.btIconOn)) { 
+			return false;
+		}
+		if (callActive == null) {
+			if (other.callActive != null) { 
+				return false;
+			}
+		} 
+		else if (!callActive.equals(other.callActive)) { 
+			return false;
+		}
+		if (eCallEventActive == null) {
+			if (other.eCallEventActive != null) { 
+				return false;
+			}
+		} 
+		else if (!eCallEventActive.equals(other.eCallEventActive)) { 
+			return false;
+		}
+		if (monoAudioMuted == null) {
+			if (other.monoAudioMuted != null) { 
+				return false;
+			}
+		} 
+		else if (!monoAudioMuted.equals(other.monoAudioMuted)) { 
+			return false;
+		}
+		if (phoneRoaming == null) {
+			if (other.phoneRoaming != null) { 
+				return false;
+			}
+		}
+		else if (!phoneRoaming.equals(other.phoneRoaming)) { 
+			return false;
+		}
+		if (primaryAudioSource == null) {
+			if (other.primaryAudioSource != null) { 
+				return false;
+			}
+		} 
+		else if (!primaryAudioSource.equals(other.primaryAudioSource)) { 
+			return false;
+		}
+		if (signalLevelStatus == null) {
+			if (other.signalLevelStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!signalLevelStatus.equals(other.signalLevelStatus)) { 
+			return false;
+		}
+		if (stereoAudioMuted == null) {
+			if (other.stereoAudioMuted != null) { 
+				return false;
+			}
+		}
+		else if (!stereoAudioMuted.equals(other.stereoAudioMuted)) { 
+			return false;
+		}
+		if (textMsgAvailable == null) {
+			if (other.textMsgAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!textMsgAvailable.equals(other.textMsgAvailable)) { 
+			return false;
+		}
+		if (voiceRecOn == null) {
+			if (other.voiceRecOn != null) { 
+				return false;
+			}
+		} 
+		else if (!voiceRecOn.equals(other.voiceRecOn)) { 
+			return false;
+		}
+		return true;
+	}
 }

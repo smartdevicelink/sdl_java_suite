@@ -84,4 +84,62 @@ public class ClusterModeStatus extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((carModeStatus == null) ? 0 : carModeStatus.hashCode());
+		result = prime * result + ((powerModeActive == null) ? 0 : powerModeActive.hashCode());
+		result = prime * result + ((powerModeQualificationStatus == null) ? 0 : powerModeQualificationStatus.hashCode());
+		result = prime * result + ((powerModeStatus == null) ? 0 : powerModeStatus.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ClusterModeStatus other = (ClusterModeStatus) obj;
+		if (carModeStatus == null) {
+			if (other.carModeStatus != null) { 
+				return false;
+			}
+		}
+		else if (!carModeStatus.equals(other.carModeStatus)) { 
+			return false;
+		}
+		if (powerModeActive == null) {
+			if (other.powerModeActive != null) { 
+				return false;
+			}
+		} 
+		else if (!powerModeActive.equals(other.powerModeActive)){ 
+			return false;
+		}
+		if (powerModeQualificationStatus == null) {
+			if (other.powerModeQualificationStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!powerModeQualificationStatus.equals(other.powerModeQualificationStatus)) { 
+			return false;
+		}
+		if (powerModeStatus == null) {
+			if (other.powerModeStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!powerModeStatus.equals(other.powerModeStatus)) { 
+			return false;
+		}
+		return true;
+	}
 }

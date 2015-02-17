@@ -133,4 +133,98 @@ public class AirbagStatus extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((driverAirbagDeployed == null) ? 0 : driverAirbagDeployed.hashCode());
+		result = prime * result + ((driverCurtainAirbagDeployed == null) ? 0 : driverCurtainAirbagDeployed.hashCode());
+		result = prime * result + ((driverKneeAirbagDeployed == null) ? 0 : driverKneeAirbagDeployed.hashCode());
+		result = prime * result + ((driverSideAirbagDeployed == null) ? 0 : driverSideAirbagDeployed.hashCode());
+		result = prime * result + ((passengerAirbagDeployed == null) ? 0 : passengerAirbagDeployed.hashCode());
+		result = prime * result + ((passengerCurtainAirbagDeployed == null) ? 0 : passengerCurtainAirbagDeployed.hashCode());
+		result = prime * result + ((passengerKneeAirbagDeployed == null) ? 0 : passengerKneeAirbagDeployed.hashCode());
+		result = prime * result + ((passengerSideAirbagDeployed == null) ? 0 : passengerSideAirbagDeployed.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		AirbagStatus other = (AirbagStatus) obj;
+		if (driverAirbagDeployed == null) {
+			if (other.driverAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!driverAirbagDeployed.equals(other.driverAirbagDeployed)) { 
+			return false;
+		}
+		if (driverCurtainAirbagDeployed == null) {
+			if (other.driverCurtainAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!driverCurtainAirbagDeployed.equals(other.driverCurtainAirbagDeployed)) { 
+			return false;
+		}
+		if (driverKneeAirbagDeployed == null) {
+			if (other.driverKneeAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!driverKneeAirbagDeployed.equals(other.driverKneeAirbagDeployed)) { 
+			return false;
+		}
+		if (driverSideAirbagDeployed == null) {
+			if (other.driverSideAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!driverSideAirbagDeployed.equals(other.driverSideAirbagDeployed)) { 
+			return false;
+		}
+		if (passengerAirbagDeployed == null) {
+			if (other.passengerAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!passengerAirbagDeployed.equals(other.passengerAirbagDeployed)) { 
+			return false;
+		}
+		if (passengerCurtainAirbagDeployed == null) {
+			if (other.passengerCurtainAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!passengerCurtainAirbagDeployed.equals(other.passengerCurtainAirbagDeployed)) { 
+			return false;
+		}
+		if (passengerKneeAirbagDeployed == null) {
+			if (other.passengerKneeAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!passengerKneeAirbagDeployed.equals(other.passengerKneeAirbagDeployed)) { 
+			return false;
+		}
+		if (passengerSideAirbagDeployed == null) {
+			if (other.passengerSideAirbagDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!passengerSideAirbagDeployed.equals(other.passengerSideAirbagDeployed)) { 
+			return false;
+		}
+		return true;
+	}
 }

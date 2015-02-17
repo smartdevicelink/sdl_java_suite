@@ -139,4 +139,89 @@ public class TireStatus extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((innerLeftRear == null) ? 0 : innerLeftRear.hashCode());
+		result = prime * result + ((innerRightRear == null) ? 0 : innerRightRear.hashCode());
+		result = prime * result + ((leftFront == null) ? 0 : leftFront.hashCode());
+		result = prime * result + ((leftRear == null) ? 0 : leftRear.hashCode());
+		result = prime * result + ((pressureTellTale == null) ? 0 : pressureTellTale.hashCode());
+		result = prime * result + ((rightFront == null) ? 0 : rightFront.hashCode());
+		result = prime * result + ((rightRear == null) ? 0 : rightRear.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		TireStatus other = (TireStatus) obj;
+		if (innerLeftRear == null) {
+			if (other.innerLeftRear != null) { 
+				return false;
+			}
+		} 
+		else if (!innerLeftRear.equals(other.innerLeftRear)) { 
+			return false;
+		}
+		if (innerRightRear == null) {
+			if (other.innerRightRear != null) { 
+				return false;
+			}
+		} 
+		else if (!innerRightRear.equals(other.innerRightRear)) { 
+			return false;
+		}
+		if (leftFront == null) {
+			if (other.leftFront != null) { 
+				return false;
+			}
+		} 
+		else if (!leftFront.equals(other.leftFront)) { 
+			return false;
+		}
+		if (leftRear == null) {
+			if (other.leftRear != null) { 
+				return false;
+			}
+		} 
+		else if (!leftRear.equals(other.leftRear)) { 
+			return false;
+		}
+		if (pressureTellTale == null) {
+			if (other.pressureTellTale != null) { 
+				return false;
+			}
+		} 
+		else if (!pressureTellTale.equals(other.pressureTellTale)) { 
+			return false;
+		}
+		if (rightFront == null) {
+			if (other.rightFront != null) { 
+				return false;
+			}
+		} 
+		else if (!rightFront.equals(other.rightFront)) { 
+			return false;
+		}
+		if (rightRear == null) {
+			if (other.rightRear != null) { 
+				return false;
+			}
+		} 
+		else if (!rightRear.equals(other.rightRear)) { 
+			return false;
+		}
+		return true;
+	}
 }

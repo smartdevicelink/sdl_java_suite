@@ -45,6 +45,63 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		public String toString() {
 			return _menuName;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((_menuID == null) ? 0 : _menuID.hashCode());
+			result = prime * result + ((_menuName == null) ? 0 : _menuName.hashCode());
+			result = prime * result + ((_position == null) ? 0 : _position.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) { 
+				return true;
+			}
+			if (obj == null) { 
+				return false;
+			}
+			if (getClass() != obj.getClass()) { 
+				return false;
+			}
+			SdlSubMenu other = (SdlSubMenu) obj;
+			if (!getOuterType().equals(other.getOuterType())) { 
+				return false;
+			}
+			if (_menuID == null) {
+				if (other._menuID != null) { 
+					return false;
+				}
+			}
+			else if (!_menuID.equals(other._menuID)) { 
+				return false;
+			}
+			if (_menuName == null) {
+				if (other._menuName != null) { 
+					return false;
+				}
+			}
+			else if (!_menuName.equals(other._menuName)) { 
+				return false;
+			}
+			if (_position == null) {
+				if (other._position != null) { 
+					return false;
+				}
+			} 
+			else if (!_position.equals(other._position)) { 
+				return false;
+			}
+			return true;
+		}
+
+		private OnSdlChoiceChosen getOuterType() {
+			return OnSdlChoiceChosen.this;
+		}
 	}
 	
 	public class SdlCommand {
@@ -88,6 +145,81 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		public String toString() {
 			return _menuName;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((_commandID == null) ? 0 : _commandID.hashCode());
+			result = prime * result + ((_menuName == null) ? 0 : _menuName.hashCode());
+			result = prime * result + ((_parentSubMenu == null) ? 0 : _parentSubMenu.hashCode());
+			result = prime * result + ((_position == null) ? 0 : _position.hashCode());
+			result = prime * result + ((_vrCommands == null) ? 0 : _vrCommands.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) { 
+				return true;
+			}
+			if (obj == null) { 
+				return false;
+			}
+			if (getClass() != obj.getClass()) { 
+				return false;
+			}
+			SdlCommand other = (SdlCommand) obj;
+			if (!getOuterType().equals(other.getOuterType())) { 
+				return false;
+			}
+			if (_commandID == null) {
+				if (other._commandID != null) { 
+					return false;
+				}
+			}
+			else if (!_commandID.equals(other._commandID)) { 
+				return false;
+			}
+			if (_menuName == null) {
+				if (other._menuName != null) { 
+					return false;
+				}
+			} 
+			else if (!_menuName.equals(other._menuName)) { 
+				return false;
+			}
+			if (_parentSubMenu == null) {
+				if (other._parentSubMenu != null) { 
+					return false;
+				}
+			} 
+			else if (!_parentSubMenu.equals(other._parentSubMenu)) { 
+				return false;
+			}
+			if (_position == null) {
+				if (other._position != null) { 
+					return false;
+				}
+			} 
+			else if (!_position.equals(other._position)) { 
+				return false;
+			}
+			if (_vrCommands == null) {
+				if (other._vrCommands != null) { 
+					return false;
+				}
+			} 
+			else if (!_vrCommands.equals(other._vrCommands)) { 
+				return false;
+			}
+			return true;
+		}
+
+		private OnSdlChoiceChosen getOuterType() {
+			return OnSdlChoiceChosen.this;
+		}
 	}
 	
 	public class SdlChoice {
@@ -118,6 +250,45 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		public String toString() {
 			return _choice.getMenuName();
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((_choice == null) ? 0 : _choice.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) { 
+				return true;
+			}
+			if (obj == null) { 
+				return false;
+			}
+			if (getClass() != obj.getClass()) { 
+				return false;
+			}
+			SdlChoice other = (SdlChoice) obj;
+			if (!getOuterType().equals(other.getOuterType())) { 
+				return false;
+			}
+			if (_choice == null) {
+				if (other._choice != null) { 
+					return false;
+				}
+			} 
+			else if (!_choice.equals(other._choice)) { 
+				return false;
+			}
+			return true;
+		}
+
+		private OnSdlChoiceChosen getOuterType() {
+			return OnSdlChoiceChosen.this;
+		}
 	}
 	
 	public class SdlChoiceSet {
@@ -136,6 +307,54 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		
 		public List<SdlChoice> getChoiceSet() {
 			return _choiceSet;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((_choiceSet == null) ? 0 : _choiceSet.hashCode());
+			result = prime * result + ((_choiceSetID == null) ? 0 : _choiceSetID.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) { 
+				return true;
+			}
+			if (obj == null) { 
+				return false;
+			}
+			if (getClass() != obj.getClass()) { 
+				return false;
+			}
+			SdlChoiceSet other = (SdlChoiceSet) obj;
+			if (!getOuterType().equals(other.getOuterType())) { 
+				return false;
+			}
+			if (_choiceSet == null) {
+				if (other._choiceSet != null) { 
+					return false;
+				}
+			}
+			else if (!_choiceSet.equals(other._choiceSet)) { 
+				return false;
+			}
+			if (_choiceSetID == null) {
+				if (other._choiceSetID != null) { 
+					return false;
+				}
+			} 
+			else if (!_choiceSetID.equals(other._choiceSetID)) { 
+				return false;
+			}
+			return true;
+		}
+
+		private OnSdlChoiceChosen getOuterType() {
+			return OnSdlChoiceChosen.this;
 		}
 	}
 	
@@ -195,4 +414,44 @@ public class OnSdlChoiceChosen extends RPCNotification {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((choice == null) ? 0 : choice.hashCode());
+		result = prime * result + ((triggerSource == null) ? 0 : triggerSource.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnSdlChoiceChosen other = (OnSdlChoiceChosen) obj;
+		if (choice == null) {
+			if (other.choice != null) { 
+				return false;
+			}
+		} 
+		else if (!choice.equals(other.choice)) { 
+			return false;
+		}
+		if (triggerSource == null) {
+			if (other.triggerSource != null) { 
+				return false;
+			}
+		} 
+		else if (!triggerSource.equals(other.triggerSource)) { 
+			return false;
+		}
+		return true;
+	}
 }

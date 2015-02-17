@@ -74,4 +74,44 @@ public class ListFilesResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((filenames == null) ? 0 : filenames.hashCode());
+		result = prime * result + ((spaceAvailable == null) ? 0 : spaceAvailable.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ListFilesResponse other = (ListFilesResponse) obj;
+		if (filenames == null) {
+			if (other.filenames != null) { 
+				return false;
+			}
+		} 
+		else if (!filenames.equals(other.filenames)) { 
+			return false;
+		}
+		if (spaceAvailable == null) {
+			if (other.spaceAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!spaceAvailable.equals(other.spaceAvailable)) { 
+			return false;
+		}
+		return true;
+	}
 }

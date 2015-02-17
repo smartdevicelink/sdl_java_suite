@@ -67,4 +67,35 @@ public class SliderResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sliderPosition == null) ? 0 : sliderPosition.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SliderResponse other = (SliderResponse) obj;
+		if (sliderPosition == null) {
+			if (other.sliderPosition != null) { 
+				return false;
+			}
+		} 
+		else if (!sliderPosition.equals(other.sliderPosition)) { 
+			return false;
+		}
+		return true;
+	}
 }

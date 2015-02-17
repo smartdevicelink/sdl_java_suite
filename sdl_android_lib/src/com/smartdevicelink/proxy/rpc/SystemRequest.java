@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -109,4 +110,57 @@ public class SystemRequest extends RPCRequest implements BulkData{
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(bulkData);
+		result = prime * result + ((filename == null) ? 0 : filename.hashCode());
+		result = prime * result + ((legacyData == null) ? 0 : legacyData.hashCode());
+		result = prime * result + ((requestType == null) ? 0 : requestType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SystemRequest other = (SystemRequest) obj;
+		if (!Arrays.equals(bulkData, other.bulkData)) { 
+			return false;
+		}
+		if (filename == null) {
+			if (other.filename != null) { 
+				return false;
+			}
+		} 
+		else if (!filename.equals(other.filename)) { 
+			return false;
+		}
+		if (legacyData == null) {
+			if (other.legacyData != null) { 
+				return false;
+			}
+		} 
+		else if (!legacyData.equals(other.legacyData)) { 
+			return false;
+		}
+		if (requestType == null) {
+			if (other.requestType != null) { 
+				return false;
+			}
+		} 
+		else if (!requestType.equals(other.requestType)) { 
+			return false;
+		}
+		return true;
+	}
 }

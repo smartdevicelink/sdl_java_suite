@@ -69,4 +69,53 @@ public class HeadLampStatus extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ambientLightStatus == null) ? 0 : ambientLightStatus.hashCode());
+		result = prime * result + ((highBeamsOn == null) ? 0 : highBeamsOn.hashCode());
+		result = prime * result + ((lowBeamsOn == null) ? 0 : lowBeamsOn.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		HeadLampStatus other = (HeadLampStatus) obj;
+		if (ambientLightStatus == null) {
+			if (other.ambientLightStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!ambientLightStatus.equals(other.ambientLightStatus)) { 
+			return false;
+		}
+		if (highBeamsOn == null) {
+			if (other.highBeamsOn != null) { 
+				return false;
+			}
+		} 
+		else if (!highBeamsOn.equals(other.highBeamsOn)) { 
+			return false;
+		}
+		if (lowBeamsOn == null) {
+			if (other.lowBeamsOn != null) { 
+				return false;
+			}
+		} 
+		else if (!lowBeamsOn.equals(other.lowBeamsOn)) { 
+			return false;
+		}
+		return true;
+	}
 }

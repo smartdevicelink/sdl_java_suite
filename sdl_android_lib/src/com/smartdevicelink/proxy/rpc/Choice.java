@@ -218,4 +218,89 @@ public class Choice extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((choiceId == null) ? 0 : choiceId.hashCode());
+		result = prime * result + ((image == null) ? 0 : image.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((secondaryImage == null) ? 0 : secondaryImage.hashCode());
+		result = prime * result + ((secondaryText == null) ? 0 : secondaryText.hashCode());
+		result = prime * result + ((tertiaryText == null) ? 0 : tertiaryText.hashCode());
+		result = prime * result + ((vrCommands == null) ? 0 : vrCommands.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Choice other = (Choice) obj;
+		if (choiceId == null) {
+			if (other.choiceId != null) { 
+				return false;
+			}
+		} 
+		else if (!choiceId.equals(other.choiceId)) { 
+			return false;
+		}
+		if (image == null) {
+			if (other.image != null) { 
+				return false;
+			}
+		} 
+		else if (!image.equals(other.image)) { 
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) { 
+				return false;
+			}
+		} 
+		else if (!name.equals(other.name)) { 
+			return false;
+		}
+		if (secondaryImage == null) {
+			if (other.secondaryImage != null) { 
+				return false;
+			}
+		} 
+		else if (!secondaryImage.equals(other.secondaryImage)) { 
+			return false;
+		}
+		if (secondaryText == null) {
+			if (other.secondaryText != null) { 
+				return false;
+			}
+		} 
+		else if (!secondaryText.equals(other.secondaryText)) { 
+			return false;
+		}
+		if (tertiaryText == null) {
+			if (other.tertiaryText != null) { 
+				return false;
+			}
+		} 
+		else if (!tertiaryText.equals(other.tertiaryText)) { 
+			return false;
+		}
+		if (vrCommands == null) {
+			if (other.vrCommands != null) { 
+				return false;
+			}
+		}
+		else if (!vrCommands.equals(other.vrCommands)) { 
+			return false;
+		}
+		return true;
+	}
 }

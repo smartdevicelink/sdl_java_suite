@@ -54,4 +54,35 @@ public class GetDTCsResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dtc == null) ? 0 : dtc.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		GetDTCsResponse other = (GetDTCsResponse) obj;
+		if (dtc == null) {
+			if (other.dtc != null) { 
+				return false;
+			}
+		} 
+		else if (!dtc.equals(other.dtc)) { 
+			return false;
+		}
+		return true;
+	}
 }

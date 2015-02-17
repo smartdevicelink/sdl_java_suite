@@ -355,4 +355,107 @@ public class PerformInteraction extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((choiceSetIds == null) ? 0 : choiceSetIds.hashCode());
+		result = prime * result + ((helpPrompt == null) ? 0 : helpPrompt.hashCode());
+		result = prime * result + ((initialPrompt == null) ? 0 : initialPrompt.hashCode());
+		result = prime * result + ((initialText == null) ? 0 : initialText.hashCode());
+		result = prime * result + ((interactionLayout == null) ? 0 : interactionLayout.hashCode());
+		result = prime * result + ((interactionMode == null) ? 0 : interactionMode.hashCode());
+		result = prime * result + ((timeout == null) ? 0 : timeout.hashCode());
+		result = prime * result + ((timeoutPrompt == null) ? 0 : timeoutPrompt.hashCode());
+		result = prime * result + ((vrHelp == null) ? 0 : vrHelp.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PerformInteraction other = (PerformInteraction) obj;
+		if (choiceSetIds == null) {
+			if (other.choiceSetIds != null) { 
+				return false;
+			}
+		}
+		else if (!choiceSetIds.equals(other.choiceSetIds)) { 
+			return false;
+		}
+		if (helpPrompt == null) {
+			if (other.helpPrompt != null){ 
+				return false;
+			}
+		} 
+		else if (!helpPrompt.equals(other.helpPrompt)) { 
+			return false;
+		}
+		if (initialPrompt == null) {
+			if (other.initialPrompt != null) { 
+				return false;
+			}
+		} 
+		else if (!initialPrompt.equals(other.initialPrompt)) { 
+			return false;
+		}
+		if (initialText == null) {
+			if (other.initialText != null) { 
+				return false;
+			}
+		} 
+		else if (!initialText.equals(other.initialText)) { 
+			return false;
+		}
+		if (interactionLayout == null) {
+			if (other.interactionLayout != null) { 
+				return false;
+			}
+		} 
+		else if (!interactionLayout.equals(other.interactionLayout)) { 
+			return false;
+		}
+		if (interactionMode == null) {
+			if (other.interactionMode != null) { 
+				return false;
+			}
+		} 
+		else if (!interactionMode.equals(other.interactionMode)) { 
+			return false;
+		}
+		if (timeout == null) {
+			if (other.timeout != null) { 
+				return false;
+			}
+		} 
+		else if (!timeout.equals(other.timeout)) { 
+			return false;
+		}
+		if (timeoutPrompt == null) {
+			if (other.timeoutPrompt != null) { 
+				return false;
+			}
+		} 
+		else if (!timeoutPrompt.equals(other.timeoutPrompt)) { 
+			return false;
+		}
+		if (vrHelp == null) {
+			if (other.vrHelp != null) { 
+				return false;
+			}
+		} 
+		else if (!vrHelp.equals(other.vrHelp)) { 
+			return false;
+		}
+		return true;
+	}
 }

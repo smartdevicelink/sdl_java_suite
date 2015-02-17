@@ -558,5 +558,241 @@ public class SubscribeVehicleData extends RPCRequest {
         }
         
         return result;
-    }  
+    }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((accPedalPosition == null) ? 0 : accPedalPosition.hashCode());
+		result = prime * result + ((airbagStatus == null) ? 0 : airbagStatus.hashCode());
+		result = prime * result + ((beltStatus == null) ? 0 : beltStatus.hashCode());
+		result = prime * result + ((bodyInformation == null) ? 0 : bodyInformation.hashCode());
+		result = prime * result + ((clusterModeStatus == null) ? 0 : clusterModeStatus.hashCode());
+		result = prime * result + ((deviceStatus == null) ? 0 : deviceStatus.hashCode());
+		result = prime * result + ((driverBraking == null) ? 0 : driverBraking.hashCode());
+		result = prime * result + ((eCallInfo == null) ? 0 : eCallInfo.hashCode());
+		result = prime * result + ((emergencyEvent == null) ? 0 : emergencyEvent.hashCode());
+		result = prime * result + ((engineTorque == null) ? 0 : engineTorque.hashCode());
+		result = prime * result + ((externalTemperature == null) ? 0 : externalTemperature.hashCode());
+		result = prime * result + ((fuelLevel == null) ? 0 : fuelLevel.hashCode());
+		result = prime * result + ((fuelLevelState == null) ? 0 : fuelLevelState.hashCode());
+		result = prime * result + ((gps == null) ? 0 : gps.hashCode());
+		result = prime * result + ((headLampStatus == null) ? 0 : headLampStatus.hashCode());
+		result = prime * result + ((instantFuelConsumption == null) ? 0 : instantFuelConsumption.hashCode());
+		result = prime * result + ((myKey == null) ? 0 : myKey.hashCode());
+		result = prime * result + ((odometer == null) ? 0 : odometer.hashCode());
+		result = prime * result + ((prndl == null) ? 0 : prndl.hashCode());
+		result = prime * result + ((rpm == null) ? 0 : rpm.hashCode());
+		result = prime * result + ((speed == null) ? 0 : speed.hashCode());
+		result = prime * result + ((steeringWheelAngle == null) ? 0 : steeringWheelAngle.hashCode());
+		result = prime * result + ((tirePressure == null) ? 0 : tirePressure.hashCode());
+		result = prime * result + ((wiperStatus == null) ? 0 : wiperStatus.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SubscribeVehicleData other = (SubscribeVehicleData) obj;
+		if (accPedalPosition == null) {
+			if (other.accPedalPosition != null) { 
+				return false;
+			}
+		} 
+		else if (!accPedalPosition.equals(other.accPedalPosition)) { 
+			return false;
+		}
+		if (airbagStatus == null) {
+			if (other.airbagStatus != null) { 
+				return false;
+			}
+		}
+		else if (!airbagStatus.equals(other.airbagStatus)) { 
+			return false;
+		}
+		if (beltStatus == null) {
+			if (other.beltStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!beltStatus.equals(other.beltStatus)) { 
+			return false;
+		}
+		if (bodyInformation == null) {
+			if (other.bodyInformation != null) { 
+				return false;
+			}
+		}
+		else if (!bodyInformation.equals(other.bodyInformation)) { 
+			return false;
+		}
+		if (clusterModeStatus == null) {
+			if (other.clusterModeStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!clusterModeStatus.equals(other.clusterModeStatus)) { 
+			return false;
+		}
+		if (deviceStatus == null) {
+			if (other.deviceStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!deviceStatus.equals(other.deviceStatus)) { 
+			return false;
+		}
+		if (driverBraking == null) {
+			if (other.driverBraking != null) { 
+				return false;
+			}
+		} 
+		else if (!driverBraking.equals(other.driverBraking)) { 
+			return false;
+		}
+		if (eCallInfo == null) {
+			if (other.eCallInfo != null) { 
+				return false;
+			}
+		}
+		else if (!eCallInfo.equals(other.eCallInfo)) { 
+			return false;
+		}
+		if (emergencyEvent == null) {
+			if (other.emergencyEvent != null) { 
+				return false;
+			}
+		} else if (!emergencyEvent.equals(other.emergencyEvent)) { 
+			return false;
+		}
+		if (engineTorque == null) {
+			if (other.engineTorque != null) { 
+				return false;
+			}
+		} else if (!engineTorque.equals(other.engineTorque)) { 
+			return false;
+		}
+		if (externalTemperature == null) {
+			if (other.externalTemperature != null) { 
+				return false;
+			}
+		} 
+		else if (!externalTemperature.equals(other.externalTemperature)) { 
+			return false;
+		}
+		if (fuelLevel == null) {
+			if (other.fuelLevel != null) { 
+				return false;
+			}
+		} 
+		else if (!fuelLevel.equals(other.fuelLevel)) { 
+			return false;
+		}
+		if (fuelLevelState == null) {
+			if (other.fuelLevelState != null) { 
+				return false;
+			}
+		} 
+		else if (!fuelLevelState.equals(other.fuelLevelState)) { 
+			return false;
+		}
+		if (gps == null) {
+			if (other.gps != null) { 
+				return false;
+			}
+		}
+		else if (!gps.equals(other.gps)) { 
+			return false;
+		}
+		if (headLampStatus == null) {
+			if (other.headLampStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!headLampStatus.equals(other.headLampStatus)) { 
+			return false;
+		}
+		if (instantFuelConsumption == null) {
+			if (other.instantFuelConsumption != null) { 
+				return false;
+			}
+		}
+		else if (!instantFuelConsumption.equals(other.instantFuelConsumption)) { 
+			return false;
+		}
+		if (myKey == null) {
+			if (other.myKey != null) { 
+				return false;
+			}
+		} 
+		else if (!myKey.equals(other.myKey)) { 
+			return false;
+		}
+		if (odometer == null) {
+			if (other.odometer != null) { 
+				return false;
+			}
+		} 
+		else if (!odometer.equals(other.odometer)) { 
+			return false;
+		}
+		if (prndl == null) {
+			if (other.prndl != null) { 
+				return false;
+			}
+		} 
+		else if (!prndl.equals(other.prndl)) { 
+			return false;
+		}
+		if (rpm == null) {
+			if (other.rpm != null) { 
+				return false;
+			}
+		}
+		else if (!rpm.equals(other.rpm)) { 
+			return false;
+		}
+		if (speed == null) {
+			if (other.speed != null) { 
+				return false;
+			}
+		} 
+		else if (!speed.equals(other.speed)) { 
+			return false;
+		}
+		if (steeringWheelAngle == null) {
+			if (other.steeringWheelAngle != null) { 
+				return false;
+			}
+		} 
+		else if (!steeringWheelAngle.equals(other.steeringWheelAngle)) { 
+			return false;
+		}
+		if (tirePressure == null) {
+			if (other.tirePressure != null) { 
+				return false;
+			}
+		} 
+		else if (!tirePressure.equals(other.tirePressure)) { 
+			return false;
+		}
+		if (wiperStatus == null) {
+			if (other.wiperStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!wiperStatus.equals(other.wiperStatus)) { 
+			return false;
+		}
+		return true;
+	}  
 }

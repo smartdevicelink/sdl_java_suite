@@ -172,4 +172,62 @@ public class TextField extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((charSet == null) ? 0 : charSet.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((rows == null) ? 0 : rows.hashCode());
+		result = prime * result + ((width == null) ? 0 : width.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		TextField other = (TextField) obj;
+		if (charSet == null) {
+			if (other.charSet != null) { 
+				return false;
+			}
+		}
+		else if (!charSet.equals(other.charSet)) { 
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) { 
+				return false;
+			}
+		} 
+		else if (!name.equals(other.name)) { 
+			return false;
+		}
+		if (rows == null) {
+			if (other.rows != null) { 
+				return false;
+			}
+		}
+		else if (!rows.equals(other.rows)) { 
+			return false;
+		}
+		if (width == null) {
+			if (other.width != null) { 
+				return false;
+			}
+		}
+		else if (!width.equals(other.width)) { 
+			return false;
+		}
+		return true;
+	}
 }

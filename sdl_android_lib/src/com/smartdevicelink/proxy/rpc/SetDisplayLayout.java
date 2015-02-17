@@ -73,4 +73,35 @@ public class SetDisplayLayout extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((displayLayout == null) ? 0 : displayLayout.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SetDisplayLayout other = (SetDisplayLayout) obj;
+		if (displayLayout == null) {
+			if (other.displayLayout != null) { 
+				return false;
+			}
+		}
+		else if (!displayLayout.equals(other.displayLayout)) { 
+			return false;
+		}
+		return true;
+	}
 }

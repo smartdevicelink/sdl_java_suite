@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Arrays;
+
 import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -202,4 +204,84 @@ public JSONObject getJsonParameters(int sdlVersion){
     
     return result;
 }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(bulkData);
+		result = prime * result + ((fileType == null) ? 0 : fileType.hashCode());
+		result = prime * result + ((filename == null) ? 0 : filename.hashCode());
+		result = prime * result + ((length == null) ? 0 : length.hashCode());
+		result = prime * result + ((offset == null) ? 0 : offset.hashCode());
+		result = prime * result + ((persistentFile == null) ? 0 : persistentFile.hashCode());
+		result = prime * result + ((systemFile == null) ? 0 : systemFile.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PutFile other = (PutFile) obj;
+		if (!Arrays.equals(bulkData, other.bulkData)) { 
+			return false;
+		}
+		if (fileType == null) {
+			if (other.fileType != null) { 
+				return false;
+			}
+		} 
+		else if (!fileType.equals(other.fileType)) { 
+			return false;
+		}
+		if (filename == null) {
+			if (other.filename != null) { 
+				return false;
+			}
+		} 
+		else if (!filename.equals(other.filename)) { 
+			return false;
+		}
+		if (length == null) {
+			if (other.length != null) { 
+				return false;
+			}
+		} 
+		else if (!length.equals(other.length)) { 
+			return false;
+		}
+		if (offset == null) {
+			if (other.offset != null) { 
+				return false;
+			}
+		} 
+		else if (!offset.equals(other.offset)) { 
+			return false;
+		}
+		if (persistentFile == null) {
+			if (other.persistentFile != null) { 
+				return false;
+			}
+		} 
+		else if (!persistentFile.equals(other.persistentFile)) { 
+			return false;
+		}
+		if (systemFile == null) {
+			if (other.systemFile != null) { 
+				return false;
+			}
+		} 
+		else if (!systemFile.equals(other.systemFile)) { 
+			return false;
+		}
+		return true;
+	}
 }

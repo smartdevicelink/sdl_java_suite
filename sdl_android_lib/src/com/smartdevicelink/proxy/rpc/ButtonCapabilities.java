@@ -153,4 +153,62 @@ public class ButtonCapabilities extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((longPressAvailable == null) ? 0 : longPressAvailable.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((shortPressAvailable == null) ? 0 : shortPressAvailable.hashCode());
+		result = prime * result + ((upDownAvailable == null) ? 0 : upDownAvailable.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ButtonCapabilities other = (ButtonCapabilities) obj;
+		if (longPressAvailable == null) {
+			if (other.longPressAvailable != null) { 
+				return false;
+			}
+		}
+		else if (!longPressAvailable.equals(other.longPressAvailable)) { 
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) { 
+				return false;
+			}
+		} 
+		else if (!name.equals(other.name)) { 
+			return false;
+		}
+		if (shortPressAvailable == null) {
+			if (other.shortPressAvailable != null) { 
+				return false;
+			}
+		}
+		else if (!shortPressAvailable.equals(other.shortPressAvailable)) { 
+			return false;
+		}
+		if (upDownAvailable == null) {
+			if (other.upDownAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!upDownAvailable.equals(other.upDownAvailable)) { 
+			return false;
+		}
+		return true;
+	}
 }

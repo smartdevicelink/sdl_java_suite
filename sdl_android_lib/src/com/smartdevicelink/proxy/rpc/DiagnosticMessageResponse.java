@@ -54,4 +54,35 @@ public class DiagnosticMessageResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((messageDataResult == null) ? 0 : messageDataResult.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DiagnosticMessageResponse other = (DiagnosticMessageResponse) obj;
+		if (messageDataResult == null) {
+			if (other.messageDataResult != null) { 
+				return false;
+			}
+		}
+		else if (!messageDataResult.equals(other.messageDataResult)) { 
+			return false;
+		}
+		return true;
+	}
 }

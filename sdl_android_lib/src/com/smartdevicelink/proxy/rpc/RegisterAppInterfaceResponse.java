@@ -497,4 +497,151 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((audioPassThruCapabilities == null) ? 0 : audioPassThruCapabilities.hashCode());
+		result = prime * result + ((buttonCapabilities == null) ? 0 : buttonCapabilities.hashCode());
+		result = prime * result + ((displayCapabilities == null) ? 0 : displayCapabilities.hashCode());
+		result = prime * result + ((hmiLanguage == null) ? 0 : hmiLanguage.hashCode());
+		result = prime * result + ((hmiZoneCapabilities == null) ? 0 : hmiZoneCapabilities.hashCode());
+		result = prime * result + ((language == null) ? 0 : language.hashCode());
+		result = prime * result + ((prerecordedSpeech == null) ? 0 : prerecordedSpeech.hashCode());
+		result = prime * result + ((presetBankCapabilities == null) ? 0 : presetBankCapabilities.hashCode());
+		result = prime * result + ((sdlMsgVersion == null) ? 0 : sdlMsgVersion.hashCode());
+		result = prime * result + ((softButtonCapabilities == null) ? 0: softButtonCapabilities.hashCode());
+		result = prime * result + ((speechCapabilities == null) ? 0 : speechCapabilities.hashCode());
+		result = prime * result + ((supportedDiagModes == null) ? 0 : supportedDiagModes.hashCode());
+		result = prime * result + ((vehicleType == null) ? 0 : vehicleType.hashCode());
+		result = prime * result + ((vrCapabilities == null) ? 0 : vrCapabilities.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		RegisterAppInterfaceResponse other = (RegisterAppInterfaceResponse) obj;
+		if (audioPassThruCapabilities == null) {
+			if (other.audioPassThruCapabilities != null) { 
+				return false;
+			}
+		}
+		else if (!audioPassThruCapabilities.equals(other.audioPassThruCapabilities))
+			return false;
+		if (buttonCapabilities == null) {
+			if (other.buttonCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!buttonCapabilities.equals(other.buttonCapabilities)) { 
+			return false;
+		}
+		if (displayCapabilities == null) {
+			if (other.displayCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!displayCapabilities.equals(other.displayCapabilities)) { 
+			return false;
+		}
+		if (hmiLanguage == null) {
+			if (other.hmiLanguage != null) { 
+				return false;
+			}
+		}
+		else if (!hmiLanguage.equals(other.hmiLanguage)) { 
+			return false;
+		}
+		if (hmiZoneCapabilities == null) {
+			if (other.hmiZoneCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!hmiZoneCapabilities.equals(other.hmiZoneCapabilities)) { 
+			return false;
+		}
+		if (language == null) {
+			if (other.language != null) { 
+				return false;
+			}
+		} 
+		else if (!language.equals(other.language)) { 
+			return false; 
+		}
+		if (prerecordedSpeech == null) {
+			if (other.prerecordedSpeech != null) { 
+				return false;
+			}
+		} 
+		else if (!prerecordedSpeech.equals(other.prerecordedSpeech)) { 
+			return false;
+		}
+		if (presetBankCapabilities == null) {
+			if (other.presetBankCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!presetBankCapabilities.equals(other.presetBankCapabilities)) { 
+			return false;
+		}
+		if (sdlMsgVersion == null) {
+			if (other.sdlMsgVersion != null) { 
+				return false;
+			}
+		} 
+		else if (!sdlMsgVersion.equals(other.sdlMsgVersion)) { 
+			return false;
+		}
+		if (softButtonCapabilities == null) {
+			if (other.softButtonCapabilities != null) { 
+				return false;
+			}
+		}
+		else if (!softButtonCapabilities.equals(other.softButtonCapabilities)) { 
+			return false;
+		}
+		if (speechCapabilities == null) {
+			if (other.speechCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!speechCapabilities.equals(other.speechCapabilities)) { 
+			return false;
+		}
+		if (supportedDiagModes == null) {
+			if (other.supportedDiagModes != null) { 
+				return false;
+			}
+		} 
+		else if (!supportedDiagModes.equals(other.supportedDiagModes)) { 
+			return false;
+		}
+		if (vehicleType == null) {
+			if (other.vehicleType != null) { 
+				return false;
+			}
+		} 
+		else if (!vehicleType.equals(other.vehicleType)) { 
+			return false;
+		}
+		if (vrCapabilities == null) {
+			if (other.vrCapabilities != null) { 
+				return false;
+			}
+		} 
+		else if (!vrCapabilities.equals(other.vrCapabilities)) { 
+			return false;
+		}
+		return true;
+	}
 }

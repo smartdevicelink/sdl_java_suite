@@ -129,4 +129,53 @@ public class StartTime extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((hours == null) ? 0 : hours.hashCode());
+		result = prime * result + ((minutes == null) ? 0 : minutes.hashCode());
+		result = prime * result + ((seconds == null) ? 0 : seconds.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		StartTime other = (StartTime) obj;
+		if (hours == null) {
+			if (other.hours != null) { 
+				return false;
+			}
+		} 
+		else if (!hours.equals(other.hours)) { 
+			return false;
+		}
+		if (minutes == null) {
+			if (other.minutes != null) { 
+				return false;
+			}
+		} 
+		else if (!minutes.equals(other.minutes)) { 
+			return false;
+		}
+		if (seconds == null) {
+			if (other.seconds != null) { 
+				return false;
+			}
+		} 
+		else if (!seconds.equals(other.seconds)) { 
+			return false;
+		}
+		return true;
+	}
 }

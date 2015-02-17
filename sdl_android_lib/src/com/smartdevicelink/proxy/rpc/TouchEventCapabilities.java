@@ -67,4 +67,53 @@ public class TouchEventCapabilities extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((doublePressAvailable == null) ? 0 : doublePressAvailable.hashCode());
+		result = prime * result + ((multiTouchAvailable == null) ? 0 : multiTouchAvailable.hashCode());
+		result = prime * result + ((pressAvailable == null) ? 0 : pressAvailable.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		TouchEventCapabilities other = (TouchEventCapabilities) obj;
+		if (doublePressAvailable == null) {
+			if (other.doublePressAvailable != null) { 
+				return false;
+			}
+		}
+		else if (!doublePressAvailable.equals(other.doublePressAvailable)) { 
+			return false;
+		}
+		if (multiTouchAvailable == null) {
+			if (other.multiTouchAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!multiTouchAvailable.equals(other.multiTouchAvailable)) { 
+			return false;
+		}
+		if (pressAvailable == null) {
+			if (other.pressAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!pressAvailable.equals(other.pressAvailable)) { 
+			return false;
+		}
+		return true;
+	}
 }

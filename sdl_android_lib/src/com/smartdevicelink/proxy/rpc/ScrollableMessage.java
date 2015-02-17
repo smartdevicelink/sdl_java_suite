@@ -140,4 +140,53 @@ public class ScrollableMessage extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((body == null) ? 0 : body.hashCode());
+		result = prime * result + ((softButtons == null) ? 0 : softButtons.hashCode());
+		result = prime * result + ((timeout == null) ? 0 : timeout.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ScrollableMessage other = (ScrollableMessage) obj;
+		if (body == null) {
+			if (other.body != null) { 
+				return false;
+			}
+		} 
+		else if (!body.equals(other.body)) { 
+			return false;
+		}
+		if (softButtons == null) {
+			if (other.softButtons != null) { 
+				return false;
+			}
+		}
+		else if (!softButtons.equals(other.softButtons)) { 
+			return false;
+		}
+		if (timeout == null) {
+			if (other.timeout != null) { 
+				return false;
+			}
+		} 
+		else if (!timeout.equals(other.timeout)) { 
+			return false;
+		}
+		return true;
+	}
 }

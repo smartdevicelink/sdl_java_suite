@@ -74,4 +74,35 @@ public class DeleteFile extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sdlFileName == null) ? 0 : sdlFileName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DeleteFile other = (DeleteFile) obj;
+		if (sdlFileName == null) {
+			if (other.sdlFileName != null) { 
+				return false;
+			}
+		} 
+		else if (!sdlFileName.equals(other.sdlFileName)) { 
+			return false;
+		}
+		return true;
+	}
 }

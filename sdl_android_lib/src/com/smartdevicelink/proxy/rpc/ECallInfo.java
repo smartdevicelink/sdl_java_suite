@@ -70,4 +70,50 @@ public class ECallInfo extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((auxECallNotificationStatus == null) ? 0 : auxECallNotificationStatus.hashCode());
+		result = prime * result + ((eCallConfirmationstatus == null) ? 0 : eCallConfirmationstatus.hashCode());
+		result = prime * result + ((eCallNotificationStatus == null) ? 0 : eCallNotificationStatus.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ECallInfo other = (ECallInfo) obj;
+		if (auxECallNotificationStatus == null) {
+			if (other.auxECallNotificationStatus != null) { 
+				return false;
+			}
+		} else if (!auxECallNotificationStatus.equals(other.auxECallNotificationStatus)) { 
+			return false;
+		}
+		if (eCallConfirmationstatus == null) {
+			if (other.eCallConfirmationstatus != null) { 
+				return false;
+			}
+		} else if (!eCallConfirmationstatus.equals(other.eCallConfirmationstatus)) { 
+			return false;
+		}
+		if (eCallNotificationStatus == null) {
+			if (other.eCallNotificationStatus != null) { 
+				return false;
+			}
+		} else if (!eCallNotificationStatus.equals(other.eCallNotificationStatus)) { 
+			return false;
+		}
+		return true;
+	}
 }

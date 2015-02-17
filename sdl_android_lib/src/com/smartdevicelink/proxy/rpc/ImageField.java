@@ -95,4 +95,53 @@ public class ImageField extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((imageFieldName == null) ? 0 : imageFieldName.hashCode());
+		result = prime * result + ((imageResolution == null) ? 0 : imageResolution.hashCode());
+		result = prime * result + ((imageTypeSupported == null) ? 0 : imageTypeSupported.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ImageField other = (ImageField) obj;
+		if (imageFieldName == null) {
+			if (other.imageFieldName != null) { 
+				return false;
+			}
+		}
+		else if (!imageFieldName.equals(other.imageFieldName)) { 
+			return false;
+		}
+		if (imageResolution == null) {
+			if (other.imageResolution != null) { 
+				return false;
+			}
+		} 
+		else if (!imageResolution.equals(other.imageResolution)) { 
+			return false;
+		}
+		if (imageTypeSupported == null) {
+			if (other.imageTypeSupported != null) { 
+				return false;
+			}
+		}
+		else if (!imageTypeSupported.equals(other.imageTypeSupported)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -95,4 +95,71 @@ public class EmergencyEvent extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((emergencyEventType == null) ? 0 : emergencyEventType.hashCode());
+		result = prime * result + ((fuelCutoffStatus == null) ? 0 : fuelCutoffStatus.hashCode());
+		result = prime * result + ((maximumChangeVelocity == null) ? 0 : maximumChangeVelocity.hashCode());
+		result = prime * result + ((multipleEvents == null) ? 0 : multipleEvents.hashCode());
+		result = prime * result + ((rolloverEvent == null) ? 0 : rolloverEvent.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		EmergencyEvent other = (EmergencyEvent) obj;
+		if (emergencyEventType == null) {
+			if (other.emergencyEventType != null) { 
+				return false;
+			}
+		} 
+		else if (!emergencyEventType.equals(other.emergencyEventType)) { 
+			return false;
+		}
+		if (fuelCutoffStatus == null) {
+			if (other.fuelCutoffStatus != null) { 
+				return false;
+			}
+		}
+		else if (!fuelCutoffStatus.equals(other.fuelCutoffStatus)) { 
+			return false;
+		}
+		if (maximumChangeVelocity == null) {
+			if (other.maximumChangeVelocity != null) { 
+				return false;
+			}
+		}
+		else if (!maximumChangeVelocity.equals(other.maximumChangeVelocity)) { 
+			return false;
+		}
+		if (multipleEvents == null) {
+			if (other.multipleEvents != null) { 
+				return false;
+			}
+		} 
+		else if (!multipleEvents.equals(other.multipleEvents)) { 
+			return false;
+		}
+		if (rolloverEvent == null) {
+			if (other.rolloverEvent != null) { 
+				return false;
+			}
+		}
+		else if (!rolloverEvent.equals(other.rolloverEvent)) { 
+			return false;
+		}
+		return true;
+	}
 }

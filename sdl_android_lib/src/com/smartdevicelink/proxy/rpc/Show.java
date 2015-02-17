@@ -481,4 +481,134 @@ public class Show extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((alignment == null) ? 0 : alignment.hashCode());
+		result = prime * result + ((customPresets == null) ? 0 : customPresets.hashCode());
+		result = prime * result + ((graphic == null) ? 0 : graphic.hashCode());
+		result = prime * result + ((mainField1 == null) ? 0 : mainField1.hashCode());
+		result = prime * result + ((mainField2 == null) ? 0 : mainField2.hashCode());
+		result = prime * result + ((mainField3 == null) ? 0 : mainField3.hashCode());
+		result = prime * result + ((mainField4 == null) ? 0 : mainField4.hashCode());
+		result = prime * result + ((mediaClock == null) ? 0 : mediaClock.hashCode());
+		result = prime * result + ((mediaTrack == null) ? 0 : mediaTrack.hashCode());
+		result = prime * result + ((secondaryGraphic == null) ? 0 : secondaryGraphic.hashCode());
+		result = prime * result + ((softButtons == null) ? 0 : softButtons.hashCode());
+		result = prime * result + ((statusBar == null) ? 0 : statusBar.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Show other = (Show) obj;
+		if (alignment == null) {
+			if (other.alignment != null) { 
+				return false;
+			}
+		}
+		else if (!alignment.equals(other.alignment)) { 
+			return false;
+		}
+		if (customPresets == null) {
+			if (other.customPresets != null) { 
+				return false;
+			}
+		} 
+		else if (!customPresets.equals(other.customPresets)) { 
+			return false;
+		}
+		if (graphic == null) {
+			if (other.graphic != null) { 
+				return false;
+			}
+		} 
+		else if (!graphic.equals(other.graphic)) { 
+			return false;
+		}
+		if (mainField1 == null) {
+			if (other.mainField1 != null) { 
+				return false;
+			}
+		} 
+		else if (!mainField1.equals(other.mainField1)) { 
+			return false;
+		}
+		if (mainField2 == null) {
+			if (other.mainField2 != null) { 
+				return false;
+			}
+		}
+		else if (!mainField2.equals(other.mainField2)) { 
+			return false;
+		}
+		if (mainField3 == null) {
+			if (other.mainField3 != null) { 
+				return false;
+			}
+		} 
+		else if (!mainField3.equals(other.mainField3)) { 
+			return false;
+		}
+		if (mainField4 == null) {
+			if (other.mainField4 != null) { 
+				return false;
+			}
+		} 
+		else if (!mainField4.equals(other.mainField4)) { 
+			return false;
+		}
+		if (mediaClock == null) {
+			if (other.mediaClock != null) { 
+				return false;
+			}
+		}
+		else if (!mediaClock.equals(other.mediaClock)) { 
+			return false;
+		}
+		if (mediaTrack == null) {
+			if (other.mediaTrack != null) { 
+				return false;
+			}
+		} 
+		else if (!mediaTrack.equals(other.mediaTrack)) { 
+			return false;
+		}
+		if (secondaryGraphic == null) {
+			if (other.secondaryGraphic != null) { 
+				return false;
+			}
+		}
+		else if (!secondaryGraphic.equals(other.secondaryGraphic)) { 
+			return false;
+		}
+		if (softButtons == null) {
+			if (other.softButtons != null) { 
+				return false;
+			}
+		} 
+		else if (!softButtons.equals(other.softButtons)) { 
+			return false;
+		}
+		if (statusBar == null) {
+			if (other.statusBar != null) { 
+				return false;
+			}
+		} 
+		else if (!statusBar.equals(other.statusBar)) { 
+			return false;
+		}
+		return true;
+	}
 }

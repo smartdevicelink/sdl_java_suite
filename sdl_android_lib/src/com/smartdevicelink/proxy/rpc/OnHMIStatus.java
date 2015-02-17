@@ -177,4 +177,62 @@ public class OnHMIStatus extends RPCNotification {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((audioStreamingState == null) ? 0 : audioStreamingState.hashCode());
+		result = prime * result + ((firstRun == null) ? 0 : firstRun.hashCode());
+		result = prime * result + ((hmiLevel == null) ? 0 : hmiLevel.hashCode());
+		result = prime * result + ((systemContext == null) ? 0 : systemContext.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnHMIStatus other = (OnHMIStatus) obj;
+		if (audioStreamingState == null) {
+			if (other.audioStreamingState != null) { 
+				return false;
+			}
+		} 
+		else if (!audioStreamingState.equals(other.audioStreamingState)) { 
+			return false;
+		}
+		if (firstRun == null) {
+			if (other.firstRun != null) { 
+				return false;
+			}
+		} 
+		else if (!firstRun.equals(other.firstRun)) { 
+			return false;
+		}
+		if (hmiLevel == null) {
+			if (other.hmiLevel != null) { 
+				return false;
+			}
+		}
+		else if (!hmiLevel.equals(other.hmiLevel)) { 
+			return false;
+		}
+		if (systemContext == null) {
+			if (other.systemContext != null) { 
+				return false;
+			}
+		} 
+		else if (!systemContext.equals(other.systemContext)) { 
+			return false;
+		}
+		return true;
+	}
 }

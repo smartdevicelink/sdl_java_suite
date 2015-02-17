@@ -59,4 +59,46 @@ public class VehicleDataResult extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dataType == null) ? 0 : dataType.hashCode());
+		result = prime * result
+				+ ((resultCode == null) ? 0 : resultCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		VehicleDataResult other = (VehicleDataResult) obj;
+		if (dataType == null) {
+			if (other.dataType != null) { 
+				return false;
+			}
+		}
+		else if (!dataType.equals(other.dataType)) { 
+			return false;
+		}
+		if (resultCode == null) {
+			if (other.resultCode != null) { 
+				return false;
+			}
+		}
+		else if (!resultCode.equals(other.resultCode)) { 
+			return false;
+		}
+		return true;
+	}
 }

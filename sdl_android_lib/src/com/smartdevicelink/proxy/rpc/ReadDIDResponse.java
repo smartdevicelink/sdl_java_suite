@@ -66,4 +66,35 @@ public class ReadDIDResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((didResult == null) ? 0 : didResult.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		ReadDIDResponse other = (ReadDIDResponse) obj;
+		if (didResult == null) {
+			if (other.didResult != null) { 
+				return false;
+			}
+		} 
+		else if (!didResult.equals(other.didResult)) { 
+			return false;
+		}
+		return true;
+	}
 }

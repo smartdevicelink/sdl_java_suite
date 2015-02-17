@@ -70,4 +70,53 @@ public class DIDResult extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((didLocation == null) ? 0 : didLocation.hashCode());
+		result = prime * result + ((resultCode == null) ? 0 : resultCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DIDResult other = (DIDResult) obj;
+		if (data == null) {
+			if (other.data != null) { 
+				return false;
+			}
+		} 
+		else if (!data.equals(other.data)) { 
+			return false;
+		}
+		if (didLocation == null) {
+			if (other.didLocation != null) { 
+				return false;
+			}
+		} 
+		else if (!didLocation.equals(other.didLocation)) { 
+			return false;
+		}
+		if (resultCode == null) {
+			if (other.resultCode != null) { 
+				return false;
+			}
+		}
+		else if (!resultCode.equals(other.resultCode)) { 
+			return false;
+		}
+		return true;
+	}
 }

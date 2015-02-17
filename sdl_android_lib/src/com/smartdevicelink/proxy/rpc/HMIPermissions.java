@@ -147,4 +147,44 @@ public class HMIPermissions extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((allowed == null) ? 0 : allowed.hashCode());
+		result = prime * result + ((userDisallowed == null) ? 0 : userDisallowed.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		HMIPermissions other = (HMIPermissions) obj;
+		if (allowed == null) {
+			if (other.allowed != null) { 
+				return false;
+			}
+		} 
+		else if (!allowed.equals(other.allowed)) { 
+			return false;
+		}
+		if (userDisallowed == null) {
+			if (other.userDisallowed != null) { 
+				return false;
+			}
+		} 
+		else if (!userDisallowed.equals(other.userDisallowed)) { 
+			return false;
+		}
+		return true;
+	}
 }

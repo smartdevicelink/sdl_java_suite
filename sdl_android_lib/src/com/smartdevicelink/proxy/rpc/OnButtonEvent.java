@@ -172,4 +172,53 @@ public class OnButtonEvent extends RPCNotification {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((buttonEventMode == null) ? 0 : buttonEventMode.hashCode());
+		result = prime * result + ((buttonName == null) ? 0 : buttonName.hashCode());
+		result = prime * result + ((customButtonId == null) ? 0 : customButtonId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnButtonEvent other = (OnButtonEvent) obj;
+		if (buttonEventMode == null) {
+			if (other.buttonEventMode != null) { 
+				return false;
+			}
+		}
+		else if (!buttonEventMode.equals(other.buttonEventMode)) { 
+			return false;
+		}
+		if (buttonName == null) {
+			if (other.buttonName != null) { 
+				return false;
+			}
+		} 
+		else if (!buttonName.equals(other.buttonName)) { 
+			return false;
+		}
+		if (customButtonId == null) {
+			if (other.customButtonId != null) { 
+				return false;
+			}
+		} 
+		else if (!customButtonId.equals(other.customButtonId)) { 
+			return false;
+		}
+		return true;
+	}
 }

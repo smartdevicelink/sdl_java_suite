@@ -207,4 +207,161 @@ public class BeltStatus extends RPCObject {
 		
 		return result;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((driverBeltBuckled == null) ? 0 : driverBeltBuckled.hashCode());
+		result = prime * result + ((driverBeltDeployed == null) ? 0 : driverBeltDeployed.hashCode());
+		result = prime * result + ((leftRow2BeltBuckled == null) ? 0 : leftRow2BeltBuckled.hashCode());
+		result = prime * result + ((leftRow3BeltBuckled == null) ? 0 : leftRow3BeltBuckled.hashCode());
+		result = prime * result + ((middleRow1BeltBuckled == null) ? 0 : middleRow1BeltBuckled.hashCode());
+		result = prime * result + ((middleRow1BeltDeployed == null) ? 0 : middleRow1BeltDeployed.hashCode());
+		result = prime * result + ((middleRow2BeltBuckled == null) ? 0 : middleRow2BeltBuckled.hashCode());
+		result = prime * result + ((middleRow3BeltBuckled == null) ? 0 : middleRow3BeltBuckled.hashCode());
+		result = prime * result + ((passengerBeltBuckled == null) ? 0 : passengerBeltBuckled.hashCode());
+		result = prime * result + ((passengerBeltDeployed == null) ? 0 : passengerBeltDeployed.hashCode());
+		result = prime * result + ((passengerChildDetected == null) ? 0 : passengerChildDetected.hashCode());
+		result = prime * result + ((rearInflatableBuckled == null) ? 0 : rearInflatableBuckled.hashCode());
+		result = prime * result + ((rightRearInflatableBuckled == null) ? 0 : rightRearInflatableBuckled.hashCode());
+		result = prime * result + ((rightRow2BeltBuckled == null) ? 0 : rightRow2BeltBuckled.hashCode());
+		result = prime * result + ((rightRow3BeltBuckled == null) ? 0 : rightRow3BeltBuckled.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		BeltStatus other = (BeltStatus) obj;
+		if (driverBeltBuckled == null) {
+			if (other.driverBeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!driverBeltBuckled.equals(other.driverBeltBuckled)) { 
+			return false;
+		}
+		if (driverBeltDeployed == null) {
+			if (other.driverBeltDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!driverBeltDeployed.equals(other.driverBeltDeployed)) { 
+			return false;
+		}
+		if (leftRow2BeltBuckled == null) {
+			if (other.leftRow2BeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!leftRow2BeltBuckled.equals(other.leftRow2BeltBuckled)) { 
+			return false;
+		}
+		if (leftRow3BeltBuckled == null) {
+			if (other.leftRow3BeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!leftRow3BeltBuckled.equals(other.leftRow3BeltBuckled)) { 
+			return false;
+		}
+		if (middleRow1BeltBuckled == null) {
+			if (other.middleRow1BeltBuckled != null) { 
+				return false;
+			}
+		}
+		else if (!middleRow1BeltBuckled.equals(other.middleRow1BeltBuckled)) { 
+			return false;
+		}
+		if (middleRow1BeltDeployed == null) {
+			if (other.middleRow1BeltDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!middleRow1BeltDeployed.equals(other.middleRow1BeltDeployed)) { 
+			return false;
+		}
+		if (middleRow2BeltBuckled == null) {
+			if (other.middleRow2BeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!middleRow2BeltBuckled.equals(other.middleRow2BeltBuckled)) { 
+			return false;
+		}
+		if (middleRow3BeltBuckled == null) {
+			if (other.middleRow3BeltBuckled != null) { 
+				return false;
+			}
+		}
+		else if (!middleRow3BeltBuckled.equals(other.middleRow3BeltBuckled)) { 
+			return false;
+		}
+		if (passengerBeltBuckled == null) {
+			if (other.passengerBeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!passengerBeltBuckled.equals(other.passengerBeltBuckled)) { 
+			return false;
+		}
+		if (passengerBeltDeployed == null) {
+			if (other.passengerBeltDeployed != null) { 
+				return false;
+			}
+		} 
+		else if (!passengerBeltDeployed.equals(other.passengerBeltDeployed)) { 
+			return false;
+		}
+		if (passengerChildDetected == null) {
+			if (other.passengerChildDetected != null) { 
+				return false;
+			}
+		}
+		else if (!passengerChildDetected.equals(other.passengerChildDetected)) { 
+			return false;
+		}
+		if (rearInflatableBuckled == null) {
+			if (other.rearInflatableBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!rearInflatableBuckled.equals(other.rearInflatableBuckled)) { 
+			return false;
+		}
+		if (rightRearInflatableBuckled == null) {
+			if (other.rightRearInflatableBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!rightRearInflatableBuckled.equals(other.rightRearInflatableBuckled)) { 
+			return false;
+		}
+		if (rightRow2BeltBuckled == null) {
+			if (other.rightRow2BeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!rightRow2BeltBuckled.equals(other.rightRow2BeltBuckled)) { 
+			return false;
+		}
+		if (rightRow3BeltBuckled == null) {
+			if (other.rightRow3BeltBuckled != null) { 
+				return false;
+			}
+		} 
+		else if (!rightRow3BeltBuckled.equals(other.rightRow3BeltBuckled)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -59,6 +59,37 @@ public class AlertResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tryAgainTime == null) ? 0 : tryAgainTime.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		AlertResponse other = (AlertResponse) obj;
+		if (tryAgainTime == null) {
+			if (other.tryAgainTime != null) { 
+				return false;
+			}
+		} 
+		else if (!tryAgainTime.equals(other.tryAgainTime)) { 
+			return false;
+		}
+		return true;
+	}
     
     
 }

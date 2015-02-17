@@ -101,4 +101,53 @@ public class PerformInteractionResponse extends RPCResponse {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((choiceId == null) ? 0 : choiceId.hashCode());
+		result = prime * result + ((manualTextEntry == null) ? 0 : manualTextEntry.hashCode());
+		result = prime * result + ((triggerSource == null) ? 0 : triggerSource.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PerformInteractionResponse other = (PerformInteractionResponse) obj;
+		if (choiceId == null) {
+			if (other.choiceId != null) { 
+				return false;
+			}
+		} 
+		else if (!choiceId.equals(other.choiceId)) { 
+			return false;
+		}
+		if (manualTextEntry == null) {
+			if (other.manualTextEntry != null) { 
+				return false;
+			}
+		} 
+		else if (!manualTextEntry.equals(other.manualTextEntry)) { 
+			return false;
+		}
+		if (triggerSource == null) {
+			if (other.triggerSource != null) { 
+				return false;
+			}
+		}
+		else if (!triggerSource.equals(other.triggerSource)) { 
+			return false;
+		}
+		return true;
+	}
 }

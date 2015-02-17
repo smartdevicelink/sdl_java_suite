@@ -200,7 +200,7 @@ public class AddCommand extends RPCRequest {
     public void setCmdIcon(Image cmdIcon) {
         this.image = cmdIcon;
     }
-
+    
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
         JSONObject result = super.getJsonParameters(sdlVersion);
@@ -219,4 +219,62 @@ public class AddCommand extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((commandId == null) ? 0 : commandId.hashCode());
+		result = prime * result + ((image == null) ? 0 : image.hashCode());
+		result = prime * result + ((menuParams == null) ? 0 : menuParams.hashCode());
+		result = prime * result + ((vrCommands == null) ? 0 : vrCommands.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AddCommand other = (AddCommand) obj;
+		if (commandId == null) {
+			if (other.commandId != null) {
+				return false;
+			}
+		} 
+		else if (!commandId.equals(other.commandId)) {
+			return false;
+		}
+		if (image == null) {
+			if (other.image != null) {
+				return false;
+			}
+		} 
+		else if (!image.equals(other.image)) {
+			return false;
+		}
+		if (menuParams == null) {
+			if (other.menuParams != null) {
+				return false;
+			}
+		} 
+		else if (!menuParams.equals(other.menuParams)) {
+			return false;
+		}
+		if (vrCommands == null) {
+			if (other.vrCommands != null) {
+				return false;
+			}
+		} 
+		else if (!vrCommands.equals(other.vrCommands)) {
+			return false;
+		}
+		return true;
+	}
 }

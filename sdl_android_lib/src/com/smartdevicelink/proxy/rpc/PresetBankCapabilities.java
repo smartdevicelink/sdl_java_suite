@@ -76,4 +76,36 @@ public class PresetBankCapabilities extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((onScreenPresetsAvailable == null) ? 0
+						: onScreenPresetsAvailable.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		PresetBankCapabilities other = (PresetBankCapabilities) obj;
+		if (onScreenPresetsAvailable == null) {
+			if (other.onScreenPresetsAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!onScreenPresetsAvailable.equals(other.onScreenPresetsAvailable)) { 
+			return false;
+		}
+		return true;
+	}
 }

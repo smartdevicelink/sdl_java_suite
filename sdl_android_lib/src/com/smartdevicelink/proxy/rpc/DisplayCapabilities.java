@@ -259,4 +259,98 @@ public class DisplayCapabilities extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((displayType == null) ? 0 : displayType.hashCode());
+		result = prime * result + ((graphicSupported == null) ? 0 : graphicSupported.hashCode());
+		result = prime * result + ((imageFields == null) ? 0 : imageFields.hashCode());
+		result = prime * result + ((mediaClockFormats == null) ? 0 : mediaClockFormats.hashCode());
+		result = prime * result + ((numCustomPresetsAvailable == null) ? 0 : numCustomPresetsAvailable.hashCode());
+		result = prime * result + ((screenParams == null) ? 0 : screenParams.hashCode());
+		result = prime * result + ((templatesAvailable == null) ? 0 : templatesAvailable.hashCode());
+		result = prime * result	+ ((textFields == null) ? 0 : textFields.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DisplayCapabilities other = (DisplayCapabilities) obj;
+		if (displayType == null) {
+			if (other.displayType != null) { 
+				return false;
+			}
+		} 
+		else if (!displayType.equals(other.displayType)) { 
+			return false;
+		}
+		if (graphicSupported == null) {
+			if (other.graphicSupported != null) { 
+				return false;
+			}
+		}
+		else if (!graphicSupported.equals(other.graphicSupported)) { 
+			return false;
+		}
+		if (imageFields == null) {
+			if (other.imageFields != null) { 
+				return false;
+			}
+		}
+		else if (!imageFields.equals(other.imageFields)) { 
+			return false;
+		}
+		if (mediaClockFormats == null) {
+			if (other.mediaClockFormats != null) { 
+				return false;
+			}
+		}
+		else if (!mediaClockFormats.equals(other.mediaClockFormats)) { 
+			return false;
+		}
+		if (numCustomPresetsAvailable == null) {
+			if (other.numCustomPresetsAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!numCustomPresetsAvailable.equals(other.numCustomPresetsAvailable)) { 
+			return false;
+		}
+		if (screenParams == null) {
+			if (other.screenParams != null) { 
+				return false;
+			}
+		} 
+		else if (!screenParams.equals(other.screenParams)) { 
+			return false;
+		}
+		if (templatesAvailable == null) {
+			if (other.templatesAvailable != null) { 
+				return false;
+			}
+		} 
+		else if (!templatesAvailable.equals(other.templatesAvailable)) { 
+			return false;
+		}
+		if (textFields == null) {
+			if (other.textFields != null) { 
+				return false;
+			}
+		}
+		else if (!textFields.equals(other.textFields)) { 
+			return false;
+		}
+		return true;
+	}
 }

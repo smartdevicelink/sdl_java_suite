@@ -133,4 +133,53 @@ public class AudioPassThruCapabilities extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((audioType == null) ? 0 : audioType.hashCode());
+		result = prime * result + ((bitsPerSample == null) ? 0 : bitsPerSample.hashCode());
+		result = prime * result + ((samplingRate == null) ? 0 : samplingRate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		AudioPassThruCapabilities other = (AudioPassThruCapabilities) obj;
+		if (audioType == null) {
+			if (other.audioType != null) { 
+				return false;
+			}
+		} 
+		else if (!audioType.equals(other.audioType)) { 
+			return false;
+		}
+		if (bitsPerSample == null) {
+			if (other.bitsPerSample != null) { 
+				return false;
+			}
+		} 
+		else if (!bitsPerSample.equals(other.bitsPerSample)) { 
+			return false;
+		}
+		if (samplingRate == null) {
+			if (other.samplingRate != null) { 
+				return false;
+			}
+		} 
+		else if (!samplingRate.equals(other.samplingRate)) { 
+			return false;
+		}
+		return true;
+	}
 }

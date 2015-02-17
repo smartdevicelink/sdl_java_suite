@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Arrays;
+
 import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -91,4 +93,30 @@ public class OnAudioPassThru extends RPCNotification implements BulkData{
     public void setBulkData(byte[] rawData){
         this.bulkData = rawData;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(bulkData);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnAudioPassThru other = (OnAudioPassThru) obj;
+		if (!Arrays.equals(bulkData, other.bulkData)) { 
+			return false;
+		}
+		return true;
+	}
 }

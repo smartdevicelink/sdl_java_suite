@@ -126,4 +126,44 @@ public class SdlMsgVersion extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((majorVersion == null) ? 0 : majorVersion.hashCode());
+		result = prime * result + ((minorVersion == null) ? 0 : minorVersion.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		SdlMsgVersion other = (SdlMsgVersion) obj;
+		if (majorVersion == null) {
+			if (other.majorVersion != null) { 
+				return false;
+			}
+		}
+		else if (!majorVersion.equals(other.majorVersion)) { 
+			return false;
+		}
+		if (minorVersion == null) {
+			if (other.minorVersion != null) { 
+				return false;
+			}
+		} 
+		else if (!minorVersion.equals(other.minorVersion)) { 
+			return false;
+		}
+		return true;
+	}
 }

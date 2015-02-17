@@ -102,4 +102,71 @@ public class KeyboardProperties extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((autoCompleteText == null) ? 0 : autoCompleteText.hashCode());
+		result = prime * result + ((keyboardLayout == null) ? 0 : keyboardLayout.hashCode());
+		result = prime * result + ((keypressMode == null) ? 0 : keypressMode.hashCode());
+		result = prime * result + ((language == null) ? 0 : language.hashCode());
+		result = prime * result + ((limitedCharacterList == null) ? 0 : limitedCharacterList.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		KeyboardProperties other = (KeyboardProperties) obj;
+		if (autoCompleteText == null) {
+			if (other.autoCompleteText != null) { 
+				return false;
+			}
+		}
+		else if (!autoCompleteText.equals(other.autoCompleteText)) { 
+			return false;
+		}
+		if (keyboardLayout == null) {
+			if (other.keyboardLayout != null) { 
+				return false;
+			}
+		} 
+		else if (!keyboardLayout.equals(other.keyboardLayout)) { 
+			return false;
+		}
+		if (keypressMode == null) {
+			if (other.keypressMode != null) { 
+				return false;
+			}
+		} 
+		else if (!keypressMode.equals(other.keypressMode)) { 
+			return false;
+		}
+		if (language == null) {
+			if (other.language != null) { 
+				return false;
+			}
+		} 
+		else if (!language.equals(other.language)) { 
+			return false;
+		}
+		if (limitedCharacterList == null) {
+			if (other.limitedCharacterList != null) { 
+				return false;
+			}
+		}
+		else if (!limitedCharacterList.equals(other.limitedCharacterList)) { 
+			return false;
+		}
+		return true;
+	}
 }

@@ -184,4 +184,71 @@ public class Slider extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((footers == null) ? 0 : footers.hashCode());
+		result = prime * result + ((header == null) ? 0 : header.hashCode());
+		result = prime * result + ((numTicks == null) ? 0 : numTicks.hashCode());
+		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		result = prime * result + ((timeout == null) ? 0 : timeout.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Slider other = (Slider) obj;
+		if (footers == null) {
+			if (other.footers != null) { 
+				return false;
+			}
+		}
+		else if (!footers.equals(other.footers)) { 
+			return false;
+		}
+		if (header == null) {
+			if (other.header != null) { 
+				return false;
+			}
+		} 
+		else if (!header.equals(other.header)) { 
+			return false;
+		}
+		if (numTicks == null) {
+			if (other.numTicks != null) { 
+				return false;
+			}
+		}
+		else if (!numTicks.equals(other.numTicks)) { 
+			return false;
+		}
+		if (position == null) {
+			if (other.position != null) { 
+				return false;
+			}
+		} 
+		else if (!position.equals(other.position)) { 
+			return false;
+		}
+		if (timeout == null) {
+			if (other.timeout != null) { 
+				return false;
+			}
+		} 
+		else if (!timeout.equals(other.timeout)) { 
+			return false;
+		}
+		return true;
+	}
 }

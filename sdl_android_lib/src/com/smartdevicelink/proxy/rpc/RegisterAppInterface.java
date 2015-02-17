@@ -505,4 +505,134 @@ public class RegisterAppInterface extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((appHmiType == null) ? 0 : appHmiType.hashCode());
+		result = prime * result + ((appId == null) ? 0 : appId.hashCode());
+		result = prime * result + ((appName == null) ? 0 : appName.hashCode());
+		result = prime * result + ((deviceInfo == null) ? 0 : deviceInfo.hashCode());
+		result = prime * result + ((hashId == null) ? 0 : hashId.hashCode());
+		result = prime * result + ((hmiLanguageDesired == null) ? 0 : hmiLanguageDesired.hashCode());
+		result = prime * result + ((isMediaApplication == null) ? 0 : isMediaApplication.hashCode());
+		result = prime * result + ((languageDesired == null) ? 0 : languageDesired.hashCode());
+		result = prime * result + ((ngnMediaName == null) ? 0 : ngnMediaName.hashCode());
+		result = prime * result + ((sdlMessageVersion == null) ? 0 : sdlMessageVersion.hashCode());
+		result = prime * result + ((ttsName == null) ? 0 : ttsName.hashCode());
+		result = prime * result + ((vrSynonyms == null) ? 0 : vrSynonyms.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		RegisterAppInterface other = (RegisterAppInterface) obj;
+		if (appHmiType == null) {
+			if (other.appHmiType != null) { 
+				return false;
+			}
+		}
+		else if (!appHmiType.equals(other.appHmiType)) { 
+			return false;
+		}
+		if (appId == null) {
+			if (other.appId != null) { 
+				return false;
+			}
+		} 
+		else if (!appId.equals(other.appId)) { 
+			return false;
+		}
+		if (appName == null) {
+			if (other.appName != null) { 
+				return false;
+			}
+		}
+		else if (!appName.equals(other.appName)) { 
+			return false; 
+		}
+		if (deviceInfo == null) {
+			if (other.deviceInfo != null) { 
+				return false;
+			}
+		} 
+		else if (!deviceInfo.equals(other.deviceInfo)) { 
+			return false;
+		}
+		if (hashId == null) {
+			if (other.hashId != null) { 
+				return false;
+			}
+		}
+		else if (!hashId.equals(other.hashId)) { 
+			return false;
+		}
+		if (hmiLanguageDesired == null) {
+			if (other.hmiLanguageDesired != null) { 
+				return false;
+			}
+		} 
+		else if (!hmiLanguageDesired.equals(other.hmiLanguageDesired)) { 
+			return false;
+		}
+		if (isMediaApplication == null) {
+			if (other.isMediaApplication != null) { 
+				return false;
+			}
+		}
+		else if (!isMediaApplication.equals(other.isMediaApplication)) { 
+			return false;
+		}
+		if (languageDesired == null) {
+			if (other.languageDesired != null) { 
+				return false;
+			}
+		}
+		else if (!languageDesired.equals(other.languageDesired)) { 
+			return false;
+		}
+		if (ngnMediaName == null) {
+			if (other.ngnMediaName != null) { 
+				return false;
+			}
+		} 
+		else if (!ngnMediaName.equals(other.ngnMediaName)) { 
+			return false;
+		}
+		if (sdlMessageVersion == null) {
+			if (other.sdlMessageVersion != null) { 
+				return false;
+			}
+		} 
+		else if (!sdlMessageVersion.equals(other.sdlMessageVersion)) { 
+			return false;
+		}
+		if (ttsName == null) {
+			if (other.ttsName != null) { 
+				return false;
+			}
+		} 
+		else if (!ttsName.equals(other.ttsName)) { 
+			return false;
+		}
+		if (vrSynonyms == null) {
+			if (other.vrSynonyms != null) { 
+				return false;
+			}
+		} 
+		else if (!vrSynonyms.equals(other.vrSynonyms)) { 
+			return false;
+		}
+		return true;
+	}
 }

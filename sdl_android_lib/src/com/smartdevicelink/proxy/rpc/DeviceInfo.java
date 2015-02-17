@@ -102,4 +102,80 @@ public class DeviceInfo extends RPCObject {
         return result;
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((carrier == null) ? 0 : carrier.hashCode());
+		result = prime * result + ((firmware == null) ? 0 : firmware.hashCode());
+		result = prime * result + ((hardware == null) ? 0 : hardware.hashCode());
+		result = prime * result + ((maxNumberRfcommPorts == null) ? 0 : maxNumberRfcommPorts.hashCode());
+		result = prime * result + ((os == null) ? 0 : os.hashCode());
+		result = prime * result + ((osVersion == null) ? 0 : osVersion.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DeviceInfo other = (DeviceInfo) obj;
+		if (carrier == null) {
+			if (other.carrier != null) { 
+				return false;
+			}
+		}
+		else if (!carrier.equals(other.carrier)) { 
+			return false;
+		}
+		if (firmware == null) {
+			if (other.firmware != null) { 
+				return false;
+			}
+		}
+		else if (!firmware.equals(other.firmware)) { 
+			return false;
+		}
+		if (hardware == null) {
+			if (other.hardware != null) { 
+				return false;
+			}
+		}
+		else if (!hardware.equals(other.hardware)) { 
+			return false;
+		}
+		if (maxNumberRfcommPorts == null) {
+			if (other.maxNumberRfcommPorts != null) { 
+				return false;
+			}
+		} 
+		else if (!maxNumberRfcommPorts.equals(other.maxNumberRfcommPorts)) { 
+			return false;
+		}
+		if (os == null) {
+			if (other.os != null) { 
+				return false;
+			}
+		} 
+		else if (!os.equals(other.os)) { 
+			return false;
+		}
+		if (osVersion == null) {
+			if (other.osVersion != null) { 
+				return false;
+			}
+		} 
+		else if (!osVersion.equals(other.osVersion)) { 
+			return false;
+		}
+		return true;
+	}
+
 }

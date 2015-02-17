@@ -88,4 +88,69 @@ public class OnLockScreenStatus extends RPCNotification {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((driverDistractionStatus == null) ? 0
+						: driverDistractionStatus.hashCode());
+		result = prime * result
+				+ ((hmiLevel == null) ? 0 : hmiLevel.hashCode());
+		result = prime
+				* result
+				+ ((lockScreenStatus == null) ? 0 : lockScreenStatus.hashCode());
+		result = prime * result
+				+ ((userSelected == null) ? 0 : userSelected.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		OnLockScreenStatus other = (OnLockScreenStatus) obj;
+		if (driverDistractionStatus == null) {
+			if (other.driverDistractionStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!driverDistractionStatus.equals(other.driverDistractionStatus)) { 
+			return false;
+		}
+		if (hmiLevel == null) {
+			if (other.hmiLevel != null) { 
+				return false;
+			}
+		} 
+		else if (!hmiLevel.equals(other.hmiLevel)) { 
+			return false;
+		}
+		if (lockScreenStatus == null) {
+			if (other.lockScreenStatus != null) { 
+				return false;
+			}
+		} 
+		else if (!lockScreenStatus.equals(other.lockScreenStatus)) { 
+			return false;
+		}
+		if (userSelected == null) {
+			if (other.userSelected != null) { 
+				return false;
+			}
+		} 
+		else if (!userSelected.equals(other.userSelected)) { 
+			return false;
+		}
+		return true;
+	}
 }

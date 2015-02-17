@@ -77,4 +77,53 @@ public class DiagnosticMessage extends RPCRequest {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((messageData == null) ? 0 : messageData.hashCode());
+		result = prime * result + ((messageLength == null) ? 0 : messageLength.hashCode());
+		result = prime * result + ((targetId == null) ? 0 : targetId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		DiagnosticMessage other = (DiagnosticMessage) obj;
+		if (messageData == null) {
+			if (other.messageData != null) { 
+				return false;
+			}
+		}
+		else if (!messageData.equals(other.messageData)) { 
+			return false;
+		}
+		if (messageLength == null) {
+			if (other.messageLength != null) { 
+				return false;
+			}
+		}
+		else if (!messageLength.equals(other.messageLength)) { 
+			return false;
+		}
+		if (targetId == null) {
+			if (other.targetId != null) { 
+				return false;
+			}
+		} 
+		else if (!targetId.equals(other.targetId)) { 
+			return false;
+		}
+		return true;
+	}
 }

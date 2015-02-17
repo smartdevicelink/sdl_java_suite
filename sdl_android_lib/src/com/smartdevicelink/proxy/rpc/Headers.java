@@ -147,4 +147,116 @@ public class Headers extends RPCObject {
         
         return result;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((charset == null) ? 0 : charset.hashCode());
+		result = prime * result + ((connectTimeout == null) ? 0 : connectTimeout.hashCode());
+		result = prime * result + ((contentLength == null) ? 0 : contentLength.hashCode());
+		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
+		result = prime * result + ((doInput == null) ? 0 : doInput.hashCode());
+		result = prime * result + ((doOutput == null) ? 0 : doOutput.hashCode());
+		result = prime * result + ((instanceFollowRedirects == null) ? 0 : instanceFollowRedirects.hashCode());
+		result = prime * result + ((readTimeout == null) ? 0 : readTimeout.hashCode());
+		result = prime * result + ((requestMethod == null) ? 0 : requestMethod.hashCode());
+		result = prime * result + ((useCaches == null) ? 0 : useCaches.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) { 
+			return true;
+		}
+		if (obj == null) { 
+			return false;
+		}
+		if (getClass() != obj.getClass()) { 
+			return false;
+		}
+		Headers other = (Headers) obj;
+		if (charset == null) {
+			if (other.charset != null) { 
+				return false;
+			}
+		}
+		else if (!charset.equals(other.charset)) { 
+			return false;
+		}
+		if (connectTimeout == null) {
+			if (other.connectTimeout != null) { 
+				return false;
+			}
+		} 
+		else if (!connectTimeout.equals(other.connectTimeout)) { 
+			return false;
+		}
+		if (contentLength == null) {
+			if (other.contentLength != null) { 
+				return false;
+			}
+		}
+		else if (!contentLength.equals(other.contentLength)) { 
+			return false;
+		}
+		if (contentType == null) {
+			if (other.contentType != null) { 
+				return false;
+			}
+		} 
+		else if (!contentType.equals(other.contentType)) { 
+			return false;
+		}
+		if (doInput == null) {
+			if (other.doInput != null) { 
+				return false;
+			}
+		}
+		else if (!doInput.equals(other.doInput)) { 
+			return false;
+		}
+		if (doOutput == null) {
+			if (other.doOutput != null) { 
+				return false;
+			}
+		}
+		else if (!doOutput.equals(other.doOutput)) { 
+			return false;
+		}
+		if (instanceFollowRedirects == null) {
+			if (other.instanceFollowRedirects != null) { 
+				return false;
+			}
+		}
+		else if (!instanceFollowRedirects.equals(other.instanceFollowRedirects)) { 
+			return false;
+		}
+		if (readTimeout == null) {
+			if (other.readTimeout != null) { 
+				return false;
+			}
+		}
+		else if (!readTimeout.equals(other.readTimeout)) { 
+			return false;
+		}
+		if (requestMethod == null) {
+			if (other.requestMethod != null) { 
+				return false;
+			}
+		} 
+		else if (!requestMethod.equals(other.requestMethod)) { 
+			return false;
+		}
+		if (useCaches == null) {
+			if (other.useCaches != null) { 
+				return false;
+			}
+		} 
+		else if (!useCaches.equals(other.useCaches)) { 
+			return false;
+		}
+		return true;
+	}
 }
