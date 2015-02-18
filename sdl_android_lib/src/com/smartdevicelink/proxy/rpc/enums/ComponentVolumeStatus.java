@@ -36,6 +36,10 @@ public enum ComponentVolumeStatus {
      * @return ComponentVolumeStatus
      */      	
     public static ComponentVolumeStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

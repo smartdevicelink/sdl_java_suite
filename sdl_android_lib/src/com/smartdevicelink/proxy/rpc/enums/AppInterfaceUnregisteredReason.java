@@ -78,6 +78,10 @@ public enum AppInterfaceUnregisteredReason {
 	APP_UNAUTHORIZED;
 
     public static AppInterfaceUnregisteredReason valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

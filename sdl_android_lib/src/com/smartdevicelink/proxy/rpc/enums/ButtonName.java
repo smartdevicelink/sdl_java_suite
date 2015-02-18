@@ -118,7 +118,11 @@ public enum ButtonName{
 	PRESET_9, CUSTOM_BUTTON, SEARCH;
 
     public static ButtonName valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
     
     /**

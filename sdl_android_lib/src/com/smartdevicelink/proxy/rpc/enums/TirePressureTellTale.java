@@ -6,6 +6,10 @@ public enum TirePressureTellTale {
     FLASH;
 
     public static TirePressureTellTale valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

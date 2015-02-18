@@ -6,6 +6,10 @@ public enum TouchType {
     END;
 
     public static TouchType valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

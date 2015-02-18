@@ -35,6 +35,10 @@ public enum FileType {
      * @return FileType
      */      
     public static FileType valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

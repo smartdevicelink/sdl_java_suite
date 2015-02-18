@@ -14,6 +14,10 @@ public enum VrCapabilities {
 	Text;
 
     public static VrCapabilities valueForString(String value) {
+        if(value == null){
+            return null;
+        }
+        
         if (value.toUpperCase().equals(VrCapabilities.Text.toString().toUpperCase()))
         {
         	return VrCapabilities.Text;

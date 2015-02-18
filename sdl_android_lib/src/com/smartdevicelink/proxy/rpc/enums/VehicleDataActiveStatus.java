@@ -8,6 +8,10 @@ public enum VehicleDataActiveStatus {
     FAULT;
 
     public static VehicleDataActiveStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

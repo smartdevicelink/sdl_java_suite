@@ -6,6 +6,10 @@ public enum MessageType {
     notification;
 
     public static MessageType valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

@@ -32,6 +32,10 @@ public enum AudioStreamingState {
 	NOT_AUDIBLE;
 
     public static AudioStreamingState valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

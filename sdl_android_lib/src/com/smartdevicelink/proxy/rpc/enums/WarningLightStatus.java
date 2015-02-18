@@ -25,6 +25,10 @@ public enum WarningLightStatus {
      * @return WarningLightStatus
      */    
     public static WarningLightStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

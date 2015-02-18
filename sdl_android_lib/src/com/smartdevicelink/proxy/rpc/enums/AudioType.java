@@ -13,6 +13,10 @@ public enum AudioType {
     PCM;
 
     public static AudioType valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

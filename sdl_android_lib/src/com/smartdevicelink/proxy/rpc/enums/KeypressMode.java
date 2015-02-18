@@ -6,6 +6,10 @@ public enum KeypressMode {
     RESEND_CURRENT_ENTRY;
 
     public static KeypressMode valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

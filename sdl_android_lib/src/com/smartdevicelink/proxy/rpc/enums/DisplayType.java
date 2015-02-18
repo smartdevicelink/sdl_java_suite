@@ -12,24 +12,28 @@ public enum DisplayType {
     MFD5("MFD5"),
     GEN3_8_INCH("GEN3_8-INCH");
 
-    final String internalName;
+    private final String INTERNAL_NAME;
 
     private DisplayType(String internalName) {
-        this.internalName = internalName;
+        this.INTERNAL_NAME = internalName;
     }
 
     public static DisplayType valueForString(String value) {
+        if(value == null){
+            return null;
+        }
+        
         for (DisplayType type : DisplayType.values()) {
             if (type.toString().equals(value)) {
                 return type;
             }
         }
 
-        throw new IllegalArgumentException("Unknown value " + value);
+        return null;
     }
 
     @Override
     public String toString() {
-        return internalName;
+        return INTERNAL_NAME;
     }
 }

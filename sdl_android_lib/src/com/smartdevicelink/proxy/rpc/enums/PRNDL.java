@@ -61,6 +61,10 @@ public enum PRNDL {
      * @return PRNDL
      */         
     public static PRNDL valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }
