@@ -31,6 +31,9 @@ public enum SdlDisconnectedReason {
     }
 	
 	public static SdlDisconnectedReason convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason reason) {
+	    if(reason == null){
+	        return null;
+	    }
 		
 		SdlDisconnectedReason returnReason = SdlDisconnectedReason.DEFAULT;
 		
