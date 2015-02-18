@@ -217,13 +217,7 @@ public class Show extends RPCRequest {
         if (obj instanceof TextAlignment) {
             return (TextAlignment) obj;
         } else if (obj instanceof String) {
-            TextAlignment theCode = null;
-            try {
-                theCode = TextAlignment.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALIGNMENT, e);
-            }
-            return theCode;
+            return TextAlignment.valueForString((String) obj);
         }
         return null;
     }

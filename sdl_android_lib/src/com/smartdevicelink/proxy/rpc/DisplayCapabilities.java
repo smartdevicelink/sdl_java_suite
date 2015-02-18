@@ -77,13 +77,7 @@ public class DisplayCapabilities extends RPCStruct {
         if (obj instanceof DisplayType) {
             return (DisplayType) obj;
         } else if (obj instanceof String) {
-            DisplayType theCode = null;
-            try {
-                theCode = DisplayType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DISPLAY_TYPE, e);
-            }
-            return theCode;
+            return DisplayType.valueForString((String) obj);
         }
         return null;
     }
@@ -197,12 +191,7 @@ public class DisplayCapabilities extends RPCStruct {
 	            	List<MediaClockFormat> newList = new ArrayList<MediaClockFormat>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    MediaClockFormat toAdd = null;
-	                    try {
-	                        toAdd = MediaClockFormat.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                        DebugTool.logError("Failed to parse MediaClockFormat from " + getClass().getSimpleName() + "." + KEY_MEDIA_CLOCK_FORMATS, e);
-	                    }
+	                    MediaClockFormat toAdd = MediaClockFormat.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }

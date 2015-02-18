@@ -110,13 +110,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof ComponentVolumeStatus) {
             return (ComponentVolumeStatus) obj;
         } else if (obj instanceof String) {
-        	ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-            return theCode;
+        	return ComponentVolumeStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -162,13 +156,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof PRNDL) {
             return (PRNDL) obj;
         } else if (obj instanceof String) {
-        	PRNDL theCode = null;
-            try {
-                theCode = PRNDL.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
-            }
-            return theCode;
+        	return PRNDL.valueForString((String) obj);
         }
         return null;
     }
@@ -278,13 +266,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -300,13 +282,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof WiperStatus) {
             return (WiperStatus) obj;
         } else if (obj instanceof String) {
-        	WiperStatus theCode = null;
-            try {
-                theCode = WiperStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
-            }
-            return theCode;
+        	return WiperStatus.valueForString((String) obj);
         }
         return null;
     }

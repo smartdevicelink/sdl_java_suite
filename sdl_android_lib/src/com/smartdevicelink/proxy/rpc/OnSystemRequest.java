@@ -156,15 +156,7 @@ public class OnSystemRequest extends RPCNotification {
         if (obj instanceof RequestType) {
             return (RequestType) obj;
         } else if (obj instanceof String) {
-            RequestType theCode = null;
-            try {
-                theCode = RequestType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_REQUEST_TYPE, e);
-            }
-            return theCode;
+            return RequestType.valueForString((String) obj);
         }
         return null;
     }
@@ -207,15 +199,7 @@ public class OnSystemRequest extends RPCNotification {
         if (obj instanceof FileType) {
             return (FileType) obj;
         } else if (obj instanceof String) {
-            FileType theCode = null;
-            try {
-                theCode = FileType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_FILE_TYPE, e);
-            }
-            return theCode;
+            return FileType.valueForString((String) obj);
         }
         return null;
     }

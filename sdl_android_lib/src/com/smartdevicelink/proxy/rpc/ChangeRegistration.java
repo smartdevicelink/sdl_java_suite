@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * If the app recognizes during the app registration that the Sdl HMI language
@@ -68,13 +67,7 @@ public class ChangeRegistration extends RPCRequest {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-        	Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
-            }
-            return theCode;
+        	return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -103,13 +96,7 @@ public class ChangeRegistration extends RPCRequest {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-        	Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
-            }
-            return theCode;
+        	return Language.valueForString((String) obj);
         }
         return null;
     }

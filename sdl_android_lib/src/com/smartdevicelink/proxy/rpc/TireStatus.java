@@ -31,13 +31,7 @@ public class TireStatus extends RPCStruct {
         if (obj instanceof WarningLightStatus) {
             return (WarningLightStatus) obj;
         } else if (obj instanceof String) {
-        	WarningLightStatus theCode = null;
-            try {
-                theCode = WarningLightStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRESSURE_TELL_TALE, e);
-            }
-            return theCode;
+        	return WarningLightStatus.valueForString((String) obj);
         }
         return null;
     }

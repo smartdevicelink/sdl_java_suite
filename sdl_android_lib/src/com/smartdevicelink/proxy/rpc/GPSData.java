@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
@@ -347,13 +346,7 @@ public class GPSData extends RPCStruct {
         if (obj instanceof CompassDirection) {
             return (CompassDirection) obj;
         } else if (obj instanceof String) {
-        	CompassDirection theCode = null;
-            try {
-                theCode = CompassDirection.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_COMPASS_DIRECTION, e);
-            }
-            return theCode;
+        	return CompassDirection.valueForString((String) obj);
         }
         return null;
     }
@@ -468,13 +461,7 @@ public class GPSData extends RPCStruct {
         if (obj instanceof Dimension) {
             return (Dimension) obj;
         } else if (obj instanceof String) {
-        	Dimension theCode = null;
-            try {
-                theCode = Dimension.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DIMENSION, e);
-            }
-            return theCode;
+        	return Dimension.valueForString((String) obj);
         }
         return null;
     }
