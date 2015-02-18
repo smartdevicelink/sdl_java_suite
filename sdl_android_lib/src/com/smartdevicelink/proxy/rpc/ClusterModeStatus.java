@@ -6,7 +6,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
-import com.smartdevicelink.util.DebugTool;
 
 public class ClusterModeStatus extends RPCStruct {
     public static final String KEY_POWER_MODE_ACTIVE = "powerModeActive";
@@ -41,13 +40,7 @@ public class ClusterModeStatus extends RPCStruct {
 	        if (obj instanceof PowerModeQualificationStatus) {
 	            return (PowerModeQualificationStatus) obj;
 	        } else if (obj instanceof String) {
-	        	PowerModeQualificationStatus theCode = null;
-	            try {
-	                theCode = PowerModeQualificationStatus.valueForString((String) obj);
-	            } catch (Exception e) {
-	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_POWER_MODE_QUALIFICATION_STATUS, e);
-	            }
-	            return theCode;
+	        	return PowerModeQualificationStatus.valueForString((String) obj);
 	        }
 	        return null;
 	    }
@@ -63,13 +56,7 @@ public class ClusterModeStatus extends RPCStruct {
 	        if (obj instanceof CarModeStatus) {
 	            return (CarModeStatus) obj;
 	        } else if (obj instanceof String) {
-	        	CarModeStatus theCode = null;
-	            try {
-	                theCode = CarModeStatus.valueForString((String) obj);
-	            } catch (Exception e) {
-	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CAR_MODE_STATUS, e);
-	            }
-	            return theCode;
+	        	return CarModeStatus.valueForString((String) obj);
 	        }
 	        return null;
 	    }
@@ -85,13 +72,7 @@ public class ClusterModeStatus extends RPCStruct {
 	        if (obj instanceof PowerModeStatus) {
 	            return (PowerModeStatus) obj;
 	        } else if (obj instanceof String) {
-	        	PowerModeStatus theCode = null;
-	            try {
-	                theCode = PowerModeStatus.valueForString((String) obj);
-	            } catch (Exception e) {
-	                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_POWER_MODE_STATUS, e);
-	            }
-	            return theCode;
+	        	return PowerModeStatus.valueForString((String) obj);
 	        }
 	        return null;
 	    }
