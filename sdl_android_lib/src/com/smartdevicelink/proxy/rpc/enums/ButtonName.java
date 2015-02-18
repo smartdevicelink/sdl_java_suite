@@ -131,7 +131,10 @@ public enum ButtonName{
      * @return Integer
      */
     public static Integer indexForPresetButton(ButtonName buttonName) {
-    	
+        if(buttonName == null){
+            return null;
+        }
+        
     	Integer returnIndex = null;
     	
     	switch(buttonName) {        	
