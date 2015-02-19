@@ -111,5 +111,49 @@ public abstract class RPCMessage extends RPCStruct {
         String name = JsonUtils.readStringFromJsonObject(json, KEY_FUNCTION_NAME);
         return SdlCommand.valueForJsonName(name, sdlVersion);
     }
+
+    @Override
+    public int hashCode(){
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( ( commandType == null ) ? 0 : commandType.hashCode() );
+        result = prime * result + ( ( correlationId == null ) ? 0 : correlationId.hashCode() );
+        result = prime * result + ( ( messageType == null ) ? 0 : messageType.hashCode() );
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+        if(obj == null){
+            return false;
+        }
+        if(getClass() != obj.getClass()){
+            return false;
+        }
+        RPCMessage other = (RPCMessage) obj;
+        if(commandType != other.commandType){
+            return false;
+        }
+        if(correlationId == null){
+            if(other.correlationId != null){
+                return false;
+            }
+        }
+        else if(!correlationId.equals(other.correlationId)){
+            return false;
+        }
+        if(messageType == null){
+            if(other.messageType != null){
+                return false;
+            }
+        }
+        else if(!messageType.equals(other.messageType)){
+            return false;
+        }
+        return true;
+    }
 	
 }

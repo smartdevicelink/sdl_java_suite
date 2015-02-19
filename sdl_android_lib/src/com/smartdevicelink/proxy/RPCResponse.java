@@ -165,6 +165,55 @@ public class RPCResponse extends RPCMessage {
         return result;
     }
     
+    @Override
+    public int hashCode(){
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ( ( info == null ) ? 0 : info.hashCode() );
+        result = prime * result + ( ( resultCode == null ) ? 0 : resultCode.hashCode() );
+        result = prime * result + ( ( success == null ) ? 0 : success.hashCode() );
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+        if(!super.equals(obj)){
+            return false;
+        }
+        if(getClass() != obj.getClass()){
+            return false;
+        }
+        RPCResponse other = (RPCResponse) obj;
+        if(info == null){
+            if(other.info != null){
+                return false;
+            }
+        }
+        else if(!info.equals(other.info)){
+            return false;
+        }
+        if(resultCode == null){
+            if(other.resultCode != null){
+                return false;
+            }
+        }
+        else if(!resultCode.equals(other.resultCode)){
+            return false;
+        }
+        if(success == null){
+            if(other.success != null){
+                return false;
+            }
+        }
+        else if(!success.equals(other.success)){
+            return false;
+        }
+        return true;
+    }
+
     public static JSONObject getParameters(JSONObject json){
         return RPCMessage.getParameters(KEY_RESPONSE, json);
     }
