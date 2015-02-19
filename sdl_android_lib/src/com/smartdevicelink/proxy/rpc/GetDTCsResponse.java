@@ -16,8 +16,10 @@ import com.smartdevicelink.util.JsonUtils;
  */
 public class GetDTCsResponse extends RPCResponse {
 	public static final String KEY_DTC = "dtc";
+	public static final String KEY_ECU_HEADER = "ecuHeader";
 
 	private List<String> dtc;
+	private Integer ecuHeader;
 	
     public GetDTCsResponse() {
         super(FunctionID.GET_DTCS);
@@ -29,6 +31,7 @@ public class GetDTCsResponse extends RPCResponse {
         switch(sdlVersion){
         default:
             this.dtc = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_DTC);
+            this.ecuHeader = JsonUtils.readIntegerFromJsonObject(jsonObject, KEY_ECU_HEADER);
             break;
         }
     }
@@ -40,6 +43,14 @@ public class GetDTCsResponse extends RPCResponse {
     public void setDtc(List<String> dtc) {
         this.dtc = dtc;
     }
+    
+    public Integer getEcuHeader(){
+        return ecuHeader;
+    }
+    
+    public void setEcuHeader(Integer ecuHeader){
+        this.ecuHeader = ecuHeader;
+    }
 
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
@@ -47,6 +58,7 @@ public class GetDTCsResponse extends RPCResponse {
         
         switch(sdlVersion){
         default:
+            JsonUtils.addToJsonObject(result, KEY_ECU_HEADER, this.ecuHeader);
             JsonUtils.addToJsonObject(result, KEY_DTC, 
                     (this.dtc == null) ? null : JsonUtils.createJsonArray(this.dtc));
             break;
@@ -59,7 +71,8 @@ public class GetDTCsResponse extends RPCResponse {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dtc == null) ? 0 : dtc.hashCode());
+        result = prime * result + ((dtc == null) ? 0 : dtc.hashCode());
+        result = prime * result + ((ecuHeader == null) ? 0 : ecuHeader.hashCode());
 		return result;
 	}
 
@@ -75,13 +88,20 @@ public class GetDTCsResponse extends RPCResponse {
 			return false;
 		}
 		GetDTCsResponse other = (GetDTCsResponse) obj;
-		if (dtc == null) {
-			if (other.dtc != null) { 
-				return false;
-			}
-		} else if (!dtc.equals(other.dtc)) { 
-			return false;
-		}
+        if (dtc == null) {
+            if (other.dtc != null) { 
+                return false;
+            }
+        } else if (!dtc.equals(other.dtc)) { 
+            return false;
+        }
+        if (ecuHeader == null) {
+            if (other.ecuHeader != null) { 
+                return false;
+            }
+        } else if (!ecuHeader.equals(other.ecuHeader)) { 
+            return false;
+        }
 		return true;
 	}
 }

@@ -1,5 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -25,8 +28,15 @@ import com.smartdevicelink.util.JsonUtils;
 public class ChangeRegistration extends RPCRequest {
 	public static final String KEY_LANGUAGE = "language";
 	public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
+    public static final String KEY_APP_NAME = "appName";
+    public static final String KEY_TTS_NAME = "ttsName";
+    public static final String KEY_NGN_MEDIA_SCREEN_NAME = "ngnMediaScreenAppName";
+    public static final String KEY_VR_SYNONYMS = "vrSynonyms";
 
 	private String language, hmiLanguage; // represents Language enum
+	private String appName, ngnAppName;
+	private List<TTSChunk> ttsName;
+	private List<String> vrSynonyms;
 	
 	/**
 	 * Constructs a new ChangeRegistration object
@@ -47,6 +57,17 @@ public class ChangeRegistration extends RPCRequest {
         default:
             this.language = JsonUtils.readStringFromJsonObject(jsonObject, KEY_LANGUAGE);
             this.hmiLanguage = JsonUtils.readStringFromJsonObject(jsonObject, KEY_HMI_DISPLAY_LANGUAGE);
+            this.appName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_APP_NAME);
+            this.ngnAppName = JsonUtils.readStringFromJsonObject(jsonObject, KEY_NGN_MEDIA_SCREEN_NAME);
+            this.vrSynonyms = JsonUtils.readStringListFromJsonObject(jsonObject, KEY_VR_SYNONYMS);
+            
+            List<JSONObject> ttsNameObjs = JsonUtils.readJsonObjectListFromJsonObject(jsonObject, KEY_TTS_NAME);
+            if(ttsNameObjs != null){
+                this.ttsName = new ArrayList<TTSChunk>(ttsNameObjs.size());
+                for(JSONObject ttsNameObj : ttsNameObjs){
+                    this.ttsName.add(new TTSChunk(ttsNameObj));
+                }
+            }
             break;
         }
     }
@@ -89,6 +110,93 @@ public class ChangeRegistration extends RPCRequest {
     	return Language.valueForJsonName(this.hmiLanguage, sdlVersion);
     }
 
+    /**
+     * Gets app name
+     * 
+     * @return The app name
+     */
+    public String getAppName(){
+        return appName;
+    }
+
+    /**
+     * Sets app name
+     * 
+     * @param appName App name to set
+     */
+    public void setAppName(String appName){
+        this.appName = appName;
+    }
+
+    /**
+     * Gets NGN media screen app name
+     * 
+     * @return The NGN app name
+     */
+    public String getNgnMediaScreenAppName(){
+        return ngnAppName;
+    }
+
+    /**
+     * Sets NGN media screen app name
+     * 
+     * @param ngnAppName The NGN app name
+     */
+    public void setNgnMediaScreenAppName(String ngnAppName){
+        this.ngnAppName = ngnAppName;
+    }
+
+    /**
+     * Gets the TTS name
+     * 
+     * @return The TTS name
+     */
+    public List<TTSChunk> getTtsName(){
+        return ttsName;
+    }
+
+    /**
+     * Sets the TTS name
+     * 
+     * @param ttsName The TTS name to set
+     */
+    public void setTtsName(List<TTSChunk> ttsName){
+        this.ttsName = ttsName;
+    }
+
+    /**
+     * Gets the List<String> representing the an array of 1-100 elements, each
+     * element containing a voice-recognition synonym
+     * 
+     * @return List<String> -a List value representing the an array of
+     *         1-100 elements, each element containing a voice-recognition
+     *         synonym
+     */
+    public List<String> getVrSynonyms(){
+        return vrSynonyms;
+    }
+
+    /**
+     * Sets a vrSynonyms representing the an array of 1-100 elements, each
+     * element containing a voice-recognition synonym
+     * 
+     * @param vrSynonyms
+     *            a List<String> value representing the an array of 1-100
+     *            elements
+     *            <p>
+     *            <b>Notes: </b>
+     *            <ul>
+     *            <li>Each vr synonym is limited to 40 characters, and there can
+     *            be 1-100 synonyms in array</li>
+     *            <li>May not be the same (by case insensitive comparison) as
+     *            the name or any synonym of any currently-registered
+     *            application</li>
+     *            </ul>
+     */
+    public void setVrSynonyms(List<String> vrSynonyms){
+        this.vrSynonyms = vrSynonyms;
+    }
+
     @Override
     public JSONObject getJsonParameters(int sdlVersion){
         JSONObject result = super.getJsonParameters(sdlVersion);
@@ -97,6 +205,12 @@ public class ChangeRegistration extends RPCRequest {
         default:
             JsonUtils.addToJsonObject(result, KEY_LANGUAGE, this.language);
             JsonUtils.addToJsonObject(result, KEY_HMI_DISPLAY_LANGUAGE, this.hmiLanguage);
+            JsonUtils.addToJsonObject(result, KEY_APP_NAME, this.appName);
+            JsonUtils.addToJsonObject(result, KEY_NGN_MEDIA_SCREEN_NAME, this.ngnAppName);
+            JsonUtils.addToJsonObject(result, KEY_VR_SYNONYMS, (this.vrSynonyms == null) ? null :
+                JsonUtils.createJsonArray(this.vrSynonyms));
+            JsonUtils.addToJsonObject(result, KEY_TTS_NAME, (this.ttsName == null) ? null :
+                JsonUtils.createJsonArrayOfJsonObjects(this.ttsName, sdlVersion));
             break;
         }
         
@@ -108,7 +222,11 @@ public class ChangeRegistration extends RPCRequest {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((hmiLanguage == null) ? 0 : hmiLanguage.hashCode());
-		result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((appName == null) ? 0 : appName.hashCode());
+        result = prime * result + ((ngnAppName == null) ? 0 : ngnAppName.hashCode());
+        result = prime * result + ((ttsName == null) ? 0 : ttsName.hashCode());
+        result = prime * result + ((vrSynonyms == null) ? 0 : vrSynonyms.hashCode());
 		return result;
 	}
 
@@ -131,13 +249,41 @@ public class ChangeRegistration extends RPCRequest {
 		} else if (!hmiLanguage.equals(other.hmiLanguage)) { 
 			return false;
 		}
-		if (language == null) {
-			if (other.language != null) { 
-				return false;
-			}
-		} else if (!language.equals(other.language)) { 
-			return false;
-		}
+        if (language == null) {
+            if (other.language != null) { 
+                return false;
+            }
+        } else if (!language.equals(other.language)) { 
+            return false;
+        }
+        if (appName == null) {
+            if (other.appName != null) { 
+                return false;
+            }
+        } else if (!appName.equals(other.appName)) { 
+            return false;
+        }
+        if (ngnAppName == null) {
+            if (other.ngnAppName != null) { 
+                return false;
+            }
+        } else if (!ngnAppName.equals(other.ngnAppName)) { 
+            return false;
+        }
+        if (vrSynonyms == null) {
+            if (other.vrSynonyms != null) { 
+                return false;
+            }
+        } else if (!vrSynonyms.equals(other.vrSynonyms)) { 
+            return false;
+        }
+        if (ttsName == null) {
+            if (other.ttsName != null) { 
+                return false;
+            }
+        } else if (!ttsName.equals(other.ttsName)) { 
+            return false;
+        }
 		return true;
 	}
 }

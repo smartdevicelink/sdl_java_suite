@@ -11,6 +11,8 @@ import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.AlertManeuver;
+import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistration;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
@@ -66,6 +68,8 @@ import com.smartdevicelink.proxy.rpc.ResetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessage;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendLocation;
+import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
@@ -75,6 +79,8 @@ import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbt;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.Slider;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -92,6 +98,8 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.UpdateTurnList;
+import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonName;
 
 /**
@@ -315,6 +323,10 @@ public enum SdlCommand implements JsonName{
     ON_TOUCH_EVENT("OnTouchEvent", null, null, OnTouchEvent.class),
     DIAGNOSTIC_MESSAGE("DiagnosticMessage", DiagnosticMessage.class, DiagnosticMessageResponse.class, null),
     ON_LOCK_SCREEN_STATUS("OnLockScreenStatus", null, null, OnLockScreenStatus.class),
+    ALERT_MANEUVER("AlertManeuver", AlertManeuver.class, AlertManeuverResponse.class, null),
+    SEND_LOCATION("SendLocation", SendLocation.class, SendLocationResponse.class, null),
+    SHOW_CONSTANT_TBT("ShowConstantTBT", ShowConstantTbt.class, ShowConstantTbtResponse.class, null),
+    UPDATE_TURN_LIST("UpdateTurnList", UpdateTurnList.class, UpdateTurnListResponse.class, null),
     
     //Future commands go here.
     
