@@ -106,7 +106,7 @@ public class MultiplexBluetoothTransport {
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public MultiplexBluetoothTransport(Handler handler) {
+    private MultiplexBluetoothTransport(Handler handler) {
     	//Log.w(TAG, "Creating Bluetooth Serial Adapter");
        // mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;

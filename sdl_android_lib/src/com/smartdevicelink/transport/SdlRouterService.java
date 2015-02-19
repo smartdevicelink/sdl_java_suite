@@ -764,7 +764,7 @@ public abstract class SdlRouterService extends Service{
     		Log.d(TAG,"Connecting to device: " + device.getName().toString());
 			if(mSerialService == null || !mSerialService.isConnected())
 			{	// Set up the Bluetooth serial object				
-				mSerialService = new MultiplexBluetoothTransport(mHandlerBT);
+				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 			}
 			// We've been given a device - let's connect to it
 			if(!device.getName().equalsIgnoreCase("livio_lvc02a")) {
