@@ -15,11 +15,6 @@ public class AirbagStatus extends RPCObject {
     public static final String KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED = "passengerSideAirbagDeployed";
     public static final String KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED = "passengerCurtainAirbagDeployed";
     public static final String KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED = "passengerKneeAirbagDeployed";
-
-    // TODO: need to have a better mechanism for propagating SDL version throughout the system.  Having an instance variable
-    //       doesn't make much sense, having a static variable is annoying to set for each class and reading version from
-    //       some other class creates a dependency for all JsonParameters classes.
-    private static int sdlVersion = -1; // TODO: default to "SDL_VERSION_INVALID" or something pre-defined
     
     // TODO: refactor these strings into a HashMap<String, String> object and implement AirbagZone enum for different
     //       airbags.  This will allow us to loop and utilize a single API instead of having multiple setter/getters

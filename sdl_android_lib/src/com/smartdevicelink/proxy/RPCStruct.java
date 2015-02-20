@@ -14,8 +14,7 @@ import com.smartdevicelink.util.JsonUtils.JsonInterfaces.JsonParameters;
  */
 public abstract class RPCStruct implements JsonParameters {
 
-	// TODO: Set Version number from SdlProxyBase when connection occurs
-	protected static int sdlVersion = 0; // TODO: need to default to pre-defined values when versioning system improves
+	protected static int sdlVersion = Version.SDL_CURRENT_VERSION;
 	
 	/**
 	 * This abstract method creates the entire JSON object that will be sent through the proxy to SDL core.

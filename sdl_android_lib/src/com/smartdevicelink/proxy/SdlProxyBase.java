@@ -1621,7 +1621,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_prerecordedSpeech = msg.getPrerecordedSpeech();
 					_sdlLanguage = msg.getLanguage();
 					_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
+					
+                    // Note that we don't know the version code until we get register app interface response.
+                    // This means that register app interface request can never change.
 					_sdlMsgVersion = msg.getSdlMsgVersion();
+					
+					if(_sdlMsgVersion != null){
+					    // Tell RPC messages what version they're sending messages to
+					    int versionCode = Version.getVersionCode(_sdlMsgVersion);
+					    RPCStruct.setSdlVersion(versionCode);
+					}
+					
 					_vrCapabilities = msg.getVrCapabilities();
 					_vehicleType = msg.getVehicleType();
 					_proxyVersionInfo = msg.getProxyVersionInfo();																			
@@ -1633,7 +1643,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_bResumeSuccess = false;
 							_lastHashID = null;
 						}
-						else if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getResultCode() == Result.SUCCESS) )
+						else if ( (_sdlMsgVersion.getMajorVersion() >= Version.SDL_3_X) && (_lastHashID != null) && 
+						        (msg.getResultCode() == Result.SUCCESS) )
 							_bResumeSuccess = true;				
 					}
 					_diagModes = msg.getSupportedDiagModes();

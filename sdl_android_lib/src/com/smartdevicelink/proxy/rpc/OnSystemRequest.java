@@ -68,9 +68,8 @@ public class OnSystemRequest extends RPCNotification implements BulkData{
         }
         
         switch(sdlVersion){
-        // TODO: what versions use the "v1" JSON keys?
+        // TODO: what versions use the "v1" JSON keys? is it used in v2 as well?
         case 1: // fall through
-        case 2: 
             this.url = JsonUtils.readStringFromJsonObject(jsonObject, KEY_URL_V1);
             this.requestType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_REQUEST_TYPE);
             this.fileType = JsonUtils.readStringFromJsonObject(jsonObject, KEY_FILE_TYPE);
