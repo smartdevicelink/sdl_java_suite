@@ -62,7 +62,9 @@ public class RPCStruct {
 		if (bulkData != null) {
 			this._bulkData = new byte[bulkData.length];
 			System.arraycopy(bulkData, 0, _bulkData, 0, bulkData.length);
-			//this._bulkData = bulkData;
+		}
+		else{
+		    this._bulkData = null;
 		}
 	}
 	
