@@ -40,6 +40,10 @@ public enum PrimaryAudioSource {
      * @return PrimaryAudioSource
      */	
     public static PrimaryAudioSource valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

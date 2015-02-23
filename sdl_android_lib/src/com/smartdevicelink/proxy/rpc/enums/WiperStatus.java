@@ -18,6 +18,10 @@ public enum WiperStatus {
 	NO_DATA_EXISTS;
 
     public static WiperStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

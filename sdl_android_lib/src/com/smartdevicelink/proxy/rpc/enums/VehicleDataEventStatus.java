@@ -23,6 +23,10 @@ public enum VehicleDataEventStatus {
      * @return VehicleDataEventStatus
      */   	
     public static VehicleDataEventStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

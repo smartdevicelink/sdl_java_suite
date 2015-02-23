@@ -10,6 +10,10 @@ public enum ECallConfirmationStatus {
     CALL_COMPLETE_DTMF_TIMEOUT;
 
     public static ECallConfirmationStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

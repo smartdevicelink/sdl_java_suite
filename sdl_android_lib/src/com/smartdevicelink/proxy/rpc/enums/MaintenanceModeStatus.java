@@ -7,6 +7,10 @@ public enum MaintenanceModeStatus {
 	FEATURE_NOT_PRESENT;
 
     public static MaintenanceModeStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

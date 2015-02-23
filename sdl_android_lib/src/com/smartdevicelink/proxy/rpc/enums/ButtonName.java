@@ -118,7 +118,11 @@ public enum ButtonName{
 	PRESET_9, CUSTOM_BUTTON, SEARCH;
 
     public static ButtonName valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
     
     /**
@@ -131,7 +135,10 @@ public enum ButtonName{
      * @return Integer
      */
     public static Integer indexForPresetButton(ButtonName buttonName) {
-    	
+        if(buttonName == null){
+            return null;
+        }
+        
     	Integer returnIndex = null;
     	
     	switch(buttonName) {        	

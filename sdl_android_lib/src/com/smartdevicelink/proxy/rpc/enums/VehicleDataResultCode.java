@@ -11,6 +11,10 @@ public enum VehicleDataResultCode {
 	IGNORED;
 
     public static VehicleDataResultCode valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

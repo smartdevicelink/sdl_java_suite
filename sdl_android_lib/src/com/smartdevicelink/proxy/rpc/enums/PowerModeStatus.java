@@ -12,6 +12,10 @@ public enum PowerModeStatus {
     CRANK_3;
 
     public static PowerModeStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

@@ -23,6 +23,10 @@ public enum DriverDistractionState {
 	 * @return DriverDistractionState
 	 */
 	public static DriverDistractionState valueForString(String value) {
-    	return valueOf(value);
+    	try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

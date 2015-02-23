@@ -19,6 +19,10 @@ public enum HmiZoneCapabilities {
 	BACK;
 
     public static HmiZoneCapabilities valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

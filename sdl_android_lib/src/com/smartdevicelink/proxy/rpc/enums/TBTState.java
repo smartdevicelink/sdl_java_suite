@@ -25,6 +25,10 @@ public enum TBTState {
      * @return TBTState
      */
     public static TBTState valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }
