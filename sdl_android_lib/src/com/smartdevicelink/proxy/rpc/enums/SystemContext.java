@@ -42,17 +42,21 @@ public enum SystemContext {
 	 */
 	SYSCTXT_ALERT("ALERT");
 
-    String internalName;
+	private final String INTERNAL_NAME;
     
     private SystemContext(String internalName) {
-        this.internalName = internalName;
+        this.INTERNAL_NAME = internalName;
     }
     
     public String toString() {
-        return this.internalName;
+        return this.INTERNAL_NAME;
     }
     
     public static SystemContext valueForString(String value) {
+        if(value == null){
+            return null;
+        }
+        
         for (SystemContext anEnum : EnumSet.allOf(SystemContext.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;

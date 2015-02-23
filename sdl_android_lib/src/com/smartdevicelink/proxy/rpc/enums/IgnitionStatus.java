@@ -36,6 +36,10 @@ public enum IgnitionStatus {
      * @return IgnitionStatus
      */   	
     public static IgnitionStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

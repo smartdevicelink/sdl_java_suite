@@ -7,17 +7,21 @@ public enum SoftButtonType {
 	SBT_IMAGE("IMAGE"),
 	SBT_BOTH("BOTH");
 
-    String internalName;
+	private final String INTERNAL_NAME;
     
     private SoftButtonType(String internalName) {
-        this.internalName = internalName;
+        this.INTERNAL_NAME = internalName;
     }
     
     public String toString() {
-        return this.internalName;
+        return this.INTERNAL_NAME;
     }
     
-    public static SoftButtonType valueForString(String value) {       	
+    public static SoftButtonType valueForString(String value) {
+        if(value == null){
+            return null;
+        }
+        
     	for (SoftButtonType anEnum : EnumSet.allOf(SoftButtonType.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;

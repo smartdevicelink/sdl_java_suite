@@ -35,16 +35,16 @@ public enum Language {
     DA_DK("DA-DK"),
     NO_NO("NO-NO");
 
-    String internalName;
+    private final String INTERNAL_NAME;
     
     private Language(String internalName) {
-        this.internalName = internalName;
+        this.INTERNAL_NAME = internalName;
     }
     /**
      * Returns a String representing a kind of Language
      */
     public String toString() {
-        return this.internalName;
+        return this.INTERNAL_NAME;
     }
     
     /**
@@ -52,7 +52,11 @@ public enum Language {
      * @param value a String
      * @return Language -EN-US, ES-MX or FR-CA
      */
-    public static Language valueForString(String value) {       	
+    public static Language valueForString(String value) {
+        if(value == null){
+            return null;
+        }
+        
     	for (Language anEnum : EnumSet.allOf(Language.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;

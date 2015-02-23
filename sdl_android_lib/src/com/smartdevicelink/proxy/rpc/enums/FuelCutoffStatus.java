@@ -6,6 +6,10 @@ public enum FuelCutoffStatus {
     FAULT;
 
     public static FuelCutoffStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

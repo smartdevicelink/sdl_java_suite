@@ -8,6 +8,10 @@ public enum PrerecordedSpeech {
     NEGATIVE_JINGLE;
 
     public static PrerecordedSpeech valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

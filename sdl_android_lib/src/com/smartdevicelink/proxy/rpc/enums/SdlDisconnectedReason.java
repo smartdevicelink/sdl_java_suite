@@ -23,10 +23,17 @@ public enum SdlDisconnectedReason {
     GENERIC_ERROR;
 	
 	public static SdlDisconnectedReason valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 	
 	public static SdlDisconnectedReason convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason reason) {
+	    if(reason == null){
+	        return null;
+	    }
 		
 		SdlDisconnectedReason returnReason = SdlDisconnectedReason.DEFAULT;
 		

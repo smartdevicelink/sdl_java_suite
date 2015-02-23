@@ -11,6 +11,10 @@ public enum EmergencyEventType {
     FAULT;
 
     public static EmergencyEventType valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

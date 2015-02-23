@@ -7,6 +7,10 @@ public enum DetailLevel {
 	VERBOSE;
 
     public static DetailLevel valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

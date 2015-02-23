@@ -7,6 +7,10 @@ public enum CarModeStatus {
 	CRASH;
 
     public static CarModeStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

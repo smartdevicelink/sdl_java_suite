@@ -12,7 +12,6 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -108,13 +107,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -150,13 +143,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -318,12 +305,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<HmiZoneCapabilities> newList = new ArrayList<HmiZoneCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    HmiZoneCapabilities toAdd = null;
-	                    try {
-	                        toAdd = HmiZoneCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_ZONE_CAPABILITIES, e);
-	                    }
+	                    HmiZoneCapabilities toAdd = HmiZoneCapabilities.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -363,12 +345,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<SpeechCapabilities> newList = new ArrayList<SpeechCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    SpeechCapabilities toAdd = null;
-	                    try {
-	                        toAdd = SpeechCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEECH_CAPABILITIES, e);
-	                    }
+	                    SpeechCapabilities toAdd = SpeechCapabilities.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -404,12 +381,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<PrerecordedSpeech> newList = new ArrayList<PrerecordedSpeech>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    PrerecordedSpeech toAdd = null;
-	                    try {
-	                        toAdd = PrerecordedSpeech.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRERECORDED_SPEECH, e);
-	                    }
+	                    PrerecordedSpeech toAdd = PrerecordedSpeech.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -447,12 +419,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<VrCapabilities> newList = new ArrayList<VrCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    VrCapabilities toAdd = null;
-	                    try {
-	                        toAdd = VrCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_VR_CAPABILITIES, e);
-	                    }
+	                    VrCapabilities toAdd = VrCapabilities.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }

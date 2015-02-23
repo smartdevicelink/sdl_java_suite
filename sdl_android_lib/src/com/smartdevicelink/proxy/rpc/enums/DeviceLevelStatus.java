@@ -36,6 +36,10 @@ public enum DeviceLevelStatus {
      * @return DeviceLevelStatus
      */	
     public static DeviceLevelStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

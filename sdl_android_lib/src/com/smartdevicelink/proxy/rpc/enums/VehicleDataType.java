@@ -33,6 +33,10 @@ public enum VehicleDataType {
     VEHICLEDATA_MYKEY;
 
     public static VehicleDataType valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

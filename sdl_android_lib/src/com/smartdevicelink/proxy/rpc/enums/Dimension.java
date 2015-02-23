@@ -20,14 +20,14 @@ public enum Dimension {
      */
     _3D("3D");
     
-    String internalName;
+    private final String INTERNAL_NAME;
 
     private Dimension(String internalName) {
-    	this.internalName = internalName;
+    	this.INTERNAL_NAME = internalName;
     }
     
     public String toString() {
-        return this.internalName;
+        return this.INTERNAL_NAME;
     }
     
     /**
@@ -36,6 +36,10 @@ public enum Dimension {
      * @return Dimension
      */    
     public static Dimension valueForString(String value) {
+        if(value == null){
+            return null;
+        }
+        
     	for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
