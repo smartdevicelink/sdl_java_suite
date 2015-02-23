@@ -3,12 +3,16 @@ package com.smartdevicelink.test.rpc.notifications;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.utils.Validator;
 
 public class OnSystemRequestTests extends BaseRpcTests{
 
@@ -18,6 +22,14 @@ public class OnSystemRequestTests extends BaseRpcTests{
     private static final String URL = "http://www.livioconnect.com";
     private static final FileType FILE_TYPE = FileType.BINARY;
     private static final RequestType REQUEST_TYPE = RequestType.HTTP;
+    
+    // TODO: read this from file somewhere
+    private static final String HTTP_REQUEST_JSON = "{\"HTTPRequest\":{\"body\":\"123456789abcdef\","+
+                                                    "\"headers\":{\"ContentType\":\"application/json\"" +
+                                                    ",\"ConnectTimeout\":60,\"DoOutput\":true," +
+                                                    "\"DoInput\":true,\"UseCaches\":false,\"RequestMethod\""+
+                                                    ":\"POST\",\"ReadTimeout\":60,\"InstanceFollowRedirects\""+
+                                                    ":false,\"charset\":\"utf-8\",\"Content-Length\":10743}}}";
     
     @Override
     protected RPCMessage createMessage(){
@@ -60,6 +72,31 @@ public class OnSystemRequestTests extends BaseRpcTests{
 
         return result;
     }
+    
+    public void testBulkData(){
+        JSONObject bulkDataJson = JsonUtils.createJsonObject(HTTP_REQUEST_JSON.getBytes());
+        JSONObject httpRequestJson = JsonUtils.readJsonObjectFromJsonObject(bulkDataJson, "HTTPRequest");
+        msg.setBulkData(HTTP_REQUEST_JSON.getBytes());
+        
+        String referenceBody = JsonUtils.readStringFromJsonObject(httpRequestJson, "body");
+        JSONObject referenceHeadersJson = JsonUtils.readJsonObjectFromJsonObject(httpRequestJson, "headers");
+        Headers referenceHeaders = null;
+        try{
+            referenceHeaders = new Headers(JsonRPCMarshaller.deserializeJSONObject(referenceHeadersJson));
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        
+        OnSystemRequest underTestMsg = (OnSystemRequest) msg;
+        String underTestBody = underTestMsg.getBody();
+        Headers underTestHeaders = underTestMsg.getHeader();
+        
+        assertEquals("Value for \"body\" key didn't match input value.", referenceBody, underTestBody);
+        assertTrue("Value for \"headers\" key didn't match input value.",
+                Validator.validateHeaders(referenceHeaders, underTestHeaders));
+        
+        msg.setBulkData(null);
+    }
 
     public void testFileType(){
         FileType data = ( (OnSystemRequest) msg ).getFileType();
@@ -89,6 +126,43 @@ public class OnSystemRequestTests extends BaseRpcTests{
     public void testRequestType(){
         RequestType data = ( (OnSystemRequest) msg ).getRequestType();
         assertEquals("Data didn't match input data.", REQUEST_TYPE, data);
+    }
+    
+    public void testBody(){
+        OnSystemRequest osr = (OnSystemRequest) msg;
+        String body = osr.getBody();
+        assertNull("Item was not null.", body);
+        
+        String testBody = "123ABC";
+        
+        osr.setBody(testBody);
+        
+        String readBody = osr.getBody();
+        assertEquals("Output value didn't match expected value.", testBody, readBody);
+    }
+    
+    public void testHeaders(){
+        OnSystemRequest osr = (OnSystemRequest) msg;
+        
+        Headers headers = osr.getHeader();
+        assertNull("Item was not null.", headers);
+        
+        Headers testHeaders = new Headers();
+        testHeaders.setCharset("ASCII");
+        testHeaders.setConnectTimeout(1000);
+        testHeaders.setContentLength(1024);
+        testHeaders.setContentType("application/json");
+        testHeaders.setDoInput(false);
+        testHeaders.setDoOutput(true);
+        testHeaders.setInstanceFollowRedirects(true);
+        testHeaders.setReadTimeout(800);
+        testHeaders.setRequestMethod("POST");
+        testHeaders.setUseCaches(false);
+        
+        osr.setHeaders(testHeaders);
+        
+        Headers readHeaders = osr.getHeader();
+        assertTrue("Output value didn't match expected value.", Validator.validateHeaders(testHeaders, readHeaders));
     }
 
     public void testNull(){

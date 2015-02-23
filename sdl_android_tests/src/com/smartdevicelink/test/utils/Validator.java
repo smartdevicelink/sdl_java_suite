@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
+import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
@@ -1306,5 +1307,56 @@ public class Validator{
     	}
     	
     	return true;
+    }
+    
+    public static boolean validateHeaders(Headers item1, Headers item2){
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+        
+        if( ! item1.getDoInput().equals(item2.getDoInput()) ){
+            return false;
+        }
+        
+        if( ! item1.getDoOutput().equals(item2.getDoOutput()) ){
+            return false;
+        }
+        
+        if( ! item1.getInstanceFollowRedirects().equals(item2.getInstanceFollowRedirects()) ){
+            return false;
+        }
+        
+        if( ! item1.getUseCaches().equals(item2.getUseCaches()) ){
+            return false;
+        }
+        
+        if( ! item1.getCharset().equals(item2.getCharset()) ){
+            return false;
+        }
+        
+        if( ! item1.getConnectTimeout().equals(item2.getConnectTimeout()) ){
+            return false;
+        }
+        
+        if( ! item1.getContentLength().equals(item2.getContentLength()) ){
+            return false;
+        }
+        
+        if( ! item1.getContentType().equals(item2.getContentType()) ){
+            return false;
+        }
+        
+        if( ! item1.getReadTimeout().equals(item2.getReadTimeout()) ){
+            return false;
+        }
+        
+        if( ! item1.getRequestMethod().equals(item2.getRequestMethod()) ){
+            return false;
+        }
+        
+        return true;
     }
 }

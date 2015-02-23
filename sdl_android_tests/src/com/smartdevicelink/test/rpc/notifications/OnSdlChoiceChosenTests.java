@@ -38,7 +38,7 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
         choice.setChoiceID(ID);
         choice.setVrCommands(VR_COMMANDS);
         
-        SdlChoice sdlChoice = new SdlChoice();
+        SdlChoice sdlChoice = msg.new SdlChoice(choice);
         
         msg.setTriggerSource(TRIGGER_SOURCE);
 		msg.setSdlChoice(sdlChoice);

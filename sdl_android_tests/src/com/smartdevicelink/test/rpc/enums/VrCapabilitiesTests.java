@@ -18,7 +18,7 @@ public class VrCapabilitiesTests extends TestCase {
 	}
 	
 	public void testInvalidEnum () {
-		String example = "tExT";
+		String example = "tExTx";
 		try {
 		    VrCapabilities temp = VrCapabilities.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
@@ -43,7 +43,8 @@ public class VrCapabilitiesTests extends TestCase {
  		List<VrCapabilities> enumValueList = Arrays.asList(VrCapabilities.values());
 
 		List<VrCapabilities> enumTestList = new ArrayList<VrCapabilities>();
-		enumTestList.add(VrCapabilities.Text);	
+		enumTestList.add(VrCapabilities.TEXT);
+		enumTestList.add(VrCapabilities.Text);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
