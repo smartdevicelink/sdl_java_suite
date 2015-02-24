@@ -75,7 +75,6 @@ public class OnSystemRequest extends RPCNotification {
         String result = null;
         
         try{
-            // TODO: does body need to conform to the funky logic in existing getBody method?
             result = httpJson.getString("body");
         }catch(JSONException e){
             Log.e("OnSystemRequest", "\"body\" key doesn't exist in bulk data.");
