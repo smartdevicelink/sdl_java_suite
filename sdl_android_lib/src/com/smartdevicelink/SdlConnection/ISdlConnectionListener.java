@@ -26,7 +26,4 @@ public interface ISdlConnectionListener {
 	
 	public void onHeartbeatTimedOut(byte sessionID);
 	
-	public void onOnStreamRPC(IPutFileResponseListener putFileListener, OnStreamRPC rpcNote);
-	
-	public void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result);	
 }

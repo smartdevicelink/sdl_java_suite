@@ -11,6 +11,8 @@ import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.PutFile;
@@ -20,18 +22,25 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
-	//private final static int BUFF_READ_SIZE = 1000000;
-	private Integer iInitialCorrID = 9999999;
+	private Integer iInitialCorrID = 0;
 	public final static int BUFF_READ_SIZE = 150000;
 	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
 	private Thread thread = null;
-	private int iFileSize = 0;
+	private long lFileSize = 0;
 	private String sFileName;
-
-	public StreamRPCPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, int iLength) throws IOException {
+	private SdlProxyBase<IProxyListenerBase> _proxy;
+	private IProxyListenerBase _proxyListener;
+	
+	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
-		iFileSize = iLength;
+		lFileSize = lLength;
 		iInitialCorrID = request.getCorrelationID();
+		if (proxy != null)
+		{
+			_proxy = proxy;
+			_proxyListener = _proxy.getProxyListener();
+			_proxy.addPutFileResponseListener(this);
+		}
 	}
 
 	public void start() throws IOException {
@@ -52,7 +61,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		}
 	}
 
-	public void handleStreamSuccess(RPCResponse rpc, InputStream is, Integer iSize)
+	private void handleStreamSuccess(RPCResponse rpc, Integer iSize)
 	{
 		StreamRPCResponse result = new StreamRPCResponse();
 		result.setSuccess(rpc.getSuccess());
@@ -61,13 +70,13 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		result.setFileName(sFileName);
 		result.setFileSize(iSize);
 		result.setCorrelationID(iInitialCorrID);
-		_streamListener.onStreamRPCResponse(this, result, _session, _rpcSessionID);				
-
+		if (_proxyListener != null)
+			_proxyListener.onStreamRPCResponse(result);
 		stop();
 		return;	
 	}
 	
-	public void handleStreamException(RPCResponse rpc, Exception e, String info, InputStream is)
+	private void handleStreamException(RPCResponse rpc, Exception e)
 	{
 		StreamRPCResponse result = new StreamRPCResponse();
 		result.setFileName(sFileName);
@@ -84,20 +93,17 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			result.setResultCode(Result.GENERIC_ERROR);
 			String sException = "";
 			
-			if (info != null)
-				sException = info;
 			if (e != null)
 				sException = sException + " " + e.toString();
 			
 			result.setInfo(sException);
 		}
-		
-		_streamListener.onStreamRPCResponse(this, result, _session, _rpcSessionID);				
+		if (_proxyListener != null)
+			_proxyListener.onStreamRPCResponse(result);		
 		if (e != null)
 			e.printStackTrace();
 		stop();
 		return;
-		
 	}	
 
 	public void run() {
@@ -114,11 +120,13 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			PutFile msg = (PutFile) _request;
 			sFileName = msg.getSdlFileName();
 			int iOffsetCounter = msg.getOffset();
-			_streamListener.onOnStreamRPC(this, null, _session, _rpcSessionID);
-			
-			if (iFileSize != 0)
+									
+			if (lFileSize != 0)
+			{
+				Integer iFileSize = (int) (long) lFileSize;
+				//TODO: PutFile RPC needs to be updated to accept Long as we might run into overflows since a Long can store a wider range than an Integer
 				msg.setLength(iFileSize);
-			
+			}
 			Integer iFileLength = msg.getLength();
 			
 			notificationList.clear();			
@@ -162,32 +170,36 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 				}
 			}
 		} catch (Exception e) {
-			handleStreamException(null, e, null, is);
+			handleStreamException(null, e);
 		}
 	}
 
 	@Override
-	public void onPutFileResponse(PutFileResponse response) {
-		
+	public void onPutFileResponse(PutFileResponse response) 
+	{	
 		OnStreamRPC streamNote = notificationList.get(response.getCorrelationID());
 		if (streamNote == null) return;
 
 		if (response.getSuccess())
-			_streamListener.onOnStreamRPC(this, streamNote, _session, _rpcSessionID);
-		
-		if (!response.getSuccess())
 		{
-			handleStreamException(response, null, null, is);
+			if (_proxyListener != null)
+				_proxyListener.onOnStreamRPC(streamNote);
 		}		
-		else if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
+		else
 		{
-			handleStreamSuccess(response, is, streamNote.getBytesComplete());
+			handleStreamException(response, null);
+		}		
+		
+		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
+		{
+			handleStreamSuccess(response, streamNote.getBytesComplete());
 		}
 	}
 
 	@Override
-	public void onPutFileStreamError(Exception e, String info) {
+	public void onPutFileStreamError(Exception e, String info) 
+	{
 		if (thread != null)
-			handleStreamException(null, e, info, is);
+			handleStreamException(null, e);
 	}
 }

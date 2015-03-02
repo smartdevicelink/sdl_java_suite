@@ -216,17 +216,5 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolSessionNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
 		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);		
-	}
-
-	@Override
-	public void onOnStreamRPC(IPutFileResponseListener putFileListener, OnStreamRPC rpcNote) {
-		this.sessionListener.onOnStreamRPC(putFileListener, rpcNote);
-	}
-
-	@Override
-	public void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result) {
-		this.sessionListener.onStreamRPCResponse(putFileListener, result);
-	
-	}
-	
+	}	
 }

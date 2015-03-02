@@ -8,8 +8,4 @@ import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 
 public interface IStreamListener {
 	void sendStreamPacket(ProtocolMessage pm);
-	
-	void onOnStreamRPC(IPutFileResponseListener puFileListener, OnStreamRPC rpcNote, SessionType sType, byte sessionID);
-	
-	void onStreamRPCResponse(IPutFileResponseListener putFileListener, StreamRPCResponse result, SessionType sType, byte sessionID);	
 }
