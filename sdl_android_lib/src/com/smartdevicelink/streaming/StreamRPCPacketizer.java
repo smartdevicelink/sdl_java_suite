@@ -23,7 +23,7 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
 	private Integer iInitialCorrID = 0;
-	public final static int BUFF_READ_SIZE = 150000;
+	private final static int BUFF_READ_SIZE = 1000000;
 	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
 	private Thread thread = null;
 	private long lFileSize = 0;
@@ -152,7 +152,11 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					pm.setSessionType(_session);
 					pm.setFunctionID(FunctionID.getFunctionID(msg.getFunctionName()));
 					
-					pm.setBulkData(buffer, length);
+					if (buffer.length != length)
+						pm.setBulkData(buffer, length);
+					else
+						pm.setBulkDataNoCopy(buffer);
+
 					pm.setCorrID(msg.getCorrelationID());
 						
 					notification = new OnStreamRPC();
