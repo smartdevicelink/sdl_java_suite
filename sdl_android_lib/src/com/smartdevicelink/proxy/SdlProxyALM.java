@@ -21,7 +21,6 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
-import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.trace.SdlTrace;
@@ -1076,16 +1075,6 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}	
 	/***************************************** END OF TRANSPORT SWITCHING SUPPORT ***************************************/
-	
-	// Allow applications using ALM to reset the proxy (dispose and reinstantiate)
-	/**
-	 * Disconnects the application from SDL, then recreates the transport such that
-	 * the next time a SDL unit discovers applications, this application will be
-	 * available.
-	 */
-	public void resetProxy() throws SdlException {
-		super.cycleProxy(SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
-	}
 	
 	/********* Getters for values returned by RegisterAppInterfaceResponse **********/
 	

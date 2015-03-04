@@ -218,11 +218,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onTransportError(String info, Exception e) {
-			DebugTool.logError("Transport failure: " + info, e);
 			
 			if (_advancedLifecycleManagementEnabled) {			
-				// Cycle the proxy
-				cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				// Close the proxy
+				closeProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
 			} else {
 				notifyProxyClosed(info, e, SdlDisconnectedReason.TRANSPORT_ERROR);
 			}
@@ -1093,12 +1092,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return DebugTool.isDebugEnabled();
 	}	
 	
-	
-	@Deprecated
-	public void close() throws SdlException {
-		dispose();
-	}
-	
 	private void cleanProxy(SdlDisconnectedReason disconnectedReason) throws SdlException {
 		try {
 			
@@ -1144,7 +1137,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Terminates the App's Interface Registration, closes the transport connection, ends the protocol session, and frees any resources used by the proxy.
 	 */
-	public void dispose() throws SdlException
+	private void dispose() throws SdlException
 	{		
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -1191,26 +1184,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	} // end-method
 
 	
-	private static Object CYCLE_LOCK = new Object();
+	private static Object CLOSE_LOCK = new Object();
 	
-	private boolean _cycling = false;
+	private boolean _closing = false;
 	
 	// Method to cycle the proxy, only called in ALM
-	protected void cycleProxy(SdlDisconnectedReason disconnectedReason) {		
-		if (_cycling) return;
+	protected void closeProxy(SdlDisconnectedReason disconnectedReason) {		
+		if (_closing) return;
 		
-		synchronized(CYCLE_LOCK)
+		synchronized(CLOSE_LOCK)
 		{
 		try{			
-				_cycling = true;
-				cleanProxy(disconnectedReason);
-				initializeProxy();
-				notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);							
+				_closing = true;
+				notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CLOSED), disconnectedReason);
+				dispose();
 			}
 		 catch (SdlException e) {
 			Intent sendIntent = createBroadcastIntent();
-			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "cycleProxy");
-			updateBroadcastIntent(sendIntent, "COMMENT1", "Proxy cycled, exception cause: " + e.getSdlExceptionCause());
+			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "closeProxy");
+			updateBroadcastIntent(sendIntent, "COMMENT1", "Proxy closed, exception cause: " + e.getSdlExceptionCause());
 			sendBroadcastIntent(sendIntent);
 
 			switch(e.getSdlExceptionCause()) {
@@ -1223,13 +1215,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							new SdlException("Cannot locate a Bluetooth adapater. A SDL connection is impossible on this device until a Bluetooth adapter is added.", SdlExceptionCause.BLUETOOTH_ADAPTER_NULL), SdlDisconnectedReason.BLUETOOTH_ADAPTER_ERROR);
 					break;
 				default :
-					notifyProxyClosed("Cycling the proxy failed.", e, SdlDisconnectedReason.GENERIC_ERROR);
+					notifyProxyClosed("Closing the proxy failed.", e, SdlDisconnectedReason.GENERIC_ERROR);
 					break;
 			}
 		} catch (Exception e) { 
-			notifyProxyClosed("Cycling the proxy failed.", e, SdlDisconnectedReason.GENERIC_ERROR);
+			notifyProxyClosed("Closing the proxy failed.", e, SdlDisconnectedReason.GENERIC_ERROR);
 		}
-			_cycling = false;
+			_closing = false;
 		}
 	}
 
@@ -2548,7 +2540,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (_advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
-                    cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+					closeProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
                 } else {
 					if (_callbackToUIThread) {
 						// Run in UI thread
