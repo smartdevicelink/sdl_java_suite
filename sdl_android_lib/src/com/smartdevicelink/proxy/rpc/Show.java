@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.ISoftButton;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
@@ -32,7 +33,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see Alert
  * @see SetMediaClockTimer
  */
-public class Show extends RPCRequest {
+public class Show extends RPCRequest implements ISoftButton {
 	public static final String KEY_GRAPHIC = "graphic";
 	public static final String KEY_CUSTOM_PRESETS = "customPresets";
 	public static final String KEY_MAIN_FIELD_1 = "mainField1";
@@ -418,6 +419,7 @@ public class Show extends RPCRequest {
 	 *         defined by the App
 	 * @since SmartDeviceLink 2.0
 	 */
+    @Override
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
         if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
@@ -455,6 +457,7 @@ public class Show extends RPCRequest {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
+    @Override
     public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
             parameters.put(KEY_SOFT_BUTTONS, softButtons);
@@ -505,4 +508,18 @@ public class Show extends RPCRequest {
         	parameters.remove(KEY_CUSTOM_PRESETS);
         }
     }
+    
+	@Override
+	public void addSoftButton(SoftButton softButton) {
+		if (softButton == null)
+			return;
+		
+		List<SoftButton> buttonList = getSoftButtons();
+		
+		if (buttonList == null)
+			buttonList = new ArrayList<SoftButton>();
+		
+		buttonList.add(softButton);
+		setSoftButtons(buttonList);
+	}     
 }

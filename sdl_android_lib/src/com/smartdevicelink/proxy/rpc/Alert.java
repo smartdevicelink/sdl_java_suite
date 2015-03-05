@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.ISoftButton;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
@@ -38,7 +39,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see Show
  * @see Speak
  */
-public class Alert extends RPCRequest {
+public class Alert extends RPCRequest implements ISoftButton {
 	public static final String KEY_PLAY_TONE = "playTone";
 	public static final String KEY_DURATION = "duration";
 	public static final String KEY_ALERT_TEXT_1 = "alertText1";
@@ -276,6 +277,7 @@ public class Alert extends RPCRequest {
 	 *         object
 	 * @since SmartDeviceLink 2.0
 	 */
+    @Override
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
         if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
@@ -311,7 +313,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    
+    @Override
     public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
             parameters.put(KEY_SOFT_BUTTONS, softButtons);
@@ -332,5 +334,18 @@ public class Alert extends RPCRequest {
         } else {
             parameters.remove(KEY_PROGRESS_INDICATOR);
         }
-    }    
+    }
+	@Override
+	public void addSoftButton(SoftButton softButton) {
+		if (softButton == null)
+			return;
+		
+		List<SoftButton> buttonList = getSoftButtons();
+		
+		if (buttonList == null)
+			buttonList = new ArrayList<SoftButton>();
+		
+		buttonList.add(softButton);
+		setSoftButtons(buttonList);
+	}     
 }

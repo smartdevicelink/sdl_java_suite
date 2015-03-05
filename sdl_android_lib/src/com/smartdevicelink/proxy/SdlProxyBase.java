@@ -52,6 +52,7 @@ import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
+import com.smartdevicelink.proxy.interfaces.IProxyListenerABS;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.*;
@@ -351,7 +352,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			_preRegisterd = preRegister;
 		}
 		
-		if (bAppResumeEnab != null && bAppResumeEnab)
+		if (bAppResumeEnab != null && bAppResumeEnab && sHashID != null)
 		{
 			_bAppResumeEnabled = true;
 			_lastHashID = sHashID;
@@ -1492,9 +1493,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						{
 							_bResumeSuccess = false;
 							_lastHashID = null;
+							if (_proxyListener instanceof IProxyListenerABS) 
+							{
+								((IProxyListenerABS)_proxyListener).onResumeDataPersistence(_bResumeSuccess);
+							}
 						}
 						else if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getResultCode() == Result.SUCCESS) )
+						{
 							_bResumeSuccess = true;				
+							if (_proxyListener instanceof IProxyListenerABS) 
+							{
+								((IProxyListenerABS)_proxyListener).onResumeDataPersistence(_bResumeSuccess);
+							}
+						}
 					}
 					_diagModes = msg.getSupportedDiagModes();
 					
@@ -1531,7 +1542,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								if (_proxyListener instanceof IProxyListener) {
 									((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								} else if (_proxyListener instanceof IProxyListenerALM) {
-									//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
+									((IProxyListenerABS)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								}
 							}
 						});
@@ -1539,7 +1550,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (_proxyListener instanceof IProxyListener) {
 							((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						} else if (_proxyListener instanceof IProxyListenerALM) {
-							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
+							((IProxyListenerABS)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
 					}
 				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
@@ -1641,10 +1652,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					{
 						_bResumeSuccess = false;
 						_lastHashID = null;
+						if (_proxyListener instanceof IProxyListenerABS) 
+						{
+							((IProxyListenerABS)_proxyListener).onResumeDataPersistence(_bResumeSuccess);
+						}						
 					}
 					else if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getResultCode() == Result.SUCCESS) )
+					{
 						_bResumeSuccess = true;				
+						if (_proxyListener instanceof IProxyListenerABS) 
+						{
+							((IProxyListenerABS)_proxyListener).onResumeDataPersistence(_bResumeSuccess);
+						}						
+					}
 				}						
+									
 				
 				_diagModes = msg.getSupportedDiagModes();				
 				
@@ -1677,7 +1699,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								if (_proxyListener instanceof IProxyListener) {
 									((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								} else if (_proxyListener instanceof IProxyListenerALM) {
-									//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
+									((IProxyListenerABS)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								}
 							}
 						});
@@ -1685,7 +1707,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (_proxyListener instanceof IProxyListener) {
 							((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						} else if (_proxyListener instanceof IProxyListenerALM) {
-							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
+							((IProxyListenerABS)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
 					}
 				}
