@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import com.smartdevicelink.abstraction.listeners.AudioPassThruListener;
 import com.smartdevicelink.abstraction.listeners.ButtonListener;
+import com.smartdevicelink.abstraction.listeners.DriverDistractionListener;
 import com.smartdevicelink.abstraction.listeners.FirstFullHMINotificationListener;
 import com.smartdevicelink.abstraction.listeners.HMINotificationListener;
 import com.smartdevicelink.abstraction.listeners.HashChangeListener;
@@ -65,6 +66,8 @@ public abstract class SdlAbstraction {
 	private AudioPassThruListener mAudioPassThruListener;
 	private SparseArray<OnCommandListener> mOnCommandListeners;
 	private VehicleDataListener mVehicleDataListener;
+	private DriverDistractionListener mDriverDistractionListener;
+	
 
 	private SdlProxyALM mSdlProxy;
 
@@ -213,6 +216,10 @@ public abstract class SdlAbstraction {
 
 	}
 
+	public final void setDriverDistractionListener(DriverDistractionListener listener) {
+		this.mDriverDistractionListener = listener;
+	}
+	
 	public final void setResumeDataPersistenceListener(ResumeDataPersistenceListener listener){
 		mResumeDataPersistenceListener = listener;
 	}
@@ -271,9 +278,12 @@ public abstract class SdlAbstraction {
 	public abstract void onOnLockScreenNotification(OnLockScreenStatus status);
 	public abstract void onOnLanguageChange(OnLanguageChange languageChange);
 	public abstract void onOnPermissionsChange(OnPermissionsChange permissions);
-	public void onDriverDistraction(OnDriverDistraction arg0){}
 	public abstract void onProxyClosed(Exception ex,SdlDisconnectedReason reason);
 	public abstract void onError(Exception ex,String info);
+	
+	public final void onDriverDistraction(OnDriverDistraction arg0){
+		mDriverDistractionListener.onDriverDistraction(arg0.getState());
+	}
 		
 	private Integer getAutoIncID(int iTypePar){
 		if (iTypePar == CORRELATION_ID)
