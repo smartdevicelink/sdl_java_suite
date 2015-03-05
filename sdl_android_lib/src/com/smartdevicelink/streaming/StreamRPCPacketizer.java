@@ -76,7 +76,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		return;	
 	}
 	
-	private void handleStreamException(RPCResponse rpc, Exception e)
+	private void handleStreamException(RPCResponse rpc, Exception e, String error)
 	{
 		StreamRPCResponse result = new StreamRPCResponse();
 		result.setFileName(sFileName);
@@ -96,6 +96,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			if (e != null)
 				sException = sException + " " + e.toString();
 			
+			sException.concat(error);
 			result.setInfo(sException);
 		}
 		if (_proxyListener != null)
@@ -131,6 +132,14 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			
 			notificationList.clear();			
 			
+			//start reading from the stream at the given offset
+			long iSkipBytes = is.skip(iOffsetCounter);
+
+			if (iOffsetCounter != iSkipBytes)
+			{
+				handleStreamException(null,null," Error, PutFile offset invalid for file: " + sFileName);
+			}
+
 			while (!Thread.interrupted()) {				
 			
 				length = is.read(buffer, 0, BUFF_READ_SIZE);				
@@ -174,7 +183,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 				}
 			}
 		} catch (Exception e) {
-			handleStreamException(null, e);
+			handleStreamException(null, e, "");
 		}
 	}
 
@@ -191,7 +200,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		}		
 		else
 		{
-			handleStreamException(response, null);
+			handleStreamException(response, null, "");
 		}		
 		
 		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
@@ -204,6 +213,6 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	public void onPutFileStreamError(Exception e, String info) 
 	{
 		if (thread != null)
-			handleStreamException(null, e);
+			handleStreamException(null, e, "");
 	}
 }
