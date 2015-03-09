@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -26,46 +28,91 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_DATA = "data";
 	public static final String KEY_OFFSET = "offset";
 	public static final String KEY_LENGTH = "length";
-
 	
-	Hashtable<String, Object> httpreqparams = null;
-	JSONObject myJSONObj = null;
+	private String body;
+	private Headers headers;
 	
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST);
     }
 
-    @SuppressWarnings("unchecked")
     public OnSystemRequest(Hashtable<String, Object> hash) {
-        super(hash);
-        
-        //testing
-        //String sJson = "{\"HTTPRequest\":{\"headers\":{\"ContentType\":\"application/json\",\"ConnectTimeout\":60,\"DoOutput\":true,\"DoInput\":true,\"UseCaches\":false,\"RequestMethod\":\"POST\",\"ReadTimeout\":60,\"InstanceFollowRedirects\":false,\"charset\":\"utf-8\",\"Content-Length\":10743},\"body\":\"{\\\"data\\\":[\\\"HQcYAAAp+Ul19L\\\"]}\"}}";
-		try {			
-			byte[] bulkData = (byte[]) hash.get(RPCStruct.KEY_BULK_DATA);
-			
-			if (bulkData == null) return;
-			
-			String jsonString = new String(bulkData);
-
-			myJSONObj = new JSONObject(jsonString);
-			Hashtable<String, Object> temp = JsonRPCMarshaller.deserializeJSONObject(myJSONObj);			
-			httpreqparams = (Hashtable<String, Object>) temp.get("HTTPRequest");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}            
+        this(hash, (byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
     }
     
-    public void setBinData(byte[] aptData) {
-        if (aptData != null) {
-            store.put(RPCStruct.KEY_BULK_DATA, aptData);
-        } else {
-        	store.remove(RPCStruct.KEY_BULK_DATA);
-        }
+    public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
+        super(hash);
+        setBulkData(bulkData);
     }
+    
+    private void handleBulkData(byte[] bulkData){
+        if(bulkData == null){
+            return;
+        }
+        
+        JSONObject httpJson;
+        String tempBody = null;
+        Headers tempHeaders = null;
+        
+        try{
+            JSONObject bulkJson = new JSONObject(new String(bulkData));
+            httpJson = bulkJson.getJSONObject("HTTPRequest");
+            tempBody = getBody(httpJson);
+            tempHeaders = getHeaders(httpJson);
+        }catch(JSONException e){
+            Log.e("OnSystemRequest", "HTTPRequest in bulk data was malformed.");
+            e.printStackTrace();
+        }catch(NullPointerException e){
+            Log.e("OnSystemRequest", "Invalid HTTPRequest object in bulk data.");
+            e.printStackTrace();
+        }
+        
+        this.body = tempBody;
+        this.headers = tempHeaders;
+    }
+    
+    private String getBody(JSONObject httpJson){
+        String result = null;
+        
+        try{
+            result = httpJson.getString("body");
+        }catch(JSONException e){
+            Log.e("OnSystemRequest", "\"body\" key doesn't exist in bulk data.");
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
+    
+    private Headers getHeaders(JSONObject httpJson){
+        Headers result = null;
+        
+        try{
+            JSONObject httpHeadersJson = httpJson.getJSONObject("headers");
+            Hashtable<String, Object> httpHeadersHash = JsonRPCMarshaller.deserializeJSONObject(httpHeadersJson);
+            result = new Headers(httpHeadersHash);
+        }catch(JSONException e){
+            Log.e("OnSystemRequest", "\"headers\" key doesn't exist in bulk data.");
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
+    
+    @Deprecated
+    public void setBinData(byte[] aptData) {
+        setBulkData(aptData);
+    }
+    
+    @Deprecated
     public byte[] getBinData() {
-        return (byte[]) store.get(RPCStruct.KEY_BULK_DATA);
+        return getBulkData();
+    }
+    
+    @Override
+    public void setBulkData(byte[] bulkData){
+        super.setBulkData(bulkData);
+        handleBulkData(bulkData);
     }
     
     
@@ -84,71 +131,20 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public String getBody(){            	
-        
-    	JSONObject jLayer1 = null;
-        String sReturn = null;        
-        try
-        {
-        	if (httpreqparams != null)
-        	{
-	        	jLayer1 = myJSONObj.getJSONObject("HTTPRequest");        	
-	        	sReturn = jLayer1.getString("body");
-	        	return sReturn;
-        	}
-        	else if (myJSONObj != null)
-        	{
-        		//jLayer1 =  new JSONObject();
-        		//jLayer1.put("data", myJSONObj);
-        		return myJSONObj.toString();
-        	}
-        	else
-        	{
-        		return null;
-        	}
-        	
-        }
-		catch (Exception e) 
-		{
-			return null;        	
-        }
+        return this.body;
     }
     
     public void setBody(String body) {
-        if (body != null) {
-            parameters.put(KEY_BODY, body);
-        } else {
-            parameters.remove(KEY_BODY);
-        }
+        this.body = body;
     }
-    
     
     public void setHeaders(Headers header) {
-        if (header != null) {
-        	httpreqparams.put(KEY_HEADERS, header);
-        } else {
-        	httpreqparams.remove(KEY_HEADERS);
-        }
+        this.headers = header;
     }
- 
-    @SuppressWarnings("unchecked")
+
     public Headers getHeader() {
-    	if (httpreqparams == null) return null;
-    	
-    	Object obj = httpreqparams.get(KEY_HEADERS);
-    	if (obj == null) return null;
-        if (obj instanceof Headers) {
-            return (Headers) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Headers((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEADERS, e);
-            }
-        }
-        return null;
+    	return this.headers;
     }
-    
-    
     
     public RequestType getRequestType() {
         Object obj = parameters.get(KEY_REQUEST_TYPE);
