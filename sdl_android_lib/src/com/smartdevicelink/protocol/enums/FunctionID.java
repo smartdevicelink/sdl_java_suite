@@ -64,6 +64,8 @@ public class FunctionID {
 	public static final String SLIDER = "Slider";
 	public static final String ON_LOCK_SCREEN_STATUS = "OnLockScreenStatus";
 	public static final String ON_SDL_CHOICE_CHOSEN = "OnSdlChoiceChosen";
+	
+	public static final String SEND_LOCATION = "SendLocation";
 
     public FunctionID() {
     }
@@ -141,6 +143,7 @@ public class FunctionID {
             put(FunctionID.SET_DISPLAY_LAYOUT, 36);
             put(FunctionID.DIAGNOSTIC_MESSAGE, 37);
             put(FunctionID.SYSTEM_REQUEST, 38);
+            put(FunctionID.SEND_LOCATION, 39);
 
             /*
                 Base Notifications
