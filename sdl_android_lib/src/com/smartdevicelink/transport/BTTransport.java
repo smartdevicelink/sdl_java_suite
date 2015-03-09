@@ -331,13 +331,11 @@ public class BTTransport extends SdlTransport {
 	    	psm = new SdlPsm();
 	    }
 		public void halt() {
-			Log.v("JOEY", "Being told to halt in reader thread");
 			isHalted = true;
 		}
 		
 		private void acceptConnection() {
 			SdlTrace.logTransportEvent("BTTransport: Waiting for incoming RFCOMM connect", "", InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
-			Log.v("JOEY", "Is socket null? " + (_serverSocket == null));
 
 			try {
 				// Blocks thread until connection established.
@@ -385,12 +383,8 @@ public class BTTransport extends SdlTransport {
 		
 		private void readFromTransport() {
 			try {
-				//int bytesRead = -1;
-				Log.d("JOEY", "Attempting to read " + (_input==null));
 				try {
-					//byteRead = (byte) _input.read(buf);
 					byteRead = (byte)_input.read();
-					Log.d("JOEY", "we read a byte " + byteRead);
 				} catch (Exception e) {
 					e.printStackTrace();
 					if (!isHalted) {

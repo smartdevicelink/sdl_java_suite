@@ -124,13 +124,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				}
 			} // end-if
 		}
-		if(_transport!=null 		//FIXME we are here as of the meeting for SDL
+		/*if(_transport!=null 		//FIXME we are here as of the meeting for SDL
 				&& _transport.getTransportType() == TransportType.BLUETOOTH 
 				&& legacyTransportRequest!=null){
 			Log.w("JOEY", "Current in legacy mode, igrnoing close");
 			_protocol = new WiProProtocol(this);
 			return;
-		}
+		}*/
 		Log.v("JOEY", "close connection.");
 		synchronized (TRANSPORT_REFERENCE_LOCK) {
 			if (willRecycle) {
@@ -383,6 +383,23 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			for (SdlSession session : listenerList) {
 				session.onTransportDisconnected(info);
 			}
+			if(isLegacyModeEnabled()){
+				synchronized(TRANSPORT_REFERENCE_LOCK) {
+					// Ensure transport is null
+					if (_transport != null) {
+						if (_transport.getIsConnected()) {
+							_transport.disconnect();
+						}
+						_transport = null;
+					}
+				_transport = new BTTransport(SdlConnection.this);
+				try {
+					startTransport();
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+			}
+			}
 		}
 
 		@Override
@@ -486,6 +503,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}else{
 			legacyTransportRequest = null;
 		}
+	}
+	public static boolean isLegacyModeEnabled(){
+		return (legacyTransportRequest!=null);
 	}
     
 }
