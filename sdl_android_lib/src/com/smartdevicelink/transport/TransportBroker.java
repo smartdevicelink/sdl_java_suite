@@ -31,10 +31,25 @@ public class TransportBroker {
 			@Override
 			public void onReceive(Context context, Intent intent) 
 			{
+				if(intent.hasExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA)){
+					boolean enableLegacy = intent.getBooleanExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, false);
+					Log.d(TAG, "Setting legacy mode: " +enableLegacy );
+					enableLegacyMode(enableLegacy);
+					//TODO not sure yet i think we just let it DC
+					if(isLegacyModeEnabled()){
+						//Start bluetooth
+						//initBluetoothSerialService();
+						//NOTE: This is to avoid the hardware d/c right below. If we ever send more extras it will be important to note that we exit here
+						//return;							
+					}else{
+						//Stop bluetooth
+						//closeBluetoothSerialServer();
+					}
+				}
 				//Log.d(TAG, whereToReply + " received an Intent, checking to see what it is");
 				if(intent.hasExtra(TransportConstants.HARDWARE_DISCONNECTED)){
 					//We should shut down, so call 
-					//Log.d(TAG, "Being told the hardware disconected, calling onHfardwareDisconnect()");
+					Log.d(TAG, "Being told the hardware disconnected, calling onHfardwareDisconnect()");
 					onHardwareDisconnected(TransportType.valueOf(intent.getStringExtra(TransportConstants.HARDWARE_DISCONNECTED)));
 				}
 				if(intent.hasExtra(TransportConstants.HARDWARE_CONNECTED)){
@@ -316,6 +331,38 @@ public class TransportBroker {
 		private Context getContext(){
 			return currentContext;
 		}
+		
+		/***************************************************************************************************************************************
+		***********************************************  LEGACY  **************************************************************
+		****************************************************************************************************************************************/	
+		/* 
+		 * Due to old implementations of SDL/Applink, old versions can't support multiple sessions per RFCOMM channel. 
+		 * This causes a race condition in the router service where only the first app registered will be able to communicate with the
+		 * head unit. With this additional code, the router service will:
+		 * 1) Acknowledge it's connected to an old system
+		 * 2) d/c its bluetooth
+		 * 3) Send a message to all clients connected that legacy mode is enabled
+		 * 4) Each client spins up their own bluetooth RFCOMM listening channel
+		 * 5) Head unit will need to query apps again
+		 * 6) HU should then connect to each app by their own RFCOMM channel bypassing the router service
+		 * 7) When the phone is D/C from the head unit the router service will reset and tell clients legacy mode is now off
+		 */
+		
+		//private static MultiplexBluetoothTransport mSerialService = null;
+		private static boolean legacyModeEnabled = false;
 
+		private static Object LEGACY_LOCK = new Object();
+		
+		protected void enableLegacyMode(boolean enable){
+			synchronized(LEGACY_LOCK){
+				legacyModeEnabled = enable;
+			}
+		}
+		protected static boolean isLegacyModeEnabled(){
+			synchronized(LEGACY_LOCK){
+				return legacyModeEnabled;
+			}
+			
+		}
 	
 }

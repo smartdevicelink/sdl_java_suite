@@ -38,6 +38,7 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.util.BitConverter;
 
 /**
@@ -268,7 +269,12 @@ public abstract class SdlRouterService extends Service{
 							shouldServiceKeepRunning(intent);
 						}
 					else{//So we just got d/c'ed from the bluetooth...alright...Let the client know
-						//onTransportDisconnected(TransportType.BLUETOOTH); //TODO check that this is ok
+						if(legacyModeEnabled){
+							Log.d(TAG, "Legacy mode enabled and bluetooth d/c'ed, restarting router service bluetooth.");
+							enableLegacyMode(false);
+							onTransportDisconnected(TransportType.BLUETOOTH); //TODO check that this is ok
+							initBluetoothSerialService();
+						}
 					}
 			}
 		};
@@ -570,6 +576,7 @@ public abstract class SdlRouterService extends Service{
 		
 		Intent unregisterIntent = new Intent();
 		unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
+		unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
 		if(registeredApps== null || registeredApps.isEmpty()){
 			Log.w(TAG, "No clients to notify. Sending global notification.");
 			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX);
@@ -598,6 +605,14 @@ public abstract class SdlRouterService extends Service{
 
         try {//TODO remove debugging
     		Log.i(TAG, "******** Read packet with header: " +(packet).toString());
+    		if(packet.getVersion()== 1 
+    				&& packet.getFrameType() == FrameType.Control
+    				&& packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){
+    			//Enable legacy mode
+    			enableLegacyMode(true);
+    			return;
+    			
+    		}
         	//Send the received packet to the registered app
         	sendPacketToRegisteredApp(packet);
 		} catch (Exception e) {
@@ -629,7 +644,9 @@ public abstract class SdlRouterService extends Service{
 	            			// We've just lost the connection - update UI?
 	            			storeConnectedStatus(false);
 	            			if(!connectAsClient && !closing){
-	            				initBluetoothSerialService();
+	            				if(!legacyModeEnabled){
+	            					initBluetoothSerialService();
+	            				}
 	            				onTransportDisconnected(TransportType.BLUETOOTH); //FIXME actually check
 	            			}
 	            			break;
@@ -908,6 +925,30 @@ public abstract class SdlRouterService extends Service{
 			//Log.d(TAG, "Returning App Id: " + appId);
 			return appId;
 		}
+	}
+	
+	/* ****************************************************************************************************************************************
+	// ***********************************************************   LEGACY   ****************************************************************
+	//*****************************************************************************************************************************************/
+	private boolean legacyModeEnabled = false;
+	private void enableLegacyMode(boolean enable){
+		Log.d(TAG, "Enable legacy mode: " + enable);
+		legacyModeEnabled = enable; //We put this at the end to avoid a race condition between the bluetooth d/c and notify of legacy mode enabled
+
+		if(legacyModeEnabled){
+			//So we need to let the clients know they need to host their own bluetooth sessions because the currently connected head unit only supports a very old version of SDL/Applink
+			//Start by closing our own bluetooth connection
+			closeBluetoothSerialServer();
+			
+			//Now let the clients know they need to start their own bluetooth
+			//Intent legacyIntent = new Intent();
+			//legacyIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, enable);
+			//notifyClient(legacyIntent);
+			
+			//Now wait until we get a d/c, then the apps should shut their bluetooth down and go back to normal
+			
+		}//else{}
+
 	}
 	
 	/* ****************************************************************************************************************************************

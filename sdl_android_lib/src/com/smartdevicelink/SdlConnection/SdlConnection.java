@@ -21,6 +21,7 @@ import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.transport.BTTransport;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.MultiplexTransport;
@@ -45,7 +46,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	
 	private Object SESSION_LOCK = new Object();
 	private Vector<SdlSession> listenerList = new Vector<SdlSession>();
-	
+	private static TransportType legacyTransportRequest = null;
 	/**
 	 * Constructor.
 	 * 
@@ -53,6 +54,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	 * @param transportConfig Transport configuration for this connection.
 	 */
 	public SdlConnection(BaseTransportConfig transportConfig) {
+		Log.v("JOEY", "New sdl conneciton being made.");
 		_connectionListener = new InternalMsgDispatcher();
 		
 		// Initialize the transport
@@ -64,10 +66,24 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				}
 				_transport = null;
 			}
-			
-			if(transportConfig.getTransportType() == TransportType.MULTIPLEX 
-					||transportConfig.getTransportType() == TransportType.BLUETOOTH){
+			if(legacyTransportRequest ==null && //Make sure legacy mode is not enabled
+					(transportConfig.getTransportType() == TransportType.MULTIPLEX
+					||  transportConfig.getTransportType() == TransportType.BLUETOOTH)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
+			}else if((legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH)
+					|| transportConfig.getTransportType() == TransportType.BLUETOOTH){
+				Log.d("JOEY", "Enabling bluetooth transport");
+				_transport = new BTTransport(this);
+				
+				/*if (legacyTransportRequest!= null && !this.getIsConnected()) {
+					try {
+						this.startTransport();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+				}*/
+				//enableLegacyMode(false,null);
+				
 			}
 			else if (transportConfig.getTransportType() == TransportType.TCP)
 			{
@@ -97,6 +113,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	
 	private void closeConnection(boolean willRecycle, byte rpcSessionID) {
 		synchronized(PROTOCOL_REFERENCE_LOCK) {
+
 			if (_protocol != null) {
 				// If transport is still connected, sent EndProtocolSessionMessage
 				if (_transport != null && _transport.getIsConnected()) {
@@ -107,7 +124,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				}
 			} // end-if
 		}
-		
+		if(_transport!=null 		//FIXME we are here as of the meeting for SDL
+				&& _transport.getTransportType() == TransportType.BLUETOOTH 
+				&& legacyTransportRequest!=null){
+			Log.w("JOEY", "Current in legacy mode, igrnoing close");
+			_protocol = new WiProProtocol(this);
+			return;
+		}
+		Log.v("JOEY", "close connection.");
 		synchronized (TRANSPORT_REFERENCE_LOCK) {
 			if (willRecycle) {
 			if (_transport != null) {
@@ -453,6 +477,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public void forceHardwareConnectEvent(TransportType type){
 		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
 			((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
+		}
+	}
+	
+	public static void enableLegacyMode(boolean enable, TransportType type){
+		if(enable){
+			legacyTransportRequest = type;
+		}else{
+			legacyTransportRequest = null;
 		}
 	}
     

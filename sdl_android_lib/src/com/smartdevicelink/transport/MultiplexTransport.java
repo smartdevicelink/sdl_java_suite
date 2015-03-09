@@ -3,6 +3,7 @@ package com.smartdevicelink.transport;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
 
@@ -43,6 +44,7 @@ public class MultiplexTransport extends SdlTransport{
 						if(connected){
 							//Log.d(TAG, "Handling disconnect");
 							connected = false;
+							SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
 							handleTransportError("",null); //This seems wrong, but it works
 							//handleTransportDisconnected("");  
 						}
