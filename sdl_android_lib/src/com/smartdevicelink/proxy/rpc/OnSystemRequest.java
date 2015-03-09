@@ -14,7 +14,6 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.DebugTool;
 
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
