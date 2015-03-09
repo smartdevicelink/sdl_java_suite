@@ -1,6 +1,9 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -14,6 +17,11 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
@@ -250,12 +258,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
 		return null;
 	}
-	
-	
-	
+		
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+            mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -266,7 +272,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+			mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mPacketizer.start();
 			return os;
 		} catch (Exception e) {
@@ -411,7 +417,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				session.onHeartbeatTimedOut(sessionID);
 			}	
 			
-		}				
+		}
 	}
 		
 	public int getRegisterCount() {
@@ -439,6 +445,4 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     		mySession._heartbeatMonitor.notifyTransportActivity();
         }
     }
-
-
 }

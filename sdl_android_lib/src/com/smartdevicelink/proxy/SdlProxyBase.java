@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.Service;
 import android.content.Context;
@@ -55,6 +57,7 @@ import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerABS;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -81,6 +84,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
+import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
@@ -196,10 +200,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;
 	
+	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
+	
 	protected byte _wiproVersion = 1;
 	
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
+	
+	private void notifyPutFileStreamError(Exception e, String info)
+	{
+		for (IPutFileResponseListener _putFileListener : _putFileListenerList) {
+			_putFileListener.onPutFileStreamError(e, info);
+		}		
+	}
+	
+	private void notifyPutFileStreamResponse(PutFileResponse msg)
+	{
+		for (IPutFileResponseListener _putFileListener : _putFileListenerList) {
+			_putFileListener.onPutFileResponse(msg);
+		}		
+	}
+	
+	public void addPutFileResponseListener(IPutFileResponseListener _putFileListener)
+	{
+		_putFileListenerList.addIfAbsent(_putFileListener);
+	}
 	
 	// Private Class to Interface with SdlConnection
 	private class SdlInterfaceBroker implements ISdlConnectionListener {
@@ -208,6 +233,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onTransportDisconnected(String info) {
 			// proxyOnTransportDisconnect is called to alert the proxy that a requested
 			// disconnect has completed
+			notifyPutFileStreamError(null, info);
 			
 			if (_advancedLifecycleManagementEnabled) {
 				// If ALM, nothing is required to be done here
@@ -219,6 +245,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onTransportError(String info, Exception e) {
+			
+			notifyPutFileStreamError(e, info);
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Close the proxy
@@ -287,6 +315,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolError(String info, Exception e) {
+			notifyPutFileStreamError(e, info);
 			passErrorToProxyListener(info, e);
 		}
 
@@ -304,7 +333,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 		}
 	}
-
+	
 	/**
 	 * Constructor.
 	 * 
@@ -1011,6 +1040,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			_appInterfaceRegisterd = true;
 		else
 			_appInterfaceRegisterd = false;
+		
+		_putFileListenerList.clear();
 		
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
 				
@@ -2038,10 +2069,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onPutFileResponse((PutFileResponse)msg);
+                            notifyPutFileStreamResponse(msg);
                         }
                     });
                 } else {
                     _proxyListener.onPutFileResponse((PutFileResponse)msg);
+                    notifyPutFileStreamResponse(msg);                    
                 }
             } else if (functionName.equals(FunctionID.DELETE_FILE)) {
                 // DeleteFile
@@ -2732,6 +2765,82 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 	}
+		
+	private FileInputStream getFileInputStream(String sLocalFile)
+	{
+		FileInputStream is = null;
+		try 
+		{
+			is = new FileInputStream(sLocalFile);
+		}
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		return is;
+	}
+
+	private Long getFileInputStreamSize(FileInputStream is)
+	{
+		Long lSize = null;
+		
+		try 
+		{
+			lSize = is.getChannel().size();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return lSize;
+	}
+	
+	private void closeFileInputStream(FileInputStream is)
+	{
+		try
+		{
+			is.close();
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private boolean startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	{		
+		if (sdlSession == null) return false;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return false;
+					
+		FileInputStream is = getFileInputStream(sLocalFile);
+		if (is == null) return false;
+		
+		Long lSize = getFileInputStreamSize(is);
+		if (lSize == null)
+		{	
+			closeFileInputStream(is);
+			return false;
+		}
+       
+		try {
+			@SuppressWarnings("unchecked")
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
+			rpcPacketizer.start();
+			return true;
+		} catch (Exception e) {
+            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            return false;
+        }			
+	}
+	
+	private boolean startPutFileStream(String sPath, PutFile msg) {
+		if (sdlSession == null) return false;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return false;
+		startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		return true;
+	}	
 	
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
 		if (sdlSession == null) return false;		
@@ -4230,12 +4339,33 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SyncException
 	*/
-	public OutputStream PutFileStream(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public OutputStream PutFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		return startRPCStream(msg);
 	}
-
+	
+	/**
+	 * Used to push a stream of putfile RPC's containing binary data from a mobile device to the module.
+	 * Responses are captured through callback on IProxyListener.
+	 *
+	 * @param sPath - The physical file path on the mobile device.
+	 * @param sdlFileName - The file reference name used by the putFile RPC.
+	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of a file.
+	 * A value greater than zero is used for resuming partial data chunks.
+	 * @param fileType - The selected file type -- see the FileType enumeration for details
+	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
+	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
+	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @return boolean - True if the putfile stream was started successfully, false if an exception occurred during stream creation. 
+	 * @throws SdlException
+	*/	
+	public boolean PutFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	{
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		return startPutFileStream(sPath, msg);
+	}
+		
 	/**
 	 *
 	 * Used to end an existing PutFileStream that was previously initiated with any PutFileStream method.
@@ -4334,6 +4464,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 			
 		return sdlSession.getCurrentTransportType();
+	}
+	
+	public IProxyListenerBase getProxyListener()
+	{
+		return _proxyListener;
 	}
 	
 	public String getAppName()

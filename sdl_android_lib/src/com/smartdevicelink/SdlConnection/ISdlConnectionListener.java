@@ -2,6 +2,9 @@ package com.smartdevicelink.SdlConnection;
 
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 
 public interface ISdlConnectionListener {
 	public void onTransportDisconnected(String info);
@@ -21,5 +24,6 @@ public interface ISdlConnectionListener {
 	
 	public void onProtocolError(String info, Exception e);
 	
-	public void onHeartbeatTimedOut(byte sessionID);	
+	public void onHeartbeatTimedOut(byte sessionID);
+	
 }
