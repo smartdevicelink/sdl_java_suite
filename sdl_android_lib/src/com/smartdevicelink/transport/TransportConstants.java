@@ -31,17 +31,9 @@ public class TransportConstants {
 	public static final String 	ALT_TRANSPORT_WRITE 						= "write";//Write to the alt transport, comes from the app
 	public static final String 	ALT_TRANSPORT_ADDRESS_EXTRA					= "altTransportAddress";
 	
-	public static final String START_ROUTER_SERVICE_LIVIOCONNECT_ENABLED_EXTRA	= "livioconnect_enabled";
+	public static final String START_ROUTER_SERVICE_SDL_ENABLED_EXTRA	= "sdl_enabled";
 	public static final String PING_REGISTERED_SERVICE_EXTRA				= "ping";
 	public static final String PING_REGISTERED_SERVICE_REPLY_EXTRA			= "pingreply";
-
-
-	public static final String LIVIO_ALHU_ACTION							= "com.livio.android.alhu";
-	public static final String LIVIO_ALHU_PACKET_TYPE						= "packet_type";
-	public static final String LIVIO_ALHU_PACKET_CHARS						= "packet_chars";
-
-
-
 	
 	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";

@@ -54,7 +54,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	 * @param transportConfig Transport configuration for this connection.
 	 */
 	public SdlConnection(BaseTransportConfig transportConfig) {
-		Log.v("JOEY", "New sdl conneciton being made.");
 		_connectionListener = new InternalMsgDispatcher();
 		
 		// Initialize the transport
@@ -72,18 +71,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if((legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH)
 					|| transportConfig.getTransportType() == TransportType.BLUETOOTH){
-				Log.d("JOEY", "Enabling bluetooth transport");
-				_transport = new BTTransport(this);
-				
-				/*if (legacyTransportRequest!= null && !this.getIsConnected()) {
-					try {
-						this.startTransport();
-					} catch (SdlException e) {
-						e.printStackTrace();
-					}
-				}*/
-				//enableLegacyMode(false,null);
-				
+				_transport = new BTTransport(this);				
 			}
 			else if (transportConfig.getTransportType() == TransportType.TCP)
 			{
@@ -124,14 +112,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				}
 			} // end-if
 		}
-		/*if(_transport!=null 		//FIXME we are here as of the meeting for SDL
-				&& _transport.getTransportType() == TransportType.BLUETOOTH 
-				&& legacyTransportRequest!=null){
-			Log.w("JOEY", "Current in legacy mode, igrnoing close");
-			_protocol = new WiProProtocol(this);
-			return;
-		}*/
-		Log.v("JOEY", "close connection.");
 		synchronized (TRANSPORT_REFERENCE_LOCK) {
 			if (willRecycle) {
 			if (_transport != null) {

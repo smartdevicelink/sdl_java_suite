@@ -51,7 +51,6 @@ public class MultiplexTransport extends SdlTransport{
 							}else{
 								handleTransportError("",null); //This seems wrong, but it works
 							}
-							//handleTransportDisconnected("");  
 						}
 					}
 

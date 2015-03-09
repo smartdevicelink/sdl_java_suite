@@ -13,11 +13,9 @@ public class SdlPacketFactory {
 			int dataSize, int messageId, byte[] payload) {
 	 */
 	public static SdlPacket createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID) {
-		Log.d("Joey", "Creating start session: " + version);
 		SdlPacket packet =  new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),SdlPacket.FRAME_INFO_START_SERVICE,sessionID,
 				0,messageID,null);
-		Log.d("Joey", "Creating start session packet : " + packet.toString());
 
 		return packet;
 	}

@@ -38,8 +38,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
-			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_LIVIOCONNECT_ENABLED_EXTRA)){	
-			if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_LIVIOCONNECT_ENABLED_EXTRA, false)){
+			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
+			if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
 					onSdlEnabled(context);
 				}else{
 					//This was previously not hooked up, so let's leave it commented out

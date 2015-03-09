@@ -822,7 +822,6 @@ public class MultiplexBluetoothTransport {
 		@SuppressLint("NewApi")
 		public void run() {
         	Log.d(TAG, "Running the Connected Thread");
- //FIXME
             int bytes = 0;
             byte input = 0;
             MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();

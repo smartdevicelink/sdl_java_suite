@@ -2,7 +2,6 @@ package com.smartdevicelink.transport;
 
 import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
-import static com.smartdevicelink.transport.TransportConstants.LIVIO_ALHU_ACTION;
 import static com.smartdevicelink.transport.TransportConstants.PACKET_TO_SEND_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.PING_REGISTERED_SERVICE_REPLY_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_ACTION;
@@ -397,7 +396,6 @@ public abstract class SdlRouterService extends Service{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(REGISTER_WITH_ROUTER_ACTION);
 		filter.addAction(TransportConstants.REQUEST_BT_CLIENT_CONNECT);
-		filter.addAction(LIVIO_ALHU_ACTION); //We allow this because ALHU can happen without a session open and defined
 		registerReceiver(mainServiceReceiver,filter);
 		
 		registerReceiver(altTransportReceiver, new IntentFilter(TransportConstants.ALT_TRANSPORT_RECEIVER)); //For reading/writing off alt transport
@@ -563,7 +561,7 @@ public abstract class SdlRouterService extends Service{
 
 		Intent startService = new Intent();  //FIXME we might need to change this considering how we might allow different apps to use this services (ie, not a single foreground app) 
 		startService.setAction(START_SERVICE_ACTION);
-		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_LIVIOCONNECT_ENABLED_EXTRA, true);
+		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
     	sendBroadcast(startService);    	
 		//HARDWARE_CONNECTED
 	}

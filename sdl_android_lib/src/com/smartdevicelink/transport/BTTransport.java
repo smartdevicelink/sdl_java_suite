@@ -135,7 +135,6 @@ public class BTTransport extends SdlTransport {
 	
 	
 	public void openConnection () throws SdlException {    	
-		Log.i("JOEY", "Attempting to open connection");
 		if (_serverSocket != null) {
 			return;
 		}		
@@ -198,8 +197,6 @@ public class BTTransport extends SdlTransport {
 		
 		SdlTrace.logTransportEvent("BTTransport: listening for incoming connect to service ID " + _listeningServiceUUID, null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
 		
-		Log.v("JOEY", "Is socket null? " + (_serverSocket == null));
-		
 		// Setup transportReader thread
 		_transportReader = new TransportReaderThread();
 		_transportReader.setName("TransportReader");
@@ -221,7 +218,6 @@ public class BTTransport extends SdlTransport {
 	 * @param ex
 	 */
 	private synchronized void disconnect(String msg, Exception ex) {		
-		Log.v("JOEY", "disconnection being called");
 		// If already disconnecting, return
 		if (_disconnecting) {
 			// No need to recursively call
@@ -357,7 +353,6 @@ public class BTTransport extends SdlTransport {
 				handleTransportConnected();
 				
 			} catch (Exception e) {
-				e.printStackTrace();
 				if (!isHalted) {					
 					// Only call disconnect if the thread has not been halted
 					clearInputStream();
@@ -386,7 +381,6 @@ public class BTTransport extends SdlTransport {
 				try {
 					byteRead = (byte)_input.read();
 				} catch (Exception e) {
-					e.printStackTrace();
 					if (!isHalted) {
 						// Only call disconnect if the thread has not been halted
 						clearInputStream();
@@ -429,7 +423,6 @@ public class BTTransport extends SdlTransport {
 					}
 				}
 			} catch (Exception excp) {
-				excp.printStackTrace();
 				if (!isHalted) {
 					// Only call disconnect if the thread has not been halted
 					clearInputStream();
@@ -454,11 +447,8 @@ public class BTTransport extends SdlTransport {
 		
 		public void run() {
 			// acceptConnection blocks until the connection has been accepted
-			Log.d("JOEY", "We are WAITING on a connection");
 			acceptConnection();
-			Log.d("JOEY", "We have accpted a connection");
 			psm.reset();
-			//sendBytesOverTransport(new byte[]{0x00,0x00},0,2);
 			while (!isHalted) {
 				readFromTransport();
 			}
