@@ -314,7 +314,7 @@ public class SdlProxyListener implements IProxyListenerABS{
 
 	@Override
 	public void onRegisterAppInterfaceResponse(RegisterAppInterfaceResponse response) {
-		
+		mAbstraction.onRegisterAppInterfaceResponse(response);
 	}
 
 	@Override

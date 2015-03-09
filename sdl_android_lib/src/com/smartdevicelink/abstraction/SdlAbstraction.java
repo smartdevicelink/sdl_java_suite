@@ -14,6 +14,7 @@ import com.smartdevicelink.abstraction.listeners.HashChangeListener;
 import com.smartdevicelink.abstraction.listeners.OnCommandListener;
 import com.smartdevicelink.abstraction.listeners.RPCListener;
 import com.smartdevicelink.abstraction.listeners.ResumeDataPersistenceListener;
+import com.smartdevicelink.abstraction.listeners.SubscribeVehicleDataListener;
 import com.smartdevicelink.abstraction.listeners.VehicleDataListener;
 import com.smartdevicelink.exception.MissingListenerException;
 import com.smartdevicelink.exception.SdlException;
@@ -40,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -47,6 +49,12 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.abstraction.listeners.AddCommandWithListener;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.abstraction.listeners.PerformAudioPassThruWithListener;
+import com.smartdevicelink.abstraction.listeners.RegisterAppInterfaceResponseListener;
+import com.smartdevicelink.abstraction.listeners.SoftButtonWithListener;
+import com.smartdevicelink.abstraction.listeners.SubscribeButtonWithListener;
 
 import android.app.Service;
 import android.util.Log;
@@ -67,7 +75,7 @@ public abstract class SdlAbstraction {
 	private SparseArray<OnCommandListener> mOnCommandListeners;
 	private VehicleDataListener mVehicleDataListener;
 	private DriverDistractionListener mDriverDistractionListener;
-	
+	private RegisterAppInterfaceResponseListener mRegisterAppInterfaceResponseListener;
 
 	private SdlProxyALM mSdlProxy;
 
@@ -156,6 +164,11 @@ public abstract class SdlAbstraction {
 			if(((SubscribeButtonWithListener)request).getListener() == null) throw new MissingListenerException(request);			
 
 			mButtonListeners.put(((SubscribeButtonWithListener)request).getButtonName(), ((SubscribeButtonWithListener)request).getListener());
+		} else if(request instanceof SubscribeVehicleData){
+			if(!(request instanceof SubscribeVehicleDataListener)) throw new MissingListenerException(request);
+			if(((SubscribeVehicleDataListener)request).getListener() == null) throw new MissingListenerException(request);
+
+			mVehicleDataListener = ((SubscribeVehicleDataListener)request).getListener();
 		}
 		//TODO add more "notification" type RPCs
 		if (mSdlProxy != null)
@@ -206,7 +219,7 @@ public abstract class SdlAbstraction {
 			if(listener!=null) listener.handleButtonEvent((OnButtonEvent)buttonEvent);
 		} else if(notification instanceof OnAudioPassThru){
 			OnAudioPassThru audioPass = (OnAudioPassThru)notification;
-			mAudioPassThruListener.handleAudioData(audioPass.getAPTData());
+			mAudioPassThruListener.handleAudioData(audioPass);
 		} else if(notification instanceof OnCommand){
 			OnCommandListener listener = mOnCommandListeners.get(((OnCommand)notification).getCmdID());
 			listener.handleCommand(((OnCommand)notification));
@@ -231,7 +244,9 @@ public abstract class SdlAbstraction {
 	public final void setHMINotificationListener(HMINotificationListener listener){
 		mHMINotificationListener = listener;
 	}
-
+	public final void setRegisterAppInterfaceResponseListener(RegisterAppInterfaceResponseListener listener){
+		mRegisterAppInterfaceResponseListener = listener;
+	}
 	public final void setFirstFullHMINotificationListener(FirstFullHMINotificationListener listener){
 		mFirstHMINotificationListener = listener;
 	}
@@ -241,7 +256,11 @@ public abstract class SdlAbstraction {
 		if(mResumeDataPersistenceListener != null)
 			mResumeDataPersistenceListener.onResumeDataPersistence(bSuccess);
 	}
-
+	public final void onRegisterAppInterfaceResponse(RegisterAppInterfaceResponse response)
+	{
+		if(mRegisterAppInterfaceResponseListener != null)
+			mRegisterAppInterfaceResponseListener.onRegisterAppInterfaceResponse(response);
+	}
 	public final void onHashChange(OnHashChange notification)
 	{
 		if(mHashChangeListener != null)
@@ -262,7 +281,9 @@ public abstract class SdlAbstraction {
 		}
 	}
 
-
+	public final boolean getIsSdlConnected(){
+	       return mIsConnected;
+	}
 	public final void onError(String arg0, Exception arg1){
 		mSdlProxy = null;
 		mIsConnected = false;
@@ -282,7 +303,8 @@ public abstract class SdlAbstraction {
 	public abstract void onError(Exception ex,String info);
 	
 	public final void onDriverDistraction(OnDriverDistraction arg0){
-		mDriverDistractionListener.onDriverDistraction(arg0.getState());
+//		mDriverDistractionListener.onDriverDistraction(arg0.getState());
+		mDriverDistractionListener.onDriverDistraction(arg0);
 	}
 		
 	private Integer getAutoIncID(int iTypePar){
