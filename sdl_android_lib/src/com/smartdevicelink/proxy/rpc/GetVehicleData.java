@@ -78,14 +78,26 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getFuelLevel() {
         return (Boolean) parameters.get(KEY_FUEL_LEVEL);
     }
+    @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
         if (fuelLevel_State != null) {
             parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
         } else {
-        	parameters.remove(KEY_FUEL_LEVEL_STATE);
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
         }
     }
+    @Deprecated
     public Boolean getFuelLevel_State() {
+        return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
+    }
+    public void setFuelLevelState(Boolean fuelLevelState) {
+        if (fuelLevelState != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
+    }
+    public Boolean getFuelLevelState() {
         return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
     }
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
