@@ -5,9 +5,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISoftButton;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.proxy.view.SDLView;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -33,7 +33,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see Alert
  * @see SetMediaClockTimer
  */
-public class Show extends RPCRequest implements ISoftButton {
+public class Show extends SDLView implements ISoftButton {
 	public static final String KEY_GRAPHIC = "graphic";
 	public static final String KEY_CUSTOM_PRESETS = "customPresets";
 	public static final String KEY_MAIN_FIELD_1 = "mainField1";

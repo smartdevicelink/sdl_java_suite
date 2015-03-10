@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import android.app.Service;
+import android.util.Log;
+import android.util.SparseArray;
+
 import com.smartdevicelink.abstraction.listeners.AudioPassThruListener;
 import com.smartdevicelink.abstraction.listeners.ButtonListener;
 import com.smartdevicelink.abstraction.listeners.DriverDistractionListener;
@@ -48,6 +52,8 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.view.SDLView;
+import com.smartdevicelink.proxy.view.SDLViewManager;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.abstraction.listeners.AddCommandWithListener;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
@@ -56,19 +62,23 @@ import com.smartdevicelink.abstraction.listeners.RegisterAppInterfaceResponseLis
 import com.smartdevicelink.abstraction.listeners.SoftButtonWithListener;
 import com.smartdevicelink.abstraction.listeners.SubscribeButtonWithListener;
 
-import android.app.Service;
-import android.util.Log;
-import android.util.SparseArray;
-
 public abstract class SdlAbstraction {
 	
+	//Proxy Functional Objects
 	private SdlProxyListener mSdlProxyListener;
-
-	private SparseArray<RPCListener> mRPCResponseListeners;
+	private SDLViewManager mViewManager;
+	
+	//Life Cycle Listeners
+	private FirstFullHMINotificationListener mFirstHMINotificationListener;
 	private HMINotificationListener mHMINotificationListener;
 	private HashChangeListener mHashChangeListener;
 	private ResumeDataPersistenceListener mResumeDataPersistenceListener;
-	private FirstFullHMINotificationListener mFirstHMINotificationListener;
+
+	//Response Listeners
+	private SparseArray<RPCListener> mRPCResponseListeners;
+	private SparseArray<SDLView> mViewResponseListeners;
+
+	//Notification Listeners
 	private Map<ButtonName, ButtonListener> mButtonListeners;
 	private SparseArray<SoftButtonWithListener> mCustomButtonListeners;
 	private AudioPassThruListener mAudioPassThruListener;
@@ -104,6 +114,7 @@ public abstract class SdlAbstraction {
 		mButtonListeners = new HashMap<ButtonName, ButtonListener>();
 		mCustomButtonListeners = new SparseArray<SoftButtonWithListener>();
 		mOnCommandListeners = new SparseArray<OnCommandListener>();
+		mViewResponseListeners = new SparseArray<SDLView>();
 	}
 
 	//start proxy
@@ -125,6 +136,12 @@ public abstract class SdlAbstraction {
 		request.setCorrelationID(coorid);
 		if(rpcListener != null)
 			mRPCResponseListeners.put(coorid, rpcListener);
+		
+		if(request instanceof SDLView){
+			mViewManager.viewInitialized((SDLView)request);
+			mViewResponseListeners.put(coorid, (SDLView)request);
+		}
+		
 		if (request instanceof ISoftButton) {
 			ISoftButton buttonRPC = (ISoftButton)request;
 			List<SoftButton> buttons = buttonRPC.getSoftButtons();
@@ -170,6 +187,7 @@ public abstract class SdlAbstraction {
 
 			mVehicleDataListener = ((SubscribeVehicleDataListener)request).getListener();
 		}
+		
 		//TODO add more "notification" type RPCs
 		if (mSdlProxy != null)
 		{
@@ -184,6 +202,11 @@ public abstract class SdlAbstraction {
 
 	public final void handleResponse(RPCResponse response){
 		int coorId = response.getCorrelationID();
+		if(mViewResponseListeners.get(coorId) != null){
+			mViewResponseListeners.get(coorId).onShown();
+			mViewResponseListeners.remove(coorId);
+		}
+		
 		RPCListener listener = mRPCResponseListeners.get(coorId);
 		if(listener != null){
 			listener.handleResponse(response);
