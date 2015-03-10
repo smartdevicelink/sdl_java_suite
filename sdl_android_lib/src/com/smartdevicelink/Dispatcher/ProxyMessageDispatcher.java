@@ -5,17 +5,17 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import com.smartdevicelink.util.DebugTool;
 
-public class ProxyMessageDispatcher<messageType> {
-	PriorityBlockingQueue<messageType> _queue = null;
+public class ProxyMessageDispatcher<T> {
+	PriorityBlockingQueue<T> _queue = null;
 	private Thread _messageDispatchingThread = null;
-	IDispatchingStrategy<messageType> _strategy = null;
+	IDispatchingStrategy<T> _strategy = null;
 
 	// Boolean to track if disposed
 	private Boolean dispatcherDisposed = false;
 	
-	public ProxyMessageDispatcher(String THREAD_NAME, Comparator<messageType> messageComparator, 
-			IDispatchingStrategy<messageType> strategy) {
-		_queue = new PriorityBlockingQueue<messageType>(10, messageComparator);
+	public ProxyMessageDispatcher(String THREAD_NAME, Comparator<T> messageComparator, 
+			IDispatchingStrategy<T> strategy) {
+		_queue = new PriorityBlockingQueue<T>(10, messageComparator);
 		
 		_strategy = strategy;
 		
@@ -38,7 +38,7 @@ public class ProxyMessageDispatcher<messageType> {
 	private void handleMessages() {
 		
 		try {
-			messageType thisMessage;
+			T thisMessage;
 		
 			while(dispatcherDisposed == false) {
 				thisMessage = _queue.take();
@@ -53,7 +53,7 @@ public class ProxyMessageDispatcher<messageType> {
 		}
 	}
 		
-	public void queueMessage(messageType message) {
+	public void queueMessage(T message) {
 		try {
 			_queue.put(message);
 		} catch(ClassCastException e) { 
