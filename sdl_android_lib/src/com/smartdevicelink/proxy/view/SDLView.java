@@ -20,6 +20,9 @@ public class SDLView extends RPCRequest {
 	//TODO call when the view is successful
 	public void onShown(){};
 	
+	//TODO call when the view was backgrounded but now in foreground again.
+	public void onReshown(){};
+	
 	//TODO call when the view is sent to background.
 	public void onBackground(){};
 	
