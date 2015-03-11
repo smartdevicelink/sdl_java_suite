@@ -326,13 +326,11 @@ public class SdlProxyListener implements IProxyListenerABS{
 
 	@Override
 	public void onOnStreamRPC(OnStreamRPC notification) {
-		// TODO Auto-generated method stub
-		
+		mAbstraction.onStreamRPCListener(notification);
 	}
 
 	@Override
 	public void onStreamRPCResponse(StreamRPCResponse response) {
-		// TODO Auto-generated method stub
-		
+		mAbstraction.onStreamRPCResponseListener(response);
 	}
 }

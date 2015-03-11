@@ -1,5 +1,6 @@
 package com.smartdevicelink.abstraction;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ import com.smartdevicelink.abstraction.listeners.HashChangeListener;
 import com.smartdevicelink.abstraction.listeners.OnCommandListener;
 import com.smartdevicelink.abstraction.listeners.RPCListener;
 import com.smartdevicelink.abstraction.listeners.ResumeDataPersistenceListener;
+import com.smartdevicelink.abstraction.listeners.StreamRPCListener;
+import com.smartdevicelink.abstraction.listeners.StreamRPCResponseListener;
 import com.smartdevicelink.abstraction.listeners.SubscribeVehicleDataListener;
 import com.smartdevicelink.abstraction.listeners.VehicleDataListener;
 import com.smartdevicelink.exception.MissingListenerException;
@@ -40,15 +43,18 @@ import com.smartdevicelink.proxy.rpc.OnHashChange;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
@@ -86,6 +92,9 @@ public abstract class SdlAbstraction {
 	private VehicleDataListener mVehicleDataListener;
 	private DriverDistractionListener mDriverDistractionListener;
 	private RegisterAppInterfaceResponseListener mRegisterAppInterfaceResponseListener;
+	private StreamRPCListener mStreamRPCListener;
+	private StreamRPCResponseListener mStreamRPCResponseListener;
+	private boolean mPutfileStreamSuccess = false;
 
 	private SdlProxyALM mSdlProxy;
 
@@ -125,6 +134,13 @@ public abstract class SdlAbstraction {
 		}
 	}
 
+	public final boolean PutFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException {
+	    if (mSdlProxy != null)
+	    {
+	    	mPutfileStreamSuccess = mSdlProxy.PutFileStream(sPath, sdlFileName, iOffset, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+	    }
+	    return mPutfileStreamSuccess;
+	}
 
 	public final void sendRPCRequest(RPCRequest request) throws SdlException {
 		sendRPCRequest(request, null);
@@ -288,6 +304,26 @@ public abstract class SdlAbstraction {
 	{
 		if(mHashChangeListener != null)
 			mHashChangeListener.onHashChange(notification);
+	}
+
+	public final void onStreamRPCListener(OnStreamRPC notification)
+	{
+		if(mStreamRPCListener != null)
+			mStreamRPCListener.onStreamRPC(notification);
+	}
+
+	public final void onStreamRPCResponseListener(StreamRPCResponse response)
+	{
+		if(mStreamRPCResponseListener != null)
+			mStreamRPCResponseListener.onStreamRPCResponse(response);
+	}
+
+	public final void setStreamRPCListener(StreamRPCListener listener){
+		mStreamRPCListener = listener;
+	}
+
+	public final void setStreamRPCResponseListener(StreamRPCResponseListener listener){
+		mStreamRPCResponseListener = listener;
 	}
 
 	public final void onHMIStatus(OnHMIStatus status){
