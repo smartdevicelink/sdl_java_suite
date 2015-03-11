@@ -86,7 +86,8 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 
     @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(KEY_SOFT_BUTTON_CAPABILITIES) instanceof List<?>) {
+		Object tempObject = parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
+        if (tempObject instanceof List<?>) {
             List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
@@ -101,6 +102,12 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	            }
 	        }
         }
+		else if (tempObject instanceof Hashtable)
+        {
+        	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
+        	newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)tempObject));
+        	return newList;
+        }		
         return null;
     }
 
