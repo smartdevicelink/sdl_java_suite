@@ -1,9 +1,6 @@
 package com.smartdevicelink.SdlConnection;
 
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -17,11 +14,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
-import com.smartdevicelink.proxy.rpc.OnStreamRPC;
-import com.smartdevicelink.proxy.rpc.PutFile;
-import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
