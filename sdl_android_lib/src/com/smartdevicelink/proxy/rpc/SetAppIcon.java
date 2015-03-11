@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -19,7 +19,7 @@ public class SetAppIcon extends RPCRequest {
 	 * Constructs a new SetAppIcon object
 	 */
     public SetAppIcon() {
-        super(FunctionID.SET_APP_ICON);
+        super(FunctionId.SET_APP_ICON.toString());
     }
 
 	/**

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -22,7 +22,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	 * Constructs a new SetDisplayLayoutResponse object
 	 */
     public SetDisplayLayoutResponse() {
-        super(FunctionID.SET_DISPLAY_LAYOUT);
+        super(FunctionId.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**

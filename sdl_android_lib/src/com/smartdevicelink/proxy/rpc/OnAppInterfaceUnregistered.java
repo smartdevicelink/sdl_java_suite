@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.util.DebugTool;
@@ -47,7 +47,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
 	*Constructs a newly allocated OnAppInterfaceUnregistered object
 	*/ 
     public OnAppInterfaceUnregistered() {
-        super(FunctionID.ON_APP_INTERFACE_UNREGISTERED);
+        super(FunctionId.ON_APP_INTERFACE_UNREGISTERED.toString());
     }
     /**
     *<p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>

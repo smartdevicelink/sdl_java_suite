@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.util.DebugTool;
@@ -35,7 +35,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * Constructs a new ChangeRegistration object
 	 */
     public ChangeRegistration() {
-        super(FunctionID.CHANGE_REGISTRATION);
+        super(FunctionId.CHANGE_REGISTRATION.toString());
     }
 
 	/**

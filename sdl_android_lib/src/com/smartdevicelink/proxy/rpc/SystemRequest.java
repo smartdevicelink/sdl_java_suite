@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import java.util.Hashtable;
+import java.util.List;
+
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
-
-import java.util.Hashtable;
-import java.util.List;
 
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
@@ -14,11 +14,11 @@ public class SystemRequest extends RPCRequest {
 	public static final String KEY_DATA = "data";
 	
     public SystemRequest() {
-        super(FunctionID.SYSTEM_REQUEST);
+        super(FunctionId.SYSTEM_REQUEST.toString());
     }
 
 	public SystemRequest(boolean bLegacy) {
-        super(FunctionID.ENCODED_SYNC_P_DATA);
+        super(FunctionId.ENCODED_SYNC_P_DATA.toString());
     }
     
     public SystemRequest(Hashtable<String, Object> hash) {

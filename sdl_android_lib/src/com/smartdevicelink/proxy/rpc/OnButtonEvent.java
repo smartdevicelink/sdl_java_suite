@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -91,7 +91,7 @@ public class OnButtonEvent extends RPCNotification {
 	*Constructs a newly allocated OnButtonEvent object
 	*/
     public OnButtonEvent() {
-        super(FunctionID.ON_BUTTON_EVENT);
+        super(FunctionId.ON_BUTTON_EVENT.toString());
     }
     /**
 	 * <p>

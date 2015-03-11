@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
@@ -49,7 +49,7 @@ public class Show extends RPCRequest {
 	 * Constructs a new Show object
 	 */
 	public Show() {
-        super(FunctionID.SHOW);
+        super(FunctionId.SHOW.toString());
     }
 	/**
 	 * Constructs a new Show object indicated by the Hashtable parameter

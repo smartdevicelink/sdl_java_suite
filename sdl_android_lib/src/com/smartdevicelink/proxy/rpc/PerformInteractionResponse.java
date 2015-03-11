@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.DebugTool;
@@ -21,7 +21,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	 * Constructs a new PerformInteractionResponse object
 	 */
     public PerformInteractionResponse() {
-        super(FunctionID.PERFORM_INTERACTION);
+        super(FunctionId.PERFORM_INTERACTION.toString());
     }
 
 	/**

@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import java.util.Hashtable;
+
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.util.DebugTool;
-
-import java.util.Hashtable;
 
 
 public class OnKeyboardInput extends RPCNotification {
@@ -13,7 +13,7 @@ public class OnKeyboardInput extends RPCNotification {
 	public static final String KEY_EVENT = "event";
 
     public OnKeyboardInput() {
-        super(FunctionID.ON_KEYBOARD_INPUT);
+        super(FunctionId.ON_KEYBOARD_INPUT.toString());
     }
 
     public OnKeyboardInput(Hashtable<String, Object> hash) {

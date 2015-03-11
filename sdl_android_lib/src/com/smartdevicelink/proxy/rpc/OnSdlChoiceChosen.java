@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.util.DebugTool;
@@ -139,7 +139,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 
 	public OnSdlChoiceChosen() {
-		super(FunctionID.ON_SDL_CHOICE_CHOSEN);
+		super(FunctionId.ON_SDL_CHOICE_CHOSEN.toString());
 	}
 	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
 		super(hash);

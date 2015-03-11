@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.DebugTool;
 
@@ -53,7 +53,7 @@ public class AddCommand extends RPCRequest {
 	 * Constructs a new AddCommand object
 	 */
 	public AddCommand() {
-        super(FunctionID.ADD_COMMAND);
+        super(FunctionId.ADD_COMMAND.toString());
     }
 	
 	/**

@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -19,7 +19,7 @@ public class ListFilesResponse extends RPCResponse {
 	 * Constructs a new ListFilesResponse object
 	 */
     public ListFilesResponse() {
-        super(FunctionID.LIST_FILES);
+        super(FunctionId.LIST_FILES.toString());
     }
     public ListFilesResponse(Hashtable<String, Object> hash) {
         super(hash);

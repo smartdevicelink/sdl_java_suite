@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.util.DebugTool;
@@ -64,7 +64,7 @@ public class OnLanguageChange extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnLanguageChange() {
-        super(FunctionID.ON_LANGUAGE_CHANGE);
+        super(FunctionId.ON_LANGUAGE_CHANGE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>

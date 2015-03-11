@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -14,7 +14,7 @@ public class DeleteFileResponse extends RPCResponse {
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
     public DeleteFileResponse() {
-        super(FunctionID.DELETE_FILE);
+        super(FunctionId.DELETE_FILE.toString());
     }
     public DeleteFileResponse(Hashtable<String, Object> hash) {
         super(hash);
