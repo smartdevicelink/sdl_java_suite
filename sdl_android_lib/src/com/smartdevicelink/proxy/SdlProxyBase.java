@@ -1,9 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -22,17 +18,20 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.smartdevicelink.proxy.RPCRequestFactory;
-import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
@@ -49,12 +48,106 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
+import com.smartdevicelink.proxy.LockScreenManager.OnLockScreenIconDownloadedListener;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.AddCommandResponse;
+import com.smartdevicelink.proxy.rpc.AddSubMenu;
+import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
+import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
+import com.smartdevicelink.proxy.rpc.DeleteFile;
+import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
+import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetVehicleData;
+import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.Headers;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.ListFiles;
+import com.smartdevicelink.proxy.rpc.ListFilesResponse;
+import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
+import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
+import com.smartdevicelink.proxy.rpc.OnCommand;
+import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnHashChange;
+import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
+import com.smartdevicelink.proxy.rpc.OnLanguageChange;
+import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.OnTBTClientState;
+import com.smartdevicelink.proxy.rpc.OnTouchEvent;
+import com.smartdevicelink.proxy.rpc.OnVehicleData;
+import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
+import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
+import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.ResetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.ScrollableMessage;
+import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowResponse;
+import com.smartdevicelink.proxy.rpc.Slider;
+import com.smartdevicelink.proxy.rpc.SliderResponse;
+import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.Speak;
+import com.smartdevicelink.proxy.rpc.SpeakResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
+import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -154,6 +247,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private SdlMsgVersion _sdlMsgVersionRequest = null;
 	private Vector<String> _vrSynonyms = null;
 	private boolean _bAppResumeEnabled = false;
+	
+	private OnSystemRequest lockScreenIconRequest = null;
 	
 	/**
 	 * Contains current configuration for the transport that was selected during 
@@ -2463,6 +2558,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					
 					
+					if(msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
+					        msg.getUrl() != null){
+					    lockScreenIconRequest = msg;
+					}
+					
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -2835,6 +2935,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setAppService(Service mService)
 	{
 		_appService = mService;
+	}
+	
+	public void getLockScreenIcon(final OnLockScreenIconDownloadedListener l){
+	    if(lockScreenIconRequest == null){
+            l.onLockScreenIconDonwloadError(new SdlException("This version of SDL core may not support lock screen icons.", 
+                    SdlExceptionCause.LOCK_SCREEN_ICON_NOT_SUPPORTED));
+	        return;
+	    }
+	    
+	    LockScreenManager lockMan = sdlSession.getLockScreenMan();
+	    Bitmap bitmap = lockMan.getLockScreenIcon();
+	    
+	    // read bitmap if it was already downloaded so we don't have to download it every time
+	    if(bitmap != null){
+	        l.onLockScreenIconDownloaded(bitmap);
+	    }
+	    else{
+    	    String url = lockScreenIconRequest.getUrl();
+    	    sdlSession.getLockScreenMan().downloadLockScreenIcon(url, l);
+	    }
 	}
 
 	/******************** Public Helper Methods *************************/
