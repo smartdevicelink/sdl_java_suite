@@ -31,25 +31,15 @@ public class TransportBroker {
 			@Override
 			public void onReceive(Context context, Intent intent) 
 			{
+				//Log.d(TAG, whereToReply + " received an Intent, checking to see what it is");
 				if(intent.hasExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA)){
 					boolean enableLegacy = intent.getBooleanExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, false);
 					Log.d(TAG, "Setting legacy mode: " +enableLegacy );
 					enableLegacyMode(enableLegacy);
-					//TODO not sure yet i think we just let it DC
-					if(isLegacyModeEnabled()){
-						//Start bluetooth
-						//initBluetoothSerialService();
-						//NOTE: This is to avoid the hardware d/c right below. If we ever send more extras it will be important to note that we exit here
-						//return;							
-					}else{
-						//Stop bluetooth
-						//closeBluetoothSerialServer();
-					}
 				}
-				//Log.d(TAG, whereToReply + " received an Intent, checking to see what it is");
 				if(intent.hasExtra(TransportConstants.HARDWARE_DISCONNECTED)){
 					//We should shut down, so call 
-					Log.d(TAG, "Being told the hardware disconnected, calling onHfardwareDisconnect()");
+					//Log.d(TAG, "Being told the hardware disconnected, calling onHardwareDisconnect()");
 					onHardwareDisconnected(TransportType.valueOf(intent.getStringExtra(TransportConstants.HARDWARE_DISCONNECTED)));
 				}
 				if(intent.hasExtra(TransportConstants.HARDWARE_CONNECTED)){
@@ -57,22 +47,11 @@ public class TransportBroker {
 					
 				}
 				if(intent.hasExtra(TransportConstants.UNREGISTER_EXTRA)){
-					//We should shut down, so call 
-					//Log.d(TAG, "Being told to unregister, calling onServiceUnregsiteredFromBTServer()");
-									
+					//We should shut down, so call 									
 					sendPacketAddress = null;
 					onServiceUnregsiteredFromRouterService(intent.getIntExtra(TransportConstants.UNREGISTER_EXTRA, 0));
 					
 				}
-				if(intent.hasExtra(TransportConstants.PING_REGISTERED_SERVICE_EXTRA)){
-					//We were pinged! Those BAST.... let's just reply
-					if(sendPacketAddress!=null){
-						Intent replyIntent = new Intent(sendPacketAddress);
-						replyIntent.putExtra(TransportConstants.PING_REGISTERED_SERVICE_REPLY_EXTRA, "PING_REGISTERED_SERVICE_REPLY_EXTRA");
-						getContext().sendBroadcast(replyIntent);
-					}
-				}
-
 				if(intent.hasExtra(SdlRouterService.REGISTER_WITH_ROUTER_ACTION)){
 					//Log.d(TAG,"Being told to reregister");
 
@@ -84,12 +63,8 @@ public class TransportBroker {
 						//This should be ok to send in the case of the first service creation
 						//We should only be returned one successful intent and one refused attempt
 						registerWithRouterService();
-						//initBluetoothConnection();
 					}
-					else{
-						//Log.d(TAG,"The sendPacketAddress is " +sendPacketAddress );
-
-					}
+					//else{Log.d(TAG,"The sendPacketAddress is " +sendPacketAddress );}
 					return;
 				}
 				if(intent.hasExtra(TransportConstants.REGISTRATION_DENIED_EXTRA_NAME)){
@@ -288,7 +263,6 @@ public class TransportBroker {
 			if(getContext()==null){
 				Log.e(TAG, "Context set to null, failing out");
 				return;
-				//setContext(getBaseContext()); //Hey at least try something
 			}
 			if(sendPacketAddress!=null){
 				Log.w(TAG, "Already registered with router service");
@@ -333,7 +307,7 @@ public class TransportBroker {
 		}
 		
 		/***************************************************************************************************************************************
-		***********************************************  LEGACY  **************************************************************
+		***********************************************  LEGACY  *******************************************************************************
 		****************************************************************************************************************************************/	
 		/* 
 		 * Due to old implementations of SDL/Applink, old versions can't support multiple sessions per RFCOMM channel. 
@@ -348,9 +322,7 @@ public class TransportBroker {
 		 * 7) When the phone is D/C from the head unit the router service will reset and tell clients legacy mode is now off
 		 */
 		
-		//private static MultiplexBluetoothTransport mSerialService = null;
 		private static boolean legacyModeEnabled = false;
-
 		private static Object LEGACY_LOCK = new Object();
 		
 		protected void enableLegacyMode(boolean enable){
@@ -364,5 +336,8 @@ public class TransportBroker {
 			}
 			
 		}
-	
+		
+		/***************************************************************************************************************************************
+		****************************************************  LEGACY END ***********************************************************************
+		****************************************************************************************************************************************/
 }

@@ -3,12 +3,10 @@ package com.smartdevicelink.transport;
 import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
 import static com.smartdevicelink.transport.TransportConstants.PACKET_TO_SEND_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.PING_REGISTERED_SERVICE_REPLY_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_ACTION;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.UNREGISTER_EXTRA;
-import static com.smartdevicelink.transport.TransportConstants.UNREGISTER_EXTRA_REASON_PING_TIMEOUT;
 import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
 
 import java.util.HashMap;
@@ -496,7 +494,7 @@ public abstract class SdlRouterService extends Service{
 
 	/**
 	 * 
-	 * 1. If the app has Livio Connect shut off, 									shut down
+	 * 1. If the app has SDL shut off, 												shut down
 	 * 2. if The app has an Alt Transport address or was started by one, 			stay open
 	 * 3. If Bluetooth is off/NA	 												shut down
 	 * 4. Anything else					
@@ -535,7 +533,6 @@ public abstract class SdlRouterService extends Service{
 	}
 	private synchronized void initBluetoothSerialService(){
 		Log.i(TAG, "Iniitializing Bluetooth Serial Class");
-		//LivioConnect.getInstance().setProtocolVersion(5); //FIXME get rid of
 		//init serial service
 		if(mSerialService ==null){
 			Log.d(TAG, "Local copy of BT Server is null");
@@ -548,7 +545,7 @@ public abstract class SdlRouterService extends Service{
 		if (mSerialService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE || mSerialService.getState() == MultiplexBluetoothTransport.STATE_ERROR) {
-              // Start the Bluetooth chat services
+              // Start the Bluetooth services
             	mSerialService.start();
             }
 
@@ -559,7 +556,7 @@ public abstract class SdlRouterService extends Service{
 		//TODO remove
 		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport Connected", Toast.LENGTH_SHORT).show();
 
-		Intent startService = new Intent();  //FIXME we might need to change this considering how we might allow different apps to use this services (ie, not a single foreground app) 
+		Intent startService = new Intent();  
 		startService.setAction(START_SERVICE_ACTION);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
     	sendBroadcast(startService);    	
@@ -591,21 +588,20 @@ public abstract class SdlRouterService extends Service{
 			}
 			for (RegisteredApp app : registeredApps.values()) {
 				app.clearSessionIds();
-				app.getSessionIds().add((long)-1); //Since we should be expecting at least one session. God i hope this works.
+				app.getSessionIds().add((long)-1); //Since we should be expecting at least one session.
 			}
 		}
 		//TODO remove
 		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport disconnected", Toast.LENGTH_SHORT).show();
 	}
 	
-	//FIXME basically delete this function as it only calls one other method
 	public void onPacketRead(SdlPacket packet){
-
-        try {//TODO remove debugging
-    		Log.i(TAG, "******** Read packet with header: " +(packet).toString());
+        try {
+    		//Log.i(TAG, "******** Read packet with header: " +(packet).toString());
     		if(packet.getVersion()== 1 
     				&& packet.getFrameType() == FrameType.Control
     				&& packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){
+    			//We received a v1 packet from the head unit, this means we can't use the router service.
     			//Enable legacy mode
     			enableLegacyMode(true);
     			return;
@@ -639,7 +635,7 @@ public abstract class SdlRouterService extends Service{
 	            			storeConnectedStatus(false);
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_NONE:
-	            			// We've just lost the connection - update UI?
+	            			// We've just lost the connection
 	            			storeConnectedStatus(false);
 	            			if(!connectAsClient && !closing){
 	            				if(!legacyModeEnabled){
@@ -675,8 +671,7 @@ public abstract class SdlRouterService extends Service{
 		
 		
 		public boolean writeBytesToTransport(byte[] byteArray,int offset,int count){
-			//TODO remove debug packet
-			debugPacket(byteArray);
+			//debugPacket(byteArray);
 			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
 				mSerialService.write(byteArray,offset,count);
 				return true;
@@ -693,7 +688,7 @@ public abstract class SdlRouterService extends Service{
 		
 		/**
 		 * This Method will send the packets through the alt transport that is connected
-		 * @param array
+		 * @param array The byte array of data to be wrote out
 		 * @return If it was possible to send the packet off.
 		 * <p><b>NOTE: This is not guaranteed. It is a best attempt at sending the packet, it may fail.</b>
 		 */
@@ -717,29 +712,21 @@ public abstract class SdlRouterService extends Service{
 		public boolean sendPacketToRegisteredApp(Parcelable packet) {
 			if(registeredApps!=null && (registeredApps.size()>0)){
 	    		Intent sendingPacketToClientIntent = new Intent();
-	    		//sendingPacketToClientIntent.setAction(whereToSendPackets);
-	    		sendingPacketToClientIntent.putExtra(PACKET_TO_SEND_EXTRA_NAME, packet); //FIXME this bullshit. do we check here for app id?
-	    		
-	    		Long appid =getAppIDForSession(((SdlPacket)packet).getSessionId());
+	    		sendingPacketToClientIntent.putExtra(PACKET_TO_SEND_EXTRA_NAME, packet);//This is the actual packet received
+	    		Long appid = getAppIDForSession(((SdlPacket)packet).getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
 	    			sendingPacketToClientIntent.setAction(registeredApps.get(appid).getReplyAddress());
 	    			sendBroadcast(sendingPacketToClientIntent);
-	    		}else{
+	    			return true;	//We should have sent our packet, so we can return true now
+	    		}else{	//If we can't find a session for this packet we just drop the packet
 	    			Log.e(TAG, "App Id was NULL!");
-	    			return false;
 	    		}
-	    		//notifyClient(sendingPacketToClientIntent);
-	     		//Log.d(TAG, "should have sent bytes: " + packet.length);
-	    		return true;
 	    	}
 	    	return false;
-
-			
 		}
 	    
 	    
 		private synchronized void closeBluetoothSerialServer(){ //FIXME change to ITransport
-			
 			if(mSerialService != null){
 				mSerialService.stop();
 				mSerialService = null;
@@ -750,7 +737,7 @@ public abstract class SdlRouterService extends Service{
 	     * bluetoothQuerryAndConnect()
 	     * This function looks through the phones currently paired bluetooth devices
 	     * If one of the devices' names contain "fire", "bcsm", or livio it will attempt to connect the RFCOMM
-	     * And start Livio Connect
+	     * And start SDL
 	     * @return a boolean if a connection was attempted
 	     */
 		public synchronized boolean bluetoothQuerryAndConnect(){
@@ -782,7 +769,7 @@ public abstract class SdlRouterService extends Service{
 				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 			}
 			// We've been given a device - let's connect to it
-			if(!device.getName().equalsIgnoreCase("livio_lvc02a")) {
+			if(!device.getName().equalsIgnoreCase("livio_lvc02a")) {	//Legacy
 				if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){//mSerialService.stop();
 				mSerialService.connect(device);
 					if(mSerialService.getState() == MultiplexBluetoothTransport.STATE_CONNECTING){
@@ -820,14 +807,20 @@ public abstract class SdlRouterService extends Service{
             editor.commit();
 		}
 		
-		public final static void setBluetoothPrefs (int Level, String prefLocation) {
+		/**
+		 * This method will set the last known bluetooth connection method that worked with this phone.
+		 * This helps speed up the process of connecting
+		 * @param level The level of bluetooth connecting method that last worked
+		 * @param prefLocation Where the preference should be stored
+		 */
+		public final static void setBluetoothPrefs (int level, String prefLocation) {
 			if(currentContext==null){
 				return;
 			}
 			SharedPreferences mBluetoothPrefs = currentContext.getSharedPreferences(prefLocation, Context.MODE_PRIVATE);
 	    	// Write the new prefs
 	    	SharedPreferences.Editor prefAdd = mBluetoothPrefs.edit();
-	    	prefAdd.putInt("level", Level);
+	    	prefAdd.putInt("level", level);
 	    	prefAdd.commit();
 		}
 		
@@ -897,12 +890,10 @@ public abstract class SdlRouterService extends Service{
         };
         versionCheckTimeOutHandler.postDelayed(versionCheckRunable, VERSION_TIMEOUT_RUNNABLE); 
 	}
-	private Intent getLastReceivedStartIntent(){
-		
+	
+	private Intent getLastReceivedStartIntent(){	
 		return lastReceivedStartIntent;
 	}
-
-
 	
 	private Long getAppIDForSession(int sessionId){
 		synchronized(SESSION_LOCK){
@@ -929,20 +920,15 @@ public abstract class SdlRouterService extends Service{
 	// ***********************************************************   LEGACY   ****************************************************************
 	//*****************************************************************************************************************************************/
 	private boolean legacyModeEnabled = false;
+	
 	private void enableLegacyMode(boolean enable){
 		Log.d(TAG, "Enable legacy mode: " + enable);
 		legacyModeEnabled = enable; //We put this at the end to avoid a race condition between the bluetooth d/c and notify of legacy mode enabled
 
 		if(legacyModeEnabled){
 			//So we need to let the clients know they need to host their own bluetooth sessions because the currently connected head unit only supports a very old version of SDL/Applink
-			//Start by closing our own bluetooth connection
-			closeBluetoothSerialServer();
-			
-			//Now let the clients know they need to start their own bluetooth
-			//Intent legacyIntent = new Intent();
-			//legacyIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, enable);
-			//notifyClient(legacyIntent);
-			
+			//Start by closing our own bluetooth connection. The following calls will handle actually notifying the clients of legacy mode
+			closeBluetoothSerialServer();			
 			//Now wait until we get a d/c, then the apps should shut their bluetooth down and go back to normal
 			
 		}//else{}

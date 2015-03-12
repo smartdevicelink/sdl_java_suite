@@ -2,7 +2,7 @@ package com.smartdevicelink.transport;
 
 
 /**
- * These constants are shared between the bluetooth serial service and the livio connect base service.
+ * These constants are shared between the bluetooth serial service and the SDL base service.
  * They are defined as strings/actions/values that both of them can understand.
  * Attempting to use standard HTTP error codes as definitions.  
  * @author Joey Grover
@@ -12,16 +12,10 @@ public class TransportConstants {
 	public static final String WAKE_UP_BLUETOOTH_SERVICE_INTENT				="livio.bluetooth.startservice";
 	protected static final String REQUEST_BT_CLIENT_CONNECT 				= "com.livio.android.requestBtClientConnect";
 
-	//public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.lvio.android.register"; 
-	//public static final String REREGISTER_WITH_ROUTER_ACTION 				= "com.lvio.android.reregister"; 
 	public static final String UNREGISTER_WITH_ROUTER_ACTION 				= "com.lvio.android.unregister"; 
 	public static final String SEND_PACKET_ACTION 							= "com.livio.android.sendpacket";
 	public static final String SEND__GLOBAL_PACKET_ACTION 					= "com.livio.android.sendglobalpacket";
-	//public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.livio.android.newservice";
-	//public static final String START_ROUTER_SERVICE_ACTION 					= "livio.bluetooth.startservice";
 	public static final String START_ROUTER_SERVICE_ACTION_SUFFIX			= ".startservice";
-
-	public static final String USB_INIT_CONNECT = "usb_init_connect";
 
 	public static final String 	ALT_TRANSPORT_RECEIVER 						= "com.lvio.android.alttransport";
 	public static final String 	ALT_TRANSPORT_CONNECTION_STATUS_EXTRA		= "connection_status";
@@ -31,9 +25,7 @@ public class TransportConstants {
 	public static final String 	ALT_TRANSPORT_WRITE 						= "write";//Write to the alt transport, comes from the app
 	public static final String 	ALT_TRANSPORT_ADDRESS_EXTRA					= "altTransportAddress";
 	
-	public static final String START_ROUTER_SERVICE_SDL_ENABLED_EXTRA	= "sdl_enabled";
-	public static final String PING_REGISTERED_SERVICE_EXTRA				= "ping";
-	public static final String PING_REGISTERED_SERVICE_REPLY_EXTRA			= "pingreply";
+	public static final String START_ROUTER_SERVICE_SDL_ENABLED_EXTRA		= "sdl_enabled";
 	
 	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
@@ -78,9 +70,6 @@ public class TransportConstants {
 	public static final int PACKET_SENDING_ERROR_NOT_REGISTERED_APP 		= 0x00;
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;
-
-	public static final String GPS_LIVIO_CONNECT 							= "com.livio.gps";
-	public static final String GPS_TOGGLE_UPDATES_EXTRA						= "GPS_TOGGLE_UPDATES_EXTRA";
 
 
 }
