@@ -33,8 +33,6 @@ public abstract class SdlTransport {
 		try {
 			// Trace received data
 			if (receivedBytesLength > 0) {
-				// Send transport data to the siphon server
-				SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
 				SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
 				
 				_transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
@@ -63,8 +61,6 @@ public abstract class SdlTransport {
         synchronized (_sendLockObj) {
         	bytesWereSent = sendBytesOverTransport(message, offset, length);
         } // end-lock
-        // Send transport data to the siphon server
-		SiphonServer.sendBytesFromAPP(message, offset, length);
         
 		SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Transmit, message, offset, length, SDL_LIB_TRACE_KEY);
         return bytesWereSent;

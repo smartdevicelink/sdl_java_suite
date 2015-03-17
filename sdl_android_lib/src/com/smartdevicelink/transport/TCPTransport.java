@@ -156,11 +156,6 @@ public class TCPTransport extends SdlTransport {
                     mThread.setDaemon(true);
                     mThread.start();
 
-                    // Initialize the SiphonServer
-                    if (SiphonServer.getSiphonEnabledStatus()) {
-                    	SiphonServer.init();
-                    }
-
                 } catch (Exception e) {
                     logError("TCPTransport: Exception during transport thread starting", e);
                     throw new SdlException(e);

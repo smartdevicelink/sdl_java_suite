@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.Version;
-import com.smartdevicelink.transport.SiphonServer;
 
 public class DebugTool {
 	
@@ -45,79 +44,45 @@ public class DebugTool {
 	}
 
 	public static void logError(String msg) {
-		
-		Boolean wasWritten = false;
-		
 		msg = prependProxyVersionNumberToString(msg);
 		
-		wasWritten = logToSiphon(msg);
-		
-		if (isErrorEnabled && !wasWritten) {
+		if (isErrorEnabled) {
 			NativeLogTool.logError(TAG, msg);
 		}
 	}
 
 	public static void logError(String msg, Throwable ex) {
-		Boolean wasWritten = false;
-		
 		msg = prependProxyVersionNumberToString(msg);
 		
-		if (ex != null) {
-			wasWritten = logToSiphon(msg + " Exception String: " + ex.toString());
-		} else {
-			wasWritten = logToSiphon(msg);
-		}
-		
-		if (isErrorEnabled && !wasWritten) {
+		if (isErrorEnabled) {
 			NativeLogTool.logError(TAG, msg, ex);
 		}
 	}
 	
 	public static void logWarning(String msg) {
-		Boolean wasWritten = false;
-		
 		msg = prependProxyVersionNumberToString(msg);
 		
-		wasWritten = logToSiphon(msg);
-		
-		if (isWarningEnabled && !wasWritten) {
+		if (isWarningEnabled) {
 			NativeLogTool.logWarning(TAG, msg);
 		}
 	}
 
 	public static void logInfo(String msg) {
-		Boolean wasWritten = false;
-		
 		msg = prependProxyVersionNumberToString(msg);
 		
-		wasWritten = logToSiphon(msg);
-		
-		if (isInfoEnabled && !wasWritten) {
+		if (isInfoEnabled) {
 			NativeLogTool.logInfo(TAG, msg);
 		}
 	}
 
 	public static void logInfo(String msg, boolean bPrependVersion) {
-		Boolean wasWritten = false;
+		if (bPrependVersion){
+		    msg = prependProxyVersionNumberToString(msg);
+		}
 		
-		if (bPrependVersion) msg = prependProxyVersionNumberToString(msg);
-		
-		wasWritten = logToSiphon(msg);
-		
-		if (isInfoEnabled && !wasWritten) {
+		if (isInfoEnabled) {
 			NativeLogTool.logInfo(TAG, msg);
 		}
-	}
-	
-	protected static Boolean logToSiphon(String msg) {
-		if (SiphonServer.getSiphonEnabledStatus()) {
-			// Initialize the SiphonServer, will be ignored if already initialized
-			SiphonServer.init();
-		
-			// Write to the SiphonServer
-			return SiphonServer.sendSiphonLogData(msg);
-		}
-		return false;
 	}
 
 	protected static String getLine(Throwable ex) {

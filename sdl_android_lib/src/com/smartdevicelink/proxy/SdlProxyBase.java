@@ -84,7 +84,6 @@ import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -1038,39 +1037,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		updateBroadcastIntent(sendIntent, "COMMENT1", sTransComment);
 		sendBroadcastIntent(sendIntent);		
 	}
-	
-	
-	/**
-	 *  Public method to enable the siphon transport
-	 */
-	public void enableSiphonDebug() {
-
-		short enabledPortNumber = SiphonServer.enableSiphonServer();
-		String sSiphonPortNumber = "Enabled Siphon Port Number: " + enabledPortNumber;
-		Intent sendIntent = createBroadcastIntent();
-		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "enableSiphonDebug");
-		updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
-		sendBroadcastIntent(sendIntent);
-	}
-
-
-	
-	/**
-	 *  Public method to disable the Siphon Trace Server
-	 */
-	public void disableSiphonDebug() {
-
-		short disabledPortNumber = SiphonServer.disableSiphonServer();
-		if (disabledPortNumber != -1) {
-		    String sSiphonPortNumber = "Disabled Siphon Port Number: " + disabledPortNumber;
-		    Intent sendIntent = createBroadcastIntent();
-		    updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "disableSiphonDebug");
-		    updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
-		    sendBroadcastIntent(sendIntent);
-		}
-	}
-
-	
 	
 	/**
 	 *  Public method to enable the Debug Tool

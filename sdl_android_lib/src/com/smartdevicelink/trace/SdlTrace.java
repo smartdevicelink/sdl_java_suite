@@ -16,7 +16,6 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.trace.enums.Mod;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.NativeLogTool;
@@ -390,17 +389,9 @@ public class SdlTrace {
 		return baseTics;
 	} // end-method
 
-	public static Boolean writeMessageToSiphonServer(String info) {
-		return SiphonServer.sendFormattedTraceMessage(info);
-	}
-
 	private static void writeXmlTraceMessage(String msg) {
-		try {			
-			// Attempt to write formatted message to the Siphon
-			if (false == writeMessageToSiphonServer(msg)) {
-				// If writing to the Siphon fails, write to the native log
-				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
-			}
+		try {
+			NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
 			
 			ISTListener localTraceListener = m_appTraceListener;
 

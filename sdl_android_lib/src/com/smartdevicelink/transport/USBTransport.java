@@ -15,7 +15,6 @@ import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.SdlTransport;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -540,11 +539,6 @@ public class USBTransport extends SdlTransport {
                     mReaderThread
                             .setName(USBTransportReader.class.getSimpleName());
                     mReaderThread.start();
-
-                    // Initialize the SiphonServer
-                    if (SiphonServer.getSiphonEnabledStatus()) {
-                    	SiphonServer.init();
-                    }
                 }
 
                 break;
