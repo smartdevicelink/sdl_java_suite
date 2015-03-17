@@ -45,7 +45,6 @@ public abstract class SdlBase extends SdlAbstraction {
 		}
 
 		public void startProxy(){
-			threadCheck();
 			synchronized (SDL_LOCK) {
 				try {
 					super.startProxy(appName, isMedia, appId, appService, sdlProxyConfigurationResources, ttsName, sNgnAppName, vrSynonyms, sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, autoActivateID, callbackToUIThread, preRegister, sAppResumeHash, transportConfig);

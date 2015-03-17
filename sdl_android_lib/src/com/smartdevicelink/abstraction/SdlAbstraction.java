@@ -1,7 +1,8 @@
 package com.smartdevicelink.abstraction;
 
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -76,7 +77,8 @@ public abstract class SdlAbstraction {
 	
 	//Life Cycle Listeners
 	private FirstFullHMINotificationListener mFirstHMINotificationListener;
-	private HMINotificationListener mHMINotificationListener;
+	private ArrayList<HMINotificationListener> mHMINotificationListeners;
+	//private HMINotificationListener mHMINotificationListener;
 	private HashChangeListener mHashChangeListener;
 	private ResumeDataPersistenceListener mResumeDataPersistenceListener;
 
@@ -124,6 +126,9 @@ public abstract class SdlAbstraction {
 		mCustomButtonListeners = new SparseArray<SoftButtonWithListener>();
 		mOnCommandListeners = new SparseArray<OnCommandListener>();
 		mViewResponseListeners = new SparseArray<SDLView>();
+		mHMINotificationListeners = new ArrayList<HMINotificationListener>();
+		mViewManager = new SDLViewManager();
+		mHMINotificationListeners.add(mViewManager.hmiListener);
 	}
 
 	//start proxy
@@ -219,7 +224,7 @@ public abstract class SdlAbstraction {
 	public final void handleResponse(RPCResponse response){
 		int coorId = response.getCorrelationID();
 		if(mViewResponseListeners.get(coorId) != null){
-			mViewResponseListeners.get(coorId).onShown();
+			mViewManager.viewShown(mViewResponseListeners.get(coorId));			
 			mViewResponseListeners.remove(coorId);
 		}
 		
@@ -280,8 +285,8 @@ public abstract class SdlAbstraction {
 		mHashChangeListener = listener;
 	}
 
-	public final void setHMINotificationListener(HMINotificationListener listener){
-		mHMINotificationListener = listener;
+	public final void addHMINotificationListener(HMINotificationListener listener){
+		mHMINotificationListeners.add(listener);
 	}
 	public final void setRegisterAppInterfaceResponseListener(RegisterAppInterfaceResponseListener listener){
 		mRegisterAppInterfaceResponseListener = listener;
@@ -330,8 +335,12 @@ public abstract class SdlAbstraction {
 		if(!mIsConnected){
 			mIsConnected = true;
 		}
-		if(mHMINotificationListener != null)
-			mHMINotificationListener.onHMIStatus(status);
+		
+		for (HMINotificationListener hmiListener : mHMINotificationListeners) {
+			if(hmiListener != null)
+				hmiListener.onHMIStatus(status);			
+        }
+		
 		if(status.getHmiLevel() == HMILevel.HMI_FULL 
 				&& status.getFirstRun() 
 				&& mFirstHMINotificationListener != null){

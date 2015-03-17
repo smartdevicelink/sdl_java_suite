@@ -30,20 +30,25 @@ public class SDLViewManager {
 			return;
 		mViewStack.add(0, view);
 	
+		//TODO do we want this before or after notifying the old view?
+		view.onShown();
+		
+		if (mViewStack.size() < 2) return;
+		
 		SDLView oldView = mViewStack.get(1);
 		if(oldView == null)
 			return;
 		oldView.onBackground();
 		oldView.onDestroyed();
 				
-		//TODO do we want this before or after notifying the old view?
-		view.onShown();
-	}
+	}	
 	
 	public HMINotificationListener hmiListener = new HMINotificationListener() {
 		
 		@Override
 		public void onHMIStatus(OnHMIStatus status) {
+			if (mViewStack.isEmpty()) return;
+			
 			SDLView view = mViewStack.get(0);
 			if(view == null)
 				return;
