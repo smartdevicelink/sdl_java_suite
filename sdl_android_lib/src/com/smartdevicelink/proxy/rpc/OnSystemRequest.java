@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
@@ -224,18 +225,12 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
-    public Integer getOffset() {
+    public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
-        
-        if (o == null) return null;
-        
-        if (o instanceof Integer) {
-            return (Integer) o;
-        }
-        return null;
+        return SdlDataTypeConverter.objectToLong(o);
     }
 
-    public void setOffset(Integer offset) {
+    public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
         } else {
@@ -265,17 +260,12 @@ public class OnSystemRequest extends RPCNotification {
         }
     }    
 
-    public Integer getLength() {
+    public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
-        if (o == null) return null;
-        		
-        if (o instanceof Integer) {
-            return (Integer) o;
-        }
-        return null;
+        return SdlDataTypeConverter.objectToLong(o);
     }
 
-    public void setLength(Integer length) {
+    public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
         } else {

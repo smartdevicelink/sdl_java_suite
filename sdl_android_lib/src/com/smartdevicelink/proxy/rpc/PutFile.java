@@ -141,7 +141,7 @@ public class PutFile extends RPCRequest {
         return getBulkData();
     }
     
-    public void setOffset(Integer offset) {
+    public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
         } else {
@@ -149,16 +149,16 @@ public class PutFile extends RPCRequest {
         }
     }
 
-    public Integer getOffset() {
+    public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
-        if (o instanceof Integer) {
-            return (Integer) o;
+        if (o instanceof Long) {
+            return (Long) o;
         }
 
         return null;
     }
 
-    public void setLength(Integer length) {
+    public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
         } else {
@@ -166,10 +166,10 @@ public class PutFile extends RPCRequest {
         }
     }
 
-    public Integer getLength() {
+    public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
-        if (o instanceof Integer) {
-            return (Integer) o;
+        if (o instanceof Long) {
+            return (Long) o;
         }
 
         return null;

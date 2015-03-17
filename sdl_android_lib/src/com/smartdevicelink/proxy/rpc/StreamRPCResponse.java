@@ -27,15 +27,15 @@ public class StreamRPCResponse extends RPCResponse {
 		return (String) parameters.get(KEY_FILENAME);
 	}
 	
-	public void setFileSize(Integer fileSize) {
+	public void setFileSize(Long fileSize) {
     	if (fileSize != null) {
     		parameters.put(KEY_FILESIZE, fileSize);
     	} else {
     		parameters.remove(KEY_FILESIZE);
     	}
 	}
-	public Integer getFileSize() {
-		return (Integer) parameters.get(KEY_FILESIZE);
+	public Long getFileSize() {
+		return (Long) parameters.get(KEY_FILESIZE);
 	}		
 	
 }
