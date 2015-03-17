@@ -139,7 +139,7 @@ public abstract class SdlAbstraction {
 		}
 	}
 
-	public final boolean PutFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException {
+	public final boolean PutFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException {
 	    if (mSdlProxy != null)
 	    {
 	    	mPutfileStreamSuccess = mSdlProxy.PutFileStream(sPath, sdlFileName, iOffset, fileType, bPersistentFile, bSystemFile, iCorrelationID);
