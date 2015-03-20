@@ -13,4 +13,4 @@ We use Gitflow as our branch management system. Please read up on it [here](http
 * Please document all code written. Write [JavaDoc style documentation](http://www.oracle.com/technetwork/articles/java/index-137868.html) for methods, and use inline code comments where it makes sense, i.e. for non-obvious code chunks.
 
 ### Contributor's License Agreement (CLA)
-Coming Soon! We unfortunately cannot accept third party contributions until this is ready.
+In order to accept Pull Requests from contributors, you must first sign [the Contributor's License Agreement](https://docs.google.com/forms/d/1VNR8EUd5b46cQ7uNbCq1fJmnu0askNpUp5dudLKRGpU/viewform). If you need to make a change to information that you entered, [please contact us](mailto:justin@livio.io).
