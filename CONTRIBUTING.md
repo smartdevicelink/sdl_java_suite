@@ -2,6 +2,11 @@
 
 Third party contributions are essential for making this repository great. However, we do have a few guidelines we need contributors to follow.
 
+### Issues
+If writing a bug report, please make sure [it has enough info](http://yourbugreportneedsmore.info). Include all relevant information. 
+
+If requesting a feature, understand that we appreciate the input! However, it may not immediately fit our roadmap, and it may take a while for us to get to your request, if we are able to at all.
+
 ### Gitflow
 We use Gitflow as our branch management system. Please read up on it [here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow). The main points you should know are:
 
