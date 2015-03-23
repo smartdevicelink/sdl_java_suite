@@ -81,7 +81,8 @@ public enum AppInterfaceUnregisteredReason {
 	 * 
 	 * @since SmartDeviceLink 4.0
 	 */
-	PROTOCOL_VIOLATION;
+	PROTOCOL_VIOLATION,
+	;
 
     public static AppInterfaceUnregisteredReason valueForString(String value) {
         try{
