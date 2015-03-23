@@ -171,7 +171,7 @@ public class SdlService extends Service implements IProxyListenerALM{
 	}
 
 	/**
-	 * This is a convience method that will grab all the binary data from a resource
+	 * This is a convenience method that will grab all the binary data from a resource
 	 * to be able to be sent to the SDL sytem
 	 * @param resource
 	 * @return

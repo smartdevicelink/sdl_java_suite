@@ -6,10 +6,13 @@ import java.io.InputStream;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
@@ -26,6 +29,7 @@ import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -53,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
@@ -581,9 +586,37 @@ public class SdlBaseService extends Service implements IProxyListenerALM{
 	}
 	
 	/* ***********************************************************************************************************************************************************************
-	 * *************************************************************** Convince Methods for Developers ***********************************************************************
+	 * *************************************************************** Convenience Methods for Developers ***********************************************************************
 	 *************************************************************************************************************************************************************************/
-	
+	public boolean sendRpc(RPCMessage rpc){
+		try{
+			proxy.sendRPCRequest((RPCRequest) rpc);		//TODO fix this to send a message, not just request
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	public void updateMainText(String mainField1, String mainField2, String mainField3, String mainField4){
+		Show show = new Show();
+		show.setMainField1(mainField1);
+		show.setMainField2(mainField2);
+		show.setMainField3(mainField3);
+		show.setMainField4(mainField4);
+		sendRpc(show);
+		
+	}
+	public void updateImage(Bitmap primaryImage, Bitmap secondaryImage){
+		//TODO make this work
+		
+	}
+	/**
+	 * This will send a file to the head unit.
+	 */
+	public void sendFile(){ //Take in a file inputstream?Bytes? As well as a listener
+		
+	}
 	
 	
 	/* ***********************************************************************************************************************************************************************
