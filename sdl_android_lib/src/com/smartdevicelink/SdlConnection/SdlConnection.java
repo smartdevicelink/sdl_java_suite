@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.AbstractProtocol;
@@ -32,7 +33,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	Object PROTOCOL_REFERENCE_LOCK = new Object();
 	
 	private Object SESSION_LOCK = new Object();
-	private Vector<SdlSession> listenerList = new Vector<SdlSession>();
+	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
 	
 	/**
 	 * Constructor.
@@ -351,13 +352,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onTransportError(String info, Exception e) {
-				SdlSession mySession = null;
-				for (int z=0; z<listenerList.size(); z++) {
-					
-					mySession = listenerList.get(0);
-					if (mySession == null) continue;
-					mySession.onTransportError(info, e);
-				}
+			for (SdlSession session : listenerList) {
+				session.onTransportError(info, e);
+			}
 		}
 
 		@Override
