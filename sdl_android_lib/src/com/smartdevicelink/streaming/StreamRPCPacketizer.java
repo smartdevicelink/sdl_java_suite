@@ -44,7 +44,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 			
 			int iCorrID = 0;
 			PutFile msg = (PutFile) _request;
-			int iOffsetCounter = msg.getOffset();
+			long iOffsetCounter = msg.getOffset();
 			
 			while (!Thread.interrupted()) {				
 			
@@ -56,7 +56,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 				if (length >= 0) {
 			        
 					if (msg.getOffset() != 0)
-			        	msg.setLength(null); //only need to send length when offset 0
+			        	msg.setLength((Long)null); //only need to send length when offset 0
 
 					byte[] msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion);					
 					ProtocolMessage pm = new ProtocolMessage();

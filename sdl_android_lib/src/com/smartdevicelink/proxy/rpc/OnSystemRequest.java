@@ -224,6 +224,18 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
+    public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+    
     public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
         
@@ -283,6 +295,18 @@ public class OnSystemRequest extends RPCNotification {
         return null;
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
+    public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
+    }
+    
     public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
