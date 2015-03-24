@@ -66,6 +66,7 @@ public class FunctionID {
 	public static final String ON_SDL_CHOICE_CHOSEN = "OnSdlChoiceChosen";
 	
 	public static final String SEND_LOCATION = "SendLocation";
+	public static final String DIAL_NUMBER_ID = "DialNumberID";
 
     public FunctionID() {
     }
@@ -144,7 +145,7 @@ public class FunctionID {
             put(FunctionID.DIAGNOSTIC_MESSAGE, 37);
             put(FunctionID.SYSTEM_REQUEST, 38);
             put(FunctionID.SEND_LOCATION, 39);
-
+            put(FunctionID.DIAL_NUMBER_ID, 40);
             /*
                 Base Notifications
                 Range = 0x 0000 8000 - 0x 0000 FFFF
