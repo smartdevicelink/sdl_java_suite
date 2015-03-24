@@ -1,6 +1,5 @@
 package com.smartdevicelink.abstraction;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -33,6 +32,8 @@ import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.interfaces.ISoftButton;
 import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -53,6 +54,10 @@ import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -76,15 +81,15 @@ public abstract class SdlAbstraction {
 	private SDLViewManager mViewManager;
 	
 	//Life Cycle Listeners
-	private FirstFullHMINotificationListener mFirstHMINotificationListener;
-	private ArrayList<HMINotificationListener> mHMINotificationListeners;
-	//private HMINotificationListener mHMINotificationListener;
-	private HashChangeListener mHashChangeListener;
-	private ResumeDataPersistenceListener mResumeDataPersistenceListener;
+	private Vector<FirstFullHMINotificationListener> mFirstHMINotificationListeners;
+	private Vector<HMINotificationListener> mHMINotificationListeners;
+	private Vector<HashChangeListener> mHashChangeListeners;
+	private Vector<ResumeDataPersistenceListener> mResumeDataPersistenceListeners;
 
 	//Response Listeners
 	private SparseArray<RPCListener> mRPCResponseListeners;
 	private SparseArray<SDLView> mViewResponseListeners;
+	private SparseArray<RPCRequest> mUnSubscribeListeners;
 
 	//Notification Listeners
 	private Map<ButtonName, ButtonListener> mButtonListeners;
@@ -92,8 +97,8 @@ public abstract class SdlAbstraction {
 	private AudioPassThruListener mAudioPassThruListener;
 	private SparseArray<OnCommandListener> mOnCommandListeners;
 	private VehicleDataListener mVehicleDataListener;
-	private DriverDistractionListener mDriverDistractionListener;
-	private RegisterAppInterfaceResponseListener mRegisterAppInterfaceResponseListener;
+	private Vector<DriverDistractionListener> mDriverDistractionListeners;
+	private Vector<RegisterAppInterfaceResponseListener> mRegisterAppInterfaceResponseListeners;
 	private StreamRPCListener mStreamRPCListener;
 	private StreamRPCResponseListener mStreamRPCResponseListener;
 	private boolean mPutfileStreamSuccess = false;
@@ -126,7 +131,13 @@ public abstract class SdlAbstraction {
 		mCustomButtonListeners = new SparseArray<SoftButtonWithListener>();
 		mOnCommandListeners = new SparseArray<OnCommandListener>();
 		mViewResponseListeners = new SparseArray<SDLView>();
-		mHMINotificationListeners = new ArrayList<HMINotificationListener>();
+		mHMINotificationListeners = new Vector<HMINotificationListener>();
+		mHashChangeListeners = new Vector<HashChangeListener>();
+		mResumeDataPersistenceListeners = new Vector<ResumeDataPersistenceListener>();
+		mFirstHMINotificationListeners = new Vector<FirstFullHMINotificationListener>();
+		mRegisterAppInterfaceResponseListeners = new Vector<RegisterAppInterfaceResponseListener>();
+		mDriverDistractionListeners = new Vector<DriverDistractionListener>();
+		mUnSubscribeListeners = new SparseArray<RPCRequest>();
 		mViewManager = new SDLViewManager();
 		mHMINotificationListeners.add(mViewManager.hmiListener);
 	}
@@ -179,8 +190,6 @@ public abstract class SdlAbstraction {
 					} catch (ClassCastException e) {
 						throw new MissingListenerException(request);
 					}
-
-
 				}
 			}
 		} else if (request instanceof PerformAudioPassThru){
@@ -207,8 +216,17 @@ public abstract class SdlAbstraction {
 			if(((SubscribeVehicleDataListener)request).getListener() == null) throw new MissingListenerException(request);
 
 			mVehicleDataListener = ((SubscribeVehicleDataListener)request).getListener();
+		} else if (request instanceof UnsubscribeButton) {
+
+			mUnSubscribeListeners.put(coorid, (UnsubscribeButton)request);
+		} else if(request instanceof UnsubscribeVehicleData) {
+
+            mUnSubscribeListeners.put(coorid, (UnsubscribeVehicleData)request);
+		} else if(request instanceof DeleteCommand) {
+
+			mUnSubscribeListeners.put(coorid, (DeleteCommand)request);
 		}
-		
+
 		//TODO add more "notification" type RPCs
 		if (mSdlProxy != null)
 		{
@@ -227,7 +245,36 @@ public abstract class SdlAbstraction {
 			mViewManager.viewShown(mViewResponseListeners.get(coorId));			
 			mViewResponseListeners.remove(coorId);
 		}
-		
+
+		 if(response instanceof UnsubscribeButtonResponse) {
+			if(mUnSubscribeListeners.get(coorId) != null) {
+			  if (response.getSuccess()) {
+					UnsubscribeButton request = (UnsubscribeButton) mUnSubscribeListeners.get(coorId);
+					mButtonListeners.remove(request.getButtonName());
+			  }
+		      mUnSubscribeListeners.remove(coorId);
+			}
+		   }
+
+		 if(response instanceof DeleteCommandResponse) {
+		   if(mUnSubscribeListeners.get(coorId) != null) {
+			 if (response.getSuccess()) {
+				DeleteCommand request = (DeleteCommand) mUnSubscribeListeners.get(coorId);
+				mOnCommandListeners.remove(request.getCmdID());
+			 }
+		     mUnSubscribeListeners.remove(coorId);
+	       }
+		 }
+
+		 if(response instanceof UnsubscribeVehicleDataResponse) {
+		   if(mUnSubscribeListeners.get(coorId) != null) {
+			 if (response.getSuccess()) {
+				 mVehicleDataListener = null;
+			 }
+			 mUnSubscribeListeners.remove(coorId);
+		   }
+		 }
+
 		RPCListener listener = mRPCResponseListeners.get(coorId);
 		if(listener != null){
 			listener.handleResponse(response);
@@ -273,42 +320,48 @@ public abstract class SdlAbstraction {
 
 	}
 
-	public final void setDriverDistractionListener(DriverDistractionListener listener) {
-		this.mDriverDistractionListener = listener;
+	public final void addDriverDistractionListener(DriverDistractionListener listener) {
+		mDriverDistractionListeners.add(listener);
 	}
 	
-	public final void setResumeDataPersistenceListener(ResumeDataPersistenceListener listener){
-		mResumeDataPersistenceListener = listener;
+	public final void addResumeDataPersistenceListener(ResumeDataPersistenceListener listener){
+		mResumeDataPersistenceListeners.add(listener);
 	}
 
-	public final void setHashChangeListener(HashChangeListener listener){
-		mHashChangeListener = listener;
+	public final void addHashChangeListener(HashChangeListener listener){
+		mHashChangeListeners.add(listener);
 	}
 
 	public final void addHMINotificationListener(HMINotificationListener listener){
 		mHMINotificationListeners.add(listener);
 	}
-	public final void setRegisterAppInterfaceResponseListener(RegisterAppInterfaceResponseListener listener){
-		mRegisterAppInterfaceResponseListener = listener;
+	public final void addRegisterAppInterfaceResponseListener(RegisterAppInterfaceResponseListener listener){
+		mRegisterAppInterfaceResponseListeners.add(listener);
 	}
-	public final void setFirstFullHMINotificationListener(FirstFullHMINotificationListener listener){
-		mFirstHMINotificationListener = listener;
+	public final void addFirstFullHMINotificationListener(FirstFullHMINotificationListener listener){
+		mFirstHMINotificationListeners.add(listener);
 	}
 
 	public final void onResumeDataPersistenceListener(Boolean bSuccess)
 	{
-		if(mResumeDataPersistenceListener != null)
-			mResumeDataPersistenceListener.onResumeDataPersistence(bSuccess);
+		for (ResumeDataPersistenceListener mResumeDataPersistenceListener : mResumeDataPersistenceListeners) {
+			if(mResumeDataPersistenceListener != null)
+			   mResumeDataPersistenceListener.onResumeDataPersistence(bSuccess);
+		}
 	}
 	public final void onRegisterAppInterfaceResponse(RegisterAppInterfaceResponse response)
 	{
-		if(mRegisterAppInterfaceResponseListener != null)
-			mRegisterAppInterfaceResponseListener.onRegisterAppInterfaceResponse(response);
+		for (RegisterAppInterfaceResponseListener mRegisterAppInterfaceResponseListener : mRegisterAppInterfaceResponseListeners) {
+		    if(mRegisterAppInterfaceResponseListener != null)
+			   mRegisterAppInterfaceResponseListener.onRegisterAppInterfaceResponse(response);
+		}
 	}
 	public final void onHashChange(OnHashChange notification)
 	{
-		if(mHashChangeListener != null)
-			mHashChangeListener.onHashChange(notification);
+		for (HashChangeListener mHashChangeListener : mHashChangeListeners) {
+			if(mHashChangeListener != null)
+			   mHashChangeListener.onHashChange(notification);
+		}
 	}
 
 	public final void onStreamRPCListener(OnStreamRPC notification)
@@ -343,9 +396,13 @@ public abstract class SdlAbstraction {
 		
 		if(status.getHmiLevel() == HMILevel.HMI_FULL 
 				&& status.getFirstRun() 
-				&& mFirstHMINotificationListener != null){
-			mFirstHMINotificationListener.onFirstHMIFull();
-			sendAboutAddCommand();
+				&& mFirstHMINotificationListeners != null){
+			for (FirstFullHMINotificationListener mFirstHMINotificationListener : mFirstHMINotificationListeners) {
+				if(mFirstHMINotificationListener != null) {
+			       mFirstHMINotificationListener.onFirstHMIFull();
+			       sendAboutAddCommand();
+				}
+			}
 		}
 	}
 
@@ -372,7 +429,10 @@ public abstract class SdlAbstraction {
 	
 	public final void onDriverDistraction(OnDriverDistraction arg0){
 //		mDriverDistractionListener.onDriverDistraction(arg0.getState());
-		mDriverDistractionListener.onDriverDistraction(arg0);
+		for (DriverDistractionListener mDriverDistractionListener : mDriverDistractionListeners) {
+			if(mDriverDistractionListener != null)
+		       mDriverDistractionListener.onDriverDistraction(arg0);
+		}
 	}
 		
 	private Integer getAutoIncID(int iTypePar){
