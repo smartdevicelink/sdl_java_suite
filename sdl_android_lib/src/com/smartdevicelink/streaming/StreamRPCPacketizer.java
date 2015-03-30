@@ -73,6 +73,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		if (_proxyListener != null)
 			_proxyListener.onStreamRPCResponse(result);
 		stop();
+		_proxy.remPutFileResponseListener(this);
 		return;	
 	}
 	
@@ -104,8 +105,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		if (e != null)
 			e.printStackTrace();
 		stop();
+		_proxy.remPutFileResponseListener(this);
 		return;
-	}	
+	}
 
 	public void run() {
 		int length;
