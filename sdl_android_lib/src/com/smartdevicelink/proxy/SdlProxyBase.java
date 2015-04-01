@@ -279,7 +279,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-			updateBroadcastIntent(sendIntent, "COMMENT2", " SessionType: " + sessionType.getName());
+			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
 			sendBroadcastIntent(sendIntent);	
 			
 			setWiProVersion(version);
@@ -295,7 +295,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				startRPCProtocolSession(sessionID, correlationID);
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
-			} else if (_wiproVersion > 1) {
+			} else if (sessionType.eq(SessionType.PCM)) {
+				AudioServiceStarted();
+			} 
+			else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
 				startRPCProtocolSession(sessionID, correlationID);
 			}  else {
@@ -308,6 +311,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				byte sessionID, byte version, String correlationID) {
 			if (sessionType.eq(SessionType.NAV)) {
 				NavServiceEnded();
+			}
+			else if (sessionType.eq(SessionType.PCM)) {
+				AudioServiceEnded();
 			}
 		}
 
@@ -2953,15 +2959,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return false;		
 		
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+		pcmServiceResponseReceived = false;
+		pcmServiceResponse = false;
 
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
 		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
+		while (!pcmServiceResponseReceived && infiniteLoopKiller<2147483647) {
 			infiniteLoopKiller++;
 		}
-		if (navServiceResponse) {
+		if (pcmServiceResponse) {
 			sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
 			return true;
 		} else {
@@ -2974,14 +2980,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;		
 		
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+		pcmServiceResponseReceived = false;
+		pcmServiceResponse = false;
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
 		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
+		while (!pcmServiceResponseReceived && infiniteLoopKiller<2147483647) {
 			infiniteLoopKiller++;
 		}
-		if (navServiceResponse) {
+		if (pcmServiceResponse) {
 			return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
 		} else {
 			return null;
@@ -3005,13 +3011,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceResponse = false;
 	}
 	
-	@SuppressWarnings("unused")
     private void AudioServiceStarted() {
 		pcmServiceResponseReceived = true;
 		pcmServiceResponse = true;
 	}
 	
-	@SuppressWarnings("unused")
     private void AudioServiceEnded() {
 		pcmServiceResponseReceived = true;
 		pcmServiceResponse = false;
