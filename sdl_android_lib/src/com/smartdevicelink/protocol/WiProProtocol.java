@@ -90,7 +90,7 @@ public class WiProProtocol extends AbstractProtocol {
 		byte sessionID = protocolMsg.getSessionID();
 		
 		byte[] data = null;
-		if (_version > 1 && sessionType != SessionType.NAV) {
+		if (_version > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
 			if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
 				sessionType = SessionType.Bulk_Data;
@@ -424,7 +424,7 @@ public class WiProProtocol extends AbstractProtocol {
 				if (_version > 1) hashID = header.getMessageID();
 				handleProtocolSessionStarted(header.getSessionType(), header.getSessionID(), _version, "");				
 			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionNACK.getValue()) {
-				if (header.getSessionType().eq(SessionType.NAV)) {
+				if (header.getSessionType().eq(SessionType.NAV) || header.getSessionType().eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(header.getSessionType(), header.getSessionID(), _version, "");
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + header.getSessionID(), null);
