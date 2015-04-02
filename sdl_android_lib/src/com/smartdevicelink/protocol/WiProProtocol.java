@@ -172,6 +172,15 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 
 	public void HandleReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+
+		byte[] remainingBytes = processReceivedBytes(receivedBytes, receivedBytesLength);
+		while (remainingBytes != null)
+		{
+			remainingBytes = processReceivedBytes(remainingBytes, remainingBytes.length);
+		}
+	}
+
+	public byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
 		int receivedBytesReadPos = 0;
 		
 		//Check for a version difference
@@ -200,7 +209,7 @@ public class WiProProtocol extends AbstractProtocol {
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
 						_headerBuf, _headerBufWritePos, receivedBytesLength);
 				_headerBufWritePos += receivedBytesLength;
-				return;
+				return null;
 			} else {
 			// If I got the size, allocate the buffer
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
@@ -229,7 +238,7 @@ public class WiProProtocol extends AbstractProtocol {
 					Log.e("HandleReceivedBytes", "headerBytesNeeded: " + headerBytesNeeded);
 					handleProtocolError("Error handling protocol message from sdl, header invalid.", 
 							new SdlException("Error handling protocol message from sdl, header invalid.", SdlExceptionCause.INVALID_HEADER));
-					return;					
+					return null;
 				}
 				_dataBufWritePos = 0;
 			}
@@ -254,7 +263,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 			handleProtocolError("Error handling protocol message from sdl, header invalid.",
 					new SdlException("Error handling protocol message from sdl, data buffer is null.", SdlExceptionCause.DATA_BUFFER_NULL));
-			return;
+			return null;
 		}
 
 		int bytesLeft = receivedBytesLength - receivedBytesReadPos;
@@ -264,7 +273,7 @@ public class WiProProtocol extends AbstractProtocol {
 			System.arraycopy(receivedBytes, receivedBytesReadPos, _dataBuf,
 					_dataBufWritePos, bytesLeft);
 			_dataBufWritePos += bytesLeft;
-			return;
+			return null;
 		} else {
 		// Fill the buffer and call the handler!
 			System.arraycopy(receivedBytes, receivedBytesReadPos, _dataBuf, _dataBufWritePos, bytesNeeded);
@@ -287,9 +296,10 @@ public class WiProProtocol extends AbstractProtocol {
 				byte[] moreBytes = new byte[moreBytesLeft];
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
 						moreBytes, 0, moreBytesLeft);
-				HandleReceivedBytes(moreBytes, moreBytesLeft);
+				return moreBytes;
 			}
 		}
+		return null;
 	}
 	
 	protected MessageFrameAssembler getFrameAssemblerForFrame(ProtocolFrameHeader header) {
