@@ -14,7 +14,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
@@ -25,7 +24,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
-	AbstractPacketizer mPacketizer = null;
+	
+	StreamRPCPacketizer mRPCPacketizer = null;
+	StreamPacketizer mVideoPacketizer = null;
+	StreamPacketizer mAudioPacketizer = null;
 
 	// Thread safety locks
 	Object TRANSPORT_REFERENCE_LOCK = new Object();
@@ -231,8 +233,18 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) {
 		try {
-            mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
-			mPacketizer.start();
+            if (sType.equals(SessionType.NAV))
+            {
+            	mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            	mVideoPacketizer.sdlConnection = this;
+            	mVideoPacketizer.start();
+            }
+            else if (sType.equals(SessionType.PCM))
+            {
+            	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            	mAudioPacketizer.sdlConnection = this;
+            	mAudioPacketizer.start();            	
+            }            
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
@@ -242,8 +254,20 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
-			mPacketizer.start();
+			
+            if (sType.equals(SessionType.NAV))
+            {
+                mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+                mVideoPacketizer.sdlConnection = this;
+                mVideoPacketizer.start();
+            }       
+            else if (sType.equals(SessionType.PCM))
+            {
+            	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            	mAudioPacketizer.sdlConnection = this;
+            	mAudioPacketizer.start();            	
+            }
+						
 			return os;
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -255,8 +279,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
-			mPacketizer.start();
+			mRPCPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+			mRPCPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
@@ -266,8 +290,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
-			mPacketizer.start();
+	        mRPCPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+	        mRPCPacketizer.start();
 			return os;
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -275,15 +299,30 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		return null;
 	}
 	
-	public void stopStream()
+	public void stopRPCStream()
 	{
-		if (mPacketizer != null)
+		if (mRPCPacketizer != null)
 		{
-			mPacketizer.stop();
+			mRPCPacketizer.stop();
 		}
 	}
 	
+	public void stopAudioStream()
+	{
+		if (mAudioPacketizer != null)
+		{
+			mAudioPacketizer.stop();
+		}
+	}
 	
+	public void stopVideoStream()
+	{
+		if (mVideoPacketizer != null)
+		{
+			mVideoPacketizer.stop();
+		}
+	}	
+		
 	@Override
 	public void sendStreamPacket(ProtocolMessage pm) {
 		sendMessage(pm);

@@ -117,9 +117,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private boolean navServiceResponseReceived = false;
 	private boolean navServiceResponse = false;
-	@SuppressWarnings("unused")
     private boolean pcmServiceResponseReceived = false;
-	@SuppressWarnings("unused")
     private boolean pcmServiceResponse = false;
 	
 	// Device Info for logging
@@ -2757,7 +2755,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return;
-		sdlConn.stopStream();
+		sdlConn.stopRPCStream();
 	}
 	
 	
@@ -2806,7 +2804,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return;
-		sdlConn.endService(SessionType.NAV, sdlSession.getSessionId());
+		sdlConn.stopVideoStream();
 	}
 	
 	public boolean startPCM(InputStream is) {
@@ -2853,7 +2851,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return;
 		
-		sdlConn.endService(SessionType.PCM, sdlSession.getSessionId());
+		sdlConn.stopAudioStream();
 	}	
 	
 	private void NavServiceStarted() {
