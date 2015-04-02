@@ -310,9 +310,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onProtocolSessionNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
 			if (sessionType.eq(SessionType.NAV)) {
+				
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
 				NavServiceEnded();
 			}
 			else if (sessionType.eq(SessionType.PCM)) {
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
 				AudioServiceEnded();
 			}
 		}
