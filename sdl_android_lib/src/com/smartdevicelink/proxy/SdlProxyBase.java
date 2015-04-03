@@ -1173,7 +1173,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Terminates the App's Interface Registration, closes the transport connection, ends the protocol session, and frees any resources used by the proxy.
 	 */
-	private void dispose() throws SdlException
+	public void dispose() throws SdlException
 	{		
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
