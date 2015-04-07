@@ -24,10 +24,15 @@ public enum VrCapabilities {
 	;
 
     public static VrCapabilities valueForString(String value) {
-        if (TEXT.toString().equalsIgnoreCase(value))
+        if(value == null){
+            return null;
+        }
+        
+        if (value.equalsIgnoreCase(TEXT.toString()))
         {
         	return TEXT;
         }
+
         try{
             return valueOf(value);
         }catch(Exception e){
