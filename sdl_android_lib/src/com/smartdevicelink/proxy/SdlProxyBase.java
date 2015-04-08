@@ -23,7 +23,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
 
 import android.app.Service;
 import android.content.Context;
@@ -123,10 +127,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private boolean navServiceResponseReceived = false;
 	private boolean navServiceResponse = false;
-	@SuppressWarnings("unused")
-    private boolean pcmServiceResponseReceived = false;
-	@SuppressWarnings("unused")
-    private boolean pcmServiceResponse = false;
+	private boolean pcmServiceResponseReceived = false;
+	private boolean pcmServiceResponse = false;
 	
 	// Device Info for logging
 	private TraceDeviceInfo _traceDeviceInterrogator = null;
@@ -232,7 +234,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	{
 		_putFileListenerList.remove(_putFileListener);
 	}
-	
+
 	// Private Class to Interface with SdlConnection
 	private class SdlInterfaceBroker implements ISdlConnectionListener {
 		
@@ -2923,8 +2925,28 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlConn == null) return;
 		sdlConn.stopRPCStream();
 	}
-	
-	
+	private class CallableMethod implements Callable<Void> {
+	    private long waitTime;
+	     
+	    public CallableMethod(int timeInMillis){
+	        this.waitTime=timeInMillis;
+	    }
+	    @Override
+	    public Void call() {
+	        try {
+				Thread.sleep(waitTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+	    }
+	}
+	public FutureTask<Void> createFutureTask(CallableMethod callMethod){
+		return new FutureTask<Void>(callMethod);
+	}
+	public ScheduledExecutorService createScheduler(){
+		return  Executors.newSingleThreadScheduledExecutor();
+	}
 	public boolean startH264(InputStream is) {
 		
 		if (sdlSession == null) return false;		
@@ -2933,11 +2955,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 		navServiceResponseReceived = false;
 		navServiceResponse = false;
+
 		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!navServiceResponseReceived || !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
 		if (navServiceResponse) {
 			sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
 			return true;
@@ -2945,7 +2974,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		}
 	}
-	
+
 	public OutputStream startH264() {
 
 		if (sdlSession == null) return null;		
@@ -2955,10 +2984,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceResponseReceived = false;
 		navServiceResponse = false;
 		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!navServiceResponseReceived  || !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
 		if (navServiceResponse) {
 			return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
 		} else {
@@ -2980,12 +3015,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		pcmServiceResponseReceived = false;
 		pcmServiceResponse = false;
-
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!pcmServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!pcmServiceResponseReceived  || !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
 		if (pcmServiceResponse) {
 			sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
 			return true;
@@ -3002,10 +3042,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceResponseReceived = false;
 		pcmServiceResponse = false;
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!pcmServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!pcmServiceResponseReceived || !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
 		if (pcmServiceResponse) {
 			return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
 		} else {
