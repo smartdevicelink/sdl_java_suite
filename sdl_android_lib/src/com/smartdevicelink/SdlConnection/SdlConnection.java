@@ -36,6 +36,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	private Object SESSION_LOCK = new Object();
 	private Vector<SdlSession> listenerList = new Vector<SdlSession>();
 	
+	private final static int BUFF_READ_SIZE = 1000000;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -253,7 +255,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public OutputStream startStream(SessionType sType, byte rpcSessionID) {
 		try {
 			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os);
+	        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
 			
             if (sType.equals(SessionType.NAV))
             {
@@ -267,7 +269,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             	mAudioPacketizer.sdlConnection = this;
             	mAudioPacketizer.start();            	
             }
-						
+            else
+            {
+            	os.close();
+            	is.close();
+            	return null;
+            }
 			return os;
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -289,7 +296,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
 			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os);
+	        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
 	        mRPCPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
 	        mRPCPacketizer.start();
 			return os;
