@@ -180,7 +180,7 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	public byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+	private byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
 		int receivedBytesReadPos = 0;
 		
 		//Check for a version difference
