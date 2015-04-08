@@ -21,6 +21,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -154,6 +155,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Language _hmiDisplayLanguageDesired = null;
 	private Vector<AppHMIType> _appType = null;
 	private String _appID = null;
+	private String _sessionUUID = null;
 	private String _autoActivateIdDesired = null;
 	private String _lastHashID = null;	
 	private SdlMsgVersion _sdlMsgVersionRequest = null;
@@ -455,6 +457,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		TelephonyManager telephonyManager = null;
 		if (sdlProxyConfigurationResources != null) {
 			telephonyManager = sdlProxyConfigurationResources.getTelephonyManager();
+			if(sdlProxyConfigurationResources.getSessionUUID() != null) {
+			   setSessionUUID(sdlProxyConfigurationResources.getSessionUUID());
+			}
 		} 
 		
 		// Use the telephonyManager to get and log phone info
@@ -630,6 +635,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sendIntent.setAction("com.smartdevicelink.broadcast");
 		sendIntent.putExtra("APP_NAME", this._applicationName);
 		sendIntent.putExtra("APP_ID", this._appID);
+		sendIntent.putExtra("APP_SESSIONUUID", this._sessionUUID);
 		sendIntent.putExtra("RPC_NAME", "");
 		sendIntent.putExtra("TYPE", "");
 		sendIntent.putExtra("SUCCESS", true);
@@ -4558,6 +4564,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	{
 		return _appID;
 	}
+	
+	public String getSessionUUID()
+	{
+		return _sessionUUID;
+	}
 
 	public long getInstanceDT()
 	{
@@ -4575,6 +4586,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setPoliciesURL(String sText)
 	{
 		sPoliciesURL = sText;
+	}
+	//for testing only
+	public void setSessionUUID(String sText)
+	{
+		_sessionUUID = sText;
 	}
 	//for testing only
 	public String getPoliciesURL()
