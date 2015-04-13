@@ -1,0 +1,15 @@
+{
+	"request":{
+		"name":"AddSubMenu",
+    "correlationID":107,
+    "parameters":{
+    	"menuID":765,
+    	"position":2,
+    	"menuName":"Menu Name"
+    }
+	},
+	"response":{
+		"name":"AddSubMenuResponse",
+		"correlationID":108
+	}
+}

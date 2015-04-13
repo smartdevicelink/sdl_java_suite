@@ -1,0 +1,27 @@
+{
+  "request":{
+    "name":"AddCommand",
+    "correlationID":105,
+    "parameters":{
+      "cmdID":1098,
+      "vrCommands":[
+        "vr1",
+        "vr2",
+        "vr3"
+      ],
+      "cmdIcon":{
+        "value":"cmdImage1.png",
+        "imageType":"DYNAMIC"
+      },
+      "menuParams":{
+        "parentID":194,
+        "position":1,
+        "menuName":"My Command"
+      }
+    }
+  },
+  "response":{
+    "name":"AddCommandResponse",
+    "correlationID":106
+  }
+}

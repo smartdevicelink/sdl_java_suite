@@ -1,0 +1,55 @@
+{
+	"request":{
+		"name":"Alert",
+		"correlationID":109,
+		"parameters":{
+			"playTone":true,
+			"duration":500,
+			"alertText1":"Line 1",
+			"alertText2":"Line 2",
+			"alertText3":"Line 3",
+			"progressIndicator":true,
+			"ttsChunks":[
+				{
+					"text":"Phrase 1",
+					"type":"TEXT"
+				},
+				{
+					"text":"Phrase 2",
+					"type":"TEXT"
+				}
+			],
+			"softButtons":[
+				{
+					"isHighlighted":true,
+					"softButtonID":6,
+					"systemAction":"STEAL_FOCUS",
+					"text":"Button 1",
+					"type":"IMAGE",
+					"image":{
+						"value":"image.png",
+						"imageType":"STATIC"
+					}
+				},
+				{
+					"isHighlighted":false,
+					"softButtonID":3,
+					"systemAction":"DEFAULT_ACTION",
+					"text":"Button 2",
+					"type":"BOTH",
+					"image":{
+						"value":"image.png",
+						"imageType":"DYNAMIC"
+					}
+				}
+			]
+		}
+	},
+	"response":{
+		"name":"AlertResponse",
+		"correlationID":110,
+		"parameters":{
+			"tryAgainTime":400
+		}
+	}
+}
