@@ -1,0 +1,34 @@
+{
+  "request":{
+    "name":"DiagnosticMessage",
+    "correlationID":123,
+    "parameters":{
+      "targetID":46,
+      "messageLength":231,
+      "messageData":[
+        33245,
+        23456,
+        234,
+        5465,
+        64365,
+        132435,
+        46576
+      ]
+    }
+  },
+  "response":{
+    "name":"DiagnosticMessageResponse",
+    "correlationID":124,
+    "parameters":{
+      "messageDataResult":[
+        33245,
+        23456,
+        234,
+        5465,
+        64365,
+        132435,
+        46576
+      ]
+    }
+  }
+}

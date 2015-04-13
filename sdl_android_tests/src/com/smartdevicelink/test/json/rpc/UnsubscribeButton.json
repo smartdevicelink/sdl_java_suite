@@ -1,0 +1,13 @@
+{
+  "request":{
+    "name":"UnsubscribeButton",
+    "correlationID":169,
+    "parameters":{
+      "buttonName":"OK"
+    }
+  },
+  "response":{
+    "name":"UnsubscribeButtonResponse",
+    "correlationID":170
+  }
+}

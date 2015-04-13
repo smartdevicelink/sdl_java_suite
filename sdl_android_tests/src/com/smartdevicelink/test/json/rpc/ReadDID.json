@@ -1,0 +1,37 @@
+{
+  "request":{
+    "name":"ReadDID",
+    "correlationID":139,
+    "parameters":{
+      "ecuName":526,
+      "didLocation":[
+        5436,
+        34574,
+        27,
+        57,
+        74,
+        3567,
+        67,
+        467
+      ]
+    }
+  },
+  "response":{
+    "name":"ReadDIDResponse",
+    "correlationID":140,
+    "parameters":{
+      "didResult":[
+        {
+          "resultCode":"USER_DISALLOWED",
+          "data":"dataGoesHere",
+          "didLocation":56484
+        },
+        {
+          "resultCode":"SUCCESS",
+          "data":"moreDataGoesHere",
+          "didLocation":1647
+        }
+      ]
+    }
+  }
+}

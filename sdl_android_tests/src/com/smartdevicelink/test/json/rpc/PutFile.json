@@ -1,0 +1,26 @@
+{
+  "request":{
+    "name":"PutFile",
+    "correlationID":137,
+    "parameters":{
+      "persistentFile":true,
+      "systemFile":false,
+      "fileType":"GRAPHIC_JPEG",
+      "syncFileName":"filename.txt",
+      "offset":2,
+      "length":456,
+      "bulkData":[
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  "response":{
+    "name":"PutFileResponse",
+    "correlationID":138,
+    "parameters":{
+      "spaceAvailable":43567543,
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "request":{
+    "name":"Show",
+    "correlationID":155,
+    "parameters":{
+      "graphic":{
+        "value":"image.png",
+        "imageType":"DYNAMIC"
+      },
+      "customPresets":[
+        "Preset 1",
+        "Preset 2",
+        "Preset 3",
+        "Preset 4"
+      ],
+      "mainField1":"Main Field 1",
+      "mainField2":"Main Field 2",
+      "mainField3":"Main Field 3",
+      "mainField4":"Main Field 4",
+      "statusBar":"Status",
+      "mediaClock":"Media Clock",
+      "alignment":"LEFT_ALIGNED",
+      "mediaTrack":"Media Track",
+      "secondaryGraphic":{
+        "value":"image2.png",
+        "imageType":"STATIC"
+      },
+      "softButtons":[
+        {
+          "isHighlighted":true,
+          "softButtonID":6,
+          "systemAction":"STEAL_FOCUS",
+          "text":"Button 1",
+          "type":"IMAGE",
+          "image":{
+            "value":"image.png",
+            "imageType":"STATIC"
+          }
+        },
+        {
+          "isHighlighted":false,
+          "softButtonID":3,
+          "systemAction":"DEFAULT_ACTION",
+          "text":"Button 2",
+          "type":"BOTH",
+          "image":{
+            "value":"image.png",
+            "imageType":"DYNAMIC"
+          }
+        }
+      ]
+    }
+  },
+  "response":{
+    "name":"ShowResponse",
+    "correlationID":156
+  }
+}
