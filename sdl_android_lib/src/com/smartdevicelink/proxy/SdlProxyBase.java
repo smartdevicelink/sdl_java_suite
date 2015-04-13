@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Surface;
 
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.rpc.PutFile;
@@ -3134,6 +3135,58 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		}
 	}
+    
+    public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+                                            int height, int bitrate) {
+        
+        if (sdlSession == null) return null;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return null;
+        
+        navServiceStartResponseReceived = false;
+        navServiceStartResponse = false;
+        sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
+        
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+        
+        while (!navServiceStartResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+        scheduler = null;
+        fTask = null;
+        
+        if (navServiceStartResponse) {
+            return sdlConn.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+                                                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+        } else {
+            return null;
+        }
+    }
+    
+    public void startEncoder () {
+        if (sdlSession == null) return;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return;
+        
+        sdlConn.startEncoder();
+    }
+    
+    public void releaseEncoder() {
+        if (sdlSession == null) return;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return;
+        
+        sdlConn.releaseEncoder();
+    }
+    
+    public void drainEncoder(boolean endOfStream) {
+        if (sdlSession == null) return;		
+        SdlConnection sdlConn = sdlSession.getSdlConnection();		
+        if (sdlConn == null) return;
+        
+        sdlConn.drainEncoder(endOfStream);
+    }
 	
 	private void NavServiceStarted() {
 		navServiceStartResponseReceived = true;
