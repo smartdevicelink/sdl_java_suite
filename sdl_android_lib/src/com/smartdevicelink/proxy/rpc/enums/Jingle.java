@@ -8,11 +8,10 @@ public enum Jingle{
     NEGATIVE("NEGATIVE_JINGLE"),
     INITIAL("INITIAL_JINGLE"),
     LISTEN("LISTEN_JINGLE"),
-    HELP("HELP_JINGLE"),
-    
-    ;
+    HELP("HELP_JINGLE");
     
     private final String INTERNAL_NAME;
+    
     private Jingle(String name){
         this.INTERNAL_NAME = name;
     }

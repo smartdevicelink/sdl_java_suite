@@ -18,7 +18,7 @@ public class LockScreenManagerTest extends TestCase{
         lockMan.setDriverDistStatus(false);
         assertEquals(ERROR_MSG, false, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
 
-        lockMan.setDriverDistStatus(null);
+        lockMan.setDriverDistStatus((Boolean) null);
         assertNull(ERROR_MSG, lockMan.getLockObj().getDriverDistractionStatus());
     }
 
