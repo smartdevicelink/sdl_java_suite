@@ -437,7 +437,10 @@ public class WiProProtocol extends AbstractProtocol {
 				} else handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionACK.getValue()) {
 				handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
+			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionNACK.getValue()) {
+				handleProtocolSessionEndedNACK(header.getSessionType(), header.getSessionID(), "");
 			}
+            
 		} // end-method
 				
 		private void handleSingleFrameMessageFrame(ProtocolFrameHeader header, byte[] data) {

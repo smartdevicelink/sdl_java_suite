@@ -276,12 +276,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onProtocolSessionNACKed(SessionType sessionType,
+		public void onProtocolSessionStartedNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
 			if (sessionType.eq(SessionType.NAV)) {
 				
 				Intent sendIntent = createBroadcastIntent();
-				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionNACKed");
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStartedNACKed");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
 				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
 				sendBroadcastIntent(sendIntent);
@@ -290,7 +290,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else if (sessionType.eq(SessionType.PCM)) {
 				Intent sendIntent = createBroadcastIntent();
-				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionNACKed");
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStartedNACKed");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
 				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
 				sendBroadcastIntent(sendIntent);
@@ -302,8 +302,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onProtocolSessionEnded(SessionType sessionType,
 				byte sessionID, String correlationID) {
-			// How to handle protocol session ended?
-				// How should protocol session management occur? 
+			//set the boolean associated our end request to true
 		}
 
 		@Override
@@ -322,6 +321,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			sendBroadcastIntent(sendIntent);	            
             
             notifyProxyClosed(msg, new SdlException(msg, SdlExceptionCause.HEARTBEAT_PAST_DUE), SdlDisconnectedReason.HB_TIMEOUT);
+			
+		}
+
+		@Override
+		public void onProtocolSessionEndedNACKed(SessionType sessionType,
+				byte sessionID, String correlationID) {
+				//set the boolean associated with our end request to false
 			
 		}
 	}

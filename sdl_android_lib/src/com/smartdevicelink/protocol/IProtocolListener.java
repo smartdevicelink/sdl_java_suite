@@ -18,7 +18,10 @@ public interface IProtocolListener {
 
 	// Called to indicate that a protocol session has ended (from either side)
 	void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
- 	/**
+ 	
+	void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
+	
+	/**
      * Called when a protocol heartbeat ACK message has been received from SDL.
      */
     void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID);
