@@ -104,6 +104,13 @@ public abstract class AbstractProtocol {
 	
 	// This method handles the end of a protocol session. A callback is 
 	// sent to the protocol listener.
+	protected void handleProtocolSessionEndedNACK(SessionType sessionType,
+			byte sessionID, String correlationID) {
+		_protocolListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+	}	
+	
+	// This method handles the end of a protocol session. A callback is 
+	// sent to the protocol listener.
 	protected void handleProtocolSessionEnded(SessionType sessionType,
 			byte sessionID, String correlationID) {
 		_protocolListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);

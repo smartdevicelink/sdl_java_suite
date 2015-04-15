@@ -208,7 +208,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	@Override
 	public void onProtocolSessionNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+		_connectionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
 	}
 
 	@Override
@@ -432,10 +432,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 
 		@Override
-		public void onProtocolSessionNACKed(SessionType sessionType,
+		public void onProtocolSessionStartedNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
-			for (SdlSession session : listenerList) {
-				session.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
 			}			
 		}
 
@@ -444,6 +445,16 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			for (SdlSession session : listenerList) {
 				session.onHeartbeatTimedOut(sessionID);
 			}	
+			
+		}
+
+		@Override
+		public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+			}			
+
 			
 		}
 	}
@@ -473,4 +484,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     		mySession._heartbeatMonitor.notifyTransportActivity();
         }
     }
+
+	@Override
+	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+			byte sessionID, String correlationID) {
+		_connectionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+		
+	}
 }
