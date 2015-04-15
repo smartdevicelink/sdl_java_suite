@@ -4378,14 +4378,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Used to push a binary stream of file data onto the module from a mobile device.
 	 * Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param is - The input stream of byte data that PutFileStream will read from 
+	 * @param is - The input stream of byte data that putFileStream will read from 
 	 * @param sdlFileName - The file reference name used by the putFile RPC.
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of the file.
 	 * A value greater than zero is used for resuming partial data chunks.
 	 * @param iLength - The total length of the file being sent.
 	 * @throws SdlException
 	*/
-	public void PutFileStream(InputStream is, String sdlFileName, Long iOffset, Long iLength) throws SdlException 
+	public void putFileStream(InputStream is, String sdlFileName, Long iOffset, Long iLength) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		startRPCStream(is, msg);
@@ -4403,7 +4403,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SdlException
 	*/
-	public OutputStream PutFileStream(String sdlFileName, Long iOffset, Long iLength) throws SdlException 
+	public OutputStream putFileStream(String sdlFileName, Long iOffset, Long iLength) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		return startRPCStream(msg);
@@ -4413,7 +4413,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Used to push a binary stream of file data onto the module from a mobile device.
 	 * Responses are captured through callback on IProxyListener.
 	 *
-	 * @param is - The input stream of byte data that PutFileStream will read from
+	 * @param is - The input stream of byte data that putFileStream will read from
 	 * @param syncFileName - The file reference name used by the putFile RPC.
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of the file.
 	 * A value greater than zero is used for resuming partial data chunks.
@@ -4423,7 +4423,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @throws SyncException
 	*/
-	public void PutFileStream(InputStream is, String syncFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public void putFileStream(InputStream is, String syncFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		startRPCStream(is, msg);
@@ -4443,7 +4443,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SyncException
 	*/
-	public OutputStream PutFileStream(String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public OutputStream putFileStream(String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		return startRPCStream(msg);
@@ -4464,7 +4464,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return boolean - True if the putfile stream was started successfully, false if an exception occurred during stream creation. 
 	 * @throws SdlException
 	*/	
-	public boolean PutFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public boolean putFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, Long.valueOf((long)0), fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(sPath, msg);
@@ -4474,7 +4474,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Used to push a stream of putfile RPC's containing binary data from a mobile device to the module.
 	 * Responses are captured through callback on IProxyListener.
 	 *
-	 * @param is - The input stream of byte data that PutFileStream will read from.
+	 * @param is - The input stream of byte data that putFileStream will read from.
 	 * @param sdlFileName - The file reference name used by the putFile RPC.
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of a file.
 	 * A value greater than zero is used for resuming partial data chunks.
@@ -4485,7 +4485,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return boolean - True if the putfile stream was started successfully, false if an exception occurred during stream creation. 
 	 * @throws SdlException
 	*/	
-	public boolean PutFileStream(InputStream is, String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public boolean putFileStream(InputStream is, String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(is, msg);
@@ -4493,7 +4493,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	/**
 	 *
-	 * Used to end an existing PutFileStream that was previously initiated with any PutFileStream method.
+	 * Used to end an existing putFileStream that was previously initiated with any putFileStream method.
 	 *
 	 */
 	public void endPutFileStream()
