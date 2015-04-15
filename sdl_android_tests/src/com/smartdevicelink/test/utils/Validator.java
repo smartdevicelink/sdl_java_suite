@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
+import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
@@ -1140,6 +1141,30 @@ public class Validator{
     		}
     	}
     	
+    	return true;
+    }
+    
+    public static boolean validateTurnList (List<Turn> item1, List<Turn> item2) {
+    	if (item1 == null) {
+    		return (item2 == null);
+    	}
+    	if (item2 == null) {
+    		return (item1 == null);
+    	}
+    	
+    	if (item1.size() != item2.size()) {
+    		return false;
+    	}
+    	
+    	for (int i = 0; i < item1.size(); i++) {
+    		if (item1.get(i).getNavigationText().equals(item2.get(i).getNavigationText())) {
+    			return false;
+    		}
+    		if (validateImage(item1.get(i).getTurnIcon(), item2.get(i).getTurnIcon())) {
+    			return false;
+    		}
+    	}
+    	    	
     	return true;
     }
     
