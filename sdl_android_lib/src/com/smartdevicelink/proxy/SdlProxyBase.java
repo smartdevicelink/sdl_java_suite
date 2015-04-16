@@ -119,10 +119,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 	private int iFileCount = 0;
 
-	private boolean navServiceResponseReceived = false;
-	private boolean navServiceResponse = false;
-    private boolean pcmServiceResponseReceived = false;
-    private boolean pcmServiceResponse = false;
+	private boolean navServiceStartResponseReceived = false;
+	private boolean navServiceStartResponse = false;
+	private boolean pcmServiceStartResponseReceived = false;
+	private boolean pcmServiceStartResponse = false;
+	private boolean navServiceEndResponseReceived = false;
+	private boolean navServiceEndResponse = false;
+	private boolean pcmServiceEndResponseReceived = false;
+	private boolean pcmServiceEndResponse = false;
 	
 	// Device Info for logging
 	private TraceDeviceInfo _traceDeviceInterrogator = null;
@@ -249,7 +253,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
 			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
-			sendBroadcastIntent(sendIntent);	
+			sendBroadcastIntent(sendIntent);
 			
 			setWiProVersion(version);
 
@@ -286,7 +290,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
 				sendBroadcastIntent(sendIntent);
 				
-				NavServiceEnded();
+				NavServiceStartedNACK();
 			}
 			else if (sessionType.eq(SessionType.PCM)) {
 				Intent sendIntent = createBroadcastIntent();
@@ -295,14 +299,32 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
 				sendBroadcastIntent(sendIntent);
 				
-				AudioServiceEnded();
+				AudioServiceStartedNACK();
 			}
 		}
 
 		@Override
 		public void onProtocolSessionEnded(SessionType sessionType,
 				byte sessionID, String correlationID) {
-			//set the boolean associated our end request to true
+			if (sessionType.eq(SessionType.NAV)) {
+				
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEnded");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				NavServiceEnded();
+			}
+			else if (sessionType.eq(SessionType.PCM)) {
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEnded");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				AudioServiceEnded();
+			}
 		}
 
 		@Override
@@ -327,7 +349,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onProtocolSessionEndedNACKed(SessionType sessionType,
 				byte sessionID, String correlationID) {
-				//set the boolean associated with our end request to false
+			if (sessionType.eq(SessionType.NAV)) {
+				
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEndedNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				NavServiceEndedNACK();
+			}
+			else if (sessionType.eq(SessionType.PCM)) {
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEndedNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				AudioServiceEndedNACK();
+			}
 			
 		}
 	}
@@ -2801,21 +2841,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return false;
-				
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
 		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
-		
-		while (!navServiceResponseReceived || !fTask.isDone());
+
+		while (!navServiceStartResponseReceived || !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
-		fTask = null;		
-		
-		if (navServiceResponse) {
+		fTask = null;
+
+		if (navServiceStartResponse) {
 			sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
 			return true;
 		} else {
@@ -2829,52 +2869,71 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;
 		
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
 		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
-		
-		while (!navServiceResponseReceived || !fTask.isDone());
+
+		while (!navServiceStartResponseReceived  || !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
-		
-		if (navServiceResponse) {
+
+		if (navServiceStartResponse) {
 			return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
 		} else {
 			return null;
 		}
 	}	
 	
-	public void endH264() {
-		if (sdlSession == null) return;		
+	public boolean endH264() {
+		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return;
+		if (sdlConn == null) return false;
+
+		navServiceEndResponseReceived = false;
+		navServiceEndResponse = false;
 		sdlConn.stopVideoStream();
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!navServiceEndResponseReceived || !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (navServiceEndResponse) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean startPCM(InputStream is) {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return false;		
-		
-		pcmServiceResponseReceived = false;
-		pcmServiceResponse = false;
+
+		pcmServiceStartResponseReceived = false;
+		pcmServiceStartResponse = false;
+		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
 
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
-		
-		while (!pcmServiceResponseReceived  || !fTask.isDone());
+
+		while (!pcmServiceStartResponseReceived  || !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
-		
-		if (pcmServiceResponse) {
+
+		if (pcmServiceStartResponse) {
 			sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
 			return true;
 		} else {
@@ -2887,49 +2946,87 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;		
 		
-		pcmServiceResponseReceived = false;
-		pcmServiceResponse = false;
+		pcmServiceStartResponseReceived = false;
+		pcmServiceStartResponse = false;
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
-		
-		while (!pcmServiceResponseReceived  || !fTask.isDone());
+
+		while (!pcmServiceStartResponseReceived || !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
-		if (pcmServiceResponse) {
+
+		if (pcmServiceStartResponse) {
 			return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
 		} else {
 			return null;
 		}
 	}
-	public void endPCM() {
-		if (sdlSession == null) return;		
+	public boolean endPCM() {
+		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return;
+		if (sdlConn == null) return false;
 		
+		pcmServiceEndResponseReceived = false;
+		pcmServiceEndResponse = false;
 		sdlConn.stopAudioStream();
-	}	
-	
-	private void NavServiceStarted() {
-		navServiceResponseReceived = true;
-		navServiceResponse = true;
+		
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!pcmServiceEndResponseReceived || !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (pcmServiceEndResponse) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	private void NavServiceEnded() {
-		navServiceResponseReceived = true;
-		navServiceResponse = false;
+	private void NavServiceStarted() {
+		navServiceStartResponseReceived = true;
+		navServiceStartResponse = true;
+	}
+	
+	private void NavServiceStartedNACK() {
+		navServiceStartResponseReceived = true;
+		navServiceStartResponse = false;
 	}
 	
     private void AudioServiceStarted() {
-		pcmServiceResponseReceived = true;
-		pcmServiceResponse = true;
+		pcmServiceStartResponseReceived = true;
+		pcmServiceStartResponse = true;
+	}
+	
+    private void AudioServiceStartedNACK() {
+		pcmServiceStartResponseReceived = true;
+		pcmServiceStartResponse = false;
+	}
+
+	private void NavServiceEnded() {
+		navServiceEndResponseReceived = true;
+		navServiceEndResponse = true;
+	}
+	
+	private void NavServiceEndedNACK() {
+		navServiceEndResponseReceived = true;
+		navServiceEndResponse = false;
 	}
 	
     private void AudioServiceEnded() {
-		pcmServiceResponseReceived = true;
-		pcmServiceResponse = false;
+		pcmServiceEndResponseReceived = true;
+		pcmServiceEndResponse = true;
+	}
+	
+    private void AudioServiceEndedNACK() {
+		pcmServiceEndResponseReceived = true;
+		pcmServiceEndResponse = false;
 	}	
 	
 	public void setAppService(Service mService)
