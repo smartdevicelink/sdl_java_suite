@@ -33,7 +33,11 @@ public enum SdlDisconnectedReason {
 	public static SdlDisconnectedReason convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason reason) {
 		
 		SdlDisconnectedReason returnReason = SdlDisconnectedReason.DEFAULT;
-		
+
+		if(reason == null) {
+			return returnReason;
+		}
+
 		switch(reason) {
 			case USER_EXIT:
 				returnReason = SdlDisconnectedReason.USER_EXIT;
