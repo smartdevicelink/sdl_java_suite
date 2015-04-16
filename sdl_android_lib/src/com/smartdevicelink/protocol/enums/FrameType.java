@@ -11,7 +11,10 @@ public class FrameType extends ByteEnumer {
 	
 	byte i = 0x00;
 	
-	protected FrameType(byte value, String name) {super(value, name);}
+	protected FrameType(byte value, String name) {
+		super(value, name);
+	}
+	
 	public final static FrameType Control = new FrameType((byte)0x00, "Control");
 	public final static FrameType Single = new FrameType((byte)0x01, "Single");
 	public final static FrameType First = new FrameType((byte)0x02, "First");

@@ -3,6 +3,7 @@ package com.smartdevicelink.test.utils;
 import java.util.Iterator;
 import java.util.List;
 
+import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.BeltStatus;
@@ -50,8 +51,9 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 public class Validator{
 
-    // TODO: This class could be eliminated if all RPC classes implement their own .equals() and .hashCode() methods.
-
+    // TODO: This class could be (mostly) eliminated if all RPC classes implement their own .equals() and .hashCode() methods.
+	// Some special methods do exist for pseudo-enums (FrameType, SessionType, FrameData, FrameDataControlFrame)
+	
     private Validator(){}
 
     public static boolean validateMenuParams(MenuParams menuParams1, MenuParams menuParams2){
@@ -98,6 +100,29 @@ public class Validator{
         }
 
         return true;
+    }
+    
+    public static boolean validateFrameTypeArray (FrameType[] array1, FrameType[] array2) {
+    	
+    	if (array1 == null) {
+    		return (array2 == null);
+    	}
+    	
+    	if (array2 == null) {
+    		return (array1 == null);
+    	}
+    	
+    	if (array1.length != array2.length) {
+    		return false;
+    	}
+    	
+    	for (int i = 0; i < array1.length; i++) {
+    		if (array1[i] != array2[i]) {
+    			return false;
+    		}
+    	}
+    	
+    	return true;
     }
 
     public static boolean validateImage(Image image1, Image image2){
