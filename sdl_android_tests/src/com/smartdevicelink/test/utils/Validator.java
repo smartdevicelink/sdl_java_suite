@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.BeltStatus;
@@ -104,6 +105,29 @@ public class Validator{
     }
     
     public static boolean validateFrameTypeArray (FrameType[] array1, FrameType[] array2) {
+    	
+    	if (array1 == null) {
+    		return (array2 == null);
+    	}
+    	
+    	if (array2 == null) {
+    		return (array1 == null);
+    	}
+    	
+    	if (array1.length != array2.length) {
+    		return false;
+    	}
+    	
+    	for (int i = 0; i < array1.length; i++) {
+    		if (array1[i] != array2[i]) {
+    			return false;
+    		}
+    	}
+    	
+    	return true;
+    }
+    
+    public static boolean validateSessionTypeArray (SessionType[] array1, SessionType[] array2) {
     	
     	if (array1 == null) {
     		return (array2 == null);

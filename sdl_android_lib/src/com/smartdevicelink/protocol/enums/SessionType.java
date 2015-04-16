@@ -12,8 +12,11 @@ public class SessionType extends ByteEnumer {
 	
 	byte i = 0x00;
 	
-	protected SessionType(byte value, String name) {super(value, name);}
-	public final static SessionType Heartbeat = new SessionType((byte) 0, "Heartbeat_Service");
+	protected SessionType(byte value, String name) {
+		super(value, name);
+	}
+	
+	public final static SessionType Heartbeat = new SessionType((byte) 0x00, "Heartbeat_Service");
 	public final static SessionType RPC = new SessionType((byte)0x07, "RPC");
 	public final static SessionType PCM = new SessionType((byte)0x0A, "PCM");
 	public final static SessionType NAV = new SessionType((byte)0x0B, "NAV");
