@@ -11,7 +11,10 @@ public class FrameData extends ByteEnumer {
 	
 	byte i = 0x00;
 	
-	protected FrameData(byte value, String name) {super(value, name);}
+	protected FrameData(byte value, String name) {
+		super(value, name);
+	}
+	
 	public final static FrameData StartSession = new FrameData((byte)0x01, "StartSession");
 	public final static FrameData StartSessionACK = new FrameData((byte)0x02, "StartSessionACK");
 	public final static FrameData StartSessionNACK = new FrameData((byte)0x03, "StartSessionNACK");
