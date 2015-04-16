@@ -11,7 +11,10 @@ public class FrameDataControlFrameType extends ByteEnumer {
 	@SuppressWarnings("unused")
     private byte _i = 0x00;
 
-	protected FrameDataControlFrameType(byte value, String name) {super(value, name);}
+	protected FrameDataControlFrameType(byte value, String name) {
+		super(value, name);
+	}
+	
 	public final static FrameDataControlFrameType Heartbeat = new FrameDataControlFrameType((byte)0x0, "Heartbeat");
 	public final static FrameDataControlFrameType StartSession = new FrameDataControlFrameType((byte)0x01, "StartSession");
 	public final static FrameDataControlFrameType StartSessionACK = new FrameDataControlFrameType((byte)0x02, "StartSessionACK");
