@@ -1,9 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -22,6 +18,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -30,9 +30,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.SparseArray;
 
-import com.smartdevicelink.proxy.RPCRequestFactory;
-import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
@@ -54,7 +53,100 @@ import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.AddCommandResponse;
+import com.smartdevicelink.proxy.rpc.AddSubMenu;
+import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
+import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
+import com.smartdevicelink.proxy.rpc.DeleteFile;
+import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
+import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetVehicleData;
+import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.Headers;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.ListFiles;
+import com.smartdevicelink.proxy.rpc.ListFilesResponse;
+import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
+import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
+import com.smartdevicelink.proxy.rpc.OnCommand;
+import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnHashChange;
+import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
+import com.smartdevicelink.proxy.rpc.OnLanguageChange;
+import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.OnTBTClientState;
+import com.smartdevicelink.proxy.rpc.OnTouchEvent;
+import com.smartdevicelink.proxy.rpc.OnVehicleData;
+import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
+import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
+import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.ResetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.ScrollableMessage;
+import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowResponse;
+import com.smartdevicelink.proxy.rpc.Slider;
+import com.smartdevicelink.proxy.rpc.SliderResponse;
+import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.Speak;
+import com.smartdevicelink.proxy.rpc.SpeakResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
+import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -109,7 +201,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final Object CONNECTION_REFERENCE_LOCK = new Object(),
 								INCOMING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								OUTGOING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
-								INTERNAL_MESSAGE_QUEUE_THREAD_LOCK = new Object();
+								INTERNAL_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
+								ON_UPDATE_LISTENER_LOCK = new Object();
 	
 	private Object APP_INTERFACE_REGISTERED_LOCK = new Object();
 		
@@ -196,6 +289,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean _bResumeSuccess = false;
 	
 	protected byte _wiproVersion = 1;
+	
+	protected SparseArray<OnUpdateListener> rpcUpdateListeners = null;
 	
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -498,6 +593,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						}
 			});
 		}
+		
+		rpcUpdateListeners = new SparseArray<OnUpdateListener>();
 		
 		// Initialize the proxy
 		try {
@@ -1130,6 +1227,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 			
+			rpcUpdateListeners.clear();
+			
 			// Clean up SDL Connection
 			synchronized(CONNECTION_REFERENCE_LOCK) {
 				if (sdlSession != null) sdlSession.close();
@@ -1183,6 +1282,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			
 			_traceDeviceInterrogator = null;
+			
+			rpcUpdateListeners = null;
+			
 		} catch (SdlException e) {
 			throw e;
 		} finally {
@@ -1439,11 +1541,75 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
 				if (_outgoingProxyMessageDispatcher != null) {
 					_outgoingProxyMessageDispatcher.queueMessage(pm);
+					//Since the message is queued we can add it's listener to our list
+					OnUpdateListener listener = request.getOnUpdateListener();
+					if(request.getMessageType() ==  RPCMessage.KEY_REQUEST){//We might want to include other message types in the future
+						addOnUpdateListener(listener, request.getCorrelationID(), msgBytes.length);
+					}
 				}
 			}
 		} catch (OutOfMemoryError e) {
 			SdlTrace.logProxyEvent("OutOfMemory exception while sending request " + request.getFunctionName(), SDL_LIB_TRACE_KEY);
 			throw new SdlException("OutOfMemory exception while sending request " + request.getFunctionName(), e, SdlExceptionCause.INVALID_ARGUMENT);
+		}
+	}
+	
+	private void onPacketStart(int correlationId, long totalSize){ //May not need this
+		synchronized(ON_UPDATE_LISTENER_LOCK){
+		if(rpcUpdateListeners !=null 
+				&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
+			rpcUpdateListeners.get(correlationId).onStart(correlationId, totalSize);
+			
+		}
+		}
+		
+	}
+	public void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
+		synchronized(ON_UPDATE_LISTENER_LOCK){
+		if(rpcUpdateListeners !=null 
+				&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
+			rpcUpdateListeners.get(correlationId).onUpdate(correlationId, bytesWritten, totalSize);
+			
+		}
+		}
+		
+	}
+	
+	/**
+	 * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
+	 * <p>Will automatically remove the listener for the list of listeners on completion. 
+	 * @param msg
+	 */
+	private void onPacketFinish(RPCResponse msg){
+		synchronized(ON_UPDATE_LISTENER_LOCK){
+			int correlationId = msg.getCorrelationID();
+			if(rpcUpdateListeners !=null 
+					&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
+				OnUpdateListener listener = rpcUpdateListeners.get(correlationId);
+				if(msg.getSuccess()){
+					listener.onFinish(correlationId, listener.totalSize);
+				}else{
+					listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
+				}
+				rpcUpdateListeners.remove(correlationId);
+			}			
+		}
+	}
+
+	public void addOnUpdateListener(OnUpdateListener listener,int correlationId, int totalSize){
+		synchronized(ON_UPDATE_LISTENER_LOCK){
+			if(rpcUpdateListeners!=null 
+					&& listener !=null){
+				listener.setTotalSize(totalSize);
+				listener.onStart(correlationId, totalSize);
+				rpcUpdateListeners.put(correlationId, listener);
+			}
+		}
+	}
+	
+	public SparseArray<OnUpdateListener> getProgressListeners(){
+		synchronized(ON_UPDATE_LISTENER_LOCK){
+			return this.rpcUpdateListeners;
 		}
 	}
 	
@@ -1541,6 +1707,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								} else if (_proxyListener instanceof IProxyListenerALM) {
 									//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								}
+								onPacketFinish(msg);
 							}
 						});
 					} else {
@@ -1549,6 +1716,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						} else if (_proxyListener instanceof IProxyListenerALM) {
 							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
+						onPacketFinish(msg);
 					}
 				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)) {
@@ -2024,10 +2192,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onPutFileResponse((PutFileResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
                     _proxyListener.onPutFileResponse((PutFileResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.DELETE_FILE)) {
                 // DeleteFile
@@ -2255,6 +2425,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString());
 				}
 			} // end-if
+
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCNotification(rpcMsg), SDL_LIB_TRACE_KEY);
 			if (functionName.equals(FunctionID.ON_HMI_STATUS)) {
@@ -2601,7 +2772,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} // end-if
 		} // end-if notification
-		
+
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
 	
