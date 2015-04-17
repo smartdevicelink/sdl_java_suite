@@ -52,6 +52,7 @@ import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.*;
@@ -306,6 +307,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onProtocolSessionEnded(SessionType sessionType,
 				byte sessionID, String correlationID) {
+			OnServiceEnded message = new OnServiceEnded(sessionType);
+			queueInternalMessage(message);
+
 			if (sessionType.eq(SessionType.NAV)) {
 				
 				Intent sendIntent = createBroadcastIntent();
@@ -1412,6 +1416,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onError(msg.getInfo(), msg.getException());
 				}
+			} else if (message.getFunctionName().equals(InternalProxyMessage.OnServiceEnded)) {
+				final OnServiceEnded msg = (OnServiceEnded)message;
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onServiceEnded(msg);
+						}
+					});
+				} else {
+					_proxyListener.onServiceEnded(msg);
+				}
+
 			/**************Start Legacy Specific Call-backs************/
 			} else if (message.getFunctionName().equals(InternalProxyMessage.OnProxyOpened)) {
 				if (_callbackToUIThread) {
