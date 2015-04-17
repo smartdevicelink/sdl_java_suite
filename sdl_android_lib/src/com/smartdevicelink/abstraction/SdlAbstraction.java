@@ -19,6 +19,7 @@ import com.smartdevicelink.abstraction.listeners.HashChangeListener;
 import com.smartdevicelink.abstraction.listeners.OnCommandListener;
 import com.smartdevicelink.abstraction.listeners.RPCListener;
 import com.smartdevicelink.abstraction.listeners.ResumeDataPersistenceListener;
+import com.smartdevicelink.abstraction.listeners.ServiceEndedListener;
 import com.smartdevicelink.abstraction.listeners.StreamRPCListener;
 import com.smartdevicelink.abstraction.listeners.StreamRPCResponseListener;
 import com.smartdevicelink.abstraction.listeners.SubscribeVehicleDataListener;
@@ -30,6 +31,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.interfaces.ISoftButton;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
@@ -101,6 +103,7 @@ public abstract class SdlAbstraction {
 	private Vector<RegisterAppInterfaceResponseListener> mRegisterAppInterfaceResponseListeners;
 	private StreamRPCListener mStreamRPCListener;
 	private StreamRPCResponseListener mStreamRPCResponseListener;
+	private ServiceEndedListener mServiceEndedListener;
 	private boolean mPutfileStreamSuccess = false;
 
 	private SdlProxyALM mSdlProxy;
@@ -153,7 +156,7 @@ public abstract class SdlAbstraction {
 	public final boolean PutFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException {
 	    if (mSdlProxy != null)
 	    {
-	    	mPutfileStreamSuccess = mSdlProxy.PutFileStream(sPath, sdlFileName, iOffset, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+	    	mPutfileStreamSuccess = mSdlProxy.putFileStream(sPath, sdlFileName, iOffset, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 	    }
 	    return mPutfileStreamSuccess;
 	}
@@ -376,12 +379,22 @@ public abstract class SdlAbstraction {
 			mStreamRPCResponseListener.onStreamRPCResponse(response);
 	}
 
+	public final void onServiceEndedListener(OnServiceEnded serviceEnded)
+	{
+		if(mServiceEndedListener != null)
+			mServiceEndedListener.onServiceEnded(serviceEnded);
+	}
+
 	public final void setStreamRPCListener(StreamRPCListener listener){
 		mStreamRPCListener = listener;
 	}
 
 	public final void setStreamRPCResponseListener(StreamRPCResponseListener listener){
 		mStreamRPCResponseListener = listener;
+	}
+
+	public final void setServiceEndedListener(ServiceEndedListener listener){
+		mServiceEndedListener = listener;
 	}
 
 	public final void onHMIStatus(OnHMIStatus status){

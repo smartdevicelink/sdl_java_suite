@@ -1,5 +1,6 @@
 package com.smartdevicelink.abstraction;
 
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerABS;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
@@ -332,5 +333,11 @@ public class SdlProxyListener implements IProxyListenerABS{
 	@Override
 	public void onStreamRPCResponse(StreamRPCResponse response) {
 		mAbstraction.onStreamRPCResponseListener(response);
+	}
+
+	@Override
+	public void onServiceEnded(OnServiceEnded serviceEnded) {
+		mAbstraction.onServiceEndedListener(serviceEnded);
+		
 	}
 }

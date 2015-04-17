@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.interfaces;
 
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
@@ -78,6 +80,8 @@ public interface IProxyListenerBase  {
 	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason);
 	
 	public void onOnStreamRPC(OnStreamRPC notification);
+
+	public void onServiceEnded(OnServiceEnded serviceEnded);
 	
 	public void onStreamRPCResponse(StreamRPCResponse response);
 	/**
