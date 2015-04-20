@@ -5,16 +5,28 @@ import android.os.Looper;
 import android.util.Log;
 
 public class HeartbeatMonitor implements IHeartbeatMonitor {
+	
+	// Variable for debugging
     private static final String TAG = HeartbeatMonitor.class.getSimpleName();
+    
+    // Lock variables
     private final Object HeartbeatThreadHandler_Lock = new Object();
-    private final Object Listener_Lock = new Object();
-    //
-    private int interval;
+    private final Object Listener_Lock               = new Object();
+    
+    // Listener    
     private IHeartbeatMonitorListener listener;
-    private boolean ackReceived;
-    private Thread heartbeatThread;
-    private Looper heartbeatThreadLooper;
+    
+    // Thread variables
+    private Thread  heartbeatThread;
+    private Looper  heartbeatThreadLooper;
     private Handler heartbeatThreadHandler;
+    private int     interval; // Thread scheduling delay    
+    private boolean ackReceived;
+    
+    // Methods used to retrieve values for unit testing only.
+    // See com/smartdevicelink/tests/protocol/heartbeat/HeartbeatMonitorTests.
+    public Runnable getHeartbeatRunnable () { return heartbeatTimeoutRunnable; }
+    public boolean getACKReceived () { return ackReceived; }
     
     private Runnable heartbeatTimeoutRunnable = new Runnable() {
         @Override
@@ -152,7 +164,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
     public void setListener(IHeartbeatMonitorListener listener) {
         this.listener = listener;
     }
-
+    
     @Override
     public void notifyTransportActivity() {
         synchronized (HeartbeatThreadHandler_Lock) {
