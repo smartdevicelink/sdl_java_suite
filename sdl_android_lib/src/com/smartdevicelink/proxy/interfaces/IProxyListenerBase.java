@@ -1,6 +1,5 @@
 package com.smartdevicelink.proxy.interfaces;
 
-import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
