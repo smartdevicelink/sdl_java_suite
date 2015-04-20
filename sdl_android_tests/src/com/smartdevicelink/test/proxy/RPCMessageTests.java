@@ -44,6 +44,8 @@ public class RPCMessageTests extends TestCase {
 		// so we cannot check against invalid data, including null values as it will
 		// crash in it's attempt to assign a null key in the hashtable.
 		// Function name and Message type should both have a check against null or invalid values.
+		// See Issue #165
+		// Hashtable does not allow null keys or null values - consider changing to HashMap?
 			
 		// Test -- RPCMessage(Hashtable<String, Object> hash)
 		Hashtable<String, Object> testHash = new Hashtable<String, Object>();

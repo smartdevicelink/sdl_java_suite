@@ -19,6 +19,10 @@ public class RPCStruct {
 		return store.contains(key);
 	}
 	
+	public Hashtable<String,Object> getStore () { // for unit testing
+		return store;
+	}
+	
 	public RPCStruct() {
 		store = new Hashtable<String, Object>();
 	}
