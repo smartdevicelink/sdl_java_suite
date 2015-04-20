@@ -60,6 +60,7 @@ import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerABS;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
+import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
@@ -319,6 +320,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onProtocolSessionStartedNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
+			OnServiceNACKed message = new OnServiceNACKed(sessionType);
+			queueInternalMessage(message);
+			
 			if (sessionType.eq(SessionType.NAV)) {
 				
 				Intent sendIntent = createBroadcastIntent();
@@ -1463,6 +1467,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onServiceEnded(msg);
+				}
+			} else if (message.getFunctionName().equals(InternalProxyMessage.OnServiceNACKed)) {
+				final OnServiceNACKed msg = (OnServiceNACKed)message;
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onServiceNACKed(msg);
+						}
+					});
+				} else {
+					_proxyListener.onServiceNACKed(msg);
 				}
 
 			/**************Start Legacy Specific Call-backs************/
