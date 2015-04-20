@@ -6,6 +6,7 @@ public class InternalProxyMessage {
 	public static final String OnProxyOpened = "OnProxyOpened";
 	public static final String OnProxyClosed = "OnProxyClosed";
 	public static final String OnServiceEnded = "OnServiceEnded";
+	public static final String OnServiceNACKed = "OnServiceNACKed";	
 	
 	public InternalProxyMessage(String functionName) {
 		//this(functionName, null, null);
