@@ -1620,7 +1620,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		if (messageType.equals(RPCMessage.KEY_RESPONSE)) {			
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
-
+			
 			// Check to ensure response is not from an internal message (reserved correlation ID)
 			if (isCorrelationIDProtected((new RPCResponse(hash)).getCorrelationID())) {
 				// This is a response generated from an internal message, it can be trapped here
@@ -1855,6 +1855,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								} else if (_proxyListener instanceof IProxyListenerALM) {
 									//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								}
+	                            onPacketFinish(msg);
 							}
 						});
 					} else {
@@ -1863,6 +1864,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						} else if (_proxyListener instanceof IProxyListenerALM) {
 							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
+                        onPacketFinish(msg);
 					}
 				}
 			} else if (functionName.equals(FunctionID.SPEAK)) {
@@ -1875,10 +1877,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onSpeakResponse(msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onSpeakResponse(msg);						
+					_proxyListener.onSpeakResponse(msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.ALERT)) {
 				// AlertResponse
@@ -1890,10 +1894,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onAlertResponse(msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onAlertResponse(msg);						
+					_proxyListener.onAlertResponse(msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.SHOW)) {
 				// ShowResponse
@@ -1905,10 +1911,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onShowResponse((ShowResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onShowResponse((ShowResponse)msg);						
+					_proxyListener.onShowResponse((ShowResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.ADD_COMMAND)) {
 				// AddCommand
@@ -1920,10 +1928,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onAddCommandResponse((AddCommandResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onAddCommandResponse((AddCommandResponse)msg);					
+					_proxyListener.onAddCommandResponse((AddCommandResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.DELETE_COMMAND)) {
 				// DeleteCommandResponse
@@ -1935,10 +1945,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onDeleteCommandResponse((DeleteCommandResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onDeleteCommandResponse((DeleteCommandResponse)msg);					
+					_proxyListener.onDeleteCommandResponse((DeleteCommandResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.ADD_SUB_MENU)) {
 				// AddSubMenu
@@ -1950,10 +1962,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onAddSubMenuResponse((AddSubMenuResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onAddSubMenuResponse((AddSubMenuResponse)msg);					
+					_proxyListener.onAddSubMenuResponse((AddSubMenuResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.DELETE_SUB_MENU)) {
 				// DeleteSubMenu
@@ -1965,10 +1979,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onDeleteSubMenuResponse((DeleteSubMenuResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onDeleteSubMenuResponse((DeleteSubMenuResponse)msg);					
+					_proxyListener.onDeleteSubMenuResponse((DeleteSubMenuResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.SUBSCRIBE_BUTTON)) {
 				// SubscribeButton
@@ -1980,10 +1996,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onSubscribeButtonResponse((SubscribeButtonResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onSubscribeButtonResponse((SubscribeButtonResponse)msg);				
+					_proxyListener.onSubscribeButtonResponse((SubscribeButtonResponse)msg);	
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.UNSUBSCRIBE_BUTTON)) {
 				// UnsubscribeButton
@@ -1995,10 +2013,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onUnsubscribeButtonResponse((UnsubscribeButtonResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onUnsubscribeButtonResponse((UnsubscribeButtonResponse)msg);			
+					_proxyListener.onUnsubscribeButtonResponse((UnsubscribeButtonResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.SET_MEDIA_CLOCK_TIMER)) {
 				// SetMediaClockTimer
@@ -2010,10 +2030,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onSetMediaClockTimerResponse((SetMediaClockTimerResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onSetMediaClockTimerResponse((SetMediaClockTimerResponse)msg);		
+					_proxyListener.onSetMediaClockTimerResponse((SetMediaClockTimerResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.ENCODED_SYNC_P_DATA)) {
 				
@@ -2033,11 +2055,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_mainUIHandler.post(new Runnable() {
 						@Override
 						public void run() {
-							_proxyListener.onSystemRequestResponse(msg); 
+							_proxyListener.onSystemRequestResponse(msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onSystemRequestResponse(msg); 		
+					_proxyListener.onSystemRequestResponse(msg);
+					onPacketFinish(msg);
 				}
 			}  else if (functionName.equals(FunctionID.CREATE_INTERACTION_CHOICE_SET)) {
 				// CreateInteractionChoiceSet
@@ -2049,10 +2073,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onCreateInteractionChoiceSetResponse((CreateInteractionChoiceSetResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onCreateInteractionChoiceSetResponse((CreateInteractionChoiceSetResponse)msg);		
+					_proxyListener.onCreateInteractionChoiceSetResponse((CreateInteractionChoiceSetResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.DELETE_INTERACTION_CHOICE_SET)) {
 				// DeleteInteractionChoiceSet
@@ -2064,10 +2090,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onDeleteInteractionChoiceSetResponse((DeleteInteractionChoiceSetResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onDeleteInteractionChoiceSetResponse((DeleteInteractionChoiceSetResponse)msg);		
+					_proxyListener.onDeleteInteractionChoiceSetResponse((DeleteInteractionChoiceSetResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.PERFORM_INTERACTION)) {
 				// PerformInteraction
@@ -2079,10 +2107,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onPerformInteractionResponse((PerformInteractionResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onPerformInteractionResponse((PerformInteractionResponse)msg);		
+					_proxyListener.onPerformInteractionResponse((PerformInteractionResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.SET_GLOBAL_PROPERTIES)) {
 				// SetGlobalPropertiesResponse 
@@ -2094,10 +2124,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							@Override
 							public void run() {
 								_proxyListener.onSetGlobalPropertiesResponse((SetGlobalPropertiesResponse)msg);
+								onPacketFinish(msg);
 							}
 						});
 					} else {
-						_proxyListener.onSetGlobalPropertiesResponse((SetGlobalPropertiesResponse)msg);		
+						_proxyListener.onSetGlobalPropertiesResponse((SetGlobalPropertiesResponse)msg);	
+						onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.RESET_GLOBAL_PROPERTIES)) {
 				// ResetGlobalProperties				
@@ -2109,10 +2141,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onResetGlobalPropertiesResponse((ResetGlobalPropertiesResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onResetGlobalPropertiesResponse((ResetGlobalPropertiesResponse)msg);		
+					_proxyListener.onResetGlobalPropertiesResponse((ResetGlobalPropertiesResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.UNREGISTER_APP_INTERFACE)) {
 				// UnregisterAppInterface
@@ -2144,6 +2178,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							} else if (_proxyListener instanceof IProxyListenerALM) {
 								//((IProxyListenerALM)_proxyListener).onUnregisterAppInterfaceResponse(msg);
 							}
+							onPacketFinish(msg);
 						}
 					});
 				} else {
@@ -2152,6 +2187,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} else if (_proxyListener instanceof IProxyListenerALM) {
 						//((IProxyListenerALM)_proxyListener).onUnregisterAppInterfaceResponse(msg);
 					}
+					onPacketFinish(msg);
 				}
 				
 				notifyProxyClosed("UnregisterAppInterfaceResponse", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
@@ -2164,10 +2200,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						@Override
 						public void run() {
 							_proxyListener.onGenericResponse((GenericResponse)msg);
+							onPacketFinish(msg);
 						}
 					});
 				} else {
-					_proxyListener.onGenericResponse((GenericResponse)msg);	
+					_proxyListener.onGenericResponse((GenericResponse)msg);
+					onPacketFinish(msg);
 				}
 			} else if (functionName.equals(FunctionID.SLIDER)) {
                 // Slider
@@ -2178,10 +2216,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onSliderResponse((SliderResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onSliderResponse((SliderResponse)msg);   
+                    _proxyListener.onSliderResponse((SliderResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.PUT_FILE)) {
                 // PutFile
@@ -2208,10 +2248,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onDeleteFileResponse((DeleteFileResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onDeleteFileResponse((DeleteFileResponse)msg);   
+                    _proxyListener.onDeleteFileResponse((DeleteFileResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.LIST_FILES)) {
                 // ListFiles
@@ -2222,10 +2264,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onListFilesResponse((ListFilesResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onListFilesResponse((ListFilesResponse)msg);     
+                    _proxyListener.onListFilesResponse((ListFilesResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.SET_APP_ICON)) {
                 // SetAppIcon
@@ -2236,10 +2280,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onSetAppIconResponse((SetAppIconResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                        _proxyListener.onSetAppIconResponse((SetAppIconResponse)msg);   
+                        _proxyListener.onSetAppIconResponse((SetAppIconResponse)msg);
+                        onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.SCROLLABLE_MESSAGE)) {
                 // ScrollableMessage
@@ -2250,10 +2296,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onScrollableMessageResponse((ScrollableMessageResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onScrollableMessageResponse((ScrollableMessageResponse)msg);     
+                    _proxyListener.onScrollableMessageResponse((ScrollableMessageResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.CHANGE_REGISTRATION)) {
                 // ChangeLanguageRegistration
@@ -2264,10 +2312,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onChangeRegistrationResponse((ChangeRegistrationResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onChangeRegistrationResponse((ChangeRegistrationResponse)msg);   
+                    _proxyListener.onChangeRegistrationResponse((ChangeRegistrationResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT)) {
                 // SetDisplayLayout
@@ -2287,10 +2337,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onSetDisplayLayoutResponse((SetDisplayLayoutResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
                         _proxyListener.onSetDisplayLayoutResponse((SetDisplayLayoutResponse)msg);
+                        onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.PERFORM_AUDIO_PASS_THRU)) {
                 // PerformAudioPassThru
@@ -2301,10 +2353,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onPerformAudioPassThruResponse((PerformAudioPassThruResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onPerformAudioPassThruResponse((PerformAudioPassThruResponse)msg);       
+                    _proxyListener.onPerformAudioPassThruResponse((PerformAudioPassThruResponse)msg);
+                    onPacketFinish(msg);       
                 }
             } else if (functionName.equals(FunctionID.END_AUDIO_PASS_THRU)) {
                 // EndAudioPassThru
@@ -2315,10 +2369,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onEndAudioPassThruResponse((EndAudioPassThruResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
                     _proxyListener.onEndAudioPassThruResponse((EndAudioPassThruResponse)msg);
+                    onPacketFinish(msg);
                 }
             } else if (functionName.equals(FunctionID.SUBSCRIBE_VEHICLE_DATA)) {
             	// SubscribeVehicleData
@@ -2329,10 +2385,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onSubscribeVehicleDataResponse((SubscribeVehicleDataResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onSubscribeVehicleDataResponse((SubscribeVehicleDataResponse)msg);       
+                    _proxyListener.onSubscribeVehicleDataResponse((SubscribeVehicleDataResponse)msg);
+                    onPacketFinish(msg);       
                 }
             } else if (functionName.equals(FunctionID.UNSUBSCRIBE_VEHICLE_DATA)) {
             	// UnsubscribeVehicleData
@@ -2343,10 +2401,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onUnsubscribeVehicleDataResponse((UnsubscribeVehicleDataResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onUnsubscribeVehicleDataResponse((UnsubscribeVehicleDataResponse)msg);   
+                    _proxyListener.onUnsubscribeVehicleDataResponse((UnsubscribeVehicleDataResponse)msg);
+                    onPacketFinish(msg);   
                 }
             } else if (functionName.equals(FunctionID.GET_VEHICLE_DATA)) {
            		// GetVehicleData
@@ -2357,10 +2417,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                            _proxyListener.onGetVehicleDataResponse((GetVehicleDataResponse)msg);
+                           onPacketFinish(msg);
                         }
                      });
                     } else {
-                        _proxyListener.onGetVehicleDataResponse((GetVehicleDataResponse)msg);   
+                        _proxyListener.onGetVehicleDataResponse((GetVehicleDataResponse)msg);
+                        onPacketFinish(msg);   
                     }            	               
             } else if (functionName.equals(FunctionID.READ_DID)) {
                 final ReadDIDResponse msg = new ReadDIDResponse(hash);
@@ -2370,6 +2432,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onReadDIDResponse((ReadDIDResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
@@ -2383,10 +2446,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onGetDTCsResponse((GetDTCsResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onGetDTCsResponse((GetDTCsResponse)msg);   
+                    _proxyListener.onGetDTCsResponse((GetDTCsResponse)msg);
+                    onPacketFinish(msg);   
                 }
             } else if (functionName.equals(FunctionID.DIAGNOSTIC_MESSAGE)) {
                 final DiagnosticMessageResponse msg = new DiagnosticMessageResponse(hash);
@@ -2396,10 +2461,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         @Override
                         public void run() {
                             _proxyListener.onDiagnosticMessageResponse((DiagnosticMessageResponse)msg);
+                            onPacketFinish(msg);
                         }
                     });
                 } else {
-                    _proxyListener.onDiagnosticMessageResponse((DiagnosticMessageResponse)msg);   
+                    _proxyListener.onDiagnosticMessageResponse((DiagnosticMessageResponse)msg);
+                    onPacketFinish(msg);   
                 }            	
             } 
             else if (functionName.equals(FunctionID.SYSTEM_REQUEST)) {
@@ -2411,10 +2478,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
    						@Override
    						public void run() {
    							_proxyListener.onSystemRequestResponse((SystemRequestResponse)msg);
+                            onPacketFinish(msg);
    						}
    					});
    				} else {
-   					_proxyListener.onSystemRequestResponse((SystemRequestResponse)msg);	
+   					_proxyListener.onSystemRequestResponse((SystemRequestResponse)msg);
+                    onPacketFinish(msg);	
    				}
             }
 			else {
