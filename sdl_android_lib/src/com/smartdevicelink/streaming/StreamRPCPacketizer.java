@@ -31,10 +31,15 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	private SdlProxyBase<IProxyListenerBase> _proxy;
 	private IProxyListenerBase _proxyListener;
 	
+    private Object mPauseLock;
+    private boolean mPaused;
+
 	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
 		lFileSize = lLength;
 		iInitialCorrID = request.getCorrelationID();
+        mPauseLock = new Object();
+        mPaused = false;
 		if (proxy != null)
 		{
 			_proxy = proxy;
@@ -43,6 +48,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		}
 	}
 
+	@Override
 	public void start() throws IOException {
 		if (thread == null) {
 			thread = new Thread(this);
@@ -50,6 +56,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		}
 	}
 
+	@Override
 	public void stop() {
 		try {
 			is.close();
@@ -109,7 +116,22 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		return;
 	}
 
-	public void run() {
+    @Override
+	public void pause() {
+        synchronized (mPauseLock) {
+            mPaused = true;
+        }
+    }
+
+    @Override
+    public void resume() {
+        synchronized (mPauseLock) {
+            mPaused = false;
+            mPauseLock.notifyAll();
+        }
+    }
+
+    public void run() {
 		int length;
 		byte[] msgBytes;
 		ProtocolMessage pm;
@@ -144,6 +166,18 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
 			while (!Thread.interrupted()) {				
 			
+				synchronized (mPauseLock)
+				{
+					while (mPaused)
+                    {
+						try
+                        {
+							mPauseLock.wait();
+                        }
+                        catch (InterruptedException e) {}
+                    }
+                }
+
 				length = is.read(buffer, 0, BUFF_READ_SIZE);				
 				
 				if (length == -1)

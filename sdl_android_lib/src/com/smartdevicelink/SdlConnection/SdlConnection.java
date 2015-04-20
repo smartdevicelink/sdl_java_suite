@@ -272,15 +272,30 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
 		return null;
 	}
-	
-	public void stopStream()
+
+	public void pauseRPCStream()
+	{
+		if (mPacketizer != null)
+		{
+			mPacketizer.pause();
+		}
+	}
+
+	public void resumeRPCStream()
+	{
+		if (mPacketizer != null)
+		{
+			mPacketizer.resume();
+		}
+	}
+
+	public void stopRPCStream()
 	{
 		if (mPacketizer != null)
 		{
 			mPacketizer.stop();
 		}
 	}
-	
 	
 	@Override
 	public void sendStreamPacket(ProtocolMessage pm) {

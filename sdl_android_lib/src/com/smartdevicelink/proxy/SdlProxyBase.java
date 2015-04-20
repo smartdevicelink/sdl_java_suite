@@ -198,6 +198,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;
+	private StreamRPCPacketizer rpcPacketizer = null;
+
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 	
@@ -2798,6 +2800,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
+	public boolean pausePutFileStream()
+	{
+		if (rpcPacketizer == null)
+			return false;
+		rpcPacketizer.pause();
+
+		return true;
+	}
+
+	public boolean resumePutFileStream()
+	{
+		if (rpcPacketizer == null)
+			return false;
+		rpcPacketizer.resume();
+
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
 	private boolean startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return false;		
@@ -2815,8 +2836,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		try {
-			@SuppressWarnings("unchecked")
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
+			rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
 			rpcPacketizer.start();
 			return true;
 		} catch (Exception e) {
@@ -2825,6 +2845,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         }			
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return false;		
@@ -2839,8 +2860,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		Long lSize = request.getLength().longValue();			
 		
 		try {
-			@SuppressWarnings("unchecked")
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
+			rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
 			rpcPacketizer.start();
 			return true;
 		} catch (Exception e) {
@@ -2885,9 +2905,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return;
-		sdlConn.stopStream();
+		sdlConn.stopRPCStream();
 	}
-	
 	
 	public boolean startH264(InputStream is) {
 		
@@ -2936,7 +2955,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlConn == null) return;
 		sdlConn.endService(SessionType.NAV, sdlSession.getSessionId());
 	}
-	
+
 	public boolean startPCM(InputStream is) {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
