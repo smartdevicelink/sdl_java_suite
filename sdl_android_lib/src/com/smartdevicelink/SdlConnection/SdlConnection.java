@@ -468,9 +468,15 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		public void onProtocolSessionStarted(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
 			for (SdlSession session : listenerList) {
-				if (session.getSessionId() == 0 || sessionType == SessionType.NAV || sessionType == SessionType.PCM) {
+				if (session.getSessionId() == 0) {
 					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 					break;
+				}
+			}
+			if (sessionType.equals(SessionType.NAV) || sessionType.equals(SessionType.PCM)){
+				SdlSession session = findSessionById(sessionID);
+				if (session != null) {
+					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 				}
 			}
 		}
