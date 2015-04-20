@@ -15,6 +15,10 @@ public class RPCStruct {
 
 	protected Hashtable<String, Object> store = null;
 	
+	public boolean getStoreValue(String key) { // for unit testing
+		return store.contains(key);
+	}
+	
 	public RPCStruct() {
 		store = new Hashtable<String, Object>();
 	}
