@@ -3025,7 +3025,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
-		while (!navServiceStartResponseReceived || !fTask.isDone());
+		while (!navServiceStartResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
@@ -3052,7 +3052,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
-		while (!navServiceStartResponseReceived  || !fTask.isDone());
+		while (!navServiceStartResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
@@ -3077,7 +3077,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
-		while (!navServiceEndResponseReceived || !fTask.isDone());
+		while (!navServiceEndResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
@@ -3102,7 +3102,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
-		while (!pcmServiceStartResponseReceived  || !fTask.isDone());
+		while (!pcmServiceStartResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
@@ -3128,7 +3128,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
-		while (!pcmServiceStartResponseReceived || !fTask.isDone());
+		while (!pcmServiceStartResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
@@ -3152,7 +3152,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
-		while (!pcmServiceEndResponseReceived || !fTask.isDone());
+		while (!pcmServiceEndResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 		scheduler = null;
 		fTask = null;
