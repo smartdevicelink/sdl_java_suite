@@ -14,9 +14,13 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 	private Thread t = null;
 
 	public SdlConnection sdlConnection = null;
+    private Object mPauseLock;
+    private boolean mPaused;
 
 	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
 		super(streamListener, is, sType, rpcSessionID);
+        mPauseLock = new Object();
+        mPaused = false;
 	}
 
 	public void start() throws IOException {
@@ -43,6 +47,18 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 		{
 			while (t != null && !t.isInterrupted()) 
 			{
+				synchronized(mPauseLock)
+				{
+					while (mPaused)
+                    {
+						try
+                        {
+							mPauseLock.wait();
+                        }
+                        catch (InterruptedException e) {}
+                    }
+                }
+
 				length = is.read(buffer, 0, 1488);
 				
 				if (length >= 0) 
@@ -71,4 +87,19 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
 		}
 	}
+
+    @Override
+	public void pause() {
+        synchronized (mPauseLock) {
+            mPaused = true;
+        }
+    }
+
+    @Override
+    public void resume() {
+        synchronized (mPauseLock) {
+            mPaused = false;
+            mPauseLock.notifyAll();
+        }
+    }
 }

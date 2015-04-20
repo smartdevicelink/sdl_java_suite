@@ -298,6 +298,22 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		return null;
 	}
 	
+	public void pauseRPCStream()
+	{
+		if (mRPCPacketizer != null)
+		{
+			mRPCPacketizer.pause();
+		}
+	}
+
+	public void resumeRPCStream()
+	{
+		if (mRPCPacketizer != null)
+		{
+			mRPCPacketizer.resume();
+		}
+	}
+
 	public void stopRPCStream()
 	{
 		if (mRPCPacketizer != null)
@@ -320,8 +336,40 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		{
 			mVideoPacketizer.stop();
 		}
-	}	
-		
+	}
+
+	public void pauseAudioStream()
+	{
+		if (mAudioPacketizer != null)
+		{
+			mAudioPacketizer.pause();
+		}
+	}
+
+	public void pauseVideoStream()
+	{
+		if (mVideoPacketizer != null)
+		{
+			mVideoPacketizer.pause();
+		}
+	}
+
+	public void resumeAudioStream()
+	{
+		if (mAudioPacketizer != null)
+		{
+			mAudioPacketizer.resume();
+		}
+	}
+
+	public void resumeVideoStream()
+	{
+		if (mVideoPacketizer != null)
+		{
+			mVideoPacketizer.resume();
+		}
+	}
+
 	@Override
 	public void sendStreamPacket(ProtocolMessage pm) {
 		sendMessage(pm);
