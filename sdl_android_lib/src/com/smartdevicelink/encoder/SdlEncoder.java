@@ -71,13 +71,19 @@ public class SdlEncoder {
 		try {
 			mEncoder = MediaCodec.createEncoderByType(_MIME_TYPE);
 		} catch (Exception e) {e.printStackTrace();}
-		
-		mEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-        return mEncoder.createInputSurface();
+
+		if(mEncoder != null) {
+		   mEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+           return mEncoder.createInputSurface();
+		} else {
+			return null;
+		}
 	}
 	
 	public void startEncoder () {
-		mEncoder.start();
+		if(mEncoder != null) {
+		  mEncoder.start();
+		}
 	}
 	
 	/**
@@ -95,6 +101,7 @@ public class SdlEncoder {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			mOutputStream = null;
 		}
 	}
 
@@ -109,8 +116,11 @@ public class SdlEncoder {
 	public void drainEncoder(boolean endOfStream) {
 		final int TIMEOUT_USEC = 10000;
 
+		if(mEncoder == null || mOutputStream == null) {
+		   return;			
+		}
 		if (endOfStream) {
-			mEncoder.signalEndOfInputStream();
+			  mEncoder.signalEndOfInputStream();
 		}
 
 		ByteBuffer[] encoderOutputBuffers = mEncoder.getOutputBuffers();
@@ -135,7 +145,7 @@ public class SdlEncoder {
 
 					try {
 						mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
-					} catch (IOException e) {}
+					} catch (Exception e) {}
 				}
 
 				mEncoder.releaseOutputBuffer(encoderStatus, false);
