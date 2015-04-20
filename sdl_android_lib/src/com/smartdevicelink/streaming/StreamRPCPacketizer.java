@@ -16,12 +16,17 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 	public final static String TAG = "StreamPacketizer";
 	public final static int BUFF_READ_SIZE = 1000;
 	
-	private Thread t = null;
 
+	private Thread t = null;
+    private Object mPauseLock;
+    private boolean mPaused;
 	public StreamRPCPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
+        mPauseLock = new Object();
+        mPaused = false;
 	}
 
+	@Override
 	public void start() throws IOException {
 		if (t == null) {
 			t = new Thread(this);
@@ -29,6 +34,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 		}
 	}
 
+	@Override
 	public void stop() {
 		try {
 			is.close();
@@ -37,7 +43,22 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 		t = null;
 	}
 
-	public void run() {
+    @Override
+	public void pause() {
+        synchronized (mPauseLock) {
+            mPaused = true;
+        }
+    }
+
+    @Override
+    public void resume() {
+        synchronized (mPauseLock) {
+            mPaused = false;
+            mPauseLock.notifyAll();
+        }
+    }
+
+    public void run() {
 		int length;
 
 		try {
@@ -48,6 +69,18 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements Runnable{
 			
 			while (!Thread.interrupted()) {				
 			
+				synchronized (mPauseLock)
+				{
+					while (mPaused)
+                    {
+						try
+                        {
+							mPauseLock.wait();
+                        }
+                        catch (InterruptedException e) {}
+                    }
+                }
+
 				length = is.read(buffer, 0, BUFF_READ_SIZE);				
 				
 				if (length == -1)
