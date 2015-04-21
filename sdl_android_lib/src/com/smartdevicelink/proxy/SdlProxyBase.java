@@ -1587,7 +1587,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
 				OnUpdateListener listener = rpcUpdateListeners.get(correlationId);
 				if(msg.getSuccess()){
-					listener.onFinish(correlationId, listener.totalSize);
+					listener.onFinish(correlationId, msg, listener.totalSize);
 				}else{
 					listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
 				}
