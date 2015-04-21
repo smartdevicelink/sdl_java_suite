@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
@@ -18,4 +15,4 @@ public class RPCNotification extends RPCMessage {
 	public RPCNotification(RPCMessage rpcMsg) {
 		super(rpcMsg);
 	}
-} // end-class
+}
