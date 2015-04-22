@@ -333,7 +333,6 @@ public class RPCRequestFactory {
 		listFiles.setCorrelationID(correlationID);
 		return listFiles;
 	}
-
 	
 	public static PerformInteraction buildPerformInteraction(
 			Vector<TTSChunk> initChunks, String displayText,

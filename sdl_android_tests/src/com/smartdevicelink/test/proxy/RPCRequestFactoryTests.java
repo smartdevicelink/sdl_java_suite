@@ -7,7 +7,14 @@ import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.rpc.DeleteFile;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -288,39 +295,111 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(MSG, testAlert.getCorrelationID());
 	}
 	
-	public void testCreateInteractionChoiceSet () {
+	public void testBuildCreateInteractionChoiceSet () {
+		
+		Integer testICSID, testCorrelationID;
+		Vector<Choice> testChoiceSet;
+		CreateInteractionChoiceSet testBCICS;
 		
 		// Test --buildCreateInteractionChoiceSet(Vector<Choice> choiceSet, Integer interactionChoiceSetID, Integer correlationID)
+		testICSID = 0;
+		testCorrelationID = 1;
+		testChoiceSet = new Vector<Choice>();
+		Choice testChoice = new Choice();
+		testChoiceSet.add(testChoice);
+		testBCICS = RPCRequestFactory.buildCreateInteractionChoiceSet(testChoiceSet, testICSID, testCorrelationID);
+		assertEquals(MSG, testChoiceSet, testBCICS.getChoiceSet());
+		assertEquals(MSG, testICSID, testBCICS.getInteractionChoiceSetID());
+		assertEquals(MSG, testCorrelationID, testBCICS.getCorrelationID());
 		
+		testBCICS = RPCRequestFactory.buildCreateInteractionChoiceSet(null, null, null);
+		assertNull(MSG, testBCICS.getChoiceSet());
+		assertNull(MSG, testBCICS.getInteractionChoiceSetID());
+		assertNull(MSG, testBCICS.getCorrelationID());
 	}
 	
-	public void testDeleteCommand () {
+	public void testBuildDeleteCommand () {
+		
+		Integer testCID, testCorrelationID;
+		DeleteCommand testDC;
 		
 		// Test -- buildDeleteCommand(Integer commandID, Integer correlationID)
+		testCID = 0;
+		testCorrelationID = 1;
+		testDC = RPCRequestFactory.buildDeleteCommand(testCID, testCorrelationID);
+		assertEquals(MSG, testCID, testDC.getCmdID());
+		assertEquals(MSG, testCorrelationID, testDC.getCorrelationID());
+		
+		testDC = RPCRequestFactory.buildDeleteCommand(null, null);
+		assertNull(MSG, testDC.getCmdID());
+		assertNull(MSG, testDC.getCorrelationID());
 		
 	}
 	
-	public void testDeleteFile () {
+	public void testBuildDeleteFile () {
+		
+		Integer testCorrelationID;
+		String testFileName;
+		DeleteFile testDF;
 		
 		// Test --buildDeleteFile(String sdlFileName, Integer correlationID)
+		testCorrelationID = 0;
+		testFileName = "test";
+		testDF = RPCRequestFactory.buildDeleteFile(testFileName, testCorrelationID);
+		assertEquals(MSG, testCorrelationID, testDF.getCorrelationID());
+		assertEquals(MSG, testFileName, testDF.getSdlFileName());
+		
+		testDF = RPCRequestFactory.buildDeleteFile(null, null);
+		assertNull(MSG, testDF.getCorrelationID());
+		assertNull(MSG, testDF.getSdlFileName());
 		
 	}
 	
-	public void testDeleteInteractionChoiceSet () {
+	public void testBuildDeleteInteractionChoiceSet () {
+		
+		Integer testICSID, testCorrelationID;
+		DeleteInteractionChoiceSet testDICS;
 		
 		// Test -- buildDeleteInteractionChoiceSet(Integer interactionChoiceSetID, Integer correlationID)
+		testICSID = 0;
+		testCorrelationID = 1;
+		testDICS = RPCRequestFactory.buildDeleteInteractionChoiceSet(testICSID, testCorrelationID);
+		assertEquals(MSG, testICSID, testDICS.getInteractionChoiceSetID());
+		assertEquals(MSG, testCorrelationID, testDICS.getCorrelationID());
 		
+		testDICS = RPCRequestFactory.buildDeleteInteractionChoiceSet(null, null);
+		assertNull(MSG, testDICS.getInteractionChoiceSetID());
+		assertNull(MSG, testDICS.getCorrelationID());
 	}
 	
-	public void testDeleteSubMenu () {
+	public void testBuildDeleteSubMenu () {
+		
+		Integer testMenuID, testCorrelationID;
+		DeleteSubMenu testDSM;
 		
 		// Test -- buildDeleteSubMenu(Integer menuID, Integer correlationID)
+		testMenuID = 0;
+		testCorrelationID = 1;
+		testDSM = RPCRequestFactory.buildDeleteSubMenu(testMenuID, testCorrelationID);
+		assertEquals(MSG, testMenuID, testDSM.getMenuID());
+		assertEquals(MSG, testCorrelationID, testDSM.getCorrelationID());
 		
+		testDSM = RPCRequestFactory.buildDeleteSubMenu(null, null);
+		assertNull(MSG, testDSM.getMenuID());
+		assertNull(MSG, testDSM.getCorrelationID());
 	}
 	
 	public void testBuildListFiles () {
 		
-		// Test -- buildListFiles(Integer correlationID) 
+		Integer testCorrelationID = 0;
+		ListFiles testLF;
+		
+		// Test -- buildListFiles(Integer correlationID)
+		testLF = RPCRequestFactory.buildListFiles(testCorrelationID);
+		assertEquals(MSG, testCorrelationID, testLF.getCorrelationID());
+				
+		testLF = RPCRequestFactory.buildListFiles(null);
+		assertNull(MSG, testLF.getCorrelationID());
 	}
 	
 	public void testBuildPerformInteraction () {
