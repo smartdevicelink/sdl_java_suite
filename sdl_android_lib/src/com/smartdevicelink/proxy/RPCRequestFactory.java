@@ -613,7 +613,6 @@ public class RPCRequestFactory {
 
 		return req;
 	}
-
 	
 	public static SetGlobalProperties buildSetGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, 
@@ -622,7 +621,6 @@ public class RPCRequestFactory {
 				.createSimpleTTSChunks(helpPrompt), TTSChunkFactory
 				.createSimpleTTSChunks(timeoutPrompt), vrHelpTitle, vrHelp, correlationID);
 	}
-
 
 	public static SetGlobalProperties buildSetGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, 

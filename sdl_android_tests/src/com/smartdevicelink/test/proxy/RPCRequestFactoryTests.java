@@ -20,6 +20,8 @@ import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -29,6 +31,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.test.utils.Validator;
 
 import junit.framework.TestCase;
@@ -639,21 +642,68 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildSetGlobalProperties () {
 		
+		Vector<TTSChunk> testHelpChunks = TTSChunkFactory.createSimpleTTSChunks("test"),
+				testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks("timeout");
+		Vector<VrHelpItem> testVrHelp = new Vector<VrHelpItem>();
+		testVrHelp.add(new VrHelpItem());
+		Integer testCorrelationID = 0;
+		String testHelpTitle = "help";
+		SetGlobalProperties testSBP;
+		
 		// Test -- buildSetGlobalProperties(String helpPrompt, String timeoutPrompt, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildSetGlobalProperties(Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, Integer correlationID)
+		testSBP = RPCRequestFactory.buildSetGlobalProperties(testHelpChunks, testTimeoutChunks, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testHelpChunks, testSBP.getHelpPrompt()));
+		assertTrue(MSG, Validator.validateTtsChunks(testTimeoutChunks, testSBP.getTimeoutPrompt()));
+		assertEquals(MSG, testCorrelationID, testSBP.getCorrelationID());
+		
+		testSBP = RPCRequestFactory.buildSetGlobalProperties((Vector<TTSChunk>) null, null, null);
+		assertNull(MSG, testSBP.getHelpPrompt());
+		assertNull(MSG, testSBP.getTimeoutPrompt());
+		assertNull(MSG, testSBP.getCorrelationID());
 		
 		// Test -- buildSetGlobalProperties(String helpPrompt, String timeoutPrompt, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildSetGlobalProperties(Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID)
-				
+		testSBP = RPCRequestFactory.buildSetGlobalProperties(testHelpChunks, testTimeoutChunks, testHelpTitle, testVrHelp, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testHelpChunks, testSBP.getHelpPrompt()));
+		assertTrue(MSG, Validator.validateTtsChunks(testTimeoutChunks, testSBP.getTimeoutPrompt()));
+		assertEquals(MSG, testHelpTitle, testSBP.getVrHelpTitle());
+		assertTrue(MSG, Validator.validateVrHelpItems(testVrHelp, testSBP.getVrHelp()));
+		assertEquals(MSG, testCorrelationID, testSBP.getCorrelationID());
+		
+		testSBP = RPCRequestFactory.buildSetGlobalProperties((Vector<TTSChunk>) null, null, null, null, null);
+		assertNull(MSG, testSBP.getHelpPrompt());
+		assertNull(MSG, testSBP.getTimeoutPrompt());
+		assertNull(MSG, testSBP.getVrHelpTitle());
+		assertNull(MSG, testSBP.getVrHelp());
+		assertNull(MSG, testSBP.getCorrelationID());
 	}
 	
 	public void testBuildSetMediaClockTimer () {
 		
+		Integer hours = 0, minutes = 0, seconds = 0, testCorrelationID = 0;
+		UpdateMode testMode = UpdateMode.COUNTUP;
+		SetMediaClockTimer testSMCT;
+		
 		// Test -- buildSetMediaClockTimer(Integer hours, Integer minutes, Integer seconds, UpdateMode updateMode, Integer correlationID)
-	
+		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(hours, minutes, seconds, testMode, testCorrelationID);
+		assertEquals(MSG, hours, testSMCT.getStartTime().getHours());
+		assertEquals(MSG, minutes, testSMCT.getStartTime().getMinutes());
+		assertEquals(MSG, seconds, testSMCT.getStartTime().getSeconds());
+		assertEquals(MSG, testMode, testSMCT.getUpdateMode());
+		assertEquals(MSG, testCorrelationID, testSMCT.getCorrelationID());
+		
+		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(null, null, null, null, null);
+		assertNull(MSG, testSMCT.getStartTime());
+		assertNull(MSG, testSMCT.getUpdateMode());
+		assertNull(MSG, testSMCT.getCorrelationID());
+		
 		// Test -- buildSetMediaClockTimer(UpdateMode updateMode, Integer correlationID)
+		// ^ Calls another build method.
 	}
 	
 	public void testBuildShow () {
