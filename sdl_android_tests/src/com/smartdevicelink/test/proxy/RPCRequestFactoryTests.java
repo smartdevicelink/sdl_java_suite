@@ -17,13 +17,18 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.test.utils.Validator;
 
 import junit.framework.TestCase;
@@ -567,14 +572,68 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildRegisterAppInterface () {
 		
+		SdlMsgVersion testSMV = new SdlMsgVersion();
+		testSMV.setMajorVersion(Integer.valueOf(SdlMsgVersion.KEY_MAJOR_VERSION));
+		testSMV.setMinorVersion(Integer.valueOf(SdlMsgVersion.KEY_MINOR_VERSION));
+		String testAppName = "test", testNGN = "ngn", testAppID = "id";
+		Vector<TTSChunk> testTTSName = TTSChunkFactory.createSimpleTTSChunks("name");
+		Vector<String> testSynonyms = new Vector<String>();
+		testSynonyms.add("examine");
+		Boolean testIMA = false;
+		Integer testCorrelationID = 0;
+		Language testLang = Language.EN_US, testHMILang = Language.EN_GB;
+		Vector<AppHMIType> testHMIType = new Vector<AppHMIType>();
+		testHMIType.add(AppHMIType.DEFAULT);
+		RegisterAppInterface testRAI;
+		
+		// Test -- buildRegisterAppInterface(String appName, String appID)
+		// ^ Calls another build method.
+		
 		// Test -- buildRegisterAppInterface(String appName, Boolean isMediaApp, String appID)
-	
+		// ^ Calls another build method.
+		
 		// Test -- buildRegisterAppInterface(SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,  Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, Integer correlationID)
+		testRAI = RPCRequestFactory.buildRegisterAppInterface(testSMV, testAppName, testTTSName, testNGN, testSynonyms, testIMA, testLang, testHMILang, testHMIType, testAppID, testCorrelationID);
+		assertTrue(MSG, Validator.validateSdlMsgVersion(testSMV, testRAI.getSdlMsgVersion()));
+		assertEquals(MSG, testAppName, testRAI.getAppName());
+		assertTrue(MSG, Validator.validateTtsChunks(testTTSName, testRAI.getTtsName()));
+		assertEquals(MSG, testNGN, testRAI.getNgnMediaScreenAppName());
+		assertTrue(MSG, Validator.validateStringList(testSynonyms, testRAI.getVrSynonyms()));
+		assertEquals(MSG, testIMA, testRAI.getIsMediaApplication());
+		assertEquals(MSG, testLang, testRAI.getLanguageDesired());
+		assertEquals(MSG, testHMILang, testRAI.getHmiDisplayLanguageDesired());
+		assertEquals(MSG, AppHMIType.DEFAULT, testRAI.getAppHMIType().get(0));
+		assertEquals(MSG, testAppID, testRAI.getAppID());
+		assertEquals(MSG, testCorrelationID, testRAI.getCorrelationID());
+		
+		testRAI = RPCRequestFactory.buildRegisterAppInterface(null, null, null, null, null, null, null, null, null, null, null);
+		assertEquals(MSG, (Integer) 1, testRAI.getCorrelationID());
+		assertEquals(MSG, testSMV, testRAI.getSdlMsgVersion());
+		assertNull(MSG, testRAI.getAppName());
+		assertNull(MSG, testRAI.getTtsName());
+		assertNull(MSG, testRAI.getNgnMediaScreenAppName());
+		assertNotNull(MSG, testRAI.getVrSynonyms());
+		assertNull(MSG, testRAI.getIsMediaApplication());
+		assertNotNull(MSG, testRAI.getLanguageDesired());
+		assertNull(MSG, testRAI.getHmiDisplayLanguageDesired());
+		assertNull(MSG, testRAI.getAppHMIType());
+		assertNull(MSG, testRAI.getAppID());
 	}
 	
 	public void testBuildSetAppIcon () {
 		
+		String testFileName = "test";
+		Integer testCorrelationID = 0;
+		SetAppIcon testSAI;
+		
 		// Test -- buildSetAppIcon(String sdlFileName, Integer correlationID)
+		testSAI = RPCRequestFactory.buildSetAppIcon(testFileName, testCorrelationID);
+		assertEquals(MSG, testFileName, testSAI.getSdlFileName());
+		assertEquals(MSG, testCorrelationID, testSAI.getCorrelationID());
+		
+		testSAI = RPCRequestFactory.buildSetAppIcon(null, null);
+		assertNull(MSG, testSAI.getSdlFileName());
+		assertNull(MSG, testSAI.getCorrelationID());
 		
 	}
 	
