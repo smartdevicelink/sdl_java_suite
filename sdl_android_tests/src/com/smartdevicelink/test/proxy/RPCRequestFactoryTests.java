@@ -3,9 +3,14 @@ package com.smartdevicelink.test.proxy;
 import java.util.Vector;
 
 import com.smartdevicelink.proxy.RPCRequestFactory;
+import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.AddSubMenu;
+import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.test.utils.Validator;
 
@@ -168,33 +173,119 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildAddSubMenu () {
 		
+		Integer    testMenuID, testCorrelationID, testPosition;
+		String     testMenuName;
+		AddSubMenu testBASM;
+		
 		// Test -- buildAddSubMenu(Integer menuID, String menuName, Integer correlationID)
-		
+		// ^ Calls another build method.
 		// Test -- buildAddSubMenu(Integer menuID, String menuName, Integer position, Integer correlationID)
+		testMenuID        = 0;
+		testMenuName      = "name";
+		testPosition      = 1;
+		testCorrelationID = 2;
+		testBASM = RPCRequestFactory.buildAddSubMenu(testMenuID, testMenuName, testPosition, testCorrelationID);
+		assertEquals(MSG, testMenuID, testBASM.getMenuID());
+		assertEquals(MSG, testMenuName, testBASM.getMenuName());
+		assertEquals(MSG, testPosition, testBASM.getPosition());
+		assertEquals(MSG, testCorrelationID, testBASM.getCorrelationID());
 		
+		testBASM = RPCRequestFactory.buildAddSubMenu(null, null, null, null);
+		assertNull(MSG, testBASM.getMenuID());
+		assertNull(MSG, testBASM.getMenuName());
+		assertNull(MSG, testBASM.getPosition());
+		assertNull(MSG, testBASM.getCorrelationID());
 	}
 	
 	public void testBuildAlert () {
 		
+		Alert              testAlert;
+		String             testTTSText, testAlertText1, testAlertText2, testAlertText3;
+		Integer            testCorrelationID, testDuration;
+		Boolean            testPlayTone;
+		Vector<SoftButton> testSoftButtons;
+		Vector<TTSChunk>   testTtsChunks;
+				
 		// Test -- buildAlert(String ttsText, Boolean playTone, Vector<SoftButton> softButtons, Integer correlationID)
+		testTTSText       = "simple test";
+		testCorrelationID = 0;
+		testPlayTone      = true;
+		testSoftButtons   = new Vector<SoftButton>();
+		SoftButton test1  = new SoftButton();
+		test1.setText("test 1");
+		SoftButton test2  = new SoftButton();
+		test2.setText("test 2");
+		testSoftButtons.add(test1);
+		testSoftButtons.add(test2);		
+		testAlert = RPCRequestFactory.buildAlert(testTTSText, testPlayTone, testSoftButtons, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(TTSChunkFactory.createSimpleTTSChunks(testTTSText), testAlert.getTtsChunks()));
+		// ^ Calls another build method.
 		
 		// Test -- buildAlert(String alertText1, String alertText2, String alertText3, Integer duration, Vector<SoftButton> softButtons, Integer correlationID)
+		testAlertText1 = "test 1";
+		testAlertText2 = "test 2";
+		testAlertText3 = "test 3";
+		testDuration   = 1;	
+		// ^ Calls another build method.
 		
 		// Test -- buildAlert(String ttsText, String alertText1, String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons, Integer correlationID)
+		testAlert = RPCRequestFactory.buildAlert(testTTSText, testAlertText1, testAlertText2, testAlertText3, testPlayTone, testDuration, testSoftButtons, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(TTSChunkFactory.createSimpleTTSChunks(testTTSText), testAlert.getTtsChunks()));
+		// ^ Calls another build method.
 		
 		// Test -- buildAlert(Vector<TTSChunk> chunks, Boolean playTone, Vector<SoftButton> softButtons, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildAlert(Vector<TTSChunk> ttsChunks, String alertText1, String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons, Integer correlationID)
+		testTtsChunks = TTSChunkFactory.createSimpleTTSChunks(testTTSText);
+		testAlert = RPCRequestFactory.buildAlert(testTtsChunks, testAlertText1, testAlertText2, testAlertText3, testPlayTone, testDuration, testSoftButtons, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testTtsChunks, testAlert.getTtsChunks()));
+		assertEquals(MSG, testAlertText1, testAlert.getAlertText1());
+		assertEquals(MSG, testAlertText2, testAlert.getAlertText2());
+		assertEquals(MSG, testAlertText3, testAlert.getAlertText3());
+		assertEquals(MSG, testPlayTone, testAlert.getPlayTone());
+		assertEquals(MSG, testDuration, testAlert.getDuration());
+		assertTrue(MSG, Validator.validateSoftButtons(testSoftButtons, testAlert.getSoftButtons()));
+		assertEquals(MSG, testCorrelationID, testAlert.getCorrelationID());
+		
+		testAlert = RPCRequestFactory.buildAlert((Vector<TTSChunk>) null, null, null, null, null, null, null, null);
+		assertNull(MSG, testAlert.getTtsChunks());
+		assertNull(MSG, testAlert.getAlertText1());
+		assertNull(MSG, testAlert.getAlertText2());
+		assertNull(MSG, testAlert.getAlertText3());
+		assertNull(MSG, testAlert.getPlayTone());
+		assertNull(MSG, testAlert.getDuration());
+		assertNull(MSG, testAlert.getSoftButtons());
+		assertNull(MSG, testAlert.getCorrelationID());
 		
 		// Test -- buildAlert(String ttsText, Boolean playTone, Integer correlationID)
-			
+		// ^ Calls another build method.
+		
 		// Test -- buildAlert(String alertText1, String alertText2, Integer duration, Integer correlationID)
-	
+		// ^ Calls another build method.
+		
 		// Test -- buildAlert(String ttsText, String alertText1, String alertText2, Boolean playTone, Integer duration, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildAlert(Vector<TTSChunk> chunks, Boolean playTone, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildAlert(Vector<TTSChunk> ttsChunks, String alertText1, String alertText2, Boolean playTone, Integer duration, Integer correlationID)
+		testAlert = RPCRequestFactory.buildAlert(testTtsChunks, testAlertText1, testAlertText2, testPlayTone, testDuration, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testTtsChunks, testAlert.getTtsChunks()));
+		assertEquals(MSG, testAlertText1, testAlert.getAlertText1());
+		assertEquals(MSG, testAlertText2, testAlert.getAlertText2());
+		assertEquals(MSG, testPlayTone, testAlert.getPlayTone());
+		assertEquals(MSG, testDuration, testAlert.getDuration());
+		assertEquals(MSG, testCorrelationID, testAlert.getCorrelationID());
+		
+		testAlert = RPCRequestFactory.buildAlert((Vector<TTSChunk>) null, null, null, null, null, null);
+		assertNull(MSG, testAlert.getTtsChunks());
+		assertNull(MSG, testAlert.getAlertText1());
+		assertNull(MSG, testAlert.getAlertText2());
+		assertNull(MSG, testAlert.getPlayTone());
+		assertNull(MSG, testAlert.getDuration());
+		assertNull(MSG, testAlert.getCorrelationID());
 	}
 	
 	public void testCreateInteractionChoiceSet () {
