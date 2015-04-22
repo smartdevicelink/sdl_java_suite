@@ -15,10 +15,15 @@ import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ListFiles;
+import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.test.utils.Validator;
 
 import junit.framework.TestCase;
@@ -402,38 +407,162 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(MSG, testLF.getCorrelationID());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void testBuildPerformInteraction () {
 		
+		String testDisplayText = "test";
+		Integer testTimeout = 1, testCorrelationID = 0;
+		InteractionMode testIM = InteractionMode.BOTH;
+		Vector<TTSChunk> testInitChunks, testHelpChunks, testTimeoutChunks;
+		Vector<Integer> testCSIDs;
+		Vector<VrHelpItem> testVrHelpItems;
+		PerformInteraction testPI;
+		
 		// Test -- buildPerformInteraction(Vector<TTSChunk> initChunks, String displayText, Vector<Integer> interactionChoiceSetIDList, Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp, Integer correlationID)
-	
+		testInitChunks    = TTSChunkFactory.createSimpleTTSChunks("init chunks");
+		testHelpChunks    = TTSChunkFactory.createSimpleTTSChunks("help items");
+		testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks("timeout");
+		VrHelpItem item = new VrHelpItem();
+		item.setText("test 1");
+		testVrHelpItems = new Vector<VrHelpItem>();
+		testVrHelpItems.add(item);
+		testCSIDs = new Vector<Integer>();
+		testCSIDs.add(0);
+		testCSIDs.add(1);		
+		testPI = RPCRequestFactory.buildPerformInteraction(testInitChunks, testDisplayText, testCSIDs, testHelpChunks, testTimeoutChunks, testIM, testTimeout, testVrHelpItems, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testInitChunks, testPI.getInitialPrompt()));
+		assertEquals(MSG, testDisplayText, testPI.getInitialText());
+		assertTrue(MSG, Validator.validateIntegerList(testCSIDs, testPI.getInteractionChoiceSetIDList()));
+		assertTrue(MSG, Validator.validateTtsChunks(testHelpChunks, testPI.getHelpPrompt()));
+		assertTrue(MSG, Validator.validateTtsChunks(testTimeoutChunks, testPI.getTimeoutPrompt()));
+		assertEquals(MSG, testIM, testPI.getInteractionMode());
+		assertEquals(MSG, testTimeout, testPI.getTimeout());
+		assertTrue(MSG, Validator.validateVrHelpItems(testVrHelpItems, testPI.getVrHelp()));
+		assertEquals(MSG, testCorrelationID, testPI.getCorrelationID());
+				
+		testPI = RPCRequestFactory.buildPerformInteraction((Vector<TTSChunk>) null, null, null, null, null, null, null, null, null);
+		assertNull(MSG, testPI.getInitialPrompt());
+		assertNull(MSG, testPI.getInitialText());
+		assertNull(MSG, testPI.getInteractionChoiceSetIDList());
+		assertNull(MSG, testPI.getHelpPrompt());
+		assertNull(MSG, testPI.getTimeoutPrompt());
+		assertNull(MSG, testPI.getInteractionMode());
+		assertNull(MSG, testPI.getTimeout());
+		assertNull(MSG, testPI.getVrHelp());
+		assertNull(MSG, testPI.getCorrelationID());
+		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Vector<Integer> interactionChoiceSetIDList, String helpPrompt, String timeoutPrompt, InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Integer interactionChoiceSetID, String helpPrompt, String timeoutPrompt, InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp, Integer correlationID)
-	
+		// ^ Calls another build method.
+		
 		// Test -- buildPerformInteraction(Vector<TTSChunk> initChunks, String displayText, Vector<Integer> interactionChoiceSetIDList, Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, InteractionMode interactionMode, Integer timeout, Integer correlationID)
+		testPI = RPCRequestFactory.buildPerformInteraction(testInitChunks, testDisplayText, testCSIDs, testHelpChunks, testTimeoutChunks, testIM, testTimeout, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testInitChunks, testPI.getInitialPrompt()));
+		assertEquals(MSG, testDisplayText, testPI.getInitialText());
+		assertTrue(MSG, Validator.validateIntegerList(testCSIDs, testPI.getInteractionChoiceSetIDList()));
+		assertTrue(MSG, Validator.validateTtsChunks(testHelpChunks, testPI.getHelpPrompt()));
+		assertTrue(MSG, Validator.validateTtsChunks(testTimeoutChunks, testPI.getTimeoutPrompt()));
+		assertEquals(MSG, testIM, testPI.getInteractionMode());
+		assertEquals(MSG, testTimeout, testPI.getTimeout());
+		assertEquals(MSG, testCorrelationID, testPI.getCorrelationID());
+		
+		testPI = RPCRequestFactory.buildPerformInteraction((Vector<TTSChunk>) null, null, null, null, null, null, null, null);
+		assertNull(MSG, testPI.getInitialPrompt());
+		assertNull(MSG, testPI.getInitialText());
+		assertNull(MSG, testPI.getInteractionChoiceSetIDList());
+		assertNull(MSG, testPI.getHelpPrompt());
+		assertNull(MSG, testPI.getTimeoutPrompt());
+		assertNull(MSG, testPI.getInteractionMode());
+		assertNull(MSG, testPI.getTimeout());
+		assertNull(MSG, testPI.getCorrelationID());
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Vector<Integer> interactionChoiceSetIDList, String helpPrompt, String timeoutPrompt, InteractionMode interactionMode, Integer timeout, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Integer interactionChoiceSetID, String helpPrompt, String timeoutPrompt, InteractionMode interactionMode, Integer timeout, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Integer interactionChoiceSetID, Integer correlationID)
+		// ^ Calls another build method.
 		
 		// Test -- buildPerformInteraction(Vector<TTSChunk> initChunks, String displayText, Vector<Integer> interactionChoiceSetIDList, Vector<TTSChunk> helpChunks, InteractionMode interactionMode, Integer timeout, Integer correlationID)
+		testPI = RPCRequestFactory.buildPerformInteraction(testInitChunks, testDisplayText, testCSIDs, testHelpChunks, testIM, testTimeout, testCorrelationID);
+		assertTrue(MSG, Validator.validateTtsChunks(testInitChunks, testPI.getInitialPrompt()));
+		assertEquals(MSG, testDisplayText, testPI.getInitialText());
+		assertTrue(MSG, Validator.validateIntegerList(testCSIDs, testPI.getInteractionChoiceSetIDList()));
+		assertTrue(MSG, Validator.validateTtsChunks(testHelpChunks, testPI.getHelpPrompt()));
+		assertEquals(MSG, testIM, testPI.getInteractionMode());
+		assertEquals(MSG, testTimeout, testPI.getTimeout());
+		assertEquals(MSG, testCorrelationID, testPI.getCorrelationID());
+		
+		testPI = RPCRequestFactory.buildPerformInteraction((Vector<TTSChunk>) null, null, null, null, null, null, null);
+		assertNull(MSG, testPI.getInitialPrompt());
+		assertNull(MSG, testPI.getInitialText());
+		assertNull(MSG, testPI.getInteractionChoiceSetIDList());
+		assertNull(MSG, testPI.getHelpPrompt());
+		assertNull(MSG, testPI.getInteractionMode());
+		assertNull(MSG, testPI.getTimeout());
+		assertNull(MSG, testPI.getCorrelationID());
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Vector<Integer> interactionChoiceSetIDList, String helpPrompt, InteractionMode interactionMode, Integer timeout, Integer correlationID)
-		
+		// ^ Calls another build method.
 	}
 	
 	public void testBuildPutFiles () {
 		
+		String testFileName = "test";
+		Boolean testPFile = true, testSystemFile = true;
+		Integer testCorrelationID = 0, testOffset = 1, testLength = 2;
+		FileType testFileType = FileType.BINARY;		
+		byte[] testFileData = {(byte) 0x00, (byte) 0x01, (byte) 0x02 };
+		PutFile testPF;
+		
 		// Test -- buildPutFile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID)
+		testPF = RPCRequestFactory.buildPutFile(testFileName, testFileType, testPFile, testFileData, testCorrelationID);
+		assertEquals(MSG, testFileName, testPF.getSdlFileName());
+		assertEquals(MSG, testFileType, testPF.getFileType());
+		assertEquals(MSG, testPFile, testPF.getPersistentFile());
+		assertTrue(MSG, Validator.validateBulkData(testFileData, testPF.getFileData()));
+		assertEquals(MSG, testCorrelationID, testPF.getCorrelationID());
+		
+		testPF = RPCRequestFactory.buildPutFile(null, null, null, null, null);
+		assertNull(MSG, testPF.getSdlFileName());
+		assertNull(MSG, testPF.getFileType());
+		assertNull(MSG, testPF.getPersistentFile());
+		assertNull(MSG, testPF.getFileData());
+		assertNull(MSG, testPF.getCorrelationID());
 		
 		// Test -- buildPutFile(String sdlFileName, Integer iOffset, Integer iLength)
+		testPF = RPCRequestFactory.buildPutFile(testFileName, testOffset, testLength);
+		assertEquals(MSG, testFileName, testPF.getSdlFileName());
+		assertEquals(MSG, testOffset, testPF.getOffset());
+		assertEquals(MSG, testLength, testPF.getLength());
+		
+		testPF = RPCRequestFactory.buildPutFile(null, null, null);
+		assertNull(MSG, testPF.getSdlFileName());
+		assertNull(MSG, testPF.getOffset());
+		assertNull(MSG, testPF.getLength());
 		
 		// Test -- buildPutFile(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile)
-				
+		testPF = RPCRequestFactory.buildPutFile(testFileName, testOffset, testLength, testFileType, testPFile, testSystemFile);
+		assertEquals(MSG, testFileName, testPF.getSdlFileName());
+		assertEquals(MSG, testOffset, testPF.getOffset());
+		assertEquals(MSG, testLength, testPF.getLength());
+		assertEquals(MSG, testFileType, testPF.getPersistentFile());
+		assertEquals(MSG, testSystemFile, testPF.getSystemFile());
+		
+		testPF = RPCRequestFactory.buildPutFile(null, null, null, null, null, null);
+		assertNull(MSG, testPF.getSdlFileName());
+		assertNull(MSG, testPF.getOffset());
+		assertNull(MSG, testPF.getLength());
+		assertNull(MSG, testPF.getFileType());
+		assertNull(MSG, testPF.getPersistentFile());
+		assertNull(MSG, testPF.getSystemFile());		
 	}
 	
 	public void testBuildRegisterAppInterface () {

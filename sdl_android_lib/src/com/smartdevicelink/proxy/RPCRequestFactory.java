@@ -338,8 +338,8 @@ public class RPCRequestFactory {
 			Vector<TTSChunk> initChunks, String displayText,
 			Vector<Integer> interactionChoiceSetIDList,
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
+			InteractionMode interactionMode, Integer timeout, 
+			Vector<VrHelpItem> vrHelp, Integer correlationID) {
 		PerformInteraction msg = new PerformInteraction();
 		msg.setInitialPrompt(initChunks);
 		msg.setInitialText(displayText);
@@ -393,8 +393,7 @@ public class RPCRequestFactory {
 		return buildPerformInteraction(initPrompt, displayText, 
 				interactionChoiceSetID, null, null,
 				InteractionMode.BOTH, null, vrHelp, correlationID);
-	}
-	
+	}	
 	
 	public static PerformInteraction buildPerformInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
