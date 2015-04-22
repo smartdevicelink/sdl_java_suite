@@ -1,27 +1,169 @@
 package com.smartdevicelink.test.proxy;
 
+import java.util.Vector;
+
+import com.smartdevicelink.proxy.RPCRequestFactory;
+import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.test.utils.Validator;
+
 import junit.framework.TestCase;
 
 public class RPCRequestFactoryTests extends TestCase {
+	
+	private final String MSG = "Response value did not match tested value.";
 
 	public void testBuildSystemRequest () {
 		
+		String         testData;
+		Integer        testInt;
+		SystemRequest  testBSR;
+		Vector<String> testVData;
+		
 		// Test -- buildSystemRequest(String data, Integer correlationID)
+		testData = "test";
+		testInt  = 0;
+		testBSR  = RPCRequestFactory.buildSystemRequest(testData, testInt);
+		assertEquals(MSG, testData.getBytes(), testBSR.getBulkData());
+		assertEquals(MSG, testInt, testBSR.getCorrelationID());
 		
+		testBSR  = RPCRequestFactory.buildSystemRequest(testData, null);
+		assertNull(MSG, testBSR.getCorrelationID());
+		
+		testBSR  = RPCRequestFactory.buildSystemRequest(null, testInt);
+		assertNull(MSG, testBSR);
+				
 		// Test -- buildSystemRequestLegacy(Vector<String> data, Integer correlationID)
+		testVData = new Vector<String>();
+		testVData.add("Test A");
+		testVData.add("Test B");
+		testVData.add("Test C");
+		testBSR   = RPCRequestFactory.buildSystemRequestLegacy(testVData, testInt);
+		assertEquals(MSG, testVData, new Vector<String>(testBSR.getLegacyData()));
+		assertEquals(MSG, testInt, testBSR.getCorrelationID());
 		
+		testBSR  = RPCRequestFactory.buildSystemRequestLegacy(testVData, null);
+		assertNull(MSG, testBSR.getCorrelationID());
+		
+		testBSR  = RPCRequestFactory.buildSystemRequestLegacy(null, testInt);
+		assertNull(MSG, testBSR);
+		
+		// Issue #166 -- Null values within the Vector<String> parameter.
+		// TODO: Once resolved, add the following test.
+		//testVData = new Vector<String>();
+		//testVData.add("Test A");
+		//testVData.add("Test B");
+		//testVData.add(null);
+		//testBSR   = RPCRequestFactory.buildSystemRequestLegacy(testVData, testInt);
+		//assertNull(MSG, testBSR);		
 	}
 	
 	public void testBuildAddCommand () {
 		
+		Image          testImage;
+		String         testMenuText, testIconValue;		
+		Integer        testCommandID, testParentID, testPosition, testCorrelationID;
+		ImageType      testIconType;
+		AddCommand     testBAC;
+		Vector<String> testVrCommands;
+		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position,Vector<String> vrCommands, Image cmdIcon, Integer correlationID)
+		testImage         = new Image();
+		testMenuText      = "menu";
+		testPosition      = 1;
+		testParentID      = 2;
+		testCommandID     = 3;
+		testCorrelationID = 4;
+		testVrCommands    = new Vector<String>();
+		testImage.setImageType(ImageType.STATIC);
+		testImage.setValue("image");
+		testVrCommands.add("Test A");
+		testVrCommands.add("Test B");
+		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testParentID, testPosition, testVrCommands, testImage, testCorrelationID);
+		assertEquals(MSG, testCommandID, testBAC.getCmdID());
+		assertEquals(MSG, testMenuText, testBAC.getMenuParams().getMenuName());
+		assertEquals(MSG, testParentID, testBAC.getMenuParams().getParentID());
+		assertEquals(MSG, testPosition, testBAC.getMenuParams().getPosition());
+		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
+		assertEquals(MSG, Validator.validateImage(testImage, testBAC.getCmdIcon()));
+		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());
+		
+		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null, null, null, null);
+		assertNull(MSG, testBAC.getCmdID());
+		assertNull(MSG, testBAC.getMenuParams().getMenuName());
+		assertNull(MSG, testBAC.getMenuParams().getParentID());
+		assertNull(MSG, testBAC.getMenuParams().getPosition());
+		assertNull(MSG, testBAC.getVrCommands());
+		assertNull(MSG, testBAC.getCmdIcon());
+		assertNull(MSG, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position, Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
+		testIconValue = "icon";
+		testIconType  = ImageType.STATIC;
+		testImage     = new Image();
+		testImage.setValue(testIconValue);
+		testImage.setImageType(testIconType);
+		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testParentID, testPosition, testVrCommands, testIconValue, testIconType, testCorrelationID);
+		assertEquals(MSG, testCommandID, testBAC.getCmdID());
+		assertEquals(MSG, testMenuText, testBAC.getMenuParams().getMenuName());
+		assertEquals(MSG, testParentID, testBAC.getMenuParams().getParentID());
+		assertEquals(MSG, testPosition, testBAC.getMenuParams().getPosition());
+		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
+		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());		
+		assertEquals(MSG, Validator.validateImage(testImage, testBAC.getCmdIcon()));
+		
+		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null, null, null, null, null);
+		assertNull(MSG, testBAC.getCmdID());
+		assertNull(MSG, testBAC.getMenuParams().getMenuName());
+		assertNull(MSG, testBAC.getMenuParams().getParentID());
+		assertNull(MSG, testBAC.getMenuParams().getPosition());
+		assertNull(MSG, testBAC.getVrCommands());
+		assertNull(MSG, testBAC.getCmdIcon().getValue());
+		assertNull(MSG, testBAC.getCmdIcon().getImageType());
+		assertNull(MSG, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position, Vector<String> vrCommands, Integer correlationID)
+		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testParentID, testPosition, testVrCommands, testCorrelationID);
+		assertEquals(MSG, testCommandID, testBAC.getCmdID());
+		assertEquals(MSG, testMenuText, testBAC.getMenuParams().getMenuName());
+		assertEquals(MSG, testParentID, testBAC.getMenuParams().getParentID());
+		assertEquals(MSG, testPosition, testBAC.getMenuParams().getPosition());
+		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
+		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());
+		
+		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null, null, null);
+		assertNull(MSG, testBAC.getCmdID());
+		assertNull(MSG, testBAC.getMenuParams().getMenuName());
+		assertNull(MSG, testBAC.getMenuParams().getParentID());
+		assertNull(MSG, testBAC.getMenuParams().getPosition());
+		assertNull(MSG, testBAC.getVrCommands());
+		assertNull(MSG, testBAC.getCorrelationID());
+		
+		// Test -- buildAddCommand(Integer commandID, String menuText, Vector<String> vrCommands, Integer correlationID)
+		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testVrCommands, testCorrelationID);
+		assertEquals(MSG, testCommandID, testBAC.getCmdID());
+		assertEquals(MSG, testMenuText, testBAC.getMenuParams().getMenuName());
+		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
+		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());
+		
+		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null);
+		assertNull(MSG, testBAC.getCmdID());
+		assertNull(MSG, testBAC.getMenuParams().getMenuName());
+		assertNull(MSG, testBAC.getVrCommands());
+		assertNull(MSG, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, Vector<String> vrCommands, Integer correlationID)
+		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testVrCommands, testCorrelationID);
+		assertEquals(MSG, testCommandID, testBAC.getCmdID());
+		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
+		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());
 		
+		testBAC = RPCRequestFactory.buildAddCommand(null, null, null);
+		assertNull(MSG, testBAC.getCmdID());
+		assertNull(MSG, testBAC.getVrCommands());
+		assertNull(MSG, testBAC.getCorrelationID());
 	}
 	
 	public void testBuildAddSubMenu () {

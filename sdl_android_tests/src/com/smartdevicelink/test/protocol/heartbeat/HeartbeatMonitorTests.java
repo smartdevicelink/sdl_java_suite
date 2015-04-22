@@ -22,7 +22,7 @@ public class HeartbeatMonitorTests extends TestCase {
 		
 		int testInterval = 100;
 		monitor.setInterval(testInterval);
-		assertSame("Interval did not match expected value", monitor.getInterval(), testInterval);
+		assertEquals("Interval did not match expected value", monitor.getInterval(), testInterval);
 	}
 	
 	public void testThread () {

@@ -15,8 +15,8 @@ public class RPCNotificationTests extends TestCase {
 		// Test -- RPCNotification(String functionName)
 		testRPC = new RPCNotification("testFunctionName");
 		assertNotNull("RPCNotification should not be null", testRPC);
-		assertSame("Test function name should match", testRPC.getFunctionName(), "testFunctionName");
-		assertSame("Message type should be notification", testRPC.getMessageType(), RPCMessage.KEY_NOTIFICATION);
+		assertEquals("Test function name should match", testRPC.getFunctionName(), "testFunctionName");
+		assertEquals("Message type should be notification", testRPC.getMessageType(), RPCMessage.KEY_NOTIFICATION);
 				
 		// Test -- RPCNotification(Hashtable<String, Object> hash)
 		// NOTE: Hashtable from RPCMessage -> RPCStruct does not allow us to
@@ -26,8 +26,8 @@ public class RPCNotificationTests extends TestCase {
 		testHash.put(RPCMessage.KEY_NOTIFICATION, new Object());
 		testRPC = new RPCNotification(testHash);
 		assertNotNull("RPCNotification should not be null", testRPC);
-		assertSame("Test key should match", testRPC.getStoreValue("testKey"), "testKey");
-		assertSame("Message type should be notification", testRPC.getMessageType(), RPCMessage.KEY_NOTIFICATION);
+		assertEquals("Test key should match", testRPC.getStoreValue("testKey"), "testKey");
+		assertEquals("Message type should be notification", testRPC.getMessageType(), RPCMessage.KEY_NOTIFICATION);
 		
 		// Test -- RPCNotification(RPCMessage rpcMsg)
 		// NOTE: See issue #165 on GitHub

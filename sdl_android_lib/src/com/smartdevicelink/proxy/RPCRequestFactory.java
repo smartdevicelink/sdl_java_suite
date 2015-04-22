@@ -57,7 +57,6 @@ public class RPCRequestFactory {
 
 	public static final int SDL_MSG_MAJOR_VERSION = 1;
 	public static final int SDL_MSG_MINOR_VERSION = 0;
-
 	
 	public static SystemRequest buildSystemRequest(
 			String data, Integer correlationID) {
@@ -71,7 +70,6 @@ public class RPCRequestFactory {
 		return msg;
 	}	
 	
-	
 	public static SystemRequest buildSystemRequestLegacy(
 			Vector<String> data, Integer correlationID) {
 		
@@ -82,7 +80,6 @@ public class RPCRequestFactory {
 		msg.setLegacyData(data);
 		return msg;
 	}	
-	
 
 	public static AddCommand buildAddCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
@@ -107,7 +104,8 @@ public class RPCRequestFactory {
 	
 	public static AddCommand buildAddCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) {
+			Vector<String> vrCommands, String IconValue, ImageType IconType, 
+			Integer correlationID) {
 		AddCommand msg = new AddCommand();
 		msg.setCorrelationID(correlationID);
 		msg.setCmdID(commandID);
@@ -135,7 +133,6 @@ public class RPCRequestFactory {
 		
 		return msg;
 	}
-
 		
 	public static AddCommand buildAddCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
