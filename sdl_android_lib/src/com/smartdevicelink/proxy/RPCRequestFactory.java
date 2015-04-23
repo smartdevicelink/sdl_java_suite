@@ -842,8 +842,7 @@ public class RPCRequestFactory {
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
 		msg.setCorrelationID(correlationID);
-		
-		
+				
 		return msg;
 	}	
 	
