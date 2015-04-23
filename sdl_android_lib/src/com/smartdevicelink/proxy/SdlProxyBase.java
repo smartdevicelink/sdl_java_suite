@@ -2969,21 +2969,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         }			
 	}
 
-	private boolean startPutFileStream(String sPath, PutFile msg) {
-		if (sdlSession == null) return false;		
+	private RPCStreamController startPutFileStream(String sPath, PutFile msg) {
+		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
-		startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
-		return true;
+		if (sdlConn == null) return null;
+		return startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);		
 	}
 
-	private boolean startPutFileStream(InputStream is, PutFile msg) {
-		if (sdlSession == null) return false;		
+	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
+		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
-		if (is == null) return false;
+		if (sdlConn == null) return null;
+		if (is == null) return null;
 		startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
-		return true;
+		return null;
 	}
 	
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
@@ -4634,10 +4633,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @return boolean - True if the putfile stream was started successfully, false if an exception occurred during stream creation. 
+	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
 	 * @throws SdlException
 	*/	
-	public boolean putFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public RPCStreamController putFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, Long.valueOf((long)0), fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(sPath, msg);
@@ -4655,10 +4654,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @return boolean - True if the putfile stream was started successfully, false if an exception occurred during stream creation. 
+	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
 	 * @throws SdlException
 	*/	
-	public boolean putFileStream(InputStream is, String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(is, msg);
