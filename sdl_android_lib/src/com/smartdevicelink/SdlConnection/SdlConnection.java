@@ -268,6 +268,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             	mAudioPacketizer.sdlConnection = this;
             	mAudioPacketizer.start();            	
             }
+            else
+            {
+            	os.close();
+            	is.close();
+            	return null;
+            }            
 						
 			return os;
 		} catch (Exception e) {
