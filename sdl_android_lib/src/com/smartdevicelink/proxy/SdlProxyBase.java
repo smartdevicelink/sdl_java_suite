@@ -197,9 +197,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
-	protected Boolean _bResumeSuccess = false;
-	private StreamRPCPacketizer rpcPacketizer = null;
-
+	protected Boolean _bResumeSuccess = false;	
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 	
@@ -2799,73 +2797,56 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean pausePutFileStream()
-	{
-		if (rpcPacketizer == null)
-			return false;
-		rpcPacketizer.pause();
-
-		return true;
-	}
-
-	public boolean resumePutFileStream()
-	{
-		if (rpcPacketizer == null)
-			return false;
-		rpcPacketizer.resume();
-
-		return true;
-	}
 
 	@SuppressWarnings("unchecked")
-	private boolean startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
 	{		
-		if (sdlSession == null) return false;		
+		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
+		if (sdlConn == null) return null;
 					
 		FileInputStream is = getFileInputStream(sLocalFile);
-		if (is == null) return false;
+		if (is == null) return null;
 		
-		Long lSize = getFileInputStreamSize(is);
-		if (lSize == null)
+		Integer iSize = Integer.valueOf(getFileInputStreamSize(is).intValue());
+		if (iSize == null)
 		{	
 			closeFileInputStream(is);
-			return false;
+			return null;
 		}
 
 		try {
-			rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, iSize);
 			rpcPacketizer.start();
-			return true;
+			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
+			return streamController;
 		} catch (Exception e) {
-            Log.e("SdlProxy", "Unable to start streaming:" + e.toString());  
-            return false;
+            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            return null;
         }			
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
 	{		
-		if (sdlSession == null) return false;		
+		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
+		if (sdlConn == null) return null;
+		Integer iSize = request.getLength();
 
 		if (request.getLength() == null)
 		{
-			return false;
-		}
-		
-		Long lSize = request.getLength().longValue();			
+			return null;
+		}		
 		
 		try {
-			rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, lSize);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, iSize);
 			rpcPacketizer.start();
-			return true;
+			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
+			return streamController;
 		} catch (Exception e) {
             Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
-            return false;
+            return null;
         }			
 	}
 

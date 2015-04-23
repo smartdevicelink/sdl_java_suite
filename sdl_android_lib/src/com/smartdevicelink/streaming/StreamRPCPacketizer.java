@@ -26,7 +26,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	private final static int BUFF_READ_SIZE = 1000000;
 	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
 	private Thread thread = null;
-	private long lFileSize = 0;
+	private int lFileSize = 0;
 	private String sFileName;
 	private SdlProxyBase<IProxyListenerBase> _proxy;
 	private IProxyListenerBase _proxyListener;
@@ -34,9 +34,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
     private Object mPauseLock;
     private boolean mPaused;
 
-	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength) throws IOException {
+	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, int iLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
-		lFileSize = lLength;
+		lFileSize = iLength;
 		iInitialCorrID = request.getCorrelationID();
         mPauseLock = new Object();
         mPaused = false;
