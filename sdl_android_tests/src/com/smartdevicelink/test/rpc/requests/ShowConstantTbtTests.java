@@ -211,16 +211,23 @@ public class ShowConstantTbtTests extends BaseRpcTests {
 			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Value doesn't match input (eta).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_ETA), cmd.getEta());
+			assertEquals("Value doesn't match input (eta).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_ETA), cmd.getEta());
 			assertEquals("Value doesn't match input (maneuver complete).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_COMPLETE), cmd.getManeuverComplete());
-			assertEquals("Value doesn't match input (maneuver distance).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE), cmd.getDistanceToManeuver());
-			assertEquals("Value doesn't match input (maneuver distance scale).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE), cmd.getDistanceToManeuverScale());			
-			assertEquals("Value doesn't match input (text1).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT1), cmd.getNavigationText1());
-			assertEquals("Value doesn't match input (text2).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT2), cmd.getNavigationText2());
-			assertEquals("Value doesn't match input (time to destination).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());
-			assertEquals("Value doesn't match input (total distance).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_TOTAL_DISTANCE), cmd.getTotalDistance());
-			assertEquals("Value doesn't match input (maneuver image).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_IMAGE), cmd.getTurnIcon().getValue());
-			assertEquals("Value doesn't match input (next maneuver image).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE), cmd.getNextTurnIcon().getValue());
+			assertEquals("Value doesn't match input (maneuver distance).", JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE), cmd.getDistanceToManeuver());
+			assertEquals("Value doesn't match input (maneuver distance scale).", JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE), cmd.getDistanceToManeuverScale());			
+			assertEquals("Value doesn't match input (text1).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT1), cmd.getNavigationText1());
+			assertEquals("Value doesn't match input (text2).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT2), cmd.getNavigationText2());
+			assertEquals("Value doesn't match input (time to destination).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());
+			assertEquals("Value doesn't match input (total distance).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TOTAL_DISTANCE), cmd.getTotalDistance());
+			
+			JSONObject icon1 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_IMAGE);
+			Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(icon1));
+			assertTrue("Value doesn't match input (maneuver image).", Validator.validateImage(refIcon1, cmd.getTurnIcon()));
+			
+			JSONObject icon2 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE);
+			Image refIcon2 = new Image(JsonRPCMarshaller.deserializeJSONObject(icon2));
+			assertTrue("Value doesn't match input (next maneuver image).", Validator.validateImage(refIcon2, cmd.getNextTurnIcon()));
+			
 			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ShowConstantTbt.KEY_SOFT_BUTTONS);
 			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
 			for (int index = 0; index < softButtonArray.length(); index++) {

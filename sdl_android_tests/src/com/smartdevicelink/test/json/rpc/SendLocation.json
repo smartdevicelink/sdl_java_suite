@@ -1,0 +1,26 @@
+{
+  "request":{
+    "name":"SendLocation",
+    "correlationID":190,
+    "parameters":{
+      "latitudeDegrees":42,
+      "longitudeDegrees":42,
+      "locationName":"location",
+      "locationDescription":"description",
+      "phoneNumber":"999-999-9999",
+      "locationImage":{
+        "value":"locationImage.png",
+        "imageType":"DYNAMIC"
+      },
+      "addressLines":[
+        "line1",
+        "line2",
+        "line3"
+      ],
+    }
+  },
+  "response":{
+    "name":"SendLocationResponse",
+    "correlationID":191
+  }
+}

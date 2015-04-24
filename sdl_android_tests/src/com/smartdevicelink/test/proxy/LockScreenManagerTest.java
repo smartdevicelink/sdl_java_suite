@@ -17,9 +17,6 @@ public class LockScreenManagerTest extends TestCase{
 
         lockMan.setDriverDistStatus(false);
         assertEquals(ERROR_MSG, false, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
-
-        lockMan.setDriverDistStatus((Boolean) null);
-        assertNull(ERROR_MSG, lockMan.getLockObj().getDriverDistractionStatus());
     }
 
     public void testHmiLevelStatus(){
@@ -37,7 +34,7 @@ public class LockScreenManagerTest extends TestCase{
         assertEquals(ERROR_MSG, HMILevel.HMI_NONE, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(null);
-        assertEquals(ERROR_MSG, null, lockMan.getLockObj().getHMILevel());
+        assertNull(ERROR_MSG, lockMan.getLockObj().getHMILevel());
     }
 
     // test lock screen status when no setters are called

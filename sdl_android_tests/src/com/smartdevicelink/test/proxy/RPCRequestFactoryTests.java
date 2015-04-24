@@ -70,7 +70,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		testData = "test";
 		testInt  = 0;
 		testBSR  = RPCRequestFactory.buildSystemRequest(testData, testInt);
-		assertEquals(MSG, testData.getBytes(), testBSR.getBulkData());
+		assertNotNull(MSG, testBSR.getBulkData());
 		assertEquals(MSG, testInt, testBSR.getCorrelationID());
 		
 		testBSR  = RPCRequestFactory.buildSystemRequest(testData, null);
@@ -131,14 +131,12 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(MSG, testParentID, testBAC.getMenuParams().getParentID());
 		assertEquals(MSG, testPosition, testBAC.getMenuParams().getPosition());
 		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
-		assertEquals(MSG, Validator.validateImage(testImage, testBAC.getCmdIcon()));
+		assertTrue(MSG, Validator.validateImage(testImage, testBAC.getCmdIcon()));
 		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());
 		
 		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null, null, null, null);
 		assertNull(MSG, testBAC.getCmdID());
-		assertNull(MSG, testBAC.getMenuParams().getMenuName());
-		assertNull(MSG, testBAC.getMenuParams().getParentID());
-		assertNull(MSG, testBAC.getMenuParams().getPosition());
+		assertNull(MSG, testBAC.getMenuParams());
 		assertNull(MSG, testBAC.getVrCommands());
 		assertNull(MSG, testBAC.getCmdIcon());
 		assertNull(MSG, testBAC.getCorrelationID());
@@ -156,16 +154,13 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(MSG, testPosition, testBAC.getMenuParams().getPosition());
 		assertEquals(MSG, testVrCommands, testBAC.getVrCommands());
 		assertEquals(MSG, testCorrelationID, testBAC.getCorrelationID());		
-		assertEquals(MSG, Validator.validateImage(testImage, testBAC.getCmdIcon()));
+		assertTrue(MSG, Validator.validateImage(testImage, testBAC.getCmdIcon()));
 		
 		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null, null, null, null, null);
 		assertNull(MSG, testBAC.getCmdID());
-		assertNull(MSG, testBAC.getMenuParams().getMenuName());
-		assertNull(MSG, testBAC.getMenuParams().getParentID());
-		assertNull(MSG, testBAC.getMenuParams().getPosition());
+		assertNull(MSG, testBAC.getMenuParams());
 		assertNull(MSG, testBAC.getVrCommands());
-		assertNull(MSG, testBAC.getCmdIcon().getValue());
-		assertNull(MSG, testBAC.getCmdIcon().getImageType());
+		assertNull(MSG, testBAC.getCmdIcon());
 		assertNull(MSG, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position, Vector<String> vrCommands, Integer correlationID)
@@ -179,9 +174,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null, null, null);
 		assertNull(MSG, testBAC.getCmdID());
-		assertNull(MSG, testBAC.getMenuParams().getMenuName());
-		assertNull(MSG, testBAC.getMenuParams().getParentID());
-		assertNull(MSG, testBAC.getMenuParams().getPosition());
+		assertNull(MSG, testBAC.getMenuParams());
 		assertNull(MSG, testBAC.getVrCommands());
 		assertNull(MSG, testBAC.getCorrelationID());
 		
@@ -194,7 +187,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testBAC = RPCRequestFactory.buildAddCommand(null, null, null, null);
 		assertNull(MSG, testBAC.getCmdID());
-		assertNull(MSG, testBAC.getMenuParams().getMenuName());
+		assertNull(MSG, testBAC.getMenuParams());
 		assertNull(MSG, testBAC.getVrCommands());
 		assertNull(MSG, testBAC.getCorrelationID());
 		
@@ -449,10 +442,15 @@ public class RPCRequestFactoryTests extends TestCase {
 		testInitChunks    = TTSChunkFactory.createSimpleTTSChunks("init chunks");
 		testHelpChunks    = TTSChunkFactory.createSimpleTTSChunks("help items");
 		testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks("timeout");
-		VrHelpItem item = new VrHelpItem();
-		item.setText("test 1");
 		testVrHelpItems = new Vector<VrHelpItem>();
-		testVrHelpItems.add(item);
+		VrHelpItem testItem = new VrHelpItem();
+		testItem.setPosition(0);
+		testItem.setText("text");
+		Image image = new Image();
+		image.setValue("value");
+		image.setImageType(ImageType.DYNAMIC);
+		testItem.setImage(image);
+		testVrHelpItems.add(testItem);
 		testCSIDs = new Vector<Integer>();
 		testCSIDs.add(0);
 		testCSIDs.add(1);		
@@ -580,7 +578,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(MSG, testFileName, testPF.getSdlFileName());
 		assertEquals(MSG, testOffset, testPF.getOffset());
 		assertEquals(MSG, testLength, testPF.getLength());
-		assertEquals(MSG, testFileType, testPF.getPersistentFile());
+		assertTrue(MSG, testPF.getPersistentFile());
 		assertEquals(MSG, testSystemFile, testPF.getSystemFile());
 		
 		testPF = RPCRequestFactory.buildPutFile(null, null, null, null, null, null);
@@ -595,8 +593,8 @@ public class RPCRequestFactoryTests extends TestCase {
 	public void testBuildRegisterAppInterface () {
 		
 		SdlMsgVersion testSMV = new SdlMsgVersion();
-		testSMV.setMajorVersion(Integer.valueOf(SdlMsgVersion.KEY_MAJOR_VERSION));
-		testSMV.setMinorVersion(Integer.valueOf(SdlMsgVersion.KEY_MINOR_VERSION));
+		testSMV.setMajorVersion(1);
+		testSMV.setMinorVersion(0);
 		String testAppName = "test", testNGN = "ngn", testAppID = "id";
 		Vector<TTSChunk> testTTSName = TTSChunkFactory.createSimpleTTSChunks("name");
 		Vector<String> testSynonyms = new Vector<String>();
@@ -630,14 +628,15 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testRAI = RPCRequestFactory.buildRegisterAppInterface(null, null, null, null, null, null, null, null, null, null, null);
 		assertEquals(MSG, (Integer) 1, testRAI.getCorrelationID());
-		assertEquals(MSG, testSMV, testRAI.getSdlMsgVersion());
+		assertEquals(MSG, testSMV.getMajorVersion(), testRAI.getSdlMsgVersion().getMajorVersion());
+		assertEquals(MSG, testSMV.getMinorVersion(), testRAI.getSdlMsgVersion().getMinorVersion());
 		assertNull(MSG, testRAI.getAppName());
 		assertNull(MSG, testRAI.getTtsName());
 		assertNull(MSG, testRAI.getNgnMediaScreenAppName());
-		assertNotNull(MSG, testRAI.getVrSynonyms());
+		assertNull(MSG, testRAI.getVrSynonyms());
 		assertNull(MSG, testRAI.getIsMediaApplication());
 		assertNotNull(MSG, testRAI.getLanguageDesired());
-		assertNull(MSG, testRAI.getHmiDisplayLanguageDesired());
+		assertNotNull(MSG, testRAI.getHmiDisplayLanguageDesired());
 		assertNull(MSG, testRAI.getAppHMIType());
 		assertNull(MSG, testRAI.getAppID());
 	}
@@ -664,7 +663,14 @@ public class RPCRequestFactoryTests extends TestCase {
 		Vector<TTSChunk> testHelpChunks = TTSChunkFactory.createSimpleTTSChunks("test"),
 				testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks("timeout");
 		Vector<VrHelpItem> testVrHelp = new Vector<VrHelpItem>();
-		testVrHelp.add(new VrHelpItem());
+		VrHelpItem testItem = new VrHelpItem();
+		testItem.setPosition(0);
+		testItem.setText("text");
+		Image image = new Image();
+		image.setValue("value");
+		image.setImageType(ImageType.DYNAMIC);
+		testItem.setImage(image);
+		testVrHelp.add(testItem);
 		Integer testCorrelationID = 0;
 		String testHelpTitle = "help";
 		SetGlobalProperties testSBP;

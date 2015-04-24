@@ -43,6 +43,9 @@ public class UpdateTurnListTests extends BaseRpcTests {
     	UpdateTurnList msg = new UpdateTurnList();
     	
     	createCustomObjects();
+
+    	msg.setTurnList(TURN_LIST);
+    	msg.setSoftButtons(SOFT_BUTTON_LIST);
     	
     	return msg;
     }
@@ -60,8 +63,8 @@ public class UpdateTurnListTests extends BaseRpcTests {
 		softButton.setImage(SOFT_BUTTON_IMAGE);
 		SOFT_BUTTON_LIST.add(softButton);
 		
-		image.setValue("turn image");
-		image.setImageType(ImageType.STATIC);
+		image.setValue("image.png");
+		image.setImageType(ImageType.DYNAMIC);
 		
 		Turn turn = new Turn();
 		turn.setNavigationText("nav text");
@@ -114,12 +117,14 @@ public class UpdateTurnListTests extends BaseRpcTests {
     public void testSoftButtons () {
 		List<SoftButton> copy = ( (UpdateTurnList) msg ).getSoftButtons();
 		
+		assertNotNull("Null turn list returned.", copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateSoftButtons(SOFT_BUTTON_LIST, copy));
 	}
     
     public void testTurnList () {
 		List<Turn> copy = ( (UpdateTurnList) msg ).getTurnList();
 		
+		assertNotNull("Null turn list returned.", copy);
 		assertTrue("Input value didn't match expected value.", Validator.validateTurnList(TURN_LIST, copy));
 	}
     
@@ -156,11 +161,12 @@ public class UpdateTurnListTests extends BaseRpcTests {
 			}
 			assertTrue("Soft button list doesn't match input button list",  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
 			
-			JSONArray turnArray = JsonUtils.readJsonArrayFromJsonObject(body, UpdateTurnList.KEY_TURN_LIST);
+			JSONArray turnArray = JsonUtils.readJsonArrayFromJsonObject(parameters, UpdateTurnList.KEY_TURN_LIST);
 			List<Turn> turnList = new ArrayList<Turn>();
 			for (int index = 0; index < turnArray.length(); index++) {
 				Turn chunk = new Turn(JsonRPCMarshaller.deserializeJSONObject((JSONObject) turnArray.get(index)));
-				turnList.add(chunk);
+				if (chunk != null)
+					turnList.add(chunk);
 			}
 			assertTrue("Turn list doesn't match input button list",  Validator.validateTurnList(turnList, cmd.getTurnList()));
 		} catch (JSONException e) {

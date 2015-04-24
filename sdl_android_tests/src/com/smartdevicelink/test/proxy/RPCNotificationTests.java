@@ -26,7 +26,7 @@ public class RPCNotificationTests extends TestCase {
 		testHash.put(RPCMessage.KEY_NOTIFICATION, new Object());
 		testRPC = new RPCNotification(testHash);
 		assertNotNull("RPCNotification should not be null", testRPC);
-		assertEquals("Test key should match", testRPC.getStoreValue("testKey"), "testKey");
+		assertEquals("Test key should match", testRPC.getStoreValue("testKey"), "testKey"); // See rpcmessagetests
 		assertEquals("Message type should be notification", testRPC.getMessageType(), RPCMessage.KEY_NOTIFICATION);
 		
 		// Test -- RPCNotification(RPCMessage rpcMsg)

@@ -20,8 +20,8 @@ import com.smartdevicelink.test.utils.Validator;
 
 public class SendLocationTests extends BaseRpcTests {
 	
-	public static final String KEY_LAT_DEGREES          = "42";
-    public static final String KEY_LON_DEGREES          = "42";
+	public static final Float KEY_LAT_DEGREES          = 42f;
+    public static final Float KEY_LON_DEGREES          = 42f;
     public static final String KEY_LOCATION_NAME        = "test";
     public static final String KEY_LOCATION_DESCRIPTION = "desc";
     public static final String KEY_PHONE_NUMBER         = "1234567890";    
@@ -37,8 +37,8 @@ public class SendLocationTests extends BaseRpcTests {
     	IMAGE.setValue(VALUE);
 		IMAGE.setImageType(IMAGE_TYPE);
     	
-    	msg.setLatitudeDegrees(Float.parseFloat(KEY_LAT_DEGREES));
-    	msg.setLongitudeDegrees(Float.parseFloat(KEY_LON_DEGREES));
+    	msg.setLatitudeDegrees(KEY_LAT_DEGREES);
+    	msg.setLongitudeDegrees(KEY_LON_DEGREES);
     	msg.setLocationName(KEY_LOCATION_NAME);
     	msg.setLocationDescription(KEY_LOCATION_DESCRIPTION);
     	msg.setPhoneNumber(KEY_PHONE_NUMBER);
@@ -79,12 +79,12 @@ public class SendLocationTests extends BaseRpcTests {
     
     public void testLatitudeDegrees(){
     	Float latitude = ((SendLocation) msg).getLatitudeDegrees();
-        assertEquals("Latitude didn't match input latitude.", Float.parseFloat(KEY_LAT_DEGREES), latitude);
+        assertEquals("Latitude didn't match input latitude.", KEY_LAT_DEGREES, latitude);
     }
     
     public void testLongitudeDegrees() {
     	Float longitude = ((SendLocation) msg).getLatitudeDegrees();
-        assertEquals("Longitude didn't match input longitude.", Float.parseFloat(KEY_LON_DEGREES), longitude);
+        assertEquals("Longitude didn't match input longitude.", KEY_LON_DEGREES, longitude);
     }
     
     public void testLocationName () {
@@ -134,6 +134,7 @@ public class SendLocationTests extends BaseRpcTests {
     	try {
     		Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
     		SendLocation cmd = new SendLocation(hash);
+    		assertNotNull("SendLocation object is null", cmd);
     		
     		JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
     		assertNotNull("Command type doesn't match expected message type", body);
@@ -143,8 +144,8 @@ public class SendLocationTests extends BaseRpcTests {
 			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
     		
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Latitude doesn't match input latitude.", Float.parseFloat(JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LAT_DEGREES)), cmd.getLatitudeDegrees());
-			assertEquals("Longitude doesn't match input longitude.", Float.parseFloat(JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LON_DEGREES)), cmd.getLongitudeDegrees());
+			assertEquals("Latitude doesn't match input latitude.", JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LAT_DEGREES).floatValue(), cmd.getLatitudeDegrees());    // Issue # 168 (If error in testing)
+			assertEquals("Longitude doesn't match input longitude.", JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LON_DEGREES).floatValue(), cmd.getLongitudeDegrees()); // Issue # 168
 			assertEquals("Location name doesn't match input location name.", JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_NAME), cmd.getLocationName());
 			assertEquals("Location description doesn't match input location description.", JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_DESCRIPTION), cmd.getLocationDescription());
 			assertEquals("Phone number doesn't match input phone number.", JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_PHONE_NUMBER), cmd.getPhoneNumber());
