@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
+import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
@@ -36,6 +37,7 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
@@ -297,4 +299,8 @@ public interface IProxyListenerBase  {
 	public void onGetDTCsResponse(GetDTCsResponse response);
 	
 	public void onOnLockScreenNotification(OnLockScreenStatus notification);
+	
+	public void onDialNumberResponse(DialNumberResponse response);
+	
+	public void onSendLocationResponse(SendLocationResponse response);
 }

@@ -15,7 +15,7 @@ public class DialNumber extends RPCRequest {
 
 
 	public DialNumber(){
-        super(FunctionID.DIAL_NUMBER_ID);
+        super(FunctionID.DIAL_NUMBER);
 	}
 	
 	public DialNumber(Hashtable<String, Object> hash) {
@@ -25,7 +25,7 @@ public class DialNumber extends RPCRequest {
 	/**
 	 * Sets a number to dial
 	 * 
-	 * @param sdlFileName
+	 * @param number
 	 *             a phone number is a string, which can be up to 40 chars.
 	 *            <p>
 	 *            <b>Notes: </b>Maxlength=40<p>

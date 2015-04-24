@@ -2247,6 +2247,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
    					_proxyListener.onSystemRequestResponse((SystemRequestResponse)msg);	
    				}
             }
+            else if (functionName.equals(FunctionID.SEND_LOCATION)) {
+
+   				final SendLocationResponse msg = new SendLocationResponse(hash);
+   				if (_callbackToUIThread) {
+   					// Run in UI thread
+   					_mainUIHandler.post(new Runnable() {
+   						@Override
+   						public void run() {
+   							_proxyListener.onSendLocationResponse(msg);
+   						}
+   					});
+   				} else {
+   					_proxyListener.onSendLocationResponse(msg);	
+   				}
+            }
+            else if (functionName.equals(FunctionID.DIAL_NUMBER)) {
+
+   				final DialNumberResponse msg = new DialNumberResponse(hash);
+   				if (_callbackToUIThread) {
+   					// Run in UI thread
+   					_mainUIHandler.post(new Runnable() {
+   						@Override
+   						public void run() {
+   							_proxyListener.onDialNumberResponse(msg);
+   						}
+   					});
+   				} else {
+   					_proxyListener.onDialNumberResponse(msg);	
+   				}
+            }
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 

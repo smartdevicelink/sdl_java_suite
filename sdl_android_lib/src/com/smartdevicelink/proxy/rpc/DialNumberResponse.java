@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class DialNumberResponse extends RPCResponse {
 
     public DialNumberResponse() {
-        super(FunctionID.DIAL_NUMBER_ID);
+        super(FunctionID.DIAL_NUMBER);
     }
     
 	public DialNumberResponse(Hashtable<String, Object> hash) {
