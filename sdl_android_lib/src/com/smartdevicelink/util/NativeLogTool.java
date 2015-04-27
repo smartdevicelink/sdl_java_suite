@@ -13,6 +13,14 @@ public class NativeLogTool {
 		Info
 		,Warning
 		,Error
+		
+		public static LogTarget valueForString (String value) {
+			try{
+				return valueOf(value);
+			} catch(Exception e) {
+				return null;
+			}
+		}
 	}
 
 	public static void setEnableState(boolean en) {
