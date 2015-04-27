@@ -27,6 +27,6 @@ public class RPCStreamController {
 	}
 	public void stop()
 	{
-		rpcPacketizer.stop();
+		rpcPacketizer.onPutFileStreamError(null, "Stop Putfile Stream Requested");
 	}	
 }
