@@ -104,7 +104,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			if (e != null)
 				sException = sException + " " + e.toString();
 			
-			sException.concat(error);
+			sException = sException + " " + error;
 			result.setInfo(sException);
 		}
 		if (_proxyListener != null)
@@ -249,6 +249,6 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	public void onPutFileStreamError(Exception e, String info) 
 	{
 		if (thread != null)
-			handleStreamException(null, e, "");
+			handleStreamException(null, e, info);
 	}
 }
