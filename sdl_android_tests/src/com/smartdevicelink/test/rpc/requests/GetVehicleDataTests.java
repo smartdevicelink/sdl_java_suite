@@ -13,6 +13,7 @@ import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 
+@SuppressWarnings("deprecation")
 public class GetVehicleDataTests extends BaseRpcTests{
 
     public static final boolean KEY_SPEED = true;
@@ -40,8 +41,8 @@ public class GetVehicleDataTests extends BaseRpcTests{
 	public static final boolean KEY_EMERGENCY_EVENT = true;
 	public static final boolean KEY_CLUSTER_MODE_STATUS = true;
 	public static final boolean KEY_MY_KEY = true;
-    
-    @Override
+        
+	@Override
     protected RPCMessage createMessage(){
         GetVehicleData msg = new GetVehicleData();
 

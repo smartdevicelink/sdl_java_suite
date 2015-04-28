@@ -35,6 +35,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
+@SuppressWarnings("deprecation")
 public class VehicleDataHelper{
 	//top level variables for OnVehicleData
     public static final double SPEED = 35.6;

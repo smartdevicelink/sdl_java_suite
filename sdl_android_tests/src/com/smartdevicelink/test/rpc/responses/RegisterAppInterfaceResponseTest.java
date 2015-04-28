@@ -45,6 +45,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
+@SuppressWarnings("deprecation")
 public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 
 	private final List<PrerecordedSpeech>   PRERECORDED_SPEECH = 

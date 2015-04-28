@@ -39,6 +39,7 @@ public class VrCapabilitiesTests extends TestCase {
 		}
 	}	
 	
+	@SuppressWarnings("deprecation")
 	public void testListEnum() {
  		List<VrCapabilities> enumValueList = Arrays.asList(VrCapabilities.values());
 

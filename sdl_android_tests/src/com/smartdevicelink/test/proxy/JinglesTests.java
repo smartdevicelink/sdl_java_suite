@@ -1,14 +1,15 @@
 package com.smartdevicelink.test.proxy;
 
-import com.smartdevicelink.proxy.Jingles;
+import com.smartdevicelink.proxy.constants.Jingles;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("deprecation")
 public class JinglesTests extends TestCase {
 	
 	public void testJingles () {
-		String test = "POSTIVE_JINGLE";
-		assertEquals("Positive jingle value does not match.", test, Jingles.POSTIVE_JINGLE);		
+		String test = "POSITIVE_JINGLE";
+		assertEquals("Positive jingle value does not match.", test, Jingles.POSITIVE_JINGLE);		
 		test = "NEGATIVE_JINGLE";
 		assertEquals("Negative jingle value does not match.", test, Jingles.NEGATIVE_JINGLE);		
 		test = "INITIAL_JINGLE";

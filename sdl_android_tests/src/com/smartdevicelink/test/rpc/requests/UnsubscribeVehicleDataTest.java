@@ -14,6 +14,7 @@ import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 
+@SuppressWarnings("deprecation")
 public class UnsubscribeVehicleDataTest extends BaseRpcTests {
 
     public static final boolean KEY_SPEED = true;

@@ -31,6 +31,8 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 import com.smartdevicelink.test.utils.VehicleDataHelper;
+
+@SuppressWarnings("deprecation")
 public class GetVehicleDataResponseTests extends BaseRpcTests{
 
     @Override

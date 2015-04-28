@@ -17,6 +17,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.utils.JsonUtils;
 import com.smartdevicelink.test.utils.Validator;
 
+@SuppressWarnings("deprecation")
 public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	//TODO: the corresponding library class does not include variables for the vehicle data type VEHICLEDATA_BATTVOLTAGE. intentional?
     public static final VehicleDataResult KEY_SPEED = new VehicleDataResult();

@@ -136,7 +136,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	assertTrue("GPS does not match input GPS", Validator.validateGpsData(VehicleDataHelper.GPS, copy));
     }
     
-    public void testFuelLevel_State() {
+    @SuppressWarnings("deprecation")
+	public void testFuelLevel_State() {
     	ComponentVolumeStatus copy = ( (OnVehicleData) msg).getFuelLevel_State();
     	assertEquals("Fuel level does not match input fuel level", VehicleDataHelper.FUEL_LEVEL_STATE, copy);
     }
@@ -496,7 +497,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
     }
 	
 
-    public void testNull(){
+    @SuppressWarnings("deprecation")
+	public void testNull(){
         OnVehicleData msg = new OnVehicleData();
         assertNotNull("Null object creation failed.", msg);
 

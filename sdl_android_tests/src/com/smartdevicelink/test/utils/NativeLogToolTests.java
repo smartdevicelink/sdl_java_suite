@@ -1,18 +1,23 @@
 package com.smartdevicelink.test.utils;
 
-import com.smartdevicelink.util.NativLogTool;
+
+import com.smartdevicelink.util.NativeLogTool;
 
 import junit.framework.TestCase;
 
 public class NativeLogToolTests extends TestCase {
 	
-	public void testValidEnums () {
+	public void testValidEnums () {		
 		String test = "Info";
-		LogTarget testInfo = LogTarget.valueForString(test);
+		NativeLogTool.LogTarget testInfo = NativeLogTool.LogTarget.valueForString(test);
 		test = "Warning";
-		LogTarget testWarning = LogTarget.valueForString(test);
+		NativeLogTool.LogTarget testWarning = NativeLogTool.LogTarget.valueForString(test);
 		test = "Error";
-		LogTarget testError = LogTarget.valueForString(test);
+		NativeLogTool.LogTarget testError = NativeLogTool.LogTarget.valueForString(test);
+		
+		assertNotNull("Info enum was null", testInfo);
+		assertNotNull("Warning enum was null", testWarning);
+		assertNotNull("Error enum was null", testError);
 	}
 	
 	public void testEnabled () {
