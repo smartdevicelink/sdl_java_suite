@@ -32,7 +32,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	Object TRANSPORT_REFERENCE_LOCK = new Object();
 	Object PROTOCOL_REFERENCE_LOCK = new Object();
 	
-	private Object SESSION_LOCK = new Object();
 	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
 	
 	/**
@@ -306,11 +305,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 	}
 	void registerSession(SdlSession registerListener) throws SdlException {
-		synchronized (SESSION_LOCK) {
-			if (!listenerList.contains(registerListener)) {
-				listenerList.add(registerListener); //TODO: check if we need to sort the list.
-			}
-		}
+		listenerList.addIfAbsent(registerListener);
 		
 		if (!this.getIsConnected()) {
 			this.startTransport();
@@ -325,12 +320,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}	
 	
 	public void unregisterSession(SdlSession registerListener) {
-		synchronized (SESSION_LOCK) {
-			listenerList.remove(registerListener);
-		
-		
+		listenerList.remove(registerListener);			
 		closeConnection(listenerList.size() == 0, registerListener.getSessionId());
-		}
 	}
 
 	
