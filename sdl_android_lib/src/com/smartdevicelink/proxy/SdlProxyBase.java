@@ -3027,7 +3027,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	public ScheduledExecutorService createScheduler(){
 		return  Executors.newSingleThreadScheduledExecutor();
-	}
+	}	
+	
+	
+	/**
+	 *Opens the video service (serviceType 11) and subsequently streams raw H264 video from an InputStream provided by the app
+	 *@return true if service is opened successfully and stream is started, return false otherwise
+	 */
 	public boolean startH264(InputStream is) {
 		
 		if (sdlSession == null) return false;		
@@ -3049,13 +3055,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		fTask = null;
 
 		if (navServiceStartResponse) {
-			sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
-			return true;
+			try {
+				sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
+				return true;
+			} catch (Exception e) {
+				return false;
+			}			
 		} else {
 			return false;
 		}
 	}
-
+	/**
+	 *Opens the video service (serviceType 11) and subsequently provides an OutputStream to the app to use for a raw H264 video stream
+	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
+	 */
 	public OutputStream startH264() {
 
 		if (sdlSession == null) return null;		
@@ -3076,12 +3089,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		fTask = null;
 
 		if (navServiceStartResponse) {
-			return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
+			try {
+				return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
+			} catch (Exception e) {
+				return null;
+			}
 		} else {
 			return null;
 		}
 	}	
 	
+	/**
+	 *Closes the opened video service (serviceType 11)
+	 *@return true if the video service is closed successfully, return false otherwise  
+	 */	
 	public boolean endH264() {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -3107,42 +3128,59 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
+	/**
+	 *Pauses the stream for the opened audio service (serviceType 10)
+	 *@return true if the audio service stream is paused successfully, return false otherwise  
+	 */		
 	public boolean pausePCM()
 	{
 		if (sdlSession == null) return false;
 		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return false;
-		sdlConn.pauseAudioStream();
-		return true;
+		return sdlConn.pauseAudioStream();		
 	}
 
+	/**
+	 *Pauses the stream for the opened video service (serviceType 11)
+	 *@return true if the video service stream is paused successfully, return false otherwise  
+	 */	
 	public boolean pauseH264()
 	{
 		if (sdlSession == null) return false;
 		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return false;
-		sdlConn.pauseVideoStream();
-		return true;
+		return sdlConn.pauseVideoStream();		
 	}
 
+	/**
+	 *Resumes the stream for the opened audio service (serviceType 10)
+	 *@return true if the audio service stream is resumed successfully, return false otherwise  
+	 */	
 	public boolean resumePCM()
 	{
 		if (sdlSession == null) return false;
 		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return false;
-		sdlConn.resumeAudioStream();
-		return true;
+		return sdlConn.resumeAudioStream();		
 	}
 
+	/**
+	 *Resumes the stream for the opened video service (serviceType 11)
+	 *@return true if the video service is resumed successfully, return false otherwise  
+	 */	
 	public boolean resumeH264()
 	{
 		if (sdlSession == null) return false;
 		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return false;
-		sdlConn.resumeVideoStream();
-		return true;
+		return sdlConn.resumeVideoStream();	
 	}
 
+	
+	/**
+	 *Opens the audio service (serviceType 10) and subsequently streams raw PCM audio from an InputStream provided by the app
+	 *@return true if service is opened successfully and stream is started, return false otherwise  
+	 */
 	public boolean startPCM(InputStream is) {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -3162,13 +3200,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		fTask = null;
 
 		if (pcmServiceStartResponse) {
-			sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
-			return true;
+			try {
+				sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
+				return true;
+			} catch (Exception e) {
+				return false;
+			}			
 		} else {
 			return false;
 		}
 	}
 	
+	/**
+	 *Opens the audio service (serviceType 10) and subsequently provides an OutputStream to the app
+	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
+	 */		
 	public OutputStream startPCM() {
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -3188,11 +3234,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		fTask = null;
 
 		if (pcmServiceStartResponse) {
-			return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
+			try {
+				return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
+			} catch (Exception e) {
+				return null;
+			}
 		} else {
 			return null;
 		}
 	}
+	
+	/**
+	 *Closes the opened audio service (serviceType 10)
+	 *@return true if the audio service is closed successfully, return false otherwise  
+	 */		
 	public boolean endPCM() {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		

@@ -1,6 +1,7 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -231,8 +232,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public TransportType getCurrentTransportType() {
 		return _transport.getTransportType();
 	}
-	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) {
-		try {
+	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
             if (sType.equals(SessionType.NAV))
             {
             	mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
@@ -244,14 +244,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
             	mAudioPacketizer.sdlConnection = this;
             	mAudioPacketizer.start();            	
-            }            
-		} catch (Exception e) {
-            Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
-        }
+            }
 	}
 	
-	public OutputStream startStream(SessionType sType, byte rpcSessionID) {
-		try {
+	public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
 			
@@ -275,10 +271,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             }            
 						
 			return os;
-		} catch (Exception e) {
-            Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
-        }
-		return null;
 	}
 		
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
@@ -327,52 +319,64 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 	}
 	
-	public void stopAudioStream()
+	public boolean stopAudioStream()
 	{
 		if (mAudioPacketizer != null)
 		{
 			mAudioPacketizer.stop();
+			return true;
 		}
+		return false;
 	}
 	
-	public void stopVideoStream()
+	public boolean stopVideoStream()
 	{
 		if (mVideoPacketizer != null)
 		{
 			mVideoPacketizer.stop();
+			return true;
 		}
+		return false;
 	}
 
-	public void pauseAudioStream()
+	public boolean pauseAudioStream()
 	{
 		if (mAudioPacketizer != null)
 		{
 			mAudioPacketizer.pause();
+			return true;
 		}
+		return false;
 	}
 
-	public void pauseVideoStream()
+	public boolean pauseVideoStream()
 	{
 		if (mVideoPacketizer != null)
 		{
 			mVideoPacketizer.pause();
+			return true;
 		}
+		return false;
 	}
 
-	public void resumeAudioStream()
+	public boolean resumeAudioStream()
 	{
 		if (mAudioPacketizer != null)
 		{
 			mAudioPacketizer.resume();
+			return true;
 		}
+		return false;		
 	}
 
-	public void resumeVideoStream()
+	public boolean resumeVideoStream()
 	{
 		if (mVideoPacketizer != null)
 		{
 			mVideoPacketizer.resume();
+			return true;
 		}
+		return false;
 	}
 
 	@Override
