@@ -11,7 +11,9 @@
         android:targetPackage="com.smartdevicelink" />
 
     <application>
-        <uses-library android:name="android.test.runner" />
+        <uses-library android:name="android.test.runner" />             
     </application>
 
 </manifest>
+<!-- For SdlProxyALMTests class - belongs in application tag
+<service android:enabled="true" android:name="com$smartdevicelink$test$proxy$SdlProxyALMTests$MockService" /> -->

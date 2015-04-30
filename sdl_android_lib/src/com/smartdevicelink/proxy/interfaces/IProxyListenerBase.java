@@ -82,8 +82,7 @@ public interface IProxyListenerBase  {
 	 * @param e - The exception that occurred. 
 	 */
 	public void onError(String info, Exception e);
-	
-	
+		
 	/**
 	 * onGenericResponse() being called indicates that SDL could not determine the
 	 * type of request it is responding to. This is usually result of an unknown RPC Request

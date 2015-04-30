@@ -627,7 +627,6 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
 				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
 	}
-
 	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
@@ -717,8 +716,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
-	}
-	
+	}	
 	
 	public SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
@@ -749,10 +747,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}
-	
-	
-	
-	
+
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
@@ -803,7 +798,6 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}
 
-		
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
@@ -906,6 +900,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}	
+	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
@@ -958,6 +953,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}
+	
 	public SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, 
@@ -988,6 +984,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}	
+	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
@@ -1043,6 +1040,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}
+	
 	public SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, 
@@ -1163,8 +1161,6 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		
 		return null;
 	}
-
-	
 	
 	/**
 	 * Gets displayCapabilities set when application interface is registered.
@@ -1223,6 +1219,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		
 		return _speechCapabilities;
 	}
+	
 	/**
 	 * Gets PrerecordedSpeech set when application interface is registered.
 	 * 
@@ -1242,6 +1239,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		
 		return _prerecordedSpeech;
 	}
+	
 	/**
 	 * Gets sdlLanguage set when application interface is registered.
 	 * 
@@ -1380,6 +1378,5 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("SDL is not connected. Unable to get isResumeSuccess.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 		return _bResumeSuccess;
-	}	
-	
+	}		
 }
