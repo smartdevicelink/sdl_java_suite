@@ -77,6 +77,10 @@ public class RPCRequestFactory {
 		
 		if(data == null) return null;
 		
+		for (String item : data) {
+			if (item == null) return null;
+		}
+		
 		SystemRequest msg = new SystemRequest(true);
 		msg.setCorrelationID(correlationID);
 		msg.setLegacyData(data);
