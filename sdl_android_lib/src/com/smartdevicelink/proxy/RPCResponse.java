@@ -66,7 +66,15 @@ public class RPCResponse extends RPCMessage {
      *@param rpcMsg The {@linkplain RPCMessage} to use
      */   
 	public RPCResponse(RPCMessage rpcMsg) {
-		super(rpcMsg);
+		super(preprocessMsg(rpcMsg));
+	}
+	
+	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
+		if (rpcMsg.getMessageType() != RPCMessage.KEY_RESPONSE) {
+			rpcMsg.messageType = RPCMessage.KEY_RESPONSE;
+		}
+		
+		return rpcMsg;
 	}
 
 	/**
