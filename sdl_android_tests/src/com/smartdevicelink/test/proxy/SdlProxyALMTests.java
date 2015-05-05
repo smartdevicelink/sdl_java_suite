@@ -3,11 +3,6 @@
 //import java.util.Vector;
 //
 //import junit.framework.TestCase;
-//import android.app.Service;
-//import android.content.Intent;
-//import android.os.Binder;
-//import android.os.IBinder;
-//import android.test.AndroidTestCase;
 //
 //import com.smartdevicelink.exception.SdlException;
 //import com.smartdevicelink.proxy.SdlProxyALM;
@@ -70,7 +65,7 @@
 //import com.smartdevicelink.transport.BaseTransportConfig;
 //import com.smartdevicelink.transport.TransportType;
 //
-//public class SdlProxyALMTests extends AndroidTestCase {
+//public class SdlProxyALMTests extends TestCase {
 //	
 //	/* Issue - Constructor Test #
 //	 * = = = = = = = =
@@ -88,7 +83,16 @@
 //	 * No get method for String getHashId               - 24,25
 //	 * 
 //	 * Cannot test the assignment of these values through the constructors.
-// 	 **/
+//	 * - -
+//	 * Cannot test RegisterAppInterface return values, they are dependent on the
+//	 * applications using library.
+//	 * - -
+//	 * Cannot mock a service object to test the constructors that require an
+//	 * instance of the service that the users must provide.
+//	 * Test # 17,18,23, and 25 have been commented out due to this issue.
+//	 * - -
+//	 * Cannot test anything because of bluetooth data.
+//	 **/
 //	
 //	Vector<AppHMIType> testAppType = new Vector<AppHMIType>();	
 //	Vector<TTSChunk> testTtsName = new Vector<TTSChunk>();
@@ -102,16 +106,9 @@
 //	Language testLanguageDesired = Language.EN_US, testHmiDisplayLanguage = Language.EN_GB;
 //	IProxyListenerALM testListener = new MockListener();	
 //	SdlProxyALM testALM = null;
-//	
-//	Service testAppService = null;
 //		
-//	public void testConstructors () {	
+//	public void testConstructors () {
 //		
-//		// TODO Note: In order to have a service object you need a context.
-//		// This can be done using AndroidUnitTest, however that is not currently
-//		// the suite we use to test so this causes run problems.
-//		
-//		testAppService = //getContext().startService(new Intent(this, MockService.class));
 //		Vector<String> testVrSynonyms = new Vector<String>();
 //		testVrSynonyms.add("synonym");
 //		
@@ -567,65 +564,65 @@
 //			fail("IProxyListenerALM or IsMediaApp was null");
 //		}
 //		
-//		// Test 17 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException
-//		try {
-//			testALM = new SdlProxyALM(testAppService, testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister);
-//			assertNotNull("SdlProxyALM should not be null", testALM);
-//			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
-//			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
-//			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
-//			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
-//			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
-//			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
+//// Test 17 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException
+////		try {
+////			testALM = new SdlProxyALM(testAppService, testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister);
+////			assertNotNull("SdlProxyALM should not be null", testALM);
+////			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
+////			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
+////			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
+////			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
+////			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
+////			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
+////		
+////		try {			
+////			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, false, true);	
+////			assertNull("App name did not match expected value.", testALM.getAppName());
+////			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
+////			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
+////			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
+////			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
+////			assertNull("App id did not match expected value.", testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
 //		
-//		try {			
-//			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, false, true);	
-//			assertNull("App name did not match expected value.", testALM.getAppName());
-//			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
-//			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
-//			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
-//			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
-//			assertNull("App id did not match expected value.", testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
-//		
-//		// Test 18 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) throws SdlException
-//		try {
-//			testALM = new SdlProxyALM(testAppService, testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister, testTransportConfig);
-//			assertNotNull("SdlProxyALM should not be null", testALM);
-//			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
-//			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
-//			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
-//			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
-//			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
-//			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
-//		
-//		try {			
-//			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, false, true, null);	
-//			assertNull("App name did not match expected value.", testALM.getAppName());
-//			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
-//			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
-//			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
-//			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
-//			assertNull("App id did not match expected value.", testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
+//// Test 18 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) throws SdlException
+////		try {
+////			testALM = new SdlProxyALM(testAppService, testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister, testTransportConfig);
+////			assertNotNull("SdlProxyALM should not be null", testALM);
+////			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
+////			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
+////			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
+////			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
+////			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
+////			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
+////		
+////		try {			
+////			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, false, true, null);	
+////			assertNull("App name did not match expected value.", testALM.getAppName());
+////			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
+////			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
+////			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
+////			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
+////			assertNull("App id did not match expected value.", testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
 //		
 //		// Test 19 -- SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,  SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException
 //		try {
@@ -747,35 +744,35 @@
 //			fail("IProxyListenerALM or IsMediaApp was null");
 //		}
 //		
-//		// Test 23 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) throws SdlException
-//		try {
-//			testALM = new SdlProxyALM(testAppService, testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppType, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister, testTransportConfig);
-//			assertNotNull("SdlProxyALM should not be null", testALM);
-//			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
-//			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
-//			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
-//			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
-//			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
-//			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
-//		
-//		try {			
-//			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, null, false, true, null);	
-//			assertNull("App name did not match expected value.", testALM.getAppName());
-//			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
-//			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
-//			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
-//			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
-//			assertNull("App id did not match expected value.", testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
+//// Test 23 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) throws SdlException
+////		try {
+////			testALM = new SdlProxyALM(testAppService, testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppType, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister, testTransportConfig);
+////			assertNotNull("SdlProxyALM should not be null", testALM);
+////			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
+////			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
+////			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
+////			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
+////			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
+////			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
+////		
+////		try {			
+////			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, null, false, true, null);	
+////			assertNull("App name did not match expected value.", testALM.getAppName());
+////			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
+////			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
+////			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
+////			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
+////			assertNull("App id did not match expected value.", testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
 //		
 //		// Test 24 -- SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID, BaseTransportConfig transportConfig) throws SdlException
 //		try {
@@ -807,51 +804,36 @@
 //			fail("IProxyListenerALM or IsMediaApp was null");
 //		}
 //		
-//		// Test 25 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID, BaseTransportConfig transportConfig) throws SdlException
-//		try {
-//			testALM = new SdlProxyALM(testAppService,testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppType, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister, testHashId,testTransportConfig);
-//			assertNotNull("SdlProxyALM should not be null", testALM);
-//			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
-//			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
-//			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
-//			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
-//			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
-//			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
-//		
-//		try {			
-//			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, null, false, true, null, null);	
-//			assertNull("App name did not match expected value.", testALM.getAppName());
-//			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
-//			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
-//			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
-//			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
-//			assertNull("App id did not match expected value.", testALM.getAppID());
-//		} catch (SdlException e) {
-//			fail("SdlException was thrown");
-//		} catch (IllegalArgumentException e) {
-//			fail("IProxyListenerALM or IsMediaApp was null");
-//		}
-//	}
-//	
-//	// Note: Cannot test RegisterAppInterface return values, dependent on app using library.
-//}
-//
-//class MockService extends Service {
-//
-//	private Binder binder;	
-//	@Override public void onCreate() { super.onCreate(); binder = new Binder(); }
-//	@Override public IBinder onBind(Intent intent) { return binder; }
-//	
-//	public class Binder extends android.os.Binder {
-//		public MockService getService() {
-//			return MockService.this;
-//		}
-//	}
+//// Test 25 -- SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID, BaseTransportConfig transportConfig) throws SdlException
+////		try {
+////			testALM = new SdlProxyALM(testAppService,testListener, testConfigResources, testAppName, testTtsName, testMediaName, testVrSynonyms, testIsMediaApp, testMessageVersion, testLanguageDesired, testHmiDisplayLanguage, testAppType, testAppId, testAutoActivateId, testCallbackToUIThread, testPreRegister, testHashId,testTransportConfig);
+////			assertNotNull("SdlProxyALM should not be null", testALM);
+////			assertEquals("App name did not match expected value.", testAppName, testALM.getAppName());
+////			assertEquals("Media app name did not match expected value.", testMediaName, testALM.getNgnAppName());
+////			assertEquals("Sdl message version did not match expected values.", testMessageVersion, testALM.getSdlMsgVersion());
+////			assertEquals("Language did not match expected value.", testLanguageDesired, testALM.getSdlLanguage());
+////			assertEquals("Language did not match expected value.", testHmiDisplayLanguage, testALM.getHmiDisplayLanguage());
+////			assertEquals("App id did not match expected value.", testAppId, testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
+////		
+////		try {			
+////			testALM = new SdlProxyALM(null, testListener, null, null, null, null, null, testIsMediaApp, null, null, null, null, null, null, false, true, null, null);	
+////			assertNull("App name did not match expected value.", testALM.getAppName());
+////			assertNull("Media app name did not match expected value.", testALM.getNgnAppName());
+////			assertNull("Sdl message version did not match expected values.", testALM.getSdlMsgVersion());
+////			assertNull("Language did not match expected value.", testALM.getSdlLanguage());
+////			assertNull("Language did not match expected value.", testALM.getHmiDisplayLanguage());
+////			assertNull("App id did not match expected value.", testALM.getAppID());
+////		} catch (SdlException e) {
+////			fail("SdlException was thrown");
+////		} catch (IllegalArgumentException e) {
+////			fail("IProxyListenerALM or IsMediaApp was null");
+////		}
+//	}	
 //}
 //
 //class MockListener implements IProxyListenerALM {

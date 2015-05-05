@@ -21,7 +21,7 @@ public class InternalProxyMessageTests extends TestCase {
 		
 		test = "OnProxyOpened";
 		assertEquals("OnProxyOpened did not match expected value.", test,
-				      InternalProxyMessage.OnProxyError);
+				      InternalProxyMessage.OnProxyOpened);
 		
 		test = "OnProxyClosed";
 		assertEquals("OnProxyClosed did not match expected value.", test,
