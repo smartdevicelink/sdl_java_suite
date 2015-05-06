@@ -14,5 +14,13 @@ public enum TransportType {
 	 * Transport type is TCP.
 	 */
 	TCP,
-	USB
+	USB;
+	
+	public static TransportType valueForString(String value) {
+		try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
+	}
 }
