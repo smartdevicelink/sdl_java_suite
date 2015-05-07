@@ -73,7 +73,7 @@ public class DiagLevelTests extends TestCase {
 		DiagLevel.setLevel(testApp, testTerse);
 		assertEquals(MSG, testTerse, DiagLevel.getLevel(testApp));
 		DiagLevel.setLevel(testApp, testOff);
-		assertEquals(MSG, testApp, DiagLevel.getLevel(testApp));
+		assertEquals(MSG, testOff, DiagLevel.getLevel(testApp));
 		
 		DiagLevel.setLevel(testTran, testVerbose);
 		assertEquals(MSG, testVerbose, DiagLevel.getLevel(testTran));	
@@ -87,7 +87,7 @@ public class DiagLevelTests extends TestCase {
 		DiagLevel.setLevel(testProxy, testTerse);
 		assertEquals(MSG, testTerse, DiagLevel.getLevel(testProxy));		
 		DiagLevel.setLevel(testProxy, testOff);
-		assertEquals(MSG, testTerse, DiagLevel.getLevel(testProxy));
+		assertEquals(MSG, testOff, DiagLevel.getLevel(testProxy));
 		
 		DiagLevel.setLevel(testProto, testVerbose);
 		assertEquals(MSG, testVerbose, DiagLevel.getLevel(testProto));
