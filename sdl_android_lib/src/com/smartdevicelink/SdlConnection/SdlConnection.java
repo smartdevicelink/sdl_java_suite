@@ -399,15 +399,21 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 	
 	public void startEncoder () {
-		mSdlEncoder.startEncoder();
+		if(mSdlEncoder != null) {
+		   mSdlEncoder.startEncoder();
+		}
 	}
 	
 	public void releaseEncoder() {
-		mSdlEncoder.releaseEncoder();
+		if(mSdlEncoder != null) {
+		   mSdlEncoder.releaseEncoder();
+		}
 	}
 	
 	public void drainEncoder(boolean endOfStream) {
-		mSdlEncoder.drainEncoder(endOfStream);
+		if(mSdlEncoder != null) {
+		   mSdlEncoder.drainEncoder(endOfStream);
+		}
 	}
 
 	@Override
