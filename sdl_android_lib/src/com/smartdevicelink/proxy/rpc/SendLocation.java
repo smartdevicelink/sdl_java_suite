@@ -47,7 +47,16 @@ public class SendLocation extends RPCRequest{
      * @return The longitude of the location
      */
     public Float getLongitudeDegrees(){
-        return (Float) parameters.get(KEY_LON_DEGREES);
+
+    	Object value = parameters.get(KEY_LON_DEGREES);
+    	
+        if (value instanceof Integer) {
+    		return ((Integer) value).floatValue();
+    	} else if (value instanceof Double) {
+    		return ((Double) value).floatValue();
+    	} else {
+    		return (Float) value;
+    	}
     }
 
     /**
@@ -67,8 +76,17 @@ public class SendLocation extends RPCRequest{
      * Getter for latitude of the location to send.
      * @return The latitude of the location
      */
-    public Float getLatitudeDegrees(){
-        return (Float) parameters.get(KEY_LAT_DEGREES);
+    public Float getLatitudeDegrees(){    
+    	
+    	Object value = parameters.get(KEY_LAT_DEGREES);
+    	
+    	if (value instanceof Integer) {
+    		return ((Integer) value).floatValue();
+    	} else if (value instanceof Double) {
+    		return ((Double) value).floatValue();
+    	} else {
+    		return (Float) value;
+    	}
     }
 
     /**
