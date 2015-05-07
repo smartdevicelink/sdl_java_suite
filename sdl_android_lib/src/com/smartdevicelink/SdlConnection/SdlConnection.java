@@ -7,6 +7,8 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
+import android.view.Surface;
+import com.smartdevicelink.encoder.SdlEncoder;
 
 import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
@@ -30,6 +32,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	StreamRPCPacketizer mRPCPacketizer = null;
 	StreamPacketizer mVideoPacketizer = null;
 	StreamPacketizer mAudioPacketizer = null;
+	SdlEncoder mSdlEncoder = null;
 
 	// Thread safety locks
 	Object TRANSPORT_REFERENCE_LOCK = new Object();
@@ -377,6 +380,34 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			return true;
 		}
 		return false;
+	}
+
+	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+			int height, int bitrate, SessionType sType, byte rpcSessionID) {
+		try {
+			mSdlEncoder = new SdlEncoder(frameRate, iFrameInterval, width,
+					height, bitrate, (PipedOutputStream) startStream(sType, rpcSessionID));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(mSdlEncoder != null) {
+		   return mSdlEncoder.prepareEncoder();
+		} else {
+		   return null;
+		}
+	}
+	
+	public void startEncoder () {
+		mSdlEncoder.startEncoder();
+	}
+	
+	public void releaseEncoder() {
+		mSdlEncoder.releaseEncoder();
+	}
+	
+	public void drainEncoder(boolean endOfStream) {
+		mSdlEncoder.drainEncoder(endOfStream);
 	}
 
 	@Override
