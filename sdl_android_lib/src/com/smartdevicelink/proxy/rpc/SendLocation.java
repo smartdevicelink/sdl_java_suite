@@ -46,16 +46,16 @@ public class SendLocation extends RPCRequest{
      * Getter for longitude of the location to send.
      * @return The longitude of the location
      */
-    public Float getLongitudeDegrees(){
+    public Double getLongitudeDegrees(){
 
     	Object value = parameters.get(KEY_LON_DEGREES);
     	
-        if (value instanceof Integer) {
-    		return ((Integer) value).floatValue();
-    	} else if (value instanceof Double) {
-    		return ((Double) value).floatValue();
+    	if (value instanceof Integer) {
+    		return ((Integer) value).doubleValue();
+    	} else if (value instanceof Float) {
+    		return ((Float) value).doubleValue();
     	} else {
-    		return (Float) value;
+    		return (Double) value;
     	}
     }
 
@@ -63,7 +63,7 @@ public class SendLocation extends RPCRequest{
      * Setter for longitude of the location to send.
      * @param longitudeDegrees
      */
-    public void setLongitudeDegrees(Float longitudeDegrees){
+    public void setLongitudeDegrees(Double longitudeDegrees){
         if(longitudeDegrees != null){
             parameters.put(KEY_LON_DEGREES, longitudeDegrees);
         }
@@ -76,16 +76,16 @@ public class SendLocation extends RPCRequest{
      * Getter for latitude of the location to send.
      * @return The latitude of the location
      */
-    public Float getLatitudeDegrees(){    
+    public Double getLatitudeDegrees(){    
     	
     	Object value = parameters.get(KEY_LAT_DEGREES);
     	
     	if (value instanceof Integer) {
-    		return ((Integer) value).floatValue();
-    	} else if (value instanceof Double) {
-    		return ((Double) value).floatValue();
+    		return ((Integer) value).doubleValue();
+    	} else if (value instanceof Float) {
+    		return ((Float) value).doubleValue();
     	} else {
-    		return (Float) value;
+    		return (Double) value;
     	}
     }
 
@@ -93,7 +93,7 @@ public class SendLocation extends RPCRequest{
      * Setter for latitude of the location to send.
      * @param latitudeDegrees
      */
-    public void setLatitudeDegrees(Float latitudeDegrees){
+    public void setLatitudeDegrees(Double latitudeDegrees){
         if(latitudeDegrees != null){
             parameters.put(KEY_LAT_DEGREES, latitudeDegrees);
         }
