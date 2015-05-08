@@ -3289,7 +3289,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         ScheduledExecutorService scheduler = createScheduler();
         scheduler.execute(fTask);
         
-        while (!navServiceStartResponseReceived  || !fTask.isDone());
+        while (!navServiceStartResponseReceived  && !fTask.isDone());
         scheduler.shutdown();
         scheduler = null;
         fTask = null;
