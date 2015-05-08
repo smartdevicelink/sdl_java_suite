@@ -83,7 +83,7 @@ public class SendLocationTests extends BaseRpcTests {
     }
     
     public void testLongitudeDegrees() {
-    	Float longitude = ((SendLocation) msg).getLatitudeDegrees();
+    	Float longitude = ((SendLocation) msg).getLongitudeDegrees();
         assertEquals("Longitude didn't match input longitude.", KEY_LON_DEGREES, longitude);
     }
     
