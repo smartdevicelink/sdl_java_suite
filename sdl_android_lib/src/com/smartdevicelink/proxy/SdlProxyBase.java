@@ -1579,8 +1579,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
 	 * <p>Will automatically remove the listener for the list of listeners on completion. 
 	 * @param msg
+	 * @return if a listener was called or not
 	 */
-	private void onPacketFinish(RPCResponse msg){
+	private boolean onPacketFinish(RPCResponse msg){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 			int correlationId = msg.getCorrelationID();
 			if(rpcUpdateListeners !=null 
@@ -1592,7 +1593,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
 				}
 				rpcUpdateListeners.remove(correlationId);
-			}			
+				return true;
+			}
+			return false;
 		}
 	}
 
