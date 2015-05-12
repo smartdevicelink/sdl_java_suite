@@ -49,6 +49,7 @@ public class SendLocation extends RPCRequest{
      * <p><b>IMPORTANT NOTE:</b> A previous version of this method call returned a Float
      * value, however, it has been changed to return a Double. This will compile, 
      * but cause a ClassCastException if your value is not also a Double type.
+     * @since SmartDeviceLink v4.0
      * 
      * @return The longitude of the location
      */
@@ -76,6 +77,7 @@ public class SendLocation extends RPCRequest{
      * <p><b>IMPORTANT NOTE:</b> A previous version of this method call returned a Float
      * value, however, it has been changed to return a Double. This will compile, 
      * but cause a ClassCastException if your value is not also a Double type.
+     * @since SmartDeviceLink v4.0
      * 
      * @return The latitude of the location
      */
