@@ -30,10 +30,12 @@ public class TouchEvent extends RPCStruct {
     	if(store.get(KEY_TS) instanceof List<?>){
     		List<?> list = (List<?>)store.get(KEY_TS);
     		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
+    			for( Object obj : list ) {
+        			if (!(obj instanceof Integer)) {
+        				return null;
+        			}
         		}
+        		return (List<Integer>) list;
     		}
     	}
         return null;
@@ -50,16 +52,43 @@ public class TouchEvent extends RPCStruct {
         if (store.get(KEY_C) instanceof List<?>) {
         	List<?> list = (List<?>)store.get(KEY_C);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TouchCoord) {
-	                return (List<TouchCoord>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TouchCoord> newList = new ArrayList<TouchCoord>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TouchCoord((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TouchCoord> touchCoordList  = new ArrayList<TouchCoord>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TouchCoord and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TouchCoord) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			touchCoordList.add(new TouchCoord((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TouchCoord>) list;
+	        	} else if (flagHash) {
+	        		return touchCoordList;
+	        	}
 	        }
         }
         return null;
