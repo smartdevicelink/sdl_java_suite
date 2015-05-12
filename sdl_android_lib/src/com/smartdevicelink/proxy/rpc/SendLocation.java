@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 
 /**
@@ -47,16 +48,8 @@ public class SendLocation extends RPCRequest{
      * @return The longitude of the location
      */
     public Double getLongitudeDegrees(){
-
-    	Object value = parameters.get(KEY_LON_DEGREES);
-    	
-    	if (value instanceof Integer) {
-    		return ((Integer) value).doubleValue();
-    	} else if (value instanceof Float) {
-    		return ((Float) value).doubleValue();
-    	} else {
-    		return (Double) value;
-    	}
+    	Object value = parameters.get(KEY_LON_DEGREES);    	
+    	return SdlDataTypeConverter.objectToDouble(value);
     }
 
     /**
@@ -76,17 +69,9 @@ public class SendLocation extends RPCRequest{
      * Getter for latitude of the location to send.
      * @return The latitude of the location
      */
-    public Double getLatitudeDegrees(){    
-    	
-    	Object value = parameters.get(KEY_LAT_DEGREES);
-    	
-    	if (value instanceof Integer) {
-    		return ((Integer) value).doubleValue();
-    	} else if (value instanceof Float) {
-    		return ((Float) value).doubleValue();
-    	} else {
-    		return (Double) value;
-    	}
+    public Double getLatitudeDegrees(){    	
+    	Object value = parameters.get(KEY_LAT_DEGREES);    	
+    	return SdlDataTypeConverter.objectToDouble(value);
     }
 
     /**
