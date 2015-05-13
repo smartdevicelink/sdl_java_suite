@@ -32,13 +32,7 @@ public class SoftButton extends RPCStruct {
         if (obj instanceof SoftButtonType) {
             return (SoftButtonType) obj;
         } else if (obj instanceof String) {
-        	SoftButtonType theCode = null;
-            try {
-                theCode = SoftButtonType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
-            }
-            return theCode;
+        	return SoftButtonType.valueForString((String) obj);
         }
         return null;
     }
@@ -105,13 +99,7 @@ public class SoftButton extends RPCStruct {
         if (obj instanceof SystemAction) {
             return (SystemAction) obj;
         } else if (obj instanceof String) {
-        	SystemAction theCode = null;
-            try {
-                theCode = SystemAction.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_ACTION, e);
-            }
-            return theCode;
+        	return SystemAction.valueForString((String) obj);
         }
         return null;
     }

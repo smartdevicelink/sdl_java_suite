@@ -6,7 +6,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
@@ -81,13 +80,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
         if (obj instanceof SamplingRate) {
             return (SamplingRate) obj;
         } else if (obj instanceof String) {
-        	SamplingRate theCode = null;
-            try {
-                theCode = SamplingRate.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SAMPLING_RATE, e);
-            }
-            return theCode;
+        	return SamplingRate.valueForString((String) obj);
         }
         return null;
     }
@@ -113,13 +106,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
         if (obj instanceof BitsPerSample) {
             return (BitsPerSample) obj;
         } else if (obj instanceof String) {
-        	BitsPerSample theCode = null;
-            try {
-                theCode = BitsPerSample.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BITS_PER_SAMPLE, e);
-            }
-            return theCode;
+        	return BitsPerSample.valueForString((String) obj);
         }
         return null;
     }
@@ -145,13 +132,7 @@ public class AudioPassThruCapabilities extends RPCStruct {
         if (obj instanceof AudioType) {
             return (AudioType) obj;
         } else if (obj instanceof String) {
-        	AudioType theCode = null;
-            try {
-                theCode = AudioType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_TYPE, e);
-            }
-            return theCode;
+        	return AudioType.valueForString((String) obj);
         }
         return null;
     }

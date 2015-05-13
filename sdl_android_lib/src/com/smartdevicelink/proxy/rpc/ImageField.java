@@ -25,13 +25,7 @@ public class ImageField extends RPCStruct {
         if (obj instanceof ImageFieldName) {
             return (ImageFieldName) obj;
         } else if (obj instanceof String) {
-        	ImageFieldName theCode = null;
-            try {
-                theCode = ImageFieldName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
-            }
-            return theCode;
+        	return ImageFieldName.valueForString((String) obj);
         }
         return null;
     } 
@@ -55,12 +49,7 @@ public class ImageField extends RPCStruct {
                       List<FileType> newList = new ArrayList<FileType>();
                       for (Object hashObj : list) {
                         String strFormat = (String)hashObj;
-                        FileType theCode = null;
-                          try {
-                            theCode = FileType.valueForString(strFormat);
-                          } catch (Exception e) {
-                            DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
-                        }
+                        FileType theCode = FileType.valueForString(strFormat);
                         if (theCode != null) {
                             newList.add(theCode);
                         }
