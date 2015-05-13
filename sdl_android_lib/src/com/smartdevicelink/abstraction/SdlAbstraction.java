@@ -29,6 +29,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.RPCStreamController;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -104,7 +105,7 @@ public abstract class SdlAbstraction {
 	private StreamRPCListener mStreamRPCListener;
 	private StreamRPCResponseListener mStreamRPCResponseListener;
 	private ServiceEndedListener mServiceEndedListener;
-	private boolean mPutfileStreamSuccess = false;
+	private RPCStreamController mPutfileStreamController;
 
 	private SdlProxyALM mSdlProxy;
 
@@ -153,12 +154,13 @@ public abstract class SdlAbstraction {
 		}
 	}
 
-	public final boolean PutFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException {
+	public final RPCStreamController putFileStream(String sPath, String sdlFileName, Long iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException {
 	    if (mSdlProxy != null)
 	    {
-	    	mPutfileStreamSuccess = mSdlProxy.putFileStream(sPath, sdlFileName, iOffset, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+	    	mPutfileStreamController = mSdlProxy.putFileStream(sPath, sdlFileName, iOffset, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+	    	return mPutfileStreamController;
 	    }
-	    return mPutfileStreamSuccess;
+	    return null;
 	}
 
 	public final void sendRPCRequest(RPCRequest request) throws SdlException {
