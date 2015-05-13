@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class MenuParamsTests extends TestCase{
 

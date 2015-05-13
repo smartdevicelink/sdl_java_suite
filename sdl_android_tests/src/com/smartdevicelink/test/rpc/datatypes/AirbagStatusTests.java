@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class AirbagStatusTests extends TestCase{
 

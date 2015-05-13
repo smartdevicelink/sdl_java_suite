@@ -5,7 +5,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 public class SessionTypeTests extends TestCase {
 	

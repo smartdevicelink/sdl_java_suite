@@ -11,8 +11,8 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
-import com.smartdevicelink.test.utils.JsonUtils;
 
 public class AddCommandResponseTests extends BaseRpcTests{
 

@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class MyKeyTests extends TestCase{
 

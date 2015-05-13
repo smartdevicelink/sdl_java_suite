@@ -13,9 +13,9 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
 
 public class SystemRequestTest extends BaseRpcTests {
 

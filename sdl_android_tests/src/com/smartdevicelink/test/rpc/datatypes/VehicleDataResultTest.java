@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class VehicleDataResultTest extends TestCase {
 

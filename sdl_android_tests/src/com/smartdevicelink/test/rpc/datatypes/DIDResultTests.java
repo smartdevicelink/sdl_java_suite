@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class DIDResultTests extends TestCase{
 

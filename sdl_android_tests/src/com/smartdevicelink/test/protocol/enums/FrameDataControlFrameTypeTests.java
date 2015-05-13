@@ -3,7 +3,7 @@ package com.smartdevicelink.test.protocol.enums;
 import java.util.Vector;
 
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 

@@ -18,9 +18,9 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
 
 public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 

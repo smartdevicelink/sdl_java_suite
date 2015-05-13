@@ -13,8 +13,8 @@ import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 
 public class KeyboardPropertiesTests extends TestCase{
 

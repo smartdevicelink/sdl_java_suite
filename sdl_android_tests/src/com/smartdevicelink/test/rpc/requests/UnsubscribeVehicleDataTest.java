@@ -11,8 +11,8 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
-import com.smartdevicelink.test.utils.JsonUtils;
 
 @SuppressWarnings("deprecation")
 public class UnsubscribeVehicleDataTest extends BaseRpcTests {

@@ -14,8 +14,8 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 
 
 public class ChoiceTests extends TestCase{

@@ -16,8 +16,8 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 
 public class ImageFieldTests extends TestCase{
 

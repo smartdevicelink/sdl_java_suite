@@ -13,9 +13,9 @@ import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
 
 @SuppressWarnings("deprecation")
 public class SubscribeVehicleDataResponseTest extends BaseRpcTests {

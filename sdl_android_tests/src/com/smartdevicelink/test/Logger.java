@@ -1,4 +1,5 @@
-package com.smartdevicelink.test.utils;
+package com.smartdevicelink.test;
+
 
 
 public class Logger{

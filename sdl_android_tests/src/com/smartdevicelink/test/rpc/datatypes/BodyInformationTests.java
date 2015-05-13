@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.BodyInformation;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class BodyInformationTests extends TestCase{
 

@@ -17,8 +17,8 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 
 public class OnPermissionsChangeTests extends BaseRpcTests{
 

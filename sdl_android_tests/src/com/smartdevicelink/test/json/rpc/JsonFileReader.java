@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class JsonFileReader {
 	private static final String PATH = "src/com/smartdevicelink/test/json/rpc/";

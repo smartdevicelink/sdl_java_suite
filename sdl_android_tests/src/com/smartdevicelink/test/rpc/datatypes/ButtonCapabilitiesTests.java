@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class ButtonCapabilitiesTests extends TestCase{
 

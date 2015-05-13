@@ -53,7 +53,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 public class RPCRequestFactoryTests extends TestCase {
 	

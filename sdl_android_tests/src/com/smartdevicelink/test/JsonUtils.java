@@ -1,4 +1,4 @@
-package com.smartdevicelink.test.utils;
+package com.smartdevicelink.test;
 
 import java.util.ArrayList;
 import java.util.List;

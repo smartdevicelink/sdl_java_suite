@@ -11,8 +11,6 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.test.utils.Config;
-import com.smartdevicelink.test.utils.JsonUtils;
 
 public abstract class BaseRpcTests extends TestCase{
 

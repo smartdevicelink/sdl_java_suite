@@ -13,8 +13,8 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 
 public class TouchEventTest extends TestCase {
 

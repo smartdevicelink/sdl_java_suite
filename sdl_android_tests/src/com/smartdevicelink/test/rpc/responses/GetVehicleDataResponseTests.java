@@ -27,10 +27,10 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
+import com.smartdevicelink.test.VehicleDataHelper;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
-import com.smartdevicelink.test.utils.VehicleDataHelper;
 
 @SuppressWarnings("deprecation")
 public class GetVehicleDataResponseTests extends BaseRpcTests{

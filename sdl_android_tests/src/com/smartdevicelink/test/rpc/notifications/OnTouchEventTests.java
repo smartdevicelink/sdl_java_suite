@@ -14,7 +14,7 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 
 public class OnTouchEventTests extends BaseRpcTests{

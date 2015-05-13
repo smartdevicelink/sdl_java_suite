@@ -1,4 +1,4 @@
-package com.smartdevicelink.test.utils;
+package com.smartdevicelink.test;
 
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.BeltStatus;

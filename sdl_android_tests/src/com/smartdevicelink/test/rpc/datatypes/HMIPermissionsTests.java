@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class HMIPermissionsTests extends TestCase{
 

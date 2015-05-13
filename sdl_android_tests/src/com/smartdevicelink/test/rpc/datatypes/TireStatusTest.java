@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 public class TireStatusTest extends TestCase {
 

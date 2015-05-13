@@ -13,8 +13,8 @@ import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen.SdlChoice;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.utils.JsonUtils;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Validator;
 
 public class OnSdlChoiceChosenTests extends BaseRpcTests{
 

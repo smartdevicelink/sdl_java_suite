@@ -5,7 +5,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import com.smartdevicelink.protocol.enums.FrameData;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 public class FrameDataTests extends TestCase {
 	

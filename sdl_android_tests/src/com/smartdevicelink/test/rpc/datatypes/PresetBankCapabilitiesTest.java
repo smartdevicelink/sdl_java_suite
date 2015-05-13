@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.test.utils.JsonUtils;
+import com.smartdevicelink.test.JsonUtils;
 
 public class PresetBankCapabilitiesTest extends TestCase {
 

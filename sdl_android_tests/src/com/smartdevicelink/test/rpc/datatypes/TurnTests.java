@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.test.utils.Validator;
+import com.smartdevicelink.test.Validator;
 
 public class TurnTests extends TestCase {
 	

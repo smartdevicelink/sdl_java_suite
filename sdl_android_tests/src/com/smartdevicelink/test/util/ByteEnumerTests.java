@@ -1,4 +1,4 @@
-package com.smartdevicelink.test.utils;
+package com.smartdevicelink.test.util;
 
 import java.util.Vector;
 
