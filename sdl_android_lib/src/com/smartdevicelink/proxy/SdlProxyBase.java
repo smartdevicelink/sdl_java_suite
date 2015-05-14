@@ -189,6 +189,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<PrerecordedSpeech> _prerecordedSpeech = null;
 	protected List<VrCapabilities> _vrCapabilities = null;
 	protected VehicleType _vehicleType = null;
+	protected List<AudioPassThruCapabilities> _audioPassThruCapabilities = null;
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
@@ -624,8 +625,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			return;
 		}
-		Context myContext = myService.getApplicationContext();
-		if (myContext != null) myContext.sendBroadcast(sendIntent);		
+		try
+		{
+			Context myContext = myService.getApplicationContext();
+			if (myContext != null) myContext.sendBroadcast(sendIntent);
+		}
+		catch(Exception ex)
+		{
+			//If the service or context has become unavailable unexpectedly, catch the exception and move on -- no broadcast log will occur. 
+		}
 	}
 
 	private void writeToFile(Object writeME, String fileName) {
@@ -1047,16 +1055,34 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *  Public method to enable the siphon transport
 	 */
-	public static void enableSiphonDebug() {
-		SiphonServer.enableSiphonServer();
+	public void enableSiphonDebug() {
+
+		short enabledPortNumber = SiphonServer.enableSiphonServer();
+		String sSiphonPortNumber = "Enabled Siphon Port Number: " + enabledPortNumber;
+		Intent sendIntent = createBroadcastIntent();
+		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "enableSiphonDebug");
+		updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
+		sendBroadcastIntent(sendIntent);
 	}
+
+
 	
 	/**
 	 *  Public method to disable the Siphon Trace Server
 	 */
-	public static void disableSiphonDebug() {
-		SiphonServer.disableSiphonServer();
-	}	
+	public void disableSiphonDebug() {
+
+		short disabledPortNumber = SiphonServer.disableSiphonServer();
+		if (disabledPortNumber != -1) {
+		    String sSiphonPortNumber = "Disabled Siphon Port Number: " + disabledPortNumber;
+		    Intent sendIntent = createBroadcastIntent();
+		    updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "disableSiphonDebug");
+		    updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
+		    sendBroadcastIntent(sendIntent);
+		}
+	}
+
+	
 	
 	/**
 	 *  Public method to enable the Debug Tool
@@ -1477,6 +1503,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_sdlMsgVersion = msg.getSdlMsgVersion();
 					_vrCapabilities = msg.getVrCapabilities();
 					_vehicleType = msg.getVehicleType();
+					_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 					_proxyVersionInfo = msg.getProxyVersionInfo();																			
 
 					if (_bAppResumeEnabled)
@@ -1625,6 +1652,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_sdlMsgVersion = msg.getSdlMsgVersion();
 				_vrCapabilities = msg.getVrCapabilities();
 				_vehicleType = msg.getVehicleType();
+				_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 				_proxyVersionInfo = msg.getProxyVersionInfo();
 				
 				if (_bAppResumeEnabled)
@@ -2086,6 +2114,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT)) {
                 // SetDisplayLayout
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
+                
+                // successfully changed display layout - update layout capabilities
+                if(msg.getSuccess()){
+                    _displayCapabilities = msg.getDisplayCapabilities();
+                    _buttonCapabilities = msg.getButtonCapabilities();
+                    _presetBankCapabilities = msg.getPresetBankCapabilities();
+                    _softButtonCapabilities = msg.getSoftButtonCapabilities();
+                }
+                
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {

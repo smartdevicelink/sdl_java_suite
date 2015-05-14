@@ -44,6 +44,10 @@ public enum CompassDirection {
      * @return CompassDirection
      */
     public static CompassDirection valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  *Specifies, which image shall be used, e.g. in Alerts or on Softbuttons provided the display supports it.
@@ -94,13 +93,7 @@ public class Image extends RPCStruct {
         if (obj instanceof ImageType) {
             return (ImageType) obj;
         } else if (obj instanceof String) {
-        	ImageType theCode = null;
-            try {
-                theCode = ImageType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE, e);
-            }
-            return theCode;
+        	return ImageType.valueForString((String) obj);
         }
         return null;
     }

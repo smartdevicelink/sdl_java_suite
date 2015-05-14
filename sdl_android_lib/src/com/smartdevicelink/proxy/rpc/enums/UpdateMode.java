@@ -33,6 +33,10 @@ public enum UpdateMode {
 	 * @return UpdateMode -COUNTUP, COUNTDOWN, PAUSE or RESUME
 	 */
     public static UpdateMode valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

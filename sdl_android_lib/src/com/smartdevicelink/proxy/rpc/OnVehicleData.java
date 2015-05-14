@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 public class OnVehicleData extends RPCNotification {
 	public static final String KEY_SPEED = "speed";
@@ -74,7 +75,8 @@ public class OnVehicleData extends RPCNotification {
     	}
     }
     public Double getSpeed() {
-    	return (Double) parameters.get(KEY_SPEED);
+    	Object object = parameters.get(KEY_SPEED);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setRpm(Integer rpm) {
     	if (rpm != null) {
@@ -94,25 +96,50 @@ public class OnVehicleData extends RPCNotification {
     	}
     }
     public Double getFuelLevel() {
-    	return (Double) parameters.get(KEY_FUEL_LEVEL);
+    	Object object = parameters.get(KEY_FUEL_LEVEL);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
+    @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-    	if (fuelLevel_State != null) {
-    		parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-    	} else {
-    		parameters.remove(KEY_FUEL_LEVEL_STATE);
-    	}
+        if (fuelLevel_State != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
     }
+    @Deprecated
     public ComponentVolumeStatus getFuelLevel_State() {
         Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
         if (obj instanceof ComponentVolumeStatus) {
             return (ComponentVolumeStatus) obj;
         } else if (obj instanceof String) {
-        	ComponentVolumeStatus theCode = null;
+            ComponentVolumeStatus theCode = null;
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+            }
+            return theCode;
+        }
+        return null;
+    }
+    public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
+        if (fuelLevelState != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        } else {
+            parameters.remove(KEY_FUEL_LEVEL_STATE);
+        }
+    }
+    public ComponentVolumeStatus getFuelLevelState() {
+        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
+        if (obj instanceof ComponentVolumeStatus) {
+            return (ComponentVolumeStatus) obj;
+        } else if (obj instanceof String) {
+            ComponentVolumeStatus theCode = null;
+            try {
+                theCode = ComponentVolumeStatus.valueForString((String) obj);
+            } catch (Exception e) {
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
             }
             return theCode;
         }
@@ -126,7 +153,8 @@ public class OnVehicleData extends RPCNotification {
     	}
     }
     public Double getInstantFuelConsumption() {
-    	return (Double) parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+    	Object object = parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setExternalTemperature(Double externalTemperature) {
     	if (externalTemperature != null) {
@@ -136,7 +164,8 @@ public class OnVehicleData extends RPCNotification {
     	}
     }
     public Double getExternalTemperature() {
-    	return (Double) parameters.get(KEY_EXTERNAL_TEMPERATURE);
+    	Object object = parameters.get(KEY_EXTERNAL_TEMPERATURE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setVin(String vin) {
     	if (vin != null) {
@@ -160,13 +189,7 @@ public class OnVehicleData extends RPCNotification {
         if (obj instanceof PRNDL) {
             return (PRNDL) obj;
         } else if (obj instanceof String) {
-        	PRNDL theCode = null;
-            try {
-                theCode = PRNDL.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
-            }
-            return theCode;
+        	return PRNDL.valueForString((String) obj);
         }
         return null;
     }
@@ -276,13 +299,7 @@ public class OnVehicleData extends RPCNotification {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -298,13 +315,7 @@ public class OnVehicleData extends RPCNotification {
         if (obj instanceof WiperStatus) {
             return (WiperStatus) obj;
         } else if (obj instanceof String) {
-        	WiperStatus theCode = null;
-            try {
-                theCode = WiperStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
-            }
-            return theCode;
+        	return WiperStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -337,7 +348,8 @@ public class OnVehicleData extends RPCNotification {
         }
     }
     public Double getEngineTorque() {
-    	return (Double) parameters.get(KEY_ENGINE_TORQUE);
+    	Object object = parameters.get(KEY_ENGINE_TORQUE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setAccPedalPosition(Double accPedalPosition) {
         if (accPedalPosition != null) {
@@ -347,7 +359,8 @@ public class OnVehicleData extends RPCNotification {
         }
     }
     public Double getAccPedalPosition() {
-    	return (Double) parameters.get(KEY_ACC_PEDAL_POSITION);
+    	Object object = parameters.get(KEY_ACC_PEDAL_POSITION);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
         if (steeringWheelAngle != null) {
@@ -357,7 +370,8 @@ public class OnVehicleData extends RPCNotification {
         }
     }
     public Double getSteeringWheelAngle() {
-    	return (Double) parameters.get(KEY_STEERING_WHEEL_ANGLE);
+    	Object object = parameters.get(KEY_STEERING_WHEEL_ANGLE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setECallInfo(ECallInfo eCallInfo) {
         if (eCallInfo != null) {

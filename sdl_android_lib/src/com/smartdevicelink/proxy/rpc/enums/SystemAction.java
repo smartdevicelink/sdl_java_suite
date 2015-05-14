@@ -6,6 +6,10 @@ public enum SystemAction {
 	KEEP_CONTEXT;
 
     public static SystemAction valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

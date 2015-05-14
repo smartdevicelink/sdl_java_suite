@@ -9,6 +9,10 @@ public enum Mod {
 	  proxy;
 
 	public static Mod valueForString(String value) {
-		return valueOf(value);
+		try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
 	}
 };

@@ -5,8 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
-import com.smartdevicelink.util.DebugTool;
-
+import com.smartdevicelink.util.SdlDataTypeConverter;
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
  * <p><b>Parameter List
@@ -193,7 +192,8 @@ public class GPSData extends RPCStruct {
      * @return longitude degrees
      */
     public Double getLongitudeDegrees() {
-    	return (Double) store.get(KEY_LONGITUDE_DEGREES);
+    	Object object = store.get(KEY_LONGITUDE_DEGREES);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -213,7 +213,8 @@ public class GPSData extends RPCStruct {
      * @return latitude degrees
      */
     public Double getLatitudeDegrees() {
-    	return (Double) store.get(KEY_LATITUDE_DEGREES);
+    	Object object = store.get(KEY_LATITUDE_DEGREES);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -347,13 +348,7 @@ public class GPSData extends RPCStruct {
         if (obj instanceof CompassDirection) {
             return (CompassDirection) obj;
         } else if (obj instanceof String) {
-        	CompassDirection theCode = null;
-            try {
-                theCode = CompassDirection.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_COMPASS_DIRECTION, e);
-            }
-            return theCode;
+        	return CompassDirection.valueForString((String) obj);
         }
         return null;
     }
@@ -374,7 +369,8 @@ public class GPSData extends RPCStruct {
      * get  the positional dilution of precision
      */
     public Double getPdop() {
-    	return (Double) store.get(KEY_PDOP);
+    	Object object = store.get(KEY_PDOP);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -394,7 +390,8 @@ public class GPSData extends RPCStruct {
      * @return the horizontal dilution of precision
      */
     public Double getHdop() {
-    	return (Double) store.get(KEY_HDOP);
+    	Object object = store.get(KEY_HDOP);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -414,7 +411,8 @@ public class GPSData extends RPCStruct {
      * @return the vertical dilution of precision
      */
     public Double getVdop() {
-    	return (Double) store.get(KEY_VDOP);
+    	Object object = store.get(KEY_VDOP);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -468,13 +466,7 @@ public class GPSData extends RPCStruct {
         if (obj instanceof Dimension) {
             return (Dimension) obj;
         } else if (obj instanceof String) {
-        	Dimension theCode = null;
-            try {
-                theCode = Dimension.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DIMENSION, e);
-            }
-            return theCode;
+        	return Dimension.valueForString((String) obj);
         }
         return null;
     }
@@ -496,7 +488,8 @@ public class GPSData extends RPCStruct {
      * @return altitude in meters
      */
     public Double getAltitude() {
-    	return (Double) store.get(KEY_ALTITUDE);
+    	Object object = store.get(KEY_ALTITUDE);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -515,7 +508,8 @@ public class GPSData extends RPCStruct {
      * get the heading
      */
     public Double getHeading() {
-    	return (Double) store.get(KEY_HEADING);
+    	Object object = store.get(KEY_HEADING);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
     
     /**
@@ -535,6 +529,7 @@ public class GPSData extends RPCStruct {
      * @return the speed in KPH
      */
     public Double getSpeed() {
-    	return (Double) store.get(KEY_SPEED);
+    	Object object = store.get(KEY_SPEED);
+    	return SdlDataTypeConverter.objectToDouble(object);
     }
 }

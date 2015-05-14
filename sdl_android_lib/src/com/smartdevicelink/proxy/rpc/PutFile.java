@@ -4,9 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -93,13 +91,7 @@ public class PutFile extends RPCRequest {
         if (obj instanceof FileType) {
             return (FileType) obj;
         } else if (obj instanceof String) {
-        	FileType theCode = null;
-            try {
-                theCode = FileType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FILE_TYPE, e);
-            }
-            return theCode;
+        	return FileType.valueForString((String) obj);
         }
         return null;
     }
@@ -136,14 +128,10 @@ public class PutFile extends RPCRequest {
         return (Boolean) parameters.get(KEY_PERSISTENT_FILE);
     }
     public void setFileData(byte[] fileData) {
-        if (fileData != null) {
-            parameters.put(RPCStruct.KEY_BULK_DATA, fileData);
-        } else {
-        	parameters.remove(RPCStruct.KEY_BULK_DATA);
-        }
+        setBulkData(fileData);
     }
     public byte[] getFileData() {
-        return (byte[]) parameters.get(RPCStruct.KEY_BULK_DATA);
+        return getBulkData();
     }
     
     public void setOffset(Integer offset) {

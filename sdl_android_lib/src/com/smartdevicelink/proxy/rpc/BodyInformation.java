@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
-import com.smartdevicelink.util.DebugTool;
 
 public class BodyInformation extends RPCStruct {
     public static final String KEY_PARK_BRAKE_ACTIVE = "parkBrakeActive";
@@ -43,13 +42,7 @@ public class BodyInformation extends RPCStruct {
         if (obj instanceof IgnitionStableStatus) {
             return (IgnitionStableStatus) obj;
         } else if (obj instanceof String) {
-        	IgnitionStableStatus theCode = null;
-            try {
-                theCode = IgnitionStableStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STABLE_STATUS, e);
-            }
-            return theCode;
+        	return IgnitionStableStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -65,13 +58,7 @@ public class BodyInformation extends RPCStruct {
         if (obj instanceof IgnitionStatus) {
             return (IgnitionStatus) obj;
         } else if (obj instanceof String) {
-        	IgnitionStatus theCode = null;
-            try {
-                theCode = IgnitionStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STATUS, e);
-            }
-            return theCode;
+            return IgnitionStatus.valueForString((String) obj);
         }
         return null;
     }

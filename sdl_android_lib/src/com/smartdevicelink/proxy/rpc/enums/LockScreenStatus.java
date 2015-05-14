@@ -6,6 +6,10 @@ public enum LockScreenStatus {
 	OFF;
 	
     public static LockScreenStatus valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

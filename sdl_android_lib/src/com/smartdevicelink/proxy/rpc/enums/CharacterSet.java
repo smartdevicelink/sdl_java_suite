@@ -15,6 +15,10 @@ public enum CharacterSet {
      * @return CharacterSet
      */
     public static CharacterSet valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

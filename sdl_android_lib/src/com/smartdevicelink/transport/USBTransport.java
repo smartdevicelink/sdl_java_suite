@@ -539,7 +539,9 @@ public class USBTransport extends SdlTransport {
                     mReaderThread.start();
 
                     // Initialize the SiphonServer
-                    SiphonServer.init();
+                    if (SiphonServer.getSiphonEnabledStatus()) {
+                    	SiphonServer.init();
+                    }
                 }
 
                 break;

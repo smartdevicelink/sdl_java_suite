@@ -27,6 +27,10 @@ public enum TextFieldName {
     menuTitle;
 
     public static TextFieldName valueForString(String value) {
-        return valueOf(value);
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
     }
 }

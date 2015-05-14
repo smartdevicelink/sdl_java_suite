@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.constants;
 
+@Deprecated
 public class Jingles {
 	public static final String POSITIVE_JINGLE = "POSITIVE_JINGLE";
 
