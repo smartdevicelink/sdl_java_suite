@@ -268,7 +268,7 @@ public class SdlTrace {
 		String s;
 		if (serviceType == SessionType.RPC )
 			s = "rpc";
-		else if (serviceType == SessionType.Bulk_Data)
+		else if (serviceType == SessionType.BULK_DATA)
 			s = "bulk";
 		else
 			s = "Unknown";
