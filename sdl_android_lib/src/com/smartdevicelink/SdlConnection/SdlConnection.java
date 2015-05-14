@@ -1,12 +1,16 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Vector;
 import android.util.Log;
+import android.view.Surface;
+
+import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
@@ -14,7 +18,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
@@ -25,7 +28,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
-	AbstractPacketizer mPacketizer = null;
+	
+	StreamRPCPacketizer mRPCPacketizer = null;
+	StreamPacketizer mVideoPacketizer = null;
+	StreamPacketizer mAudioPacketizer = null;
+	SdlEncoder mSdlEncoder = null;
 
 	// Thread safety locks
 	Object TRANSPORT_REFERENCE_LOCK = new Object();
@@ -33,6 +40,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	
 	private Object SESSION_LOCK = new Object();
 	private Vector<SdlSession> listenerList = new Vector<SdlSession>();
+	
+	private final static int BUFF_READ_SIZE = 1000000;
 	
 	/**
 	 * Constructor.
@@ -205,7 +214,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	@Override
 	public void onProtocolSessionNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+		_connectionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
 	}
 
 	@Override
@@ -229,34 +238,52 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public TransportType getCurrentTransportType() {
 		return _transport.getTransportType();
 	}
-	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) {
-		try {
-            mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
-			mPacketizer.start();
-		} catch (Exception e) {
-            Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
-        }
+	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
+            if (sType.equals(SessionType.NAV))
+            {
+            	mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            	mVideoPacketizer.sdlConnection = this;
+            	mVideoPacketizer.start();
+            }
+            else if (sType.equals(SessionType.PCM))
+            {
+            	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            	mAudioPacketizer.sdlConnection = this;
+            	mAudioPacketizer.start();            	
+            }
 	}
 	
-	public OutputStream startStream(SessionType sType, byte rpcSessionID) {
-		try {
+	public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
 			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
-			mPacketizer.start();
+	        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
+			
+            if (sType.equals(SessionType.NAV))
+            {
+                mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+                mVideoPacketizer.sdlConnection = this;
+                mVideoPacketizer.start();
+            }       
+            else if (sType.equals(SessionType.PCM))
+            {
+            	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            	mAudioPacketizer.sdlConnection = this;
+            	mAudioPacketizer.start();            	
+            }
+            else
+            {
+            	os.close();
+            	is.close();
+            	return null;
+            }
 			return os;
-		} catch (Exception e) {
-            Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
-        }
-		return null;
 	}
 	
 	
 	
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
-			mPacketizer.start();
+			mRPCPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+			mRPCPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
@@ -265,9 +292,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
 			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
-			mPacketizer.start();
+	        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
+	        mRPCPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+	        mRPCPacketizer.start();
 			return os;
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -275,15 +302,119 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		return null;
 	}
 	
-	public void stopStream()
+	public void pauseRPCStream()
 	{
-		if (mPacketizer != null)
+		if (mRPCPacketizer != null)
 		{
-			mPacketizer.stop();
+			mRPCPacketizer.pause();
+		}
+	}
+
+	public void resumeRPCStream()
+	{
+		if (mRPCPacketizer != null)
+		{
+			mRPCPacketizer.resume();
+		}
+	}
+
+	public void stopRPCStream()
+	{
+		if (mRPCPacketizer != null)
+		{
+			mRPCPacketizer.stop();
 		}
 	}
 	
+	public boolean stopAudioStream()
+	{
+		if (mAudioPacketizer != null)
+		{
+			mAudioPacketizer.stop();
+			return true;
+		}
+		return false;
+	}
 	
+	public boolean stopVideoStream()
+	{
+		if (mVideoPacketizer != null)
+		{
+			mVideoPacketizer.stop();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean pauseAudioStream()
+	{
+		if (mAudioPacketizer != null)
+		{
+			mAudioPacketizer.pause();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean pauseVideoStream()
+	{
+		if (mVideoPacketizer != null)
+		{
+			mVideoPacketizer.pause();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean resumeAudioStream()
+	{
+		if (mAudioPacketizer != null)
+		{
+			mAudioPacketizer.resume();
+			return true;
+		}
+		return false;		
+	}
+
+	public boolean resumeVideoStream()
+	{
+		if (mVideoPacketizer != null)
+		{
+			mVideoPacketizer.resume();
+			return true;
+		}
+		return false;
+	}	
+	
+	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+			int height, int bitrate, SessionType sType, byte rpcSessionID) {
+		try {
+			mSdlEncoder = new SdlEncoder(frameRate, iFrameInterval, width,
+					height, bitrate, (PipedOutputStream) startStream(sType, rpcSessionID));
+		} catch (IOException e) {
+			return null;
+		}
+		return mSdlEncoder.prepareEncoder();
+	}
+	
+	public void startEncoder () {
+		if(mSdlEncoder != null) {
+		   mSdlEncoder.startEncoder();
+		}
+	}
+	
+	public void releaseEncoder() {
+		if(mSdlEncoder != null) {
+		   mSdlEncoder.releaseEncoder();
+		}
+	}
+	
+	public void drainEncoder(boolean endOfStream) {
+		if(mSdlEncoder != null) {
+		   mSdlEncoder.drainEncoder(endOfStream);
+		}
+	}
+		
 	@Override
 	public void sendStreamPacket(ProtocolMessage pm) {
 		sendMessage(pm);
@@ -374,9 +505,15 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		public void onProtocolSessionStarted(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
 			for (SdlSession session : listenerList) {
-				if (session.getSessionId() == 0 || sessionType == SessionType.NAV) {
+				if (session.getSessionId() == 0) {
 					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
-					break; //FIXME: need changes on SDL side, as the sessionID is devided by SDL.
+					break;
+				}
+			}
+			if (sessionType.equals(SessionType.NAV) || sessionType.equals(SessionType.PCM)){
+				SdlSession session = findSessionById(sessionID);
+				if (session != null) {
+					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 				}
 			}
 		}
@@ -398,10 +535,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 
 		@Override
-		public void onProtocolSessionNACKed(SessionType sessionType,
+		public void onProtocolSessionStartedNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
-			for (SdlSession session : listenerList) {
-				session.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
 			}			
 		}
 
@@ -409,9 +547,18 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		public void onHeartbeatTimedOut(byte sessionID) {
 			for (SdlSession session : listenerList) {
 				session.onHeartbeatTimedOut(sessionID);
-			}	
+			}
+		}
+
+		@Override
+		public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+			}			
+
 			
-		}				
+		}
 	}
 		
 	public int getRegisterCount() {
@@ -440,5 +587,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
     }
 
-
+	@Override
+	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+			byte sessionID, String correlationID) {
+		_connectionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+		
+	}
 }

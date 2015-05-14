@@ -114,7 +114,6 @@ public class TCPTransport extends SdlTransport {
         boolean bResult = false;
 
         if(currentState == TCPTransportState.CONNECTED) {
-            synchronized (this) {
                 if (mOutputStream != null) {
                     logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
                     try {
@@ -129,7 +128,7 @@ public class TCPTransport extends SdlTransport {
                     logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
                 }
             }
-        } else {
+        else {
             logInfo("TCPTransport: sendBytesOverTransport request rejected. Transport is not connected");
             bResult = false;
         }

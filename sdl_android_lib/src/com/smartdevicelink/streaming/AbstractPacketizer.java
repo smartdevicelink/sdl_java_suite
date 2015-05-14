@@ -9,12 +9,12 @@ import com.smartdevicelink.proxy.RPCRequest;
 abstract public class AbstractPacketizer {
 
 	protected IStreamListener _streamListener = null;
-
+	private final static int BUFF_READ_SIZE = 1000000;
 	protected byte _rpcSessionID = 0;
 	
 	protected SessionType _session = null;
 	protected InputStream is = null;
-	protected byte[] buffer = new byte[1488];
+	protected byte[] buffer = new byte[BUFF_READ_SIZE];
 	protected boolean upts = false;
 	protected RPCRequest _request = null;
 	protected byte _wiproVersion = 1;
@@ -41,6 +41,10 @@ abstract public class AbstractPacketizer {
 	public abstract void start() throws IOException;
 
 	public abstract void stop();
+
+	public abstract void pause();
+
+	public abstract void resume();
 
 	protected static String printBuffer(byte[] buffer, int start,int end) {
 		String str = "";
