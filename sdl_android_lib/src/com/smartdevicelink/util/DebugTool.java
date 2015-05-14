@@ -69,7 +69,7 @@ public class DebugTool {
 		
 		wasWritten = logToSiphon(msg);
 		
-		if (!wasWritten) {
+		if (isEnabled && !wasWritten) {
 			NativeLogTool.logWarning(TAG, msg);
 		}
 	}
