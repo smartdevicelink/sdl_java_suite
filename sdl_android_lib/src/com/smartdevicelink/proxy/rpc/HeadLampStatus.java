@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 public class HeadLampStatus extends RPCStruct {
 	public static final String KEY_AMBIENT_LIGHT_SENSOR_STATUS = "ambientLightSensorStatus";
@@ -31,7 +31,7 @@ public class HeadLampStatus extends RPCStruct {
             try {
                 theCode = AmbientLightStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AMBIENT_LIGHT_SENSOR_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AMBIENT_LIGHT_SENSOR_STATUS, e);
             }
             return theCode;
         }

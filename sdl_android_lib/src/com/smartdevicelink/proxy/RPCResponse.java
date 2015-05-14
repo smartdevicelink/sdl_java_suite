@@ -5,7 +5,7 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * Result sent by SDL after an RPC is processed, consists of four parts: 
@@ -134,7 +134,7 @@ public class RPCResponse extends RPCMessage {
             try {
                 theCode = Result.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RPCResponse.KEY_RESULT_CODE, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RPCResponse.KEY_RESULT_CODE, e);
             }
             return theCode;
         }

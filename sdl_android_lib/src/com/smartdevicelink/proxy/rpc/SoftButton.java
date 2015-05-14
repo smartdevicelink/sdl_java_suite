@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 public class SoftButton extends RPCStruct {
 
@@ -36,7 +36,7 @@ public class SoftButton extends RPCStruct {
             try {
                 theCode = SoftButtonType.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
             }
             return theCode;
         }
@@ -68,7 +68,7 @@ public class SoftButton extends RPCStruct {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
             }
         }
         return null;
@@ -109,7 +109,7 @@ public class SoftButton extends RPCStruct {
             try {
                 theCode = SystemAction.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_ACTION, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_ACTION, e);
             }
             return theCode;
         }

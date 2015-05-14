@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 /**
  * <p>Notifies an application that HMI conditions have changed for the application. This indicates whether the application 
  * can speak phrases, display text, perform interactions, receive button presses and events, stream audio, etc. This 
@@ -95,7 +95,7 @@ public class OnHMIStatus extends RPCNotification {
             try {
                 theCode = HMILevel.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_LEVEL, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_LEVEL, e);
             }
             return theCode;
         }
@@ -125,7 +125,7 @@ public class OnHMIStatus extends RPCNotification {
             try {
                 theCode = AudioStreamingState.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_STREAMING_STATE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_STREAMING_STATE, e);
             }
             return theCode;
         }
@@ -155,7 +155,7 @@ public class OnHMIStatus extends RPCNotification {
             try {
                 theCode = SystemContext.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_CONTEXT, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_CONTEXT, e);
             }
             return theCode;
         }

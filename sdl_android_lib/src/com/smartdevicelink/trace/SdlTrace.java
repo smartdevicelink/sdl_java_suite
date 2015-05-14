@@ -18,8 +18,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.trace.enums.Mod;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.util.BitConverter;
-import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
+import com.smartdevicelink.util.LogTool;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
    1. System defaults
@@ -343,7 +342,7 @@ public class SdlTrace {
 
 	private static void checkB64(String x, byte[] buf, int offset, int byteLength) {
 		if ((x.length() % 4) != 0) {
-			NativeLogTool.logWarning(SdlTrace.SYSTEM_LOG_TAG, "b64 string length (" + x.length() + ") isn't multiple of 4: buf.length=" + buf.length + ", offset=" + offset + ", len=" + byteLength);
+			LogTool.logWarning(SdlTrace.SYSTEM_LOG_TAG, "b64 string length (" + x.length() + ") isn't multiple of 4: buf.length=" + buf.length + ", offset=" + offset + ", len=" + byteLength);
 		} // end-if
 	} // end-method
 
@@ -399,7 +398,7 @@ public class SdlTrace {
 			// Attempt to write formatted message to the Siphon
 			if (false == writeMessageToSiphonServer(msg)) {
 				// If writing to the Siphon fails, write to the native log
-				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
+				LogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
 			}
 			
 			ISTListener localTraceListener = m_appTraceListener;
@@ -408,11 +407,11 @@ public class SdlTrace {
 				try {
 					localTraceListener.logXmlMsg(msg, KeyStr);
 				} catch (Exception ex) {
-					DebugTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
+					LogTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
 				} // end-catch
 			} // end-if
 		} catch (Exception ex) {
-			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG, "Failure writing XML trace message: " + ex.toString());
+			LogTool.logError(SdlTrace.SYSTEM_LOG_TAG, "Failure writing XML trace message: " + ex.toString());
 		}
 	} // end-method
 	

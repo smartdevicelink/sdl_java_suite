@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
 public class OnVehicleData extends RPCNotification {
@@ -61,7 +61,7 @@ public class OnVehicleData extends RPCNotification {
             try {
                 theCode = new GPSData((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
             }
             return theCode;
         }
@@ -117,7 +117,7 @@ public class OnVehicleData extends RPCNotification {
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
             }
             return theCode;
         }
@@ -139,7 +139,7 @@ public class OnVehicleData extends RPCNotification {
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
             }
             return theCode;
         }
@@ -193,7 +193,7 @@ public class OnVehicleData extends RPCNotification {
             try {
                 theCode = PRNDL.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
             }
             return theCode;
         }
@@ -215,7 +215,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new TireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
             }
         }
         return null;
@@ -246,7 +246,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new BeltStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
             }
         }
         return null;
@@ -267,7 +267,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new BodyInformation((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
             }
         }
         return null;
@@ -288,7 +288,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new DeviceStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
             }
         }
         return null;
@@ -309,7 +309,7 @@ public class OnVehicleData extends RPCNotification {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
             }
             return theCode;
         }
@@ -331,7 +331,7 @@ public class OnVehicleData extends RPCNotification {
             try {
                 theCode = WiperStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
             }
             return theCode;
         }
@@ -353,7 +353,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new HeadLampStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
             }
         }
         return null;
@@ -407,7 +407,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new ECallInfo((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
             }
         }
         return null;
@@ -428,7 +428,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new AirbagStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
             }
         }
         return null;
@@ -449,7 +449,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new EmergencyEvent((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
             }
         }
         return null;
@@ -470,7 +470,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new ClusterModeStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
             }
         }
         return null;
@@ -491,7 +491,7 @@ public class OnVehicleData extends RPCNotification {
         	try {
         		return new MyKey((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
             }
         }
         return null;

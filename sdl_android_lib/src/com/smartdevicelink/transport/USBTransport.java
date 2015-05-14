@@ -17,7 +17,7 @@ import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.SdlTransport;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.TransportType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -311,7 +311,7 @@ public class USBTransport extends SdlTransport {
      */
     //@Override
     public void stopReading() {
-        DebugTool.logInfo("USBTransport: stop reading requested, doing nothing");
+        LogTool.logInfo("USBTransport: stop reading requested, doing nothing");
         // TODO - put back stopUSBReading(); @see <a href="https://adc.luxoft.com/jira/browse/SmartDeviceLink-3450">SmartDeviceLink-3450</a>
     }
 
@@ -562,7 +562,7 @@ public class USBTransport extends SdlTransport {
      * @param tr throwable to log
      */
     private void logE(String s, Throwable tr) {
-        DebugTool.logError(s, tr);
+        LogTool.logError(s, tr);
     }
 
     /**
@@ -571,7 +571,7 @@ public class USBTransport extends SdlTransport {
      * @param s string to log
      */
     private void logW(String s) {
-        DebugTool.logWarning(s);
+        LogTool.logWarning(s);
     }
 
     /**
@@ -595,7 +595,7 @@ public class USBTransport extends SdlTransport {
      * @param s string to log
      */
     private void logI(String s) {
-        DebugTool.logInfo(s);
+        LogTool.logInfo(s);
     }
 
     /**
@@ -604,8 +604,8 @@ public class USBTransport extends SdlTransport {
      * @param s string to log
      */
     private void logD(String s) {
-        // DebugTool doesn't support DEBUG level, so we use INFO instead
-        DebugTool.logInfo(DEBUG_PREFIX + s);
+        // LogTool doesn't support DEBUG level, so we use INFO instead
+        LogTool.logInfo(DEBUG_PREFIX + s);
     }
 
     /**
@@ -789,15 +789,15 @@ public class USBTransport extends SdlTransport {
         // Log functions
 
         private void logD(String s) {
-            DebugTool.logInfo(DEBUG_PREFIX + s);
+            LogTool.logInfo(DEBUG_PREFIX + s);
         }
 
         private void logI(String s) {
-            DebugTool.logInfo(s);
+            LogTool.logInfo(s);
         }
 
         private void logW(String s) {
-            DebugTool.logWarning(s);
+            LogTool.logWarning(s);
         }
 
         private void logW(String s, Throwable tr) {
@@ -810,7 +810,7 @@ public class USBTransport extends SdlTransport {
         }
 
         private void logE(String s, Throwable tr) {
-            DebugTool.logError(s, tr);
+            LogTool.logError(s, tr);
         }
     }
 

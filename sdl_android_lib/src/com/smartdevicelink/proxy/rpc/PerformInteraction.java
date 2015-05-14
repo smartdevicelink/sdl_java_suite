@@ -8,7 +8,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 /**
  * Performs an application-initiated interaction in which the user can select a
  * {@linkplain Choice} from among the specified Choice Sets. For instance, an
@@ -137,7 +137,7 @@ public class PerformInteraction extends RPCRequest {
             try {
                 theCode = InteractionMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_MODE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_MODE, e);
             }
             return theCode;
         }
@@ -383,7 +383,7 @@ public class PerformInteraction extends RPCRequest {
             try {
                 theCode = LayoutMode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_LAYOUT, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_LAYOUT, e);
             }
             return theCode;
         }

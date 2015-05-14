@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 import java.util.Hashtable;
 
@@ -29,7 +29,7 @@ public class OnKeyboardInput extends RPCNotification {
             try {
                 theCode = KeyboardEvent.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EVENT, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EVENT, e);
             }
             return theCode;
         }

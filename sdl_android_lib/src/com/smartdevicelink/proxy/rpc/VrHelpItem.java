@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 public class VrHelpItem extends RPCStruct {
 	public static final String KEY_POSITION = "position";
@@ -40,7 +40,7 @@ public class VrHelpItem extends RPCStruct {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
             }
         }
         return null;

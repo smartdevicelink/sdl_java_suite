@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * Tire pressure status of a single tire.
@@ -68,7 +68,7 @@ public class SingleTireStatus extends RPCStruct {
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATUS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATUS, e);
             }
             return theCode;
         }

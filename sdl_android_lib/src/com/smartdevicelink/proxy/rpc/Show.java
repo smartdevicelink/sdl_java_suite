@@ -7,7 +7,7 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * Updates the application's display text area, regardless of whether or not
@@ -221,7 +221,7 @@ public class Show extends RPCRequest {
             try {
                 theCode = TextAlignment.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALIGNMENT, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALIGNMENT, e);
             }
             return theCode;
         }
@@ -379,7 +379,7 @@ public class Show extends RPCRequest {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GRAPHIC, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GRAPHIC, e);
             }
         }
         return null;
@@ -404,7 +404,7 @@ public class Show extends RPCRequest {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_GRAPHIC, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_GRAPHIC, e);
             }
         }
         return null;

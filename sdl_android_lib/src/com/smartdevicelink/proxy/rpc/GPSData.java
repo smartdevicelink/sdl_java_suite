@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
 /**
@@ -354,7 +354,7 @@ public class GPSData extends RPCStruct {
             try {
                 theCode = CompassDirection.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_COMPASS_DIRECTION, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_COMPASS_DIRECTION, e);
             }
             return theCode;
         }
@@ -478,7 +478,7 @@ public class GPSData extends RPCStruct {
             try {
                 theCode = Dimension.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DIMENSION, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DIMENSION, e);
             }
             return theCode;
         }

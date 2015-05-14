@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * Specifies what is to be spoken. This can be simply a text phrase, which SDL will speak according to its own rules.
@@ -83,7 +83,7 @@ public class TTSChunk extends RPCStruct {
             try {
                 theCode = SpeechCapabilities.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
             }
             return theCode;
         }

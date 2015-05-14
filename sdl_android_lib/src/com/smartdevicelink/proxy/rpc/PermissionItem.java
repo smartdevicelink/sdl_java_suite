@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 public class PermissionItem extends RPCStruct {
 	public static final String KEY_RPC_NAME = "rpcName";
@@ -33,7 +33,7 @@ public class PermissionItem extends RPCStruct {
         	try {
         		return new HMIPermissions((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_PERMISSIONS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_PERMISSIONS, e);
             }
         }
         return null;
@@ -54,7 +54,7 @@ public class PermissionItem extends RPCStruct {
         	try {
         		return new ParameterPermissions((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PARAMETER_PERMISSIONS, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PARAMETER_PERMISSIONS, e);
             }
         }
         return null;

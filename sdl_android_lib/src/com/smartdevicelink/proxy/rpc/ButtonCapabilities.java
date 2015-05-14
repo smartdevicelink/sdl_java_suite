@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * Provides information about the capabilities of a SDL HMI button.
@@ -73,7 +73,7 @@ public class ButtonCapabilities extends RPCStruct {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
             }
             return theCode;
         }

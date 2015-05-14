@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * Provides information to what language the Sdl HMI language was changed
@@ -97,7 +97,7 @@ public class OnLanguageChange extends RPCNotification {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
             }
             return theCode;
         }
@@ -127,7 +127,7 @@ public class OnLanguageChange extends RPCNotification {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
             }
             return theCode;
         }

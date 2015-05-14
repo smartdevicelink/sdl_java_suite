@@ -8,7 +8,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -371,7 +371,7 @@ public class RegisterAppInterface extends RPCRequest {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE_DESIRED, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE_DESIRED, e);
             }
             return theCode;
         }
@@ -412,7 +412,7 @@ public class RegisterAppInterface extends RPCRequest {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE_DESIRED, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE_DESIRED, e);
             }
             return theCode;
         }
@@ -460,7 +460,7 @@ public class RegisterAppInterface extends RPCRequest {
 	                    try {
 	                        toAdd = AppHMIType.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);	                    }
+	                    	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }

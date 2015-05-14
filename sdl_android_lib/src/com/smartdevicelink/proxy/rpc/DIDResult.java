@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 public class DIDResult extends RPCStruct {
 	public static final String KEY_RESULT_CODE = "resultCode";
@@ -31,7 +31,7 @@ public class DIDResult extends RPCStruct {
             try {
                 theCode = VehicleDataResultCode.valueForString((String) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESULT_CODE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESULT_CODE, e);
             }
             return theCode;
         }

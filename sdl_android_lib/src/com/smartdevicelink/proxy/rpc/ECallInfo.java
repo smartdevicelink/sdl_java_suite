@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 public class ECallInfo extends RPCStruct {
     public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
@@ -33,7 +33,7 @@ public class ECallInfo extends RPCStruct {
             try {
                 theCode = VehicleDataNotificationStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_NOTIFICATION_STATUS, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_NOTIFICATION_STATUS, e);
             }
             return theCode;
         }
@@ -55,7 +55,7 @@ public class ECallInfo extends RPCStruct {
             try {
                 theCode = VehicleDataNotificationStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUX_E_CALL_NOTIFICATION_STATUS, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUX_E_CALL_NOTIFICATION_STATUS, e);
             }
             return theCode;
         }
@@ -77,7 +77,7 @@ public class ECallInfo extends RPCStruct {
             try {
                 theCode = ECallConfirmationStatus.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_CONFIRMATION_STATUS, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_CONFIRMATION_STATUS, e);
             }
             return theCode;
         }

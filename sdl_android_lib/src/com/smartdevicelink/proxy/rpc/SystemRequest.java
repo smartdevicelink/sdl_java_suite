@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -68,7 +68,7 @@ public class SystemRequest extends RPCRequest {
             try {
                 theCode = RequestType.valueForString((String) obj);
             } catch (Exception e) {
-                DebugTool.logError(
+                LogTool.logError(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_REQUEST_TYPE, e);
             }

@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.LogTool;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
@@ -163,7 +163,7 @@ public class Choice extends RPCStruct {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
+            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
             }
         }
         return null;
@@ -212,7 +212,7 @@ public class Choice extends RPCStruct {
             try {
                 return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_IMAGE, e);
+                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_IMAGE, e);
             }
         }
         return null;
