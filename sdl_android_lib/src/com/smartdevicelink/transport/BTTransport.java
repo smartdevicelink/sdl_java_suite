@@ -11,9 +11,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.os.Build.VERSION;
+import android.util.Log;
 
+import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.util.DebugTool;
@@ -30,7 +33,6 @@ public class BTTransport extends SdlTransport {
 	
 	private BluetoothAdapter _adapter = null;
 	private BluetoothSocket _activeSocket = null;
-	private InputStream _input = null;
 	private UUID _listeningServiceUUID = SDL_V4_MOBILE_APPLICATION_SVC_CLASS;
 	private BluetoothAdapterMonitor _bluetoothAdapterMonitor = null;
 	private TransportReaderThread _transportReader = null;
@@ -133,7 +135,6 @@ public class BTTransport extends SdlTransport {
 	
 	
 	public void openConnection () throws SdlException {    	
-		
 		if (_serverSocket != null) {
 			return;
 		}		
@@ -270,14 +271,7 @@ public class BTTransport extends SdlTransport {
 			DebugTool.logError("Failed to close activeSocket", e);
 		} // end-catch
 		
-		try {
-			if (_input != null) {
-				_input.close();
-				_input = null;
-			}
-		} catch (Exception e) {
-			DebugTool.logError("Failed to close input stream", e);
-		} // end-catch
+
 		
 		try {
 			if (_output != null) {
@@ -321,17 +315,27 @@ public class BTTransport extends SdlTransport {
 	
 	
 	private class TransportReaderThread extends Thread {
-		
-		byte[] buf = new byte[4096];
+	    final int READ_BUFFER_SIZE = 4096;
+		byte[] buf = new byte[READ_BUFFER_SIZE];
 		private Boolean isHalted = false;
-		
+	    SdlPsm psm;
+        int bytes = 0;
+        byte byteRead = -1;
+        boolean stateProgress = false;
+        
+    	private InputStream _input = null;
+
+        
+	    public TransportReaderThread(){
+	    	psm = new SdlPsm();
+	    }
 		public void halt() {
 			isHalted = true;
 		}
 		
 		private void acceptConnection() {
 			SdlTrace.logTransportEvent("BTTransport: Waiting for incoming RFCOMM connect", "", InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
-			
+
 			try {
 				// Blocks thread until connection established.
 				_activeSocket = _serverSocket.accept();
@@ -352,10 +356,9 @@ public class BTTransport extends SdlTransport {
 				handleTransportConnected();
 				
 			} catch (Exception e) {
-				
 				if (!isHalted) {					
 					// Only call disconnect if the thread has not been halted
-					
+					clearInputStream();
 					// Check to see if Bluetooth was disabled
 					if (_adapter != null && !_adapter.isEnabled()) {
 						disconnect("Bluetooth Adapater has been disabled.", new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", e, SdlExceptionCause.BLUETOOTH_DISABLED));
@@ -364,6 +367,7 @@ public class BTTransport extends SdlTransport {
 					}
 				} 
 			}  finally {
+					
 					if (!bKeepSocketActive && _serverSocket != null && !isHalted && (VERSION.SDK_INT > 0x00000010 /*VERSION_CODES.JELLY_BEAN*/) ) {
 						try {
 							_serverSocket.close();
@@ -377,13 +381,12 @@ public class BTTransport extends SdlTransport {
 		
 		private void readFromTransport() {
 			try {
-				int bytesRead = -1;
 				try {
-					bytesRead = _input.read(buf);
+					byteRead = (byte)_input.read();
 				} catch (Exception e) {
 					if (!isHalted) {
 						// Only call disconnect if the thread has not been halted
-						
+						clearInputStream();
 						// Check to see if Bluetooth was disabled
 						if (_adapter != null && !_adapter.isEnabled()) {
 							disconnect("Bluetooth Adapater has been disabled.", new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", e, SdlExceptionCause.BLUETOOTH_DISABLED));
@@ -394,8 +397,26 @@ public class BTTransport extends SdlTransport {
 					return;
 				} // end-catch
 				
-				if (bytesRead != -1) {
-					handleReceivedBytes(buf, bytesRead);
+				if (byteRead != -1) {
+               	 	stateProgress = psm.handleByte(byteRead); 
+               	 	if(stateProgress){ //We are trying to weed through the bad packet info until we get something
+               	 		buf[bytes]=byteRead;
+               	 		bytes++;
+               	 	}
+               	 	else if(!stateProgress){
+                 		//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+               	 		psm.reset();
+                 		bytes=0;
+                 		buf = new byte[READ_BUFFER_SIZE];
+               	 	}
+               	 	if(psm.getState() == SdlPsm.FINISHED_STATE){
+               	 		//Log.d(TAG, "Packet formed, sending off");
+               	 		handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+               	 		//We put a trace statement in the message read so we can avoid all the extra bytes
+               	 		psm.reset();
+               	 		bytes=0;
+               	 		buf = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
+               	 	}
 				} else {
 					// When bytesRead == -1, it indicates end of stream
 					if (!isHalted) {
@@ -407,6 +428,7 @@ public class BTTransport extends SdlTransport {
 			} catch (Exception excp) {
 				if (!isHalted) {
 					// Only call disconnect if the thread has not been halted
+					clearInputStream();
 					String errString = "Failure in BTTransport reader thread: " + excp.toString();
 					DebugTool.logError(errString, excp);
 					disconnect(errString, excp);
@@ -415,10 +437,21 @@ public class BTTransport extends SdlTransport {
 			} // end-catch
 		} // end-method
 		
+		private void clearInputStream(){
+			try {
+				if (_input != null) {
+					_input.close();
+					_input = null;
+				}
+			} catch (Exception e) {
+				DebugTool.logError("Failed to close input stream", e);
+			} // end-catch
+		}
+		
 		public void run() {
 			// acceptConnection blocks until the connection has been accepted
 			acceptConnection();
-			
+			psm.reset();
 			while (!isHalted) {
 				readFromTransport();
 			}
@@ -486,6 +519,18 @@ public class BTTransport extends SdlTransport {
 	@Override
 	public String getBroadcastComment() {
 		return sComment;
+	}
+
+	@Override
+	protected void handleTransportDisconnected(String info) {
+		SdlConnection.enableLegacyMode(false, null);
+		super.handleTransportDisconnected(info);
+	}
+
+	@Override
+	protected void handleTransportError(String message, Exception ex) {
+		SdlConnection.enableLegacyMode(false, null);
+		super.handleTransportError(message, ex);
 	}
 	
 } // end-class

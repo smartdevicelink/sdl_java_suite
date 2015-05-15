@@ -1,15 +1,16 @@
 package com.smartdevicelink.transport;
 
-import android.util.Log;
-
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import android.util.Log;
+
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.SdlPacket;
 
 /**
  * General comments:
@@ -288,7 +289,10 @@ public class TCPTransport extends SdlTransport {
      * Internal class that represents separate thread, that does actual work, related to connecting/reading/writing data
      */
     private class TCPTransportThread extends Thread {
-
+    	SdlPsm psm;
+    	public TCPTransportThread(){
+    		psm = new SdlPsm();
+    	}
         /**
          * Represents current thread state - halted or not. This flag is used to change internal behavior depending
          * on current state.
@@ -313,7 +317,7 @@ public class TCPTransport extends SdlTransport {
         private boolean connect() {
             boolean bConnected;
             int remainingRetry = RECONNECT_RETRY_COUNT;
-
+            
             synchronized (TCPTransport.this) {
                 do {
                     try {
@@ -359,7 +363,7 @@ public class TCPTransport extends SdlTransport {
         @Override
         public void run() {
             logInfo("TCPTransport.run: transport thread created. Starting connect stage");
-
+            psm.reset();
             while(!isHalted) {
                 setCurrentState(TCPTransportState.CONNECTING);
                 if(!connect()){
@@ -376,14 +380,15 @@ public class TCPTransport extends SdlTransport {
                     setCurrentState(TCPTransportState.CONNECTED);
                     handleTransportConnected();
                 }
-
+                int bytes = 0;
                 byte[] buffer = new byte[READ_BUFFER_SIZE];
-
+                byte input;
+                boolean stateProgress = false;
                 while (!isHalted) {
                     logInfo("TCPTransport.run: Waiting for data...");
-                    int bytesRead;
                     try {
-                        bytesRead = mInputStream.read(buffer);
+                    	input = (byte) mInputStream.read();
+                        //bytesRead = mInputStream.read(buffer);
                     } catch (IOException e) {
                         internalHandleStreamReadError();
                         break;
@@ -397,17 +402,34 @@ public class TCPTransport extends SdlTransport {
                     }
 
                     logInfo("TCPTransport.run: Got new data");
-                    if (-1 == bytesRead) {
-                        internalHandleTCPDisconnect();
-                        break;
-                    } else if (0 == bytesRead) {
-                        logInfo("TCPTransport.run: Received zero bytes");
-                    } else {
-                        logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
-                        synchronized (TCPTransport.this) {
-                            handleReceivedBytes(buffer, bytesRead);
+                    	synchronized (TCPTransport.this) {
+                        // Send the response of what we received
+                        stateProgress = psm.handleByte(input); 
+                        if(stateProgress){ //We are trying to weed through the bad packet info until we get something
+                        	buffer[bytes]=input;
+                        	bytes++;
                         }
-                    }
+                        else if(!stateProgress){
+                        	
+                        	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                        	psm.reset();
+                        	bytes=0;
+                            buffer = new byte[READ_BUFFER_SIZE];
+                        }
+                        
+                        if(psm.getState() == SdlPsm.FINISHED_STATE)
+                        {
+                        	//Log.d(TAG, "Packet formed, sending off");
+                        	handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                        	//We put a trace statement in the message read so we can avoid all the extra bytes
+                        	psm.reset();
+                        	bytes=0;
+                            buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
+
+                        }
+                        //FIXME logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
+                        
+                        }            
                 }
             }
 
