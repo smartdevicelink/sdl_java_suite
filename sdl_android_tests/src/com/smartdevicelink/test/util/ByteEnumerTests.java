@@ -6,33 +6,90 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.util.ByteEnumer;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.util.ByteEnumer}
+ */
 public class ByteEnumerTests extends TestCase {
 	
-	public void testMethods () {
+	/**
+	 * This is a unit test for the following methods :
+	 * {@link com.smartdevicelink.util.ByteEnumer#value()}
+	 * {@link com.smartdevicelink.util.ByteEnumer#getValue()}
+	 * {@link com.smartdevicelink.util.ByteEnumer#getName()}
+	 * {@link com.smartdevicelink.util.ByteEnumer#equals(ByteEnumer)}
+	 * {@link com.smartdevicelink.util.ByteEnumer#eq(ByteEnumer)}
+	 */
+	public void testStoredValues () {
+		
+		// Test Values
+		byte           testByte   = (byte) 0x01;
+		String         testString = "test";
+		MockByteEnumer testObject = new MockByteEnumer(testByte, null);
+		
+		// Comparison Values
+		MockByteEnumer expectedObject   = new MockByteEnumer(testByte, testString);
+		MockByteEnumer actualObject     = new MockByteEnumer(testByte, testString);		
+		byte           actualByte1      = expectedObject.getValue();
+		byte           actualByte2      = expectedObject.value();
+		String         actualString     = expectedObject.getName();
+		String         actualNullString = testObject.getName();
+		
+		// Valid Tests
+		assertNotNull("Value should not be null.", expectedObject);
+		assertEquals("Values should match.", testByte, actualByte1);
+		assertEquals("Values should match.", testByte, actualByte2);
+		assertEquals("Values should match.", testString, actualString);
+		assertTrue("Value should be true.", actualObject.equals(expectedObject));
+		assertTrue("Value should be true.", actualObject.eq(expectedObject));
+		
+		// Invalid/Null Tests
+		assertNull("Value should be null.", actualNullString);
+	}
 	
-		ExtByteEnumer test = new ExtByteEnumer((byte) 0x01, "test a");
-		assertEquals("Values should match.", (byte) 0x01, test.getValue());
-		assertEquals("Values should match.", (byte) 0x01, test.value());
-		assertEquals("Values should match.", "test a", test.getName());
+	/**
+	 * This is a unit test for the following methods : 
+	 * {@link com.smartdevicelink.util.ByteEnumer#get(Vector, byte)}
+	 * {@link com.smartdevicelink.util.ByteEnumer#get(Vector, String)}
+	 */
+	public void testSearchMethods () {
 		
-		ExtByteEnumer copy = test;
-		assertTrue("Value should be true.", test.equals(copy));
-		assertTrue("Value should be true.", test.eq(copy));
+		// Test Values
+		byte               testByte1       = (byte) 0x01;
+		byte               testByte2       = (byte) 0x02;
+		String             testString1     = "test_1";
+		String             testString2     = "test_2";
+		Vector<ByteEnumer> testList        = new Vector<ByteEnumer>();
+		Vector<String>     testInvalidList = new Vector<String>();
 		
-		Vector<ByteEnumer> list = new Vector<ByteEnumer>();
-		list.add(test);
-		list.add(new ExtByteEnumer((byte) 0x02, "test b"));
+		// Comparison Values
+		MockByteEnumer expectedObject1 = new MockByteEnumer(testByte1, testString1);
+		MockByteEnumer expectedObject2 = new MockByteEnumer(testByte2, testString2);
 		
-		assertNotNull("Value should exist.", ByteEnumer.get(list, (byte) 0x01));
-		assertNotNull("Value should exist.", ByteEnumer.get(list, (byte) 0x02));
-		assertNotNull("Value should exist.", ByteEnumer.get(list, "test a"));
-		assertNotNull("Value should exist.", ByteEnumer.get(list, "test b"));
-		assertNull("Value should not exist.", ByteEnumer.get(list, null));
+		testList.add(expectedObject1);
+		testList.add(expectedObject2);		
+		testInvalidList.add(testString1);
+		testInvalidList.add(testString2);
+		
+		// Valid Tests
+		assertEquals("Values should match.", expectedObject1, ByteEnumer.get(testList, testByte1));
+		assertEquals("Values should match.", expectedObject1, ByteEnumer.get(testList, testString1));
+		assertEquals("Values should match.", expectedObject2, ByteEnumer.get(testList, testByte2));
+		assertEquals("Values should match.", expectedObject2, ByteEnumer.get(testList, testString2));
+		
+		// Invalid/Null Tests
+		assertNull("Value should be null.", ByteEnumer.get(testList, null));
+		assertNull("Value should be null.", ByteEnumer.get(testInvalidList, testByte1));
+		assertNull("Value should be null.", ByteEnumer.get(testInvalidList, testString1));
 	}
 }
 
-class ExtByteEnumer extends ByteEnumer {
-	protected ExtByteEnumer(byte value, String name) {
+/**
+ * This is a mock class for testing the following : 
+ * {@link com.smartdevicelink.util.ByteEnumer}
+ */
+class MockByteEnumer extends ByteEnumer {
+	protected MockByteEnumer(byte value, String name) {
 		super(value, name);
-	}	
+	}
 }
