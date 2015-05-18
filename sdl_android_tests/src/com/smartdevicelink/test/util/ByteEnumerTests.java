@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.util.ByteEnumer;
 
 /**
@@ -36,15 +37,15 @@ public class ByteEnumerTests extends TestCase {
 		String         actualNullString = testObject.getName();
 		
 		// Valid Tests
-		assertNotNull("Value should not be null.", expectedObject);
-		assertEquals("Values should match.", testByte, actualByte1);
-		assertEquals("Values should match.", testByte, actualByte2);
-		assertEquals("Values should match.", testString, actualString);
-		assertTrue("Value should be true.", actualObject.equals(expectedObject));
-		assertTrue("Value should be true.", actualObject.eq(expectedObject));
+		assertNotNull(Test.NOT_NULL, expectedObject);
+		assertEquals(Test.MATCH, testByte, actualByte1);
+		assertEquals(Test.MATCH, testByte, actualByte2);
+		assertEquals(Test.MATCH, testString, actualString);
+		assertTrue(Test.TRUE, actualObject.equals(expectedObject));
+		assertTrue(Test.TRUE, actualObject.eq(expectedObject));
 		
 		// Invalid/Null Tests
-		assertNull("Value should be null.", actualNullString);
+		assertNull(Test.NULL, actualNullString);
 	}
 	
 	/**
@@ -72,15 +73,15 @@ public class ByteEnumerTests extends TestCase {
 		testInvalidList.add(testString2);
 		
 		// Valid Tests
-		assertEquals("Values should match.", expectedObject1, ByteEnumer.get(testList, testByte1));
-		assertEquals("Values should match.", expectedObject1, ByteEnumer.get(testList, testString1));
-		assertEquals("Values should match.", expectedObject2, ByteEnumer.get(testList, testByte2));
-		assertEquals("Values should match.", expectedObject2, ByteEnumer.get(testList, testString2));
+		assertEquals(Test.MATCH, expectedObject1, ByteEnumer.get(testList, testByte1));
+		assertEquals(Test.MATCH, expectedObject1, ByteEnumer.get(testList, testString1));
+		assertEquals(Test.MATCH, expectedObject2, ByteEnumer.get(testList, testByte2));
+		assertEquals(Test.MATCH, expectedObject2, ByteEnumer.get(testList, testString2));
 		
 		// Invalid/Null Tests
-		assertNull("Value should be null.", ByteEnumer.get(testList, null));
-		assertNull("Value should be null.", ByteEnumer.get(testInvalidList, testByte1));
-		assertNull("Value should be null.", ByteEnumer.get(testInvalidList, testString1));
+		assertNull(Test.NULL, ByteEnumer.get(testList, null));
+		assertNull(Test.NULL, ByteEnumer.get(testInvalidList, testByte1));
+		assertNull(Test.NULL, ByteEnumer.get(testInvalidList, testString1));
 	}
 }
 

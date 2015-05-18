@@ -13,7 +13,7 @@ import com.smartdevicelink.streaming.StreamRPCPacketizer;
 
 import junit.framework.TestCase;
 
-public class StreamRPCPacketizerTests extends TestCase {
+public class StreamRpcPacketizerTests extends TestCase {
 	
 	private final String MSG = "Value did not match expected value.";
 	

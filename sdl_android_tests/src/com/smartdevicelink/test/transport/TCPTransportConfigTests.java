@@ -5,7 +5,7 @@ import com.smartdevicelink.transport.TransportType;
 
 import junit.framework.TestCase;
 
-public class TCPTransportConfigTests extends TestCase {
+public class TcpTransportConfigTests extends TestCase {
 	
 	public void testValues () {
 		

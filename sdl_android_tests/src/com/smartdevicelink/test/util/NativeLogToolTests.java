@@ -6,6 +6,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.util.NativeLogTool;
 
 /**
@@ -44,14 +45,14 @@ public class NativeLogToolTests extends TestCase {
 			List<NativeLogTool.LogTarget> actualEnumList = Arrays.asList(NativeLogTool.LogTarget.values());
 			
 			// Valid Tests
-			assertEquals("Values should match.", expectedInfoEnum,    actualInfoEnum);
-			assertEquals("Values should match.", expectedErrorEnum,   actualErrorEnum);
-			assertEquals("Values should match.", expectedWarningEnum, actualWarningEnum);
+			assertEquals(Test.MATCH, expectedInfoEnum,    actualInfoEnum);
+			assertEquals(Test.MATCH, expectedErrorEnum,   actualErrorEnum);
+			assertEquals(Test.MATCH, expectedWarningEnum, actualWarningEnum);
 			assertTrue("Contents should match.", expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests
-			assertNull("Value should be null.", actualInvalidEnum);
-			assertNull("Value should be null.", actualNullEnum);
+			assertNull(Test.NULL, actualInvalidEnum);
+			assertNull(Test.NULL, actualNullEnum);
 		
 		} catch (NullPointerException e) {
 			fail("Could not retrieve value for null string, should return null.");

@@ -1,8 +1,9 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.util.SdlDataTypeConverter;
-
 import junit.framework.TestCase;
+
+import com.smartdevicelink.test.Test;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -33,13 +34,13 @@ public class SdlDataTypeConverterTests extends TestCase {
 		Double actualIntegerValue = SdlDataTypeConverter.objectToDouble(testInteger);
 		
 		// Valid Tests		
-		assertEquals("Values should match.", expectedValue, actualDoubleValue);
-		assertEquals("Values should match.", expectedValue, actualIntegerValue);
+		assertEquals(Test.MATCH, expectedValue, actualDoubleValue);
+		assertEquals(Test.MATCH, expectedValue, actualIntegerValue);
 		
 		// Null Tests
-		assertNull("Value should be null.", actualNullValue);
-		assertNull("Value should be null.", actualLongValue);
-		assertNull("Value should be null.", actualShortValue);
-		assertNull("Value should be null.", actualFloatValue);
+		assertNull(Test.NULL, actualNullValue);
+		assertNull(Test.NULL, actualLongValue);
+		assertNull(Test.NULL, actualShortValue);
+		assertNull(Test.NULL, actualFloatValue);
 	}
 }

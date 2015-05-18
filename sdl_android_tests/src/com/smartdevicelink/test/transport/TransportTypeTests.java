@@ -4,58 +4,60 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.TransportType;
 
 import junit.framework.TestCase;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.transport.TransportType}
+ */
 public class TransportTypeTests extends TestCase {
 	
-	private final String MSG = "Value did not match expected value.";
-	
-	public void testValidEnums () {
+	/**
+	 * This is a unit test for the following enum : 
+	 * {@link com.smartdevicelink.transport.TransportType}
+	 */
+	public void testTransportTypeEnum () {
 		
-		String test = "BLUETOOTH";
-		TransportType enumBluetooth = TransportType.valueForString(test);
-		test = "TCP";
-		TransportType enumTCP = TransportType.valueForString(test);
-		test = "USB";
-		TransportType enumUSB = TransportType.valueForString(test);
+		// Test Values
+		String testTcp       = "TCP";
+		String testUsb       = "USB";
+		String testInvalid   = "INVALID";
+		String testBluetooth = "BLUETOOTH";
 		
-		assertNotNull(MSG, enumBluetooth);
-		assertNotNull(MSG, enumTCP);
-		assertNotNull(MSG, enumUSB);
-	}
-	
-	public void testInvalidEnum () {		
-		String test = "invalid";
 		try {
-			TransportType temp = TransportType.valueForString(test);
-			assertNull(MSG, temp);
-		} catch (IllegalArgumentException e) {
-			fail("Invalid enum throws IllegalArgumentException.");
-		}
-	}
-	
-	public void testNullEnum () {
-		String test = null;
-		try {
-			TransportType temp = TransportType.valueForString(test);
-			assertNull(MSG, temp);
+			// Comparison Values
+			TransportType expectedTcpEnum        = TransportType.TCP;
+			TransportType expectedUsbEnum        = TransportType.USB;
+			TransportType expectedBluetoothEnum  = TransportType.BLUETOOTH;
+			List<TransportType> expectedEnumList = new ArrayList<TransportType>();
+			expectedEnumList.add(TransportType.BLUETOOTH);
+			expectedEnumList.add(TransportType.TCP);
+			expectedEnumList.add(TransportType.USB);
+			
+			TransportType actualNullEnum       = TransportType.valueForString(null);
+			TransportType actualTcpEnum        = TransportType.valueForString(testTcp);
+			TransportType actualUsbEnum        = TransportType.valueForString(testUsb);
+			TransportType actualInvalidEnum    = TransportType.valueForString(testInvalid);
+			TransportType actualBluetoothEnum  = TransportType.valueForString(testBluetooth);
+			List<TransportType> actualEnumList = Arrays.asList(TransportType.values());
+			
+			// Valid Tests
+			assertEquals(Test.MATCH, expectedTcpEnum, actualTcpEnum);
+			assertEquals(Test.MATCH, expectedUsbEnum, actualUsbEnum);
+			assertEquals(Test.MATCH, expectedBluetoothEnum, actualBluetoothEnum);
+			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
+			
+			// Invalid/Null Tests
+			assertNull(Test.NULL, actualInvalidEnum);
+			assertNull(Test.NULL, actualNullEnum);
+		
 		} catch (NullPointerException e) {
-			fail("Invalid enum throws NullPointerException.");
+			fail("Could not retrieve value for null string, should return null.");
+		} catch (IllegalArgumentException e) {
+			fail("Could not retrieve value for invalid string, should return null.");
 		}
-	}
-	
-	public void testListEnum () {
-		List<TransportType> enumValueList = Arrays.asList(TransportType.values());
-		List<TransportType> enumTestList  = new ArrayList<TransportType>();
-		
-		enumTestList.add(TransportType.BLUETOOTH);
-		enumTestList.add(TransportType.TCP);
-		enumTestList.add(TransportType.USB);
-		
-		assertTrue("Enum value list does not match enum class list.",
-				enumValueList.containsAll(enumTestList) &&
-				enumTestList.containsAll(enumValueList));		
 	}
 }

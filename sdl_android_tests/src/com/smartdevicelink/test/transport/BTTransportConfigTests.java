@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.TransportType;
 
-public class BTTransportConfigTests extends TestCase {
+public class BtTransportConfigTests extends TestCase {
 	
 	public void testValues () {
 		
