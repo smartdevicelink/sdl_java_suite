@@ -2,24 +2,42 @@ package com.smartdevicelink.test.transport;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.TransportType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.transport.BtTransportConfig}
+ */
 public class BtTransportConfigTests extends TestCase {
 	
-	public void testValues () {
+	/**
+	 * This is a unit test for the following methods : 
+	 * {@link com.smartdevicelink.transport.BtTransportConfig#getTransportType()}
+	 * {@link com.smartdevicelink.transport.BtTransportConfig#setKeepSocketActive(boolean)}
+	 * {@link com.smartdevicelink.transport.BtTransportConfig#getKeepSocketActive}
+	 */
+	public void testConfigs () {
 		
-		BTTransportConfig test1 = new BTTransportConfig();
-		BTTransportConfig test2 = new BTTransportConfig(false);		
-		assertEquals("Values should match.", TransportType.BLUETOOTH, test1.getTransportType());
-		assertEquals("Values should match.", TransportType.BLUETOOTH, test2.getTransportType());
+		// Test Values
+		boolean testBoolean = true;
+		BTTransportConfig testConfig1 = new BTTransportConfig();
+		BTTransportConfig testConfig2 = new BTTransportConfig(testBoolean);
 		
-		assertTrue("Values should match.", test1.shareConnection());
-		assertFalse("Values should match.", test2.shareConnection());
+		// Comparison Values
+		TransportType expectedTransportType = TransportType.BLUETOOTH;
+		boolean       actualShareConnection = testConfig2.shareConnection();
+		TransportType actualTransportType   = testConfig1.getTransportType();
 		
-		test1.setKeepSocketActive(true);
-		assertTrue("Value should be true.", test1.getKeepSocketActive());
-		test1.setKeepSocketActive(false);
-		assertFalse("Value should be false.", test1.getKeepSocketActive());
+		// Valid Tests
+		assertEquals(Test.MATCH, expectedTransportType, actualTransportType);
+		assertTrue(Test.TRUE, actualShareConnection);
+		
+		
+		testConfig1.setKeepSocketActive(true);
+		assertTrue(Test.TRUE, testConfig1.getKeepSocketActive());
+		testConfig1.setKeepSocketActive(false);
+		assertFalse(Test.FALSE, testConfig2.getKeepSocketActive());
 	}	
 }
