@@ -9,15 +9,18 @@ package com.smartdevicelink.transport;
  *
  */
 public class TransportConstants {
-	public static final String WAKE_UP_BLUETOOTH_SERVICE_INTENT				="livio.bluetooth.startservice";
-	protected static final String REQUEST_BT_CLIENT_CONNECT 				= "com.livio.android.requestBtClientConnect";
+	public static final String WAKE_UP_BLUETOOTH_SERVICE_INTENT				="sdl.bluetooth.startservice";
+	protected static final String REQUEST_BT_CLIENT_CONNECT 				= "com.sdl.android.requestBtClientConnect";
 
-	public static final String UNREGISTER_WITH_ROUTER_ACTION 				= "com.lvio.android.unregister"; 
-	public static final String SEND_PACKET_ACTION 							= "com.livio.android.sendpacket";
-	public static final String SEND__GLOBAL_PACKET_ACTION 					= "com.livio.android.sendglobalpacket";
+	public static final String UNREGISTER_WITH_ROUTER_ACTION 				= "com.sdl.android.unregister"; 
+	public static final String SEND_PACKET_ACTION 							= "com.sdl.android.sendpacket";
+	public static final String SEND__GLOBAL_PACKET_ACTION 					= "com.sdl.android.sendglobalpacket";
 	public static final String START_ROUTER_SERVICE_ACTION_SUFFIX			= ".startservice";
 
-	public static final String 	ALT_TRANSPORT_RECEIVER 						= "com.lvio.android.alttransport";
+	public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
+	public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";
+	
+	public static final String 	ALT_TRANSPORT_RECEIVER 						= "com.sdl.android.alttransport";
 	public static final String 	ALT_TRANSPORT_CONNECTION_STATUS_EXTRA		= "connection_status";
 	public static final int 	ALT_TRANSPORT_DISCONNECTED					= 0;
 	public static final int 	ALT_TRANSPORT_CONNECTED						= 1;
@@ -38,7 +41,6 @@ public class TransportConstants {
 	public static final String CONNECTED_DEVICE_STRING_EXTRA_NAME			= "devicestring";
 
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
-
 	
 	public static final String HARDWARE_DISCONNECTED						= "hardware.dissconect";
 	public static final String HARDWARE_CONNECTED							= "hardware.connected";
@@ -46,7 +48,6 @@ public class TransportConstants {
 	
 	public static final String UNREGISTER_EXTRA 							= "unregister.request";
 	public static final int	UNREGISTER_EXTRA_REASON_PING_TIMEOUT			= 408;
-	public static final int	UNREGISTER_EXTRA_REASON_NEW_FOREGROUND_APP		= 101;
 	public static final int	UNREGISTER_EXTRA_REASON_LOST_CONNECTION			= 499;
 
 	
@@ -56,7 +57,6 @@ public class TransportConstants {
 
 	
 	public static final String REGISTRATION_DENIED_EXTRA_NAME 				= "registrationdenied";
-	public static final char REGISTRATION_DENIED_ANOTHER_APP_HAS_FOCUS 		= 0x00;
 	public static final char REGISTRATION_DENIED_AUTHENTICATION_FAILED 		= 0x01;
 	public static final char REGISTRATION_DENIED_NO_CONNECTION 				= 0x02;
 	public static final char REGISTRATION_DENIED_UNKNOWN 					= 0xFF;

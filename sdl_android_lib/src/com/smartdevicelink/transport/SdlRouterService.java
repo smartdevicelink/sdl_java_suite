@@ -26,10 +26,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -86,10 +89,7 @@ public abstract class SdlRouterService extends Service{
 	private static String altTransportAddress = null;
 
 	private String  connectedDeviceName = "";			//The name of the connected Device
-	private boolean startSequenceComplete = false;
-	private boolean alreadyUpdatedForegroundApp = false;
-	
-	
+	private boolean startSequenceComplete = false;	
 	
 	
 	
@@ -104,54 +104,24 @@ public abstract class SdlRouterService extends Service{
 	{
 		@Override
 		public void onReceive(Context context, Intent intent) 
-		{
-			if(intent.getAction().equals(TransportConstants.REQUEST_BT_CLIENT_CONNECT)
-				&& intent.getBooleanExtra(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
-				&& !connectAsClient){		//We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
-				//Log.d(TAG,"Attempting to connect as bt client");
-				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				connectAsClient = true;
-				if(device==null || !bluetoothConnect(device)){
-					Log.e(TAG, "Unable to connect to bluetooth device");
-					connectAsClient = false;
-				}
-				
-			}
-			//Let's see if they wanted to unregister
-			if(intent.hasExtra(UNREGISTER_EXTRA)){
-				long appId = intent.getLongExtra(UNREGISTER_EXTRA, 0);
-				//Log.i(TAG, appId + " has just been unregistered with SDL Router Service");
-				registeredApps.remove(appId); //Should remove if it exists and nothing happens if it doesn't. Chill as hell.
-				return;
-			}
+		{	
+			//TODO just send back the current address for this service
+			
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
-			String tempSendBackAction =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
-			long appId = intent.getLongExtra(TransportConstants.APP_ID_EXTRA, 0);
-			//Log.d(TAG, "Attempting to registered: " + appId + " at: " +tempSendBackAction );
-			Intent registrationIntent = new Intent();
-			registrationIntent.setAction(tempSendBackAction);
-			RegisteredApp app = new RegisteredApp(appId,tempSendBackAction);
-			registrationIntent = registerApp(app,intent);
-			sendBroadcast(registrationIntent);	
+			String action =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
+			sendBroadcast(prepareRegistrationIntent(action));	
 		}
 	};
-	/**
-	 * This will register the app with the service, it will be the one main point of contact for hardware/app communication
-	 * @param appReceiverName The return address of the intent that was sent
-	 * @param intent The intent we received in the register broadcast receiver
-	 * @return An intent that will tell the registering app that it was successful
-	 */
-	private synchronized Intent registerApp(RegisteredApp app, Intent intent){
+	
+	private Intent prepareRegistrationIntent(String action){
 		Intent registrationIntent = new Intent();
-		registrationIntent.setAction(app.getReplyAddress());
-		//whereToSendPackets = appReceiverName;
-		registeredApps.put(app.getAppId(), app);
-		onAppRegistered(app, intent, registrationIntent);
-		
+		registrationIntent.setAction(action);
+		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, this.getPackageName());
+		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, this.getClass().getName());
 		return registrationIntent;
 	}
 	
-	private void onAppRegistered(RegisteredApp app, Intent receivedIntent, Intent beingSent){
+	private void onAppRegistered(RegisteredApp app){
 		//Log.enableDebug(receivedIntent.getBooleanExtra(LOG_BASIC_DEBUG_BOOLEAN_EXTRA, false));
 		//Log.enableBluetoothTraceLogging(receivedIntent.getBooleanExtra(LOG_TRACE_BT_DEBUG_BOOLEAN_EXTRA, false));
 		//Ok this is where we should do some authenticating...maybe. 
@@ -176,33 +146,9 @@ public abstract class SdlRouterService extends Service{
 
 		}
 
-		beingSent.putExtra(SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME, SEND_PACKET_ACTION);
-		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
-			beingSent.putExtra(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
-		}
-
-		Log.i(TAG, app.getReplyAddress() + " has just been registered with Livio Bluetooth Service");
+		Log.i(TAG, app.getReplyAddress() + " has just been registered with SDL Router Service");
 	}
 	
-	
-	
-	
-	/**Receiver for sending out packets*/
-    BroadcastReceiver outPacketsReceiver = new BroadcastReceiver() 
-	{
-		@Override
-		public void onReceive(Context context, Intent intent) 
-		{
-			if(intent.hasExtra(TransportConstants.BYTES_TO_SEND_EXTRA_NAME)){
-				byte[] packet = intent.getByteArrayExtra(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
-				int offset = intent.getIntExtra(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
-				int count = intent.getIntExtra(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-				
-				send(packet,offset,count);
-			}
-			
-		}
-	};
 	
 	 /**
 	  * this is to make sure the AceeptThread is still running
@@ -335,8 +281,6 @@ public abstract class SdlRouterService extends Service{
 ***********************************************  Broadcast Receivers End  **************************************************************
 ****************************************************************************************************************************************/
 
-	
-		
 		
 /* **************************************************************************************************************************************
 ***********************************************  Life Cycle **************************************************************
@@ -344,7 +288,7 @@ public abstract class SdlRouterService extends Service{
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return null; 
+		return this.mMessenger.getBinder(); 
 	}
 
 	
@@ -397,12 +341,6 @@ public abstract class SdlRouterService extends Service{
 		registerReceiver(mainServiceReceiver,filter);
 		
 		registerReceiver(altTransportReceiver, new IntentFilter(TransportConstants.ALT_TRANSPORT_RECEIVER)); //For reading/writing off alt transport
-
-		IntentFilter sendFilter = new IntentFilter();
-		sendFilter.addAction(SEND_PACKET_ACTION);
-		sendFilter.addAction(TransportConstants.SEND__GLOBAL_PACKET_ACTION);
-		
-		registerReceiver(outPacketsReceiver,sendFilter); //This is only for sending out packets
 		
 		if(!connectAsClient){initBluetoothSerialService();}
 		startSequenceComplete= true;
@@ -417,14 +355,15 @@ public abstract class SdlRouterService extends Service{
 		 if(intent != null ){
 		 if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
 			Log.i(TAG, "Received an intent with request to register service: ");
-			 Intent registerIntent = new Intent(REGISTER_WITH_ROUTER_ACTION);
+			 Intent registerIntent = new Intent(REGISTER_WITH_ROUTER_ACTION); //TODO ok so this has the request with it
 			 registerIntent.putExtras(intent);
 			 if(startSequenceComplete){
 				 sendBroadcast(registerIntent);
 			 }else{
-				 long appId = intent.getLongExtra(TransportConstants.APP_ID_EXTRA, 0);
-				 RegisteredApp app = new RegisteredApp(appId,intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
-				 sendBroadcast(registerApp(app, registerIntent));
+				 //long appId = intent.getLongExtra(TransportConstants.APP_ID_EXTRA, 0);
+				 //RegisteredApp app = new RegisteredApp(appId,intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
+				 sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
+				 //sendBroadcast(registerApp(app, registerIntent));
 			 }
 		 }else if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA)){
 			 Log.d(TAG, "Service started by alt transport");
@@ -462,7 +401,6 @@ public abstract class SdlRouterService extends Service{
 			unregisterReceiver(sdlCustomReceiver);
 			unregisterReceiver(mListenForDisconnect);
 			unregisterReceiver(mainServiceReceiver);
-			unregisterReceiver(outPacketsReceiver);
 			unregisterReceiver(altTransportReceiver);
 		}catch(Exception e){}
 	}
@@ -470,13 +408,6 @@ public abstract class SdlRouterService extends Service{
 	/* **************************************************************************************************************************************
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
-
-	public boolean hasUpdatedForegroundApp(){
-		return alreadyUpdatedForegroundApp;
-	}
-	public void setHasUpdatedForegroundApp(boolean updated){
-		alreadyUpdatedForegroundApp= updated;
-	}
 	
 	public  String getConnectedDeviceName(){ //FIXME we need to implement something better than this, but for now it will work....
 		return connectedDeviceName;
@@ -625,7 +556,6 @@ public abstract class SdlRouterService extends Service{
 	            		switch (msg.arg1) {
 	            		case MultiplexBluetoothTransport.STATE_CONNECTED:
 	            			storeConnectedStatus(true);
-	            			alreadyUpdatedForegroundApp = false;
 	            			onTransportConnected(TransportType.BLUETOOTH); //FIXME actually check
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_CONNECTING:
@@ -711,12 +641,23 @@ public abstract class SdlRouterService extends Service{
 		 */
 		public boolean sendPacketToRegisteredApp(Parcelable packet) {
 			if(registeredApps!=null && (registeredApps.size()>0)){
-	    		Intent sendingPacketToClientIntent = new Intent();
-	    		sendingPacketToClientIntent.putExtra(PACKET_TO_SEND_EXTRA_NAME, packet);//This is the actual packet received
 	    		Long appid = getAppIDForSession(((SdlPacket)packet).getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
-	    			sendingPacketToClientIntent.setAction(registeredApps.get(appid).getReplyAddress());
-	    			sendBroadcast(sendingPacketToClientIntent);
+	    			Messenger mes = registeredApps.get(appid).messenger;
+	    			if(mes==null){
+	    				return false;
+	    			}
+	    			Message message = new Message();
+	    			//TODO put arg1 and 2
+	    			Bundle bundle = new Bundle();
+	    			bundle.putParcelable(PACKET_TO_SEND_EXTRA_NAME, packet);
+	    			message.setData(bundle);
+	    			try {
+						mes.send(message);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+						return false;
+					}	    			
 	    			return true;	//We should have sent our packet, so we can return true now
 	    		}else{	//If we can't find a session for this packet we just drop the packet
 	    			Log.e(TAG, "App Id was NULL!");
@@ -736,7 +677,7 @@ public abstract class SdlRouterService extends Service{
 		 /**
 	     * bluetoothQuerryAndConnect()
 	     * This function looks through the phones currently paired bluetooth devices
-	     * If one of the devices' names contain "fire", "bcsm", or livio it will attempt to connect the RFCOMM
+	     * If one of the devices' names contain "sync", or livio it will attempt to connect the RFCOMM
 	     * And start SDL
 	     * @return a boolean if a connection was attempted
 	     */
@@ -746,9 +687,7 @@ public abstract class SdlRouterService extends Service{
 	        	Log.d(TAG, "Querry Bluetooth paired devices");
 	        	if (pairedBT.size() > 0) {
 	            	for (BluetoothDevice device : pairedBT) {
-	                	//There will be a list of names available soon from the authentication server
-	            		if(device.getName().toLowerCase(Locale.US).contains("bcsm") 
-	            				|| device.getName().toLowerCase(Locale.US).contains("fire")
+	            		if(device.getName().toLowerCase(Locale.US).contains("sync") 
 	            				|| device.getName().toLowerCase(Locale.US).contains("livio")){
 	            			bluetoothConnect(device);
 	            				  return true;
@@ -769,14 +708,13 @@ public abstract class SdlRouterService extends Service{
 				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 			}
 			// We've been given a device - let's connect to it
-			if(!device.getName().equalsIgnoreCase("livio_lvc02a")) {	//Legacy
-				if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){//mSerialService.stop();
+			if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){//mSerialService.stop();
 				mSerialService.connect(device);
-					if(mSerialService.getState() == MultiplexBluetoothTransport.STATE_CONNECTING){
-						return true;
-					}
+				if(mSerialService.getState() == MultiplexBluetoothTransport.STATE_CONNECTING){
+					return true;
 				}
 			}
+
 			Log.d(TAG, "Bluetooth SPP Connect Attempt Completed");
 			return false;
 		}
@@ -797,12 +735,6 @@ public abstract class SdlRouterService extends Service{
 			SharedPreferences prefs = getApplicationContext().getSharedPreferences(getApplicationContext().getPackageName()+SdlBroadcastReceiver.TRANSPORT_GLOBAL_PREFS,
                     Context.MODE_WORLD_READABLE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(SdlBroadcastReceiver.IS_TRANSPORT_CONNECTED, isConnected);
-            editor.commit();
-            //Legacy call for < v5.01
-            prefs = getSharedPreferences(SdlBroadcastReceiver.TRANSPORT_GLOBAL_PREFS,
-                    Context.MODE_WORLD_READABLE);
-            editor = prefs.edit();
             editor.putBoolean(SdlBroadcastReceiver.IS_TRANSPORT_CONNECTED, isConnected);
             editor.commit();
 		}
@@ -968,6 +900,94 @@ public abstract class SdlRouterService extends Service{
 		
 	}
 	
+    /**
+     * Command to the service to register a client, receiving callbacks
+     * from the service.  The Message's replyTo field must be a Messenger of
+     * the client where callbacks should be sent.
+     */
+    static final int ROUTER_REGISTER_CLIENT = 1;
+
+    /**
+     * Command to the service to unregister a client, ot stop receiving callbacks
+     * from the service.  The Message's replyTo field must be a Messenger of
+     * the client as previously given with MSG_REGISTER_CLIENT.
+     */
+    static final int ROUTER_UNREGISTER_CLIENT = 2;
+
+    /**
+     * Command to service to set a new value.  This can be sent to the
+     * service to supply a new value, and will be sent by the service to
+     * any registered clients with the new value.
+     */
+    static final int ROUTER_SEND_PACKET = 3;
+
+    
+    static final int ROUTER_REQUEST_BT_CLIENT_CONNECT = 4;
+    
+	 /**
+     * Handler of incoming messages from clients.
+     */
+    class RouterHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+        	Bundle receivedBundle = msg.getData();
+        	Bundle returnBundle;
+            switch (msg.what) {
+            case ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
+            	if(receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
+        				&& !connectAsClient){		//We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
+        				//Log.d(TAG,"Attempting to connect as bt client");
+        				BluetoothDevice device = receivedBundle.getParcelable(BluetoothDevice.EXTRA_DEVICE);
+        				connectAsClient = true;
+        				if(device==null || !bluetoothConnect(device)){
+        					Log.e(TAG, "Unable to connect to bluetooth device");
+        					connectAsClient = false;
+        				}
+        			}
+            	//We don't break here so we can let the app register as well
+                case ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
+                	if(msg.arg1<0 || msg.replyTo == null){
+                		Log.w(TAG, "Unable to requster app as no id or messenger was included");
+                		break;
+                	}
+                	RegisteredApp app = new RegisteredApp(msg.arg1,msg.replyTo);
+                	registeredApps.put(app.getAppId(), app);
+            		onAppRegistered(app);
+            		//TODO reply to this messanger.
+            		Message message = new Message();
+            		returnBundle = new Bundle();
+          
+            		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+            			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+            		}
+            		message.setData(returnBundle);
+            		app.sendMessage(message);
+
+                	//FIXME
+                	//mClients.add(msg.replyTo);
+                    break;
+                case ROUTER_UNREGISTER_CLIENT:
+                	registeredApps.remove(msg.arg1);//TODO check if this works
+                    break;
+                case ROUTER_SEND_PACKET:
+                	
+                	byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
+    				int offset = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
+    				int count = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+    				
+    				send(packet,offset,count);
+                    break;
+
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    }
+    /**
+     * Target we publish for clients to send messages to IncomingHandler.
+     */
+    final Messenger mMessenger = new Messenger(new RouterHandler());
+	
 	/* ****************************************************************************************************************************************
 	// **********************************************************   TINY CLASSES   ************************************************************
 	//*****************************************************************************************************************************************/
@@ -998,6 +1018,7 @@ public abstract class SdlRouterService extends Service{
 		
 	}
 	
+	
 	/**
 	 * This class helps keep track of all the different sessions established with the head unit
 	 * and to which app they belong to.
@@ -1005,23 +1026,22 @@ public abstract class SdlRouterService extends Service{
 	 *
 	 */
 	class RegisteredApp {
-		//TODO add some sort of proper in foreground, has focus, etc. flag. (if needed)
 		long appId;
 		String replyAddress; //possible package name? Probably a good idea. meh for now
+		Messenger messenger;
 		Vector<Long> sessionIds;
-		
+	
 		/**
 		 * This is a simple class to hold onto a reference of a registered app. This is an immutable class. Deal with it.
 		 * @param appId
-		 * @param replyAddress
+		 * @param messenger
 		 */
-		public RegisteredApp(long appId, String replyAddress){
+		public RegisteredApp(long appId, Messenger messenger){
 			this.appId = appId;
-			this.replyAddress = replyAddress;
+			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
 			this.sessionIds.add((long) -1);
 		}
-
 		public long getAppId() {
 			return appId;
 		}
@@ -1048,7 +1068,6 @@ public abstract class SdlRouterService extends Service{
 		}
 		
 		/**
-		 * This is a convince variable and may not be used or useful in different protocols
 		 * @param sessionId
 		 */
 		public void setSessionId(int position,long sessionId) throws ArrayIndexOutOfBoundsException {
@@ -1059,6 +1078,18 @@ public abstract class SdlRouterService extends Service{
 			this.sessionIds.clear();
 		}
 		
+		public boolean sendMessage(Message message){
+			if(this.messenger == null || message == null){
+				return false;
+			}
+			try {
+				this.messenger.send(message);
+				return true;
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 	}
 	
 	
