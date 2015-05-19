@@ -38,6 +38,6 @@ public class BtTransportConfigTests extends TestCase {
 		testConfig1.setKeepSocketActive(true);
 		assertTrue(Test.TRUE, testConfig1.getKeepSocketActive());
 		testConfig1.setKeepSocketActive(false);
-		assertFalse(Test.FALSE, testConfig2.getKeepSocketActive());
+		assertFalse(Test.FALSE, testConfig1.getKeepSocketActive());
 	}	
 }
