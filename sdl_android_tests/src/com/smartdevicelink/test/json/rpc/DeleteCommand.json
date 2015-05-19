@@ -1,0 +1,13 @@
+{
+  "request":{
+    "name":"DeleteCommand",
+    "correlationID":115,
+    "parameters":{
+    	"cmdID":34
+		}
+  },
+  "response":{
+    "name":"DeleteCommandResponse",
+    "correlationID":116
+  }
+}

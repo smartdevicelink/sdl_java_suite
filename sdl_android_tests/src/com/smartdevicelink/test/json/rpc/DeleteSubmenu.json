@@ -1,0 +1,13 @@
+{
+  "request":{
+    "name":"DeleteSubMenu",
+    "correlationID":121,
+    "parameters":{
+      "menuID":765,
+    }
+  },
+  "response":{
+    "name":"AddCommandResponse",
+    "correlationID":122
+  }
+}
