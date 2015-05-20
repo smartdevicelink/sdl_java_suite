@@ -292,16 +292,15 @@ public abstract class SdlRouterService extends Service{
 	}
 
 	
-	//FIXME this is where we need to handle the logic of where to send the packet
-	private void notifyClient(Intent intent){
-		if(intent==null){
+	//FIXME change to message
+	private void notifyClient(Message message){
+		if(message==null){
 			return;
 		}
 		Log.d(TAG, "Notifying "+ registeredApps.size()+ " clients");
 		//registeredApps;
 		for (RegisteredApp app : registeredApps.values()) {
-			intent.setAction(app.getReplyAddress());
-			sendBroadcast(intent);
+			app.sendMessage(message);
 		}
 	
 	}
@@ -356,7 +355,7 @@ public abstract class SdlRouterService extends Service{
 		 if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
 			Log.i(TAG, "Received an intent with request to register service: ");
 			 Intent registerIntent = new Intent(REGISTER_WITH_ROUTER_ACTION); //TODO ok so this has the request with it
-			 registerIntent.putExtras(intent);
+			 registerIntent.putExtras(intent); //FIXME we should be able to remove this
 			 if(startSequenceComplete){
 				 sendBroadcast(registerIntent);
 			 }else{
@@ -499,18 +498,23 @@ public abstract class SdlRouterService extends Service{
 			return;
 		}
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
-		
-		Intent unregisterIntent = new Intent();
-		unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
-		unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
+
 		if(registeredApps== null || registeredApps.isEmpty()){
 			Log.w(TAG, "No clients to notify. Sending global notification.");
+			Intent unregisterIntent = new Intent();
+			unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
+			unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
 			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX);
 			sendBroadcast(unregisterIntent);
 			return;
 		}
+		Message message = new Message();
+		Bundle bundle = new Bundle();
 		
-		notifyClient(unregisterIntent);
+		bundle.putString(HARDWARE_DISCONNECTED, type.name());
+		bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
+		message.setData(bundle);		
+		notifyClient(message);
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
 			sessionMap.clear();
@@ -915,9 +919,7 @@ public abstract class SdlRouterService extends Service{
     static final int ROUTER_UNREGISTER_CLIENT = 2;
 
     /**
-     * Command to service to set a new value.  This can be sent to the
-     * service to supply a new value, and will be sent by the service to
-     * any registered clients with the new value.
+     * Command to service to send a packet
      */
     static final int ROUTER_SEND_PACKET = 3;
 
@@ -953,18 +955,18 @@ public abstract class SdlRouterService extends Service{
                 	RegisteredApp app = new RegisteredApp(msg.arg1,msg.replyTo);
                 	registeredApps.put(app.getAppId(), app);
             		onAppRegistered(app);
+            		
             		//TODO reply to this messanger.
             		Message message = new Message();
             		returnBundle = new Bundle();
-          
+       
             		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
             			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
             		}
+            		
             		message.setData(returnBundle);
             		app.sendMessage(message);
 
-                	//FIXME
-                	//mClients.add(msg.replyTo);
                     break;
                 case ROUTER_UNREGISTER_CLIENT:
                 	registeredApps.remove(msg.arg1);//TODO check if this works
