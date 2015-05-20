@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.WarningListStatus}
+ */
 public class WarningLightStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "OFF";
 		WarningLightStatus enumOff = WarningLightStatus.valueForString(example);
@@ -26,6 +33,9 @@ public class WarningLightStatusTests extends TestCase {
 		assertNotNull("NOT_USED returned null", enumNotUsed);
 	}
 	
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "OfF";
 		try {
@@ -37,6 +47,9 @@ public class WarningLightStatusTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -48,6 +61,9 @@ public class WarningLightStatusTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of WarningLightStatus.
+	 */
 	public void testListEnum() {
  		List<WarningLightStatus> enumValueList = Arrays.asList(WarningLightStatus.values());
 
@@ -59,6 +75,5 @@ public class WarningLightStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

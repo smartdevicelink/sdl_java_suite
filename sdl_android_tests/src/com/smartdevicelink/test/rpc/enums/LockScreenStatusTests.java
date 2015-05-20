@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.LockScreenStatus}
+ */
 public class LockScreenStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "REQUIRED";
 		LockScreenStatus enumRequired = LockScreenStatus.valueForString(example);
@@ -22,7 +29,10 @@ public class LockScreenStatusTests extends TestCase {
 		assertNotNull("OPTIONAL returned null", enumOptional);
 		assertNotNull("OFF returned null", enumOff);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "ReqUireD";
 		try {
@@ -33,7 +43,10 @@ public class LockScreenStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class LockScreenStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of LockScreenStatus.
+	 */
 	public void testListEnum() {
  		List<LockScreenStatus> enumValueList = Arrays.asList(LockScreenStatus.values());
 
@@ -55,6 +71,5 @@ public class LockScreenStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

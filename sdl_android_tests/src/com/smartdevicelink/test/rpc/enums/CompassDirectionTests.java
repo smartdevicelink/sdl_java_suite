@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.CompassDirection}
+ */
 public class CompassDirectionTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NORTH";
 		CompassDirection enumNorth = CompassDirection.valueForString(example);
@@ -37,7 +44,10 @@ public class CompassDirectionTests extends TestCase {
 		assertNotNull("EAST returned null", enumEast);
 		assertNotNull("NORTHEAST returned null", enumNorthEast);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "noRTh";
 		try {
@@ -48,7 +58,10 @@ public class CompassDirectionTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -59,7 +72,10 @@ public class CompassDirectionTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of CompassDirection.
+	 */
 	public void testListEnum() {
  		List<CompassDirection> enumValueList = Arrays.asList(CompassDirection.values());
 
@@ -75,6 +91,5 @@ public class CompassDirectionTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

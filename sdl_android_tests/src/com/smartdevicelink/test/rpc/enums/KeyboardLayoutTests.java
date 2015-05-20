@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.KeyboardLayout}
+ */
 public class KeyboardLayoutTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "QWERTY";
 		KeyboardLayout enumQwerty = KeyboardLayout.valueForString(example);
@@ -22,7 +29,10 @@ public class KeyboardLayoutTests extends TestCase {
 		assertNotNull("QWERTZ returned null", enumQwertz);
 		assertNotNull("AZERTY returned null", enumAzerty);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "qWerTY";
 		try {
@@ -33,7 +43,10 @@ public class KeyboardLayoutTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class KeyboardLayoutTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of KeyboardLayout.
+	 */
 	public void testListEnum() {
  		List<KeyboardLayout> enumValueList = Arrays.asList(KeyboardLayout.values());
 
@@ -55,6 +71,5 @@ public class KeyboardLayoutTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.FileType}
+ */
 public class FileTypeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "GRAPHIC_BMP";
 		FileType enumGraphicBmp = FileType.valueForString(example);
@@ -37,7 +44,10 @@ public class FileTypeTests extends TestCase {
 		assertNotNull("BINARY returned null", enumBinary);
 		assertNotNull("JSON returned null", enumJson);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "uSer_ExiT";
 		try {
@@ -48,7 +58,10 @@ public class FileTypeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -60,6 +73,9 @@ public class FileTypeTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of FileType.
+	 */
 	public void testListEnum() {
  		List<FileType> enumValueList = Arrays.asList(FileType.values());
 
@@ -75,6 +91,5 @@ public class FileTypeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

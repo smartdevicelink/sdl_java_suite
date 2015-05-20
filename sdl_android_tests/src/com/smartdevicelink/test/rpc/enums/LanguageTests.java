@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.Language}
+ */
 public class LanguageTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "EN-US";
 		Language enumEnUs = Language.valueForString(example);
@@ -86,7 +93,9 @@ public class LanguageTests extends TestCase {
 		assertNotNull("NO-NO returned null", enumNoNo);
 	}
 
-	//use this test if it's supposed to throw an exception
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "eN-Us";
 		try {
@@ -97,8 +106,10 @@ public class LanguageTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
-	//use this test if it's supposed to throw an exception
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -109,7 +120,10 @@ public class LanguageTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies the possible enum values of Language.
+	 */
 	public void testListEnum() {
  		List<Language> enumValueList = Arrays.asList(Language.values());
 
@@ -142,6 +156,5 @@ public class LanguageTests extends TestCase {
 		
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

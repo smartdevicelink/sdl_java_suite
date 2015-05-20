@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.WiperStatis}
+ */
 public class WiperStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "OFF";
 		WiperStatus enumOff = WiperStatus.valueForString(example);
@@ -59,6 +66,9 @@ public class WiperStatusTests extends TestCase {
 		assertNotNull("NO_DATA_EXISTS returned null", enumNoDataExists);
 	}
 	
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "OFf";
 		try {
@@ -70,6 +80,9 @@ public class WiperStatusTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -81,6 +94,9 @@ public class WiperStatusTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of WiperStatus.
+	 */
 	public void testListEnum() {
  		List<WiperStatus> enumValueList = Arrays.asList(WiperStatus.values());
 
@@ -103,6 +119,5 @@ public class WiperStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

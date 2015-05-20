@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.DisplayType}
+ */
 public class DisplayTypeTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "CID";
 		DisplayType enumCid = DisplayType.valueForString(example);
@@ -43,9 +50,10 @@ public class DisplayTypeTests extends TestCase {
 		assertNotNull("MFD5 returned null", enumMfd5);
 		assertNotNull("GEN3_8-INCH returned null", enumGen3_8Inch);
 	}
-	
 
-	//use this test if it's supposed to throw an exception
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "cId";
 		try {
@@ -56,8 +64,10 @@ public class DisplayTypeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
-	//use this test if it's supposed to throw an exception
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -69,6 +79,9 @@ public class DisplayTypeTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies the possible enum values of DisplayType.
+	 */
 	public void testListEnum() {
  		List<DisplayType> enumValueList = Arrays.asList(DisplayType.values());
 
@@ -86,6 +99,5 @@ public class DisplayTypeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

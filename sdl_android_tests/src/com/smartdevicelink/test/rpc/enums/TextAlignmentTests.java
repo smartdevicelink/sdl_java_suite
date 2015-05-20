@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.TextAlignment}
+ */
 public class TextAlignmentTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "LEFT_ALIGNED";
 		TextAlignment enumLeftAligned = TextAlignment.valueForString(example);
@@ -22,7 +29,10 @@ public class TextAlignmentTests extends TestCase {
 		assertNotNull("RIGHT_ALIGNED returned null", enumRightAligned);
 		assertNotNull("CENTERED returned null", enumCentered);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "leFT_AliGned";
 		try {
@@ -33,7 +43,10 @@ public class TextAlignmentTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class TextAlignmentTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of TextAlignment.
+	 */
 	public void testListEnum() {
  		List<TextAlignment> enumValueList = Arrays.asList(TextAlignment.values());
 
@@ -55,6 +71,5 @@ public class TextAlignmentTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ComponentVolumeStatus}
+ */
 public class ComponentVolumeStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "UNKNOWN";
 		ComponentVolumeStatus enumUnknown = ComponentVolumeStatus.valueForString(example);
@@ -30,9 +37,11 @@ public class ComponentVolumeStatusTests extends TestCase {
 		assertNotNull("FAULT returned null", enumFault);
 		assertNotNull("ALERT returned null", enumAlert);
 		assertNotNull("NOT_SUPPORTED returned null", enumNotSupported);
-
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "unKNowN";
 		try {
@@ -43,7 +52,10 @@ public class ComponentVolumeStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -54,7 +66,10 @@ public class ComponentVolumeStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of ComponentVolumeStatus.
+	 */
 	public void testListEnum() {
  		List<ComponentVolumeStatus> enumValueList = Arrays.asList(ComponentVolumeStatus.values());
 
@@ -68,6 +83,5 @@ public class ComponentVolumeStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

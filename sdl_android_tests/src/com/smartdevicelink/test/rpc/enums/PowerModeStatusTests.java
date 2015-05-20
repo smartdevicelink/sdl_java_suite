@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.PowerModeStatus}
+ */
 public class PowerModeStatusTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "KEY_OUT";
 		PowerModeStatus enumKeyOut = PowerModeStatus.valueForString(example);
@@ -40,7 +47,10 @@ public class PowerModeStatusTests extends TestCase {
 		assertNotNull("RUNNING_2 returned null", enumRunning2);
 		assertNotNull("CRANK_3 returned null", enumCrank3);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "key_Out";
 		try {
@@ -51,7 +61,10 @@ public class PowerModeStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -62,7 +75,10 @@ public class PowerModeStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of PowerModeStatus.
+	 */
 	public void testListEnum() {
  		List<PowerModeStatus> enumValueList = Arrays.asList(PowerModeStatus.values());
 
@@ -79,6 +95,5 @@ public class PowerModeStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

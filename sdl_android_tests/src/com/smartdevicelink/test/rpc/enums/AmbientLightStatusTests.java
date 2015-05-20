@@ -8,9 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.AmbientLightStatus}
+ */
 public class AmbientLightStatusTests extends TestCase {
 
-	// Verifies that the enum values are not null upon valid assignment.
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		
 		String example = "DAY";
@@ -40,7 +46,9 @@ public class AmbientLightStatusTests extends TestCase {
 		assertNotNull("TWILIGHT_4 returned null", enumTwilight4);		
 	}	
 	
-	// Verifies that an invalid assignment is null.
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "niGHt";
 		try {
@@ -52,7 +60,9 @@ public class AmbientLightStatusTests extends TestCase {
 		}
 	}
 	
-	// Verifies that a null assignment is invalid.
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -64,7 +74,9 @@ public class AmbientLightStatusTests extends TestCase {
 		}
 	}
 	
-	// Verifies the possible enum values of AmbientLightStatus.
+	/**
+	 * Verifies the possible enum values of AmbientLightStatus.
+	 */
 	public void testListEnum() {
  		List<AmbientLightStatus> enumValueList = Arrays.asList(AmbientLightStatus.values()); 		
 		List<AmbientLightStatus> enumTestList = new ArrayList<AmbientLightStatus>();

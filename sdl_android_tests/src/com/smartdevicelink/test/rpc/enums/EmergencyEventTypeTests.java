@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.EmergencyEventType}
+ */
 public class EmergencyEventTypeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NO_EVENT";
 		EmergencyEventType enumEventType = EmergencyEventType.valueForString(example);
@@ -34,7 +41,10 @@ public class EmergencyEventTypeTests extends TestCase {
 		assertNotNull("NOT_SUPPORTED returned null", enumNotSupported);
 		assertNotNull("FAULT returned null", enumFault);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "nO_EvenT";
 		try {
@@ -45,7 +55,10 @@ public class EmergencyEventTypeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -56,7 +69,10 @@ public class EmergencyEventTypeTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of EmergencyEvent.
+	 */
 	public void testListEnum() {
  		List<EmergencyEventType> enumValueList = Arrays.asList(EmergencyEventType.values());
 
@@ -71,6 +87,5 @@ public class EmergencyEventTypeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

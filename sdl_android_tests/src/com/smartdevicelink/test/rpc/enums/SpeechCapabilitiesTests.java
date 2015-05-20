@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.SpeechCapabilities}
+ */
 public class SpeechCapabilitiesTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "TEXT";
 		SpeechCapabilities enumText = SpeechCapabilities.valueForString(example);
@@ -28,7 +35,10 @@ public class SpeechCapabilitiesTests extends TestCase {
 		assertNotNull("PRE_RECORDED returned null", enumPreRecorded);
 		assertNotNull("SILENCE returned null", enumSilence);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "teXT";
 		try {
@@ -39,7 +49,10 @@ public class SpeechCapabilitiesTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -50,7 +63,10 @@ public class SpeechCapabilitiesTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of SpeechCapabilities.
+	 */
 	public void testListEnum() {
  		List<SpeechCapabilities> enumValueList = Arrays.asList(SpeechCapabilities.values());
 
@@ -63,6 +79,5 @@ public class SpeechCapabilitiesTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

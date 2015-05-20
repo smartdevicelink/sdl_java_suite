@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.GlobalProperty}
+ */
 public class GlobalPropertyTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "HELPPROMPT";
 		GlobalProperty enumHelpPrompt = GlobalProperty.valueForString(example);
@@ -34,7 +41,10 @@ public class GlobalPropertyTests extends TestCase {
 		assertNotNull("MENUICON returned null", enumMenuIcon);
 		assertNotNull("KEYBOARDPROPERTIES returned null", enumKeyboardProperties);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "heLp_ProMPt";
 		try {
@@ -45,7 +55,10 @@ public class GlobalPropertyTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -56,7 +69,10 @@ public class GlobalPropertyTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of GlobalProperty.
+	 */
 	public void testListEnum() {
  		List<GlobalProperty> enumValueList = Arrays.asList(GlobalProperty.values());
 
@@ -71,6 +87,5 @@ public class GlobalPropertyTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

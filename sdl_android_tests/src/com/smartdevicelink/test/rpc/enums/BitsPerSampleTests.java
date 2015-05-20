@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.BitsPerSample}
+ */
 public class BitsPerSampleTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "8_BIT";
 		BitsPerSample enum8Bit = BitsPerSample.valueForString(example);
@@ -20,6 +27,9 @@ public class BitsPerSampleTests extends TestCase {
 		assertNotNull("16_BIT returned null", enum16Bit);
 	}
 
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "8_biT";
 		try {
@@ -30,7 +40,10 @@ public class BitsPerSampleTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -41,7 +54,10 @@ public class BitsPerSampleTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies the possible enum values of BitsPerSample.
+	 */
 	public void testListEnum() {
  		List<BitsPerSample> enumValueList = Arrays.asList(BitsPerSample.values());
 
@@ -51,6 +67,5 @@ public class BitsPerSampleTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

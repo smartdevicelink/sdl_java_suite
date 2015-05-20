@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.SystemAction}
+ */
 public class SystemActionTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "DEFAULT_ACTION";
 		SystemAction enumDefaultAction = SystemAction.valueForString(example);
@@ -22,7 +29,10 @@ public class SystemActionTests extends TestCase {
 		assertNotNull("STEAL_FOCUS returned null", enumStealFocus);
 		assertNotNull("KEEP_CONTEXT returned null", enumKeepContext);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "deFaulT_ActiON";
 		try {
@@ -33,7 +43,10 @@ public class SystemActionTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class SystemActionTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of SystemAction.
+	 */
 	public void testListEnum() {
  		List<SystemAction> enumValueList = Arrays.asList(SystemAction.values());
 
@@ -55,6 +71,5 @@ public class SystemActionTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

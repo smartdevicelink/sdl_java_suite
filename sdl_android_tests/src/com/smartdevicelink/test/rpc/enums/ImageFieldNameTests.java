@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ImageFieldName}
+ */
 public class ImageFieldNameTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "softButtonImage";
 		ImageFieldName enumSoftButtonImage = ImageFieldName.valueForString(example);
@@ -46,7 +53,10 @@ public class ImageFieldNameTests extends TestCase {
 		assertNotNull("showConstantTBTIcon returned null", enumShowConstantTbtIcon);
 		assertNotNull("showConstantTBTNextTurnIcon returned null", enumShowConstantTbtNextTurnIcon);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "sofTbUtTOnImagE";
 		try {
@@ -57,7 +67,10 @@ public class ImageFieldNameTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -69,6 +82,9 @@ public class ImageFieldNameTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of ImageFieldName.
+	 */
 	public void testListEnum() {
  		List<ImageFieldName> enumValueList = Arrays.asList(ImageFieldName.values());
 
@@ -87,6 +103,5 @@ public class ImageFieldNameTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

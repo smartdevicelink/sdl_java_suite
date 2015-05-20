@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.AppHmiType}
+ */
 public class AppHmiTypeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "DEFAULT";
 		AppHMIType enumDefault = AppHMIType.valueForString(example);
@@ -44,6 +51,9 @@ public class AppHmiTypeTests extends TestCase {
 		assertNotNull("SYSTEM returned null", enumSystem);
 	}
 	
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "deFaUlt";
 		try {
@@ -55,6 +65,9 @@ public class AppHmiTypeTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -66,6 +79,9 @@ public class AppHmiTypeTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of AmbientLightStatus.
+	 */
 	public void testListEnum() {
  		List<AppHMIType> enumValueList = Arrays.asList(AppHMIType.values());
  		

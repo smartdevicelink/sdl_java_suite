@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.CharacterSet}
+ */
 public class CharacterSetTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "TYPE2SET";
 		CharacterSet enumType2Set = CharacterSet.valueForString(example);
@@ -25,7 +32,10 @@ public class CharacterSetTests extends TestCase {
 		assertNotNull("CID1SET returned null", enumCid1Set);
 		assertNotNull("CID2SET returned null", enumCid2Set);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "tyPe2SeT";
 		try {
@@ -36,7 +46,10 @@ public class CharacterSetTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -47,7 +60,10 @@ public class CharacterSetTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of CharacterSet.
+	 */
 	public void testListEnum() {
  		List<CharacterSet> enumValueList = Arrays.asList(CharacterSet.values());
 
@@ -59,6 +75,5 @@ public class CharacterSetTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

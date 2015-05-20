@@ -6,10 +6,19 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.SdlDisconnectedReason}
+ */
 public class SdlDisconnectedReasonTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "USER_EXIT";
 		SdlDisconnectedReason enumUserExit = SdlDisconnectedReason.valueForString(example);
@@ -73,7 +82,10 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		assertNotNull("APP_INTERFACE_UNREG returned null", enumAppInterfaceUnreg);
 		assertNotNull("GENERIC_ERROR returned null", enumGenericError);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "uSer_ExiT";
 		try {
@@ -84,7 +96,10 @@ public class SdlDisconnectedReasonTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -94,8 +109,11 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
 		}
-	}	
-	
+	}		
+
+	/**
+	 * Verifies the possible enum values of SdlDisconnectedReason.
+	 */
 	public void testListEnum() {
  		List<SdlDisconnectedReason> enumValueList = Arrays.asList(SdlDisconnectedReason.values());
 
@@ -125,6 +143,23 @@ public class SdlDisconnectedReasonTests extends TestCase {
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
 	
-	//TODO: add test cases for convertAppInterfaceUnregisteredReason method
+	/**
+	 * Verifies the valid returns of the conversion method,
+	 * {@link com.smartdevicelink.rpc.enums.SdlDisconnectedReason#convertAppInterfaceunregisteredReason(AppInterfaceUnregisteredReason)}
+	 */
+	public void testConvertMethod () {		
+		assertEquals(Test.MATCH, SdlDisconnectedReason.DEFAULT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.BLUETOOTH_OFF, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.BLUETOOTH_OFF));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.DRIVER_DISTRACTION_VIOLATION, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.DRIVER_DISTRACTION_VIOLATION));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.FACTORY_DEFAULTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.FACTORY_DEFAULTS));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.IGNITION_OFF, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.IGNITION_OFF));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.LANGUAGE_CHANGE, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.MASTER_RESET, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.MASTER_RESET));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.REQUEST_WHILE_IN_NONE_HMI_LEVEL));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.TOO_MANY_REQUESTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.TOO_MANY_REQUESTS));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.USB_DISCONNECTED, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USB_DISCONNECTED));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.USER_EXIT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USER_EXIT));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.DEFAULT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(null));
+	}
 	
 }

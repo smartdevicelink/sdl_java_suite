@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.MediaClockFormat}
+ */
 public class MediaClockFormatTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "CLOCK1";
 		MediaClockFormat enumClock1 = MediaClockFormat.valueForString(example);
@@ -34,7 +41,10 @@ public class MediaClockFormatTests extends TestCase {
 		assertNotNull("CLOCKTEXT3 returned null", enumClockText3);
 		assertNotNull("CLOCKTEXT4 returned null", enumClockText4);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "cloCK1";
 		try {
@@ -45,7 +55,10 @@ public class MediaClockFormatTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -55,8 +68,11 @@ public class MediaClockFormatTests extends TestCase {
 		catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
 		}
-	}	
-	
+	}		
+
+	/**
+	 * Verifies the possible enum values of MediaClockFormat.
+	 */
 	public void testListEnum() {
  		List<MediaClockFormat> enumValueList = Arrays.asList(MediaClockFormat.values());
 
@@ -71,6 +87,5 @@ public class MediaClockFormatTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

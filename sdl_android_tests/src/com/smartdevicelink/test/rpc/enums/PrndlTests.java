@@ -8,8 +8,16 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 
+
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.Prndl}
+ */
 public class PrndlTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "PARK";
 		PRNDL enumPark = PRNDL.valueForString(example);
@@ -61,7 +69,10 @@ public class PrndlTests extends TestCase {
 		assertNotNull("UNKNOWN returned null", enumUnknown);
 		assertNotNull("FAULT returned null", enumFault);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "pARk";
 		try {
@@ -72,7 +83,10 @@ public class PrndlTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -83,7 +97,10 @@ public class PrndlTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of PRNDL.
+	 */
 	public void testListEnum() {
  		List<PRNDL> enumValueList = Arrays.asList(PRNDL.values());
 
@@ -107,6 +124,5 @@ public class PrndlTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

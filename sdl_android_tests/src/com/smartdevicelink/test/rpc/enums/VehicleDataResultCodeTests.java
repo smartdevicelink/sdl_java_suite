@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.VehicleDataResultCode}
+ */
 public class VehicleDataResultCodeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "SUCCESS";
 		VehicleDataResultCode enumSuccess = VehicleDataResultCode.valueForString(example);
@@ -38,6 +45,9 @@ public class VehicleDataResultCodeTests extends TestCase {
 		assertNotNull("IGNORED returned null", enumIgnored);
 	}
 	
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "suCcesS";
 		try {
@@ -49,6 +59,9 @@ public class VehicleDataResultCodeTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -60,6 +73,9 @@ public class VehicleDataResultCodeTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of VehicleDataResultCode.
+	 */
 	public void testListEnum() {
  		List<VehicleDataResultCode> enumValueList = Arrays.asList(VehicleDataResultCode.values());
 
@@ -75,6 +91,5 @@ public class VehicleDataResultCodeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

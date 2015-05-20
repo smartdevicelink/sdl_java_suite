@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ECallConfirmationStatus}
+ */
 public class ECallConfirmationStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NORMAL";
 		ECallConfirmationStatus enumNormal = ECallConfirmationStatus.valueForString(example);
@@ -34,7 +41,10 @@ public class ECallConfirmationStatusTests extends TestCase {
 		assertNotNull("ECALL_CONFIGURED_OFF returned null", enumConfiguredOff);
 		assertNotNull("CALL_COMPLETE_DTMF_TIMEOUT returned null", enumCompleteDtmfTimeout);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "noRMal";
 		try {
@@ -45,7 +55,10 @@ public class ECallConfirmationStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -56,7 +69,10 @@ public class ECallConfirmationStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of ECallConfirmationStatus.
+	 */
 	public void testListEnum() {
  		List<ECallConfirmationStatus> enumValueList = Arrays.asList(ECallConfirmationStatus.values());
 
@@ -71,6 +87,5 @@ public class ECallConfirmationStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

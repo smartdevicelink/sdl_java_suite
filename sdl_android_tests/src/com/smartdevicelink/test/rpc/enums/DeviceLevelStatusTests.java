@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.DeviceLevelStatus}
+ */
 public class DeviceLevelStatusTests extends TestCase{
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "ZERO_LEVEL_BARS";
 		DeviceLevelStatus enumZeroLevel = DeviceLevelStatus.valueForString(example);
@@ -31,7 +38,10 @@ public class DeviceLevelStatusTests extends TestCase{
 		assertNotNull("FOUR_LEVEL_BARS returned null", enumFourLevel);
 		assertNotNull("NOT_PROVIDED returned null", enumNotProvided);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "onE_LeVeL_barS";
 		try {
@@ -42,7 +52,10 @@ public class DeviceLevelStatusTests extends TestCase{
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -53,7 +66,10 @@ public class DeviceLevelStatusTests extends TestCase{
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of DeviceLevelStatus.
+	 */
 	public void testListEnum() {
  		List<DeviceLevelStatus> enumValueList = Arrays.asList(DeviceLevelStatus.values());
  		
@@ -67,7 +83,5 @@ public class DeviceLevelStatusTests extends TestCase{
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-
-	
+	}	
 }

@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.UpdateMode}
+ */
 public class UpdateModeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "COUNTUP";
 		UpdateMode enumCountUp = UpdateMode.valueForString(example);
@@ -29,6 +36,9 @@ public class UpdateModeTests extends TestCase {
 		assertNotNull("CLEAR returned null", enumClear);
 	}
 	
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "coUnTUp";
 		try {
@@ -40,6 +50,9 @@ public class UpdateModeTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -51,6 +64,9 @@ public class UpdateModeTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of UpdateMode.
+	 */
 	public void testListEnum() {
  		List<UpdateMode> enumValueList = Arrays.asList(UpdateMode.values());
 
@@ -63,6 +79,5 @@ public class UpdateModeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

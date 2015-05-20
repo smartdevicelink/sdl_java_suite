@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.TirePressureTellTale;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.TirePressureTellTale}
+ */
 public class TirePressureTellTaleTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "OFF";
 		TirePressureTellTale enumOff = TirePressureTellTale.valueForString(example);
@@ -22,7 +29,10 @@ public class TirePressureTellTaleTests extends TestCase {
 		assertNotNull("ON returned null", enumOn);
 		assertNotNull("FLASH returned null", enumFlash);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "oFf";
 		try {
@@ -33,7 +43,10 @@ public class TirePressureTellTaleTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -45,6 +58,10 @@ public class TirePressureTellTaleTests extends TestCase {
 		}
 	}	
 	
+
+	/**
+	 * Verifies the possible enum values of TirePressureTellTale.
+	 */
 	public void testListEnum() {
  		List<TirePressureTellTale> enumValueList = Arrays.asList(TirePressureTellTale.values());
 
@@ -55,6 +72,5 @@ public class TirePressureTellTaleTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.HmiZoneCapabilities}
+ */
 public class HmiZoneCapabilitiesTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "FRONT";
 		HmiZoneCapabilities enumFront = HmiZoneCapabilities.valueForString(example);
@@ -19,7 +26,10 @@ public class HmiZoneCapabilitiesTests extends TestCase {
 		assertNotNull("FRONT returned null", enumFront);
 		assertNotNull("BACK returned null", enumBack);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "fROnT";
 		try {
@@ -30,7 +40,10 @@ public class HmiZoneCapabilitiesTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -42,6 +55,9 @@ public class HmiZoneCapabilitiesTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of HmiZoneCapabilities.
+	 */
 	public void testListEnum() {
  		List<HmiZoneCapabilities> enumValueList = Arrays.asList(HmiZoneCapabilities.values());
 
@@ -51,6 +67,5 @@ public class HmiZoneCapabilitiesTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

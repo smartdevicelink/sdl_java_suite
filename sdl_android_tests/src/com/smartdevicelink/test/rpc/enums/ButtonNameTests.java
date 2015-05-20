@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ButtonName}
+ */
 public class ButtonNameTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "OK";
 		ButtonName enumOk = ButtonName.valueForString(example);
@@ -65,7 +72,10 @@ public class ButtonNameTests extends TestCase {
 		assertNotNull("CUSTOM_BUTTON returned null", enumCustomButton);
 		assertNotNull("SEARCH returned null", enumSearch);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "oK";
 		try {
@@ -76,7 +86,10 @@ public class ButtonNameTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -87,7 +100,10 @@ public class ButtonNameTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of ButtonName.
+	 */
 	public void testListEnum() {
  		List<ButtonName> enumValueList = Arrays.asList(ButtonName.values());
 
@@ -115,6 +131,10 @@ public class ButtonNameTests extends TestCase {
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
 	
+
+	/**
+	 * Tests the preset numeric order.
+	 */
 	public void testPresetIndeces () {
 		ButtonName[] inputPresetArray = new ButtonName[] {
 				ButtonName.PRESET_0, ButtonName.PRESET_1, ButtonName.PRESET_2, ButtonName.PRESET_3, ButtonName.PRESET_4, 
@@ -131,7 +151,10 @@ public class ButtonNameTests extends TestCase {
 			assertSame("Enum input " + result + " does not match expected value " + expect, result, expect);
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null preset lookup is invalid.
+	 */
 	public void testPresetNull () {
 		try {
 			assertNull("Passing null as a parameter does not return null", ButtonName.indexForPresetButton(null));

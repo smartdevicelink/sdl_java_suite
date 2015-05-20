@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.LightSwitchStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.LightSwitchStatus}
+ */
 public class LightSwitchStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "OFF";
 		LightSwitchStatus enumOff = LightSwitchStatus.valueForString(example);
@@ -25,7 +32,10 @@ public class LightSwitchStatusTests extends TestCase {
 		assertNotNull("HEADLAMP returned null", enumHeadlamp);
 		assertNotNull("AUTOLAMP returned null", enumAutolamp);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "oFf";
 		try {
@@ -36,7 +46,10 @@ public class LightSwitchStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -47,7 +60,10 @@ public class LightSwitchStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of LightSwitchStatus.
+	 */
 	public void testListEnum() {
  		List<LightSwitchStatus> enumValueList = Arrays.asList(LightSwitchStatus.values());
 
@@ -59,6 +75,5 @@ public class LightSwitchStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

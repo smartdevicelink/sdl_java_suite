@@ -8,8 +8,15 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 import junit.framework.TestCase;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.HmiLevel}
+ */
 public class HmiLevelTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "FULL";
 		HMILevel enumFull = HMILevel.valueForString(example);
@@ -26,7 +33,9 @@ public class HmiLevelTests extends TestCase {
 		assertNotNull("NONE returned null", enumNone);
 	}
 
-	//use this test if it's supposed to throw an exception
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "fUlL";
 		try {
@@ -37,8 +46,10 @@ public class HmiLevelTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
-	//use this test if it's supposed to throw an exception
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -49,7 +60,10 @@ public class HmiLevelTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies the possible enum values of HMILevel.
+	 */
 	public void testListEnum() {
  		List<HMILevel> enumValueList = Arrays.asList(HMILevel.values());
 
@@ -61,6 +75,5 @@ public class HmiLevelTests extends TestCase {
 		
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

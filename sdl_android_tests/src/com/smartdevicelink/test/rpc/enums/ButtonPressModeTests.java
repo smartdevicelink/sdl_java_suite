@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ButtonPressMode}
+ */
 public class ButtonPressModeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "LONG";
 		ButtonPressMode enumLong = ButtonPressMode.valueForString(example);
@@ -20,6 +27,9 @@ public class ButtonPressModeTests extends TestCase {
 		assertNotNull("SHORT returned null", enumShort);
 	}
 
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "lONg";
 		try {
@@ -30,7 +40,10 @@ public class ButtonPressModeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -41,7 +54,10 @@ public class ButtonPressModeTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of ButtonPressMode.
+	 */
 	public void testListEnum() {
  		List<ButtonPressMode> enumValueList = Arrays.asList(ButtonPressMode.values());
 
@@ -51,6 +67,5 @@ public class ButtonPressModeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

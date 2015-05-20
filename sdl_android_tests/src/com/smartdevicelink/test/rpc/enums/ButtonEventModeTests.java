@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ButtonEventMode}
+ */
 public class ButtonEventModeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "BUTTONUP";
 		ButtonEventMode enumButtonUp = ButtonEventMode.valueForString(example);
@@ -19,7 +26,10 @@ public class ButtonEventModeTests extends TestCase {
 		assertNotNull("BUTTONUP returned null", enumButtonUp);
 		assertNotNull("BUTTONDOWN returned null", enumButtonDown);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "buTTonUp";
 		try {
@@ -30,7 +40,10 @@ public class ButtonEventModeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -41,7 +54,10 @@ public class ButtonEventModeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of ButtonEventMode.
+	 */
 	public void testListEnum() {
  		List<ButtonEventMode> enumValueList = Arrays.asList(ButtonEventMode.values());
 
@@ -51,6 +67,5 @@ public class ButtonEventModeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

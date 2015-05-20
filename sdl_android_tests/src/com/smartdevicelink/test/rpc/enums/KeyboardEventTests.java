@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.KeyboardEvent}
+ */
 public class KeyboardEventTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "KEYPRESS";
 		KeyboardEvent enumKeypress = KeyboardEvent.valueForString(example);
@@ -25,7 +32,10 @@ public class KeyboardEventTests extends TestCase {
 		assertNotNull("ENTRY_CANCELLED returned null", enumEntryCancelled);
 		assertNotNull("ENTRY_ABORTED returned null", enumEntryAborted);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "keyPreSS";
 		try {
@@ -36,7 +46,10 @@ public class KeyboardEventTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -47,7 +60,10 @@ public class KeyboardEventTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of KeyboardEvent.
+	 */
 	public void testListEnum() {
  		List<KeyboardEvent> enumValueList = Arrays.asList(KeyboardEvent.values());
 
@@ -59,6 +75,5 @@ public class KeyboardEventTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

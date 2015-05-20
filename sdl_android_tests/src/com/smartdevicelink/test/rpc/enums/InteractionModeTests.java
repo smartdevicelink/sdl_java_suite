@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.InteractionMode}
+ */
 public class InteractionModeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "MANUAL_ONLY";
 		InteractionMode enumManualOnly = InteractionMode.valueForString(example);
@@ -22,7 +29,10 @@ public class InteractionModeTests extends TestCase {
 		assertNotNull("VR_ONLY returned null", enumVrOnly);
 		assertNotNull("BOTH returned null", enumBoth);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "maNuAL_OnlY";
 		try {
@@ -33,7 +43,10 @@ public class InteractionModeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class InteractionModeTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of InteractionMode.
+	 */
 	public void testListEnum() {
  		List<InteractionMode> enumValueList = Arrays.asList(InteractionMode.values());
 
@@ -55,6 +71,5 @@ public class InteractionModeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

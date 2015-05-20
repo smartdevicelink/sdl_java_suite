@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.AudioStreaming}
+ */
 public class AudioStreamingStateTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "AUDIBLE";
 		AudioStreamingState enumAudible = AudioStreamingState.valueForString(example);
@@ -23,7 +30,10 @@ public class AudioStreamingStateTests extends TestCase {
 		assertNotNull("ATTENUATED returned null", enumAttentuated);
 		assertNotNull("NOT_AUDIBLE returned null", enumNotAudible);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "aUDibLE";
 		try {
@@ -34,7 +44,10 @@ public class AudioStreamingStateTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -45,7 +58,10 @@ public class AudioStreamingStateTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of AudioStreamingState.
+	 */
 	public void testListEnum() {
  		List<AudioStreamingState> enumValueList = Arrays.asList(AudioStreamingState.values());
 
@@ -56,6 +72,5 @@ public class AudioStreamingStateTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

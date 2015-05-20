@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.CarModeStatus}
+ */
 public class CarModeStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NORMAL";
 		CarModeStatus enumNormal = CarModeStatus.valueForString(example);
@@ -25,7 +32,10 @@ public class CarModeStatusTests extends TestCase {
 		assertNotNull("TRANSPORT returned null", enumTransport);
 		assertNotNull("CRASH returned null", enumCrash);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "noRmaL";
 		try {
@@ -36,7 +46,10 @@ public class CarModeStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -47,7 +60,10 @@ public class CarModeStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of CarModeStatus.
+	 */
 	public void testListEnum() {
  		List<CarModeStatus> enumValueList = Arrays.asList(CarModeStatus.values());
 
@@ -59,6 +75,5 @@ public class CarModeStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

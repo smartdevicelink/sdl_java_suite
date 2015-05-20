@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.TbtState}
+ */
 public class TbtStateTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "ROUTE_UPDATE_REQUEST";
 		TBTState enumRouteUpdateRequest = TBTState.valueForString(example);
@@ -43,7 +50,10 @@ public class TbtStateTests extends TestCase {
 		assertNotNull("TRIP_STATUS_REQUEST returned null", enumTripStatusRequest);
 		assertNotNull("ROUTE_UPDATE_REQUEST_TIMEOUT returned null", enumRouteUpdateRequestTimeout);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "rOUte_UpDAte_reQuesT";
 		try {
@@ -54,7 +64,10 @@ public class TbtStateTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -65,7 +78,10 @@ public class TbtStateTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of TBTState.
+	 */
 	public void testListEnum() {
  		List<TBTState> enumValueList = Arrays.asList(TBTState.values());
 
@@ -84,5 +100,4 @@ public class TbtStateTests extends TestCase {
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
-
 }

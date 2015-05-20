@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.FuelCutoffStatus}
+ */
 public class FuelCutoffStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "TERMINATE_FUEL";
 		FuelCutoffStatus enumTerminateFuel = FuelCutoffStatus.valueForString(example);
@@ -22,7 +29,10 @@ public class FuelCutoffStatusTests extends TestCase {
 		assertNotNull("NORMAL_OPERATION returned null", enumNormalOperation);
 		assertNotNull("FAULT returned null", enumFault);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "tErmINAte_FueL";
 		try {
@@ -33,7 +43,10 @@ public class FuelCutoffStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -43,8 +56,11 @@ public class FuelCutoffStatusTests extends TestCase {
 		catch (NullPointerException exception) {
             fail("Null string throws NullPointerException.");
 		}
-	}	
-	
+	}		
+
+	/**
+	 * Verifies the possible enum values of FuelCutoffStatus.
+	 */
 	public void testListEnum() {
  		List<FuelCutoffStatus> enumValueList = Arrays.asList(FuelCutoffStatus.values());
 
@@ -55,6 +71,5 @@ public class FuelCutoffStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

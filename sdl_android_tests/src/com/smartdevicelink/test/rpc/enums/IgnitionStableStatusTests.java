@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.IgnitionStableStatus}
+ */
 public class IgnitionStableStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "IGNITION_SWITCH_NOT_STABLE";
 		IgnitionStableStatus enumIgnitionSwitchNotStable = IgnitionStableStatus.valueForString(example);
@@ -22,7 +29,10 @@ public class IgnitionStableStatusTests extends TestCase {
 		assertNotNull("IGNITION_SWITCH_STABLE returned null", enumIgnitionSwitchStable);
 		assertNotNull("MISSING_FROM_TRANSMITTER returned null", enumMissingFromTransmitter);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "iGnitIoN_SwiTch_NoT_StablE";
 		try {
@@ -33,7 +43,10 @@ public class IgnitionStableStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class IgnitionStableStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of IgnitionStableStatus.
+	 */
 	public void testListEnum() {
  		List<IgnitionStableStatus> enumValueList = Arrays.asList(IgnitionStableStatus.values());
 
@@ -55,6 +71,5 @@ public class IgnitionStableStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

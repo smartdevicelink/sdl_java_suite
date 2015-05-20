@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.PermissionStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.PermissionStatus}
+ */
 public class PermissionStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "ALLOWED";
 		PermissionStatus enumAllowed = PermissionStatus.valueForString(example);
@@ -25,7 +32,10 @@ public class PermissionStatusTests extends TestCase {
 		assertNotNull("USER_DISALLOWED returned null", enumUserDisallowed);
 		assertNotNull("USER_CONSENT_PENDING returned null", enumUserConsentPending);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "aLloWed";
 		try {
@@ -36,7 +46,10 @@ public class PermissionStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -47,7 +60,10 @@ public class PermissionStatusTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of PermissionStatus.
+	 */
 	public void testListEnum() {
  		List<PermissionStatus> enumValueList = Arrays.asList(PermissionStatus.values());
 
@@ -59,6 +75,5 @@ public class PermissionStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

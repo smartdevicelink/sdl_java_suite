@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.PrerecordedSpeech}
+ */
 public class PrerecordedSpeechTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "HELP_JINGLE";
 		PrerecordedSpeech enumHelpJingle = PrerecordedSpeech.valueForString(example);
@@ -28,7 +35,10 @@ public class PrerecordedSpeechTests extends TestCase {
 		assertNotNull("POSITIVE_JINGLE returned null", enumPositiveJingle);
 		assertNotNull("NEGATIVE_JINGLE returned null", enumNegativeJingle);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "heLP_JingLE";
 		try {
@@ -39,7 +49,10 @@ public class PrerecordedSpeechTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -50,7 +63,10 @@ public class PrerecordedSpeechTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of PrerecordedSpeech.
+	 */
 	public void testListEnum() {
  		List<PrerecordedSpeech> enumValueList = Arrays.asList(PrerecordedSpeech.values());
 

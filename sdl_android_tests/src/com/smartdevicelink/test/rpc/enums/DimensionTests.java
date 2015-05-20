@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.Dimension}
+ */
 public class DimensionTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NO_FIX";
 		Dimension enumNoFix = Dimension.valueForString(example);
@@ -23,6 +30,9 @@ public class DimensionTests extends TestCase {
 		assertNotNull("3D returned null", enum3D);
 	}
 
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "no_FiX";
 		try {
@@ -33,8 +43,10 @@ public class DimensionTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
-	//use this test if it's supposed to throw an exception
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -46,6 +58,9 @@ public class DimensionTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies the possible enum values of Dimension.
+	 */
 	public void testListEnum() {
  		List<Dimension> enumValueList = Arrays.asList(Dimension.values());
 
@@ -57,5 +72,4 @@ public class DimensionTests extends TestCase {
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
-	
 }

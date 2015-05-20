@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.SoftButtonType}
+ */
 public class SoftButtonTypeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "TEXT";
 		SoftButtonType enumText = SoftButtonType.valueForString(example);
@@ -23,7 +30,10 @@ public class SoftButtonTypeTests extends TestCase {
 		assertNotNull("BOTH returned null", enumBoth);
 	}
 
-	//use this test if it's supposed to throw an exception
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "teXT";
 		try {
@@ -34,8 +44,10 @@ public class SoftButtonTypeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
-	//use this test if it's supposed to throw an exception
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -46,7 +58,10 @@ public class SoftButtonTypeTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies the possible enum values of SoftButtonType.
+	 */
 	public void testListEnum() {
  		List<SoftButtonType> enumValueList = Arrays.asList(SoftButtonType.values());
 
@@ -57,6 +72,5 @@ public class SoftButtonTypeTests extends TestCase {
 		
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

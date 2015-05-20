@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.GearShiftAdviceStatus;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.GearShiftAdviceStatus}
+ */
 public class GearShiftAdviceStatusTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NO_INDICATION";
 		GearShiftAdviceStatus enumNoIndication = GearShiftAdviceStatus.valueForString(example);
@@ -31,7 +38,10 @@ public class GearShiftAdviceStatusTests extends TestCase {
 		assertNotNull("DOWNSHIFT_RECOMMENDATION returned null", enumDownshiftRecommendation);
 		assertNotNull("SHIFT_TO_NEUTRAL returned null", enumShiftToNeutral);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "no_INdICaTIon";
 		try {
@@ -42,7 +52,10 @@ public class GearShiftAdviceStatusTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -54,6 +67,10 @@ public class GearShiftAdviceStatusTests extends TestCase {
 		}
 	}	
 	
+
+	/**
+	 * Verifies the possible enum values of GearShiftAdviceStatus.
+	 */
 	public void testListEnum() {
  		List<GearShiftAdviceStatus> enumValueList = Arrays.asList(GearShiftAdviceStatus.values());
 
@@ -67,6 +84,5 @@ public class GearShiftAdviceStatusTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

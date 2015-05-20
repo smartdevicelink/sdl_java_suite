@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.DriverDistractionState}
+ */
 public class DriverDistractionStateTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "DD_ON";
 		DriverDistractionState enumDdOn = DriverDistractionState.valueForString(example);
@@ -19,7 +26,10 @@ public class DriverDistractionStateTests extends TestCase {
 		assertNotNull("DD_ON returned null", enumDdOn);
 		assertNotNull("DD_OFF returned null", enumDdOff);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "dD_oN";
 		try {
@@ -30,7 +40,10 @@ public class DriverDistractionStateTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -41,7 +54,10 @@ public class DriverDistractionStateTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of DriverDistractionState.
+	 */
 	public void testListEnum() {
  		List<DriverDistractionState> enumValueList = Arrays.asList(DriverDistractionState.values());
 
@@ -51,6 +67,5 @@ public class DriverDistractionStateTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

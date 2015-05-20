@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.VehicleData}
+ */
 public class VehicleDataTypeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "VEHICLEDATA_GPS";
 		VehicleDataType enumVehicleDataGps = VehicleDataType.valueForString(example);
@@ -92,6 +99,9 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_MYKEY returned null", enumVehicleDataMyKey);
 	}
 	
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "VeHIcLEDatA_GPs";
 		try {
@@ -103,6 +113,9 @@ public class VehicleDataTypeTests extends TestCase {
 		}
 	}
 	
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -114,6 +127,9 @@ public class VehicleDataTypeTests extends TestCase {
 		}
 	}	
 	
+	/**
+	 * Verifies the possible enum values of VehicleDataType.
+	 */
 	public void testListEnum() {
  		List<VehicleDataType> enumValueList = Arrays.asList(VehicleDataType.values());
 
@@ -147,6 +163,5 @@ public class VehicleDataTypeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

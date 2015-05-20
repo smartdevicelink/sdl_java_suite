@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.KeypressMode}
+ */
 public class KeypressModeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "SINGLE_KEYPRESS";
 		KeypressMode enumSingleKeypress = KeypressMode.valueForString(example);
@@ -22,7 +29,10 @@ public class KeypressModeTests extends TestCase {
 		assertNotNull("QUEUE_KEYPRESSES returned null", enumQueueKeypresses);
 		assertNotNull("RESEND_CURRENT_ENTRY returned null", enumResendCurrentEntry);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "sIngLe_KeyPrESs";
 		try {
@@ -33,7 +43,10 @@ public class KeypressModeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -44,7 +57,10 @@ public class KeypressModeTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of KeypressMode.
+	 */
 	public void testListEnum() {
  		List<KeypressMode> enumValueList = Arrays.asList(KeypressMode.values());
 
@@ -55,6 +71,5 @@ public class KeypressModeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

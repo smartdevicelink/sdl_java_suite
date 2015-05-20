@@ -8,8 +8,16 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 
+
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.PrimaryAudioSource}
+ */
 public class PrimaryAudioSourceTests extends TestCase {
-	
+
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "NO_SOURCE_SELECTED";
 		PrimaryAudioSource enumNoSourceSelected = PrimaryAudioSource.valueForString(example);
@@ -34,7 +42,10 @@ public class PrimaryAudioSourceTests extends TestCase {
 		assertNotNull("IPOD returned null", enumIpod);
 		assertNotNull("MOBILE_APP returned null", enumMobileApp);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "no_SouRCe_SelEcteD";
 		try {
@@ -45,7 +56,10 @@ public class PrimaryAudioSourceTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -57,6 +71,10 @@ public class PrimaryAudioSourceTests extends TestCase {
 		}
 	}	
 	
+
+	/**
+	 * Verifies the possible enum values of PrimaryAudioSource.
+	 */
 	public void testListEnum() {
  		List<PrimaryAudioSource> enumValueList = Arrays.asList(PrimaryAudioSource.values());
 
@@ -71,6 +89,5 @@ public class PrimaryAudioSourceTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }

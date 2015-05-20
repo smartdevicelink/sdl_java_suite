@@ -8,8 +8,15 @@ import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.enums.ImageType}
+ */
 public class ImageTypeTests extends TestCase {
 
+	/**
+	 * Verifies that the enum values are not null upon valid assignment.
+	 */
 	public void testValidEnums () {	
 		String example = "STATIC";
 		ImageType enumStatic = ImageType.valueForString(example);
@@ -19,7 +26,10 @@ public class ImageTypeTests extends TestCase {
 		assertNotNull("STATIC returned null", enumStatic);
 		assertNotNull("DYNAMIC returned null", enumDynamic);
 	}
-	
+
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
 	public void testInvalidEnum () {
 		String example = "sTatIc";
 		try {
@@ -30,7 +40,10 @@ public class ImageTypeTests extends TestCase {
             fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
-	
+
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
 	public void testNullEnum () {
 		String example = null;
 		try {
@@ -41,7 +54,10 @@ public class ImageTypeTests extends TestCase {
             fail("Null string throws NullPointerException.");
 		}
 	}	
-	
+
+	/**
+	 * Verifies the possible enum values of ImageType.
+	 */
 	public void testListEnum() {
  		List<ImageType> enumValueList = Arrays.asList(ImageType.values());
 
@@ -51,6 +67,5 @@ public class ImageTypeTests extends TestCase {
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}
-	
+	}	
 }
