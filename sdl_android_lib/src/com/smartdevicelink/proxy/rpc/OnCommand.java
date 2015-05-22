@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * This is called when a command was selected via VR after pressing the PTT button, or selected from the menu after 
@@ -95,13 +94,7 @@ public class OnCommand extends RPCNotification {
         if (obj instanceof TriggerSource) {
             return (TriggerSource) obj;
         } else if (obj instanceof String) {
-            TriggerSource theCode = null;
-            try {
-                theCode = TriggerSource.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
-            }
-            return theCode;
+            return TriggerSource.valueForString((String) obj);
         }
         return null;
     }

@@ -52,6 +52,7 @@ public enum FunctionId{
     DIAGNOSTIC_MESSAGE(37, "DiagnosticMessage"),
     SYSTEM_REQUEST(38, "SystemRequest"),
     SEND_LOCATION(39, "SendLocation"),
+    DIAL_NUMBER(40, "DialNumber"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
@@ -73,6 +74,8 @@ public enum FunctionId{
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
     ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
+    ON_STREAM_RPC(-1, "OnStreamRPC"),
+    STREAM_RPC(-1, "StreamRPC"),
 
     ;
 

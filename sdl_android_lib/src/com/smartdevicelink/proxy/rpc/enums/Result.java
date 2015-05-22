@@ -88,9 +88,12 @@ public enum Result {
 	 */
 	IN_USE,
 	/**
-	 * There is already an existing subscription for this item
+	 *The user has turned off access to vehicle data, and it is globally unavailable to mobile applications.
 	 */
     VEHICLE_DATA_NOT_ALLOWED,
+    /**
+     * The requested vehicle data is not available on this vehicle or is not published.
+     */
 	VEHICLE_DATA_NOT_AVAILABLE,
 	/**
 	 * The requested operation was rejected. No attempt was made to perform the
@@ -114,18 +117,57 @@ public enum Result {
 	 * information on supported buttons on the currently connected SDL platform
 	 */
     UNSUPPORTED_RESOURCE,
+    /**
+     * A specified file could not be found on Sync.
+     */
     FILE_NOT_FOUND,
+    /**
+     * Provided data is valid but something went wrong in the lower layers.
+     */
     GENERIC_ERROR,
+    /**
+     * RPC is not authorized in local policy table.
+     */
     DISALLOWED,
+    /**
+     * RPC is included in a functional group explicitly blocked by the user.
+     */
     USER_DISALLOWED,
+    /**
+     * Overlay reached the maximum timeout and closed.
+     */
     TIMED_OUT,
+    /**
+     * User selected to Cancel Route.
+     */
     CANCEL_ROUTE,
+    /**
+     * The RPC (e.g. ReadDID) executed successfully but the data exceeded the platform maximum threshold and thus, only part of the data is available.
+     */
     TRUNCATED_DATA,
+    /**
+     * The user interrupted the RPC (e.g. PerformAudioPassThru) and indicated to start over.  Note, the app must issue the new RPC.
+     */
     RETRY,
+    /**
+     * The RPC (e.g. SubscribeVehicleData) executed successfully but one or more items have a warning or failure.
+     */
     WARNINGS,
+    /**
+     * The RPC (e.g. Slider) executed successfully and the user elected to save the current position / value.
+     */
     SAVED,
+    /**
+     * The certificate provided during authentication is invalid.
+     */
     INVALID_CERT,
+    /**
+     * The certificate provided during authentication is expired.
+     */
     EXPIRED_CERT,
+    /**
+     * The provided hash ID does not match the hash of the current set of registered data or the core could not resume the previous data.
+     */
     RESUME_FAILED;
 
     public static Result valueForString(String value) {
