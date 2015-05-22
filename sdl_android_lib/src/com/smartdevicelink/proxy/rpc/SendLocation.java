@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
@@ -28,7 +28,7 @@ public class SendLocation extends RPCRequest{
      * Constructs a new SendLocation object
      */
     public SendLocation(){
-        super(FunctionID.SEND_LOCATION);
+        super(FunctionId.SEND_LOCATION.toString());
     }
 
     /**

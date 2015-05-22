@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -28,7 +28,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * Constructs a new CreateInteractionChoiceSet object
 	 */    
 	public CreateInteractionChoiceSet() {
-        super(FunctionID.CREATE_INTERACTION_CHOICE_SET);
+        super(FunctionId.CREATE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
 	 * Constructs a new CreateInteractionChoiceSet object indicated by the

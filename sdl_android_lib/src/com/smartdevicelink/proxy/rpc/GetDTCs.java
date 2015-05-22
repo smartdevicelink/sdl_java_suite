@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -22,7 +22,7 @@ public class GetDTCs extends RPCRequest {
 	 * Constructs a new GetDTCs object
 	 */
     public GetDTCs() {
-        super(FunctionID.GET_DTCS);
+        super(FunctionId.GET_DTCS.toString());
     }
 
 	/**

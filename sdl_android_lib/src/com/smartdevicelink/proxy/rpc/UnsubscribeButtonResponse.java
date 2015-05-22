@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -16,7 +16,7 @@ public class UnsubscribeButtonResponse extends RPCResponse {
 	 * Constructs a new UnsubscribeButtonResponse object
 	 */
     public UnsubscribeButtonResponse() {
-        super(FunctionID.UNSUBSCRIBE_BUTTON);
+        super(FunctionId.UNSUBSCRIBE_BUTTON.toString());
     }
 
 	/**

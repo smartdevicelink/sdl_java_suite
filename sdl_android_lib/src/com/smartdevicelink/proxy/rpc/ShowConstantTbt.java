@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -38,7 +38,7 @@ public class ShowConstantTbt extends RPCRequest{
      * Constructs a new ShowConstantTbt object
      */
     public ShowConstantTbt(){
-        super(FunctionID.SHOW_CONSTANT_TBT);
+        super(FunctionId.SHOW_CONSTANT_TBT.toString());
     }
 
     /**

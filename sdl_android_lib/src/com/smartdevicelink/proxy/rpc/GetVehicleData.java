@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public class GetVehicleData extends RPCRequest {
@@ -33,7 +33,7 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_MY_KEY = "myKey";
 
     public GetVehicleData() {
-        super(FunctionID.GET_VEHICLE_DATA);
+        super(FunctionId.GET_VEHICLE_DATA.toString());
     }
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);

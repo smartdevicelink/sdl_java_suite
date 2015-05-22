@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class DialNumberResponse extends RPCResponse {
 
     public DialNumberResponse() {
-        super(FunctionID.DIAL_NUMBER);
+        super(FunctionId.DIAL_NUMBER.toString());
     }
     
 	public DialNumberResponse(Hashtable<String, Object> hash) {

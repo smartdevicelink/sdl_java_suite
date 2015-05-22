@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class SendLocationResponse extends RPCResponse{
 
     public SendLocationResponse(){
-        super(FunctionID.SEND_LOCATION);
+        super(FunctionId.SEND_LOCATION.toString());
     }
 
     public SendLocationResponse(Hashtable<String, Object> hash){
