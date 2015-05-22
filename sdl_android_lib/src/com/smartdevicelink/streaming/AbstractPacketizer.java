@@ -14,7 +14,7 @@ abstract public class AbstractPacketizer {
 	
 	protected SessionType _session = null;
 	protected InputStream is = null;
-	protected byte[] buffer = new byte[1488];
+	protected byte[] buffer = new byte[1000000];
 	protected boolean upts = false;
 	protected RPCRequest _request = null;
 	protected byte _wiproVersion = 1;
@@ -41,6 +41,10 @@ abstract public class AbstractPacketizer {
 	public abstract void start() throws IOException;
 
 	public abstract void stop();
+
+	public abstract void pause();
+
+	public abstract void resume();
 
 	protected static String printBuffer(byte[] buffer, int start,int end) {
 		String str = "";
