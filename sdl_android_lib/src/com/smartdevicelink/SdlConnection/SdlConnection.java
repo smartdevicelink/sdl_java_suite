@@ -250,12 +250,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
 		return null;
 	}
-	
-	
-	
+		
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+            mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -266,7 +264,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(this, is, request, sType, rpcSessionID, wiproVersion);
+			mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mPacketizer.start();
 			return os;
 		} catch (Exception e) {
@@ -274,15 +272,30 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
 		return null;
 	}
-	
-	public void stopStream()
+
+	public void pauseRPCStream()
+	{
+		if (mPacketizer != null)
+		{
+			mPacketizer.pause();
+		}
+	}
+
+	public void resumeRPCStream()
+	{
+		if (mPacketizer != null)
+		{
+			mPacketizer.resume();
+		}
+	}
+
+	public void stopRPCStream()
 	{
 		if (mPacketizer != null)
 		{
 			mPacketizer.stop();
 		}
 	}
-	
 	
 	@Override
 	public void sendStreamPacket(ProtocolMessage pm) {
@@ -399,7 +412,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				session.onHeartbeatTimedOut(sessionID);
 			}	
 			
-		}				
+		}
 	}
 		
 	public int getRegisterCount() {
@@ -427,6 +440,4 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     		mySession._heartbeatMonitor.notifyTransportActivity();
         }
     }
-
-
 }
