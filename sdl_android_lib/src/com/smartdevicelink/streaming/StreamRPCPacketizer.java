@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -143,12 +143,13 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			
 			int iCorrID = 0;
 			PutFile msg = (PutFile) _request;
-			sFileName = msg.getSdlFileName();
+
 			long iOffsetCounter = msg.getOffset();
+			sFileName = msg.getSdlFileName();
 									
 			if (lFileSize != 0)
 			{
-				Long iFileSize = Long.valueOf((long) lFileSize);
+				Long iFileSize = (long) lFileSize;
 				//TODO: PutFile RPC needs to be updated to accept Long as we might run into overflows since a Long can store a wider range than an Integer
 				msg.setLength(iFileSize);
 			}
@@ -186,7 +187,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 				if (length >= 0) {
 			        
 					if (msg.getOffset() != 0)
-			        	msg.setLength(null); //only need to send length when offset 0
+			        	msg.setLength((Long)null); //only need to send length when offset 0
 
 					msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion);					
 					pm = new ProtocolMessage();
@@ -195,7 +196,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					pm.setSessionID(_rpcSessionID);
 					pm.setMessageType(MessageType.RPC);
 					pm.setSessionType(_session);
-					pm.setFunctionID(FunctionID.getFunctionID(msg.getFunctionName()));
+					pm.setFunctionID(FunctionId.getFunctionId(msg.getFunctionName()));
 					
 					if (buffer.length != length)
 						pm.setBulkData(buffer, length);

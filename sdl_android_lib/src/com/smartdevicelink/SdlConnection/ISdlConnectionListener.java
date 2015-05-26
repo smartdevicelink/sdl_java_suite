@@ -3,6 +3,7 @@ package com.smartdevicelink.SdlConnection;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 
+
 public interface ISdlConnectionListener {
 	public void onTransportDisconnected(String info);
 	

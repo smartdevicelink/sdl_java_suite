@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -72,7 +72,7 @@ public class OnHMIStatus extends RPCNotification {
 	*Constructs a newly allocated OnHMIStatus object
 	*/ 	
     public OnHMIStatus() {
-        super(FunctionID.ON_HMI_STATUS);
+        super(FunctionId.ON_HMI_STATUS.toString());
     }
     /**
     *<p>Constructs a newly allocated OnHMIStatus object indicated by the Hashtable parameter</p>

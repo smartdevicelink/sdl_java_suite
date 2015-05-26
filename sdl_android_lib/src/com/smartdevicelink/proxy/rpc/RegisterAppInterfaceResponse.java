@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
@@ -19,25 +19,30 @@ import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
  * @since SmartDeviceLink 1.0
  */
 public class RegisterAppInterfaceResponse extends RPCResponse {
-	public static final String KEY_VEHICLE_TYPE = "vehicleType";
-	public static final String KEY_SPEECH_CAPABILITIES = "speechCapabilities";
-	public static final String KEY_VR_CAPABILITIES = "vrCapabilities";
+	public static final String KEY_VEHICLE_TYPE 				= "vehicleType";
+	public static final String KEY_SPEECH_CAPABILITIES 			= "speechCapabilities";
+	public static final String KEY_VR_CAPABILITIES 				= "vrCapabilities";
 	public static final String KEY_AUDIO_PASS_THRU_CAPABILITIES = "audioPassThruCapabilities";
-	public static final String KEY_HMI_ZONE_CAPABILITIES = "hmiZoneCapabilities";
-    public static final String KEY_PRERECORDED_SPEECH = "prerecordedSpeech";
-    public static final String KEY_SUPPORTED_DIAG_MODES = "supportedDiagModes";
-    public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
-    public static final String KEY_LANGUAGE = "language";
-    public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
-    public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
-    public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
-    public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
-    public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
+	public static final String KEY_HMI_ZONE_CAPABILITIES 		= "hmiZoneCapabilities";
+    public static final String KEY_PRERECORDED_SPEECH 			= "prerecordedSpeech";
+    public static final String KEY_SUPPORTED_DIAG_MODES 		= "supportedDiagModes";
+    public static final String KEY_SDL_MSG_VERSION 				= "syncMsgVersion";
+    public static final String KEY_LANGUAGE 					= "language";
+    public static final String KEY_BUTTON_CAPABILITIES 			= "buttonCapabilities";
+    public static final String KEY_DISPLAY_CAPABILITIES 		= "displayCapabilities";
+    public static final String KEY_HMI_DISPLAY_LANGUAGE 		= "hmiDisplayLanguage";
+    public static final String KEY_SOFT_BUTTON_CAPABILITIES 	= "softButtonCapabilities";
+    public static final String KEY_PRESET_BANK_CAPABILITIES 	= "presetBankCapabilities";
+    public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
+    public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
+    public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
+
+    
 	/**
 	 * Constructs a new RegisterAppInterfaceResponse object
 	 */
     public RegisterAppInterfaceResponse() {
-        super(FunctionID.REGISTER_APP_INTERFACE);
+        super(FunctionId.REGISTER_APP_INTERFACE.toString());
     }
 
 	/**
@@ -540,5 +545,48 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         	}
         }
         return null;
-    }          
+    }
+    
+    public void setHmiCapabilities(HMICapabilities hmiCapabilities) {
+        if (hmiCapabilities != null) {
+        	parameters.put(KEY_HMI_CAPABILITIES, hmiCapabilities);
+        }else{
+        	parameters.remove(KEY_HMI_CAPABILITIES);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public HMICapabilities getHmiCapabilities() {
+    	Object obj = parameters.get(KEY_HMI_CAPABILITIES);
+        if (obj instanceof HMICapabilities) {
+        	return (HMICapabilities)obj;
+        } else if (obj instanceof Hashtable) {
+        	return new HMICapabilities((Hashtable<String, Object>)obj);
+        }
+        return null;
+    }  
+    
+    public void setSdlVersion(String sdlVersion) {
+        if (sdlVersion != null) {
+        	parameters.put(KEY_SDL_VERSION, sdlVersion);
+        }else{
+        	parameters.remove(KEY_SDL_VERSION);
+        }
+    }
+
+    public String getSdlVersion() {    
+    	 return (String) parameters.get(KEY_SDL_VERSION);
+    } 
+    
+    public void setSystemSoftwareVersion(String systemSoftwareVersion) {
+        if (systemSoftwareVersion != null) {
+        	parameters.put(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
+        }else{
+        	parameters.remove(KEY_SYSTEM_SOFTWARE_VERSION);
+        }
+    }
+
+    public String getSystemSoftwareVersion() {    
+    	 return (String) parameters.get(KEY_SYSTEM_SOFTWARE_VERSION);
+    } 
 }

@@ -93,7 +93,7 @@ public class WiProProtocol extends AbstractProtocol {
 		if (_version > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
 			if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
-				sessionType = SessionType.Bulk_Data;
+				sessionType = SessionType.BULK_DATA;
 			} else data = new byte[12 + protocolMsg.getJsonSize()];
 			BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
 			binFrameHeader = ProtocolFrameHeaderFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
@@ -180,7 +180,7 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	public byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+	private byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
 		int receivedBytesReadPos = 0;
 		
 		//Check for a version difference
@@ -457,7 +457,7 @@ public class WiProProtocol extends AbstractProtocol {
 			ProtocolMessage message = new ProtocolMessage();
 			if (header.getSessionType() == SessionType.RPC) {
 				message.setMessageType(MessageType.RPC);
-			} else if (header.getSessionType() == SessionType.Bulk_Data) {
+			} else if (header.getSessionType() == SessionType.BULK_DATA) {
 				message.setMessageType(MessageType.BULK);
 			} // end-if
 			message.setSessionType(header.getSessionType());
@@ -506,7 +506,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void SendHeartBeat(byte sessionID) {
-        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.Heartbeat, sessionID, _version);        
+        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.CONTROL, sessionID, _version);        
         sendFrameToTransport(heartbeat);		
 	}
 } // end-class

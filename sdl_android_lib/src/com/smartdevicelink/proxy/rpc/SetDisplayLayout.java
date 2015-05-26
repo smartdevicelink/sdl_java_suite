@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -18,7 +18,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 * Constructs a new SetDisplayLayout object
 	 */
     public SetDisplayLayout() {
-        super(FunctionID.SET_DISPLAY_LAYOUT);
+        super(FunctionId.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**

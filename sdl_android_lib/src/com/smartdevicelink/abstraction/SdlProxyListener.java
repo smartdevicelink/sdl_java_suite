@@ -13,6 +13,7 @@ import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
+import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
@@ -41,6 +42,7 @@ import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
@@ -344,6 +346,18 @@ public class SdlProxyListener implements IProxyListenerABS{
 
 	@Override
 	public void onServiceNACKed(OnServiceNACKed serviceNACKed) {
+		
+	}
+
+	@Override
+	public void onDialNumberResponse(DialNumberResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSendLocationResponse(SendLocationResponse response) {
+		// TODO Auto-generated method stub
 		
 	}
 }

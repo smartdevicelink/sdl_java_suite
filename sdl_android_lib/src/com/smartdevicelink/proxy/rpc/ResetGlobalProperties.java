@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 /**
@@ -29,7 +29,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES);
+        super(FunctionId.RESET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable

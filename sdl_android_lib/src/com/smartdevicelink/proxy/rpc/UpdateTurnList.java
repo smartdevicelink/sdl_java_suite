@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -27,7 +27,7 @@ public class UpdateTurnList extends RPCRequest{
      * Constructs a new UpdateTurnList object
      */
     public UpdateTurnList() {
-        super(FunctionID.UPDATE_TURN_LIST);
+        super(FunctionId.UPDATE_TURN_LIST.toString());
     }
     
     /**

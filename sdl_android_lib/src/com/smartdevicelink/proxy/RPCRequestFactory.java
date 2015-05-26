@@ -526,7 +526,7 @@ public class RPCRequestFactory {
 		putFile.setLength(iLength);
 		return putFile;
 	}
-	
+
 	public static PutFile buildPutFile(String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(iCorrelationID);

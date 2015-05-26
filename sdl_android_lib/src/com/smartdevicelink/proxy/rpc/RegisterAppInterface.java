@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -96,7 +96,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Constructs a new RegisterAppInterface object
 	 */
     public RegisterAppInterface() {
-        super(FunctionID.REGISTER_APP_INTERFACE);
+        super(FunctionId.REGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new RegisterAppInterface object indicated by the Hashtable

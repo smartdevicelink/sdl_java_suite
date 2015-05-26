@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -34,7 +34,7 @@ public class OnSystemRequest extends RPCNotification {
 	private Headers headers;
 	
     public OnSystemRequest() {
-        super(FunctionID.ON_SYSTEM_REQUEST);
+        super(FunctionId.ON_SYSTEM_REQUEST.toString());
     }
 
     public OnSystemRequest(Hashtable<String, Object> hash) {
@@ -209,9 +209,31 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
+    public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+    
     public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
-        return SdlDataTypeConverter.objectToLong(o);
+        
+        if (o == null){
+        	return null;
+        }
+        
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
+        }
+        return null;
     }
 
     public void setOffset(Long offset) {
@@ -243,12 +265,33 @@ public class OnSystemRequest extends RPCNotification {
             parameters.remove(KEY_TIMEOUT);
         }
     }    
-
+    
     public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
-        return SdlDataTypeConverter.objectToLong(o);
+        if (o == null){
+        	return null;
+        }
+        		
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
+        }
+        return null;
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
+    public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
+    }
+    
     public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);

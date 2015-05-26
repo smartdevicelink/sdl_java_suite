@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -17,7 +17,7 @@ public class SliderResponse extends RPCResponse {
 	 * Constructs a new SliderResponse object
 	 */
     public SliderResponse() {
-        super(FunctionID.SLIDER);
+        super(FunctionId.SLIDER.toString());
     }
 
 	/**

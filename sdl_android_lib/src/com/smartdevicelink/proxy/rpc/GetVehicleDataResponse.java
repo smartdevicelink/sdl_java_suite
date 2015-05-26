@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
@@ -41,7 +41,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 
 
     public GetVehicleDataResponse() {
-        super(FunctionID.GET_VEHICLE_DATA);
+        super(FunctionId.GET_VEHICLE_DATA.toString());
     }
     public GetVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);

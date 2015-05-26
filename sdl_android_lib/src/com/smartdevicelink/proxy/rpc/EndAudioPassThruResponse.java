@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -16,7 +16,7 @@ public class EndAudioPassThruResponse extends RPCResponse {
 	 * Constructs a new EndAudioPassThruResponse object
 	 */
     public EndAudioPassThruResponse() {
-        super(FunctionID.END_AUDIO_PASS_THRU);
+        super(FunctionId.END_AUDIO_PASS_THRU.toString());
     }
     public EndAudioPassThruResponse(Hashtable<String, Object> hash) {
         super(hash);

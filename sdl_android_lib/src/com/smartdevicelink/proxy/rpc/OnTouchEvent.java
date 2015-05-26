@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 
@@ -13,7 +13,7 @@ public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_TYPE = "type";
 	
     public OnTouchEvent() {
-        super(FunctionID.ON_TOUCH_EVENT);
+        super(FunctionId.ON_TOUCH_EVENT.toString());
     }
     public OnTouchEvent(Hashtable<String, Object> hash) {
         super(hash);

@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.FunctionId;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 
@@ -28,7 +28,7 @@ public class PutFile extends RPCRequest {
 	 * Constructs a new PutFile object
 	 */
     public PutFile() {
-        super(FunctionID.PUT_FILE);
+        super(FunctionId.PUT_FILE.toString());
     }
 
 	/**
@@ -133,7 +133,19 @@ public class PutFile extends RPCRequest {
     public byte[] getFileData() {
         return getBulkData();
     }
-    
+
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
+    public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+
     public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
@@ -144,11 +156,29 @@ public class PutFile extends RPCRequest {
 
     public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
-        if (o instanceof Long) {
-            return (Long) o;
+        if (o == null){
+        	return null;
+        }
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
 
+
         return null;
+    }
+
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
+    public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
     }
 
     public void setLength(Long length) {
@@ -161,8 +191,13 @@ public class PutFile extends RPCRequest {
 
     public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
-        if (o instanceof Long) {
-            return (Long) o;
+        if (o == null){
+        	return null;
+        }
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
 
         return null;

@@ -18,6 +18,7 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
@@ -28,6 +29,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
+	AbstractPacketizer mPacketizer = null;
 	
 	StreamRPCPacketizer mRPCPacketizer = null;
 	StreamPacketizer mVideoPacketizer = null;
@@ -278,8 +280,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
-			mRPCPacketizer.start();
+            mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
+			mPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
@@ -289,36 +291,36 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-	        mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
-	        mRPCPacketizer.start();
+			mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
+			mPacketizer.start();
 			return os;
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
 		return null;
 	}
-	
+
 	public void pauseRPCStream()
 	{
-		if (mRPCPacketizer != null)
+		if (mPacketizer != null)
 		{
-			mRPCPacketizer.pause();
+			mPacketizer.pause();
 		}
 	}
 
 	public void resumeRPCStream()
 	{
-		if (mRPCPacketizer != null)
+		if (mPacketizer != null)
 		{
-			mRPCPacketizer.resume();
+			mPacketizer.resume();
 		}
 	}
 
 	public void stopRPCStream()
 	{
-		if (mRPCPacketizer != null)
+		if (mPacketizer != null)
 		{
-			mRPCPacketizer.stop();
+			mPacketizer.stop();
 		}
 	}
 	

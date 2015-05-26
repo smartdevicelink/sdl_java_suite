@@ -59,7 +59,6 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
                         catch (InterruptedException e) {}
                     }
                 }
-
 				length = is.read(buffer, 0, BUFF_READ_SIZE);
 				
 				if (length >= 0) 

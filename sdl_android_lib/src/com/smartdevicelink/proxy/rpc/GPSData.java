@@ -6,7 +6,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.util.SdlDataTypeConverter;
-
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
  * <p><b>Parameter List
