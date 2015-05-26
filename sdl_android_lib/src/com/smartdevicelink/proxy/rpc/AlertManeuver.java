@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -28,7 +28,7 @@ public class AlertManeuver extends RPCRequest{
      * Constructs a new AlertManeuver object
      */
     public AlertManeuver(){
-        super(FunctionId.ALERT_MANEUVER.toString());
+        super(FunctionID.ALERT_MANEUVER.toString());
     }
 
     /**

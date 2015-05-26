@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -16,7 +16,7 @@ public class UpdateTurnListResponse extends RPCResponse{
      * Constructs a new UpdateTurnListResponse object
      */
     public UpdateTurnListResponse() {
-        super(FunctionId.UPDATE_TURN_LIST.toString());
+        super(FunctionID.UPDATE_TURN_LIST.toString());
     }
     
     public UpdateTurnListResponse(Hashtable<String, Object> hash) {

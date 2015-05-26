@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -26,7 +26,7 @@ public class ReadDID extends RPCRequest {
 	 * Constructs a new ReadDID object
 	 */
     public ReadDID() {
-        super(FunctionId.READ_DID.toString());
+        super(FunctionID.READ_DID.toString());
     }
 
 	/**

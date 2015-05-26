@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
@@ -39,7 +39,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_MY_KEY = "myKey";
 
     public OnVehicleData() {
-        super(FunctionId.ON_VEHICLE_DATA.toString());
+        super(FunctionID.ON_VEHICLE_DATA.toString());
     }
     public OnVehicleData(Hashtable<String, Object> hash) {
         super(hash);

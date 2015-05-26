@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -32,7 +32,7 @@ public class OnSystemRequest extends RPCNotification {
 	private Headers headers;
 	
     public OnSystemRequest() {
-        super(FunctionId.ON_SYSTEM_REQUEST.toString());
+        super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
 
     public OnSystemRequest(Hashtable<String, Object> hash) {

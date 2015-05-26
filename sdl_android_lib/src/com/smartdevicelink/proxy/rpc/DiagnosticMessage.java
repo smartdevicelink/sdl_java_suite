@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public class DiagnosticMessage extends RPCRequest {
@@ -12,7 +12,7 @@ public class DiagnosticMessage extends RPCRequest {
 	public static final String KEY_MESSAGE_DATA = "messageData";
 
     public DiagnosticMessage() {
-        super(FunctionId.DIAGNOSTIC_MESSAGE.toString());
+        super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
 
     public DiagnosticMessage(Hashtable<String, Object> hash) {

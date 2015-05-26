@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 
@@ -44,7 +44,7 @@ public class OnDriverDistraction  extends RPCNotification {
 	*Constructs a newly allocated OnDriverDistraction object
 	*/ 
 	public OnDriverDistraction() {
-        super(FunctionId.ON_DRIVER_DISTRACTION.toString());
+        super(FunctionID.ON_DRIVER_DISTRACTION.toString());
     }
 	/**
      *<p>Constructs a newly allocated OnDriverDistraction object indicated by the Hashtable parameter</p>

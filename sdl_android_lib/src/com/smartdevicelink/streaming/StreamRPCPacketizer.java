@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -195,7 +195,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					pm.setSessionID(_rpcSessionID);
 					pm.setMessageType(MessageType.RPC);
 					pm.setSessionType(_session);
-					pm.setFunctionID(FunctionId.getFunctionId(msg.getFunctionName()));
+					pm.setFunctionID(FunctionID.getFunctionId(msg.getFunctionName()));
 					
 					if (buffer.length != length)
 						pm.setBulkData(buffer, length);

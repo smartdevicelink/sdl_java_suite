@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -16,7 +16,7 @@ public class ReadDIDResponse extends RPCResponse {
 	public static final String KEY_DID_RESULT = "didResult";
 
     public ReadDIDResponse() {
-        super(FunctionId.READ_DID.toString());
+        super(FunctionID.READ_DID.toString());
     }
     public ReadDIDResponse(Hashtable<String, Object> hash) {
         super(hash);

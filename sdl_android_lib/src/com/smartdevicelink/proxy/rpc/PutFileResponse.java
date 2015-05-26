@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -17,7 +17,7 @@ public class PutFileResponse extends RPCResponse {
 	 * Constructs a new PutFileResponse object
 	 */
     public PutFileResponse() {
-        super(FunctionId.PUT_FILE.toString());
+        super(FunctionID.PUT_FILE.toString());
     }
 
 	/**

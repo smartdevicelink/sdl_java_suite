@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
@@ -38,7 +38,7 @@ public class PerformInteraction extends RPCRequest {
 	 * Constructs a new PerformInteraction object
 	 */
     public PerformInteraction() {
-        super(FunctionId.PERFORM_INTERACTION.toString());
+        super(FunctionID.PERFORM_INTERACTION.toString());
     }
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable

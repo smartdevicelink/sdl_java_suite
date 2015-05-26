@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
 /**
@@ -54,7 +54,7 @@ public class OnPermissionsChange extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
 	public OnPermissionsChange() {
-		super(FunctionId.ON_PERMISSIONS_CHANGE.toString());
+		super(FunctionID.ON_PERMISSIONS_CHANGE.toString());
 	}
 	/**
      *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>

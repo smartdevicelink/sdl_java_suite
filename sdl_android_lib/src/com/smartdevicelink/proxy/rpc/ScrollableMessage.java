@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -25,7 +25,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * Constructs a new ScrollableMessage object
 	 */
     public ScrollableMessage() {
-        super(FunctionId.SCROLLABLE_MESSAGE.toString());
+        super(FunctionID.SCROLLABLE_MESSAGE.toString());
     }
 
 	/**

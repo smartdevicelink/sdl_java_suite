@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -49,7 +49,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Constructs a new UnsubscribeVehicleData object
 	 */
     public UnsubscribeVehicleData() {
-        super(FunctionId.UNSUBSCRIBE_VEHICLE_DATA.toString());
+        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**

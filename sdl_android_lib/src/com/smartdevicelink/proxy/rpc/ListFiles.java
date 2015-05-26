@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -18,7 +18,7 @@ public class ListFiles extends RPCRequest {
 	 * Constructs a new ListFiles object
 	 */
     public ListFiles() {
-        super(FunctionId.LIST_FILES.toString());
+        super(FunctionID.LIST_FILES.toString());
     }
 
 	/**

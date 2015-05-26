@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -79,7 +79,7 @@ public class Speak extends RPCRequest {
 	 * Constructs a new Speak object
 	 */    
 	public Speak() {
-        super(FunctionId.SPEAK.toString());
+        super(FunctionID.SPEAK.toString());
     }
 	/**
 	 * Constructs a new Speak object indicated by the Hashtable parameter
