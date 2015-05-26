@@ -11,17 +11,21 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-public class SetDisplayLayoutTest extends BaseRpcTests {
 
-	private static final String DISPLAY_LAYOUT = "displayLayout";
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SetDisplayLayout}
+ */
+public class SetDisplayLayoutTests extends BaseRpcTests {
 	
 	@Override
 	protected RPCMessage createMessage() {
 		SetDisplayLayout msg = new SetDisplayLayout();
 
-		msg.setDisplayLayout(DISPLAY_LAYOUT);
+		msg.setDisplayLayout(Test.GENERAL_STRING);
 
 		return msg;
 	}
@@ -41,54 +45,55 @@ public class SetDisplayLayoutTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(SetDisplayLayout.KEY_DISPLAY_LAYOUT, DISPLAY_LAYOUT);
-			
+			result.put(SetDisplayLayout.KEY_DISPLAY_LAYOUT, Test.GENERAL_STRING);			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testDisplayLayout() {
-		String copy = ( (SetDisplayLayout) msg ).getDisplayLayout();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {   
+    	// Test Values
+		String testDisplayLayout = ( (SetDisplayLayout) msg ).getDisplayLayout();
 		
-		assertEquals("Data didn't match input data.", DISPLAY_LAYOUT, copy);
-	}
-
-	public void testNull() {
+		// Valid Tests
+		assertEquals("Data didn't match input data.", Test.GENERAL_STRING, testDisplayLayout);
+		
+		// Invalid/Null Tests
 		SetDisplayLayout msg = new SetDisplayLayout();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Display layout wasn't set, but getter method returned an object.", msg.getDisplayLayout());
+		assertNull(Test.NULL, msg.getDisplayLayout());
 	}
 	
+	/**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SetDisplayLayout cmd = new SetDisplayLayout(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.MATCH, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Display layout doesn't match input layout", 
-					JsonUtils.readStringFromJsonObject(parameters, SetDisplayLayout.KEY_DISPLAY_LAYOUT), cmd.getDisplayLayout());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetDisplayLayout.KEY_DISPLAY_LAYOUT), cmd.getDisplayLayout());
 			
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}    	
     }
-
 }

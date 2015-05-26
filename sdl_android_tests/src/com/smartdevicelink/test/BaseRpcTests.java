@@ -12,20 +12,32 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 
-public abstract class BaseRpcTests extends TestCase{
+public abstract class BaseRpcTests extends TestCase {
 
     public static final int  SDL_VERSION_UNDER_TEST = Config.SDL_VERSION_UNDER_TEST;
 
-    private static final int CORR_ID                = 402;
+    private static final int CORR_ID = 402;
 
-    protected RPCMessage     msg;
+    protected RPCMessage msg;
 
+    /**
+	 * Sets up the specific RPC message under testing.
+	 */
     protected abstract RPCMessage createMessage();
 
+    /**
+	 * Retrieves the RPC message type under testing.
+	 */
     protected abstract String getMessageType();
 
+    /**
+	 * Retrieves the RPC command type under testing.
+	 */
     protected abstract String getCommandType();
 
+    /**
+	 * Retrieves the JSON translated RPC message under testing.
+	 */
     protected abstract JSONObject getExpectedParameters(int sdlVersion);
 
     @Override
@@ -188,7 +200,5 @@ public abstract class BaseRpcTests extends TestCase{
             //do nothing
         }
 
-    }
-    
- 
+    }  
 }

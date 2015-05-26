@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc.requests;
 
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -12,38 +11,29 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SendLocation;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.json.rpc.JsonFileReader;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SendLocation}
+ */
 public class SendLocationTests extends BaseRpcTests {
 	
-	public static final Float KEY_LAT_DEGREES          = 42f;
-    public static final Float KEY_LON_DEGREES          = 42f;
-    public static final String KEY_LOCATION_NAME        = "test";
-    public static final String KEY_LOCATION_DESCRIPTION = "desc";
-    public static final String KEY_PHONE_NUMBER         = "1234567890";    
-    public static final List<String> KEY_ADDRESS_LINES = Arrays.asList(new String[]{"1234 Test Lane", "Ferndale", "MI", "56789"});
-    private static final Image IMAGE = new Image();
-    private static final String VALUE = "image.jpg";
-    private static final ImageType IMAGE_TYPE = ImageType.STATIC;
-    
     @Override
     protected RPCMessage createMessage(){
     	SendLocation msg = new SendLocation();
     	
-    	IMAGE.setValue(VALUE);
-		IMAGE.setImageType(IMAGE_TYPE);
-    	
-    	msg.setLatitudeDegrees(KEY_LAT_DEGREES);
-    	msg.setLongitudeDegrees(KEY_LON_DEGREES);
-    	msg.setLocationName(KEY_LOCATION_NAME);
-    	msg.setLocationDescription(KEY_LOCATION_DESCRIPTION);
-    	msg.setPhoneNumber(KEY_PHONE_NUMBER);
-    	msg.setAddressLines(KEY_ADDRESS_LINES);
-    	msg.setLocationImage(IMAGE);
+    	msg.setLatitudeDegrees(Test.GENERAL_FLOAT);
+    	msg.setLongitudeDegrees(Test.GENERAL_FLOAT);
+    	msg.setLocationName(Test.GENERAL_STRING);
+    	msg.setLocationDescription(Test.GENERAL_STRING);
+    	msg.setPhoneNumber(Test.GENERAL_STRING);
+    	msg.setAddressLines(Test.GENERAL_STRING_LIST);
+    	msg.setLocationImage(Test.GENERAL_IMAGE);
     	
     	return msg;
     }
@@ -63,70 +53,59 @@ public class SendLocationTests extends BaseRpcTests {
     	JSONObject result = new JSONObject();
     	
     	try {
-    		result.put(SendLocation.KEY_LAT_DEGREES, KEY_LAT_DEGREES);
-    		result.put(SendLocation.KEY_LON_DEGREES, KEY_LON_DEGREES);
-    		result.put(SendLocation.KEY_LOCATION_NAME, KEY_LOCATION_NAME);
-    		result.put(SendLocation.KEY_LOCATION_DESCRIPTION, KEY_LOCATION_DESCRIPTION);
-    		result.put(SendLocation.KEY_PHONE_NUMBER, KEY_PHONE_NUMBER);
-    		result.put(SendLocation.KEY_LOCATION_IMAGE, IMAGE.serializeJSON());
-    		result.put(SendLocation.KEY_ADDRESS_LINES, JsonUtils.createJsonArray(KEY_ADDRESS_LINES));    		
+    		result.put(SendLocation.KEY_LAT_DEGREES, Test.GENERAL_FLOAT);
+    		result.put(SendLocation.KEY_LON_DEGREES, Test.GENERAL_FLOAT);
+    		result.put(SendLocation.KEY_LOCATION_NAME, Test.GENERAL_STRING);
+    		result.put(SendLocation.KEY_LOCATION_DESCRIPTION, Test.GENERAL_STRING);
+    		result.put(SendLocation.KEY_PHONE_NUMBER, Test.GENERAL_STRING);
+    		result.put(SendLocation.KEY_LOCATION_IMAGE, Test.GENERAL_IMAGE.serializeJSON());
+    		result.put(SendLocation.KEY_ADDRESS_LINES, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));    		
     	} catch(JSONException e){
-            /* do nothing */
+    		fail(Test.JSON_FAIL);
         }
     	
     	return result;
     }
     
-    public void testLatitudeDegrees(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {    	
+    	// Test Values
     	Float latitude = ((SendLocation) msg).getLatitudeDegrees();
-        assertEquals("Latitude didn't match input latitude.", KEY_LAT_DEGREES, latitude);
-    }
-    
-    public void testLongitudeDegrees() {
-    	Float longitude = ((SendLocation) msg).getLongitudeDegrees();
-        assertEquals("Longitude didn't match input longitude.", KEY_LON_DEGREES, longitude);
-    }
-    
-    public void testLocationName () {
-    	String locationName = ((SendLocation) msg).getLocationName();
-    	assertEquals("Location name didn't match input location name.", KEY_LOCATION_NAME, locationName);
-    }
-    
-    public void testLocationDescription () {
+        Float longitude = ((SendLocation) msg).getLongitudeDegrees();
+        String locationName = ((SendLocation) msg).getLocationName();
     	String locationDesc = ((SendLocation) msg).getLocationDescription();
-    	assertEquals("Location description didn't match input location name.", KEY_LOCATION_DESCRIPTION, locationDesc);
-    }
-    
-    public void testPhoneNumber () {
     	String phoneNumber = ((SendLocation) msg).getPhoneNumber();
-    	assertEquals("Phone number didn't match input phone number.", KEY_PHONE_NUMBER, phoneNumber);
-    }
-    
-    public void testAddressLines () {
     	List<String> addressLines = ((SendLocation) msg).getAddressLines();
-    	assertTrue("Address didn't match input address.", Validator.validateStringList(KEY_ADDRESS_LINES, addressLines));
-    }
-    
-    public void testLocationImage () {
     	Image locationImage = ((SendLocation) msg).getLocationImage();
-    	assertTrue("Image didn't match input address.", Validator.validateImage(IMAGE, locationImage));
-    }
+    	
+    	// Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, longitude);
+        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, latitude);
+    	assertEquals(Test.MATCH, Test.GENERAL_STRING, locationDesc);
+    	assertEquals(Test.MATCH, Test.GENERAL_STRING, locationName);
+    	assertEquals(Test.MATCH, Test.GENERAL_STRING, phoneNumber);
+    	assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, addressLines));
+    	assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, locationImage));
     
-    public void testNull(){
+    	// Invalid/Null Tests
     	SendLocation msg = new SendLocation();
-    	assertNotNull("Null object creation failed.", msg);
-
+    	assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Latitude wasn't set, but getter method returned an object.", msg.getLatitudeDegrees());
-        assertNull("Longitude wasn't set, but getter method returned an object.", msg.getLongitudeDegrees());
-        assertNull("Location name wasn't set, but getter method returned an object.", msg.getLocationName());
-        assertNull("Location description wasn't set, but getter method returned an object.", msg.getLocationDescription());
-        assertNull("Phone number wasn't set, but getter method returned an object.", msg.getPhoneNumber());
-        assertNull("Address lines wasn't set, but getter method returned an object.", msg.getAddressLines());
-        assertNull("Location image wasn't set, but getter method returned an object.", msg.getLocationImage());
+        assertNull(Test.NULL, msg.getLatitudeDegrees());
+        assertNull(Test.NULL, msg.getLongitudeDegrees());
+        assertNull(Test.NULL, msg.getLocationName());
+        assertNull(Test.NULL, msg.getLocationDescription());
+        assertNull(Test.NULL, msg.getPhoneNumber());
+        assertNull(Test.NULL, msg.getAddressLines());
+        assertNull(Test.NULL, msg.getLocationImage());
     }
-    
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
     	assertNotNull("Command object is null", commandJson);
@@ -134,33 +113,33 @@ public class SendLocationTests extends BaseRpcTests {
     	try {
     		Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
     		SendLocation cmd = new SendLocation(hash);
-    		assertNotNull("SendLocation object is null", cmd);
+    		assertNotNull(Test.NOT_NULL, cmd);
     		
     		JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-    		assertNotNull("Command type doesn't match expected message type", body);
+    		assertNotNull(Test.NOT_NULL, body);
     		
-    		// test everything in the body
-    		assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+    		// Test everything in the json body.
+    		assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
     		
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Latitude doesn't match input latitude.", JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LAT_DEGREES).floatValue(), cmd.getLatitudeDegrees());    // Issue # 168 (If error in testing)
-			assertEquals("Longitude doesn't match input longitude.", JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LON_DEGREES).floatValue(), cmd.getLongitudeDegrees()); // Issue # 168
-			assertEquals("Location name doesn't match input location name.", JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_NAME), cmd.getLocationName());
-			assertEquals("Location description doesn't match input location description.", JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_DESCRIPTION), cmd.getLocationDescription());
-			assertEquals("Phone number doesn't match input phone number.", JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_PHONE_NUMBER), cmd.getPhoneNumber());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LAT_DEGREES).floatValue(), cmd.getLatitudeDegrees());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LON_DEGREES).floatValue(), cmd.getLongitudeDegrees());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_NAME), cmd.getLocationName());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_DESCRIPTION), cmd.getLocationDescription());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_PHONE_NUMBER), cmd.getPhoneNumber());
 			
 			List<String> addressList = JsonUtils.readStringListFromJsonObject(parameters, SendLocation.KEY_ADDRESS_LINES);
 			List<String> testList = cmd.getAddressLines();
-			assertEquals("Address list length not the same as reference address list length", addressList.size(), testList.size());
-			assertTrue("Address list doesn't match input address list", Validator.validateStringList(addressList, testList));
+			assertEquals(Test.MATCH, addressList.size(), testList.size());
+			assertTrue(Test.TRUE, Validator.validateStringList(addressList, testList));
 			
 			JSONObject cmdIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, SendLocation.KEY_LOCATION_IMAGE);
 			Image reference = new Image(JsonRPCMarshaller.deserializeJSONObject(cmdIcon));
-			assertTrue("Image doesn't match expected image", Validator.validateImage(reference, cmd.getLocationImage()));
+			assertTrue(Test.TRUE, Validator.validateImage(reference, cmd.getLocationImage()));
 			
     	} catch (JSONException e) {
-			e.printStackTrace();
+    		fail(Test.JSON_FAIL);
 		}
     }
 }

@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc.requests;
 
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -13,22 +12,23 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessage;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.DiagnosticMessage}
+ */
 public class DiagnosticMessageTests extends BaseRpcTests{
-
-    private static final int           TARGET_ID      = 48531;
-    private final List<Integer> MESSAGE_DATA   = Arrays.asList(new Integer[] { 1, 1, 2, 3, 5, 8, 13, 21, 34 });
-    private final int           MESSAGE_LENGTH = MESSAGE_DATA.size();
 
     @Override
     protected RPCMessage createMessage(){
         DiagnosticMessage msg = new DiagnosticMessage();
 
-        msg.setMessageLength(MESSAGE_LENGTH);
-        msg.setTargetID(TARGET_ID);
-        msg.setMessageData(MESSAGE_DATA);
+        msg.setMessageLength(Test.GENERAL_INT);
+        msg.setTargetID(Test.GENERAL_INT);
+        msg.setMessageData(Test.GENERAL_INTEGER_LIST);
 
         return msg;
     }
@@ -48,75 +48,72 @@ public class DiagnosticMessageTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(DiagnosticMessage.KEY_TARGET_ID, TARGET_ID);
-            result.put(DiagnosticMessage.KEY_MESSAGE_LENGTH, MESSAGE_LENGTH);
-            result.put(DiagnosticMessage.KEY_MESSAGE_DATA, JsonUtils.createJsonArray(MESSAGE_DATA));
+            result.put(DiagnosticMessage.KEY_TARGET_ID, Test.GENERAL_INT);
+            result.put(DiagnosticMessage.KEY_MESSAGE_LENGTH, Test.GENERAL_INT);
+            result.put(DiagnosticMessage.KEY_MESSAGE_DATA, JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testTargetId(){
-        int cmdId = ( (DiagnosticMessage) msg ).getTargetID();
-        assertEquals("Target ID didn't match input target ID.", TARGET_ID, cmdId);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {  
+    	// Test Values
+        int testTargetId = ( (DiagnosticMessage) msg ).getTargetID();
+        int testMessageLength = ( (DiagnosticMessage) msg ).getMessageLength();
+        List<Integer> testMessageData = ( (DiagnosticMessage) msg ).getMessageData();
 
-    public void testMessageLength(){
-        int cmdId = ( (DiagnosticMessage) msg ).getMessageLength();
-        assertEquals("Message length didn't match input message length.", MESSAGE_LENGTH, cmdId);
-    }
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_INT, testTargetId);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, testMessageLength);
+        assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST.size(), testMessageData.size());
 
-    public void testMessageData(){
-        List<Integer> cmdId = ( (DiagnosticMessage) msg ).getMessageData();
-
-        assertEquals("Message data size didn't match expected size.", MESSAGE_DATA.size(), cmdId.size());
-
-        for(int i = 0; i < cmdId.size(); i++){
-            assertEquals("Value didn't match input value.", MESSAGE_DATA.get(i), cmdId.get(i));
+        for(int i = 0; i < testMessageData.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST.get(i), testMessageData.get(i));
         }
-    }
-
-    public void testNull(){
+    
+        // Invalid/Null Tests
         DiagnosticMessage msg = new DiagnosticMessage();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Target ID wasn't set, but getter method returned an object.", msg.getTargetID());
-        assertNull("Message length wasn't set, but getter method returned an object.", msg.getMessageLength());
-        assertNull("Message data wasn't set, but getter method returned an object.", msg.getMessageData());
+        assertNull(Test.NULL, msg.getTargetID());
+        assertNull(Test.NULL, msg.getMessageLength());
+        assertNull(Test.NULL, msg.getMessageData());
     }
-    
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			DiagnosticMessage cmd = new DiagnosticMessage(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Target ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_TARGET_ID), cmd.getTargetID());
-			assertEquals("Message length doesn't match input length", JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_MESSAGE_LENGTH), cmd.getMessageLength());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_TARGET_ID), cmd.getTargetID());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_MESSAGE_LENGTH), cmd.getMessageLength());
 			
 			List<Integer> messageDataList = JsonUtils.readIntegerListFromJsonObject(parameters, DiagnosticMessage.KEY_MESSAGE_DATA);
 			List<Integer> testDataList = cmd.getMessageData();
-			assertEquals("Message data list length not same as reference list length", messageDataList.size(), testDataList.size());
-			assertTrue("Integer list doesn't match input integer list", Validator.validateIntegerList(messageDataList, testDataList));
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	
+			assertEquals(Test.MATCH, messageDataList.size(), testDataList.size());
+			assertTrue(Test.TRUE, Validator.validateIntegerList(messageDataList, testDataList));
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}    	
     }
-
 }

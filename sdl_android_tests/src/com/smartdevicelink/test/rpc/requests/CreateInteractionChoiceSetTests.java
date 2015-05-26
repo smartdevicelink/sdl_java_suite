@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc.requests;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -15,49 +14,24 @@ import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.CreateInteractionChoiceSet}
+ */
 public class CreateInteractionChoiceSetTests extends BaseRpcTests{
-
-    //private static final String TAG = "CreateInteractionChoiceSetTests";
     
-    private static final int    CHOICE_SET_ID          = 16164;
-    private static final int    CHOICE1_ID             = 5163;
-    private static final String CHOICE1_NAME           = "Choice #1";
-    private static final String CHOICE1_SECONDARY_TEXT = "Second text";
-    private static final int    CHOICE2_ID             = 8151;
-    private static final String CHOICE2_NAME           = "Choice #2";
-    private static final String CHOICE2_SECONDARY_TEXT = "Second text";
-
-    private List<Choice>        choiceList;
-
     @Override
     protected RPCMessage createMessage(){
         CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet();
 
-        createChoiceList();
-
-        msg.setInteractionChoiceSetID(CHOICE_SET_ID);
-        msg.setChoiceSet(choiceList);
+        msg.setInteractionChoiceSetID(Test.GENERAL_INT);
+        msg.setChoiceSet(Test.GENERAL_CHOICE_LIST);
 
         return msg;
-    }
-
-    private void createChoiceList(){
-        choiceList = new ArrayList<Choice>(2);
-
-        Choice choice = new Choice();
-        choice.setChoiceID(CHOICE1_ID);
-        choice.setMenuName(CHOICE1_NAME);
-        choice.setSecondaryText(CHOICE1_SECONDARY_TEXT);
-        choiceList.add(choice);
-
-        choice = new Choice();
-        choice.setChoiceID(CHOICE2_ID);
-        choice.setMenuName(CHOICE2_NAME);
-        choice.setSecondaryText(CHOICE2_SECONDARY_TEXT);
-        choiceList.add(choice);
     }
 
     @Override
@@ -72,86 +46,70 @@ public class CreateInteractionChoiceSetTests extends BaseRpcTests{
 
     @Override
     protected JSONObject getExpectedParameters(int sdlVersion){
-        JSONObject result = new JSONObject(), choice1 = new JSONObject(), choice2 = new JSONObject();
-        JSONArray choiceArray = new JSONArray();
+        JSONObject result = new JSONObject();
 
         try{
-            choice1.put(Choice.KEY_CHOICE_ID, CHOICE1_ID);
-            choice1.put(Choice.KEY_MENU_NAME, CHOICE1_NAME);
-            choice1.put(Choice.KEY_SECONDARY_TEXT, CHOICE1_SECONDARY_TEXT);
-
-            choice2.put(Choice.KEY_CHOICE_ID, CHOICE2_ID);
-            choice2.put(Choice.KEY_MENU_NAME, CHOICE2_NAME);
-            choice2.put(Choice.KEY_SECONDARY_TEXT, CHOICE2_SECONDARY_TEXT);
-
-            choiceArray.put(choice1);
-            choiceArray.put(choice2);
-
-            result.put(CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID, CHOICE_SET_ID);
-            result.put(CreateInteractionChoiceSet.KEY_CHOICE_SET, choiceArray);
+            result.put(CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID, Test.GENERAL_INT);
+            result.put(CreateInteractionChoiceSet.KEY_CHOICE_SET, Test.JSON_CHOICES);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testChoiceSetId(){
-        int cmdId = ( (CreateInteractionChoiceSet) msg ).getInteractionChoiceSetID();
-        assertEquals("Command ID didn't match input command ID.", CHOICE_SET_ID, cmdId);
-    }
-
-    public void testChoiceList(){
-        List<Choice> copy = ( (CreateInteractionChoiceSet) msg ).getChoiceSet();
-
-        assertEquals("Choice list size didn't match expected size.", choiceList.size(), copy.size());
-        for(int i = 0; i < copy.size(); i++){
-            //log("validating choice at index " + i + ": \"" + choiceList.get(i) + "\" vs. \"" + copy.get(i) + "\"");
-            assertTrue("Choice at index " + i + " didn't match expected value.",
-                    Validator.validateChoice(choiceList.get(i), copy.get(i)));
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {    	
+    	// Test Values
+        int testCmdId = ( (CreateInteractionChoiceSet) msg ).getInteractionChoiceSetID(); 
+        List<Choice> testChoices = ( (CreateInteractionChoiceSet) msg ).getChoiceSet();
+       
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_INT, testCmdId);
+        assertEquals(Test.MATCH, Test.GENERAL_CHOICE_LIST.size(), testChoices.size());
+        for(int i = 0; i < testChoices.size(); i++){
+            assertTrue(Test.TRUE, Validator.validateChoice(Test.GENERAL_CHOICE_LIST.get(i), testChoices.get(i)));
         }
-    }
-
-    public void testNull(){
+   
+        // Invalid/Null Tests
         CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Choice list wasn't set, but getter method returned an object.", msg.getChoiceSet());
-        assertNull("Choice set ID wasn't set, but getter method returned an object.", msg.getInteractionChoiceSetID());
+        assertNull(Test.NULL, msg.getChoiceSet());
+        assertNull(Test.NULL, msg.getInteractionChoiceSetID());
     }
 
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			CreateInteractionChoiceSet cmd = new CreateInteractionChoiceSet(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Interaction choice set ID doesn't match input ID", 
-					JsonUtils.readIntegerFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
 			
 			JSONArray choiceSetArray = JsonUtils.readJsonArrayFromJsonObject(parameters, CreateInteractionChoiceSet.KEY_CHOICE_SET);
 			for (int index = 0; index < choiceSetArray.length(); index++) {
 				Choice chunk = new Choice(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)choiceSetArray.get(index)) );
-				assertTrue("Choice item doesn't match input Choice item",  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
-			}
-			
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	
-    }    
-
+				assertTrue(Test.TRUE,  Validator.validateChoice(chunk, cmd.getChoiceSet().get(index)) );
+			}			
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}    	
+    }
 }

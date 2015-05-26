@@ -12,17 +12,20 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-public class UnsubscribeButtonTest extends BaseRpcTests {
-
-	private static final ButtonName BUTTON = ButtonName.OK;
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.UnsubscribeButton}
+ */
+public class UnsubscribeButtonTests extends BaseRpcTests {
 	
 	@Override
 	protected RPCMessage createMessage() {
 		UnsubscribeButton msg = new UnsubscribeButton();
 
-		msg.setButtonName(BUTTON);
+		msg.setButtonName(Test.GENERAL_BUTTONNAME);
 
 		return msg;
 	}
@@ -42,54 +45,56 @@ public class UnsubscribeButtonTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(UnsubscribeButton.KEY_BUTTON_NAME, BUTTON);
+			result.put(UnsubscribeButton.KEY_BUTTON_NAME, Test.GENERAL_BUTTONNAME);
 			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testButton() {
-		ButtonName copy = ( (UnsubscribeButton) msg ).getButtonName();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () { 
+    	// Test Values
+    	ButtonName testButtonName = ( (UnsubscribeButton) msg ).getButtonName();
 		
-		assertEquals("Data didn't match input data.", BUTTON, copy);
-	}
-
-	public void testNull() {
+    	// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, testButtonName);
+		
+		// Invalid/Null Tests
 		UnsubscribeButton msg = new UnsubscribeButton();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Button wasn't set, but getter method returned an object.", msg.getButtonName());
-	}
+		assertNull(Test.NULL, msg.getButtonName());
+    }
 	
+	/**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			UnsubscribeButton cmd = new UnsubscribeButton(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Button name doesn't match input name", 
-					JsonUtils.readStringFromJsonObject(parameters, UnsubscribeButton.KEY_BUTTON_NAME), cmd.getButtonName().toString());
-			
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, UnsubscribeButton.KEY_BUTTON_NAME), cmd.getButtonName().toString());			
 		} 
 		catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
-    }
-	
+		}    	
+    }	
 }

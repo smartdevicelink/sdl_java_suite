@@ -11,17 +11,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-public class SetAppIconTest extends BaseRpcTests {
-	
-	private static final String FILE_NAME = "fileName";
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SetAppIcon}
+ */
+public class SetAppIconTests extends BaseRpcTests {
 
 	@Override
 	protected RPCMessage createMessage() {
 		SetAppIcon msg = new SetAppIcon();
 
-		msg.setSdlFileName(FILE_NAME);
+		msg.setSdlFileName(Test.GENERAL_STRING);
 
 		return msg;
 	}
@@ -41,53 +44,55 @@ public class SetAppIconTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(SetAppIcon.KEY_SDL_FILE_NAME, FILE_NAME);
-			
+			result.put(SetAppIcon.KEY_SDL_FILE_NAME, Test.GENERAL_STRING);			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testFileName() {
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {    	
+    	// Test Values
 		String copy = ( (SetAppIcon) msg ).getSdlFileName();
 		
-		assertEquals("Data didn't match input data.", FILE_NAME, copy);
-	}
-
-	public void testNull() {
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, copy);
+	
+		// Invalid/Null Tests
 		SetAppIcon msg = new SetAppIcon();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("File name wasn't set, but getter method returned an object.", msg.getSdlFileName());
+		assertNull(Test.NULL, msg.getSdlFileName());
 	}
-	
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SetAppIcon cmd = new SetAppIcon(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("File name doesn't match input name", JsonUtils.readStringFromJsonObject(parameters, SetAppIcon.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetAppIcon.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
 			
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}    	
     }
-
 }

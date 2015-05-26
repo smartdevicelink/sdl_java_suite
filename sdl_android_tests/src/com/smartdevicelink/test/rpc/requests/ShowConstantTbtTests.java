@@ -14,66 +14,33 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbt;
 import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
-import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.ShowConstantTbt}
+ */
 public class ShowConstantTbtTests extends BaseRpcTests {
-	
-	public static final String KEY_TEXT1                   = "message1";
-    public static final String KEY_TEXT2                   = "message2";
-    public static final String KEY_ETA                     = "42";
-    public static final String KEY_TOTAL_DISTANCE          = "42";
-    public static final Double KEY_MANEUVER_DISTANCE       = 42.42;
-    public static final Double KEY_MANEUVER_DISTANCE_SCALE = 42.42;
-    public static final Image KEY_MANEUVER_IMAGE           = new Image();
-    public static final Image KEY_NEXT_MANEUVER_IMAGE      = new Image();
-    public static final Boolean KEY_MANEUVER_COMPLETE      = true;
-    public static final String KEY_TIME_TO_DESTINATION     = "timeToDestination";
-    public static final Image image = new Image();
-    private final List<SoftButton> SOFT_BUTTON_LIST = new ArrayList<SoftButton>();
-    private static final Boolean SOFT_BUTTON_HIGHLIGHTED = true;
-    private static final Integer SOFT_BUTTON_ID = 236;
-	private static final SystemAction SOFT_BUTTON_SYSTEM_ACTION = SystemAction.STEAL_FOCUS;
-    private static final String SOFT_BUTTON_TEXT = "Hello";
-    private static final SoftButtonType SOFT_BUTTON_KEY_TYPE = SoftButtonType.SBT_TEXT;
 
 	@Override
 	protected RPCMessage createMessage() {
 		ShowConstantTbt msg = new ShowConstantTbt();
-				
-		KEY_MANEUVER_IMAGE.setValue("turnIcon");
-		KEY_MANEUVER_IMAGE.setImageType(ImageType.STATIC);
-		KEY_NEXT_MANEUVER_IMAGE.setValue("nextTurnIcon");
-		KEY_NEXT_MANEUVER_IMAGE.setImageType(ImageType.STATIC);
 		
-		image.setValue("softbutton");
-		image.setImageType(ImageType.STATIC);
-		
-		SoftButton softButton = new SoftButton();
-		softButton.setIsHighlighted(SOFT_BUTTON_HIGHLIGHTED);
-		softButton.setSoftButtonID(SOFT_BUTTON_ID);
-		softButton.setSystemAction(SOFT_BUTTON_SYSTEM_ACTION);
-		softButton.setText(SOFT_BUTTON_TEXT);
-		softButton.setType(SOFT_BUTTON_KEY_TYPE);
-		softButton.setImage(image);
-		SOFT_BUTTON_LIST.add(softButton);
-		
-		msg.setDistanceToManeuver(KEY_MANEUVER_DISTANCE);
-		msg.setDistanceToManeuverScale(KEY_MANEUVER_DISTANCE);
-		msg.setEta(KEY_ETA);
-		msg.setManeuverComplete(KEY_MANEUVER_COMPLETE);
-		msg.setNavigationText1(KEY_TEXT1);
-		msg.setNavigationText2(KEY_TEXT2);
-		msg.setNextTurnIcon(KEY_NEXT_MANEUVER_IMAGE);
-		msg.setSoftButtons(SOFT_BUTTON_LIST);
-		msg.setTimeToDestination(KEY_TIME_TO_DESTINATION);
-		msg.setTotalDistance(KEY_TOTAL_DISTANCE);
-		msg.setTurnIcon(KEY_MANEUVER_IMAGE);
+		msg.setDistanceToManeuver(Test.GENERAL_DOUBLE);
+		msg.setDistanceToManeuverScale(Test.GENERAL_DOUBLE);
+		msg.setEta(Test.GENERAL_STRING);
+		msg.setManeuverComplete(true);
+		msg.setNavigationText1(Test.GENERAL_STRING);
+		msg.setNavigationText2(Test.GENERAL_STRING);
+		msg.setNextTurnIcon(Test.GENERAL_IMAGE);
+		msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
+		msg.setTimeToDestination(Test.GENERAL_STRING);
+		msg.setTotalDistance(Test.GENERAL_STRING);
+		msg.setTurnIcon(Test.GENERAL_IMAGE);
 		
 		return msg;
 	}
@@ -91,142 +58,108 @@ public class ShowConstantTbtTests extends BaseRpcTests {
 	@Override
 	protected JSONObject getExpectedParameters(int sdlVersion) {
 		JSONObject result = new JSONObject();
-        JSONArray softButtons = new JSONArray();
         
-        try {
-        	JSONObject softButton = new JSONObject();
-			softButton.put(SoftButton.KEY_IS_HIGHLIGHTED , SOFT_BUTTON_HIGHLIGHTED);
-			softButton.put(SoftButton.KEY_SOFT_BUTTON_ID, SOFT_BUTTON_ID);
-			softButton.put(SoftButton.KEY_SYSTEM_ACTION, SOFT_BUTTON_SYSTEM_ACTION);
-			softButton.put(SoftButton.KEY_TEXT, SOFT_BUTTON_TEXT);
-			softButton.put(SoftButton.KEY_TYPE, SOFT_BUTTON_KEY_TYPE);
-			softButton.put(SoftButton.KEY_IMAGE, image.serializeJSON());
-			softButtons.put(softButton);
-			
-			result.put(ShowConstantTbt.KEY_SOFT_BUTTONS, softButtons);
-        	result.put(ShowConstantTbt.KEY_ETA, KEY_ETA);
+        try {			
+			result.put(ShowConstantTbt.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
+        	result.put(ShowConstantTbt.KEY_ETA, Test.GENERAL_STRING);
         	result.put(ShowConstantTbt.KEY_MANEUVER_COMPLETE, true);
-        	result.put(ShowConstantTbt.KEY_MANEUVER_DISTANCE, KEY_MANEUVER_DISTANCE);
-        	result.put(ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE, KEY_MANEUVER_DISTANCE_SCALE);
-        	result.put(ShowConstantTbt.KEY_TEXT1, KEY_TEXT1);
-        	result.put(ShowConstantTbt.KEY_TEXT2, KEY_TEXT2);
-        	result.put(ShowConstantTbt.KEY_TIME_TO_DESTINATION, KEY_TIME_TO_DESTINATION);
-        	result.put(ShowConstantTbt.KEY_TOTAL_DISTANCE, KEY_TOTAL_DISTANCE);
-        	result.put(ShowConstantTbt.KEY_MANEUVER_IMAGE, KEY_MANEUVER_IMAGE.serializeJSON());
-        	result.put(ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE, KEY_NEXT_MANEUVER_IMAGE.serializeJSON());
-        	
+        	result.put(ShowConstantTbt.KEY_MANEUVER_DISTANCE, Test.GENERAL_DOUBLE);
+        	result.put(ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE, Test.GENERAL_DOUBLE);
+        	result.put(ShowConstantTbt.KEY_TEXT1, Test.GENERAL_STRING);
+        	result.put(ShowConstantTbt.KEY_TEXT2, Test.GENERAL_STRING);
+        	result.put(ShowConstantTbt.KEY_TIME_TO_DESTINATION, Test.GENERAL_STRING);
+        	result.put(ShowConstantTbt.KEY_TOTAL_DISTANCE, Test.GENERAL_STRING);
+        	result.put(ShowConstantTbt.KEY_MANEUVER_IMAGE, Test.GENERAL_IMAGE.serializeJSON());
+        	result.put(ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE, Test.GENERAL_IMAGE.serializeJSON());        	
         } catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
         
 		return result;
 	}
 	
-	public void testNavigationText1 () {
-		String text = ((ShowConstantTbt) msg).getNavigationText1();
-		assertEquals("Navigation text 1 didn't match input navigation text 1.", KEY_TEXT1, text);
-	}
-	
-	public void testNavigationText2 () {
-		String text = ((ShowConstantTbt) msg).getNavigationText2();
-		assertEquals("Navigation text 2 didn't match input navigation text 2.", KEY_TEXT2, text);
-	}
-	
-	public void testEta () {
-		String text = ((ShowConstantTbt) msg).getEta();
-		assertEquals("Eta didn't match input eta.", KEY_ETA, text);
-	}
-	
-	public void testTotalDistance () {
-		String total = ((ShowConstantTbt) msg).getTotalDistance();
-		assertEquals("Total distance didn't match input total distance.", KEY_TOTAL_DISTANCE, total);
-	}
-	
-	public void testManeuverDistance () {
-		Double distance = ((ShowConstantTbt) msg).getDistanceToManeuver();
-		assertEquals("Maneuver distance didn't match input maneuver distance.", KEY_MANEUVER_DISTANCE, distance);
-	}
-	
-	public void testManeuverDistanceScale () {
-		Double scale = ((ShowConstantTbt) msg).getDistanceToManeuverScale();
-		assertEquals("Maneuver distance scale didn't match input maneuver distance.", KEY_MANEUVER_DISTANCE_SCALE, scale);
-	}
-	
-	public void testManeuverImage () {
-		Image image = ((ShowConstantTbt) msg).getTurnIcon();
-		assertTrue("Maneuver image didn't match input maneuver image.", Validator.validateImage(KEY_MANEUVER_IMAGE, image));
-	}
-	
-	public void testNextManeuverImage () {
-		Image image = ((ShowConstantTbt) msg).getNextTurnIcon();
-		assertTrue("Next maneuver image didn't match input next maneuver image.", Validator.validateImage(KEY_NEXT_MANEUVER_IMAGE, image));
-	}
-	
-	public void testManeuverComplete () {
-		Boolean stat = ((ShowConstantTbt) msg).getManeuverComplete();
-		assertEquals("Maneuver complete didn't match input maneuver complete status.", KEY_MANEUVER_COMPLETE, stat);
-	}
-	
-	public void testSoftButtons () {
-		List<SoftButton> copy = ((ShowConstantTbt) msg).getSoftButtons();		
-		assertTrue("Input value didn't match expected value.", Validator.validateSoftButtons(SOFT_BUTTON_LIST, copy));
-	}
-	
-	public void testTimeToDestination () {
-		String ttd = ((ShowConstantTbt) msg).getTimeToDestination();
-		assertEquals("Input value didn't match expected value.",KEY_TIME_TO_DESTINATION, ttd);
-	}
-	
-	public void testNull () {
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+		// Test Values
+    	Double  testScale                = ((ShowConstantTbt) msg).getDistanceToManeuverScale();
+    	Double  testDistance             = ((ShowConstantTbt) msg).getDistanceToManeuver();
+    	String  testEta                  = ((ShowConstantTbt) msg).getEta();
+		String  testTimeToDestination    = ((ShowConstantTbt) msg).getTimeToDestination();
+		String  testTotalDistance        = ((ShowConstantTbt) msg).getTotalDistance();
+		String  testNavText2             = ((ShowConstantTbt) msg).getNavigationText2();
+		String  testNavText1             = ((ShowConstantTbt) msg).getNavigationText1();
+		Boolean testManeuverComplete     = ((ShowConstantTbt) msg).getManeuverComplete();
+		Image   testTurnIcon             = ((ShowConstantTbt) msg).getTurnIcon();
+		Image   testNextTurnIcon         = ((ShowConstantTbt) msg).getNextTurnIcon();
+		List<SoftButton> testSoftButtons = ((ShowConstantTbt) msg).getSoftButtons();
+		
+		// Valid Test
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, testTimeToDestination);
+		assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, testScale);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, testNavText1);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, testNavText2);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, testEta);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, testTotalDistance);
+		assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, testDistance);
+		assertTrue(Test.TRUE, testManeuverComplete);
+		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
+		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testTurnIcon));
+		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testNextTurnIcon));
+		
+		// Invalid/Null Tests
 		ShowConstantTbt msg = new ShowConstantTbt();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
         
-        assertNull("Soft buttons wasn't set, but getter method returned an object.", msg.getSoftButtons());
-        assertNull("Text 1 wasn't set, but getter method returned an object.", msg.getNavigationText1());
-        assertNull("Text 2 wasn't set, but getter method returned an object.", msg.getNavigationText2());
-        assertNull("Maneuver distance wasn't set, but getter method returned an object.", msg.getDistanceToManeuver());
-        assertNull("Maneuver distance scale wasn't set, but getter method returned an object.", msg.getDistanceToManeuverScale());
-        assertNull("Eta wasn't set, but getter method returned an object.", msg.getEta());
-        assertNull("Maneuver status wasn't set, but getter method returned an object.", msg.getManeuverComplete());
-        assertNull("Next turn icon wasn't set, but getter method returned an object.", msg.getNextTurnIcon());
-        assertNull("Time to destination wasn't set, but getter method returned an object.", msg.getTimeToDestination());
-        assertNull("Total distance wasn't set, but getter method returned an object.", msg.getTotalDistance());
-        assertNull("Turn icon wasn't set, but getter method returned an object.", msg.getTurnIcon());
+        assertNull(Test.NULL, msg.getSoftButtons());
+        assertNull(Test.NULL, msg.getNavigationText1());
+        assertNull(Test.NULL, msg.getNavigationText2());
+        assertNull(Test.NULL, msg.getDistanceToManeuver());
+        assertNull(Test.NULL, msg.getDistanceToManeuverScale());
+        assertNull(Test.NULL, msg.getEta());
+        assertNull(Test.NULL, msg.getManeuverComplete());
+        assertNull(Test.NULL, msg.getNextTurnIcon());
+        assertNull(Test.NULL, msg.getTimeToDestination());
+        assertNull(Test.NULL, msg.getTotalDistance());
+        assertNull(Test.NULL, msg.getTurnIcon());
 	}
 	
+	/**
+     * Tests a valid JSON construction of this RPC message.
+     */
 	public void testJsonConstructor () {
 		JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
     	try {
     		Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
     		ShowConstantTbt cmd = new ShowConstantTbt(hash);
     		JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Value doesn't match input (eta).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_ETA), cmd.getEta());
-			assertEquals("Value doesn't match input (maneuver complete).", JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_COMPLETE), cmd.getManeuverComplete());
-			assertEquals("Value doesn't match input (maneuver distance).", JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE), cmd.getDistanceToManeuver());
-			assertEquals("Value doesn't match input (maneuver distance scale).", JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE), cmd.getDistanceToManeuverScale());			
-			assertEquals("Value doesn't match input (text1).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT1), cmd.getNavigationText1());
-			assertEquals("Value doesn't match input (text2).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT2), cmd.getNavigationText2());
-			assertEquals("Value doesn't match input (time to destination).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());
-			assertEquals("Value doesn't match input (total distance).", JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TOTAL_DISTANCE), cmd.getTotalDistance());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_ETA), cmd.getEta());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_COMPLETE), cmd.getManeuverComplete());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE), cmd.getDistanceToManeuver());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_DISTANCE_SCALE), cmd.getDistanceToManeuverScale());			
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT1), cmd.getNavigationText1());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TEXT2), cmd.getNavigationText2());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TIME_TO_DESTINATION), cmd.getTimeToDestination());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ShowConstantTbt.KEY_TOTAL_DISTANCE), cmd.getTotalDistance());
 			
 			JSONObject icon1 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTbt.KEY_MANEUVER_IMAGE);
 			Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(icon1));
-			assertTrue("Value doesn't match input (maneuver image).", Validator.validateImage(refIcon1, cmd.getTurnIcon()));
+			assertTrue(Test.TRUE, Validator.validateImage(refIcon1, cmd.getTurnIcon()));
 			
 			JSONObject icon2 = JsonUtils.readJsonObjectFromJsonObject(parameters, ShowConstantTbt.KEY_NEXT_MANEUVER_IMAGE);
 			Image refIcon2 = new Image(JsonRPCMarshaller.deserializeJSONObject(icon2));
-			assertTrue("Value doesn't match input (next maneuver image).", Validator.validateImage(refIcon2, cmd.getNextTurnIcon()));
+			assertTrue(Test.TRUE, Validator.validateImage(refIcon2, cmd.getNextTurnIcon()));
 			
 			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ShowConstantTbt.KEY_SOFT_BUTTONS);
 			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
@@ -234,9 +167,9 @@ public class ShowConstantTbtTests extends BaseRpcTests {
 				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
 				softButtonList.add(chunk);
 			}
-			assertTrue("Soft button list doesn't match input button list",  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+			assertTrue(Test.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
     	} catch (JSONException e) {
-			e.printStackTrace();
+    		fail(Test.JSON_FAIL);
 		}
 	}
 }

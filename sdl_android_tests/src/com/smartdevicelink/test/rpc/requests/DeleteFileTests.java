@@ -11,17 +11,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.DeleteFile}
+ */
 public class DeleteFileTests extends BaseRpcTests{
-
-    private static final String FILENAME = "file.png";
     
     @Override
     protected RPCMessage createMessage(){
         DeleteFile msg = new DeleteFile();
 
-         msg.setSdlFileName(FILENAME);
+         msg.setSdlFileName(Test.GENERAL_STRING);
 
         return msg;
     }
@@ -41,50 +44,54 @@ public class DeleteFileTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-             result.put(DeleteFile.KEY_SDL_FILE_NAME, FILENAME);
+             result.put(DeleteFile.KEY_SDL_FILE_NAME, Test.GENERAL_STRING);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testSmartDeviceLinkFileName(){
-         String filename = ( (DeleteFile) msg ).getSdlFileName();
-         assertEquals("Filename didn't match input filename.", FILENAME, filename);
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () { 
+    	 // Test Values
+         String testFilename = ( (DeleteFile) msg ).getSdlFileName();
+         
+         // Valid Tests
+         assertEquals(Test.MATCH, Test.GENERAL_STRING, testFilename);
+         
+         // Invalid/Null Tests
+         DeleteFile msg = new DeleteFile();
+         assertNotNull(Test.NOT_NULL, msg);
+         testNullBase(msg);
+
+         assertNull(Test.NULL, msg.getSdlFileName());
     }
 
-    public void testNull(){
-        DeleteFile msg = new DeleteFile();
-        assertNotNull("Null object creation failed.", msg);
-
-        testNullBase(msg);
-
-         assertNull("Filename wasn't set, but getter method returned an object.", msg.getSdlFileName());
-    }
-    
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			DeleteFile cmd = new DeleteFile(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(parameters, DeleteFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
-
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, DeleteFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}    	
     }
 }

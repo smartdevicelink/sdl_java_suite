@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc.requests;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -15,20 +14,20 @@ import com.smartdevicelink.proxy.rpc.ResetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-public class ResetGlobalPropertiesTest extends BaseRpcTests {
-
-	private final List<GlobalProperty> PROPERTIES = new ArrayList<GlobalProperty>();
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.ResetGlobalProperties}
+ */
+public class ResetGlobalPropertiesTests extends BaseRpcTests {
 
 	@Override
 	protected RPCMessage createMessage() {
-		PROPERTIES.add(GlobalProperty.VRHELPTITLE);
-		PROPERTIES.add(GlobalProperty.MENUICON);
-		
 		ResetGlobalProperties msg = new ResetGlobalProperties();
 
-		msg.setProperties(PROPERTIES);
+		msg.setProperties(Test.GENERAL_GLOBALPROPERTY_LIST);
 
 		return msg;
 	}
@@ -48,62 +47,62 @@ public class ResetGlobalPropertiesTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(ResetGlobalProperties.KEY_PROPERTIES, JsonUtils.createJsonArray(PROPERTIES));
-			
+			result.put(ResetGlobalProperties.KEY_PROPERTIES, JsonUtils.createJsonArray(Test.GENERAL_GLOBALPROPERTY_LIST));
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testProperties() {
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {    	
+    	// Test Values
 		List<GlobalProperty> copy = ( (ResetGlobalProperties) msg ).getProperties();
 		
-        assertEquals("List size didn't match expected size.", PROPERTIES.size(), copy.size());
-
-        for(int i = 0; i < PROPERTIES.size(); i++){
-            assertEquals("Input value didn't match expected value.", PROPERTIES.get(i), copy.get(i));
+		// Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_GLOBALPROPERTY_LIST.size(), copy.size());
+        for(int i = 0; i < Test.GENERAL_GLOBALPROPERTY_LIST.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_GLOBALPROPERTY_LIST.get(i), copy.get(i));
         }
-	}
-
-	public void testNull() {
+	
+        // Invalid/Null Tests
 		ResetGlobalProperties msg = new ResetGlobalProperties();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Properties wasn't set, but getter method returned an object.", msg.getProperties());
+		assertNull(Test.NULL, msg.getProperties());
 	}
-	
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			ResetGlobalProperties cmd = new ResetGlobalProperties(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			
 			JSONArray propertiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ResetGlobalProperties.KEY_PROPERTIES);
 			for (int index = 0; index < propertiesArray.length(); index++) {
 				GlobalProperty property = GlobalProperty.valueOf(propertiesArray.get(index).toString());
-				assertEquals("Global property item doesn't match input property item",  property, cmd.getProperties().get(index));
-			}
-			
-		} 
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	
+				assertEquals(Test.MATCH,  property, cmd.getProperties().get(index));
+			}			
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}    	
     }
-
 }

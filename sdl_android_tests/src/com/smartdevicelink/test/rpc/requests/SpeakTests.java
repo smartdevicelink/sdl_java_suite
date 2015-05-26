@@ -20,7 +20,7 @@ import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-public class SpeakTest extends BaseRpcTests {
+public class SpeakTests extends BaseRpcTests {
 
 	private List<TTSChunk> ttsChunks;
 	
