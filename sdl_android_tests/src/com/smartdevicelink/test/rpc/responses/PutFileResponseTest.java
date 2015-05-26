@@ -11,17 +11,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.PutFileResponse}
+ */
 public class PutFileResponseTest extends BaseRpcTests {
-
-	private static final Integer SPACE_AVAILABLE = -1;
 	
 	@Override
 	protected RPCMessage createMessage() {
 		PutFileResponse msg = new PutFileResponse();
 
-		msg.setSpaceAvailable(SPACE_AVAILABLE);
+		msg.setSpaceAvailable(Test.GENERAL_INT);
 
 		return msg;
 	}
@@ -41,54 +44,54 @@ public class PutFileResponseTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(PutFileResponse.KEY_SPACE_AVAILABLE, SPACE_AVAILABLE);
-			
+			result.put(PutFileResponse.KEY_SPACE_AVAILABLE, Test.GENERAL_INT);			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testSpaceAvailable() {
-		Integer copy = ( (PutFileResponse) msg ).getSpaceAvailable();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {   
+    	// Test Values
+		Integer testSpace = ( (PutFileResponse) msg ).getSpaceAvailable();
 		
-		assertEquals("Data didn't match input data.", SPACE_AVAILABLE, copy);
-	}
-
-	public void testNull() {
+		// Valid Tests
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testSpace);
+	
+		// Invalid/Null Tests
 		PutFileResponse msg = new PutFileResponse();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Space available wasn't set, but getter method returned an object.",  msg.getSpaceAvailable());
+		assertNull(Test.NULL, msg.getSpaceAvailable());
 	}
-	
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			PutFileResponse cmd = new PutFileResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Space available doesn't match input space available", 
-					JsonUtils.readIntegerFromJsonObject(parameters, PutFileResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
-			
-		} 
-		catch (JSONException e) {
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PutFileResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
+		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
+		}    	
     }
-
 }

@@ -12,21 +12,22 @@ import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.PerformInteractionResponse}
+ */
 public class PerformInteractionResponseTest extends BaseRpcTests {
-
-	private static final Integer       CHOICE_ID         = -1;
-	private static final TriggerSource TRIGGER_SOURCE    = TriggerSource.TS_VR;
-	private static final String        MANUAL_TEXT_ENTRY = "manualTextEntry";
     
 	@Override
 	protected RPCMessage createMessage() {
 		PerformInteractionResponse msg = new PerformInteractionResponse();
 
-		msg.setChoiceID(CHOICE_ID);
-		msg.setTriggerSource(TRIGGER_SOURCE);
-		msg.setManualTextEntry(MANUAL_TEXT_ENTRY);
+		msg.setChoiceID(Test.GENERAL_INT);
+		msg.setTriggerSource(Test.GENERAL_TRIGGERSOURCE);
+		msg.setManualTextEntry(Test.GENERAL_STRING);
 
 		return msg;
 	}
@@ -46,74 +47,64 @@ public class PerformInteractionResponseTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(PerformInteractionResponse.KEY_CHOICE_ID, CHOICE_ID);
-			result.put(PerformInteractionResponse.KEY_TRIGGER_SOURCE, TRIGGER_SOURCE);
-			result.put(PerformInteractionResponse.KEY_MANUAL_TEXT_ENTRY, MANUAL_TEXT_ENTRY);
-			
+			result.put(PerformInteractionResponse.KEY_CHOICE_ID, Test.GENERAL_INT);
+			result.put(PerformInteractionResponse.KEY_TRIGGER_SOURCE, Test.GENERAL_TRIGGERSOURCE);
+			result.put(PerformInteractionResponse.KEY_MANUAL_TEXT_ENTRY, Test.GENERAL_STRING);
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testChoiceId() {
-		Integer copy = ( (PerformInteractionResponse) msg).getChoiceID();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {   
+    	// Test Values
+		Integer testId = ( (PerformInteractionResponse) msg).getChoiceID();
+		TriggerSource testSource = ( (PerformInteractionResponse) msg).getTriggerSource();
+		String testText = ( (PerformInteractionResponse) msg).getManualTextEntry();
 		
-		
-		assertEquals("Choice id didn't match input data.", CHOICE_ID, copy);
-	}
+		// Valid Tests
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testId);
+		assertEquals(Test.MATCH, Test.GENERAL_TRIGGERSOURCE, testSource);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText);
 	
-	public void testTriggerSource () {
-		TriggerSource copy = ( (PerformInteractionResponse) msg).getTriggerSource();
-		
-		assertEquals("Trigger source didn't match input data.", TRIGGER_SOURCE, copy);
-	}
-	
-	public void testManualTextEntry () {
-		String copy = ( (PerformInteractionResponse) msg).getManualTextEntry();
-		
-		assertEquals("Manual text entry didn't match input data.", MANUAL_TEXT_ENTRY, copy);
-	}
-
-	public void testNull() {
+		// Invalid/Null Tests
 		PerformInteractionResponse msg = new PerformInteractionResponse();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Choice id wasn't set, but getter method returned an object.",         msg.getChoiceID());
-		assertNull("Trigger source wasn't set, but getter method returned an object.",    msg.getTriggerSource());
-		assertNull("Manual text entry wasn't set, but getter method returned an object.", msg.getManualTextEntry());
+		assertNull(Test.NULL, msg.getChoiceID());
+		assertNull(Test.NULL, msg.getTriggerSource());
+		assertNull(Test.NULL, msg.getManualTextEntry());
 	}
-	
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			PerformInteractionResponse cmd = new PerformInteractionResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Manual text entry doesn't match input text entry", 
-					JsonUtils.readStringFromJsonObject(parameters, PerformInteractionResponse.KEY_MANUAL_TEXT_ENTRY), cmd.getManualTextEntry());
-			assertEquals("Trigger source doesn't match input trigger source", 
-					JsonUtils.readStringFromJsonObject(parameters, PerformInteractionResponse.KEY_TRIGGER_SOURCE), cmd.getTriggerSource().toString());
-			assertEquals("Choice ID doesn't match input ID", 
-					JsonUtils.readIntegerFromJsonObject(parameters, PerformInteractionResponse.KEY_CHOICE_ID), cmd.getChoiceID());
-		} 
-		catch (JSONException e) {
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteractionResponse.KEY_MANUAL_TEXT_ENTRY), cmd.getManualTextEntry());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteractionResponse.KEY_TRIGGER_SOURCE), cmd.getTriggerSource().toString());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteractionResponse.KEY_CHOICE_ID), cmd.getChoiceID());
+		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
+		}    	
     }
-
 }

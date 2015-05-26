@@ -35,7 +35,6 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
-@SuppressWarnings("deprecation")
 public class VehicleDataHelper{
 	//top level variables for OnVehicleData
     public static final double SPEED = 35.6;
@@ -304,7 +303,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setEngineTorque(ENGINE_TORQUE);
 		VEHICLE_DATA.setOdometer(ODOMETER);
 		VEHICLE_DATA.setGps(GPS);
-		VEHICLE_DATA.setFuelLevel_State(FUEL_LEVEL_STATE);
+		VEHICLE_DATA.setFuelLevelState(FUEL_LEVEL_STATE);
 		VEHICLE_DATA.setInstantFuelConsumption(INSTANT_FUEL_CONSUMPTION);
 		VEHICLE_DATA.setBeltStatus(BELT_STATUS);
 		VEHICLE_DATA.setBodyInformation(BODY_INFORMATION);
@@ -331,7 +330,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setEngineTorque(ENGINE_TORQUE);
 		VEHICLE_DATA_RESPONSE.setOdometer(ODOMETER);
 		VEHICLE_DATA_RESPONSE.setGps(GPS);
-		VEHICLE_DATA_RESPONSE.setFuelLevel_State(FUEL_LEVEL_STATE);
+		VEHICLE_DATA_RESPONSE.setFuelLevelState(FUEL_LEVEL_STATE);
 		VEHICLE_DATA_RESPONSE.setInstantFuelConsumption(INSTANT_FUEL_CONSUMPTION);
 		VEHICLE_DATA_RESPONSE.setBeltStatus(BELT_STATUS);
 		VEHICLE_DATA_RESPONSE.setBodyInformation(BODY_INFORMATION);

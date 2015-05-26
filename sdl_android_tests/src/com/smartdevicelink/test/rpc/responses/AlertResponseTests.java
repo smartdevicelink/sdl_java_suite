@@ -11,8 +11,13 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.AlertResponse}
+ */
 public class AlertResponseTests extends BaseRpcTests{
 
     private static final int TRY_AGAIN_TIME = 400;
@@ -41,48 +46,52 @@ public class AlertResponseTests extends BaseRpcTests{
         try{
             result.put(AlertResponse.KEY_TRY_AGAIN_TIME, TRY_AGAIN_TIME);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testTryAgainTime(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {    
+    	// Test Values
         int tryAgainTime = ( (AlertResponse) msg ).getTryAgainTime();
-        assertEquals("Try again time didn't match expected time.", TRY_AGAIN_TIME, tryAgainTime);
-    }
-
-    public void testNull(){
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, TRY_AGAIN_TIME, tryAgainTime);
+        
+        // Invalid/Null Tests
         AlertResponse msg = new AlertResponse();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Try again time wasn't set, but getter method returned an object.", msg.getTryAgainTime());
+        assertNull(Test.NULL, msg.getTryAgainTime());
     }
-    
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			AlertResponse cmd = new AlertResponse(hash);
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Try again time doesn't match input time", JsonUtils.readIntegerFromJsonObject(parameters, AlertResponse.KEY_TRY_AGAIN_TIME), cmd.getTryAgainTime());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AlertResponse.KEY_TRY_AGAIN_TIME), cmd.getTryAgainTime());
 			
-		} 
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
+		}    	
     }
-
 }

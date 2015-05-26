@@ -6,7 +6,12 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.CreateInteractionChoiceSetResponse}
+ */
 public class CreateInteractionChoiceSetResponseTests extends BaseRpcTests{
 
     @Override
@@ -29,11 +34,14 @@ public class CreateInteractionChoiceSetResponseTests extends BaseRpcTests{
         return new JSONObject();
     }
 
-    public void testNull(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {    
+    	// Invalid/Null Tests
         CreateInteractionChoiceSetResponse msg = new CreateInteractionChoiceSetResponse();
-        assertNotNull("Null object creation failed.", msg);
+        assertNotNull(Test.NOT_NULL, msg);
 
         testNullBase(msg);
     }
-
 }

@@ -13,39 +13,25 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.ReadDIDResponse}
+ */
 public class ReadDIDResponseTest extends BaseRpcTests {
-
-	private List<DIDResult> didResults;
 	
 	@Override
 	protected RPCMessage createMessage() {
 		ReadDIDResponse msg = new ReadDIDResponse();
-
-		createCustomObjects();
 		
-		msg.setDidResult(didResults);
+		msg.setDidResult(Test.GENERAL_DIDRESULT_LIST);
 
 		return msg;
-	}
-	
-	public void createCustomObjects () {
-		didResults = new ArrayList<DIDResult>(2);
-
-		DIDResult item1 = new DIDResult();
-		item1.setData("data");
-		item1.setResultCode(VehicleDataResultCode.SUCCESS);
-		
-		DIDResult item2 = new DIDResult();
-		item2.setData("info");
-		item2.setResultCode(VehicleDataResultCode.IGNORED);
-		didResults.add(item1);
-		didResults.add(item2);
 	}
 
 	@Override
@@ -60,59 +46,52 @@ public class ReadDIDResponseTest extends BaseRpcTests {
 
 	@Override
 	protected JSONObject getExpectedParameters(int sdlVersion) {
-		JSONObject result    = new JSONObject(),
-				   didResult = new JSONObject();
-		JSONArray  didResults = new JSONArray();
+		JSONObject result = new JSONObject();
 
-		try {
-			didResult.put(DIDResult.KEY_DATA, "data");
-			didResult.put(DIDResult.KEY_RESULT_CODE, VehicleDataResultCode.SUCCESS);
-			didResults.put(didResult);
-			
-			didResult = new JSONObject();
-			didResult.put(DIDResult.KEY_DATA, "info");
-			didResult.put(DIDResult.KEY_RESULT_CODE, VehicleDataResultCode.IGNORED);
-			didResults.put(didResult);
-			
-			result.put(ReadDIDResponse.KEY_DID_RESULT, didResults);
-			
+		try {			
+			result.put(ReadDIDResponse.KEY_DID_RESULT, Test.JSON_DIDRESULTS);			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testDidResults() {
-		List<DIDResult> copy = ( (ReadDIDResponse) msg ).getDidResult();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {  
+		// Test Values
+		List<DIDResult> testResults = ( (ReadDIDResponse) msg ).getDidResult();
 		
-		assertNotNull("Did results were null.", copy);
-		assertTrue("Did results didn't match input data.", Validator.validateDIDResults(didResults, copy));
-	}
-
-	public void testNull() {
+		// Valid Tests
+		assertTrue("Did results didn't match input data.", Validator.validateDIDResults(Test.GENERAL_DIDRESULT_LIST, testResults));
+	
+		// Invalid/Null Tests
 		ReadDIDResponse msg = new ReadDIDResponse();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Did response wasn't set, but getter method returned an object.", msg.getDidResult());
+		assertNull(Test.NULL, msg.getDidResult());
 	}
-	
+
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			ReadDIDResponse cmd = new ReadDIDResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			
@@ -122,13 +101,9 @@ public class ReadDIDResponseTest extends BaseRpcTests {
 				DIDResult chunk = new DIDResult(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)didResultArray.get(index)) );
 				didResultList.add(chunk);
 			}
-			assertTrue("TTSChunk list doesn't match input TTSChunk list",  Validator.validateDIDResults(didResultList, cmd.getDidResult()));
-			
-		} 
-		catch (JSONException e) {
+			assertTrue(Test.MATCH,  Validator.validateDIDResults(didResultList, cmd.getDidResult()));
+		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
+		}    	
     }
-
 }

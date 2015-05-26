@@ -17,22 +17,24 @@ import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
-import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
-import com.smartdevicelink.proxy.rpc.enums.PRNDL;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.VehicleDataHelper;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-@SuppressWarnings("deprecation")
+
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.GetVehicleDataResponse}
+ */
 public class GetVehicleDataResponseTests extends BaseRpcTests{
 
     @Override
@@ -80,137 +82,11 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
             result.put(GetVehicleDataResponse.KEY_EMERGENCY_EVENT, VehicleDataHelper.EMERGENCY_EVENT.serializeJSON());
             result.put(GetVehicleDataResponse.KEY_CLUSTER_MODE_STATUS, VehicleDataHelper.CLUSTER_MODE_STATUS.serializeJSON());
             result.put(GetVehicleDataResponse.KEY_MY_KEY, VehicleDataHelper.MY_KEY.serializeJSON());
-            
-        }catch(JSONException e){
-            //do nothing 
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
-    }
-
-    public void testSpeed() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getSpeed();
-    	assertEquals("Speed does not match input speed", VehicleDataHelper.SPEED, copy);
-    }
-    
-    public void testRpm() {
-    	int copy = ( (GetVehicleDataResponse) msg).getRpm();
-    	assertEquals("RPM does not match input RPM", VehicleDataHelper.RPM, copy);
-    }
-    
-    public void testExternalTemperature() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getExternalTemperature();
-    	assertEquals("External temperature does not match input external temperature", VehicleDataHelper.EXTERNAL_TEMPERATURE, copy);
-    }
-    
-    public void testFuelLevel() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getFuelLevel();
-    	assertEquals("Fuel level does not match input fuel level", VehicleDataHelper.FUEL_LEVEL, copy);
-    }
-    
-    public void testVin() {
-    	String copy = ( (GetVehicleDataResponse) msg).getVin();
-    	assertEquals("VIN does not match input VIN", VehicleDataHelper.VIN, copy);
-    }
-    
-    public void testPRNDL() {
-    	PRNDL copy = ( (GetVehicleDataResponse) msg).getPrndl();
-    	assertEquals("PRNDL does not match input PRNDL", VehicleDataHelper.PRNDL_FINAL, copy);
-    }
-    
-    public void testTirePressure() {
-    	TireStatus copy = ( (GetVehicleDataResponse) msg).getTirePressure();
-    	assertTrue("Tire pressure does not match input tire pressure", Validator.validateTireStatus(VehicleDataHelper.TIRE_PRESSURE, copy));
-    }
-    
-    public void testEngineTorque() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getEngineTorque();
-    	assertEquals("Engine torque does not match input engine torque", VehicleDataHelper.ENGINE_TORQUE, copy);
-    }
-    
-    public void testOdometer() {
-    	int copy = ( (GetVehicleDataResponse) msg).getOdometer();
-    	assertEquals("Odometer does not match input odometer", VehicleDataHelper.ODOMETER, copy);
-    }
-    
-    public void testGps() {
-    	GPSData copy = ( (GetVehicleDataResponse) msg).getGps();
-    	assertTrue("GPS does not match input GPS", Validator.validateGpsData(VehicleDataHelper.GPS, copy));
-    }
-    
-    public void testFuelLevel_State() {
-    	ComponentVolumeStatus copy = ( (GetVehicleDataResponse) msg).getFuelLevel_State();
-    	assertEquals("Fuel level does not match input fuel level", VehicleDataHelper.FUEL_LEVEL_STATE, copy);
-    }
-    
-    public void testInstantFuelConsumption() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getInstantFuelConsumption();
-    	assertEquals("Instant fuel consumption does not match input instant fuel consumption", VehicleDataHelper.INSTANT_FUEL_CONSUMPTION, copy);
-    }
-    
-    public void testBeltStatus() {
-    	BeltStatus copy = ( (GetVehicleDataResponse) msg).getBeltStatus();
-    	assertTrue("Belt status does not match input belt status", Validator.validateBeltStatus(VehicleDataHelper.BELT_STATUS, copy));
-    }
-    
-    public void testBodyInformation() {
-    	BodyInformation copy = ( (GetVehicleDataResponse) msg).getBodyInformation();
-    	assertTrue("Body information does not match input body information", Validator.validateBodyInformation(VehicleDataHelper.BODY_INFORMATION, copy));
-    }
-    
-    public void testDeviceStatus() {
-    	DeviceStatus copy = ( (GetVehicleDataResponse) msg).getDeviceStatus();
-    	assertTrue("Device status does not match input device status", Validator.validateDeviceStatus(VehicleDataHelper.DEVICE_STATUS, copy));
-    }
-    
-    public void testDriverBraking() {
-    	VehicleDataEventStatus copy = ( (GetVehicleDataResponse) msg).getDriverBraking();
-    	assertEquals("Driver braking does not match input driver braking", VehicleDataHelper.DRIVER_BRAKING, copy);
-    }
-    
-    public void testWiperStatus() {
-    	WiperStatus copy = ( (GetVehicleDataResponse) msg).getWiperStatus();
-    	assertEquals("Wiper status does not match input wiper status", VehicleDataHelper.WIPER_STATUS, copy);
-    }
-    
-    public void testHeadLampStatus() {
-    	HeadLampStatus copy = ( (GetVehicleDataResponse) msg).getHeadLampStatus();
-    	assertTrue("Head lamp status does not match input head lamp status", Validator.validateHeadLampStatus(VehicleDataHelper.HEAD_LAMP_STATUS, copy));
-    }
-    
-    public void testAccPedalPosition() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getAccPedalPosition();
-    	assertEquals("Acc pedal position does not match input acc pedal position", VehicleDataHelper.ACC_PEDAL_POSITION, copy);
-    }
-    
-    public void testSteeringWheelAngle() {
-    	Double copy = ( (GetVehicleDataResponse) msg).getSteeringWheelAngle();
-    	assertEquals("Steering wheel angle does not match input steering wheel angle", VehicleDataHelper.STEERING_WHEEL_ANGLE, copy);
-    }
-    
-    public void testECallInfo() {
-    	ECallInfo copy = ( (GetVehicleDataResponse) msg).getECallInfo();
-    	assertTrue("Emergency call info does not match input emergency call info", Validator.validateECallInfo(VehicleDataHelper.E_CALL_INFO, copy));
-    }
-    
-    public void testAirbagStatus() {
-    	AirbagStatus copy = ( (GetVehicleDataResponse) msg).getAirbagStatus();
-    	assertTrue("Airbag status does not match input airbag status", Validator.validateAirbagStatus(VehicleDataHelper.AIRBAG_STATUS, copy));
-    }
-    
-    public void testEmergencyEvent() {
-    	EmergencyEvent copy = ( (GetVehicleDataResponse) msg).getEmergencyEvent();
-    	assertTrue("Emergency event does not match input emergency event", Validator.validateEmergencyEvent(VehicleDataHelper.EMERGENCY_EVENT, copy));
-    }
-    
-    public void testClusterModeStatus() {
-    	ClusterModeStatus copy = ( (GetVehicleDataResponse) msg).getClusterModeStatus();
-    	assertTrue("Cluster mode status does not match cluster mode status", Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, copy));
-    }
-    
-    public void testMyKey() {
-    	MyKey copy = ( (GetVehicleDataResponse) msg).getMyKey();
-    	assertTrue("My key does not match my key", Validator.validateMyKey(VehicleDataHelper.MY_KEY, copy));
     }
 
     public void testJson() {
@@ -494,140 +370,155 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			}
 			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
     }
     
-    public void testNull(){
-        GetVehicleDataResponse msg = new GetVehicleDataResponse();
-        assertNotNull("Null object creation failed.", msg);
-
-        testNullBase(msg);
-        
-        assertNull("Speed wasn't set, but getter method returned an object.", msg.getSpeed());
-        assertNull("RPM wasn't set, but getter method returned an object.", msg.getRpm());
-        assertNull("External temperature wasn't set, but getter method returned an object.", msg.getExternalTemperature());
-        assertNull("Fuel level wasn't set, but getter method returned an object.", msg.getFuelLevel());
-        assertNull("VIN wasn't set, but getter method returned an object.", msg.getVin());
-        assertNull("PRNDL wasn't set, but getter method returned an object.", msg.getPrndl());
-        assertNull("Tire pressure wasn't set, but getter method returned an object.", msg.getTirePressure());
-        assertNull("Engine torque wasn't set, but getter method returned an object.", msg.getEngineTorque());
-        assertNull("Odometer wasn't set, but getter method returned an object.", msg.getOdometer());
-        assertNull("GPS wasn't set, but getter method returned an object.", msg.getGps());
-        assertNull("Fuel level state wasn't set, but getter method returned an object.", msg.getFuelLevel_State());
-        assertNull("Instant fuel consumption wasn't set, but getter method returned an object.", msg.getInstantFuelConsumption());
-        assertNull("Belt status wasn't set, but getter method returned an object.", msg.getBeltStatus());
-        assertNull("Body information wasn't set, but getter method returned an object.", msg.getBodyInformation());
-        assertNull("Device status wasn't set, but getter method returned an object.", msg.getDeviceStatus());
-        assertNull("Driver braking wasn't set, but getter method returned an object.", msg.getDriverBraking());
-        assertNull("Wiper status wasn't set, but getter method returned an object.", msg.getWiperStatus());
-        assertNull("Head lamp status wasn't set, but getter method returned an object.", msg.getHeadLampStatus());
-        assertNull("Acceleration pedal position wasn't set, but getter method returned an object.", msg.getAccPedalPosition());
-        assertNull("Steering wheel angle wasn't set, but getter method returned an object.", msg.getSteeringWheelAngle());
-        assertNull("Emergency call info wasn't set, but getter method returned an object.", msg.getECallInfo());
-        assertNull("Airbag status wasn't set, but getter method returned an object.", msg.getAirbagStatus());
-        assertNull("Emergency event wasn't set, but getter method returned an object.", msg.getEmergencyEvent());
-        assertNull("Cluster mode status wasn't set, but getter method returned an object.", msg.getClusterModeStatus());
-        assertNull("My key wasn't set, but getter method returned an object.", msg.getMyKey());
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+	public void testRpcValues(){		
+		// Valid Tests
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getSpeed());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getRpm());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getExternalTemperature());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getFuelLevel());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getPrndl());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getTirePressure());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getEngineTorque());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getOdometer());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getGps());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getFuelLevelState());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getInstantFuelConsumption());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getBeltStatus());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getBodyInformation());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getDeviceStatus());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getDriverBraking());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getWiperStatus());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getHeadLampStatus());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getAccPedalPosition());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getSteeringWheelAngle());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getECallInfo());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getAirbagStatus());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getEmergencyEvent());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getClusterModeStatus());
+		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getMyKey());
+		
+		// Invalid/Null Tests
+		GetVehicleData msg = new GetVehicleData();
+		assertNotNull(Test.NOT_NULL, msg);
+		testNullBase(msg);
+		
+		assertNull(Test.NULL, msg.getAccPedalPosition());
+        assertNull(Test.NULL, msg.getAirbagStatus());
+        assertNull(Test.NULL, msg.getBeltStatus());
+        assertNull(Test.NULL, msg.getDriverBraking());
+        assertNull(Test.NULL, msg.getFuelLevel());
+        assertNull(Test.NULL, msg.getTirePressure());
+        assertNull(Test.NULL, msg.getWiperStatus());
+        assertNull(Test.NULL, msg.getGps());
+        assertNull(Test.NULL, msg.getSpeed());
+        assertNull(Test.NULL, msg.getRpm());
+        assertNull(Test.NULL, msg.getFuelLevelState());
+        assertNull(Test.NULL, msg.getInstantFuelConsumption());
+        assertNull(Test.NULL, msg.getExternalTemperature());
+        assertNull(Test.NULL, msg.getPrndl());
+        assertNull(Test.NULL, msg.getOdometer());
+        assertNull(Test.NULL, msg.getBodyInformation());
+        assertNull(Test.NULL, msg.getDeviceStatus());
+        assertNull(Test.NULL, msg.getHeadLampStatus());
+        assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getSteeringWheelAngle());
+        assertNull(Test.NULL, msg.getECallInfo());
+        assertNull(Test.NULL, msg.getEmergencyEvent());
+        assertNull(Test.NULL, msg.getClusterModeStatus());
+        assertNull(Test.NULL, msg.getMyKey());		
     }
     
+
+	/**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			GetVehicleDataResponse cmd = new GetVehicleDataResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals("Speed doesn't match input speed", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_SPEED), cmd.getSpeed());
-			assertEquals("Rpm doesn't match input rpm", 
-					JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_RPM), cmd.getRpm());
-			assertEquals("External temperature doesn't match input temperature", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
-			assertEquals("Fuel level doesn't match input level", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL), cmd.getFuelLevel());
-			assertEquals("VIN doesn't match input VIN", 
-					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_VIN), cmd.getVin());
-			assertEquals("PRNDL doesn't match input PRDNL", 
-					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_PRNDL), cmd.getPrndl().toString());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_SPEED), cmd.getSpeed());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_RPM), cmd.getRpm());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL), cmd.getFuelLevel());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_VIN), cmd.getVin());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_PRNDL), cmd.getPrndl().toString());
 			
 			JSONObject tireStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_TIRE_PRESSURE);
 			TireStatus tireStatus = new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tireStatusObj));
-			assertTrue("Tire pressure doesn't match input pressure", Validator.validateTireStatus(tireStatus, cmd.getTirePressure()) );
+			assertTrue(Test.TRUE, Validator.validateTireStatus(tireStatus, cmd.getTirePressure()) );
 			
-			assertEquals("Engine torque doesn't match input torque", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
-			assertEquals("Odometer doesn't match input odometer", 
-					JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_ODOMETER), cmd.getOdometer());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_ODOMETER), cmd.getOdometer());
 			
 			JSONObject gpsDataObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_GPS);
 			GPSData gpsData = new GPSData(JsonRPCMarshaller.deserializeJSONObject(gpsDataObj));
-			assertTrue("GPS doesn't match input GPS", Validator.validateGpsData(gpsData, cmd.getGps()) );
+			assertTrue(Test.TRUE, Validator.validateGpsData(gpsData, cmd.getGps()) );
 			
-			assertEquals("Fuel level state doesn't match input state", 
-					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevel_State().toString());
-			assertEquals("Instant fuel consumption doesn't match input consumption", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState().toString());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
 			
 			JSONObject beltStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_BELT_STATUS);
 			BeltStatus beltStatus = new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltStatusObj));
-			assertTrue("Belt status doesn't match input status", Validator.validateBeltStatus(beltStatus, cmd.getBeltStatus()) );
+			assertTrue(Test.TRUE, Validator.validateBeltStatus(beltStatus, cmd.getBeltStatus()) );
 			
 			JSONObject bodyInformationObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_BODY_INFORMATION);
 			BodyInformation bodyInformation = new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInformationObj));
-			assertTrue("Body information doesn't match input information", Validator.validateBodyInformation(bodyInformation, cmd.getBodyInformation()) );
+			assertTrue(Test.TRUE, Validator.validateBodyInformation(bodyInformation, cmd.getBodyInformation()) );
 			
 			JSONObject deviceStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_DEVICE_STATUS);
 			DeviceStatus deviceStatus = new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceStatusObj));
-			assertTrue("Device status doesn't match input status", Validator.validateDeviceStatus(deviceStatus, cmd.getDeviceStatus()) );
+			assertTrue(Test.TRUE, Validator.validateDeviceStatus(deviceStatus, cmd.getDeviceStatus()) );
 			
-			assertEquals("Driver braking doesn't match input braking", 
-					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_DRIVER_BRAKING), cmd.getDriverBraking().toString());
-			assertEquals("Wiper status doesn't match input status", 
-					JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_WIPER_STATUS), cmd.getWiperStatus().toString());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_DRIVER_BRAKING), cmd.getDriverBraking().toString());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_WIPER_STATUS), cmd.getWiperStatus().toString());
 			
 			JSONObject headLampStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_HEAD_LAMP_STATUS);
 			HeadLampStatus headLampStatus = new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampStatusObj));
-			assertTrue("Head lamp status doesn't match input status", Validator.validateHeadLampStatus(headLampStatus, cmd.getHeadLampStatus()) );
+			assertTrue(Test.TRUE, Validator.validateHeadLampStatus(headLampStatus, cmd.getHeadLampStatus()) );
 			
-			assertEquals("Acceleration pedal position doesn't match input position", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
-			assertEquals("Steering wheel angle doesn't match input angle", 
-					JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
 			
 			JSONObject eCallInfoObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_E_CALL_INFO);
 			ECallInfo eCallInfo = new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(eCallInfoObj));
-			assertTrue("Emergency call info doesn't match input info", Validator.validateECallInfo(eCallInfo, cmd.getECallInfo()) );
+			assertTrue(Test.TRUE, Validator.validateECallInfo(eCallInfo, cmd.getECallInfo()) );
 			
 			JSONObject airbagStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_AIRBAG_STATUS);
 			AirbagStatus airbagStatus = new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagStatusObj));
-			assertTrue("Airbag status doesn't match input status", Validator.validateAirbagStatus(airbagStatus, cmd.getAirbagStatus()) );
+			assertTrue(Test.TRUE, Validator.validateAirbagStatus(airbagStatus, cmd.getAirbagStatus()) );
 			
 			JSONObject emergencyEventObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_EMERGENCY_EVENT);
 			EmergencyEvent emergencyEvent = new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyEventObj));
-			assertTrue("Emergency event doesn't match input event", Validator.validateEmergencyEvent(emergencyEvent, cmd.getEmergencyEvent()) );
+			assertTrue(Test.TRUE, Validator.validateEmergencyEvent(emergencyEvent, cmd.getEmergencyEvent()) );
 			
 			JSONObject clusterModeStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_CLUSTER_MODE_STATUS);
 			ClusterModeStatus clusterModeStatus = new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeStatusObj));
-			assertTrue("Cluster mode status doesn't match input status", Validator.validateClusterModeStatus(clusterModeStatus, cmd.getClusterModeStatus()) );
+			assertTrue(Test.TRUE, Validator.validateClusterModeStatus(clusterModeStatus, cmd.getClusterModeStatus()) );
 			
 			JSONObject myKeyObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_MY_KEY);
 			MyKey myKey = new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObj));
-			assertTrue("My key doesn't match input key", Validator.validateMyKey(myKey, cmd.getMyKey()) );
-		} 
-		catch (JSONException e) {
+			assertTrue(Test.TRUE, Validator.validateMyKey(myKey, cmd.getMyKey()) );
+		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
-    }
-    
+		}    	
+    }    
 }

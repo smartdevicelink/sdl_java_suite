@@ -16,53 +16,28 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SetDisplayLayoutResponse}
+ */
 public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 
-	private DisplayCapabilities DISPLAY_CAPABILITIES = new DisplayCapabilities();
-	private static final PresetBankCapabilities PRESET_BANK_CAPABILITIES = new PresetBankCapabilities();
-	private final List<ButtonCapabilities> BUTTON_CAPABILITIES_LIST = new ArrayList<ButtonCapabilities>();
-	private final List<SoftButtonCapabilities> SOFT_BUTTON_CAPABILITIES_LIST = new ArrayList<SoftButtonCapabilities>();
-	private static final Boolean BUTTON_CAPABILITIES_TRUE = true;
-	private static final Boolean BUTTON_CAPABILITIES_FALSE = false;
-	private static final Boolean SOFT_BUTTON_CAPABILITIES_TRUE = true;
-	private static final Boolean SOFT_BUTTON_CAPABILITIES_FALSE = false;
-	
 	@Override
 	protected RPCMessage createMessage() {		
 		SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse();
-		createCustomObjects();
 		
-		msg.setDisplayCapabilities(DISPLAY_CAPABILITIES);
-		msg.setPresetBankCapabilities(PRESET_BANK_CAPABILITIES);
-		msg.setButtonCapabilities(BUTTON_CAPABILITIES_LIST);
-		msg.setSoftButtonCapabilities(SOFT_BUTTON_CAPABILITIES_LIST);
+		msg.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
+		msg.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
+		msg.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
+		msg.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 
 		return msg;
-	}
-	
-	private void createCustomObjects () { 
-		ButtonCapabilities buttonCapabailities = new ButtonCapabilities();
-		buttonCapabailities.setUpDownAvailable(BUTTON_CAPABILITIES_TRUE);
-		buttonCapabailities.setLongPressAvailable(BUTTON_CAPABILITIES_TRUE);
-		buttonCapabailities.setShortPressAvailable(BUTTON_CAPABILITIES_FALSE);
-		BUTTON_CAPABILITIES_LIST.add(buttonCapabailities);
-		
-		SoftButtonCapabilities softButtonCapabilities = new SoftButtonCapabilities();
-		softButtonCapabilities.setImageSupported(SOFT_BUTTON_CAPABILITIES_FALSE);
-		softButtonCapabilities.setUpDownAvailable(SOFT_BUTTON_CAPABILITIES_TRUE);
-		softButtonCapabilities.setLongPressAvailable(SOFT_BUTTON_CAPABILITIES_FALSE);
-		softButtonCapabilities.setShortPressAvailable(SOFT_BUTTON_CAPABILITIES_TRUE);
-		SOFT_BUTTON_CAPABILITIES_LIST.add(softButtonCapabilities);
-
-		DISPLAY_CAPABILITIES.setDisplayType(DisplayType.TYPE2);
-		DISPLAY_CAPABILITIES.setGraphicSupported(true);
-		PRESET_BANK_CAPABILITIES.setOnScreenPresetsAvailable(true);
 	}
 
 	@Override
@@ -78,98 +53,69 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 	@Override
 	protected JSONObject getExpectedParameters(int sdlVersion) {
 		JSONObject result = new JSONObject();
-		JSONObject presetBank = new JSONObject();
 
-		try {			
-			presetBank.put(PresetBankCapabilities.KEY_ON_SCREEN_PRESETS_AVAILABLE, PRESET_BANK_CAPABILITIES.onScreenPresetsAvailable());
-						
-			result.put(SetDisplayLayoutResponse.KEY_DISPLAY_CAPABILITIES, DISPLAY_CAPABILITIES.serializeJSON());
-			result.put(SetDisplayLayoutResponse.KEY_PRESET_BANK_CAPABILITIES, presetBank);
-			
-			JSONObject buttonCapabilitiesObj = new JSONObject();
-			JSONArray buttonCapabilitiesArray = new JSONArray();
-            buttonCapabilitiesObj.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, true);
-            buttonCapabilitiesObj.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, false);
-            buttonCapabilitiesObj.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, true);
-            buttonCapabilitiesArray.put(buttonCapabilitiesObj);
-			
-			result.put(SetDisplayLayoutResponse.KEY_BUTTON_CAPABILITIES, buttonCapabilitiesArray);
-            
-            JSONObject softButtonCapabilitiesObj = new JSONObject();
-            JSONArray softButtonCapabilitiesArray = new JSONArray();
-            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, true);
-            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, true);
-            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, false);
-            softButtonCapabilitiesObj.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, false);
-            softButtonCapabilitiesArray.put(softButtonCapabilitiesObj);
-			
-			result.put(SetDisplayLayoutResponse.KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilitiesArray);
-			
+		try {
+			result.put(SetDisplayLayoutResponse.KEY_DISPLAY_CAPABILITIES, Test.GENERAL_DISPLAYCAPABILITIES.serializeJSON());
+			result.put(SetDisplayLayoutResponse.KEY_PRESET_BANK_CAPABILITIES, Test.JSON_PRESETBANKCAPABILITIES);
+			result.put(SetDisplayLayoutResponse.KEY_BUTTON_CAPABILITIES, Test.JSON_BUTTONCAPABILITIES);
+            result.put(SetDisplayLayoutResponse.KEY_SOFT_BUTTON_CAPABILITIES, Test.JSON_SOFTBUTTONCAPABILITIES);
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
 
-	public void testDisplayCapabilities() {
-		DisplayCapabilities copy = ( (SetDisplayLayoutResponse) msg ).getDisplayCapabilities();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		DisplayCapabilities testDisplay      = ( (SetDisplayLayoutResponse) msg ).getDisplayCapabilities();
+		PresetBankCapabilities testPbc       = ( (SetDisplayLayoutResponse) msg ).getPresetBankCapabilities();
+		List<ButtonCapabilities> testBc      = ( (SetDisplayLayoutResponse) msg ).getButtonCapabilities();
+		List<SoftButtonCapabilities> testSbc = ( (SetDisplayLayoutResponse) msg ).getSoftButtonCapabilities();
 		
-		assertTrue("Input value didn't match expected value.", Validator.validateDisplayCapabilities(DISPLAY_CAPABILITIES, copy));
-	}
-	
-	public void testPresetBankCapabilities() {
-		PresetBankCapabilities copy = ( (SetDisplayLayoutResponse) msg ).getPresetBankCapabilities();
-		
-		assertTrue("Input value didn't match expected value.", Validator.validatePresetBankCapabilities(PRESET_BANK_CAPABILITIES, copy));
-	}
-	
-	public void testButtonCapabilities () {
-		List<ButtonCapabilities> copy = ( (SetDisplayLayoutResponse) msg ).getButtonCapabilities();
-		
-		assertEquals("List size didn't match expected size.", BUTTON_CAPABILITIES_LIST.size(), copy.size());
-		
-		for (int i = 0; i < BUTTON_CAPABILITIES_LIST.size(); i++) {
-			assertEquals("Input value didn't match expected value.", BUTTON_CAPABILITIES_LIST.get(i), copy.get(i));
+		// Valid Tests
+		assertTrue(Test.TRUE, Validator.validateDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES, testDisplay));
+		assertTrue(Test.TRUE, Validator.validatePresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES, testPbc));
+		assertEquals(Test.MATCH, Test.GENERAL_BUTTONCAPABILITIES_LIST.size(), testBc.size());
+		assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST.size(), testSbc.size());
+		for (int i = 0; i < Test.GENERAL_BUTTONCAPABILITIES_LIST.size(); i++) {
+			assertEquals(Test.MATCH, Test.GENERAL_BUTTONCAPABILITIES_LIST.get(i), testBc.get(i));
 		}
-	}
-	
-	public void testSoftButtonCapabilities () {
-		List<SoftButtonCapabilities> copy = ( (SetDisplayLayoutResponse) msg ).getSoftButtonCapabilities();
-		
-		assertEquals("List size didn't match expected size.", SOFT_BUTTON_CAPABILITIES_LIST.size(), copy.size());
-		
-		for (int i = 0; i < SOFT_BUTTON_CAPABILITIES_LIST.size(); i++) {
-			assertEquals("Input value didn't match expected value.", SOFT_BUTTON_CAPABILITIES_LIST.get(i), copy.get(i));
+		for (int i = 0; i < Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST.size(); i++) {
+			assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST.get(i), testSbc.get(i));
 		}
-	}
-
-	public void testNull() {
+	
+		// Invalid/Null Tests
 		SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse();
-		assertNotNull("Null object creation failed.", msg);
-
+		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull("Display capabilities wasn't set, but getter method returned an object.", msg.getDisplayCapabilities());
-		assertNull("Preset bank capabilities wasn't set, but getter method returned an object.", msg.getPresetBankCapabilities());
-		assertNull("Button capabilities wasn't set, but getter method returned an object.", msg.getButtonCapabilities());
-		assertNull("Soft button capabilities wasn't set, but getter method returned an object.", msg.getSoftButtonCapabilities());
+		assertNull(Test.NULL, msg.getDisplayCapabilities());
+		assertNull(Test.NULL, msg.getPresetBankCapabilities());
+		assertNull(Test.NULL, msg.getButtonCapabilities());
+		assertNull(Test.NULL, msg.getSoftButtonCapabilities());
 	}
 	
+    /**
+     * Tests a valid JSON construction of this RPC message.
+     */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
-    	assertNotNull("Command object is null", commandJson);
+    	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SetDisplayLayoutResponse cmd = new SetDisplayLayoutResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull("Command type doesn't match expected message type", body);
+			assertNotNull(Test.NOT_NULL, body);
 			
-			// test everything in the body
-			assertEquals("Command name doesn't match input name", JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals("Correlation ID doesn't match input ID", JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			// Test everything in the json body.
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
@@ -179,12 +125,11 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 				ButtonCapabilities buttonCapability = new ButtonCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)buttonCapabilitiesArray.get(index) ));
 				buttonCapabilitiesList.add(buttonCapability);
 			}
-			assertTrue("Button capabilities list doesn't match input capabilities list",  
-					Validator.validateButtonCapabilities(buttonCapabilitiesList, cmd.getButtonCapabilities() ));
+			assertTrue(Test.TRUE, Validator.validateButtonCapabilities(buttonCapabilitiesList, cmd.getButtonCapabilities() ));
 			
 			JSONObject displayCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(parameters, SetDisplayLayoutResponse.KEY_DISPLAY_CAPABILITIES);
 			DisplayCapabilities displayCapabilities = new DisplayCapabilities(JsonRPCMarshaller.deserializeJSONObject(displayCapabilitiesObj));
-			assertTrue("Display capabilities doesn't match input capabilities",  Validator.validateDisplayCapabilities(displayCapabilities, cmd.getDisplayCapabilities()) );
+			assertTrue(Test.TRUE, Validator.validateDisplayCapabilities(displayCapabilities, cmd.getDisplayCapabilities()) );
 			
 			JSONArray softButtonCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, SetDisplayLayoutResponse.KEY_SOFT_BUTTON_CAPABILITIES);
 			List<SoftButtonCapabilities> softButtonCapabilitiesList = new ArrayList<SoftButtonCapabilities>();
@@ -193,17 +138,13 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 						new SoftButtonCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonCapabilitiesArray.get(index) ));
 				softButtonCapabilitiesList.add(softButtonCapability);
 			}
-			assertTrue("Soft button capabilities list doesn't match input capabilities list",  
-					Validator.validateSoftButtonCapabilities(softButtonCapabilitiesList, cmd.getSoftButtonCapabilities() ));
+			assertTrue(Test.TRUE, Validator.validateSoftButtonCapabilities(softButtonCapabilitiesList, cmd.getSoftButtonCapabilities() ));
 			
 			JSONObject presetBankCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(parameters, SetDisplayLayoutResponse.KEY_PRESET_BANK_CAPABILITIES);
 			PresetBankCapabilities presetBankCapabilities = new PresetBankCapabilities(JsonRPCMarshaller.deserializeJSONObject(presetBankCapabilitiesObj));
-			assertTrue("Preset bank capabilities doesn't match input capabilities",  Validator.validatePresetBankCapabilities(presetBankCapabilities, cmd.getPresetBankCapabilities()) );
-		} 
-		catch (JSONException e) {
+			assertTrue(Test.TRUE,  Validator.validatePresetBankCapabilities(presetBankCapabilities, cmd.getPresetBankCapabilities()) );
+		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-    	
-    }
-	
+		}    	
+    }	
 }

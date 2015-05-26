@@ -65,8 +65,7 @@ public class AddCommandTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {   
-    	
+    public void testRpcValues () {       	
     	// Test Values
     	int          testCmdId      = ( (AddCommand) msg ).getCmdID();
     	Image        testImage      = ( (AddCommand) msg ).getCmdIcon();
@@ -131,8 +130,7 @@ public class AddCommandTests extends BaseRpcTests{
 			Image referenceCmdIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(cmdIcon));
 			assertTrue(Test.TRUE, Validator.validateImage(referenceCmdIcon, cmd.getCmdIcon()));
 			
-		} 
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	
     }

@@ -102,8 +102,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues(){
-		
+	public void testRpcValues(){		
 		// Valid Tests
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getSpeed());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getRpm());
