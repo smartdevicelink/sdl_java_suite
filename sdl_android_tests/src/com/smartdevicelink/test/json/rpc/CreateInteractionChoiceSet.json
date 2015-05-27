@@ -16,7 +16,11 @@
           "vrCommands":[
             "vr1",
             "vr2",
-            "vr3"
+            "vr3",
+            "vr4",
+            "vr5",
+            "vr6",
+            "vr7"
           ],
           "choiceID":1,
           "image":{
@@ -33,9 +37,13 @@
           },
           "menuName":"Menu Name 2",
           "vrCommands":[
+            "vr1",
+            "vr2",
+            "vr3",
             "vr4",
             "vr5",
-            "vr6"
+            "vr6",
+            "vr7"
           ],
           "choiceID":2,
           "image":{

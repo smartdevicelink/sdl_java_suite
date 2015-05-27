@@ -110,23 +110,23 @@ public class Test {
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
 	public static final List<String>                    GENERAL_STRING_LIST                    = Arrays.asList(new String[] { "a", "b"});
 	public static final List<Integer>                   GENERAL_INTEGER_LIST                   = Arrays.asList(new Integer[]{ -1, -2});
-	public static final List<TTSChunk>                  GENERAL_TTSCHUNK_LIST                  = new ArrayList<TTSChunk>();
-	public static final List<TextField>                 GENERAL_TEXTFIELD_LIST                 = new ArrayList<TextField>();
-	public static final List<DIDResult>                 GENERAL_DIDRESULT_LIST                 = new ArrayList<DIDResult>();
-	public static final List<AppHMIType>                GENERAL_APPHMITYPE_LIST                = new ArrayList<AppHMIType>();
-	public static final List<VrHelpItem>                GENERAL_VRHELPITEM_LIST                = new ArrayList<VrHelpItem>();
-	public static final List<SoftButton>                GENERAL_SOFTBUTTON_LIST                = new ArrayList<SoftButton>();
-	public static final List<ImageField> 			    GENERAL_IMAGEFIELD_LIST				   = new ArrayList<ImageField>();
-	public static final List<GlobalProperty>            GENERAL_GLOBALPROPERTY_LIST            = new ArrayList<GlobalProperty>();
-	public static final List<VrCapabilities>		    GENERAL_VRCAPABILITIES_LIST            = new ArrayList<VrCapabilities>();
-	public static final List<MediaClockFormat>          GENERAL_MEDIACLOCKFORMAT_LIST		   = new ArrayList<MediaClockFormat>();
-	public static final List<VehicleDataResult>         GENERAL_VEHICLEDATARESULT_LIST         = new ArrayList<VehicleDataResult>();
-	public static final List<PrerecordedSpeech>         GENERAL_PRERECORDEDSPEECH_LIST		   = new ArrayList<PrerecordedSpeech>();
-	public static final List<SpeechCapabilities>        GENERAL_SPEECHCAPABILITIES_LIST        = new ArrayList<SpeechCapabilities>();
-	public static final List<ButtonCapabilities>        GENERAL_BUTTONCAPABILITIES_LIST        = new ArrayList<ButtonCapabilities>();
-	public static final List<HmiZoneCapabilities>       GENERAL_HMIZONECAPABILITIES_LIST       = new ArrayList<HmiZoneCapabilities>();
-	public static final List<SoftButtonCapabilities>    GENERAL_SOFTBUTTONCAPABILITIES_LIST    = new ArrayList<SoftButtonCapabilities>();
-	public static final List<AudioPassThruCapabilities> GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST = new ArrayList<AudioPassThruCapabilities>();
+	public static final List<TTSChunk>                  GENERAL_TTSCHUNK_LIST                  = new ArrayList<TTSChunk>(2);
+	public static final List<TextField>                 GENERAL_TEXTFIELD_LIST                 = new ArrayList<TextField>(1);
+	public static final List<DIDResult>                 GENERAL_DIDRESULT_LIST                 = new ArrayList<DIDResult>(1);
+	public static final List<AppHMIType>                GENERAL_APPHMITYPE_LIST                = new ArrayList<AppHMIType>(2);
+	public static final List<VrHelpItem>                GENERAL_VRHELPITEM_LIST                = new ArrayList<VrHelpItem>(2);
+	public static final List<SoftButton>                GENERAL_SOFTBUTTON_LIST                = new ArrayList<SoftButton>(1);
+	public static final List<ImageField> 			    GENERAL_IMAGEFIELD_LIST				   = new ArrayList<ImageField>(1);
+	public static final List<GlobalProperty>            GENERAL_GLOBALPROPERTY_LIST            = new ArrayList<GlobalProperty>(2);
+	public static final List<VrCapabilities>		    GENERAL_VRCAPABILITIES_LIST            = new ArrayList<VrCapabilities>(1);
+	public static final List<MediaClockFormat>          GENERAL_MEDIACLOCKFORMAT_LIST		   = new ArrayList<MediaClockFormat>(2);
+	public static final List<VehicleDataResult>         GENERAL_VEHICLEDATARESULT_LIST         = new ArrayList<VehicleDataResult>(VehicleDataType.values().length);
+	public static final List<PrerecordedSpeech>         GENERAL_PRERECORDEDSPEECH_LIST		   = new ArrayList<PrerecordedSpeech>(2);
+	public static final List<SpeechCapabilities>        GENERAL_SPEECHCAPABILITIES_LIST        = new ArrayList<SpeechCapabilities>(2);
+	public static final List<ButtonCapabilities>        GENERAL_BUTTONCAPABILITIES_LIST        = new ArrayList<ButtonCapabilities>(2);
+	public static final List<HmiZoneCapabilities>       GENERAL_HMIZONECAPABILITIES_LIST       = new ArrayList<HmiZoneCapabilities>(2);
+	public static final List<SoftButtonCapabilities>    GENERAL_SOFTBUTTONCAPABILITIES_LIST    = new ArrayList<SoftButtonCapabilities>(1);
+	public static final List<AudioPassThruCapabilities> GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST = new ArrayList<AudioPassThruCapabilities>(1);
 	
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();	
@@ -149,7 +149,7 @@ public class Test {
 	public static final JSONObject JSON_KEYBOARDPROPERTIES        = new JSONObject();
 	public static final JSONObject JSON_DISPLAYCAPABILITIES       = new JSONObject();
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
-	
+		
 	static {
 		// TextField List Setup
 		TextField item = new TextField();
@@ -210,17 +210,14 @@ public class Test {
 		GENERAL_MENUPARAMS.setMenuName(GENERAL_STRING);
 		GENERAL_MENUPARAMS.setParentID(GENERAL_INT);
 		GENERAL_MENUPARAMS.setPosition(GENERAL_INT);
-		
-		// String List Setup
-		GENERAL_STRING_LIST.add("Command 1");
-		GENERAL_STRING_LIST.add("Command 2");
-		
+				
 		// VrHelpItem List Setup
 		VrHelpItem vrItem1 = new VrHelpItem();
     	vrItem1.setText(GENERAL_STRING);
     	vrItem1.setImage(GENERAL_IMAGE);
-    	vrItem1.setPosition(0);	    	
+    	vrItem1.setPosition(100);	    	
     	GENERAL_VRHELPITEM_LIST.add(vrItem1);
+    	vrItem1 = new VrHelpItem();
     	
     	// TTSChunk List Setup
     	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle"));
@@ -231,7 +228,7 @@ public class Test {
     	GENERAL_KEYBOARDPROPERTIES.setKeypressMode(KeypressMode.SINGLE_KEYPRESS);
     	GENERAL_KEYBOARDPROPERTIES.setKeyboardLayout(KeyboardLayout.QWERTY);
     	GENERAL_KEYBOARDPROPERTIES.setLanguage(Language.EN_US);
-    	GENERAL_KEYBOARDPROPERTIES.setLimitedCharacterList(GENERAL_STRING_LIST);
+    	GENERAL_KEYBOARDPROPERTIES.setLimitedCharacterList(Test.GENERAL_STRING_LIST);
     	
     	// StartTime Setup
     	GENERAL_STARTTIME.setHours(0);
@@ -243,6 +240,10 @@ public class Test {
         choice.setChoiceID(GENERAL_INT);
         choice.setMenuName(GENERAL_STRING);
         choice.setSecondaryText(GENERAL_STRING);
+        choice.setImage(GENERAL_IMAGE);
+        choice.setSecondaryImage(GENERAL_IMAGE);
+        choice.setTertiaryText(GENERAL_STRING);
+        choice.setVrCommands(GENERAL_STRING_LIST);
         GENERAL_CHOICE_LIST.add(choice);
         
         // DeviceInfo Setup
@@ -295,10 +296,10 @@ public class Test {
         
         // ButtonCapabilities List Setup
         ButtonCapabilities testButton = new ButtonCapabilities();
-        testButton.setLongPressAvailable(GENERAL_BOOLEAN);
-        testButton.setShortPressAvailable(GENERAL_BOOLEAN);
-        testButton.setUpDownAvailable(GENERAL_BOOLEAN);
-        testButton.setName(ButtonName.OK);        
+        testButton.setLongPressAvailable(false);
+        testButton.setShortPressAvailable(true);
+        testButton.setUpDownAvailable(true);
+        testButton.setName(ButtonName.SEEKRIGHT);        
         GENERAL_BUTTONCAPABILITIES_LIST.add(testButton);
         
         // SoftButtonCapabilities List Setup
@@ -375,13 +376,17 @@ public class Test {
 	    	jsonTtsChunk.put(TTSChunk.KEY_TEXT, "Welcome to the jungle");
 	    	jsonTtsChunk.put(TTSChunk.KEY_TYPE, SpeechCapabilities.TEXT);
 	    	JSON_TTSCHUNKS.put(jsonTtsChunk);
+	    	jsonTtsChunk = new JSONObject();
+	    	jsonTtsChunk.put(TTSChunk.KEY_TEXT, "Say a command");
+	    	jsonTtsChunk.put(TTSChunk.KEY_TYPE, SpeechCapabilities.TEXT);
+	    	JSON_TTSCHUNKS.put(jsonTtsChunk);
 	    	
 	    	// Json KeyboardProperties Setup
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_AUTO_COMPLETE_TEXT, GENERAL_STRING);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_KEYPRESS_MODE, KeypressMode.SINGLE_KEYPRESS);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_KEYBOARD_LAYOUT, KeyboardLayout.QWERTY);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_LANGUAGE, Language.EN_US);
-	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST, GENERAL_STRING_LIST);
+	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 	    	
 	    	// Json StartTime Setup
 			JSON_STARTTIME.put(StartTime.KEY_HOURS, GENERAL_STARTTIME.getHours());
@@ -393,10 +398,10 @@ public class Test {
 			jsonChoice.put(Choice.KEY_CHOICE_ID, GENERAL_INT);
 			jsonChoice.put(Choice.KEY_IMAGE, JSON_IMAGE);
 			jsonChoice.put(Choice.KEY_MENU_NAME, GENERAL_STRING);
+			jsonChoice.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			jsonChoice.put(Choice.KEY_SECONDARY_IMAGE, JSON_IMAGE);
 			jsonChoice.put(Choice.KEY_SECONDARY_TEXT, GENERAL_STRING);
-			jsonChoice.put(Choice.KEY_TERTIARY_TEXT, GENERAL_STRING);
-			jsonChoice.put(Choice.KEY_VR_COMMANDS, GENERAL_STRING_LIST);
+			jsonChoice.put(Choice.KEY_TERTIARY_TEXT, GENERAL_STRING);			
 			JSON_CHOICES.put(jsonChoice);
 			
 			// Json DeviceInfo Setup
@@ -423,10 +428,10 @@ public class Test {
 			
 			// Json ButtonCapabilities List Setup
 			JSONObject jsonButton = new JSONObject();
-			jsonButton.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, GENERAL_BOOLEAN);
+			jsonButton.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, false);
 			jsonButton.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			jsonButton.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, GENERAL_BOOLEAN);
-			jsonButton.put(ButtonCapabilities.KEY_NAME, GENERAL_STRING);
+			jsonButton.put(ButtonCapabilities.KEY_NAME, ButtonName.SEEKRIGHT);
 			JSON_BUTTONCAPABILITIES.put(jsonButton);
 			
 			// Json SoftButtonCapabilities List Setup
@@ -473,7 +478,7 @@ public class Test {
 			JSON_SCREENPARAMS.put(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE, jsonTEC);
 			
 			// Json DisplayCapabilities Setup
-			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_DISPLAY_TYPE, GENERAL_STRING);
+			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_DISPLAY_TYPE, DisplayType.TYPE2);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, GENERAL_BOOLEAN);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_IMAGE_FIELDS, JSON_IMAGEFIELDS);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(GENERAL_MEDIACLOCKFORMAT_LIST));

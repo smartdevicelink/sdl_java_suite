@@ -14,12 +14,7 @@
         "keyboardLayout":"QWERTY",
         "limitedCharacterList":[
           "a",
-          "b",
-          "c",
-          "d",
-          "e",
-          "f",
-          "g"
+          "b"
         ],
         "autoCompleteText":"something goes here",
         "language":"EN-US",

@@ -78,12 +78,12 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			result.put(RegisterAppInterfaceResponse.KEY_HMI_DISPLAY_LANGUAGE, Test.GENERAL_LANGUAGE);
 			result.put(RegisterAppInterfaceResponse.KEY_SUPPORTED_DIAG_MODES, JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));			
 			result.put(RegisterAppInterfaceResponse.KEY_SDL_MSG_VERSION, Test.JSON_SDLMSGVERSION);
-			result.put(RegisterAppInterfaceResponse.KEY_VEHICLE_TYPE, Test.GENERAL_VEHICLETYPE);
+			result.put(RegisterAppInterfaceResponse.KEY_VEHICLE_TYPE, Test.GENERAL_VEHICLETYPE.serializeJSON());
 			result.put(RegisterAppInterfaceResponse.KEY_PRESET_BANK_CAPABILITIES, Test.JSON_PRESETBANKCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_DISPLAY_CAPABILITIES, Test.JSON_DISPLAYCAPABILITIES);	
 			result.put(RegisterAppInterfaceResponse.KEY_BUTTON_CAPABILITIES, Test.JSON_BUTTONCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_SOFT_BUTTON_CAPABILITIES, Test.JSON_SOFTBUTTONCAPABILITIES);
-			result.put(RegisterAppInterfaceResponse.KEY_AUDIO_PASS_THRU_CAPABILITIES, Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);				
+			result.put(RegisterAppInterfaceResponse.KEY_AUDIO_PASS_THRU_CAPABILITIES, Test.JSON_AUDIOPASSTHRUCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_SPEECH_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_SPEECHCAPABILITIES_LIST));
 			result.put(RegisterAppInterfaceResponse.KEY_VR_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_VRCAPABILITIES_LIST));	
 			result.put(RegisterAppInterfaceResponse.KEY_HMI_ZONE_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_HMIZONECAPABILITIES_LIST));

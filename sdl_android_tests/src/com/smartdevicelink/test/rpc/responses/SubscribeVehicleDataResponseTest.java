@@ -80,7 +80,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 			result.put(SubscribeVehicleDataResponse.KEY_SPEED, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_SPEED.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_RPM, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_RPM.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EXTERNTEMP.ordinal()).serializeJSON());
-	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_LEVEL, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELLEVEL.ordinal()));
+	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_LEVEL, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELLEVEL.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_PRNDL, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_PRNDL.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TIRE_PRESSURE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TIREPRESSURE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ENGINE_TORQUE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ENGINETORQUE.ordinal()).serializeJSON());

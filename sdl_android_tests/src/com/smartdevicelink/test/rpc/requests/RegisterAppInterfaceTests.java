@@ -71,7 +71,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 			result.put(RegisterAppInterface.KEY_LANGUAGE_DESIRED, Test.GENERAL_LANGUAGE);
 			result.put(RegisterAppInterface.KEY_HMI_DISPLAY_LANGUAGE_DESIRED, Test.GENERAL_LANGUAGE);
 			result.put(RegisterAppInterface.KEY_HASH_ID, Test.GENERAL_STRING);
-			result.put(RegisterAppInterface.KEY_TTS_NAME, Test.GENERAL_TTSCHUNK_LIST);
+			result.put(RegisterAppInterface.KEY_TTS_NAME, Test.JSON_TTSCHUNKS);
 			result.put(RegisterAppInterface.KEY_VR_SYNONYMS, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
 			result.put(RegisterAppInterface.KEY_APP_HMI_TYPE, JsonUtils.createJsonArrayOfJsonNames(Test.GENERAL_APPHMITYPE_LIST, SDL_VERSION_UNDER_TEST));
 			result.put(RegisterAppInterface.KEY_IS_MEDIA_APPLICATION, Test.GENERAL_BOOLEAN);

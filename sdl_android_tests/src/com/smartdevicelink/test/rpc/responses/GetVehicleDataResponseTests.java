@@ -17,7 +17,6 @@ import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.GPSData;
-import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
@@ -379,33 +378,33 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 	 */
 	public void testRpcValues(){		
 		// Valid Tests
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getSpeed());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getRpm());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getExternalTemperature());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getFuelLevel());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getPrndl());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getTirePressure());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getEngineTorque());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getOdometer());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getGps());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getFuelLevelState());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getInstantFuelConsumption());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getBeltStatus());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getBodyInformation());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getDeviceStatus());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getDriverBraking());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getWiperStatus());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getHeadLampStatus());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getAccPedalPosition());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getSteeringWheelAngle());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getECallInfo());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getAirbagStatus());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getEmergencyEvent());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getClusterModeStatus());
-		assertTrue(Test.TRUE,( (GetVehicleData) msg ).getMyKey());
+		assertEquals(Test.MATCH, VehicleDataHelper.SPEED, ( (GetVehicleDataResponse) msg ).getSpeed());
+		assertEquals(Test.MATCH, (Integer) VehicleDataHelper.RPM, ( (GetVehicleDataResponse) msg ).getRpm());
+		assertEquals(Test.MATCH, VehicleDataHelper.EXTERNAL_TEMPERATURE, ( (GetVehicleDataResponse) msg ).getExternalTemperature());
+		assertEquals(Test.MATCH, VehicleDataHelper.FUEL_LEVEL, ( (GetVehicleDataResponse) msg ).getFuelLevel());
+		assertEquals(Test.MATCH, VehicleDataHelper.PRNDL_FINAL, ( (GetVehicleDataResponse) msg ).getPrndl());
+		assertEquals(Test.MATCH, VehicleDataHelper.TIRE_PRESSURE, ( (GetVehicleDataResponse) msg ).getTirePressure());
+		assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_TORQUE, ( (GetVehicleDataResponse) msg ).getEngineTorque());
+		assertEquals(Test.MATCH, (Integer) VehicleDataHelper.ODOMETER, ( (GetVehicleDataResponse) msg ).getOdometer());
+		assertEquals(Test.MATCH, VehicleDataHelper.GPS, ( (GetVehicleDataResponse) msg ).getGps());
+		assertEquals(Test.MATCH, VehicleDataHelper.FUEL_LEVEL_STATE, ( (GetVehicleDataResponse) msg ).getFuelLevelState());
+		assertEquals(Test.MATCH, VehicleDataHelper.INSTANT_FUEL_CONSUMPTION, ( (GetVehicleDataResponse) msg ).getInstantFuelConsumption());
+		assertEquals(Test.MATCH, VehicleDataHelper.BELT_STATUS, ( (GetVehicleDataResponse) msg ).getBeltStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.BODY_INFORMATION, ( (GetVehicleDataResponse) msg ).getBodyInformation());
+		assertEquals(Test.MATCH, VehicleDataHelper.DEVICE_STATUS, ( (GetVehicleDataResponse) msg ).getDeviceStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.DRIVER_BRAKING, ( (GetVehicleDataResponse) msg ).getDriverBraking());
+		assertEquals(Test.MATCH, VehicleDataHelper.WIPER_STATUS, ( (GetVehicleDataResponse) msg ).getWiperStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.HEAD_LAMP_STATUS, ( (GetVehicleDataResponse) msg ).getHeadLampStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.ACC_PEDAL_POSITION, ( (GetVehicleDataResponse) msg ).getAccPedalPosition());
+		assertEquals(Test.MATCH, VehicleDataHelper.STEERING_WHEEL_ANGLE, ( (GetVehicleDataResponse) msg ).getSteeringWheelAngle());
+		assertEquals(Test.MATCH, VehicleDataHelper.E_CALL_INFO, ( (GetVehicleDataResponse) msg ).getECallInfo());
+		assertEquals(Test.MATCH, VehicleDataHelper.AIRBAG_STATUS, ( (GetVehicleDataResponse) msg ).getAirbagStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.EMERGENCY_EVENT, ( (GetVehicleDataResponse) msg ).getEmergencyEvent());
+		assertEquals(Test.MATCH, VehicleDataHelper.CLUSTER_MODE_STATUS, ( (GetVehicleDataResponse) msg ).getClusterModeStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.MY_KEY, ( (GetVehicleDataResponse) msg ).getMyKey());
 		
 		// Invalid/Null Tests
-		GetVehicleData msg = new GetVehicleData();
+		GetVehicleDataResponse msg = new GetVehicleDataResponse();
 		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 		

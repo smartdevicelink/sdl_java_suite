@@ -67,7 +67,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 			result.put(PerformInteraction.KEY_INTERACTION_CHOICE_SET_ID_LIST, JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));
 			result.put(PerformInteraction.KEY_INTERACTION_LAYOUT, Test.GENERAL_LAYOUTMODE);
 			result.put(PerformInteraction.KEY_INITIAL_TEXT, Test.GENERAL_STRING);
-			result.put(PerformInteraction.KEY_INTERACTION_MODE,   Test.GENERAL_INTERACTIONMODE);
+			result.put(PerformInteraction.KEY_INTERACTION_MODE, Test.GENERAL_INTERACTIONMODE);
 			result.put(PerformInteraction.KEY_TIMEOUT, Test.GENERAL_INT);			
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);

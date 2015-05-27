@@ -51,8 +51,8 @@ public class AlertManeuverTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
         
         try {
-			result.put(AlertManeuver.KEY_TTS_CHUNKS, Test.GENERAL_TTSCHUNK_LIST);
-            result.put(AlertManeuver.KEY_SOFT_BUTTONS, Test.GENERAL_SOFTBUTTON_LIST);			
+			result.put(AlertManeuver.KEY_TTS_CHUNKS, Test.JSON_TTSCHUNKS);
+            result.put(AlertManeuver.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);			
         } catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
