@@ -10,22 +10,22 @@ import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnHMIStatus}
+ */
 public class OnHMIStatusTests extends BaseRpcTests{
 
-    private static final AudioStreamingState AUDIO_STREAMING_STATE = AudioStreamingState.AUDIBLE;
-    private static final boolean             FIRST_RUN             = true;
-    private static final HMILevel            HMI_LEVEL             = HMILevel.HMI_FULL;
-    private static final SystemContext       SYSTEM_CONTEXT        = SystemContext.SYSCTXT_MAIN;
-
-    @Override
+	@Override
     protected RPCMessage createMessage(){
         OnHMIStatus msg = new OnHMIStatus();
 
-        msg.setAudioStreamingState(AUDIO_STREAMING_STATE);
-        msg.setFirstRun(FIRST_RUN);
-        msg.setHmiLevel(HMI_LEVEL);
-        msg.setSystemContext(SYSTEM_CONTEXT);
+        msg.setAudioStreamingState(Test.GENERAL_AUDIOSTREAMINGSTATE);
+        msg.setFirstRun(Test.GENERAL_BOOLEAN);
+        msg.setHmiLevel(Test.GENERAL_HMILEVEL);
+        msg.setSystemContext(Test.GENERAL_SYSTEMCONTEXT);
 
         return msg;
     }
@@ -45,40 +45,37 @@ public class OnHMIStatusTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnHMIStatus.KEY_AUDIO_STREAMING_STATE, AUDIO_STREAMING_STATE);
-            result.put(OnHMIStatus.KEY_HMI_LEVEL, HMI_LEVEL);
-            result.put(OnHMIStatus.KEY_SYSTEM_CONTEXT, SYSTEM_CONTEXT);
+            result.put(OnHMIStatus.KEY_AUDIO_STREAMING_STATE, Test.GENERAL_AUDIOSTREAMINGSTATE);
+            result.put(OnHMIStatus.KEY_HMI_LEVEL, Test.GENERAL_HMILEVEL);
+            result.put(OnHMIStatus.KEY_SYSTEM_CONTEXT, Test.GENERAL_SYSTEMCONTEXT);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testAudioStreamingState(){
-        AudioStreamingState cmdId = ( (OnHMIStatus) msg ).getAudioStreamingState();
-        assertEquals("Audio streaming state didn't match input audio streaming state.", AUDIO_STREAMING_STATE, cmdId);
-    }
-
-    public void testHmiLevel(){
-        HMILevel cmdId = ( (OnHMIStatus) msg ).getHmiLevel();
-        assertEquals("HMI level didn't match input HMI level.", HMI_LEVEL, cmdId);
-    }
-
-    public void testSystemContext(){
-        SystemContext cmdId = ( (OnHMIStatus) msg ).getSystemContext();
-        assertEquals("System context didn't match input system context.", SYSTEM_CONTEXT, cmdId);
-    }
-
-    public void testNull(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
+        AudioStreamingState state = ( (OnHMIStatus) msg ).getAudioStreamingState();
+        HMILevel hmiLevel = ( (OnHMIStatus) msg ).getHmiLevel();
+        SystemContext context = ( (OnHMIStatus) msg ).getSystemContext();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_AUDIOSTREAMINGSTATE, state);
+        assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL, hmiLevel);
+        assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCONTEXT, context);
+   
+        // Invalid/Null Tests
         OnHMIStatus msg = new OnHMIStatus();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Audio streaming state wasn't set, but getter method returned an object.",
-                msg.getAudioStreamingState());
-        assertNull("HMI level wasn't set, but getter method returned an object.", msg.getHmiLevel());
-        assertNull("System context wasn't set, but getter method returned an object.", msg.getSystemContext());
+        assertNull(Test.NULL, msg.getAudioStreamingState());
+        assertNull(Test.NULL, msg.getHmiLevel());
+        assertNull(Test.NULL, msg.getSystemContext());
     }
 }

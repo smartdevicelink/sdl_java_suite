@@ -27,10 +27,14 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.VehicleDataHelper;
 
-
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnVehicleData}
+ */
 public class OnVehicleDataTests extends BaseRpcTests{
 	
     @Override
@@ -78,144 +82,107 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_EMERGENCY_EVENT, VehicleDataHelper.EMERGENCY_EVENT.serializeJSON());
             result.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, VehicleDataHelper.CLUSTER_MODE_STATUS.serializeJSON());
             result.put(OnVehicleData.KEY_MY_KEY, VehicleDataHelper.MY_KEY.serializeJSON());
-            
-        }catch(JSONException e){
-            //do nothing 
+        } catch(JSONException e) {
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
     
-    public void testSpeed() {
-    	Double copy = ( (OnVehicleData) msg).getSpeed();
-    	assertEquals("Speed does not match input speed", VehicleDataHelper.SPEED, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
+    	Double speed = ( (OnVehicleData) msg).getSpeed();
+    	int rpm = ( (OnVehicleData) msg).getRpm();
+    	Double external = ( (OnVehicleData) msg).getExternalTemperature();
+    	Double fuelLevel = ( (OnVehicleData) msg).getFuelLevel();
+    	String vin = ( (OnVehicleData) msg).getVin();
+    	PRNDL prndl = ( (OnVehicleData) msg).getPrndl();
+    	TireStatus pressure = ( (OnVehicleData) msg).getTirePressure();
+    	Double torque = ( (OnVehicleData) msg).getEngineTorque();
+    	int odometer = ( (OnVehicleData) msg).getOdometer();
+    	GPSData gps = ( (OnVehicleData) msg).getGps();
+    	ComponentVolumeStatus state = ( (OnVehicleData) msg).getFuelLevelState();
+    	Double consumption = ( (OnVehicleData) msg).getInstantFuelConsumption();
+    	BeltStatus belt = ( (OnVehicleData) msg).getBeltStatus();
+    	BodyInformation body = ( (OnVehicleData) msg).getBodyInformation();
+    	DeviceStatus device = ( (OnVehicleData) msg).getDeviceStatus();
+    	VehicleDataEventStatus brake = ( (OnVehicleData) msg).getDriverBraking();
+    	WiperStatus wiper = ( (OnVehicleData) msg).getWiperStatus();
+    	HeadLampStatus lamp = ( (OnVehicleData) msg).getHeadLampStatus();
+    	Double pedal = ( (OnVehicleData) msg).getAccPedalPosition();
+    	Double wheel = ( (OnVehicleData) msg).getSteeringWheelAngle();
+    	ECallInfo ecall = ( (OnVehicleData) msg).getECallInfo();
+    	AirbagStatus airbag = ( (OnVehicleData) msg).getAirbagStatus();
+    	EmergencyEvent event = ( (OnVehicleData) msg).getEmergencyEvent();
+    	ClusterModeStatus cluster = ( (OnVehicleData) msg).getClusterModeStatus();
+    	MyKey key = ( (OnVehicleData) msg).getMyKey();
+    	
+    	// Valid Tests
+    	assertEquals(Test.MATCH, VehicleDataHelper.SPEED, speed);
+    	assertEquals(Test.MATCH, VehicleDataHelper.RPM, rpm);
+    	assertEquals(Test.MATCH, VehicleDataHelper.EXTERNAL_TEMPERATURE, external);
+    	assertEquals(Test.MATCH, VehicleDataHelper.FUEL_LEVEL, fuelLevel);
+    	assertEquals(Test.MATCH, VehicleDataHelper.VIN, vin);
+    	assertEquals(Test.MATCH, VehicleDataHelper.PRNDL_FINAL, prndl);
+    	assertTrue(Test.MATCH, Validator.validateTireStatus(VehicleDataHelper.TIRE_PRESSURE, pressure));
+    	assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_TORQUE, torque);
+    	assertEquals(Test.MATCH, VehicleDataHelper.ODOMETER, odometer);
+    	assertTrue(Test.MATCH, Validator.validateGpsData(VehicleDataHelper.GPS, gps));
+    	assertEquals(Test.MATCH, VehicleDataHelper.FUEL_LEVEL_STATE, state);
+    	assertEquals(Test.MATCH, VehicleDataHelper.INSTANT_FUEL_CONSUMPTION, consumption);
+    	assertTrue(Test.TRUE, Validator.validateBeltStatus(VehicleDataHelper.BELT_STATUS, belt));
+    	assertTrue(Test.TRUE, Validator.validateBodyInformation(VehicleDataHelper.BODY_INFORMATION, body));
+    	assertTrue(Test.TRUE, Validator.validateDeviceStatus(VehicleDataHelper.DEVICE_STATUS, device));
+    	assertEquals(Test.MATCH, VehicleDataHelper.DRIVER_BRAKING, brake);
+    	assertEquals(Test.MATCH, VehicleDataHelper.WIPER_STATUS, wiper);
+    	assertTrue(Test.TRUE, Validator.validateHeadLampStatus(VehicleDataHelper.HEAD_LAMP_STATUS, lamp));
+		assertEquals(Test.MATCH, VehicleDataHelper.ACC_PEDAL_POSITION, pedal);
+    	assertEquals(Test.MATCH, VehicleDataHelper.STEERING_WHEEL_ANGLE, wheel);
+    	assertTrue(Test.TRUE, Validator.validateECallInfo(VehicleDataHelper.E_CALL_INFO, ecall));
+    	assertTrue(Test.TRUE, Validator.validateAirbagStatus(VehicleDataHelper.AIRBAG_STATUS, airbag));
+	    assertTrue(Test.TRUE, Validator.validateEmergencyEvent(VehicleDataHelper.EMERGENCY_EVENT, event));
+	    assertTrue(Test.TRUE, Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, cluster));
+	    assertTrue(Test.TRUE, Validator.validateMyKey(VehicleDataHelper.MY_KEY, key));
     
-    public void testRpm() {
-    	int copy = ( (OnVehicleData) msg).getRpm();
-    	assertEquals("RPM does not match input RPM", VehicleDataHelper.RPM, copy);
-    }
-    
-    public void testExternalTemperature() {
-    	Double copy = ( (OnVehicleData) msg).getExternalTemperature();
-    	assertEquals("External temperature does not match input external temperature", VehicleDataHelper.EXTERNAL_TEMPERATURE, copy);
-    }
-    
-    public void testFuelLevel() {
-    	Double copy = ( (OnVehicleData) msg).getFuelLevel();
-    	assertEquals("Fuel level does not match input fuel level", VehicleDataHelper.FUEL_LEVEL, copy);
-    }
-    
-    public void testVin() {
-    	String copy = ( (OnVehicleData) msg).getVin();
-    	assertEquals("VIN does not match input VIN", VehicleDataHelper.VIN, copy);
-    }
-    
-    public void testPRNDL() {
-    	PRNDL copy = ( (OnVehicleData) msg).getPrndl();
-    	assertEquals("PRNDL does not match input PRNDL", VehicleDataHelper.PRNDL_FINAL, copy);
-    }
-    
-    public void testTirePressure() {
-    	TireStatus copy = ( (OnVehicleData) msg).getTirePressure();
-    	assertTrue("Tire pressure does not match input tire pressure", Validator.validateTireStatus(VehicleDataHelper.TIRE_PRESSURE, copy));
-    }
-    
-    public void testEngineTorque() {
-    	Double copy = ( (OnVehicleData) msg).getEngineTorque();
-    	assertEquals("Engine torque does not match input engine torque", VehicleDataHelper.ENGINE_TORQUE, copy);
-    }
-    
-    public void testOdometer() {
-    	int copy = ( (OnVehicleData) msg).getOdometer();
-    	assertEquals("Odometer does not match input odometer", VehicleDataHelper.ODOMETER, copy);
-    }
-    
-    public void testGps() {
-    	GPSData copy = ( (OnVehicleData) msg).getGps();
-    	assertTrue("GPS does not match input GPS", Validator.validateGpsData(VehicleDataHelper.GPS, copy));
-    }
-    
-    @SuppressWarnings("deprecation")
-	public void testFuelLevel_State() {
-    	ComponentVolumeStatus copy = ( (OnVehicleData) msg).getFuelLevel_State();
-    	assertEquals("Fuel level does not match input fuel level", VehicleDataHelper.FUEL_LEVEL_STATE, copy);
-    }
-    
-    public void testInstantFuelConsumption() {
-    	Double copy = ( (OnVehicleData) msg).getInstantFuelConsumption();
-    	assertEquals("Instant fuel consumption does not match input instant fuel consumption", VehicleDataHelper.INSTANT_FUEL_CONSUMPTION, copy);
-    }
-    
-    public void testBeltStatus() {
-    	BeltStatus copy = ( (OnVehicleData) msg).getBeltStatus();
-    	assertTrue("Belt status does not match input belt status", Validator.validateBeltStatus(VehicleDataHelper.BELT_STATUS, copy));
-    }
-    
-    public void testBodyInformation() {
-    	BodyInformation copy = ( (OnVehicleData) msg).getBodyInformation();
-    	assertTrue("Body information does not match input body information", Validator.validateBodyInformation(VehicleDataHelper.BODY_INFORMATION, copy));
-    }
-    
-    public void testDeviceStatus() {
-    	DeviceStatus copy = ( (OnVehicleData) msg).getDeviceStatus();
-    	assertTrue("Device status does not match input device status", Validator.validateDeviceStatus(VehicleDataHelper.DEVICE_STATUS, copy));
-    }
-    
-    public void testDriverBraking() {
-    	VehicleDataEventStatus copy = ( (OnVehicleData) msg).getDriverBraking();
-    	assertEquals("Driver braking does not match input driver braking", VehicleDataHelper.DRIVER_BRAKING, copy);
-    }
-    
-    public void testWiperStatus() {
-    	WiperStatus copy = ( (OnVehicleData) msg).getWiperStatus();
-    	assertEquals("Wiper status does not match input wiper status", VehicleDataHelper.WIPER_STATUS, copy);
-    }
-    
-    public void testHeadLampStatus() {
-    	HeadLampStatus copy = ( (OnVehicleData) msg).getHeadLampStatus();
-    	assertTrue("Head lamp status does not match input head lamp status", Validator.validateHeadLampStatus(VehicleDataHelper.HEAD_LAMP_STATUS, copy));
-    }
-    
-    public void testAccPedalPosition() {
-    	Double copy = ( (OnVehicleData) msg).getAccPedalPosition();
-    	assertEquals("Acc pedal position does not match input acc pedal position", VehicleDataHelper.ACC_PEDAL_POSITION, copy);
-    }
-    
-    public void testSteeringWheelAngle() {
-    	Double copy = ( (OnVehicleData) msg).getSteeringWheelAngle();
-    	assertEquals("Steering wheel angle does not match input steering wheel angle", VehicleDataHelper.STEERING_WHEEL_ANGLE, copy);
-    }
-    
-    public void testECallInfo() {
-    	ECallInfo copy = ( (OnVehicleData) msg).getECallInfo();
-    	assertTrue("Emergency call info does not match input emergency call info", Validator.validateECallInfo(VehicleDataHelper.E_CALL_INFO, copy));
-    }
-    
-    public void testAirbagStatus() {
-    	AirbagStatus copy = ( (OnVehicleData) msg).getAirbagStatus();
-    	assertTrue("Airbag status does not match input airbag status", Validator.validateAirbagStatus(VehicleDataHelper.AIRBAG_STATUS, copy));
-    }
-    
-    public void testEmergencyEvent() {
-    	EmergencyEvent copy = ( (OnVehicleData) msg).getEmergencyEvent();
-    	assertTrue("Emergency event does not match input emergency event", Validator.validateEmergencyEvent(VehicleDataHelper.EMERGENCY_EVENT, copy));
-    }
-    
-    public void testClusterModeStatus() {
-    	ClusterModeStatus copy = ( (OnVehicleData) msg).getClusterModeStatus();
-    	assertTrue("Cluster mode status does not match cluster mode status", Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, copy));
-    }
-    
-    public void testMyKey() {
-    	MyKey copy = ( (OnVehicleData) msg).getMyKey();
-    	assertTrue("My key does not match my key", Validator.validateMyKey(VehicleDataHelper.MY_KEY, copy));
-    }
+	    // Invalid/Null Tests
+        OnVehicleData msg = new OnVehicleData();
+        assertNotNull(Test.NOT_NULL, msg);
+        testNullBase(msg);
 
+        assertNull(Test.NULL, msg.getSpeed());
+        assertNull(Test.NULL, msg.getRpm());
+        assertNull(Test.NULL, msg.getExternalTemperature());
+        assertNull(Test.NULL, msg.getFuelLevel());
+        assertNull(Test.NULL, msg.getVin());
+        assertNull(Test.NULL, msg.getPrndl());
+        assertNull(Test.NULL, msg.getTirePressure());
+        assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getOdometer());
+        assertNull(Test.NULL, msg.getGps());
+        assertNull(Test.NULL, msg.getFuelLevelState());
+        assertNull(Test.NULL, msg.getInstantFuelConsumption());
+        assertNull(Test.NULL, msg.getBeltStatus());
+        assertNull(Test.NULL, msg.getBodyInformation());
+        assertNull(Test.NULL, msg.getDeviceStatus());
+        assertNull(Test.NULL, msg.getDriverBraking());
+        assertNull(Test.NULL, msg.getWiperStatus());
+        assertNull(Test.NULL, msg.getHeadLampStatus());
+        assertNull(Test.NULL, msg.getAccPedalPosition());
+        assertNull(Test.NULL, msg.getSteeringWheelAngle());
+        assertNull(Test.NULL, msg.getECallInfo());
+        assertNull(Test.NULL, msg.getAirbagStatus());
+        assertNull(Test.NULL, msg.getEmergencyEvent());
+        assertNull(Test.NULL, msg.getClusterModeStatus());
+        assertNull(Test.NULL, msg.getMyKey());    	
+    }  
+    
     public void testJson() {
 		JSONObject reference = new JSONObject();
 		
-		//objects needed on the first level
+		//Objects needed on the first level.
 		JSONObject tireStatusObj = new JSONObject();
 		JSONObject GPSDataObj = new JSONObject();
 		JSONObject beltStatusObj = new JSONObject();
@@ -229,7 +196,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
 		JSONObject myKeyObj = new JSONObject();
 		
 		try {
-			//set up the JSONObject to represent OnVehicleData
+			//Set up the JSONObject to represent OnVehicleData:
+			
 			//TIRE_PRESSURE
 			tireStatusObj.put(TireStatus.KEY_PRESSURE_TELL_TALE, VehicleDataHelper.TIRE_PRESSURE_TELL_TALE);
 			JSONObject tireLeftFront = new JSONObject();
@@ -376,7 +344,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			//go inside underTest and only return the JSONObject inside the parameters key inside the notification key
 			underTest = underTest.getJSONObject("notification").getJSONObject("parameters");
 			
-			assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			
@@ -387,150 +355,90 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					JSONObject tirePressureReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject tirePressureTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateTireStatus(
-									new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tirePressureReference)),
-									new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tirePressureTest))));
+					assertTrue(Test.TRUE, Validator.validateTireStatus(
+						new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tirePressureReference)),
+						new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tirePressureTest))));
 					
-				}
-				else if (key.equals(OnVehicleData.KEY_GPS)) {
+				} else if (key.equals(OnVehicleData.KEY_GPS)) {
 					JSONObject GPSObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject GPSObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateGpsData(
-									new GPSData(JsonRPCMarshaller.deserializeJSONObject(GPSObjReference)),
-									new GPSData(JsonRPCMarshaller.deserializeJSONObject(GPSObjTest))));
-				}
-				else if (key.equals(OnVehicleData.KEY_BELT_STATUS)) {
+					assertTrue(Test.TRUE, Validator.validateGpsData(
+						new GPSData(JsonRPCMarshaller.deserializeJSONObject(GPSObjReference)),
+						new GPSData(JsonRPCMarshaller.deserializeJSONObject(GPSObjTest))));
+				} else if (key.equals(OnVehicleData.KEY_BELT_STATUS)) {
 					JSONObject beltObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject beltObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateBeltStatus(
-									new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltObjReference)),
-									new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltObjTest))));
-				}
-				else if (key.equals(OnVehicleData.KEY_BODY_INFORMATION)) {
+					assertTrue(Test.TRUE, Validator.validateBeltStatus(
+						new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltObjReference)),
+						new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltObjTest))));
+				} else if (key.equals(OnVehicleData.KEY_BODY_INFORMATION)) {
 					JSONObject bodyInfoObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject bodyInfoObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateBodyInformation(
-									new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInfoObjReference)),
-									new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInfoObjTest))));
-				}
-				else if (key.equals(OnVehicleData.KEY_DEVICE_STATUS)) {
+					assertTrue(Test.TRUE, Validator.validateBodyInformation(
+						new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInfoObjReference)),
+						new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInfoObjTest))));
+				} else if (key.equals(OnVehicleData.KEY_DEVICE_STATUS)) {
 					JSONObject deviceObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject deviceObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateDeviceStatus(
-									new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceObjReference)),
-									new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceObjTest))));
-				}
-				else if (key.equals(OnVehicleData.KEY_HEAD_LAMP_STATUS)) {
+					assertTrue(Test.TRUE, Validator.validateDeviceStatus(
+						new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceObjReference)),
+						new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceObjTest))));
+				} else if (key.equals(OnVehicleData.KEY_HEAD_LAMP_STATUS)) {
 					JSONObject headLampObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject headLampObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateHeadLampStatus(
-									new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampObjReference)),
-									new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampObjTest))));
-				}
-				else if (key.equals(OnVehicleData.KEY_E_CALL_INFO)) {
+					assertTrue(Test.TRUE, Validator.validateHeadLampStatus(
+						new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampObjReference)),
+						new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampObjTest))));
+				} else if (key.equals(OnVehicleData.KEY_E_CALL_INFO)) {
 					JSONObject callInfoObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject callInfoObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateECallInfo(
-									new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(callInfoObjReference)),
-									new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(callInfoObjTest))));
-				}
-				else if (key.equals(OnVehicleData.KEY_AIRBAG_STATUS)) {
+					assertTrue(Test.TRUE, Validator.validateECallInfo(
+						new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(callInfoObjReference)),
+						new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(callInfoObjTest))));
+				} else if (key.equals(OnVehicleData.KEY_AIRBAG_STATUS)) {
 					JSONObject airbagObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject airbagObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateAirbagStatus(
-									new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagObjReference)),
-									new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagObjTest))));
+					assertTrue(Test.TRUE, Validator.validateAirbagStatus(
+						new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagObjReference)),
+						new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagObjTest))));
 				}
 				else if (key.equals(OnVehicleData.KEY_EMERGENCY_EVENT)) {
 					JSONObject emergencyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject emergencyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateEmergencyEvent(
-									new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyObjReference)),
-									new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyObjTest))));
+					assertTrue(Test.TRUE, Validator.validateEmergencyEvent(
+						new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyObjReference)),
+						new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyObjTest))));
 				}
 				else if (key.equals(OnVehicleData.KEY_CLUSTER_MODE_STATUS)) {
 					JSONObject clusterModeObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject clusterModeObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateClusterModeStatus(
-									new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeObjReference)),
-									new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeObjTest))));
+					assertTrue(Test.TRUE, Validator.validateClusterModeStatus(
+						new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeObjReference)),
+						new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeObjTest))));
 				}
 				else if (key.equals(OnVehicleData.KEY_MY_KEY)) {
 					JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateMyKey(
-									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
-									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
+					assertTrue(Test.TRUE, Validator.validateMyKey(
+						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
+						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
 				}
 				else {
-					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-							JsonUtils.readObjectFromJsonObject(reference, key),
-							JsonUtils.readObjectFromJsonObject(underTest, key));
-	            }
-				
-			}
-			
+					assertEquals(Test.TRUE, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+	            }				
+			}			
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
     }
-	
-
-    @SuppressWarnings("deprecation")
-	public void testNull(){
-        OnVehicleData msg = new OnVehicleData();
-        assertNotNull("Null object creation failed.", msg);
-
-        testNullBase(msg);
-
-        assertNull("Speed wasn't set, but getter method returned an object.", msg.getSpeed());
-        assertNull("RPM wasn't set, but getter method returned an object.", msg.getRpm());
-        assertNull("External temperature wasn't set, but getter method returned an object.", msg.getExternalTemperature());
-        assertNull("Fuel level wasn't set, but getter method returned an object.", msg.getFuelLevel());
-        assertNull("VIN wasn't set, but getter method returned an object.", msg.getVin());
-        assertNull("PRNDL wasn't set, but getter method returned an object.", msg.getPrndl());
-        assertNull("Tire pressure wasn't set, but getter method returned an object.", msg.getTirePressure());
-        assertNull("Engine torque wasn't set, but getter method returned an object.", msg.getEngineTorque());
-        assertNull("Odometer wasn't set, but getter method returned an object.", msg.getOdometer());
-        assertNull("GPS wasn't set, but getter method returned an object.", msg.getGps());
-        assertNull("Fuel level state wasn't set, but getter method returned an object.", msg.getFuelLevel_State());
-        assertNull("Instant fuel consumption wasn't set, but getter method returned an object.", msg.getInstantFuelConsumption());
-        assertNull("Belt status wasn't set, but getter method returned an object.", msg.getBeltStatus());
-        assertNull("Body information wasn't set, but getter method returned an object.", msg.getBodyInformation());
-        assertNull("Device status wasn't set, but getter method returned an object.", msg.getDeviceStatus());
-        assertNull("Driver braking wasn't set, but getter method returned an object.", msg.getDriverBraking());
-        assertNull("Wiper status wasn't set, but getter method returned an object.", msg.getWiperStatus());
-        assertNull("Head lamp status wasn't set, but getter method returned an object.", msg.getHeadLampStatus());
-        assertNull("Acceleration pedal position wasn't set, but getter method returned an object.", msg.getAccPedalPosition());
-        assertNull("Steering wheel angle wasn't set, but getter method returned an object.", msg.getSteeringWheelAngle());
-        assertNull("Emergency call info wasn't set, but getter method returned an object.", msg.getECallInfo());
-        assertNull("Airbag status wasn't set, but getter method returned an object.", msg.getAirbagStatus());
-        assertNull("Emergency event wasn't set, but getter method returned an object.", msg.getEmergencyEvent());
-        assertNull("Cluster mode status wasn't set, but getter method returned an object.", msg.getClusterModeStatus());
-        assertNull("My key wasn't set, but getter method returned an object.", msg.getMyKey());
-    	
-    }
-    
-
 }

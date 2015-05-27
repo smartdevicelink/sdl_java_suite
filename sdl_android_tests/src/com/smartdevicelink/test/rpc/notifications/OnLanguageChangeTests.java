@@ -8,18 +8,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnLanguageChange}
+ */
 public class OnLanguageChangeTests extends BaseRpcTests{
-
-    private static final Language LANGUAGE     = Language.AR_SA;
-    private static final Language HMI_LANGUAGE = Language.DE_DE;
 
     @Override
     protected RPCMessage createMessage(){
         OnLanguageChange msg = new OnLanguageChange();
 
-        msg.setLanguage(LANGUAGE);
-        msg.setHmiDisplayLanguage(HMI_LANGUAGE);
+        msg.setLanguage(Test.GENERAL_LANGUAGE);
+        msg.setHmiDisplayLanguage(Test.GENERAL_LANGUAGE);
 
         return msg;
     }
@@ -39,32 +41,33 @@ public class OnLanguageChangeTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnLanguageChange.KEY_LANGUAGE, LANGUAGE);
-            result.put(OnLanguageChange.KEY_HMI_DISPLAY_LANGUAGE, HMI_LANGUAGE);
+            result.put(OnLanguageChange.KEY_LANGUAGE, Test.GENERAL_LANGUAGE);
+            result.put(OnLanguageChange.KEY_HMI_DISPLAY_LANGUAGE, Test.GENERAL_LANGUAGE);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testLanguage(){
-        Language data = ( (OnLanguageChange) msg ).getLanguage();
-        assertEquals("Language didn't match input language.", LANGUAGE, data);
-    }
-
-    public void testHMILanguage(){
-        Language data = ( (OnLanguageChange) msg ).getHmiDisplayLanguage();
-        assertEquals("HMI language didn't match input language.", HMI_LANGUAGE, data);
-    }
-
-    public void testNull(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
+        Language lang = ( (OnLanguageChange) msg ).getLanguage();
+        Language hmiLang = ( (OnLanguageChange) msg ).getHmiDisplayLanguage();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, lang);
+        assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, hmiLang);
+    
+        // Invalid/Null Tests
         OnLanguageChange msg = new OnLanguageChange();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Language wasn't set, but getter method returned an object.", msg.getLanguage());
-        assertNull("HMI language wasn't set, but getter method returned an object.", msg.getHmiDisplayLanguage());
+        assertNull(Test.NULL, msg.getLanguage());
+        assertNull(Test.NULL, msg.getHmiDisplayLanguage());
     }
 }

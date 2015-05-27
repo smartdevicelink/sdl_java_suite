@@ -1,47 +1,31 @@
 package com.smartdevicelink.test.rpc.notifications;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen.SdlChoice;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnSdlChoiceChosen}
+ */
 public class OnSdlChoiceChosenTests extends BaseRpcTests{
-
-    private static final TriggerSource TRIGGER_SOURCE = TriggerSource.TS_MENU;
-    private static final String        NAME           = "Choice 1";
-    private static final String        SECONDARY      = "Second text";
-    private static final String        TERTIARY       = "Third text";
-    private static final int           ID             = 61413;
-    private final List<String>  VR_COMMANDS    = Arrays.asList(new String[] { "Choice 1", "One" });
-
-    private Choice                     choice;
 
     @Override
     protected RPCMessage createMessage(){
-        OnSdlChoiceChosen msg = new OnSdlChoiceChosen();
-        //TODO: convert into SdlChoice
-        choice = new Choice();
-        choice.setMenuName(NAME);
-        choice.setSecondaryText(SECONDARY);
-        choice.setTertiaryText(TERTIARY);
-        choice.setChoiceID(ID);
-        choice.setVrCommands(VR_COMMANDS);
+        OnSdlChoiceChosen msg = new OnSdlChoiceChosen();                
+        SdlChoice sdlChoice = msg.new SdlChoice(Test.GENERAL_CHOICE);
         
-        SdlChoice sdlChoice = msg.new SdlChoice(choice);
-        
-        msg.setTriggerSource(TRIGGER_SOURCE);
+        msg.setTriggerSource(Test.GENERAL_TRIGGERSOURCE);
 		msg.setSdlChoice(sdlChoice);
+		
         return msg;
     }
 
@@ -57,42 +41,36 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
 
     @Override
     protected JSONObject getExpectedParameters(int sdlVersion){
-        JSONObject result = new JSONObject(), choiceJson = new JSONObject();
+        JSONObject result = new JSONObject();
 
         try{
-            choiceJson.put(Choice.KEY_CHOICE_ID, ID);
-            choiceJson.put(Choice.KEY_MENU_NAME, NAME);
-            choiceJson.put(Choice.KEY_SECONDARY_TEXT, SECONDARY);
-            choiceJson.put(Choice.KEY_TERTIARY_TEXT, TERTIARY);
-            choiceJson.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(VR_COMMANDS));
-
-            result.put(OnSdlChoiceChosen.KEY_TRIGGER_SOURCE, TRIGGER_SOURCE);
-            result.put(OnSdlChoiceChosen.KEY_SDL_CHOICE, choiceJson);
+            result.put(OnSdlChoiceChosen.KEY_TRIGGER_SOURCE, Test.GENERAL_TRIGGERSOURCE);
+            result.put(OnSdlChoiceChosen.KEY_SDL_CHOICE, Test.JSON_CHOICE);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testSmartDeviceLinkChoice(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
         SdlChoice data = ( (OnSdlChoiceChosen) msg ).getSdlChoice();
-        //TODO: verify this works
-        assertTrue("Data didn't match input data.", Validator.validateChoice(choice, data.getChoice()));
-    }
-
-    public void testTriggerSource(){
-        TriggerSource data = ( (OnSdlChoiceChosen) msg ).getTriggerSource();
-        assertEquals("Data didn't match input data.", TRIGGER_SOURCE, data);
-    }
-
-    public void testNull(){
+        TriggerSource source = ( (OnSdlChoiceChosen) msg ).getTriggerSource();
+        
+        // Valid Tests
+        assertTrue(Test.MATCH, Validator.validateChoice(Test.GENERAL_CHOICE, data.getChoice()));
+        assertEquals(Test.MATCH, Test.GENERAL_TRIGGERSOURCE, source);
+    
+        // Invalid/Null Tests
     	OnSdlChoiceChosen msg = new OnSdlChoiceChosen();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Trigger source wasn't set, but getter method returned an object.", msg.getTriggerSource());
-        assertNull("Choice wasn't set, but getter method returned an object.", msg.getSdlChoice());
+        assertNull(Test.NULL, msg.getTriggerSource());
+        assertNull(Test.NULL, msg.getSdlChoice());
     }
 }

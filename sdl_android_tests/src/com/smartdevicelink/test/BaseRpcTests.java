@@ -94,7 +94,13 @@ public abstract class BaseRpcTests extends TestCase {
     public void testJson(){
         try{
             JSONObject reference = buildJsonStore();
-            JSONObject underTest = msg.serializeJSON();            
+            JSONObject underTest = msg.serializeJSON();   
+            
+            if (reference.toString().contains("SendLocation")){
+            	System.out.println(reference.toString());
+            	System.out.println(underTest.toString());
+            }
+            
             assertEquals("Size of JSON under test didn't match expected size.", reference.length(), underTest.length());
 
             // loop through all values and verifies they match the RPCMessage parameters

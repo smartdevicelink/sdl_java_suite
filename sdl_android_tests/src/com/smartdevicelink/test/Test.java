@@ -17,11 +17,14 @@ import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.MenuParams;
+import com.smartdevicelink.proxy.rpc.ParameterPermissions;
+import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -30,27 +33,36 @@ import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.TouchCoord;
+import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
+import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
@@ -58,8 +70,11 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
+import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TBTState;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
@@ -76,11 +91,23 @@ public class Test {
 	public static final String FALSE     = "Value should be false.";
 	public static final String NOT_NULL  = "Value should not be null.";
 	public static final String JSON_FAIL = "Json testing failed.";
+	
+	// Rpc Notification-Specific Values
+    public static final AppInterfaceUnregisteredReason GENERAL_REASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
+    public static final AudioStreamingState GENERAL_AUDIOSTREAMINGSTATE = AudioStreamingState.AUDIBLE;
+    public static final ButtonEventMode GENERAL_BUTTONEVENTMODE = ButtonEventMode.BUTTONUP;
+    public static final ButtonPressMode GENERAL_BUTTONPRESSMODE = ButtonPressMode.SHORT;
+    public static final HMILevel GENERAL_HMILEVEL = HMILevel.HMI_FULL;
+    public static final SystemContext GENERAL_SYSTEMCONTEXT = SystemContext.SYSCTXT_MAIN;
+    public static final KeyboardEvent GENERAL_KEYBOARDEVENT = KeyboardEvent.ENTRY_SUBMITTED;
+    public static final LockScreenStatus GENERAL_SHOWLOCKSCREEN = LockScreenStatus.REQUIRED;
+    public static final TBTState GENERAL_TBTSTATE = TBTState.NEXT_TURN_REQUEST;
 
-	// Rpc Test Values
+	// Rpc Request & Response Values
 	public static final int                    GENERAL_INT                    = 100;
 	public static final float                  GENERAL_FLOAT                  = 100f;
 	public static final Image                  GENERAL_IMAGE                  = new Image();	
+	public static final Choice                 GENERAL_CHOICE                 = new Choice();
 	public static final String                 GENERAL_STRING                 = "test";
 	public static final Double                 GENERAL_DOUBLE                 = 10.01;
 	public static final boolean                GENERAL_BOOLEAN                = true;
@@ -88,6 +115,7 @@ public class Test {
 	public static final Language               GENERAL_LANGUAGE               = Language.EN_US;
 	public static final AudioType              GENERAL_AUDIOTYPE              = AudioType.PCM;
 	public static final StartTime              GENERAL_STARTTIME              = new StartTime();
+	public static final TouchType              GENERAL_TOUCHTYPE              = TouchType.BEGIN;
 	public static final DeviceInfo	           GENERAL_DEVICEINFO	          = new DeviceInfo();
 	public static final LayoutMode             GENERAL_LAYOUTMODE             = LayoutMode.LIST_ONLY;
 	public static final MenuParams             GENERAL_MENUPARAMS             = new MenuParams();
@@ -117,6 +145,8 @@ public class Test {
 	public static final List<VrHelpItem>                GENERAL_VRHELPITEM_LIST                = new ArrayList<VrHelpItem>(2);
 	public static final List<SoftButton>                GENERAL_SOFTBUTTON_LIST                = new ArrayList<SoftButton>(1);
 	public static final List<ImageField> 			    GENERAL_IMAGEFIELD_LIST				   = new ArrayList<ImageField>(1);
+	public static final List<TouchEvent>			    GENERAL_TOUCHEVENT_LIST                = new ArrayList<TouchEvent>(1);
+	public static final List<PermissionItem>            GENERAL_PERMISSIONITEM_LIST            = new ArrayList<PermissionItem>(1);
 	public static final List<GlobalProperty>            GENERAL_GLOBALPROPERTY_LIST            = new ArrayList<GlobalProperty>(2);
 	public static final List<VrCapabilities>		    GENERAL_VRCAPABILITIES_LIST            = new ArrayList<VrCapabilities>(1);
 	public static final List<MediaClockFormat>          GENERAL_MEDIACLOCKFORMAT_LIST		   = new ArrayList<MediaClockFormat>(2);
@@ -129,18 +159,21 @@ public class Test {
 	public static final List<AudioPassThruCapabilities> GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST = new ArrayList<AudioPassThruCapabilities>(1);
 	
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
-	public static final JSONArray  JSON_CHOICES                   = new JSONArray();	
+	public static final JSONArray  JSON_CHOICES                   = new JSONArray();		
 	public static final JSONArray  JSON_TTSCHUNKS                 = new JSONArray();
 	public static final JSONArray  JSON_DIDRESULTS                = new JSONArray();
 	public static final JSONArray  JSON_TEXTFIELDS                = new JSONArray();
 	public static final JSONArray  JSON_VRHELPITEMS               = new JSONArray();
 	public static final JSONArray  JSON_SOFTBUTTONS               = new JSONArray();	
 	public static final JSONArray  JSON_IMAGEFIELDS				  = new JSONArray();
+	public static final JSONArray  JSON_TOUCHEVENTS               = new JSONArray();
+	public static final JSONArray  JSON_PERMISSIONITEMS           = new JSONArray();
 	public static final JSONArray  JSON_BUTTONCAPABILITIES        = new JSONArray();
 	public static final JSONArray  JSON_SOFTBUTTONCAPABILITIES    = new JSONArray();
 	public static final JSONArray  JSON_AUDIOPASSTHRUCAPABILITIES = new JSONArray();
 	
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
+	public static final JSONObject JSON_CHOICE                    = new JSONObject();
 	public static final JSONObject JSON_STARTTIME                 = new JSONObject();
 	public static final JSONObject JSON_MENUPARAMS                = new JSONObject();
 	public static final JSONObject JSON_DEVICEINFO                = new JSONObject();
@@ -151,6 +184,28 @@ public class Test {
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
 		
 	static {
+		// Choice Setup
+		GENERAL_CHOICE.setMenuName(GENERAL_STRING);
+		GENERAL_CHOICE.setSecondaryText(GENERAL_STRING);
+		GENERAL_CHOICE.setTertiaryText(GENERAL_STRING);
+		GENERAL_CHOICE.setChoiceID(GENERAL_INT);
+		GENERAL_CHOICE.setImage(GENERAL_IMAGE);
+		GENERAL_CHOICE.setSecondaryImage(GENERAL_IMAGE);
+		GENERAL_CHOICE.setVrCommands(GENERAL_STRING_LIST);
+				
+		// TouchEvent List Setup
+		TouchCoord touchCoord = new TouchCoord();
+		touchCoord.setX(GENERAL_INT);
+		touchCoord.setY(GENERAL_INT);
+		List<TouchCoord> coordList = new ArrayList<TouchCoord>();
+		coordList.add(touchCoord);
+		
+		TouchEvent touchEvent = new TouchEvent();
+		touchEvent.setId(GENERAL_INT);
+		touchEvent.setTs(GENERAL_INTEGER_LIST);
+		touchEvent.setC(coordList);
+		GENERAL_TOUCHEVENT_LIST.add(touchEvent);
+		
 		// TextField List Setup
 		TextField item = new TextField();
 		item.setName(TextFieldName.ETA);
@@ -338,7 +393,46 @@ public class Test {
         // VrCapabilities List Setup
         GENERAL_VRCAPABILITIES_LIST.add(VrCapabilities.TEXT);
         
-		try {			
+        // PermissionItem List Setup
+        HMIPermissions hmiPermissions = new HMIPermissions();
+        hmiPermissions.setAllowed(Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND}));
+        hmiPermissions.setUserDisallowed(Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE}));
+        
+        ParameterPermissions paramPermissions = new ParameterPermissions();
+        paramPermissions.setAllowed(GENERAL_STRING_LIST);
+        paramPermissions.setUserDisallowed(GENERAL_STRING_LIST);
+        
+        PermissionItem permissionItem = new PermissionItem();
+        permissionItem.setRpcName(GENERAL_STRING);
+        permissionItem.setHMIPermissions(hmiPermissions);
+        permissionItem.setParameterPermissions(paramPermissions);
+        GENERAL_PERMISSIONITEM_LIST.add(permissionItem);
+        
+		try {	
+			// Json Choice Setup
+			JSON_CHOICE.put(Choice.KEY_MENU_NAME, GENERAL_STRING);
+			JSON_CHOICE.put(Choice.KEY_SECONDARY_TEXT, GENERAL_STRING);
+			JSON_CHOICE.put(Choice.KEY_TERTIARY_TEXT, GENERAL_STRING);
+			JSON_CHOICE.put(Choice.KEY_CHOICE_ID, GENERAL_INT);
+			JSON_CHOICE.put(Choice.KEY_IMAGE, JSON_IMAGE);
+			JSON_CHOICE.put(Choice.KEY_SECONDARY_IMAGE, JSON_IMAGE);
+			JSON_CHOICE.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			
+			// Json PermissionItem List Setup
+			JSONObject jsonHmiPerm = new JSONObject();
+			jsonHmiPerm.put(HMIPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND})));
+			jsonHmiPerm.put(HMIPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE})));
+			
+			JSONObject jsonParamPerm = new JSONObject();
+			jsonParamPerm.put(ParameterPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			jsonParamPerm.put(ParameterPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			
+			JSONObject jsonPermItem = new JSONObject();
+			jsonPermItem.put(PermissionItem.KEY_HMI_PERMISSIONS, jsonHmiPerm);
+			jsonPermItem.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, jsonParamPerm);
+			jsonPermItem.put(PermissionItem.KEY_RPC_NAME, GENERAL_STRING);
+			JSON_PERMISSIONITEMS.put(jsonPermItem);
+			
 			// Json Image Setup
 			JSON_IMAGE.put(Image.KEY_IMAGE_TYPE, ImageType.STATIC);
 			JSON_IMAGE.put(Image.KEY_VALUE, GENERAL_STRING);
@@ -486,6 +580,19 @@ public class Test {
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_SCREEN_PARAMS, JSON_SCREENPARAMS);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEXT_FIELDS, JSON_TEXTFIELDS);
+			
+			// Json TouchEvent List Setup
+			JSONObject jsonTouchCoord = new JSONObject();
+			jsonTouchCoord.put(TouchCoord.KEY_X, GENERAL_INT);
+			jsonTouchCoord.put(TouchCoord.KEY_Y, GENERAL_INT);
+			JSONArray jsonCoordList = new JSONArray();
+			jsonCoordList.put(jsonTouchCoord);
+			
+			JSONObject jsonTouchEvent = new JSONObject();
+			jsonTouchEvent.put(TouchEvent.KEY_C, jsonCoordList);
+			jsonTouchEvent.put(TouchEvent.KEY_ID, GENERAL_INT);
+			jsonTouchEvent.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_INTEGER_LIST));
+			JSON_TOUCHEVENTS.put(jsonTouchEvent);
 			
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

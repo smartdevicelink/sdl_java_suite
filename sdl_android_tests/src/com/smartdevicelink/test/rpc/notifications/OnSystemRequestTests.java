@@ -3,7 +3,6 @@ package com.smartdevicelink.test.rpc.notifications;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Headers;
@@ -11,36 +10,25 @@ import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnSystemRequest}
+ */
 public class OnSystemRequestTests extends BaseRpcTests{
-
-    private static final int LENGTH = 10;
-    private static final int TIMEOUT = 5000;
-    private static final int OFFSET = 0;
-    private static final String URL = "http://www.livioconnect.com";
-    private static final FileType FILE_TYPE = FileType.BINARY;
-    private static final RequestType REQUEST_TYPE = RequestType.HTTP;
-    
-    // TODO: read this from file somewhere
-    private static final String HTTP_REQUEST_JSON = "{\"HTTPRequest\":{\"body\":\"123456789abcdef\","+
-                                                    "\"headers\":{\"ContentType\":\"application/json\"" +
-                                                    ",\"ConnectTimeout\":60,\"DoOutput\":true," +
-                                                    "\"DoInput\":true,\"UseCaches\":false,\"RequestMethod\""+
-                                                    ":\"POST\",\"ReadTimeout\":60,\"InstanceFollowRedirects\""+
-                                                    ":false,\"charset\":\"utf-8\",\"Content-Length\":10743}}}";
     
     @Override
     protected RPCMessage createMessage(){
         OnSystemRequest msg = new OnSystemRequest();
 
-        msg.setFileType(FILE_TYPE);
-        msg.setLength(LENGTH);
-        msg.setOffset(OFFSET);
-        msg.setRequestType(REQUEST_TYPE);
-        msg.setTimeout(TIMEOUT);
-        msg.setUrl(URL);
+        msg.setFileType(Test.GENERAL_FILETYPE);
+        msg.setLength(Test.GENERAL_INT);
+        msg.setOffset(Test.GENERAL_INT);
+        msg.setRequestType(Test.GENERAL_REQUESTTYPE);
+        msg.setTimeout(Test.GENERAL_INT);
+        msg.setUrl(Test.GENERAL_STRING);
 
         return msg;
     }
@@ -60,92 +48,54 @@ public class OnSystemRequestTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnSystemRequest.KEY_FILE_TYPE, FILE_TYPE);
-            result.put(OnSystemRequest.KEY_LENGTH, LENGTH);
-            result.put(OnSystemRequest.KEY_TIMEOUT, TIMEOUT);
-            result.put(OnSystemRequest.KEY_OFFSET, OFFSET);
-            result.put(OnSystemRequest.KEY_URL, URL);
-            result.put(OnSystemRequest.KEY_REQUEST_TYPE, REQUEST_TYPE);
-        }catch(JSONException e){
-            /* do nothing */
+            result.put(OnSystemRequest.KEY_FILE_TYPE, Test.GENERAL_FILETYPE);
+            result.put(OnSystemRequest.KEY_LENGTH, Test.GENERAL_INT);
+            result.put(OnSystemRequest.KEY_TIMEOUT, Test.GENERAL_INT);
+            result.put(OnSystemRequest.KEY_OFFSET, Test.GENERAL_INT);
+            result.put(OnSystemRequest.KEY_URL, Test.GENERAL_STRING);
+            result.put(OnSystemRequest.KEY_REQUEST_TYPE, Test.GENERAL_REQUESTTYPE);
+        } catch(JSONException e) {
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
-    
-    public void testBulkData(){
-        JSONObject bulkDataJson = JsonUtils.createJsonObject(HTTP_REQUEST_JSON.getBytes());
-        JSONObject httpRequestJson = JsonUtils.readJsonObjectFromJsonObject(bulkDataJson, "HTTPRequest");
-        msg.setBulkData(HTTP_REQUEST_JSON.getBytes());
+
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
+        FileType fileType = ( (OnSystemRequest) msg ).getFileType();
+        int length = ( (OnSystemRequest) msg ).getLength();
+        int timeout = ( (OnSystemRequest) msg ).getTimeout();
+        int offset = ( (OnSystemRequest) msg ).getOffset();
+        String url = ( (OnSystemRequest) msg ).getUrl();
+        RequestType requestType = ( (OnSystemRequest) msg ).getRequestType();
         
-        String referenceBody = JsonUtils.readStringFromJsonObject(httpRequestJson, "body");
-        JSONObject referenceHeadersJson = JsonUtils.readJsonObjectFromJsonObject(httpRequestJson, "headers");
-        Headers referenceHeaders = null;
-        try{
-            referenceHeaders = new Headers(JsonRPCMarshaller.deserializeJSONObject(referenceHeadersJson));
-        }catch(JSONException e){
-            e.printStackTrace();
-        }
         
-        OnSystemRequest underTestMsg = (OnSystemRequest) msg;
-        String underTestBody = underTestMsg.getBody();
-        Headers underTestHeaders = underTestMsg.getHeader();
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, fileType);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, length);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, timeout);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, offset);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, url);
+        assertEquals(Test.MATCH, Test.GENERAL_REQUESTTYPE, requestType);
         
-        assertEquals("Value for \"body\" key didn't match input value.", referenceBody, underTestBody);
-        assertTrue("Value for \"headers\" key didn't match input value.",
-                Validator.validateHeaders(referenceHeaders, underTestHeaders));
-        
-        msg.setBulkData(null);
-    }
-
-    public void testFileType(){
-        FileType data = ( (OnSystemRequest) msg ).getFileType();
-        assertEquals("Data didn't match input data.", FILE_TYPE, data);
-    }
-
-    public void testLength(){
-        int data = ( (OnSystemRequest) msg ).getLength();
-        assertEquals("Data didn't match input data.", LENGTH, data);
-    }
-
-    public void testTimeout(){
-        int data = ( (OnSystemRequest) msg ).getTimeout();
-        assertEquals("Data didn't match input data.", TIMEOUT, data);
-    }
-
-    public void testOffset(){
-        int data = ( (OnSystemRequest) msg ).getOffset();
-        assertEquals("Data didn't match input data.", OFFSET, data);
-    }
-
-    public void testUrl(){
-        String data = ( (OnSystemRequest) msg ).getUrl();
-        assertEquals("Data didn't match input data.", URL, data);
-    }
-
-    public void testRequestType(){
-        RequestType data = ( (OnSystemRequest) msg ).getRequestType();
-        assertEquals("Data didn't match input data.", REQUEST_TYPE, data);
-    }
-    
-    public void testBody(){
+        // Test Body
         OnSystemRequest osr = (OnSystemRequest) msg;
         String body = osr.getBody();
-        assertNull("Item was not null.", body);
+        assertNull(Test.NULL, body);
         
-        String testBody = "123ABC";
-        
+        String testBody = "123ABC";        
         osr.setBody(testBody);
         
         String readBody = osr.getBody();
-        assertEquals("Output value didn't match expected value.", testBody, readBody);
-    }
+        assertEquals(Test.MATCH, testBody, readBody);
     
-    public void testHeaders(){
-        OnSystemRequest osr = (OnSystemRequest) msg;
-        
+        // Test Headers     
         Headers headers = osr.getHeader();
-        assertNull("Item was not null.", headers);
+        assertNull(Test.NULL, headers);
         
         Headers testHeaders = new Headers();
         testHeaders.setCharset("ASCII");
@@ -157,25 +107,22 @@ public class OnSystemRequestTests extends BaseRpcTests{
         testHeaders.setInstanceFollowRedirects(true);
         testHeaders.setReadTimeout(800);
         testHeaders.setRequestMethod("POST");
-        testHeaders.setUseCaches(false);
-        
+        testHeaders.setUseCaches(false);        
         osr.setHeaders(testHeaders);
         
         Headers readHeaders = osr.getHeader();
-        assertTrue("Output value didn't match expected value.", Validator.validateHeaders(testHeaders, readHeaders));
-    }
-
-    public void testNull(){
+        assertTrue(Test.TRUE, Validator.validateHeaders(testHeaders, readHeaders));
+    
+        // Invalid/Null Tests
         OnSystemRequest msg = new OnSystemRequest();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("File type wasn't set, but getter method returned an object.", msg.getFileType());
-        assertNull("Length wasn't set, but getter method returned an object.", msg.getLength());
-        assertNull("Offset wasn't set, but getter method returned an object.", msg.getOffset());
-        assertNull("Timeout wasn't set, but getter method returned an object.", msg.getTimeout());
-        assertNull("URL wasn't set, but getter method returned an object.", msg.getUrl());
-        assertNull("Request type wasn't set, but getter method returned an object.", msg.getRequestType());
+        assertNull(Test.NULL, msg.getFileType());
+        assertNull(Test.NULL, msg.getLength());
+        assertNull(Test.NULL, msg.getOffset());
+        assertNull(Test.NULL, msg.getTimeout());
+        assertNull(Test.NULL, msg.getUrl());
+        assertNull(Test.NULL, msg.getRequestType());
     }
 }

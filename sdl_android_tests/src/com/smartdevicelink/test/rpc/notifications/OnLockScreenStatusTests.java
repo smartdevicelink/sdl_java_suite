@@ -10,22 +10,22 @@ import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnLockScreenStatus}
+ */
 public class OnLockScreenStatusTests extends BaseRpcTests{
-
-    private static final boolean DRIVER_DISTRACTED = false;
-    private static final LockScreenStatus SHOW_LOCK_SCREEN  = LockScreenStatus.REQUIRED;
-    private static final boolean USER_SELECTED     = true;
-    private static final HMILevel  HMI_LEVEL         = HMILevel.HMI_BACKGROUND;
 
     @Override
     protected RPCMessage createMessage(){
         OnLockScreenStatus msg = new OnLockScreenStatus();
 
-        msg.setDriverDistractionStatus(DRIVER_DISTRACTED);
-        msg.setHMILevel(HMI_LEVEL);
-        msg.setShowLockScreen(SHOW_LOCK_SCREEN);
-        msg.setUserSelected(USER_SELECTED);
+        msg.setDriverDistractionStatus(Test.GENERAL_BOOLEAN);
+        msg.setHMILevel(Test.GENERAL_HMILEVEL);
+        msg.setShowLockScreen(Test.GENERAL_SHOWLOCKSCREEN);
+        msg.setUserSelected(Test.GENERAL_BOOLEAN);
 
         return msg;
     }
@@ -45,48 +45,41 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, DRIVER_DISTRACTED);
-            //TODO: is OnHMIStatus correct class for this variable?
-            result.put(OnHMIStatus.KEY_HMI_LEVEL, HMI_LEVEL);
-            result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, SHOW_LOCK_SCREEN);
-            result.put(OnLockScreenStatus.KEY_USER_SELECTED, USER_SELECTED);
+            result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, Test.GENERAL_BOOLEAN);
+            result.put(OnHMIStatus.KEY_HMI_LEVEL, Test.GENERAL_HMILEVEL);
+            result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, Test.GENERAL_SHOWLOCKSCREEN);
+            result.put(OnLockScreenStatus.KEY_USER_SELECTED, Test.GENERAL_BOOLEAN);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testDriverDistractionStatus(){
-        Boolean data = ( (OnLockScreenStatus) msg ).getDriverDistractionStatus();
-        assertEquals("Data didn't match input data.", Boolean.valueOf(DRIVER_DISTRACTED), data);
-    }
-
-    public void testHMILevel(){
-    	HMILevel data = ( (OnLockScreenStatus) msg ).getHMILevel();
-        assertEquals("Data didn't match input data.", HMI_LEVEL, data);
-    }
-
-    public void testShowLockScreen(){
-        LockScreenStatus data = ( (OnLockScreenStatus) msg ).getShowLockScreen();
-        assertEquals("Data didn't match input data.", SHOW_LOCK_SCREEN, data);
-    }
-
-    public void testUserSelected(){
-        boolean data = ( (OnLockScreenStatus) msg ).getUserSelected();
-        assertEquals("Data didn't match input data.", USER_SELECTED, data);
-    }
-
-    public void testNull(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
+        Boolean status = ( (OnLockScreenStatus) msg ).getDriverDistractionStatus();
+        HMILevel hmiLevel = ( (OnLockScreenStatus) msg ).getHMILevel();
+        LockScreenStatus lockScreen = ( (OnLockScreenStatus) msg ).getShowLockScreen();
+        boolean userSelected = ( (OnLockScreenStatus) msg ).getUserSelected();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, status);
+        assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL, hmiLevel);
+        assertEquals(Test.MATCH, Test.GENERAL_SHOWLOCKSCREEN, lockScreen);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, userSelected);
+    
+        // Invalid/Null Tests
         OnLockScreenStatus msg = new OnLockScreenStatus();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Driver distraction status wasn't set, but getter method returned an object.",
-                msg.getDriverDistractionStatus());
-        assertNull("HMI level wasn't set, but getter method returned an object.", msg.getHMILevel());
-        assertNull("Show lock screen wasn't set, but getter method returned an object.", msg.getShowLockScreen());
-        assertNull("User selected wasn't set, but getter method returned an object.", msg.getUserSelected());
+        assertNull(Test.NULL, msg.getDriverDistractionStatus());
+        assertNull(Test.NULL, msg.getHMILevel());
+        assertNull(Test.NULL, msg.getShowLockScreen());
+        assertNull(Test.NULL, msg.getUserSelected());
     }
 }

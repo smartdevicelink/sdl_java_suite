@@ -8,18 +8,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnKeyboardInput}
+ */
 public class OnKeyboardInputTests extends BaseRpcTests{
-
-    private static final String        DATA           = "A";
-    private static final KeyboardEvent KEYBOARD_EVENT = KeyboardEvent.KEYPRESS;
 
     @Override
     protected RPCMessage createMessage(){
         OnKeyboardInput msg = new OnKeyboardInput();
 
-        msg.setData(DATA);
-        msg.setEvent(KEYBOARD_EVENT);
+        msg.setData(Test.GENERAL_STRING);
+        msg.setEvent(Test.GENERAL_KEYBOARDEVENT);
 
         return msg;
     }
@@ -39,32 +41,33 @@ public class OnKeyboardInputTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnKeyboardInput.KEY_DATA, DATA);
-            result.put(OnKeyboardInput.KEY_EVENT, KEYBOARD_EVENT);
+            result.put(OnKeyboardInput.KEY_DATA, Test.GENERAL_STRING);
+            result.put(OnKeyboardInput.KEY_EVENT, Test.GENERAL_KEYBOARDEVENT);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testData(){
-        String cmdId = ( (OnKeyboardInput) msg ).getData();
-        assertEquals("Data didn't match input data.", DATA, cmdId);
-    }
-
-    public void testKeyboardEvent(){
-        KeyboardEvent cmdId = ( (OnKeyboardInput) msg ).getEvent();
-        assertEquals("Keyboard event didn't match input event.", KEYBOARD_EVENT, cmdId);
-    }
-
-    public void testNull(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () { 
+    	// Test Values
+        KeyboardEvent event = ( (OnKeyboardInput) msg ).getEvent();
+        String data = ( (OnKeyboardInput) msg ).getData();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_KEYBOARDEVENT, event);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, data);
+    
+        // Invalid/Null Tests
         OnKeyboardInput msg = new OnKeyboardInput();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Data wasn't set, but getter method returned an object.", msg.getData());
-        assertNull("Keyboard event wasn't set, but getter method returned an object.", msg.getEvent());
+        assertNull(Test.NULL, msg.getData());
+        assertNull(Test.NULL, msg.getEvent());
     }
 }

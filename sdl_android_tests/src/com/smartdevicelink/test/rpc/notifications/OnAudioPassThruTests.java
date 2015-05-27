@@ -6,19 +6,17 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Validator;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnAudioPassThru}
+ */
 public class OnAudioPassThruTests extends BaseRpcTests{
-
-    private static final byte[] BULK_DATA = new byte[] { 7, 2, 9, 1, 12, 9, 0, 0, 1, 15, 11, 3 };
 
     @Override
     protected RPCMessage createMessage(){
-        OnAudioPassThru msg = new OnAudioPassThru();
-
-        msg.setBulkData(BULK_DATA);
-
-        return msg;
+        return new OnAudioPassThru();
     }
 
     @Override
@@ -36,16 +34,13 @@ public class OnAudioPassThruTests extends BaseRpcTests{
         return new JSONObject();
     }
 
-    public void testBulkData(){
-        byte[] copy = ( (OnAudioPassThru) msg ).getBulkData();
-        assertEquals("Bulk data size didn't match expected size.", BULK_DATA.length, copy.length);
-        assertTrue("Input value didn't match expected value.", Validator.validateBulkData(BULK_DATA, copy));
-    }
-
-    public void testNull(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () { 
+    	// Invalid/Null Tests
         OnAudioPassThru msg = new OnAudioPassThru();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
     }
 }

@@ -8,16 +8,19 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnAppInterfaceUnregistered}
+ */
 public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
-
-    private static final AppInterfaceUnregisteredReason REASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 
     @Override
     protected RPCMessage createMessage(){
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
 
-        msg.setReason(REASON);
+        msg.setReason(Test.GENERAL_REASON);
 
         return msg;
     }
@@ -37,25 +40,29 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnAppInterfaceUnregistered.KEY_REASON, REASON);
-        }catch(JSONException e){
-            /* do nothing */
+            result.put(OnAppInterfaceUnregistered.KEY_REASON, Test.GENERAL_REASON);
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testReason(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
         AppInterfaceUnregisteredReason reason = ( (OnAppInterfaceUnregistered) msg ).getReason();
-        assertEquals("Reason didn't match input reason.", REASON, reason);
-    }
-
-    public void testNull(){
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_REASON, reason);
+    
+        // Invalid/Null tests
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Reason wasn't set, but getter method returned an object.", msg.getReason());
+        assertNull(Test.NULL, msg.getReason());
     }
 }

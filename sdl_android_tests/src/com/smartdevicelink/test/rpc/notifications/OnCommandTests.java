@@ -8,18 +8,20 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnCommand}
+ */
 public class OnCommandTests extends BaseRpcTests{
-
-    private static final int           ID             = 1545681;
-    private static final TriggerSource TRIGGER_SOURCE = TriggerSource.TS_MENU;
 
     @Override
     protected RPCMessage createMessage(){
         OnCommand msg = new OnCommand();
 
-        msg.setCmdID(ID);
-        msg.setTriggerSource(TRIGGER_SOURCE);
+        msg.setCmdID(Test.GENERAL_INT);
+        msg.setTriggerSource(Test.GENERAL_TRIGGERSOURCE);
 
         return msg;
     }
@@ -39,32 +41,33 @@ public class OnCommandTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnCommand.KEY_CMD_ID, ID);
-            result.put(OnCommand.KEY_TRIGGER_SOURCE, TRIGGER_SOURCE);
+            result.put(OnCommand.KEY_CMD_ID, Test.GENERAL_INT);
+            result.put(OnCommand.KEY_TRIGGER_SOURCE, Test.GENERAL_TRIGGERSOURCE);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testCmdID(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
         int cmdId = ( (OnCommand) msg ).getCmdID();
-        assertEquals("Command ID didn't match input command ID.", ID, cmdId);
-    }
-
-    public void testTriggerSource(){
-        TriggerSource cmdId = ( (OnCommand) msg ).getTriggerSource();
-        assertEquals("Trigger source didn't match input trigger source.", TRIGGER_SOURCE, cmdId);
-    }
-
-    public void testNull(){
+        TriggerSource triggerSource = ( (OnCommand) msg ).getTriggerSource();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_INT, cmdId);
+        assertEquals(Test.MATCH, Test.GENERAL_TRIGGERSOURCE, triggerSource);
+       
+        // Invalid/Null Tests
         OnCommand msg = new OnCommand();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Trigger source wasn't set, but getter method returned an object.", msg.getTriggerSource());
-        assertNull("Command ID wasn't set, but getter method returned an object.", msg.getCmdID());
+        assertNull(Test.NULL, msg.getTriggerSource());
+        assertNull(Test.NULL, msg.getCmdID());
     }
 }

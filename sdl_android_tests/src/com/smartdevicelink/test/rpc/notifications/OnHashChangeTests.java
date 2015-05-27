@@ -7,7 +7,12 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnHashChange;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnHashChange}
+ */
 public class OnHashChangeTests extends BaseRpcTests{
 
     private static final String HASH_ID = "agh4lg2hb1g9gq3";
@@ -38,23 +43,27 @@ public class OnHashChangeTests extends BaseRpcTests{
         try{
             result.put(OnHashChange.KEY_HASH_ID, HASH_ID);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testHashID(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
         String hashId = ( (OnHashChange) msg ).getHashID();
-        assertEquals("Hash ID didn't match input hash ID.", HASH_ID, hashId);
-    }
-
-    public void testNull(){
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, HASH_ID, hashId);
+   
+        // Invalid/Null Tests
         OnHashChange msg = new OnHashChange();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull("Hash ID wasn't set, but getter method returned an object.", msg.getHashID());
+        assertNull(Test.NULL, msg.getHashID());
     }
 }

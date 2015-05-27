@@ -8,7 +8,12 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.test.BaseRpcTests;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.OnDriverDistraction}
+ */
 public class OnDriverDistractionTests extends BaseRpcTests{
 
     private static final DriverDistractionState STATUS = DriverDistractionState.DD_ON;
@@ -39,23 +44,27 @@ public class OnDriverDistractionTests extends BaseRpcTests{
         try{
             result.put(OnDriverDistraction.KEY_STATE, STATUS);
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
 
         return result;
     }
 
-    public void testState(){
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {       	
+    	// Test Values
         DriverDistractionState cmdId = ( (OnDriverDistraction) msg ).getState();
-        assertEquals("Driver distraction state didn't match input state.", STATUS, cmdId);
-    }
-
-    public void testNull(){
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, STATUS, cmdId);
+    
+        // Invalid/Null Tests
         OnDriverDistraction msg = new OnDriverDistraction();
-        assertNotNull("Null object creation failed.", msg);
-
+        assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-         assertNull("State wasn't set, but getter method returned an object.", msg.getState());
+         assertNull(Test.NULL, msg.getState());
     }
 }
