@@ -10,70 +10,62 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Validator;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.Image}
+ */
 public class ImageTests extends TestCase{
 
-    private static final ImageType IMAGE_TYPE = ImageType.DYNAMIC;
-    private static final String    IMAGE_NAME = "image_name.png";
-    private static final byte[]    IMAGE_DATA = new byte[] { 4, 7, 1, 8, 14, 10, 0, 0, 3 };
-
-    private Image                  msg;
+    private Image msg;
 
     @Override
     public void setUp(){
         msg = new Image();
 
-        msg.setImageType(IMAGE_TYPE);
-        msg.setValue(IMAGE_NAME);
-        msg.setBulkData(IMAGE_DATA);
+        msg.setImageType(Test.GENERAL_IMAGETYPE);
+        msg.setValue(Test.GENERAL_STRING);
     }
 
-    public void testImageType(){
-        ImageType copy = msg.getImageType();
-        assertEquals("Input value didn't match expected value.", IMAGE_TYPE, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        ImageType imageType = msg.getImageType();
+        String value = msg.getValue();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_IMAGETYPE, imageType);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, value);
+        
+        // Invalid/Null Tests
+        Image msg = new Image();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testValue(){
-        String copy = msg.getValue();
-        assertEquals("Input value didn't match expected value.", IMAGE_NAME, copy);
-    }
-
-    public void testBulkData(){
-        byte[] copy = msg.getBulkData();
-        assertEquals("Bulk data size didn't match expected size.", IMAGE_DATA.length, copy.length);
-        assertTrue("Input value didn't match expected value.", Validator.validateBulkData(IMAGE_DATA, copy));
+        assertNull(Test.NULL, msg.getImageType());
+        assertNull(Test.NULL, msg.getValue());
+        assertNull(Test.NULL, msg.getBulkData());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(Image.KEY_IMAGE_TYPE, IMAGE_TYPE);
-            reference.put(Image.KEY_VALUE, IMAGE_NAME);
+            reference.put(Image.KEY_IMAGE_TYPE, Test.GENERAL_IMAGETYPE);
+            reference.put(Image.KEY_VALUE, Test.GENERAL_STRING);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        Image msg = new Image();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Image type wasn't set, but getter method returned an object.", msg.getImageType());
-        assertNull("Value wasn't set, but getter method returned an object.", msg.getValue());
-        assertNull("Bulk data wasn't set, but getter method returned an object.", msg.getBulkData());
     }
 }

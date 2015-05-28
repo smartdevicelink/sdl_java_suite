@@ -10,51 +10,55 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.MyKey}
+ */
 public class MyKeyTests extends TestCase{
 
-    private static final VehicleDataStatus E_911_OVERRIDE = VehicleDataStatus.ON;
-
-    private MyKey                          msg;
+    private MyKey msg;
 
     @Override
     public void setUp(){
         msg = new MyKey();
-
-        msg.setE911Override(E_911_OVERRIDE);
+        msg.setE911Override(Test.GENERAL_VEHICLEDATASTATUS);
     }
 
-    public void testE911Override(){
-        VehicleDataStatus copy = msg.getE911Override();
-        assertEquals("Input value didn't match expected value.", E_911_OVERRIDE, copy);
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        VehicleDataStatus override = msg.getE911Override();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATASTATUS, override);
+        
+        // Invalid/Null Tests
+        MyKey msg = new MyKey();
+        assertNotNull(Test.NOT_NULL, msg);
+
+        assertNull(Test.NULL, msg.getE911Override());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(MyKey.KEY_E_911_OVERRIDE, E_911_OVERRIDE);
+            reference.put(MyKey.KEY_E_911_OVERRIDE, Test.GENERAL_VEHICLEDATASTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        MyKey msg = new MyKey();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("E 911 override wasn't set, but getter method returned an object.", msg.getE911Override());
     }
 }

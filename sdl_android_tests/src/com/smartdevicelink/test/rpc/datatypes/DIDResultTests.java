@@ -10,72 +10,61 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
-public class DIDResultTests extends TestCase{
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.DIDResult}
+ */
+public class DIDResultTests extends TestCase {
 
-    public static final VehicleDataResultCode RESULT_CODE = VehicleDataResultCode.SUCCESS;
-    public static final String                DATA        = "aglghelgb3l2389hgal3tb34l";
-
-    private DIDResult                         msg;
+    private DIDResult msg;
 
     @Override
     public void setUp(){
         msg = new DIDResult();
 
-        msg.setData(DATA);
-        msg.setResultCode(RESULT_CODE);
+        msg.setData(Test.GENERAL_STRING);
+        msg.setResultCode(Test.GENERAL_VEHICLEDATARESULTCODE);
     }
 
-    public void testData(){
-        String copy = msg.getData();
-        assertEquals("Input value didn't match expected value.", DATA, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        String data = msg.getData();
+        VehicleDataResultCode resultCode = msg.getResultCode();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, data);
+        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATARESULTCODE, resultCode);
+        
+        // Invalid/Null Tests
+        DIDResult msg = new DIDResult();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testResultCode(){
-        VehicleDataResultCode copy = msg.getResultCode();
-        assertEquals("Input value didn't match expected value.", RESULT_CODE, copy);
+        assertNull(Test.NULL, msg.getData());
+        assertNull(Test.NULL, msg.getResultCode());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(DIDResult.KEY_DATA, DATA);
-            reference.put(DIDResult.KEY_RESULT_CODE, RESULT_CODE);
+            reference.put(DIDResult.KEY_DATA, Test.GENERAL_STRING);
+            reference.put(DIDResult.KEY_RESULT_CODE, Test.GENERAL_VEHICLEDATARESULTCODE);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-            /* do nothing */
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
     }
-
-    public void testNull(){
-        DIDResult msg = new DIDResult();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Data wasn't set, but getter method returned an object.", msg.getData());
-        assertNull("Result code wasn't set, but getter method returned an object.", msg.getResultCode());
-    }
-  //TODO: remove testCopy()?
-    /*
-    public void testCopy(){
-        DIDResult copy = new DIDResult(msg);
-
-        assertNotSame("Object was not copied.", copy, msg);
-
-        String error = "Object data was not copied correctly.";
-        assertEquals(error, copy.getData(), msg.getData());
-        assertEquals(error, copy.getResultCode(), msg.getResultCode());
-    }
-    */
 }

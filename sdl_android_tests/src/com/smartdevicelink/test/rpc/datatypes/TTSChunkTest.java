@@ -10,11 +10,9 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
 public class TTSChunkTest extends TestCase {
-
-	private static final SpeechCapabilities SPEECH_TYPE = SpeechCapabilities.SILENCE;
-	private static final String TEXT = "text";
 	
 	private TTSChunk msg;
 
@@ -22,53 +20,47 @@ public class TTSChunkTest extends TestCase {
 	public void setUp() {
 		msg = new TTSChunk();
 		
-		msg.setText(TEXT);
-		msg.setType(SPEECH_TYPE);
+		msg.setText(Test.GENERAL_STRING);
+		msg.setType(Test.GENERAL_SPEECHCAPABILITIES);
 	}
 
-	public void testText() {
-		String copy = msg.getText();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		String text = msg.getText();
+		SpeechCapabilities speechType = msg.getType();
 		
-		assertEquals("Input value didn't match expected value.", TEXT, copy);
-	}
-	
-	public void testSpeechType () {
-		SpeechCapabilities copy = msg.getType();
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, text);
+		assertEquals(Test.MATCH, Test.GENERAL_SPEECHCAPABILITIES, speechType);
 		
-		assertEquals("Input value didn't match expected value.", SPEECH_TYPE, copy);
+		// Invalid/Null Tests
+		TTSChunk msg = new TTSChunk();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getText());
+		assertNull(Test.NULL, msg.getType());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(TTSChunk.KEY_TEXT, TEXT);
-			reference.put(TTSChunk.KEY_TYPE, SPEECH_TYPE);
+			reference.put(TTSChunk.KEY_TEXT, Test.GENERAL_STRING);
+			reference.put(TTSChunk.KEY_TYPE, Test.GENERAL_SPEECHCAPABILITIES);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		TTSChunk msg = new TTSChunk();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Text wasn't set, but getter method returned an object.", msg.getText());
-		assertNull("Speech type wasn't set, but getter method returned an object.", msg.getType());
 	}
 }

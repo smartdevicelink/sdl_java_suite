@@ -12,92 +12,76 @@ import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.EmergencyEvent}
+ */
 public class EmergencyEventTests extends TestCase{
 
-    // public EmergencyEvent(EmergencyEventType type, FuelCutoffStatus fuelCutoffStatus,
-    // VehicleDataEventStatus rolloverEvent, VehicleDataEventStatus multipleEvents, Integer maxChangeVelocity){
-
-    private static final EmergencyEventType     TYPE                = EmergencyEventType.NO_EVENT;
-    private static final FuelCutoffStatus       FUEL_CUTOFF_STATUS  = FuelCutoffStatus.NORMAL_OPERATION;
-    private static final VehicleDataEventStatus ROLLOVER_EVENT      = VehicleDataEventStatus.NO_EVENT;
-    private static final VehicleDataEventStatus MULTIPLE_EVENTS     = VehicleDataEventStatus.NO;
-    private static final int                    MAX_CHANGE_VELOCITY = 50;
-
-    private EmergencyEvent                      msg;
+    private EmergencyEvent msg;
 
     @Override
     public void setUp(){
         msg = new EmergencyEvent();
 
-        msg.setEmergencyEventType(TYPE);
-        msg.setFuelCutoffStatus(FUEL_CUTOFF_STATUS);
-        msg.setMaximumChangeVelocity(MAX_CHANGE_VELOCITY);
-        msg.setMultipleEvents(MULTIPLE_EVENTS);
-        msg.setRolloverEvent(ROLLOVER_EVENT);
+        msg.setEmergencyEventType(Test.GENERAL_EMERGENCYEVENTTYPE);
+        msg.setFuelCutoffStatus(Test.GENERAL_FUELCUTOFFSTATUS);
+        msg.setMaximumChangeVelocity(Test.GENERAL_INT);
+        msg.setMultipleEvents(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
+        msg.setRolloverEvent(Test.GENERAL_VEHCILEDATAEVENTSTATUS);
     }
 
-    public void testEmergencyEventType(){
-        EmergencyEventType copy = msg.getEmergencyEventType();
-        assertEquals("Input value didn't match expected value.", TYPE, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        EmergencyEventType type = msg.getEmergencyEventType();
+        FuelCutoffStatus cutoffStatus = msg.getFuelCutoffStatus();
+        VehicleDataEventStatus multipleEvents = msg.getMultipleEvents();
+        int changeVelocity = msg.getMaximumChangeVelocity();
+        VehicleDataEventStatus rollover = msg.getRolloverEvent();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_EMERGENCYEVENTTYPE, type);
+        assertEquals(Test.MATCH, Test.GENERAL_FUELCUTOFFSTATUS, cutoffStatus);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, changeVelocity);
+        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, multipleEvents);
+        assertEquals(Test.MATCH, Test.GENERAL_VEHCILEDATAEVENTSTATUS, rollover);
+        
+        // Invalid/Null Tests
+        EmergencyEvent msg = new EmergencyEvent();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testFuelCutoffStatus(){
-        FuelCutoffStatus copy = msg.getFuelCutoffStatus();
-        assertEquals("Input value didn't match expected value.", FUEL_CUTOFF_STATUS, copy);
-    }
-
-    public void testMaximumChangeVelocity(){
-        int copy = msg.getMaximumChangeVelocity();
-        assertEquals("Input value didn't match expected value.", MAX_CHANGE_VELOCITY, copy);
-    }
-
-    public void testMultipleEvents(){
-        VehicleDataEventStatus copy = msg.getMultipleEvents();
-        assertEquals("Input value didn't match expected value.", MULTIPLE_EVENTS, copy);
-    }
-
-    public void testRolloverEvent(){
-        VehicleDataEventStatus copy = msg.getRolloverEvent();
-        assertEquals("Input value didn't match expected value.", ROLLOVER_EVENT, copy);
+        assertNull(Test.NULL, msg.getEmergencyEventType());
+        assertNull(Test.NULL, msg.getFuelCutoffStatus());
+        assertNull(Test.NULL, msg.getMaximumChangeVelocity());
+        assertNull(Test.NULL, msg.getMultipleEvents());
+        assertNull(Test.NULL, msg.getRolloverEvent());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(EmergencyEvent.KEY_FUEL_CUTOFF_STATUS, FUEL_CUTOFF_STATUS);
-            reference.put(EmergencyEvent.KEY_MULTIPLE_EVENTS, MULTIPLE_EVENTS);
-            reference.put(EmergencyEvent.KEY_ROLLOVER_EVENT, ROLLOVER_EVENT);
-            reference.put(EmergencyEvent.KEY_EMERGENCY_EVENT_TYPE, TYPE);
-            reference.put(EmergencyEvent.KEY_MAXIMUM_CHANGE_VELOCITY, MAX_CHANGE_VELOCITY);
+            reference.put(EmergencyEvent.KEY_FUEL_CUTOFF_STATUS, Test.GENERAL_FUELCUTOFFSTATUS);
+            reference.put(EmergencyEvent.KEY_MULTIPLE_EVENTS, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(EmergencyEvent.KEY_ROLLOVER_EVENT, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(EmergencyEvent.KEY_EMERGENCY_EVENT_TYPE, Test.GENERAL_EMERGENCYEVENTTYPE);
+            reference.put(EmergencyEvent.KEY_MAXIMUM_CHANGE_VELOCITY, Test.GENERAL_INT);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        EmergencyEvent msg = new EmergencyEvent();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Emergency event type wasn't set, but getter method returned an object.",
-                msg.getEmergencyEventType());
-        assertNull("Fuel cutoff status wasn't set, but getter method returned an object.", msg.getFuelCutoffStatus());
-        assertNull("Maximum change velocity wasn't set, but getter method returned an object.",
-                msg.getMaximumChangeVelocity());
-        assertNull("Multiple events wasn't set, but getter method returned an object.", msg.getMultipleEvents());
-        assertNull("Rollover event wasn't set, but getter method returned an object.", msg.getRolloverEvent());
     }
 }

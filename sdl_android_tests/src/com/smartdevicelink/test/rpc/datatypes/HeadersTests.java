@@ -9,132 +9,101 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.Headers}
+ */
 public class HeadersTests extends TestCase{
 
-    private static final String  CONTENT_TYPE              = "text/html";
-    private static final String  REQUEST_METHOD            = "GET";
-    private static final String  CHARSET                   = "ISO-8859-4";
-    private static final int     CONNECTION_TIMEOUT        = 200;
-    private static final int     READ_TIMEOUT              = 100;
-    private static final int     CONTENT_LENGTH            = 5029;
-    private static final boolean DO_OUTPUT                 = true;
-    private static final boolean DO_INPUT                  = false;
-    private static final boolean USES_CACHES               = false;
-    private static final boolean INSTANCE_FOLLOW_REDIRECTS = true;
-
-    private Headers              msg;
+    private Headers msg;
 
     @Override
     public void setUp(){
         msg = new Headers();
 
-        msg.setCharset(CHARSET);
-        msg.setConnectTimeout(CONNECTION_TIMEOUT);
-        msg.setContentLength(CONTENT_LENGTH);
-        msg.setContentType(CONTENT_TYPE);
-        msg.setDoInput(DO_INPUT);
-        msg.setDoOutput(DO_OUTPUT);
-        msg.setInstanceFollowRedirects(INSTANCE_FOLLOW_REDIRECTS);
-        msg.setReadTimeout(READ_TIMEOUT);
-        msg.setRequestMethod(REQUEST_METHOD);
-        msg.setUseCaches(USES_CACHES);
+        msg.setCharset(Test.GENERAL_STRING);
+        msg.setConnectTimeout(Test.GENERAL_INT);
+        msg.setContentLength(Test.GENERAL_INT);
+        msg.setContentType(Test.GENERAL_STRING);
+        msg.setDoInput(Test.GENERAL_BOOLEAN);
+        msg.setDoOutput(Test.GENERAL_BOOLEAN);
+        msg.setInstanceFollowRedirects(Test.GENERAL_BOOLEAN);
+        msg.setReadTimeout(Test.GENERAL_INT);
+        msg.setRequestMethod(Test.GENERAL_STRING);
+        msg.setUseCaches(Test.GENERAL_BOOLEAN);
     }
 
-    public void testCharset(){
-        String copy = msg.getCharset();
-        assertEquals("Input value didn't match expected value.", CHARSET, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        String charset = msg.getCharset();
+        String contentType = msg.getContentType();
+        String requestMode = msg.getRequestMethod();
+        int connectTimeout = msg.getConnectTimeout();
+        int readTimeout = msg.getReadTimeout();
+        int contentLength = msg.getContentLength();
+        boolean doOutput = msg.getDoOutput();
+        boolean doInput = msg.getDoInput();
+        boolean useCache = msg.getUseCaches();
+        boolean instanceFollow = msg.getInstanceFollowRedirects();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, charset);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, contentType);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, requestMode);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, connectTimeout);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, readTimeout);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, contentLength);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, doOutput);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, doInput);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, useCache);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, instanceFollow);
+        
+        // Invalid/Null Tests
+        Headers msg = new Headers();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testContentType(){
-        String copy = msg.getContentType();
-        assertEquals("Input value didn't match expected value.", CONTENT_TYPE, copy);
-    }
-
-    public void testRequestMethod(){
-        String copy = msg.getRequestMethod();
-        assertEquals("Input value didn't match expected value.", REQUEST_METHOD, copy);
-    }
-
-    public void testConnectTimeout(){
-        int copy = msg.getConnectTimeout();
-        assertEquals("Input value didn't match expected value.", CONNECTION_TIMEOUT, copy);
-    }
-
-    public void testReadTimeout(){
-        int copy = msg.getReadTimeout();
-        assertEquals("Input value didn't match expected value.", READ_TIMEOUT, copy);
-    }
-
-    public void testContentLength(){
-        int copy = msg.getContentLength();
-        assertEquals("Input value didn't match expected value.", CONTENT_LENGTH, copy);
-    }
-
-    public void testDoOutput(){
-        boolean copy = msg.getDoOutput();
-        assertEquals("Input value didn't match expected value.", DO_OUTPUT, copy);
-    }
-
-    public void testDoInput(){
-        boolean copy = msg.getDoInput();
-        assertEquals("Input value didn't match expected value.", DO_INPUT, copy);
-    }
-
-    public void testUseCache(){
-        boolean copy = msg.getUseCaches();
-        assertEquals("Input value didn't match expected value.", USES_CACHES, copy);
-    }
-
-    public void testInstanceFollowRedirects(){
-        boolean copy = msg.getInstanceFollowRedirects();
-        assertEquals("Input value didn't match expected value.", INSTANCE_FOLLOW_REDIRECTS, copy);
+        assertNull(Test.NULL, msg.getCharset());
+        assertNull(Test.NULL, msg.getConnectTimeout());
+        assertNull(Test.NULL, msg.getContentLength());
+        assertNull(Test.NULL, msg.getContentType());
+        assertNull(Test.NULL, msg.getDoInput());
+        assertNull(Test.NULL, msg.getDoOutput());
+        assertNull(Test.NULL, msg.getInstanceFollowRedirects());
+        assertNull(Test.NULL, msg.getReadTimeout());
+        assertNull(Test.NULL, msg.getRequestMethod());
+        assertNull(Test.NULL, msg.getUseCaches());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(Headers.KEY_CHARSET, CHARSET);
-            reference.put(Headers.KEY_CONTENT_TYPE, CONTENT_TYPE);
-            reference.put(Headers.KEY_REQUEST_METHOD, REQUEST_METHOD);
-            reference.put(Headers.KEY_CONNECT_TIMEOUT, CONNECTION_TIMEOUT);
-            reference.put(Headers.KEY_READ_TIMEOUT, READ_TIMEOUT);
-            reference.put(Headers.KEY_CONTENT_LENGTH, CONTENT_LENGTH);
-            reference.put(Headers.KEY_DO_OUTPUT, DO_OUTPUT);
-            reference.put(Headers.KEY_DO_INPUT, DO_INPUT);
-            reference.put(Headers.KEY_USE_CACHES, USES_CACHES);
-            reference.put(Headers.KEY_INSTANCE_FOLLOW_REDIRECTS, INSTANCE_FOLLOW_REDIRECTS);
+            reference.put(Headers.KEY_CHARSET, Test.GENERAL_STRING);
+            reference.put(Headers.KEY_CONTENT_TYPE, Test.GENERAL_STRING);
+            reference.put(Headers.KEY_REQUEST_METHOD, Test.GENERAL_STRING);
+            reference.put(Headers.KEY_CONNECT_TIMEOUT, Test.GENERAL_INT);
+            reference.put(Headers.KEY_READ_TIMEOUT, Test.GENERAL_INT);
+            reference.put(Headers.KEY_CONTENT_LENGTH, Test.GENERAL_INT);
+            reference.put(Headers.KEY_DO_OUTPUT, Test.GENERAL_BOOLEAN);
+            reference.put(Headers.KEY_DO_INPUT, Test.GENERAL_BOOLEAN);
+            reference.put(Headers.KEY_USE_CACHES, Test.GENERAL_BOOLEAN);
+            reference.put(Headers.KEY_INSTANCE_FOLLOW_REDIRECTS, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        Headers msg = new Headers();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Charset wasn't set, but getter method returned an object.", msg.getCharset());
-        assertNull("Connection timeout wasn't set, but getter method returned an object.", msg.getConnectTimeout());
-        assertNull("Content length wasn't set, but getter method returned an object.", msg.getContentLength());
-        assertNull("Content type wasn't set, but getter method returned an object.", msg.getContentType());
-        assertNull("Do input wasn't set, but getter method returned an object.", msg.getDoInput());
-        assertNull("Do output wasn't set, but getter method returned an object.", msg.getDoOutput());
-        assertNull("Follow wasn't set, but getter method returned an object.", msg.getInstanceFollowRedirects());
-        assertNull("Read timeout wasn't set, but getter method returned an object.", msg.getReadTimeout());
-        assertNull("Request method wasn't set, but getter method returned an object.", msg.getRequestMethod());
-        assertNull("Uses caches wasn't set, but getter method returned an object.", msg.getUseCaches());
     }
 }

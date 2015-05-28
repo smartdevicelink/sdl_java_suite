@@ -10,70 +10,66 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.HeadLampStatus}
+ */
 public class HeadLampStatusTests extends TestCase{
-
-    private static final boolean            LOW_BEAMS_ON         = false;
-    private static final boolean            HIGH_BEAMS_ON        = true;
-    private static final AmbientLightStatus AMBIENT_LIGHT_STATUS = AmbientLightStatus.NIGHT;
-
-    private HeadLampStatus                  msg;
+	
+    private HeadLampStatus msg;
 
     @Override
     public void setUp(){
         msg = new HeadLampStatus();
 
-        msg.setAmbientLightStatus(AMBIENT_LIGHT_STATUS);
-        msg.setLowBeamsOn(LOW_BEAMS_ON);
-        msg.setHighBeamsOn(HIGH_BEAMS_ON);
+        msg.setAmbientLightStatus(Test.GENERAL_AMBIENTLIGHTSTATUS);
+        msg.setLowBeamsOn(Test.GENERAL_BOOLEAN);
+        msg.setHighBeamsOn(Test.GENERAL_BOOLEAN);
     }
 
-    public void testLowBeamsOn(){
-        boolean copy = msg.getLowBeamsOn();
-        assertEquals("Input value didn't match expected value.", LOW_BEAMS_ON, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        boolean lowBeams = msg.getLowBeamsOn();
+        boolean highBeams = msg.getHighBeamsOn();
+        AmbientLightStatus ambientLights = msg.getAmbientLightStatus();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_AMBIENTLIGHTSTATUS, ambientLights);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, highBeams);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, lowBeams);
+                
+        // Invalid/Null Tests
+        HeadLampStatus msg = new HeadLampStatus();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testHighBeamsOn(){
-        boolean copy = msg.getHighBeamsOn();
-        assertEquals("Input value didn't match expected value.", HIGH_BEAMS_ON, copy);
-    }
-
-    public void testAmbientLightStatus(){
-        AmbientLightStatus copy = msg.getAmbientLightStatus();
-        assertEquals("Input value didn't match expected value.", AMBIENT_LIGHT_STATUS, copy);
+        assertNull(Test.NULL, msg.getLowBeamsOn());
+        assertNull(Test.NULL, msg.getHighBeamsOn());
+        assertNull(Test.NULL, msg.getAmbientLightStatus());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(HeadLampStatus.KEY_HIGH_BEAMS_ON, HIGH_BEAMS_ON);
-            reference.put(HeadLampStatus.KEY_LOW_BEAMS_ON, LOW_BEAMS_ON);
-            reference.put(HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS, AMBIENT_LIGHT_STATUS);
+            reference.put(HeadLampStatus.KEY_HIGH_BEAMS_ON, Test.GENERAL_BOOLEAN);
+            reference.put(HeadLampStatus.KEY_LOW_BEAMS_ON, Test.GENERAL_BOOLEAN);
+            reference.put(HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS, Test.GENERAL_AMBIENTLIGHTSTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-            /* do nothing */
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        HeadLampStatus msg = new HeadLampStatus();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Low beams on wasn't set, but getter method returned an object.", msg.getLowBeamsOn());
-        assertNull("High beams on wasn't set, but getter method returned an object.", msg.getHighBeamsOn());
-        assertNull("Ambient light status wasn't set, but getter method returned an object.",
-                msg.getAmbientLightStatus());
     }
 }

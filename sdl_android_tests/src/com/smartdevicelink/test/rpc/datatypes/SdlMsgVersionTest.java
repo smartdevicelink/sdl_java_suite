@@ -9,11 +9,13 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SdlMsgVersion}
+ */
 public class SdlMsgVersionTest extends TestCase {
-
-	private static final Integer MAJOR_VERSION = 0;
-	private static final Integer MINOR_VERSION = 0;
 	
 	private SdlMsgVersion msg;
 
@@ -21,53 +23,47 @@ public class SdlMsgVersionTest extends TestCase {
 	public void setUp() {
 		msg = new SdlMsgVersion();
 
-		msg.setMajorVersion(MAJOR_VERSION);
-		msg.setMinorVersion(MINOR_VERSION);
+		msg.setMajorVersion(Test.GENERAL_INT);
+		msg.setMinorVersion(Test.GENERAL_INT);
 	}
 
-	public void testMajorVersion() {
-		Integer copy = msg.getMajorVersion();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		Integer major = msg.getMajorVersion();
+		Integer minor = msg.getMinorVersion();
 		
-		assertEquals("Input value didn't match expected value.", MAJOR_VERSION, copy);
-	}
-	
-	public void testMinorVersion() {
-		Integer copy = msg.getMinorVersion();
+		// Valid Tests
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, major);
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, minor);
 		
-		assertEquals("Input value didn't match expected value.", MINOR_VERSION, copy);
+		// Invalid/Null Tests
+		SdlMsgVersion msg = new SdlMsgVersion();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getMajorVersion());
+		assertNull(Test.NULL, msg.getMinorVersion());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(SdlMsgVersion.KEY_MAJOR_VERSION, MAJOR_VERSION);
-			reference.put(SdlMsgVersion.KEY_MINOR_VERSION, MINOR_VERSION);
+			reference.put(SdlMsgVersion.KEY_MAJOR_VERSION, Test.GENERAL_INT);
+			reference.put(SdlMsgVersion.KEY_MINOR_VERSION, Test.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		SdlMsgVersion msg = new SdlMsgVersion();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Major version wasn't set, but getter method returned an object.", msg.getMajorVersion());
-		assertNull("Minor version wasn't set, but getter method returned an object.", msg.getMinorVersion());
 	}
 }

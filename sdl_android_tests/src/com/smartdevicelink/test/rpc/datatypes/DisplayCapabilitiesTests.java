@@ -1,7 +1,5 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -19,192 +17,86 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.DisplayCapabilities}
+ */
 public class DisplayCapabilitiesTests extends TestCase{
-
-    private static final boolean                GRAPHIC_SUPPORTED              = true;
-    private static final int                    CUSTOM_PRESETS_AVAILABLE       = 5;
-    private static final DisplayType            DISPLAY_TYPE                   = DisplayType.NGN;
-
-    // screen params constants
-    private static final int                    SCREEN_IMAGE_RESOLUTION_WIDTH  = 1250;
-    private static final int                    SCREEN_IMAGE_RESOLUTION_HEIGHT = 1080;
-    private static final boolean                TOUCH_AVAILABLE                = true;
-    private static final boolean                MULTI_TOUCH_AVAILABLE          = false;
-    private static final boolean                DOUBLE_PRESS_AVAILABLE         = false;
-    
-    // textFields constants
-    private static final TextFieldName[]        TEXT_FIELD_NAMES               = new TextFieldName[] {
-            TextFieldName.alertText1, TextFieldName.alertText2, TextFieldName.mainField1 };
-    private static final int[]                  TEXT_FIELD_WIDTHS              = new int[] { 25, 25, 30 };
-    private static final int                    TEXT_FIELD_ROWS                = 1;
-    private static final CharacterSet           CHARACTER_SET                  = CharacterSet.TYPE2SET;
-    
-    
-    // imageFields constants
-    private static final ImageFieldName[]       IMAGE_FIELD_NAMES              = new ImageFieldName[] {
-            ImageFieldName.appIcon, ImageFieldName.graphic, ImageFieldName.softButtonImage };
-    private static final FileType[]             IMAGE_FILE_TYPES               = new FileType[] { FileType.GRAPHIC_PNG,
-            FileType.GRAPHIC_JPEG, FileType.GRAPHIC_BMP                       };
-    private static final ImageResolution[]      IMAGE_RESOLUTIONS              = new ImageResolution[3];
-    private static final Integer				IMAGE_RESOLUTION_ITEM_1_WIDTH  = 20;
-    private static final Integer				IMAGE_RESOLUTION_ITEM_1_HEIGHT = 20;
-    private static final Integer				IMAGE_RESOLUTION_ITEM_2_WIDTH  = 30;
-    private static final Integer				IMAGE_RESOLUTION_ITEM_2_HEIGHT = 30;
-    private static final Integer				IMAGE_RESOLUTION_ITEM_3_WIDTH  = 40;
-    private static final Integer				IMAGE_RESOLUTION_ITEM_3_HEIGHT = 40;
-    
-    
-    private final List<String>           TEMPLATES_AVAILABLE            = Arrays.asList(new String[] { "Media",
-            "Navigation", "Productivity"                                      });
-    
-    private final List<MediaClockFormat> MEDIA_CLOCK_FORMATS            = Arrays.asList(new MediaClockFormat[] { MediaClockFormat.CLOCK1 });
-    
-    private DisplayCapabilities                 msg;
-
-    private ScreenParams                        screenParams;
-    private List<TextField>                     textFields;
-    private List<ImageField>                    imageFields;
-    private ImageResolution                     imageResolution;
-    private TouchEventCapabilities              touchEventCapabilities;
+	
+    private DisplayCapabilities msg;
 
     @Override
     public void setUp(){    	
     	msg = new DisplayCapabilities();
 
-        createCustomObjects();
-
-        msg.setGraphicSupported(GRAPHIC_SUPPORTED);
-        msg.setNumCustomPresetsAvailable(CUSTOM_PRESETS_AVAILABLE);
-        msg.setDisplayType(DISPLAY_TYPE);
-        msg.setImageFields(imageFields);
-        msg.setTextFields(textFields);
-        msg.setMediaClockFormats(MEDIA_CLOCK_FORMATS);
-        msg.setScreenParams(screenParams);
-        msg.setTemplatesAvailable(TEMPLATES_AVAILABLE);
+        msg.setGraphicSupported(Test.GENERAL_BOOLEAN);
+        msg.setNumCustomPresetsAvailable(Test.GENERAL_INT);
+        msg.setDisplayType(Test.GENERAL_DISPLAYTYPE);
+        msg.setImageFields(Test.GENERAL_IMAGEFIELD_LIST);
+        msg.setTextFields(Test.GENERAL_TEXTFIELD_LIST);
+        msg.setMediaClockFormats(Test.GENERAL_MEDIACLOCKFORMAT_LIST);
+        msg.setScreenParams(Test.GENERAL_SCREENPARAMS);
+        msg.setTemplatesAvailable(Test.GENERAL_STRING_LIST);
     }
 
-    private void createCustomObjects(){
-    	IMAGE_RESOLUTIONS[0] = new ImageResolution();
-    	IMAGE_RESOLUTIONS[0].setResolutionWidth(IMAGE_RESOLUTION_ITEM_1_WIDTH);
-    	IMAGE_RESOLUTIONS[0].setResolutionHeight(IMAGE_RESOLUTION_ITEM_1_HEIGHT);
-    	
-    	IMAGE_RESOLUTIONS[1] = new ImageResolution();
-    	IMAGE_RESOLUTIONS[1].setResolutionWidth(IMAGE_RESOLUTION_ITEM_2_WIDTH);
-    	IMAGE_RESOLUTIONS[1].setResolutionHeight(IMAGE_RESOLUTION_ITEM_2_HEIGHT);
-    	
-    	IMAGE_RESOLUTIONS[2] = new ImageResolution();
-    	IMAGE_RESOLUTIONS[2].setResolutionWidth(IMAGE_RESOLUTION_ITEM_3_WIDTH);
-    	IMAGE_RESOLUTIONS[2].setResolutionHeight(IMAGE_RESOLUTION_ITEM_3_HEIGHT);
-    	
-        imageResolution = new ImageResolution();
-        imageResolution.setResolutionWidth(SCREEN_IMAGE_RESOLUTION_WIDTH);
-        imageResolution.setResolutionHeight(SCREEN_IMAGE_RESOLUTION_HEIGHT);
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        boolean graphicSupported = msg.getGraphicSupported();
+        int numPresets = msg.getNumCustomPresetsAvailable();
+        DisplayType displayType = msg.getDisplayType();
+        ScreenParams screenParams = msg.getScreenParams();
+        List<String> templatesAvailable = msg.getTemplatesAvailable();
+        List<MediaClockFormat> mediaClock = msg.getMediaClockFormats();
+        List<TextField> textFields = msg.getTextFields();
+        List<ImageField> imageFields = msg.getImageFields();
         
-        touchEventCapabilities = new TouchEventCapabilities();
-        touchEventCapabilities.setPressAvailable(TOUCH_AVAILABLE);
-        touchEventCapabilities.setMultiTouchAvailable(MULTI_TOUCH_AVAILABLE);
-        touchEventCapabilities.setDoublePressAvailable(DOUBLE_PRESS_AVAILABLE);
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, graphicSupported);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, numPresets);
+        assertEquals(Test.MATCH, Test.GENERAL_DISPLAYTYPE, displayType);
+        assertTrue(Test.TRUE, Validator.validateScreenParams(Test.GENERAL_SCREENPARAMS, screenParams));
+        assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), templatesAvailable.size());
+		assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
+		assertEquals(Test.MATCH, Test.GENERAL_TEXTFIELD_LIST.size(), textFields.size());
+		assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELD_LIST.size(), imageFields.size());
+		
+		for(int i = 0; i < Test.GENERAL_STRING_LIST.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
+        }
         
-        screenParams = new ScreenParams();
-        screenParams.setImageResolution(imageResolution);
-        screenParams.setTouchEventAvailable(touchEventCapabilities);
-
-        textFields = new ArrayList<TextField>(TEXT_FIELD_NAMES.length);
-        for(int i = 0; i < TEXT_FIELD_NAMES.length; i++){
-        	TextField textField = new TextField();
-        	textField.setName(TEXT_FIELD_NAMES[i]);
-        	textField.setCharacterSet(CHARACTER_SET);
-        	textField.setWidth(TEXT_FIELD_WIDTHS[i]);
-        	textField.setRows(TEXT_FIELD_ROWS);
-            textFields.add(textField);
+        for(int i = 0; i < Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.get(i), mediaClock.get(i));
         }
 
-        imageFields = new ArrayList<ImageField>(IMAGE_FIELD_NAMES.length);
-        for(int i = 0; i < IMAGE_FIELD_NAMES.length; i++){
-        	ImageField imageField = new ImageField();
-        	imageField.setName(IMAGE_FIELD_NAMES[i]);
-
-        	List<FileType> fileList = new ArrayList<FileType>();
-        	for(int j = 0; j < IMAGE_FILE_TYPES.length; j++){
-        		fileList.add(IMAGE_FILE_TYPES[j]);
-        	}
-        	imageField.setImageTypeSupported(fileList);
-        	imageField.setImageResolution(IMAGE_RESOLUTIONS[i]);
-        	
-            imageFields.add(imageField);
+        for(int i = 0; i < Test.GENERAL_TEXTFIELD_LIST.size(); i++){
+            assertTrue(Test.TRUE, Validator.validateTextFields(Test.GENERAL_TEXTFIELD_LIST.get(i), textFields.get(i)));
         }
-    }
 
-    public void testGraphicSupported(){
-        boolean copy = msg.getGraphicSupported();
-        assertEquals("Input value didn't match expected value.", GRAPHIC_SUPPORTED, copy);
-    }
-
-    public void testNumPresetsAvailable(){
-        int copy = msg.getNumCustomPresetsAvailable();
-        assertEquals("Input value didn't match expected value.", CUSTOM_PRESETS_AVAILABLE, copy);
-    }
-
-    public void testDisplayType(){
-        DisplayType copy = msg.getDisplayType();
-        assertEquals("Input value didn't match expected value.", DISPLAY_TYPE, copy);
-    }
-
-    public void testScreenParams(){
-        ScreenParams copy = msg.getScreenParams();
-
-        assertTrue("Input value didn't match expected value.", Validator.validateScreenParams(screenParams, copy));
-    }
-    
-    public void testTemplatesAvailable(){
-        List<String> copy = msg.getTemplatesAvailable();
-
-        assertEquals("Templates available size didn't match expected size.", TEMPLATES_AVAILABLE.size(), copy.size());
-
-        for(int i = 0; i < TEMPLATES_AVAILABLE.size(); i++){
-            assertEquals("Template data at index " + i + " didn't match expected data.", TEMPLATES_AVAILABLE.get(i),
-                    copy.get(i));
+        for(int i = 0; i < Test.GENERAL_IMAGEFIELD_LIST.size(); i++){
+            assertTrue(Test.TRUE, Validator.validateImageFields(Test.GENERAL_IMAGEFIELD_LIST.get(i), imageFields.get(i)));
         }
-    }
+        
+        // Invalid/Null Tests
+        DisplayCapabilities msg = new DisplayCapabilities();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testMediaClockFormats(){
-        List<MediaClockFormat> copy = msg.getMediaClockFormats();
-
-        assertEquals("Media clock formats size didn't match expected size.", MEDIA_CLOCK_FORMATS.size(), copy.size());
-
-        for(int i = 0; i < MEDIA_CLOCK_FORMATS.size(); i++){
-            assertEquals("Media clock format data at index " + i + " didn't match expected data.",
-                    MEDIA_CLOCK_FORMATS.get(i), copy.get(i));
-        }
-    }
-
-    public void testTextFields(){
-        List<TextField> copy = msg.getTextFields();
-        assertEquals("Text fields size didn't match expected size.", textFields.size(), copy.size());
-
-        for(int i = 0; i < textFields.size(); i++){
-            assertTrue("Text field data at index " + i + " didn't match expected data.",
-                    Validator.validateTextFields(textFields.get(i), copy.get(i)));
-        }
-    }
-
-    public void testImageFields(){
-        List<ImageField> copy = msg.getImageFields();
-        assertEquals("Text fields size didn't match expected size.", imageFields.size(), copy.size());
-       
-        for(int i = 0; i < imageFields.size(); i++){
-            assertTrue("Text field data at index " + i + " didn't match expected data.",
-                    Validator.validateImageFields(imageFields.get(i), copy.get(i)));
-        }
+        assertNull(Test.NULL, msg.getDisplayType());
+        assertNull(Test.NULL, msg.getGraphicSupported());
+        assertNull(Test.NULL, msg.getImageFields());
+        assertNull(Test.NULL, msg.getMediaClockFormats());
+        assertNull(Test.NULL, msg.getNumCustomPresetsAvailable());
+        assertNull(Test.NULL, msg.getScreenParams());
+        assertNull(Test.NULL, msg.getTemplatesAvailable());
+        assertNull(Test.NULL, msg.getTextFields());
     }
     
     public void testJson(){
@@ -213,19 +105,18 @@ public class DisplayCapabilitiesTests extends TestCase{
         JSONArray mediaClockFormats = new JSONArray(), textFields = new JSONArray(), imageFields = new JSONArray();
 
         try{
-            reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, CUSTOM_PRESETS_AVAILABLE);
-            reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, GRAPHIC_SUPPORTED);
-            reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, DISPLAY_TYPE);
-            reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE,
-                    JsonUtils.createJsonArray(TEMPLATES_AVAILABLE));
+            reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, Test.GENERAL_INT);
+            reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, Test.GENERAL_BOOLEAN);
+            reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, Test.GENERAL_DISPLAYTYPE);
+            reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
 
-            for(MediaClockFormat format : MEDIA_CLOCK_FORMATS){
+            for(MediaClockFormat format : Test.GENERAL_MEDIACLOCKFORMAT_LIST){
                 mediaClockFormats.put(format);
             }
             reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats);
 
             // text fields
-            for(TextField textField : this.textFields){
+            for(TextField textField : Test.GENERAL_TEXTFIELD_LIST){
                 JSONObject textFieldJson = new JSONObject();
                 textFieldJson.put(TextField.KEY_CHARACTER_SET, textField.getCharacterSet());
                 textFieldJson.put(TextField.KEY_NAME, textField.getName());
@@ -236,7 +127,7 @@ public class DisplayCapabilitiesTests extends TestCase{
             reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, textFields);
 
             // image fields
-            for(ImageField imageField : this.imageFields){
+            for(ImageField imageField : Test.GENERAL_IMAGEFIELD_LIST){
                 JSONObject imageFieldJson = new JSONObject();
                 imageFieldJson.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, imageField.getImageTypeSupported());
                 imageFieldJson.put(ImageField.KEY_NAME, imageField.getName());
@@ -252,12 +143,12 @@ public class DisplayCapabilitiesTests extends TestCase{
             reference.put(DisplayCapabilities.KEY_IMAGE_FIELDS, imageFields);
 
             // screen params
-            ImageResolution resolution = this.screenParams.getImageResolution();
+            ImageResolution resolution = Test.GENERAL_SCREENPARAMS.getImageResolution();
             imageResolution.put(ImageResolution.KEY_RESOLUTION_HEIGHT, resolution.getResolutionHeight());
             imageResolution.put(ImageResolution.KEY_RESOLUTION_WIDTH, resolution.getResolutionWidth());
             screenParams.put(ScreenParams.KEY_RESOLUTION, imageResolution);
 
-            TouchEventCapabilities touchCapabilities = this.touchEventCapabilities;
+            TouchEventCapabilities touchCapabilities = Test.GENERAL_TOUCHEVENTCAPABILITIES;
             touchEventCapabilities.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE,
                     touchCapabilities.getPressAvailable());
             touchEventCapabilities.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE,
@@ -268,8 +159,7 @@ public class DisplayCapabilitiesTests extends TestCase{
             reference.put(DisplayCapabilities.KEY_SCREEN_PARAMS, screenParams);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
             
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
@@ -277,87 +167,52 @@ public class DisplayCapabilitiesTests extends TestCase{
                 if(key.equals(DisplayCapabilities.KEY_IMAGE_FIELDS)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals("Image field size didn't match expected size.", referenceArray.length(),
-                    		underTestArray.length());
+                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
                     for(int i = 0; i < referenceArray.length(); i++){
                     	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
                     	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                    	
-                        assertTrue("Image field at index " + i + " didn't match expected value.",
-                                Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
+                    	assertTrue(Test.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
                     }
-                }
-                else if(key.equals(DisplayCapabilities.KEY_TEXT_FIELDS)){
+                } else if(key.equals(DisplayCapabilities.KEY_TEXT_FIELDS)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals("Text field size didn't match expected size.", referenceArray.length(),
-                            underTestArray.length());
+                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
                     for(int i = 0; i < referenceArray.length(); i++){
                     	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
                     	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                    	
-                        assertTrue("Text field at index " + i + " didn't match expected value.",
-                                Validator.validateTextFields(new TextField(hashReference), new TextField(hashTest)));
+                    	assertTrue(Test.TRUE, Validator.validateTextFields(new TextField(hashReference), new TextField(hashTest)));
                     }
-                }
-                else if(key.equals(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE)){
+                } else if(key.equals(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals("Template list size didn't match expected size.", referenceArray.length(),
-                            underTestArray.length());
+                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
                     for(int i = 0; i < referenceArray.length(); i++){
-                        assertTrue("Template field at index " + i + " didn't match expected value.",
-                                Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));
+                        assertTrue(Test.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));
                     }
-                }
-                else if(key.equals(DisplayCapabilities.KEY_SCREEN_PARAMS)){
+                } else if(key.equals(DisplayCapabilities.KEY_SCREEN_PARAMS)){
                     JSONObject referenceArray = JsonUtils.readJsonObjectFromJsonObject(reference, key);
                     JSONObject underTestArray = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
                 	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray);
                 	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray);
                     
-                    assertTrue("Screen params value didn't match expected value.", Validator.validateScreenParams(
-                            new ScreenParams(hashReference), new ScreenParams(hashTest)));
-                }
-                else if(key.equals(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS)){
+                    assertTrue(Test.TRUE, Validator.validateScreenParams(new ScreenParams(hashReference), new ScreenParams(hashTest)));
+                } else if(key.equals(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals("Media clock format list size didn't match expected size.", referenceArray.length(),
-                            underTestArray.length());
+                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
                     for(int i = 0; i < referenceArray.length(); i++){
-                        assertTrue("Media clock format at index " + i + " didn't match expected value.",
-                                Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));
+                        assertTrue(Test.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));
                     }
-                }
-                else{
-                    assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                            JsonUtils.readObjectFromJsonObject(reference, key),
-                            JsonUtils.readObjectFromJsonObject(underTest, key));
+                } else{
+                    assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        DisplayCapabilities msg = new DisplayCapabilities();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Display type wasn't set, but getter method returned an object.", msg.getDisplayType());
-        assertNull("Graphic supported wasn't set, but getter method returned an object.", msg.getGraphicSupported());
-        assertNull("Image field list wasn't set, but getter method returned an object.", msg.getImageFields());
-        assertNull("Media clock format list wasn't set, but getter method returned an object.",
-                msg.getMediaClockFormats());
-        assertNull("Num of custom presets wasn't set, but getter method returned an object.",
-                msg.getNumCustomPresetsAvailable());
-        assertNull("Screen params wasn't set, but getter method returned an object.", msg.getScreenParams());
-        assertNull("Templates available list wasn't set, but getter method returned an object.",
-                msg.getTemplatesAvailable());
-        assertNull("Text fields list wasn't set, but getter method returned an object.", msg.getTextFields());
     }
 }

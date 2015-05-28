@@ -40,6 +40,7 @@ import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -48,12 +49,22 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
+import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
+import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
+import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
+import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
+import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -64,7 +75,10 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
+import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
+import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
@@ -77,9 +91,13 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 
 public class Test {
 	
@@ -102,7 +120,34 @@ public class Test {
     public static final KeyboardEvent GENERAL_KEYBOARDEVENT = KeyboardEvent.ENTRY_SUBMITTED;
     public static final LockScreenStatus GENERAL_SHOWLOCKSCREEN = LockScreenStatus.REQUIRED;
     public static final TBTState GENERAL_TBTSTATE = TBTState.NEXT_TURN_REQUEST;
-
+    public static final PowerModeQualificationStatus GENERAL_POWERMODEQUALIFICATIONSTATUS = PowerModeQualificationStatus.POWER_MODE_OK;
+    public static final CarModeStatus GENERAL_CARMODESTATUS = CarModeStatus.NORMAL;
+    public static final PowerModeStatus GENERAL_POWERMODESTATUS = PowerModeStatus.RUNNING_2;
+    public static final DeviceLevelStatus GENERAL_DEVICELEVELSTATUS = DeviceLevelStatus.FOUR_LEVEL_BARS;
+    public static final PrimaryAudioSource GENERAL_PRIMARYAUDIOSOURCE = PrimaryAudioSource.BLUETOOTH_STEREO_BTST;
+    public static final ECallConfirmationStatus GENERAL_ECALLCONFIRMATIONSTATUS = ECallConfirmationStatus.CALL_IN_PROGRESS;
+    public static final VehicleDataNotificationStatus GENERAL_VEHICLEDATANOTIFICATIONSTATUS = VehicleDataNotificationStatus.NORMAL;
+    public static final EmergencyEventType GENERAL_EMERGENCYEVENTTYPE = EmergencyEventType.FAULT;
+    public static final FuelCutoffStatus GENERAL_FUELCUTOFFSTATUS = FuelCutoffStatus.NORMAL_OPERATION;
+    public static final Dimension GENERAL_DIMENSION = Dimension._2D;
+    public static final CompassDirection GENERAL_COMPASSDIRECTION = CompassDirection.EAST;
+    public static final AmbientLightStatus GENERAL_AMBIENTLIGHTSTATUS = AmbientLightStatus.NIGHT;   
+    public static final SoftButtonType GENERAL_SOFTBUTTONTYPE = SoftButtonType.SBT_BOTH;
+    public static final SystemAction GENERAL_SYSTEMACTION = SystemAction.DEFAULT_ACTION;
+    public static final ImageResolution GENERAL_IMAGERESOLUTION = new ImageResolution();
+    public static final TouchEventCapabilities GENERAL_TOUCHEVENTCAPABILITIES = new TouchEventCapabilities();
+    public static final VehicleDataStatus GENERAL_VEHICLEDATASTATUS = VehicleDataStatus.ON;
+    public static final TextFieldName GENERAL_TEXTFIELDNAME = TextFieldName.ETA;
+    public static final CharacterSet GENERAL_CHARACTERSET = CharacterSet.CID1SET;
+    public static final ImageType GENERAL_IMAGETYPE = ImageType.DYNAMIC;
+    public static final KeyboardLayout GENERAL_KEYBOARDLAYOUT = KeyboardLayout.QWERTY;
+    public static final KeypressMode GENERAL_KEYPRESSMODE = KeypressMode.QUEUE_KEYPRESSES;
+    public static final ImageFieldName GENERAL_IMAGEFIELDNAME = ImageFieldName.graphic;
+    public static final HMIPermissions GENERAL_HMIPERMISSIONS = new HMIPermissions();
+    public static final ParameterPermissions GENERAL_PARAMETERPERMISSIONS = new ParameterPermissions();
+    public static final SpeechCapabilities GENERAL_SPEECHCAPABILITIES = SpeechCapabilities.TEXT;
+    public static final DisplayType GENERAL_DISPLAYTYPE = DisplayType.CID;
+    
 	// Rpc Request & Response Values
 	public static final int                    GENERAL_INT                    = 100;
 	public static final float                  GENERAL_FLOAT                  = 100f;
@@ -129,18 +174,28 @@ public class Test {
 	public static final BitsPerSample          GENERAL_BITSPERSAMPLE          = BitsPerSample._8_BIT;
 	public static final TextAlignment          GENERAL_TEXTALIGNMENT          = TextAlignment.CENTERED;
 	public static final SdlMsgVersion          GENERAL_SDLMSGVERSION          = new SdlMsgVersion();
+	public static final IgnitionStatus         GENERAL_IGNITIONSTATUS         = IgnitionStatus.RUN;
+	public static final VehicleDataType        GENERAL_VEHICLEDATATYPE        = VehicleDataType.VEHICLEDATA_BRAKING;
 	public static final InteractionMode        GENERAL_INTERACTIONMODE        = InteractionMode.BOTH;
+	public static final WarningLightStatus	   GENERAL_WARNINGLIGHTSTATUS	  = WarningLightStatus.OFF;
 	public static final KeyboardProperties     GENERAL_KEYBOARDPROPERTIES     = new KeyboardProperties();	
 	public static final DisplayCapabilities    GENERAL_DISPLAYCAPABILITIES    = new DisplayCapabilities();
+	public static final IgnitionStableStatus   GENERAL_IGNITIONSTABLESTATUS   = IgnitionStableStatus.IGNITION_SWITCH_STABLE;
+	public static final VehicleDataResultCode  GENERAL_VEHICLEDATARESULTCODE  = VehicleDataResultCode.IGNORED;
+	public static final ComponentVolumeStatus  GENERAL_COMPONENTVOLUMESTATUS  = ComponentVolumeStatus.LOW;
 	public static final PresetBankCapabilities GENERAL_PRESETBANKCAPABILITIES = new PresetBankCapabilities();
+	public static final VehicleDataEventStatus GENERAL_VEHCILEDATAEVENTSTATUS = VehicleDataEventStatus.YES;
 	
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
 	public static final List<String>                    GENERAL_STRING_LIST                    = Arrays.asList(new String[] { "a", "b"});
 	public static final List<Integer>                   GENERAL_INTEGER_LIST                   = Arrays.asList(new Integer[]{ -1, -2});
 	public static final List<TTSChunk>                  GENERAL_TTSCHUNK_LIST                  = new ArrayList<TTSChunk>(2);
+	public static final List<HMILevel>                  GENERAL_HMILEVEL_LIST                  = Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND});
+	public static final List<FileType>                  GENERAL_FILETYPE_LIST                  = new ArrayList<FileType>(1);
 	public static final List<TextField>                 GENERAL_TEXTFIELD_LIST                 = new ArrayList<TextField>(1);
 	public static final List<DIDResult>                 GENERAL_DIDRESULT_LIST                 = new ArrayList<DIDResult>(1);
+	public static final List<TouchCoord>                GENERAL_TOUCHCOORD_LIST                = new ArrayList<TouchCoord>(1);
 	public static final List<AppHMIType>                GENERAL_APPHMITYPE_LIST                = new ArrayList<AppHMIType>(2);
 	public static final List<VrHelpItem>                GENERAL_VRHELPITEM_LIST                = new ArrayList<VrHelpItem>(2);
 	public static final List<SoftButton>                GENERAL_SOFTBUTTON_LIST                = new ArrayList<SoftButton>(1);
@@ -160,9 +215,11 @@ public class Test {
 	
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();		
+	public static final JSONArray  JSON_HMILEVELS                 = new JSONArray();
 	public static final JSONArray  JSON_TTSCHUNKS                 = new JSONArray();
 	public static final JSONArray  JSON_DIDRESULTS                = new JSONArray();
 	public static final JSONArray  JSON_TEXTFIELDS                = new JSONArray();
+	public static final JSONArray  JSON_TOUCHCOORDS               = new JSONArray();
 	public static final JSONArray  JSON_VRHELPITEMS               = new JSONArray();
 	public static final JSONArray  JSON_SOFTBUTTONS               = new JSONArray();	
 	public static final JSONArray  JSON_IMAGEFIELDS				  = new JSONArray();
@@ -179,11 +236,24 @@ public class Test {
 	public static final JSONObject JSON_DEVICEINFO                = new JSONObject();
 	public static final JSONObject JSON_SCREENPARAMS              = new JSONObject();
 	public static final JSONObject JSON_SDLMSGVERSION             = new JSONObject();
+	public static final JSONObject JSON_HMIPERMISSIONS            = new JSONObject();
+	public static final JSONObject JSON_IMAGERESOLUTION           = new JSONObject();
 	public static final JSONObject JSON_KEYBOARDPROPERTIES        = new JSONObject();
 	public static final JSONObject JSON_DISPLAYCAPABILITIES       = new JSONObject();
+	public static final JSONObject JSON_PARAMETERPERMISSIONS      = new JSONObject();
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
-		
+	public static final JSONObject JSON_TOUCHEVENTCAPABILITIES    = new JSONObject();
+	
 	static {
+		// TouchEventCapabilities Setup
+		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
+		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
+		GENERAL_TOUCHEVENTCAPABILITIES.setPressAvailable(GENERAL_BOOLEAN);
+		
+		// ImageResolution Setup
+		GENERAL_IMAGERESOLUTION.setResolutionHeight(GENERAL_INT);
+		GENERAL_IMAGERESOLUTION.setResolutionWidth(GENERAL_INT);		
+		
 		// Choice Setup
 		GENERAL_CHOICE.setMenuName(GENERAL_STRING);
 		GENERAL_CHOICE.setSecondaryText(GENERAL_STRING);
@@ -197,13 +267,12 @@ public class Test {
 		TouchCoord touchCoord = new TouchCoord();
 		touchCoord.setX(GENERAL_INT);
 		touchCoord.setY(GENERAL_INT);
-		List<TouchCoord> coordList = new ArrayList<TouchCoord>();
-		coordList.add(touchCoord);
+		GENERAL_TOUCHCOORD_LIST.add(touchCoord);
 		
 		TouchEvent touchEvent = new TouchEvent();
 		touchEvent.setId(GENERAL_INT);
 		touchEvent.setTs(GENERAL_INTEGER_LIST);
-		touchEvent.setC(coordList);
+		touchEvent.setC(GENERAL_TOUCHCOORD_LIST);
 		GENERAL_TOUCHEVENT_LIST.add(touchEvent);
 		
 		// TextField List Setup
@@ -219,13 +288,12 @@ public class Test {
 		imageResolution.setResolutionHeight(GENERAL_INT);
 		imageResolution.setResolutionWidth(GENERAL_INT);
 		
-		List<FileType> fileTypes = new ArrayList<FileType>();
-		fileTypes.add(GENERAL_FILETYPE);
+		GENERAL_FILETYPE_LIST.add(GENERAL_FILETYPE);
 		
 		ImageField imageField = new ImageField();
 		imageField.setImageResolution(imageResolution);
 		imageField.setName(ImageFieldName.graphic);
-		imageField.setImageTypeSupported(fileTypes);
+		imageField.setImageTypeSupported(GENERAL_FILETYPE_LIST);
 		GENERAL_IMAGEFIELD_LIST.add(imageField);
 		
 		// ScreenParams Setup
@@ -394,21 +462,32 @@ public class Test {
         GENERAL_VRCAPABILITIES_LIST.add(VrCapabilities.TEXT);
         
         // PermissionItem List Setup
-        HMIPermissions hmiPermissions = new HMIPermissions();
-        hmiPermissions.setAllowed(Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND}));
-        hmiPermissions.setUserDisallowed(Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE}));
+        GENERAL_HMIPERMISSIONS.setAllowed(GENERAL_HMILEVEL_LIST);
+        GENERAL_HMIPERMISSIONS.setUserDisallowed(GENERAL_HMILEVEL_LIST);
         
-        ParameterPermissions paramPermissions = new ParameterPermissions();
-        paramPermissions.setAllowed(GENERAL_STRING_LIST);
-        paramPermissions.setUserDisallowed(GENERAL_STRING_LIST);
+        GENERAL_PARAMETERPERMISSIONS.setAllowed(GENERAL_STRING_LIST);
+        GENERAL_PARAMETERPERMISSIONS.setUserDisallowed(GENERAL_STRING_LIST);
         
         PermissionItem permissionItem = new PermissionItem();
         permissionItem.setRpcName(GENERAL_STRING);
-        permissionItem.setHMIPermissions(hmiPermissions);
-        permissionItem.setParameterPermissions(paramPermissions);
+        permissionItem.setHMIPermissions(GENERAL_HMIPERMISSIONS);
+        permissionItem.setParameterPermissions(GENERAL_PARAMETERPERMISSIONS);
         GENERAL_PERMISSIONITEM_LIST.add(permissionItem);
         
 		try {	
+			// Json HMIPermissions Setup
+			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
+			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
+			
+			// Json TouchEventCapabilities Setup
+			JSON_TOUCHEVENTCAPABILITIES.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, GENERAL_BOOLEAN);
+			JSON_TOUCHEVENTCAPABILITIES.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, GENERAL_BOOLEAN);
+			JSON_TOUCHEVENTCAPABILITIES.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, GENERAL_BOOLEAN);
+			
+			// Json ImageResolution Setup
+			JSON_IMAGERESOLUTION.put(ImageResolution.KEY_RESOLUTION_HEIGHT, GENERAL_INT);
+			JSON_IMAGERESOLUTION.put(ImageResolution.KEY_RESOLUTION_WIDTH, GENERAL_INT);
+			
 			// Json Choice Setup
 			JSON_CHOICE.put(Choice.KEY_MENU_NAME, GENERAL_STRING);
 			JSON_CHOICE.put(Choice.KEY_SECONDARY_TEXT, GENERAL_STRING);
@@ -419,17 +498,19 @@ public class Test {
 			JSON_CHOICE.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			
 			// Json PermissionItem List Setup
-			JSONObject jsonHmiPerm = new JSONObject();
-			jsonHmiPerm.put(HMIPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(Arrays.asList(new HMILevel[]{HMILevel.HMI_FULL, HMILevel.HMI_BACKGROUND})));
-			jsonHmiPerm.put(HMIPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(Arrays.asList(new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_NONE})));
+			JSON_HMILEVELS.put(HMILevel.HMI_FULL);
+			JSON_HMILEVELS.put(HMILevel.HMI_BACKGROUND);
 			
-			JSONObject jsonParamPerm = new JSONObject();
-			jsonParamPerm.put(ParameterPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
-			jsonParamPerm.put(ParameterPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			JSONObject jsonHmiPerm = new JSONObject();
+			jsonHmiPerm.put(HMIPermissions.KEY_ALLOWED, JSON_HMILEVELS);
+			jsonHmiPerm.put(HMIPermissions.KEY_USER_DISALLOWED, JSON_HMILEVELS);
+			
+			JSON_PARAMETERPERMISSIONS.put(ParameterPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			JSON_PARAMETERPERMISSIONS.put(ParameterPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			
 			JSONObject jsonPermItem = new JSONObject();
 			jsonPermItem.put(PermissionItem.KEY_HMI_PERMISSIONS, jsonHmiPerm);
-			jsonPermItem.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, jsonParamPerm);
+			jsonPermItem.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, JSON_PARAMETERPERMISSIONS);
 			jsonPermItem.put(PermissionItem.KEY_RPC_NAME, GENERAL_STRING);
 			JSON_PERMISSIONITEMS.put(jsonPermItem);
 			
@@ -558,7 +639,7 @@ public class Test {
 			
 			jsonItem = new JSONObject();
 			jsonItem.put(ImageField.KEY_IMAGE_RESOLUTION, jsonImageResolution);
-			jsonItem.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(fileTypes));
+			jsonItem.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(Test.GENERAL_FILETYPE_LIST));
 			jsonItem.put(ImageField.KEY_NAME, ImageFieldName.graphic);
 			JSON_IMAGEFIELDS.put(jsonItem);
 			
@@ -585,11 +666,10 @@ public class Test {
 			JSONObject jsonTouchCoord = new JSONObject();
 			jsonTouchCoord.put(TouchCoord.KEY_X, GENERAL_INT);
 			jsonTouchCoord.put(TouchCoord.KEY_Y, GENERAL_INT);
-			JSONArray jsonCoordList = new JSONArray();
-			jsonCoordList.put(jsonTouchCoord);
+			JSON_TOUCHCOORDS.put(jsonTouchCoord);
 			
 			JSONObject jsonTouchEvent = new JSONObject();
-			jsonTouchEvent.put(TouchEvent.KEY_C, jsonCoordList);
+			jsonTouchEvent.put(TouchEvent.KEY_C, JSON_TOUCHCOORDS);
 			jsonTouchEvent.put(TouchEvent.KEY_ID, GENERAL_INT);
 			jsonTouchEvent.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_INTEGER_LIST));
 			JSON_TOUCHEVENTS.put(jsonTouchEvent);

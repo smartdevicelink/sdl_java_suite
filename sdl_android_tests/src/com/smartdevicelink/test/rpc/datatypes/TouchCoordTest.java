@@ -9,11 +9,13 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.TouchCoord}
+ */
 public class TouchCoordTest extends TestCase {
-
-	private static final Integer X = 0;
-	private static final Integer Y = 0;
 	
 	private TouchCoord msg;
 
@@ -21,53 +23,47 @@ public class TouchCoordTest extends TestCase {
 	public void setUp() {
 		msg = new TouchCoord();
 		
-		msg.setX(X);
-		msg.setY(Y);
+		msg.setX(Test.GENERAL_INT);
+		msg.setY(Test.GENERAL_INT);
 	}
 
-	public void testX () {
-		Integer copy = msg.getX();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		Integer x = msg.getX();
+		Integer y = msg.getY();
 		
-		assertEquals("Input value didn't match expected value.", X, copy);
-	}
-	
-	public void testY () {
-		Integer copy = msg.getY();
+		// Valid Tests
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, x);
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, y);
 		
-		assertEquals("Input value didn't match expected value.", Y, copy);
+		// Invalid/Null Tests
+		TouchCoord msg = new TouchCoord();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getX());
+		assertNull(Test.NULL, msg.getY());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(TouchCoord.KEY_X, X);
-			reference.put(TouchCoord.KEY_Y, Y);
+			reference.put(TouchCoord.KEY_X, Test.GENERAL_INT);
+			reference.put(TouchCoord.KEY_Y, Test.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		TouchCoord msg = new TouchCoord();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("X wasn't set, but getter method returned an object.", msg.getX());
-		assertNull("Y wasn't set, but getter method returned an object.", msg.getY());
 	}
 }

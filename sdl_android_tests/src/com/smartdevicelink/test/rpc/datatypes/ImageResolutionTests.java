@@ -9,60 +9,62 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.ImageResolution}
+ */
 public class ImageResolutionTests extends TestCase{
 
-    private static final int HEIGHT = 1920;
-    private static final int WIDTH  = 1080;
-
-    private ImageResolution  msg;
+    private ImageResolution msg;
 
     @Override
     public void setUp(){
         msg = new ImageResolution();
 
-        msg.setResolutionHeight(HEIGHT);
-        msg.setResolutionWidth(WIDTH);
+        msg.setResolutionHeight(Test.GENERAL_INT);
+        msg.setResolutionWidth(Test.GENERAL_INT);
     }
 
-    public void testHeight(){
-        int copy = msg.getResolutionHeight();
-        assertEquals("Input value didn't match expected value.", HEIGHT, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        int height = msg.getResolutionHeight();
+        int width = msg.getResolutionWidth();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_INT, height);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, width);
+        
+        // Invalid/Null Tests
+        ImageResolution msg = new ImageResolution();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testWidth(){
-        int copy = msg.getResolutionWidth();
-        assertEquals("Input value didn't match expected value.", WIDTH, copy);
+        assertNull(Test.NULL, msg.getResolutionHeight());
+        assertNull(Test.NULL, msg.getResolutionWidth());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ImageResolution.KEY_RESOLUTION_HEIGHT, HEIGHT);
-            reference.put(ImageResolution.KEY_RESOLUTION_WIDTH, WIDTH);
+            reference.put(ImageResolution.KEY_RESOLUTION_HEIGHT, Test.GENERAL_INT);
+            reference.put(ImageResolution.KEY_RESOLUTION_WIDTH, Test.GENERAL_INT);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-            /* do nothing */
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        ImageResolution msg = new ImageResolution();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Height wasn't set, but getter method returned an object.", msg.getResolutionHeight());
-        assertNull("Width wasn't set, but getter method returned an object.", msg.getResolutionWidth());
     }
 }

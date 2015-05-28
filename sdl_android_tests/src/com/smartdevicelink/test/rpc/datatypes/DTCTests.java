@@ -9,60 +9,61 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.DTC;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.DTC}
+ */
 public class DTCTests extends TestCase{
 
-    private static final String ECU_ID = "511";
-    private static final String STATUS = "0x00";
-
-    private DTC                 msg;
+    private DTC msg;
 
     @Override
     public void setUp(){
         msg = new DTC();
 
-        msg.setIdentifier(ECU_ID);
-        msg.setStatusByte(STATUS);
+        msg.setIdentifier(Test.GENERAL_STRING);
+        msg.setStatusByte(Test.GENERAL_STRING);
     }
 
-    public void testIdentifier(){
-        String copy = msg.getIdentifier();
-        assertEquals("Input value didn't match expected value.", ECU_ID, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        String identifier = msg.getIdentifier();
+        String statusByte = msg.getStatusByte();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, identifier);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, statusByte);
+        
+        // Invalid/Null Tests
+        DTC msg = new DTC();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testStatusByte(){
-        String copy = msg.getStatusByte();
-        assertEquals("Input value didn't match expected value.", STATUS, copy);
+        assertNull(Test.NULL, msg.getIdentifier());
+        assertNull(Test.NULL, msg.getStatusByte());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(DTC.KEY_IDENTIFIER, ECU_ID);
-            reference.put(DTC.KEY_STATUS_BYTE, STATUS);
+            reference.put(DTC.KEY_IDENTIFIER, Test.GENERAL_STRING);
+            reference.put(DTC.KEY_STATUS_BYTE, Test.GENERAL_STRING);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        DTC msg = new DTC();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Identifier wasn't set, but getter method returned an object.", msg.getIdentifier());
-        assertNull("Status wasn't set, but getter method returned an object.", msg.getStatusByte());
     }
 }

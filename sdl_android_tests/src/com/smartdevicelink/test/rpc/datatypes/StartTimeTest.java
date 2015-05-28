@@ -9,12 +9,13 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.StartTime}
+ */
 public class StartTimeTest extends TestCase {
-
-	private static final Integer HOURS = 0;
-	private static final Integer MINUTES = 0;
-	private static final Integer SECONDS = 0;
 	
 	private StartTime msg;
 
@@ -22,62 +23,52 @@ public class StartTimeTest extends TestCase {
 	public void setUp() {
 		msg = new StartTime();
 		
-		msg.setHours(HOURS);
-		msg.setMinutes(MINUTES);
-		msg.setSeconds(SECONDS);
+		msg.setHours(Test.GENERAL_INT);
+		msg.setMinutes(Test.GENERAL_INT);
+		msg.setSeconds(Test.GENERAL_INT);
 	}
 
-	public void testHours() {
-		Integer copy = msg.getHours();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		Integer hours = msg.getHours();
+		Integer minutes = msg.getMinutes();
+		Integer seconds = msg.getSeconds();		
 		
-		assertEquals("Input value didn't match expected value.", HOURS, copy);
-	}
-	
-	public void testMinutes () {
-		Integer copy = msg.getMinutes();
+		// Valid Tests
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, hours);
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, minutes);
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, seconds);
 		
-		assertEquals("Input value didn't match expected value.", MINUTES, copy);
-	}
-	
-	public void testSeconds () {
-		Integer copy = msg.getSeconds();
-		
-		assertEquals("Input value didn't match expected value.", SECONDS, copy);
+		// Invalid/Null Tests
+		StartTime msg = new StartTime();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getHours());
+		assertNull(Test.NULL, msg.getMinutes());
+		assertNull(Test.NULL, msg.getSeconds());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(StartTime.KEY_HOURS, HOURS);
-			reference.put(StartTime.KEY_MINUTES, MINUTES);
-			reference.put(StartTime.KEY_SECONDS, SECONDS);
+			reference.put(StartTime.KEY_HOURS, Test.GENERAL_INT);
+			reference.put(StartTime.KEY_MINUTES, Test.GENERAL_INT);
+			reference.put(StartTime.KEY_SECONDS, Test.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		StartTime msg = new StartTime();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Hours wasn't set, but getter method returned an object.", msg.getHours());
-		assertNull("Minutes wasn't set, but getter method returned an object.", msg.getMinutes());
-		assertNull("Seconds wasn't set, but getter method returned an object.", msg.getSeconds());
 	}
 }

@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,55 +11,60 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.HMIPermissions}
+ */
 public class HMIPermissionsTests extends TestCase{
 
-    private final List<HMILevel> ALLOWED_LIST        = Arrays.asList(new HMILevel[] { HMILevel.HMI_FULL,
-            HMILevel.HMI_BACKGROUND                       });
-    	
-    private final List<HMILevel> USER_DISALLOWED_LIST = Arrays.asList(new HMILevel[] { HMILevel.HMI_LIMITED,
-            HMILevel.HMI_NONE                             });
-
-    private HMIPermissions              msg;
+    private HMIPermissions msg;
 
     @Override
     public void setUp(){
         msg = new HMIPermissions();
 
-        msg.setAllowed(ALLOWED_LIST);
-        msg.setUserDisallowed(USER_DISALLOWED_LIST);
+        msg.setAllowed(Test.GENERAL_HMILEVEL_LIST);
+        msg.setUserDisallowed(Test.GENERAL_HMILEVEL_LIST);
     }
 
-    public void testAllowed(){
-        List<HMILevel> copy = msg.getAllowed();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        List<HMILevel> allowed = msg.getAllowed();
+        List<HMILevel> disallowed = msg.getUserDisallowed();
 
-        assertEquals("List size didn't match expected size.", ALLOWED_LIST.size(), copy.size());
-
-        for(int i = 0; i < ALLOWED_LIST.size(); i++){
-            assertEquals("Input value didn't match expected value.", ALLOWED_LIST.get(i), copy.get(i));
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL_LIST.size(), allowed.size());
+        assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL_LIST.size(), disallowed.size());
+        
+        for(int i = 0; i < Test.GENERAL_HMILEVEL_LIST.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL_LIST.get(i), allowed.get(i));
         }
-    }
-
-    public void testUserDisallowed(){
-        List<HMILevel> copy = msg.getUserDisallowed();
-
-        assertEquals("List size didn't match expected size.", USER_DISALLOWED_LIST.size(), copy.size());
-
-        for(int i = 0; i < USER_DISALLOWED_LIST.size(); i++){
-            assertEquals("Input value didn't match expected value.", USER_DISALLOWED_LIST.get(i), copy.get(i));
+        for(int i = 0; i < Test.GENERAL_HMILEVEL_LIST.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL_LIST.get(i), disallowed.get(i));
         }
+        
+        // Invalid/Null Tests
+        HMIPermissions msg = new HMIPermissions();
+        assertNotNull(Test.NOT_NULL, msg);
+
+        assertNull(Test.NULL, msg.getAllowed());
+        assertNull(Test.NULL, msg.getUserDisallowed());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(HMIPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(ALLOWED_LIST));
-            reference.put(HMIPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(USER_DISALLOWED_LIST));
+            reference.put(HMIPermissions.KEY_ALLOWED, Test.JSON_HMILEVELS);
+            reference.put(HMIPermissions.KEY_USER_DISALLOWED, Test.JSON_HMILEVELS);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
@@ -68,22 +72,13 @@ public class HMIPermissionsTests extends TestCase{
                 List<String> referenceList = JsonUtils.readStringListFromJsonObject(reference, key);
                 List<String> underTestList = JsonUtils.readStringListFromJsonObject(underTest, key);
 
-                assertEquals("JSON list size didn't match expected size.", referenceList.size(), underTestList.size());
+                assertEquals(Test.MATCH, referenceList.size(), underTestList.size());
                 for(int i = 0; i < referenceList.size(); i++){
-                    assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                            referenceList.get(i), underTestList.get(i));
+                    assertEquals(Test.MATCH, referenceList.get(i), underTestList.get(i));
                 }
             }
-        }catch(JSONException e){
-            /* do nothing */
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        HMIPermissions msg = new HMIPermissions();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Allowed list wasn't set, but getter method returned an object.", msg.getAllowed());
-        assertNull("User disallowed list wasn't set, but getter method returned an object.", msg.getUserDisallowed());
     }
 }

@@ -11,72 +11,66 @@ import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.ECallInfo}
+ */
 public class ECallInfoTests extends TestCase{
 
-    private static final ECallConfirmationStatus       CONFIRMATION_STATUS     = ECallConfirmationStatus.CALL_IN_PROGRESS;
-    private static final VehicleDataNotificationStatus AUX_NOTIFICATION_STATUS = VehicleDataNotificationStatus.NORMAL;
-    private static final VehicleDataNotificationStatus NOTIFICATION_STATUS     = VehicleDataNotificationStatus.ACTIVE;
-
-    private ECallInfo                                  msg;
+    private ECallInfo msg;
 
     @Override
     public void setUp(){
         msg = new ECallInfo();
 
-        msg.setAuxECallNotificationStatus(AUX_NOTIFICATION_STATUS);
-        msg.setECallConfirmationStatus(CONFIRMATION_STATUS);
-        msg.setECallNotificationStatus(NOTIFICATION_STATUS);
+        msg.setAuxECallNotificationStatus(Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+        msg.setECallConfirmationStatus(Test.GENERAL_ECALLCONFIRMATIONSTATUS);
+        msg.setECallNotificationStatus(Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
     }
 
-    public void testAuxECallNotificationStatus(){
-        VehicleDataNotificationStatus copy = msg.getAuxECallNotificationStatus();
-        assertEquals("Input value didn't match expected value.", AUX_NOTIFICATION_STATUS, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        VehicleDataNotificationStatus auxEcall = msg.getAuxECallNotificationStatus();
+        VehicleDataNotificationStatus ecallNotify = msg.getECallNotificationStatus();
+        ECallConfirmationStatus ecallConfirm = msg.getECallConfirmationStatus();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS, auxEcall);
+        assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS, ecallNotify);
+        assertEquals(Test.MATCH, Test.GENERAL_ECALLCONFIRMATIONSTATUS, ecallConfirm);
+        
+        // Invalid/Null Tests
+        ECallInfo msg = new ECallInfo();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testECallNotificationStatus(){
-        VehicleDataNotificationStatus copy = msg.getECallNotificationStatus();
-        assertEquals("Input value didn't match expected value.", NOTIFICATION_STATUS, copy);
-    }
-
-    public void testECallConfirmationStatus(){
-        ECallConfirmationStatus copy = msg.getECallConfirmationStatus();
-        assertEquals("Input value didn't match expected value.", CONFIRMATION_STATUS, copy);
+        assertNull(Test.NULL, msg.getECallConfirmationStatus());
+        assertNull(Test.NULL, msg.getECallNotificationStatus());
+        assertNull(Test.NULL, msg.getAuxECallNotificationStatus());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ECallInfo.KEY_AUX_E_CALL_NOTIFICATION_STATUS, AUX_NOTIFICATION_STATUS);
-            reference.put(ECallInfo.KEY_E_CALL_NOTIFICATION_STATUS, NOTIFICATION_STATUS);
-            reference.put(ECallInfo.KEY_E_CALL_CONFIRMATION_STATUS, CONFIRMATION_STATUS);
+            reference.put(ECallInfo.KEY_AUX_E_CALL_NOTIFICATION_STATUS, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+            reference.put(ECallInfo.KEY_E_CALL_NOTIFICATION_STATUS, Test.GENERAL_VEHICLEDATANOTIFICATIONSTATUS);
+            reference.put(ECallInfo.KEY_E_CALL_CONFIRMATION_STATUS, Test.GENERAL_ECALLCONFIRMATIONSTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        ECallInfo msg = new ECallInfo();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("ECall confirmation status wasn't set, but getter method returned an object.",
-                msg.getECallConfirmationStatus());
-        assertNull("ECall notification status wasn't set, but getter method returned an object.",
-                msg.getECallNotificationStatus());
-        assertNull("Aux ECall notification status wasn't set, but getter method returned an object.",
-                msg.getAuxECallNotificationStatus());
     }
 }

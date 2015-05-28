@@ -10,95 +10,73 @@ import org.json.JSONObject;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.ButtonCapabilities}
+ */
 public class ButtonCapabilitiesTests extends TestCase{
 
-    private static final boolean    SHORT_PRESS_AVAILABLE = true;
-    private static final boolean    LONG_PRESS_AVAILABLE  = true;
-    private static final boolean    UP_DOWN_AVAILABLE     = true;
-    private static final ButtonName BUTTON_NAME           = ButtonName.OK;
-
-    private ButtonCapabilities      msg;
+    private ButtonCapabilities msg;
 
     @Override
     public void setUp(){
         msg = new ButtonCapabilities();
 
-        msg.setLongPressAvailable(LONG_PRESS_AVAILABLE);
-        msg.setName(BUTTON_NAME);
-        msg.setShortPressAvailable(SHORT_PRESS_AVAILABLE);
-        msg.setUpDownAvailable(UP_DOWN_AVAILABLE);
+        msg.setLongPressAvailable(Test.GENERAL_BOOLEAN);
+        msg.setName(Test.GENERAL_BUTTONNAME);
+        msg.setShortPressAvailable(Test.GENERAL_BOOLEAN);
+        msg.setUpDownAvailable(Test.GENERAL_BOOLEAN);
     }
 
-    public void testShortPressAvailable(){
-        boolean copy = msg.getShortPressAvailable();
-        assertEquals("Input value didn't match expected value.", SHORT_PRESS_AVAILABLE, copy);
-    }
 
-    public void testLongPressAvailable(){
-        boolean copy = msg.getLongPressAvailable();
-        assertEquals("Input value didn't match expected value.", LONG_PRESS_AVAILABLE, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        boolean shortPress = msg.getShortPressAvailable();
+        boolean longPress = msg.getLongPressAvailable();
+        boolean upDown = msg.getUpDownAvailable();
+        ButtonName buttonName = msg.getName();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, shortPress);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, longPress);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, upDown);
+        assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, buttonName);
+        
+        // Invalid/Null Tests
+        ButtonCapabilities msg = new ButtonCapabilities();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testUpDownAvailable(){
-        boolean copy = msg.getUpDownAvailable();
-        assertEquals("Input value didn't match expected value.", UP_DOWN_AVAILABLE, copy);
-    }
-
-    public void testButtonName(){
-        ButtonName copy = msg.getName();
-        assertEquals("Input value didn't match expected value.", BUTTON_NAME, copy);
+        assertNull(Test.NULL, msg.getShortPressAvailable());
+        assertNull(Test.NULL, msg.getLongPressAvailable());
+        assertNull(Test.NULL, msg.getUpDownAvailable());
+        assertNull(Test.NULL, msg.getName());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, SHORT_PRESS_AVAILABLE);
-            reference.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, LONG_PRESS_AVAILABLE);
-            reference.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, UP_DOWN_AVAILABLE);
-            reference.put(ButtonCapabilities.KEY_NAME, BUTTON_NAME);
+            reference.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ButtonCapabilities.KEY_NAME, Test.GENERAL_BUTTONNAME);
 
             JSONObject underTest = msg.serializeJSON();
 
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
-        }catch(JSONException e){
-            /* do nothing */
+        } catch(JSONException e){
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        ButtonCapabilities msg = new ButtonCapabilities();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Short press available wasn't set, but getter method returned an object.",
-                msg.getShortPressAvailable());
-        assertNull("Long press available wasn't set, but getter method returned an object.",
-                msg.getLongPressAvailable());
-        assertNull("Up/down available wasn't set, but getter method returned an object.", msg.getUpDownAvailable());
-        assertNull("Button name wasn't set, but getter method returned an object.", msg.getName());
-    }
-
-    //TODO: remove testCopy()?
-    /*
-    public void testCopy(){
-        ButtonCapabilities copy = new ButtonCapabilities(msg);
-
-        assertNotSame("Object was not copied.", copy, msg);
-
-        String error = "Object data was not copied correctly.";
-        assertEquals(error, copy.getShortPressAvailable(), msg.getShortPressAvailable());
-        assertEquals(error, copy.getLongPressAvailable(), msg.getLongPressAvailable());
-        assertEquals(error, copy.getUpDownAvailable(), msg.getUpDownAvailable());
-        assertEquals(error, copy.getName(), msg.getName());
-    }
-    */
+    }    
 }

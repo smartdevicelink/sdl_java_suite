@@ -9,12 +9,13 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.TouchEventCapabilties}
+ */
 public class TouchEventCapabilitiesTest extends TestCase {
-
-	private static final Boolean PRESS_AVAILABLE = false;
-	private static final Boolean MULTI_TOUCH_AVAILABLE = false;
-	private static final Boolean DOUBLE_PRESS_AVAILABLE = false;
 	
 	private TouchEventCapabilities msg;
 
@@ -22,62 +23,52 @@ public class TouchEventCapabilitiesTest extends TestCase {
 	public void setUp() {
 		msg = new TouchEventCapabilities();
 		
-		msg.setPressAvailable(PRESS_AVAILABLE);
-		msg.setDoublePressAvailable(DOUBLE_PRESS_AVAILABLE);
-		msg.setMultiTouchAvailable(MULTI_TOUCH_AVAILABLE);
+		msg.setPressAvailable(Test.GENERAL_BOOLEAN);
+		msg.setDoublePressAvailable(Test.GENERAL_BOOLEAN);
+		msg.setMultiTouchAvailable(Test.GENERAL_BOOLEAN);
 	}
 
-	public void testPressAvailable () {
-		Boolean copy = msg.getPressAvailable();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		Boolean press = msg.getPressAvailable();
+		Boolean multiTouch = msg.getMultiTouchAvailable();
+		Boolean doublePress = msg.getDoublePressAvailable();
 		
-		assertEquals("Input value didn't match expected value.", PRESS_AVAILABLE, copy);
-	}
-	
-	public void testMultiTouchAvailable () {
-		Boolean copy = msg.getMultiTouchAvailable();
+		// Valid Tests
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, press);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, multiTouch);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, doublePress);
 		
-		assertEquals("Input value didn't match expected value.", MULTI_TOUCH_AVAILABLE, copy);
-	}
-	
-	public void testDoublePressAvialable () {
-		Boolean copy = msg.getDoublePressAvailable();
-		
-		assertEquals("Input value didn't match expected value.", DOUBLE_PRESS_AVAILABLE, copy);
+		// Invalid/Null Tests
+		TouchEventCapabilities msg = new TouchEventCapabilities();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getPressAvailable());
+		assertNull(Test.NULL, msg.getMultiTouchAvailable());
+		assertNull(Test.NULL, msg.getDoublePressAvailable());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, PRESS_AVAILABLE);
-			reference.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, MULTI_TOUCH_AVAILABLE);
-			reference.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, DOUBLE_PRESS_AVAILABLE);
+			reference.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		TouchEventCapabilities msg = new TouchEventCapabilities();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Press available wasn't set, but getter method returned an object.", msg.getPressAvailable());
-		assertNull("Multi touch available wasn't set, but getter method returned an object.", msg.getMultiTouchAvailable());
-		assertNull("Double press available wasn't set, but getter method returned an object.", msg.getDoublePressAvailable());
 	}
 }

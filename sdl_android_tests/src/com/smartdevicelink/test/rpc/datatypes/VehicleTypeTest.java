@@ -9,13 +9,9 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
 public class VehicleTypeTest extends TestCase {
-
-	private static final String MAKE = "make";
-	private static final String MODEL = "model";
-	private static final String YEAR = "year";
-	private static final String TRIM = "trim";
 	
 	private VehicleType msg;
 
@@ -23,71 +19,57 @@ public class VehicleTypeTest extends TestCase {
 	public void setUp() {
 		msg = new VehicleType();
 		
-		msg.setModel(MODEL);
-		msg.setMake(MAKE);
-		msg.setTrim(TRIM);
-		msg.setModelYear(YEAR);
+		msg.setModel(Test.GENERAL_STRING);
+		msg.setMake(Test.GENERAL_STRING);
+		msg.setTrim(Test.GENERAL_STRING);
+		msg.setModelYear(Test.GENERAL_STRING);
 	}
 
-	public void testModel() {
-		String copy = msg.getModel();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+		// Test Values
+		String year = msg.getModelYear();
+		String trim = msg.getTrim();
+		String make = msg.getMake();
+		String model = msg.getModel();
 		
-		assertEquals("Input value didn't match expected value.", MODEL, copy);
-	}
-	
-	public void testMake () {
-		String copy = msg.getMake();
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, year);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, model);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, make);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, trim);		
 		
-		assertEquals("Input value didn't match expected value.", MAKE, copy);
-	}
-	
-	public void testTrim () {
-		String copy = msg.getTrim();
-		
-		assertEquals("Input value didn't match expected value.", TRIM, copy);
-	}
-	
-	public void testYear () {
-		String copy = msg.getModelYear();
-		
-		assertEquals("Input value didn't match expected value.", YEAR, copy);
+		// Invalid/Null Tests
+		VehicleType msg = new VehicleType();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getModel());
+		assertNull(Test.NULL, msg.getMake());
+		assertNull(Test.NULL, msg.getModelYear());
+		assertNull(Test.NULL, msg.getTrim());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(VehicleType.KEY_MODEL, MODEL);
-			reference.put(VehicleType.KEY_MAKE, MAKE);
-			reference.put(VehicleType.KEY_MODEL_YEAR, YEAR);
-			reference.put(VehicleType.KEY_TRIM, TRIM);
+			reference.put(VehicleType.KEY_MODEL, Test.GENERAL_STRING);
+			reference.put(VehicleType.KEY_MAKE, Test.GENERAL_STRING);
+			reference.put(VehicleType.KEY_MODEL_YEAR, Test.GENERAL_STRING);
+			reference.put(VehicleType.KEY_TRIM, Test.GENERAL_STRING);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		VehicleType msg = new VehicleType();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Model wasn't set, but getter method returned an object.", msg.getModel());
-		assertNull("Make wasn't set, but getter method returned an object.", msg.getMake());
-		assertNull("Year wasn't set, but getter method returned an object.", msg.getModelYear());
-		assertNull("Trim wasn't set, but getter method returned an object.", msg.getTrim());
 	}
 }

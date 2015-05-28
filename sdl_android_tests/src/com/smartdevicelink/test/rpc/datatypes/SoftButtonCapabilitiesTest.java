@@ -9,13 +9,13 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SoftButtonCapabilities}
+ */
 public class SoftButtonCapabilitiesTest extends TestCase {
-	
-	private static final Boolean SHORT_PRESS_AVAILABLE =  false;
-	private static final Boolean LONG_PRESS_AVAILABLE = false;
-	private static final Boolean UP_DOWN_AVAILABLE = false;
-	private static final Boolean IMAGE_SUPPORTED = false;
 
 	private SoftButtonCapabilities msg;
 
@@ -23,71 +23,57 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 	public void setUp() {
 		msg = new SoftButtonCapabilities();
 		
-		msg.setImageSupported(IMAGE_SUPPORTED);
-		msg.setShortPressAvailable(SHORT_PRESS_AVAILABLE);
-		msg.setLongPressAvailable(LONG_PRESS_AVAILABLE);
-		msg.setUpDownAvailable(UP_DOWN_AVAILABLE);
+		msg.setImageSupported(Test.GENERAL_BOOLEAN);
+		msg.setShortPressAvailable(Test.GENERAL_BOOLEAN);
+		msg.setLongPressAvailable(Test.GENERAL_BOOLEAN);
+		msg.setUpDownAvailable(Test.GENERAL_BOOLEAN);
 	}
 
-	public void testImageSupported () {
-		Boolean copy = msg.getImageSupported();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		Boolean imageSupp = msg.getImageSupported();
+		Boolean updown = msg.getUpDownAvailable();
+		Boolean longPress = msg.getLongPressAvailable();
+		Boolean shortPress = msg.getShortPressAvailable();
 		
-		assertEquals("Input value didn't match expected value.", IMAGE_SUPPORTED, copy);
-	}
-	
-	public void testUpDownAvailable () {
-		Boolean copy = msg.getUpDownAvailable();
+		// Valid Tests
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, imageSupp);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, updown);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, longPress);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, shortPress);
 		
-		assertEquals("Input value didn't match expected value.", UP_DOWN_AVAILABLE, copy);
-	}
-	
-	public void testLongPressAvailable () {
-		Boolean copy = msg.getLongPressAvailable();
-		
-		assertEquals("Input value didn't match expected value.", LONG_PRESS_AVAILABLE, copy);
-	}
-	
-	public void testShortPressAvailable () {
-		Boolean copy = msg.getShortPressAvailable();
-		
-		assertEquals("Input value didn't match expected value.", SHORT_PRESS_AVAILABLE, copy);
+		// Invalid/Null Tests
+		SoftButtonCapabilities msg = new SoftButtonCapabilities();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getImageSupported());
+		assertNull(Test.NULL, msg.getLongPressAvailable());
+		assertNull(Test.NULL, msg.getShortPressAvailable());
+		assertNull(Test.NULL, msg.getUpDownAvailable());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, IMAGE_SUPPORTED);
-			reference.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, UP_DOWN_AVAILABLE);
-			reference.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, LONG_PRESS_AVAILABLE);
-			reference.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, SHORT_PRESS_AVAILABLE);
+			reference.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, Test.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(
-						"JSON value didn't match expected value for key \""
-								+ key + "\".",
-						JsonUtils.readObjectFromJsonObject(reference, key),
-						JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			/* do nothing */
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		SoftButtonCapabilities msg = new SoftButtonCapabilities();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Image supported wasn't set, but getter method returned an object.", msg.getImageSupported());
-		assertNull("Long press available wasn't set, but getter method returned an object.", msg.getLongPressAvailable());
-		assertNull("Short press available wasn't set, but getter method returned an object.", msg.getShortPressAvailable());
-		assertNull("Up down available wasn't set, but getter method returned an object.", msg.getUpDownAvailable());
 	}
 }

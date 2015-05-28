@@ -11,67 +11,57 @@ import org.json.JSONObject;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
 public class VrHelpItemTest extends TestCase {
-
-	private static final String TEXT = "text";
-	private static final Image IMAGE = new Image();
-	private static final String IMAGE_VALUE = Image.KEY_VALUE;
-	private static final ImageType IMAGE_TYPE = ImageType.DYNAMIC;
-	private static final Integer POSITION = 0;
 	
 	private VrHelpItem msg;
 
 	@Override
-	public void setUp() {
-		IMAGE.setValue(IMAGE_VALUE);
-		IMAGE.setImageType(IMAGE_TYPE);
-		
+	public void setUp() {		
 		msg = new VrHelpItem();
 		
-		msg.setText(TEXT);
-		msg.setImage(IMAGE);
-		msg.setPosition(POSITION);
+		msg.setText(Test.GENERAL_STRING);
+		msg.setImage(Test.GENERAL_IMAGE);
+		msg.setPosition(Test.GENERAL_INT);
 
 	}
 
-	public void testText() {
-		String copy = msg.getText();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		String text = msg.getText();
+		Image image = msg.getImage();
+		Integer position = msg.getPosition();
 		
-		assertEquals("Input value didn't match expected value.", TEXT, copy);
-	}
-	
-	public void testImage () {
-		Image copy = msg.getImage();
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, text);
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, position);
+		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, image));
 		
-	    assertTrue("Input value didn't match expected value.", Validator.validateImage(IMAGE, copy));
-	}
-	
-	public void testPosition () {
-		Integer copy = msg.getPosition();
-		
-		assertEquals("Input value didn't match expected value.", POSITION, copy);
+		// Invalid/Null Tests
+		VrHelpItem msg = new VrHelpItem();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getImage());
+		assertNull(Test.NULL, msg.getText());
+		assertNull(Test.NULL, msg.getPosition());
 	}
 	
 	public void testJson() {
 		JSONObject reference = new JSONObject();
-		JSONObject image = new JSONObject();
 
-		try {
-			image.put(Image.KEY_IMAGE_TYPE, ImageType.DYNAMIC);
-	        image.put(Image.KEY_VALUE, "value");
-	        
-			reference.put(VrHelpItem.KEY_IMAGE, image);
-			reference.put(VrHelpItem.KEY_TEXT, TEXT);
-			reference.put(VrHelpItem.KEY_POSITION, POSITION);
+		try {	        
+			reference.put(VrHelpItem.KEY_IMAGE, Test.JSON_IMAGE);
+			reference.put(VrHelpItem.KEY_TEXT, Test.GENERAL_STRING);
+			reference.put(VrHelpItem.KEY_POSITION, Test.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -83,26 +73,13 @@ public class VrHelpItemTest extends TestCase {
                 	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                 	Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
                 	
-	                assertTrue("JSON value didn't match expected value for key \"" + key + "\"",
-	                        Validator.validateImage(new Image(hashReference), new Image(hashTest)));
+	                assertTrue(Test.TRUE, Validator.validateImage(new Image(hashReference), new Image(hashTest)));
 	            } else {
-					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-							JsonUtils.readObjectFromJsonObject(reference, key),
-							JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 	            }
 			}
 		} catch (JSONException e) {
-			 //do nothing 
+			fail(Test.JSON_FAIL);
 		}
-	}
-
-	public void testNull() {
-		VrHelpItem msg = new VrHelpItem();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Image wasn't set, but getter method returned an object.", msg.getImage());
-		assertNull("Text wasn't set, but getter method returned an object.", msg.getText());
-		assertNull("Position wasn't set, but getter method returned an object.", msg.getPosition());
-
 	}
 }

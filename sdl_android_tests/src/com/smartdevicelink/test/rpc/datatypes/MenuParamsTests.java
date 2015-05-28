@@ -9,69 +9,66 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.MenuParams}
+ */
 public class MenuParamsTests extends TestCase{
 
-    private static final String MENU_NAME = "Favorites Menu";
-    private static final int    PARENT_ID = 5026;
-    private static final int    POSITION  = 3;
-
-    private MenuParams          msg;
+    private MenuParams msg;
 
     @Override
     public void setUp(){
         msg = new MenuParams();
 
-        msg.setMenuName(MENU_NAME);
-        msg.setParentID(PARENT_ID);
-        msg.setPosition(POSITION);
+        msg.setMenuName(Test.GENERAL_STRING);
+        msg.setParentID(Test.GENERAL_INT);
+        msg.setPosition(Test.GENERAL_INT);
     }
 
-    public void testMenuName(){
-        String copy = msg.getMenuName();
-        assertEquals("Input value didn't match expected value.", MENU_NAME, copy);
-    }
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+        String menuName = msg.getMenuName();
+        int parentId = msg.getParentID();
+        int position = msg.getPosition();
+        
+        // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, menuName);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, parentId);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, position);
+        
+        // Invalid/Null Tests
+        MenuParams msg = new MenuParams();
+        assertNotNull(Test.NOT_NULL, msg);
 
-    public void testParentID(){
-        int copy = msg.getParentID();
-        assertEquals("Input value didn't match expected value.", PARENT_ID, copy);
-    }
-
-    public void testPosition(){
-        int copy = msg.getPosition();
-        assertEquals("Input value didn't match expected value.", POSITION, copy);
+        assertNull(Test.NULL, msg.getMenuName());
+        assertNull(Test.NULL, msg.getParentID());
+        assertNull(Test.NULL, msg.getPosition());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(MenuParams.KEY_MENU_NAME, MENU_NAME);
-            reference.put(MenuParams.KEY_PARENT_ID, PARENT_ID);
-            reference.put(MenuParams.KEY_POSITION, POSITION);
+            reference.put(MenuParams.KEY_MENU_NAME, Test.GENERAL_STRING);
+            reference.put(MenuParams.KEY_PARENT_ID, Test.GENERAL_INT);
+            reference.put(MenuParams.KEY_POSITION, Test.GENERAL_INT);
 
             JSONObject underTest = msg.serializeJSON();
-
-            assertEquals("JSON size didn't match expected size.", reference.length(), underTest.length());
+            assertEquals(Test.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-                        JsonUtils.readObjectFromJsonObject(reference, key),
-                        JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-            /* do nothing */
+        	fail(Test.JSON_FAIL);
         }
-    }
-
-    public void testNull(){
-        MenuParams msg = new MenuParams();
-        assertNotNull("Null object creation failed.", msg);
-
-        assertNull("Menu name wasn't set, but getter method returned an object.", msg.getMenuName());
-        assertNull("Parent ID wasn't set, but getter method returned an object.", msg.getParentID());
-        assertNull("Position wasn't set, but getter method returned an object.", msg.getPosition());
     }
 }

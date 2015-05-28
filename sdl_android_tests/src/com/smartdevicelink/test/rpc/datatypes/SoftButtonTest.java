@@ -11,95 +11,77 @@ import org.json.JSONObject;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.rpc.SoftButton}
+ */
 public class SoftButtonTest extends TestCase {
-
-	private static final SoftButtonType TYPE = SoftButtonType.SBT_TEXT;
-	private static final String TEXT = "text";
-	private static final SystemAction SYS_ACTION = SystemAction.DEFAULT_ACTION;
-	private static final Image IMAGE = new Image();
-	private static final ImageType IMAGE_TYPE = ImageType.DYNAMIC;
-	private static final Boolean IS_HIGHLIGHTED = false;
-	private static final Integer ID = 0;
 	
 	private SoftButton msg;
 
 	@Override
 	public void setUp() {
-		IMAGE.setValue(Image.KEY_VALUE);
-		IMAGE.setImageType(IMAGE_TYPE);
-		
 		msg = new SoftButton();
 		
-		msg.setType(TYPE);
-		msg.setText(TEXT);
-		msg.setSystemAction(SYS_ACTION);
-		msg.setImage(IMAGE);
-		msg.setIsHighlighted(IS_HIGHLIGHTED);
-		msg.setSoftButtonID(ID);
-
+		msg.setType(Test.GENERAL_SOFTBUTTONTYPE);
+		msg.setText(Test.GENERAL_STRING);
+		msg.setSystemAction(Test.GENERAL_SYSTEMACTION);
+		msg.setImage(Test.GENERAL_IMAGE);
+		msg.setIsHighlighted(Test.GENERAL_BOOLEAN);
+		msg.setSoftButtonID(Test.GENERAL_INT);
 	}
 
-	public void testType() {
-		SoftButtonType copy = msg.getType();
+    /**
+	 * Tests the expected values of the RPC message.
+	 */
+    public void testRpcValues () {
+    	// Test Values
+		SoftButtonType type = msg.getType();
+		String text = msg.getText();
+		SystemAction sysAction = msg.getSystemAction();
+		Image image = msg.getImage();
+		Boolean isHighlighted = msg.getIsHighlighted();
+		Integer id = msg.getSoftButtonID();
 		
-		assertEquals("Input value didn't match expected value.", TYPE, copy);
-	}
-	
-	public void testText() {
-		String copy = msg.getText();
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTONTYPE, type);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, text);
+		assertEquals(Test.MATCH, Test.GENERAL_SYSTEMACTION, sysAction);
+	    assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, image));
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, isHighlighted);
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, id);
 		
-		assertEquals("Input value didn't match expected value.", TEXT, copy);
-	}
-	
-	public void testSysAction () {
-		SystemAction copy = msg.getSystemAction();
-		
-		assertEquals("Input value didn't match expected value.", SYS_ACTION, copy);
-	}
-	
-	public void testImage () {
-		Image copy = msg.getImage();
-		
-	    assertTrue("Input value didn't match expected value.", Validator.validateImage(IMAGE, copy));
-	}
-	
-	public void testIsHighlighted () {
-		Boolean copy = msg.getIsHighlighted();
-		
-		assertEquals("Input value didn't match expected value.", IS_HIGHLIGHTED, copy);
-	}
-	
-	public void testId () {
-		Integer copy = msg.getSoftButtonID();
-		
-		assertEquals("Input value didn't match expected value.", ID, copy);
+		// Invalid/Null Tests
+		SoftButton msg = new SoftButton();
+		assertNotNull(Test.NOT_NULL, msg);
+
+		assertNull(Test.NULL, msg.getSoftButtonID());
+		assertNull(Test.NULL, msg.getImage());
+		assertNull(Test.NULL, msg.getIsHighlighted());
+		assertNull(Test.NULL, msg.getSystemAction());
+		assertNull(Test.NULL, msg.getText());
+		assertNull(Test.NULL, msg.getType());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
-		JSONObject image = new JSONObject();
 
-		try {
-			image.put(Image.KEY_IMAGE_TYPE, ImageType.DYNAMIC);
-			image.put(Image.KEY_VALUE, "value");
-			
-			reference.put(SoftButton.KEY_SOFT_BUTTON_ID, ID);
-			reference.put(SoftButton.KEY_TYPE, TYPE);
-			reference.put(SoftButton.KEY_TEXT, TEXT);
-			reference.put(SoftButton.KEY_IMAGE, image);
-			reference.put(SoftButton.KEY_SYSTEM_ACTION, SYS_ACTION);
-			reference.put(SoftButton.KEY_IS_HIGHLIGHTED, IS_HIGHLIGHTED);
+		try {			
+			reference.put(SoftButton.KEY_SOFT_BUTTON_ID, Test.GENERAL_INT);
+			reference.put(SoftButton.KEY_TYPE, Test.GENERAL_SOFTBUTTONTYPE);
+			reference.put(SoftButton.KEY_TEXT, Test.GENERAL_STRING);
+			reference.put(SoftButton.KEY_IMAGE, Test.JSON_IMAGE);
+			reference.put(SoftButton.KEY_SYSTEM_ACTION, Test.GENERAL_SYSTEMACTION);
+			reference.put(SoftButton.KEY_IS_HIGHLIGHTED, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
-
-			assertEquals("JSON size didn't match expected size.",
-					reference.length(), underTest.length());
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -110,30 +92,13 @@ public class SoftButtonTest extends TestCase {
                     JSONObject underTestArray = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
                 	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray);
                 	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray);
-                	
-	                assertTrue("JSON value didn't match expected value for key \"" + key + "\"",
-	                        Validator.validateImage(new Image(hashReference), new Image(hashTest)));
+                	assertTrue(Test.TRUE, Validator.validateImage(new Image(hashReference), new Image(hashTest)));
 	            } else {
-					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
-							JsonUtils.readObjectFromJsonObject(reference, key),
-							JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 	            }
 			}
 		} catch (JSONException e) {
-			//do nothing 
+			fail(Test.JSON_FAIL);
 		}
-	}
-	
-
-	public void testNull() {
-		SoftButton msg = new SoftButton();
-		assertNotNull("Null object creation failed.", msg);
-
-		assertNull("Id wasn't set, but getter method returned an object.", msg.getSoftButtonID());
-		assertNull("Image wasn't set, but getter method returned an object.", msg.getImage());
-		assertNull("Is highlighted wasn't set, but getter method returned an object.", msg.getIsHighlighted());
-		assertNull("System action wasn't set, but getter method returned an object.", msg.getSystemAction());
-		assertNull("Text wasn't set, but getter method returned an object.", msg.getText());
-		assertNull("Type wasn't set, but getter method returned an object.", msg.getType());
 	}
 }
