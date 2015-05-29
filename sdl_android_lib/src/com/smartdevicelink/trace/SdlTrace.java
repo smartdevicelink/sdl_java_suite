@@ -32,9 +32,7 @@ import com.smartdevicelink.util.NativeLogTool;
 @SuppressLint("DefaultLocale")
 public class SdlTrace {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
-	static boolean canWriteLogs = false;
-		
+			
 	public static final String SYSTEM_LOG_TAG = "SdlTrace";
 	
 	private static long baseTics  = java.lang.System.currentTimeMillis();
@@ -60,12 +58,6 @@ public class SdlTrace {
 	
 	public static void setAppTraceListener(ISTListener listener) {
 		m_appTraceListener = listener;
-	} // end-method
-
-	public static void setTracingEnable(Boolean enable) {
-		if (enable != null) {
-			canWriteLogs = enable;
-		}
 	} // end-method
 
 	public static void setAppTraceLevel(DetailLevel dt) {
