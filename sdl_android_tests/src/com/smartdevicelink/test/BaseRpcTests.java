@@ -94,12 +94,7 @@ public abstract class BaseRpcTests extends TestCase {
     public void testJson(){
         try{
             JSONObject reference = buildJsonStore();
-            JSONObject underTest = msg.serializeJSON();   
-            
-            if (reference.toString().contains("SendLocation")){
-            	System.out.println(reference.toString());
-            	System.out.println(underTest.toString());
-            }
+            JSONObject underTest = msg.serializeJSON();  
             
             assertEquals("Size of JSON under test didn't match expected size.", reference.length(), underTest.length());
 
@@ -192,7 +187,7 @@ public abstract class BaseRpcTests extends TestCase {
 
         try{
             assertTrue("Parameters weren't initialized, but the JSON contained 2 or more objects.", (msg.serializeJSON().length() == 1));
-        }catch(JSONException e){
+        } catch(JSONException e) {
             //do nothing
         }
 

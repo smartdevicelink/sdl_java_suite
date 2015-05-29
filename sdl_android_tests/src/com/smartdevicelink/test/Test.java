@@ -110,81 +110,91 @@ public class Test {
 	public static final String NOT_NULL  = "Value should not be null.";
 	public static final String JSON_FAIL = "Json testing failed.";
 	
-	// Rpc Notification-Specific Values
-    public static final AppInterfaceUnregisteredReason GENERAL_REASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
-    public static final AudioStreamingState GENERAL_AUDIOSTREAMINGSTATE = AudioStreamingState.AUDIBLE;
-    public static final ButtonEventMode GENERAL_BUTTONEVENTMODE = ButtonEventMode.BUTTONUP;
-    public static final ButtonPressMode GENERAL_BUTTONPRESSMODE = ButtonPressMode.SHORT;
-    public static final HMILevel GENERAL_HMILEVEL = HMILevel.HMI_FULL;
-    public static final SystemContext GENERAL_SYSTEMCONTEXT = SystemContext.SYSCTXT_MAIN;
-    public static final KeyboardEvent GENERAL_KEYBOARDEVENT = KeyboardEvent.ENTRY_SUBMITTED;
-    public static final LockScreenStatus GENERAL_SHOWLOCKSCREEN = LockScreenStatus.REQUIRED;
-    public static final TBTState GENERAL_TBTSTATE = TBTState.NEXT_TURN_REQUEST;
-    public static final PowerModeQualificationStatus GENERAL_POWERMODEQUALIFICATIONSTATUS = PowerModeQualificationStatus.POWER_MODE_OK;
-    public static final CarModeStatus GENERAL_CARMODESTATUS = CarModeStatus.NORMAL;
-    public static final PowerModeStatus GENERAL_POWERMODESTATUS = PowerModeStatus.RUNNING_2;
-    public static final DeviceLevelStatus GENERAL_DEVICELEVELSTATUS = DeviceLevelStatus.FOUR_LEVEL_BARS;
-    public static final PrimaryAudioSource GENERAL_PRIMARYAUDIOSOURCE = PrimaryAudioSource.BLUETOOTH_STEREO_BTST;
-    public static final ECallConfirmationStatus GENERAL_ECALLCONFIRMATIONSTATUS = ECallConfirmationStatus.CALL_IN_PROGRESS;
-    public static final VehicleDataNotificationStatus GENERAL_VEHICLEDATANOTIFICATIONSTATUS = VehicleDataNotificationStatus.NORMAL;
-    public static final EmergencyEventType GENERAL_EMERGENCYEVENTTYPE = EmergencyEventType.FAULT;
-    public static final FuelCutoffStatus GENERAL_FUELCUTOFFSTATUS = FuelCutoffStatus.NORMAL_OPERATION;
-    public static final Dimension GENERAL_DIMENSION = Dimension._2D;
-    public static final CompassDirection GENERAL_COMPASSDIRECTION = CompassDirection.EAST;
-    public static final AmbientLightStatus GENERAL_AMBIENTLIGHTSTATUS = AmbientLightStatus.NIGHT;   
-    public static final SoftButtonType GENERAL_SOFTBUTTONTYPE = SoftButtonType.SBT_BOTH;
-    public static final SystemAction GENERAL_SYSTEMACTION = SystemAction.DEFAULT_ACTION;
-    public static final ImageResolution GENERAL_IMAGERESOLUTION = new ImageResolution();
-    public static final TouchEventCapabilities GENERAL_TOUCHEVENTCAPABILITIES = new TouchEventCapabilities();
-    public static final VehicleDataStatus GENERAL_VEHICLEDATASTATUS = VehicleDataStatus.ON;
-    public static final TextFieldName GENERAL_TEXTFIELDNAME = TextFieldName.ETA;
-    public static final CharacterSet GENERAL_CHARACTERSET = CharacterSet.CID1SET;
-    public static final ImageType GENERAL_IMAGETYPE = ImageType.DYNAMIC;
-    public static final KeyboardLayout GENERAL_KEYBOARDLAYOUT = KeyboardLayout.QWERTY;
-    public static final KeypressMode GENERAL_KEYPRESSMODE = KeypressMode.QUEUE_KEYPRESSES;
-    public static final ImageFieldName GENERAL_IMAGEFIELDNAME = ImageFieldName.graphic;
-    public static final HMIPermissions GENERAL_HMIPERMISSIONS = new HMIPermissions();
-    public static final ParameterPermissions GENERAL_PARAMETERPERMISSIONS = new ParameterPermissions();
-    public static final SpeechCapabilities GENERAL_SPEECHCAPABILITIES = SpeechCapabilities.TEXT;
-    public static final DisplayType GENERAL_DISPLAYTYPE = DisplayType.CID;
-    
-	// Rpc Request & Response Values
-	public static final int                    GENERAL_INT                    = 100;
-	public static final float                  GENERAL_FLOAT                  = 100f;
-	public static final Image                  GENERAL_IMAGE                  = new Image();	
-	public static final Choice                 GENERAL_CHOICE                 = new Choice();
-	public static final String                 GENERAL_STRING                 = "test";
-	public static final Double                 GENERAL_DOUBLE                 = 10.01;
-	public static final boolean                GENERAL_BOOLEAN                = true;
-	public static final FileType               GENERAL_FILETYPE               = FileType.BINARY;
-	public static final Language               GENERAL_LANGUAGE               = Language.EN_US;
-	public static final AudioType              GENERAL_AUDIOTYPE              = AudioType.PCM;
-	public static final StartTime              GENERAL_STARTTIME              = new StartTime();
-	public static final TouchType              GENERAL_TOUCHTYPE              = TouchType.BEGIN;
-	public static final DeviceInfo	           GENERAL_DEVICEINFO	          = new DeviceInfo();
-	public static final LayoutMode             GENERAL_LAYOUTMODE             = LayoutMode.LIST_ONLY;
-	public static final MenuParams             GENERAL_MENUPARAMS             = new MenuParams();
-	public static final ButtonName             GENERAL_BUTTONNAME             = ButtonName.OK;
-	public static final UpdateMode             GENERAL_UPDATEMODE             = UpdateMode.RESUME;
-	public static final VehicleType            GENERAL_VEHICLETYPE            = new VehicleType();
-	public static final RequestType            GENERAL_REQUESTTYPE            = RequestType.AUTH_REQUEST;
-	public static final SamplingRate           GENERAL_SAMPLINGRATE        	  = SamplingRate._8KHZ;
-	public static final ScreenParams           GENERAL_SCREENPARAMS			  = new ScreenParams();
-	public static final TriggerSource          GENERAL_TRIGGERSOURCE      	  = TriggerSource.TS_VR;
-	public static final BitsPerSample          GENERAL_BITSPERSAMPLE          = BitsPerSample._8_BIT;
-	public static final TextAlignment          GENERAL_TEXTALIGNMENT          = TextAlignment.CENTERED;
-	public static final SdlMsgVersion          GENERAL_SDLMSGVERSION          = new SdlMsgVersion();
-	public static final IgnitionStatus         GENERAL_IGNITIONSTATUS         = IgnitionStatus.RUN;
-	public static final VehicleDataType        GENERAL_VEHICLEDATATYPE        = VehicleDataType.VEHICLEDATA_BRAKING;
-	public static final InteractionMode        GENERAL_INTERACTIONMODE        = InteractionMode.BOTH;
-	public static final WarningLightStatus	   GENERAL_WARNINGLIGHTSTATUS	  = WarningLightStatus.OFF;
-	public static final KeyboardProperties     GENERAL_KEYBOARDPROPERTIES     = new KeyboardProperties();	
-	public static final DisplayCapabilities    GENERAL_DISPLAYCAPABILITIES    = new DisplayCapabilities();
-	public static final IgnitionStableStatus   GENERAL_IGNITIONSTABLESTATUS   = IgnitionStableStatus.IGNITION_SWITCH_STABLE;
-	public static final VehicleDataResultCode  GENERAL_VEHICLEDATARESULTCODE  = VehicleDataResultCode.IGNORED;
-	public static final ComponentVolumeStatus  GENERAL_COMPONENTVOLUMESTATUS  = ComponentVolumeStatus.LOW;
-	public static final PresetBankCapabilities GENERAL_PRESETBANKCAPABILITIES = new PresetBankCapabilities();
-	public static final VehicleDataEventStatus GENERAL_VEHCILEDATAEVENTSTATUS = VehicleDataEventStatus.YES;
+	// RPC Request/Response/Notification/Datatype Test Values
+	public static final int                            GENERAL_INT                            = 100;
+	public static final Turn                           GENERAL_TURN                           = new Turn();
+	public static final float                          GENERAL_FLOAT                          = 100f;
+	public static final Image                          GENERAL_IMAGE                          = new Image();	
+	public static final Choice                         GENERAL_CHOICE                         = new Choice();
+	public static final String                         GENERAL_STRING                         = "test";
+	public static final Double                         GENERAL_DOUBLE                         = 10.01;
+	public static final boolean                        GENERAL_BOOLEAN                        = true;
+	public static final TBTState                       GENERAL_TBTSTATE                       = TBTState.NEXT_TURN_REQUEST;
+	public static final FileType                       GENERAL_FILETYPE                       = FileType.BINARY;
+	public static final Language                       GENERAL_LANGUAGE                       = Language.EN_US;
+	public static final HMILevel                       GENERAL_HMILEVEL                       = HMILevel.HMI_FULL;
+	public static final DIDResult                      GENERAL_DIDRESULT                      = new DIDResult();
+	public static final TextField                      GENERAL_TEXTFIELD                      = new TextField();
+	public static final Dimension                      GENERAL_DIMENSION                      = Dimension._2D;
+	public static final ImageType                      GENERAL_IMAGETYPE                      = ImageType.DYNAMIC;
+	public static final AudioType                      GENERAL_AUDIOTYPE                      = AudioType.PCM;
+	public static final StartTime                      GENERAL_STARTTIME                      = new StartTime();
+	public static final TouchType                      GENERAL_TOUCHTYPE                      = TouchType.BEGIN;
+	public static final TouchEvent                     GENERAL_TOUCHEVENT                     = new TouchEvent();
+	public static final VrHelpItem                     GENERAL_VRHELPITEM                     = new VrHelpItem();
+	public static final ImageField                     GENERAL_IMAGEFIELD                     = new ImageField();
+	public static final DeviceInfo	                   GENERAL_DEVICEINFO	                  = new DeviceInfo();
+	public static final LayoutMode                     GENERAL_LAYOUTMODE                     = LayoutMode.LIST_ONLY;
+	public static final MenuParams                     GENERAL_MENUPARAMS                     = new MenuParams();
+	public static final SoftButton                     GENERAL_SOFTBUTTON                     = new SoftButton();
+	public static final ButtonName                     GENERAL_BUTTONNAME                     = ButtonName.OK;
+	public static final UpdateMode                     GENERAL_UPDATEMODE                     = UpdateMode.RESUME;
+	public static final TouchCoord                     GENERAL_TOUCHCOORD                     = new TouchCoord();
+	public static final DisplayType                    GENERAL_DISPLAYTYPE                    = DisplayType.CID;
+	public static final VehicleType                    GENERAL_VEHICLETYPE                    = new VehicleType();
+	public static final RequestType                    GENERAL_REQUESTTYPE                    = RequestType.AUTH_REQUEST;	
+	public static final SystemAction                   GENERAL_SYSTEMACTION                   = SystemAction.DEFAULT_ACTION;
+	public static final CharacterSet                   GENERAL_CHARACTERSET                   = CharacterSet.CID1SET;
+	public static final SamplingRate                   GENERAL_SAMPLINGRATE                	  = SamplingRate._8KHZ;
+	public static final ScreenParams                   GENERAL_SCREENPARAMS		        	  = new ScreenParams();
+	public static final KeypressMode                   GENERAL_KEYPRESSMODE                   = KeypressMode.QUEUE_KEYPRESSES;
+	public static final SystemContext                  GENERAL_SYSTEMCONTEXT                  = SystemContext.SYSCTXT_MAIN;
+	public static final KeyboardEvent                  GENERAL_KEYBOARDEVENT                  = KeyboardEvent.ENTRY_SUBMITTED;
+	public static final CarModeStatus                  GENERAL_CARMODESTATUS                  = CarModeStatus.NORMAL;
+	public static final TextFieldName                  GENERAL_TEXTFIELDNAME                  = TextFieldName.ETA;
+	public static final TriggerSource                  GENERAL_TRIGGERSOURCE              	  = TriggerSource.TS_VR;
+	public static final BitsPerSample                  GENERAL_BITSPERSAMPLE                  = BitsPerSample._8_BIT;
+	public static final TextAlignment                  GENERAL_TEXTALIGNMENT                  = TextAlignment.CENTERED;
+	public static final SdlMsgVersion                  GENERAL_SDLMSGVERSION                  = new SdlMsgVersion();
+	public static final PermissionItem                 GENERAL_PERMISSIONITEM                 = new PermissionItem();
+	public static final SoftButtonType                 GENERAL_SOFTBUTTONTYPE                 = SoftButtonType.SBT_BOTH;
+	public static final KeyboardLayout                 GENERAL_KEYBOARDLAYOUT                 = KeyboardLayout.QWERTY;
+	public static final ImageFieldName                 GENERAL_IMAGEFIELDNAME                 = ImageFieldName.graphic;
+	public static final HMIPermissions                 GENERAL_HMIPERMISSIONS                 = new HMIPermissions();
+	public static final IgnitionStatus                 GENERAL_IGNITIONSTATUS                 = IgnitionStatus.RUN;
+	public static final ButtonEventMode                GENERAL_BUTTONEVENTMODE                = ButtonEventMode.BUTTONUP;
+    public static final ButtonPressMode                GENERAL_BUTTONPRESSMODE                = ButtonPressMode.SHORT;
+	public static final PowerModeStatus                GENERAL_POWERMODESTATUS                = PowerModeStatus.RUNNING_2;
+	public static final VehicleDataType                GENERAL_VEHICLEDATATYPE                = VehicleDataType.VEHICLEDATA_BRAKING;
+	public static final InteractionMode                GENERAL_INTERACTIONMODE                = InteractionMode.BOTH;
+	public static final ImageResolution                GENERAL_IMAGERESOLUTION                = new ImageResolution();	
+	public static final FuelCutoffStatus               GENERAL_FUELCUTOFFSTATUS               = FuelCutoffStatus.NORMAL_OPERATION;
+	public static final CompassDirection               GENERAL_COMPASSDIRECTION               = CompassDirection.EAST;
+	public static final LockScreenStatus               GENERAL_LOCKSCREENSTATUS               = LockScreenStatus.REQUIRED;
+	public static final VehicleDataStatus              GENERAL_VEHICLEDATASTATUS              = VehicleDataStatus.ON;
+	public static final DeviceLevelStatus              GENERAL_DEVICELEVELSTATUS              = DeviceLevelStatus.FOUR_LEVEL_BARS;
+	public static final ButtonCapabilities             GENERAL_BUTTONCAPABILITIES             = new ButtonCapabilities();
+	public static final EmergencyEventType             GENERAL_EMERGENCYEVENTTYPE             = EmergencyEventType.FAULT;
+	public static final AmbientLightStatus             GENERAL_AMBIENTLIGHTSTATUS             = AmbientLightStatus.NIGHT; 
+	public static final SpeechCapabilities             GENERAL_SPEECHCAPABILITIES             = SpeechCapabilities.TEXT;
+	public static final WarningLightStatus        	   GENERAL_WARNINGLIGHTSTATUS        	  = WarningLightStatus.OFF;
+	public static final KeyboardProperties             GENERAL_KEYBOARDPROPERTIES             = new KeyboardProperties();	
+	public static final PrimaryAudioSource             GENERAL_PRIMARYAUDIOSOURCE             = PrimaryAudioSource.BLUETOOTH_STEREO_BTST;
+	public static final AudioStreamingState            GENERAL_AUDIOSTREAMINGSTATE            = AudioStreamingState.AUDIBLE;
+	public static final DisplayCapabilities            GENERAL_DISPLAYCAPABILITIES            = new DisplayCapabilities();
+	public static final ParameterPermissions           GENERAL_PARAMETERPERMISSIONS           = new ParameterPermissions();  
+	public static final IgnitionStableStatus           GENERAL_IGNITIONSTABLESTATUS           = IgnitionStableStatus.IGNITION_SWITCH_STABLE;	
+	public static final VehicleDataResultCode          GENERAL_VEHICLEDATARESULTCODE          = VehicleDataResultCode.IGNORED;
+	public static final ComponentVolumeStatus          GENERAL_COMPONENTVOLUMESTATUS          = ComponentVolumeStatus.LOW;
+	public static final PresetBankCapabilities         GENERAL_PRESETBANKCAPABILITIES         = new PresetBankCapabilities();
+	public static final VehicleDataEventStatus         GENERAL_VEHCILEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
+	public static final TouchEventCapabilities         GENERAL_TOUCHEVENTCAPABILITIES         = new TouchEventCapabilities();
+	public static final SoftButtonCapabilities         GENERAL_SOFTBUTTONCAPABILITIES         = new SoftButtonCapabilities();
+	public static final ECallConfirmationStatus        GENERAL_ECALLCONFIRMATIONSTATUS        = ECallConfirmationStatus.CALL_IN_PROGRESS;	
+	public static final AudioPassThruCapabilities      GENERAL_AUDIOPASSTHRUCAPABILITIES      = new AudioPassThruCapabilities();
+	public static final PowerModeQualificationStatus   GENERAL_POWERMODEQUALIFICATIONSTATUS   = PowerModeQualificationStatus.POWER_MODE_OK;
+	public static final VehicleDataNotificationStatus  GENERAL_VEHICLEDATANOTIFICATIONSTATUS  = VehicleDataNotificationStatus.NORMAL;
+	public static final AppInterfaceUnregisteredReason GENERAL_APPINTERFACEUNREGISTEREDREASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 	
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -229,15 +239,24 @@ public class Test {
 	public static final JSONArray  JSON_SOFTBUTTONCAPABILITIES    = new JSONArray();
 	public static final JSONArray  JSON_AUDIOPASSTHRUCAPABILITIES = new JSONArray();
 	
+	public static final JSONObject JSON_TURN                      = new JSONObject();
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
 	public static final JSONObject JSON_CHOICE                    = new JSONObject();
+	public static final JSONObject JSON_DIDRESULT                 = new JSONObject();
 	public static final JSONObject JSON_STARTTIME                 = new JSONObject();
+	public static final JSONObject JSON_TEXTFIELD                 = new JSONObject();
+	public static final JSONObject JSON_TOUCHCOORD                = new JSONObject();
+	public static final JSONObject JSON_TOUCHEVENT                = new JSONObject();
+	public static final JSONObject JSON_IMAGEFIELD                = new JSONObject();
+	public static final JSONObject JSON_SOFTBUTTON                = new JSONObject();
 	public static final JSONObject JSON_MENUPARAMS                = new JSONObject();
 	public static final JSONObject JSON_DEVICEINFO                = new JSONObject();
-	public static final JSONObject JSON_SCREENPARAMS              = new JSONObject();
+	public static final JSONObject JSON_VRHELPITEM                = new JSONObject();
+	public static final JSONObject JSON_SCREENPARAMS              = new JSONObject();	
 	public static final JSONObject JSON_SDLMSGVERSION             = new JSONObject();
+	public static final JSONObject JSON_PERMISSIONITEM            = new JSONObject();
 	public static final JSONObject JSON_HMIPERMISSIONS            = new JSONObject();
-	public static final JSONObject JSON_IMAGERESOLUTION           = new JSONObject();
+	public static final JSONObject JSON_IMAGERESOLUTION           = new JSONObject();	
 	public static final JSONObject JSON_KEYBOARDPROPERTIES        = new JSONObject();
 	public static final JSONObject JSON_DISPLAYCAPABILITIES       = new JSONObject();
 	public static final JSONObject JSON_PARAMETERPERMISSIONS      = new JSONObject();
@@ -245,16 +264,13 @@ public class Test {
 	public static final JSONObject JSON_TOUCHEVENTCAPABILITIES    = new JSONObject();
 	
 	static {
-		// TouchEventCapabilities Setup
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setPressAvailable(GENERAL_BOOLEAN);
 		
-		// ImageResolution Setup
 		GENERAL_IMAGERESOLUTION.setResolutionHeight(GENERAL_INT);
 		GENERAL_IMAGERESOLUTION.setResolutionWidth(GENERAL_INT);		
 		
-		// Choice Setup
 		GENERAL_CHOICE.setMenuName(GENERAL_STRING);
 		GENERAL_CHOICE.setSecondaryText(GENERAL_STRING);
 		GENERAL_CHOICE.setTertiaryText(GENERAL_STRING);
@@ -262,114 +278,74 @@ public class Test {
 		GENERAL_CHOICE.setImage(GENERAL_IMAGE);
 		GENERAL_CHOICE.setSecondaryImage(GENERAL_IMAGE);
 		GENERAL_CHOICE.setVrCommands(GENERAL_STRING_LIST);
-				
-		// TouchEvent List Setup
-		TouchCoord touchCoord = new TouchCoord();
-		touchCoord.setX(GENERAL_INT);
-		touchCoord.setY(GENERAL_INT);
-		GENERAL_TOUCHCOORD_LIST.add(touchCoord);
 		
-		TouchEvent touchEvent = new TouchEvent();
-		touchEvent.setId(GENERAL_INT);
-		touchEvent.setTs(GENERAL_INTEGER_LIST);
-		touchEvent.setC(GENERAL_TOUCHCOORD_LIST);
-		GENERAL_TOUCHEVENT_LIST.add(touchEvent);
+		GENERAL_TOUCHCOORD.setX(GENERAL_INT);
+		GENERAL_TOUCHCOORD.setY(GENERAL_INT);		
+		GENERAL_TOUCHCOORD_LIST.add(GENERAL_TOUCHCOORD);
 		
-		// TextField List Setup
-		TextField item = new TextField();
-		item.setName(TextFieldName.ETA);
-		item.setRows(GENERAL_INT);
-		item.setWidth(GENERAL_INT);
-		item.setCharacterSet(CharacterSet.CID1SET);
-		GENERAL_TEXTFIELD_LIST.add(item);
+		GENERAL_TOUCHEVENT.setId(GENERAL_INT);
+		GENERAL_TOUCHEVENT.setTs(GENERAL_INTEGER_LIST);
+		GENERAL_TOUCHEVENT.setC(GENERAL_TOUCHCOORD_LIST);		
+		GENERAL_TOUCHEVENT_LIST.add(GENERAL_TOUCHEVENT);
 		
-		// ImageField List Setup
-		ImageResolution imageResolution = new ImageResolution();
-		imageResolution.setResolutionHeight(GENERAL_INT);
-		imageResolution.setResolutionWidth(GENERAL_INT);
+		GENERAL_TEXTFIELD.setName(GENERAL_TEXTFIELDNAME);
+		GENERAL_TEXTFIELD.setRows(GENERAL_INT);
+		GENERAL_TEXTFIELD.setWidth(GENERAL_INT);
+		GENERAL_TEXTFIELD.setCharacterSet(GENERAL_CHARACTERSET);
+		GENERAL_TEXTFIELD_LIST.add(GENERAL_TEXTFIELD);
 		
 		GENERAL_FILETYPE_LIST.add(GENERAL_FILETYPE);
 		
-		ImageField imageField = new ImageField();
-		imageField.setImageResolution(imageResolution);
-		imageField.setName(ImageFieldName.graphic);
-		imageField.setImageTypeSupported(GENERAL_FILETYPE_LIST);
-		GENERAL_IMAGEFIELD_LIST.add(imageField);
+		GENERAL_IMAGEFIELD.setImageResolution(GENERAL_IMAGERESOLUTION);
+		GENERAL_IMAGEFIELD.setName(GENERAL_IMAGEFIELDNAME);
+		GENERAL_IMAGEFIELD.setImageTypeSupported(GENERAL_FILETYPE_LIST);
+		GENERAL_IMAGEFIELD_LIST.add(GENERAL_IMAGEFIELD);
 		
-		// ScreenParams Setup
-		TouchEventCapabilities touchEC = new TouchEventCapabilities();
-		touchEC.setDoublePressAvailable(GENERAL_BOOLEAN);
-		touchEC.setMultiTouchAvailable(GENERAL_BOOLEAN);
-		touchEC.setPressAvailable(GENERAL_BOOLEAN);
+		GENERAL_SCREENPARAMS.setImageResolution(GENERAL_IMAGERESOLUTION);
+		GENERAL_SCREENPARAMS.setTouchEventAvailable(GENERAL_TOUCHEVENTCAPABILITIES);
 		
-		GENERAL_SCREENPARAMS.setImageResolution(imageResolution);
-		GENERAL_SCREENPARAMS.setTouchEventAvailable(touchEC);
-		
-		// MediaClockFormat List Setup		
 		GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK1);
 		GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK2);
 		
-		// Image Setup
 		GENERAL_IMAGE.setValue(GENERAL_STRING);
-		GENERAL_IMAGE.setImageType(ImageType.STATIC);
+		GENERAL_IMAGE.setImageType(GENERAL_IMAGETYPE);
 		
-		// SoftButton List Setup
-		SoftButton softButton = new SoftButton();
-		softButton.setIsHighlighted(GENERAL_BOOLEAN);
-		softButton.setSoftButtonID(GENERAL_INT);
-		softButton.setSystemAction(SystemAction.STEAL_FOCUS);
-		softButton.setText(GENERAL_STRING);
-		softButton.setType(SoftButtonType.SBT_TEXT);
-		softButton.setImage(GENERAL_IMAGE);
-		GENERAL_SOFTBUTTON_LIST.add(softButton);
+		GENERAL_SOFTBUTTON.setIsHighlighted(GENERAL_BOOLEAN);
+		GENERAL_SOFTBUTTON.setSoftButtonID(GENERAL_INT);
+		GENERAL_SOFTBUTTON.setSystemAction(SystemAction.STEAL_FOCUS);
+		GENERAL_SOFTBUTTON.setText(GENERAL_STRING);
+		GENERAL_SOFTBUTTON.setType(SoftButtonType.SBT_TEXT);
+		GENERAL_SOFTBUTTON.setImage(GENERAL_IMAGE);
+		GENERAL_SOFTBUTTON_LIST.add(GENERAL_SOFTBUTTON);
 		
-		// Turn List Setup
-		Turn turn = new Turn();
-		turn.setNavigationText(GENERAL_STRING);
-		turn.setTurnIcon(GENERAL_IMAGE);
-		GENERAL_TURN_LIST.add(turn);
+		GENERAL_TURN.setNavigationText(GENERAL_STRING);
+		GENERAL_TURN.setTurnIcon(GENERAL_IMAGE);
+		GENERAL_TURN_LIST.add(GENERAL_TURN);
 		
-		// MenuParams Setup
 		GENERAL_MENUPARAMS.setMenuName(GENERAL_STRING);
 		GENERAL_MENUPARAMS.setParentID(GENERAL_INT);
 		GENERAL_MENUPARAMS.setPosition(GENERAL_INT);
 				
-		// VrHelpItem List Setup
-		VrHelpItem vrItem1 = new VrHelpItem();
-    	vrItem1.setText(GENERAL_STRING);
-    	vrItem1.setImage(GENERAL_IMAGE);
-    	vrItem1.setPosition(100);	    	
-    	GENERAL_VRHELPITEM_LIST.add(vrItem1);
-    	vrItem1 = new VrHelpItem();
+		GENERAL_VRHELPITEM.setText(GENERAL_STRING);
+		GENERAL_VRHELPITEM.setImage(GENERAL_IMAGE);
+		GENERAL_VRHELPITEM.setPosition(100);	    	
+    	GENERAL_VRHELPITEM_LIST.add(GENERAL_VRHELPITEM);
     	
-    	// TTSChunk List Setup
     	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle"));
     	GENERAL_TTSCHUNK_LIST.add(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Say a command"));
 		
-    	// KeyboardProperties Setup
     	GENERAL_KEYBOARDPROPERTIES.setAutoCompleteText(GENERAL_STRING);
     	GENERAL_KEYBOARDPROPERTIES.setKeypressMode(KeypressMode.SINGLE_KEYPRESS);
     	GENERAL_KEYBOARDPROPERTIES.setKeyboardLayout(KeyboardLayout.QWERTY);
     	GENERAL_KEYBOARDPROPERTIES.setLanguage(Language.EN_US);
     	GENERAL_KEYBOARDPROPERTIES.setLimitedCharacterList(Test.GENERAL_STRING_LIST);
     	
-    	// StartTime Setup
-    	GENERAL_STARTTIME.setHours(0);
-		GENERAL_STARTTIME.setMinutes(0);
-		GENERAL_STARTTIME.setSeconds(0);
+    	GENERAL_STARTTIME.setHours(GENERAL_INT);
+		GENERAL_STARTTIME.setMinutes(GENERAL_INT);
+		GENERAL_STARTTIME.setSeconds(GENERAL_INT);
 		
-		// Choice List Setup
-		Choice choice = new Choice();
-        choice.setChoiceID(GENERAL_INT);
-        choice.setMenuName(GENERAL_STRING);
-        choice.setSecondaryText(GENERAL_STRING);
-        choice.setImage(GENERAL_IMAGE);
-        choice.setSecondaryImage(GENERAL_IMAGE);
-        choice.setTertiaryText(GENERAL_STRING);
-        choice.setVrCommands(GENERAL_STRING_LIST);
-        GENERAL_CHOICE_LIST.add(choice);
+        GENERAL_CHOICE_LIST.add(GENERAL_CHOICE);
         
-        // DeviceInfo Setup
         GENERAL_DEVICEINFO.setCarrier(GENERAL_STRING);
         GENERAL_DEVICEINFO.setFirmwareRev(GENERAL_STRING);
         GENERAL_DEVICEINFO.setHardware(GENERAL_STRING);
@@ -377,19 +353,15 @@ public class Test {
         GENERAL_DEVICEINFO.setOs(GENERAL_STRING);
         GENERAL_DEVICEINFO.setOsVersion(GENERAL_STRING);
         
-        // SdlMsgVersion Setup
         GENERAL_SDLMSGVERSION.setMajorVersion(GENERAL_INT);
         GENERAL_SDLMSGVERSION.setMinorVersion(GENERAL_INT);
         
-        // AppHMIType List Setup
         GENERAL_APPHMITYPE_LIST.add(AppHMIType.BACKGROUND_PROCESS);
         GENERAL_APPHMITYPE_LIST.add(AppHMIType.COMMUNICATION);
         
-        // GlobalProperty List Setup
         GENERAL_GLOBALPROPERTY_LIST.add(GlobalProperty.HELPPROMPT);
         GENERAL_GLOBALPROPERTY_LIST.add(GlobalProperty.MENUICON);
         
-        // VehicleDataResult List Setup
         for (VehicleDataType data : VehicleDataType.values()) {
         	VehicleDataResult result = new VehicleDataResult();
             result.setResultCode(VehicleDataResultCode.SUCCESS);
@@ -397,15 +369,12 @@ public class Test {
         	GENERAL_VEHICLEDATARESULT_LIST.add(result);
         }
         
-        // DidResult List Setup
-        DIDResult testResult = new DIDResult();
-        testResult.setData(GENERAL_STRING);
-        testResult.setDidLocation(GENERAL_INT);
-        testResult.setResultCode(VehicleDataResultCode.SUCCESS);
-        GENERAL_DIDRESULT_LIST.add(testResult);
+        GENERAL_DIDRESULT.setData(GENERAL_STRING);
+        GENERAL_DIDRESULT.setDidLocation(GENERAL_INT);
+        GENERAL_DIDRESULT.setResultCode(VehicleDataResultCode.SUCCESS);
+        GENERAL_DIDRESULT_LIST.add(GENERAL_DIDRESULT);
         
-        // DisplayCapabilities Setup
-        GENERAL_DISPLAYCAPABILITIES.setDisplayType(DisplayType.TYPE2);
+        GENERAL_DISPLAYCAPABILITIES.setDisplayType(GENERAL_DISPLAYTYPE);
         GENERAL_DISPLAYCAPABILITIES.setGraphicSupported(GENERAL_BOOLEAN);
         GENERAL_DISPLAYCAPABILITIES.setImageFields(GENERAL_IMAGEFIELD_LIST);
         GENERAL_DISPLAYCAPABILITIES.setMediaClockFormats(GENERAL_MEDIACLOCKFORMAT_LIST);
@@ -414,81 +383,63 @@ public class Test {
         GENERAL_DISPLAYCAPABILITIES.setTemplatesAvailable(GENERAL_STRING_LIST);
         GENERAL_DISPLAYCAPABILITIES.setTextFields(GENERAL_TEXTFIELD_LIST);
 		
-        // PresetBankCapabilities Setup
         GENERAL_PRESETBANKCAPABILITIES.setOnScreenPresetsAvailable(GENERAL_BOOLEAN);
         
-        // ButtonCapabilities List Setup
-        ButtonCapabilities testButton = new ButtonCapabilities();
-        testButton.setLongPressAvailable(false);
-        testButton.setShortPressAvailable(true);
-        testButton.setUpDownAvailable(true);
-        testButton.setName(ButtonName.SEEKRIGHT);        
-        GENERAL_BUTTONCAPABILITIES_LIST.add(testButton);
+        GENERAL_BUTTONCAPABILITIES.setLongPressAvailable(false);
+        GENERAL_BUTTONCAPABILITIES.setShortPressAvailable(true);
+        GENERAL_BUTTONCAPABILITIES.setUpDownAvailable(true);
+        GENERAL_BUTTONCAPABILITIES.setName(ButtonName.SEEKRIGHT);        
+        GENERAL_BUTTONCAPABILITIES_LIST.add(GENERAL_BUTTONCAPABILITIES);
         
-        // SoftButtonCapabilities List Setup
-        SoftButtonCapabilities testSoftButton = new SoftButtonCapabilities();
-        testSoftButton.setLongPressAvailable(GENERAL_BOOLEAN);
-        testSoftButton.setShortPressAvailable(GENERAL_BOOLEAN);
-        testSoftButton.setUpDownAvailable(GENERAL_BOOLEAN);
-        testSoftButton.setImageSupported(GENERAL_BOOLEAN);
-        GENERAL_SOFTBUTTONCAPABILITIES_LIST.add(testSoftButton);        
+        GENERAL_SOFTBUTTONCAPABILITIES.setLongPressAvailable(GENERAL_BOOLEAN);
+        GENERAL_SOFTBUTTONCAPABILITIES.setShortPressAvailable(GENERAL_BOOLEAN);
+        GENERAL_SOFTBUTTONCAPABILITIES.setUpDownAvailable(GENERAL_BOOLEAN);
+        GENERAL_SOFTBUTTONCAPABILITIES.setImageSupported(GENERAL_BOOLEAN);
+        GENERAL_SOFTBUTTONCAPABILITIES_LIST.add(GENERAL_SOFTBUTTONCAPABILITIES);        
         
-        // VehicleType Setup
         GENERAL_VEHICLETYPE.setMake(GENERAL_STRING);
         GENERAL_VEHICLETYPE.setModel(GENERAL_STRING);
         GENERAL_VEHICLETYPE.setModelYear(GENERAL_STRING);
         GENERAL_VEHICLETYPE.setTrim(GENERAL_STRING);
         
-        // AudioPassThruCapabilities List Setup
-        AudioPassThruCapabilities testAptc = new AudioPassThruCapabilities();
-        testAptc.setAudioType(GENERAL_AUDIOTYPE);
-        testAptc.setBitsPerSample(GENERAL_BITSPERSAMPLE);
-        testAptc.setSamplingRate(GENERAL_SAMPLINGRATE);
-        GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST.add(testAptc);
+        GENERAL_AUDIOPASSTHRUCAPABILITIES.setAudioType(GENERAL_AUDIOTYPE);
+        GENERAL_AUDIOPASSTHRUCAPABILITIES.setBitsPerSample(GENERAL_BITSPERSAMPLE);
+        GENERAL_AUDIOPASSTHRUCAPABILITIES.setSamplingRate(GENERAL_SAMPLINGRATE);
+        GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST.add(GENERAL_AUDIOPASSTHRUCAPABILITIES);
         
-        // PrerecordedSpeech List Setup
         GENERAL_PRERECORDEDSPEECH_LIST.add(PrerecordedSpeech.HELP_JINGLE);
         GENERAL_PRERECORDEDSPEECH_LIST.add(PrerecordedSpeech.INITIAL_JINGLE);
         
-        // HmiZoneCapabilities List Setup
         GENERAL_HMIZONECAPABILITIES_LIST.add(HmiZoneCapabilities.BACK);
         GENERAL_HMIZONECAPABILITIES_LIST.add(HmiZoneCapabilities.FRONT);
         
-        // SpeechCapabilities List Setup
         GENERAL_SPEECHCAPABILITIES_LIST.add(SpeechCapabilities.SILENCE);
         GENERAL_SPEECHCAPABILITIES_LIST.add(SpeechCapabilities.TEXT);
         
-        // VrCapabilities List Setup
         GENERAL_VRCAPABILITIES_LIST.add(VrCapabilities.TEXT);
         
-        // PermissionItem List Setup
         GENERAL_HMIPERMISSIONS.setAllowed(GENERAL_HMILEVEL_LIST);
         GENERAL_HMIPERMISSIONS.setUserDisallowed(GENERAL_HMILEVEL_LIST);
         
         GENERAL_PARAMETERPERMISSIONS.setAllowed(GENERAL_STRING_LIST);
         GENERAL_PARAMETERPERMISSIONS.setUserDisallowed(GENERAL_STRING_LIST);
         
-        PermissionItem permissionItem = new PermissionItem();
-        permissionItem.setRpcName(GENERAL_STRING);
-        permissionItem.setHMIPermissions(GENERAL_HMIPERMISSIONS);
-        permissionItem.setParameterPermissions(GENERAL_PARAMETERPERMISSIONS);
-        GENERAL_PERMISSIONITEM_LIST.add(permissionItem);
+        GENERAL_PERMISSIONITEM.setRpcName(GENERAL_STRING);
+        GENERAL_PERMISSIONITEM.setHMIPermissions(GENERAL_HMIPERMISSIONS);
+        GENERAL_PERMISSIONITEM.setParameterPermissions(GENERAL_PARAMETERPERMISSIONS);
+        GENERAL_PERMISSIONITEM_LIST.add(GENERAL_PERMISSIONITEM);
         
 		try {	
-			// Json HMIPermissions Setup
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
 			
-			// Json TouchEventCapabilities Setup
 			JSON_TOUCHEVENTCAPABILITIES.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			JSON_TOUCHEVENTCAPABILITIES.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, GENERAL_BOOLEAN);
 			JSON_TOUCHEVENTCAPABILITIES.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			
-			// Json ImageResolution Setup
 			JSON_IMAGERESOLUTION.put(ImageResolution.KEY_RESOLUTION_HEIGHT, GENERAL_INT);
 			JSON_IMAGERESOLUTION.put(ImageResolution.KEY_RESOLUTION_WIDTH, GENERAL_INT);
 			
-			// Json Choice Setup
 			JSON_CHOICE.put(Choice.KEY_MENU_NAME, GENERAL_STRING);
 			JSON_CHOICE.put(Choice.KEY_SECONDARY_TEXT, GENERAL_STRING);
 			JSON_CHOICE.put(Choice.KEY_TERTIARY_TEXT, GENERAL_STRING);
@@ -497,56 +448,44 @@ public class Test {
 			JSON_CHOICE.put(Choice.KEY_SECONDARY_IMAGE, JSON_IMAGE);
 			JSON_CHOICE.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			
-			// Json PermissionItem List Setup
 			JSON_HMILEVELS.put(HMILevel.HMI_FULL);
 			JSON_HMILEVELS.put(HMILevel.HMI_BACKGROUND);
 			
-			JSONObject jsonHmiPerm = new JSONObject();
-			jsonHmiPerm.put(HMIPermissions.KEY_ALLOWED, JSON_HMILEVELS);
-			jsonHmiPerm.put(HMIPermissions.KEY_USER_DISALLOWED, JSON_HMILEVELS);
+			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, JSON_HMILEVELS);
+			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, JSON_HMILEVELS);
 			
 			JSON_PARAMETERPERMISSIONS.put(ParameterPermissions.KEY_ALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			JSON_PARAMETERPERMISSIONS.put(ParameterPermissions.KEY_USER_DISALLOWED, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			
-			JSONObject jsonPermItem = new JSONObject();
-			jsonPermItem.put(PermissionItem.KEY_HMI_PERMISSIONS, jsonHmiPerm);
-			jsonPermItem.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, JSON_PARAMETERPERMISSIONS);
-			jsonPermItem.put(PermissionItem.KEY_RPC_NAME, GENERAL_STRING);
-			JSON_PERMISSIONITEMS.put(jsonPermItem);
+			JSON_PERMISSIONITEM.put(PermissionItem.KEY_HMI_PERMISSIONS, JSON_HMIPERMISSIONS);
+			JSON_PERMISSIONITEM.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, JSON_PARAMETERPERMISSIONS);
+			JSON_PERMISSIONITEM.put(PermissionItem.KEY_RPC_NAME, GENERAL_STRING);
+			JSON_PERMISSIONITEMS.put(JSON_PERMISSIONITEM);
 			
-			// Json Image Setup
-			JSON_IMAGE.put(Image.KEY_IMAGE_TYPE, ImageType.STATIC);
+			JSON_IMAGE.put(Image.KEY_IMAGE_TYPE, GENERAL_IMAGETYPE);
 			JSON_IMAGE.put(Image.KEY_VALUE, GENERAL_STRING);
 			
-			// Json SoftButton List Setup
-			JSONObject jsonSoftButton = new JSONObject();
-			jsonSoftButton.put(SoftButton.KEY_IS_HIGHLIGHTED , GENERAL_BOOLEAN);
-			jsonSoftButton.put(SoftButton.KEY_SOFT_BUTTON_ID, GENERAL_INT);
-			jsonSoftButton.put(SoftButton.KEY_SYSTEM_ACTION, SystemAction.STEAL_FOCUS);
-			jsonSoftButton.put(SoftButton.KEY_TEXT, GENERAL_STRING);
-			jsonSoftButton.put(SoftButton.KEY_TYPE, SoftButtonType.SBT_TEXT);
-			jsonSoftButton.put(SoftButton.KEY_IMAGE, GENERAL_IMAGE.serializeJSON());
-			JSON_SOFTBUTTONS.put(jsonSoftButton);
+			JSON_SOFTBUTTON.put(SoftButton.KEY_IS_HIGHLIGHTED , GENERAL_BOOLEAN);
+			JSON_SOFTBUTTON.put(SoftButton.KEY_SOFT_BUTTON_ID, GENERAL_INT);
+			JSON_SOFTBUTTON.put(SoftButton.KEY_SYSTEM_ACTION, SystemAction.STEAL_FOCUS);
+			JSON_SOFTBUTTON.put(SoftButton.KEY_TEXT, GENERAL_STRING);
+			JSON_SOFTBUTTON.put(SoftButton.KEY_TYPE, SoftButtonType.SBT_TEXT);
+			JSON_SOFTBUTTON.put(SoftButton.KEY_IMAGE, GENERAL_IMAGE.serializeJSON());
+			JSON_SOFTBUTTONS.put(JSON_SOFTBUTTON);
 			
-			// Json Turn List Setup
-			JSONObject jsonTurn = new JSONObject();
-			jsonTurn.put(Turn.KEY_NAVIGATION_TEXT, GENERAL_STRING);
-			jsonTurn.put(Turn.KEY_TURN_IMAGE, GENERAL_IMAGE.serializeJSON());
-			JSON_TURNS.put(jsonTurn);
+			JSON_TURN.put(Turn.KEY_NAVIGATION_TEXT, GENERAL_STRING);
+			JSON_TURN.put(Turn.KEY_TURN_IMAGE, GENERAL_IMAGE.serializeJSON());
+			JSON_TURNS.put(JSON_TURN);
 			
-			// Json MenuParams Setup
 			JSON_MENUPARAMS.put(MenuParams.KEY_MENU_NAME, GENERAL_STRING);
 			JSON_MENUPARAMS.put(MenuParams.KEY_PARENT_ID, GENERAL_INT);
 			JSON_MENUPARAMS.put(MenuParams.KEY_POSITION, GENERAL_INT);
 			
-			// Json VrHelpItem Setup
-	    	JSONObject jsonVrHelpItem = new JSONObject();
-	    	jsonVrHelpItem.put(VrHelpItem.KEY_TEXT, GENERAL_STRING);
-	    	jsonVrHelpItem.put(VrHelpItem.KEY_IMAGE, JSON_IMAGE);
-	    	jsonVrHelpItem.put(VrHelpItem.KEY_POSITION, GENERAL_INT);
-	    	JSON_VRHELPITEMS.put(jsonVrHelpItem);
+	    	JSON_VRHELPITEM.put(VrHelpItem.KEY_TEXT, GENERAL_STRING);
+	    	JSON_VRHELPITEM.put(VrHelpItem.KEY_IMAGE, JSON_IMAGE);
+	    	JSON_VRHELPITEM.put(VrHelpItem.KEY_POSITION, GENERAL_INT);
+	    	JSON_VRHELPITEMS.put(JSON_VRHELPITEM);
 	    	
-	    	// Json TTSChunk Setup
 	    	JSONObject jsonTtsChunk = new JSONObject();
 	    	jsonTtsChunk.put(TTSChunk.KEY_TEXT, "Welcome to the jungle");
 	    	jsonTtsChunk.put(TTSChunk.KEY_TYPE, SpeechCapabilities.TEXT);
@@ -556,30 +495,18 @@ public class Test {
 	    	jsonTtsChunk.put(TTSChunk.KEY_TYPE, SpeechCapabilities.TEXT);
 	    	JSON_TTSCHUNKS.put(jsonTtsChunk);
 	    	
-	    	// Json KeyboardProperties Setup
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_AUTO_COMPLETE_TEXT, GENERAL_STRING);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_KEYPRESS_MODE, KeypressMode.SINGLE_KEYPRESS);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_KEYBOARD_LAYOUT, KeyboardLayout.QWERTY);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_LANGUAGE, Language.EN_US);
 	    	JSON_KEYBOARDPROPERTIES.put(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 	    	
-	    	// Json StartTime Setup
 			JSON_STARTTIME.put(StartTime.KEY_HOURS, GENERAL_STARTTIME.getHours());
 			JSON_STARTTIME.put(StartTime.KEY_MINUTES, GENERAL_STARTTIME.getMinutes());
 			JSON_STARTTIME.put(StartTime.KEY_SECONDS, GENERAL_STARTTIME.getSeconds());
+					
+			JSON_CHOICES.put(JSON_CHOICE);
 			
-			// Json Choice List Setup
-			JSONObject jsonChoice = new JSONObject();
-			jsonChoice.put(Choice.KEY_CHOICE_ID, GENERAL_INT);
-			jsonChoice.put(Choice.KEY_IMAGE, JSON_IMAGE);
-			jsonChoice.put(Choice.KEY_MENU_NAME, GENERAL_STRING);
-			jsonChoice.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
-			jsonChoice.put(Choice.KEY_SECONDARY_IMAGE, JSON_IMAGE);
-			jsonChoice.put(Choice.KEY_SECONDARY_TEXT, GENERAL_STRING);
-			jsonChoice.put(Choice.KEY_TERTIARY_TEXT, GENERAL_STRING);			
-			JSON_CHOICES.put(jsonChoice);
-			
-			// Json DeviceInfo Setup
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_CARRIER, GENERAL_STRING);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_FIRMWARE_REV, GENERAL_STRING);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_HARDWARE, GENERAL_STRING);
@@ -587,21 +514,16 @@ public class Test {
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS, GENERAL_STRING);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS_VERSION, GENERAL_STRING);
 			
-			// Json SdlMessageVersion Setup
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MAJOR_VERSION, GENERAL_INT);
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MINOR_VERSION, GENERAL_INT);	
 			
-			// Json DidResult List Setup
-			JSONObject jsonResult = new JSONObject();
-			jsonResult.put(DIDResult.KEY_DATA, GENERAL_STRING);
-			jsonResult.put(DIDResult.KEY_DID_LOCATION, GENERAL_INT);
-			jsonResult.put(DIDResult.KEY_RESULT_CODE, VehicleDataResultCode.SUCCESS);
-			JSON_DIDRESULTS.put(jsonResult);
+			JSON_DIDRESULT.put(DIDResult.KEY_DATA, GENERAL_STRING);
+			JSON_DIDRESULT.put(DIDResult.KEY_DID_LOCATION, GENERAL_INT);
+			JSON_DIDRESULT.put(DIDResult.KEY_RESULT_CODE, VehicleDataResultCode.SUCCESS);
+			JSON_DIDRESULTS.put(JSON_DIDRESULT);
 			
-			// Json PresetBankCapabilities Setup
 			JSON_PRESETBANKCAPABILITIES.put(PresetBankCapabilities.KEY_ON_SCREEN_PRESETS_AVAILABLE, GENERAL_BOOLEAN);
 			
-			// Json ButtonCapabilities List Setup
 			JSONObject jsonButton = new JSONObject();
 			jsonButton.put(ButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, false);
 			jsonButton.put(ButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, GENERAL_BOOLEAN);
@@ -609,7 +531,6 @@ public class Test {
 			jsonButton.put(ButtonCapabilities.KEY_NAME, ButtonName.SEEKRIGHT);
 			JSON_BUTTONCAPABILITIES.put(jsonButton);
 			
-			// Json SoftButtonCapabilities List Setup
 			jsonButton = new JSONObject();
 			jsonButton.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			jsonButton.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, GENERAL_BOOLEAN);
@@ -617,43 +538,32 @@ public class Test {
 			jsonButton.put(SoftButtonCapabilities.KEY_IMAGE_SUPPORTED, GENERAL_BOOLEAN);
 			JSON_SOFTBUTTONCAPABILITIES.put(jsonButton);
 			
-			// Json AudioPassThruCapabilities List Setup
 			jsonButton = new JSONObject();
 			jsonButton.put(AudioPassThruCapabilities.KEY_AUDIO_TYPE, GENERAL_AUDIOTYPE);
 			jsonButton.put(AudioPassThruCapabilities.KEY_BITS_PER_SAMPLE, GENERAL_BITSPERSAMPLE);
 			jsonButton.put(AudioPassThruCapabilities.KEY_SAMPLING_RATE, GENERAL_SAMPLINGRATE);
 			JSON_AUDIOPASSTHRUCAPABILITIES.put(jsonButton);
 			
-			// Json TextField List Setup
-			JSONObject jsonItem = new JSONObject();
-			jsonItem.put(TextField.KEY_CHARACTER_SET, CharacterSet.CID1SET);
-			jsonItem.put(TextField.KEY_NAME, TextFieldName.ETA);
-			jsonItem.put(TextField.KEY_ROWS, GENERAL_INT);
-			jsonItem.put(TextField.KEY_WIDTH, GENERAL_INT);
-			JSON_TEXTFIELDS.put(jsonItem);
+			JSON_TEXTFIELD.put(TextField.KEY_CHARACTER_SET, CharacterSet.CID1SET);
+			JSON_TEXTFIELD.put(TextField.KEY_NAME, TextFieldName.ETA);
+			JSON_TEXTFIELD.put(TextField.KEY_ROWS, GENERAL_INT);
+			JSON_TEXTFIELD.put(TextField.KEY_WIDTH, GENERAL_INT);
+			JSON_TEXTFIELDS.put(JSON_TEXTFIELD);
 			
-			// Json ImageField List Setup
-			JSONObject jsonImageResolution = new JSONObject();
-			jsonImageResolution.put(ImageResolution.KEY_RESOLUTION_HEIGHT, GENERAL_INT);
-			jsonImageResolution.put(ImageResolution.KEY_RESOLUTION_WIDTH, GENERAL_INT);
+			JSON_IMAGEFIELD.put(ImageField.KEY_IMAGE_RESOLUTION, JSON_IMAGERESOLUTION);
+			JSON_IMAGEFIELD.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(Test.GENERAL_FILETYPE_LIST));
+			JSON_IMAGEFIELD.put(ImageField.KEY_NAME, ImageFieldName.graphic);
+			JSON_IMAGEFIELDS.put(JSON_IMAGEFIELD);
 			
-			jsonItem = new JSONObject();
-			jsonItem.put(ImageField.KEY_IMAGE_RESOLUTION, jsonImageResolution);
-			jsonItem.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, JsonUtils.createJsonArray(Test.GENERAL_FILETYPE_LIST));
-			jsonItem.put(ImageField.KEY_NAME, ImageFieldName.graphic);
-			JSON_IMAGEFIELDS.put(jsonItem);
-			
-			// Json ScreenParams Setup
 			JSONObject jsonTEC = new JSONObject();
 			jsonTEC.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			jsonTEC.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, GENERAL_BOOLEAN);
 			jsonTEC.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			
-			JSON_SCREENPARAMS.put(ScreenParams.KEY_RESOLUTION, jsonImageResolution);
+			JSON_SCREENPARAMS.put(ScreenParams.KEY_RESOLUTION, JSON_IMAGERESOLUTION);
 			JSON_SCREENPARAMS.put(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE, jsonTEC);
 			
-			// Json DisplayCapabilities Setup
-			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_DISPLAY_TYPE, DisplayType.TYPE2);
+			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_DISPLAY_TYPE, GENERAL_DISPLAYTYPE);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, GENERAL_BOOLEAN);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_IMAGE_FIELDS, JSON_IMAGEFIELDS);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(GENERAL_MEDIACLOCKFORMAT_LIST));
@@ -662,17 +572,14 @@ public class Test {
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEXT_FIELDS, JSON_TEXTFIELDS);
 			
-			// Json TouchEvent List Setup
-			JSONObject jsonTouchCoord = new JSONObject();
-			jsonTouchCoord.put(TouchCoord.KEY_X, GENERAL_INT);
-			jsonTouchCoord.put(TouchCoord.KEY_Y, GENERAL_INT);
-			JSON_TOUCHCOORDS.put(jsonTouchCoord);
+			JSON_TOUCHCOORD.put(TouchCoord.KEY_X, GENERAL_INT);
+			JSON_TOUCHCOORD.put(TouchCoord.KEY_Y, GENERAL_INT);
+			JSON_TOUCHCOORDS.put(JSON_TOUCHCOORD);
 			
-			JSONObject jsonTouchEvent = new JSONObject();
-			jsonTouchEvent.put(TouchEvent.KEY_C, JSON_TOUCHCOORDS);
-			jsonTouchEvent.put(TouchEvent.KEY_ID, GENERAL_INT);
-			jsonTouchEvent.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_INTEGER_LIST));
-			JSON_TOUCHEVENTS.put(jsonTouchEvent);
+			JSON_TOUCHEVENT.put(TouchEvent.KEY_C, JSON_TOUCHCOORDS);
+			JSON_TOUCHEVENT.put(TouchEvent.KEY_ID, GENERAL_INT);
+			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_INTEGER_LIST));
+			JSON_TOUCHEVENTS.put(JSON_TOUCHEVENT);
 			
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

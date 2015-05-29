@@ -45,7 +45,7 @@ public class OnButtonPressTests extends BaseRpcTests{
         try{
             result.put(OnButtonPress.KEY_CUSTOM_BUTTON_ID, Test.GENERAL_INT);
             result.put(OnButtonPress.KEY_BUTTON_NAME, Test.GENERAL_BUTTONNAME);
-            result.put(OnButtonPress.KEY_BUTTON_PRESS_MODE, Test.GENERAL_BUTTONEVENTMODE);
+            result.put(OnButtonPress.KEY_BUTTON_PRESS_MODE, Test.GENERAL_BUTTONPRESSMODE);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -65,7 +65,7 @@ public class OnButtonPressTests extends BaseRpcTests{
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, customName);
 	    assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, buttonName);
-	    assertEquals(Test.MATCH, Test.GENERAL_BUTTONEVENTMODE, buttonPressMode);
+	    assertEquals(Test.MATCH, Test.GENERAL_BUTTONPRESSMODE, buttonPressMode);
     
         // Invalid/Null Tests
         OnButtonPress msg = new OnButtonPress();

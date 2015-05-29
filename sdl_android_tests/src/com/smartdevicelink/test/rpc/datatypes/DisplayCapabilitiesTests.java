@@ -13,10 +13,8 @@ import org.json.JSONObject;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.test.JsonUtils;
@@ -101,62 +99,16 @@ public class DisplayCapabilitiesTests extends TestCase{
     
     public void testJson(){
         JSONObject reference = new JSONObject();
-        JSONObject screenParams = new JSONObject(), imageResolution = new JSONObject(), touchEventCapabilities = new JSONObject();
-        JSONArray mediaClockFormats = new JSONArray(), textFields = new JSONArray(), imageFields = new JSONArray();
 
         try{
             reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, Test.GENERAL_INT);
             reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, Test.GENERAL_BOOLEAN);
             reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, Test.GENERAL_DISPLAYTYPE);
             reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
-
-            for(MediaClockFormat format : Test.GENERAL_MEDIACLOCKFORMAT_LIST){
-                mediaClockFormats.put(format);
-            }
-            reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats);
-
-            // text fields
-            for(TextField textField : Test.GENERAL_TEXTFIELD_LIST){
-                JSONObject textFieldJson = new JSONObject();
-                textFieldJson.put(TextField.KEY_CHARACTER_SET, textField.getCharacterSet());
-                textFieldJson.put(TextField.KEY_NAME, textField.getName());
-                textFieldJson.put(TextField.KEY_ROWS, textField.getRows());
-                textFieldJson.put(TextField.KEY_WIDTH, textField.getWidth());
-                textFields.put(textFieldJson);
-            }
-            reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, textFields);
-
-            // image fields
-            for(ImageField imageField : Test.GENERAL_IMAGEFIELD_LIST){
-                JSONObject imageFieldJson = new JSONObject();
-                imageFieldJson.put(ImageField.KEY_IMAGE_TYPE_SUPPORTED, imageField.getImageTypeSupported());
-                imageFieldJson.put(ImageField.KEY_NAME, imageField.getName());
-
-                ImageResolution resolution = imageField.getImageResolution();
-                JSONObject resolutionJson = new JSONObject();
-                resolutionJson.put(ImageResolution.KEY_RESOLUTION_HEIGHT, resolution.getResolutionHeight());
-                resolutionJson.put(ImageResolution.KEY_RESOLUTION_WIDTH, resolution.getResolutionWidth());
-                imageFieldJson.put(ImageField.KEY_IMAGE_RESOLUTION, resolutionJson);
-
-                imageFields.put(imageFieldJson);
-            }
-            reference.put(DisplayCapabilities.KEY_IMAGE_FIELDS, imageFields);
-
-            // screen params
-            ImageResolution resolution = Test.GENERAL_SCREENPARAMS.getImageResolution();
-            imageResolution.put(ImageResolution.KEY_RESOLUTION_HEIGHT, resolution.getResolutionHeight());
-            imageResolution.put(ImageResolution.KEY_RESOLUTION_WIDTH, resolution.getResolutionWidth());
-            screenParams.put(ScreenParams.KEY_RESOLUTION, imageResolution);
-
-            TouchEventCapabilities touchCapabilities = Test.GENERAL_TOUCHEVENTCAPABILITIES;
-            touchEventCapabilities.put(TouchEventCapabilities.KEY_PRESS_AVAILABLE,
-                    touchCapabilities.getPressAvailable());
-            touchEventCapabilities.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE,
-                    touchCapabilities.getDoublePressAvailable());
-            touchEventCapabilities.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE,
-                    touchCapabilities.getMultiTouchAvailable());
-            screenParams.put(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE, touchEventCapabilities);
-            reference.put(DisplayCapabilities.KEY_SCREEN_PARAMS, screenParams);
+            reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(Test.GENERAL_MEDIACLOCKFORMAT_LIST));
+            reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, Test.JSON_TEXTFIELDS);
+            reference.put(DisplayCapabilities.KEY_IMAGE_FIELDS, Test.JSON_IMAGEFIELDS);
+            reference.put(DisplayCapabilities.KEY_SCREEN_PARAMS, Test.JSON_SCREENPARAMS);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -175,23 +127,17 @@ public class DisplayCapabilitiesTests extends TestCase{
                     	assertTrue(Test.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
                     }
                 } else if(key.equals(DisplayCapabilities.KEY_TEXT_FIELDS)){
-                    JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
-
-                    for(int i = 0; i < referenceArray.length(); i++){
-                    	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
-                    	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
-                    	assertTrue(Test.TRUE, Validator.validateTextFields(new TextField(hashReference), new TextField(hashTest)));
+                    List<TextField> referenceList = Test.GENERAL_TEXTFIELD_LIST;
+                    
+                    for (int i = 0; i < referenceList.size(); i++) {
+                    	assertTrue(Test.TRUE, Validator.validateTextFields(referenceList.get(i), (TextField) underTestArray.get(i)));
                     }
                 } else if(key.equals(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
                     assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
-
-                    for(int i = 0; i < referenceArray.length(); i++){
-                        assertTrue(Test.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));
-                    }
+                    assertTrue(Test.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
                 } else if(key.equals(DisplayCapabilities.KEY_SCREEN_PARAMS)){
                     JSONObject referenceArray = JsonUtils.readJsonObjectFromJsonObject(reference, key);
                     JSONObject underTestArray = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
@@ -205,7 +151,7 @@ public class DisplayCapabilitiesTests extends TestCase{
                     assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
                     for(int i = 0; i < referenceArray.length(); i++){
-                        assertTrue(Test.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));
+                        assertTrue(Test.TRUE, Validator.validateText(referenceArray.getString(i), underTestArray.getString(i)));// not a string?
                     }
                 } else{
                     assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

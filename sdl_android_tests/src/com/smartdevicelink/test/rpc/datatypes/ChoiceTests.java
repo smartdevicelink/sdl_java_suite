@@ -55,9 +55,9 @@ public class ChoiceTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_STRING, text2);
         assertEquals(Test.MATCH, Test.GENERAL_STRING, menuName);
         assertEquals(Test.MATCH, Test.GENERAL_INT, choiceId);
-        assertTrue(Test.TRUE, Validator.validateStringList(vrCommands, vrCommands));
-        assertTrue(Test.TRUE, Validator.validateImage(image2, image2));
-        assertTrue(Test.TRUE, Validator.validateImage(image, image));
+        assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, vrCommands));
+        assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, image2));
+        assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, image));
         
         // Invalid/Null Tests
         Choice msg = new Choice();

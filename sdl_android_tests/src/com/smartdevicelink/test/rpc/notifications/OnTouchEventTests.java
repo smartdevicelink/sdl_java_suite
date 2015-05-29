@@ -44,8 +44,8 @@ public class OnTouchEventTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{            
-            result.put(OnTouchEvent.KEY_TYPE, Test.JSON_TOUCHEVENTS);
-            result.put(OnTouchEvent.KEY_EVENT, Test.GENERAL_TOUCHTYPE);
+            result.put(OnTouchEvent.KEY_TYPE,Test.GENERAL_TOUCHTYPE);
+            result.put(OnTouchEvent.KEY_EVENT,  Test.JSON_TOUCHEVENTS);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }

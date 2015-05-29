@@ -43,14 +43,14 @@ public class ImageFieldTests extends TestCase{
     public void testRpcValues () {
     	// Test Values
         ImageResolution imageRes = msg.getImageResolution();
-        FileType imageType = msg.getImageTypeSupported().get(0);
+        List<FileType> imageTypes = msg.getImageTypeSupported();
         ImageFieldName name = msg.getName();
         
         // Valid Tests
-        assertTrue(Test.TRUE, Validator.validateImageResolution(Test.GENERAL_IMAGERESOLUTION, imageRes));
-        assertEquals(Test.MATCH, Test.GENERAL_FILETYPE_LIST, imageType);
-        assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELDNAME, name);
-        
+        assertTrue(Test.TRUE, Validator.validateImageResolution(Test.GENERAL_IMAGERESOLUTION, imageRes));        
+        assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELDNAME, name);        
+        assertTrue(Test.TRUE, Validator.validateFileTypes(Test.GENERAL_FILETYPE_LIST, imageTypes));
+                
         // Invalid/Null Tests
         ImageField msg = new ImageField();
         assertNotNull(Test.NOT_NULL, msg);

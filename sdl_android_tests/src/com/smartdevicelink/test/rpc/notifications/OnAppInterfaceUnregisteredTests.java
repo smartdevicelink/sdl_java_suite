@@ -20,7 +20,7 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
 
-        msg.setReason(Test.GENERAL_REASON);
+        msg.setReason(Test.GENERAL_APPINTERFACEUNREGISTEREDREASON);
 
         return msg;
     }
@@ -40,7 +40,7 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnAppInterfaceUnregistered.KEY_REASON, Test.GENERAL_REASON);
+            result.put(OnAppInterfaceUnregistered.KEY_REASON, Test.GENERAL_APPINTERFACEUNREGISTEREDREASON);
         } catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -56,7 +56,7 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
         AppInterfaceUnregisteredReason reason = ( (OnAppInterfaceUnregistered) msg ).getReason();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_REASON, reason);
+        assertEquals(Test.MATCH, Test.GENERAL_APPINTERFACEUNREGISTEREDREASON, reason);
     
         // Invalid/Null tests
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();

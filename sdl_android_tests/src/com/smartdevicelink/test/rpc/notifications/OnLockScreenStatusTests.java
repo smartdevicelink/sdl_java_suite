@@ -24,7 +24,7 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
 
         msg.setDriverDistractionStatus(Test.GENERAL_BOOLEAN);
         msg.setHMILevel(Test.GENERAL_HMILEVEL);
-        msg.setShowLockScreen(Test.GENERAL_SHOWLOCKSCREEN);
+        msg.setShowLockScreen(Test.GENERAL_LOCKSCREENSTATUS);
         msg.setUserSelected(Test.GENERAL_BOOLEAN);
 
         return msg;
@@ -47,7 +47,7 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
         try{
             result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, Test.GENERAL_BOOLEAN);
             result.put(OnHMIStatus.KEY_HMI_LEVEL, Test.GENERAL_HMILEVEL);
-            result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, Test.GENERAL_SHOWLOCKSCREEN);
+            result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, Test.GENERAL_LOCKSCREENSTATUS);
             result.put(OnLockScreenStatus.KEY_USER_SELECTED, Test.GENERAL_BOOLEAN);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
@@ -69,7 +69,7 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
         // Valid Tests
         assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, status);
         assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL, hmiLevel);
-        assertEquals(Test.MATCH, Test.GENERAL_SHOWLOCKSCREEN, lockScreen);
+        assertEquals(Test.MATCH, Test.GENERAL_LOCKSCREENSTATUS, lockScreen);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, userSelected);
     
         // Invalid/Null Tests
