@@ -6,118 +6,137 @@ import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.test.Test;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class : 
+ * {@link com.smartdevicelink.proxy.LockScreenManager}
+ */
 public class LockScreenManagerTest extends TestCase{
-    private static final String ERROR_MSG = "Input value didn't match result.";
 
+	/**
+	 * This is a unit test for the following methods : 
+	 * {@link com.smartdevicelink.proxy.LockScreenManager#setDriverDistStatus(boolean)}
+	 */
     public void testDriverDistStatus(){
         LockScreenManager lockMan = new LockScreenManager();
         lockMan.setDriverDistStatus(true);
-        assertEquals(ERROR_MSG, true, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
+        assertEquals(Test.MATCH, true, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
 
         lockMan.setDriverDistStatus(false);
-        assertEquals(ERROR_MSG, false, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
+        assertEquals(Test.MATCH, false, (boolean) lockMan.getLockObj().getDriverDistractionStatus());
     }
 
+    /**
+	 * This is a unit test for the following methods : 
+	 * {@link com.smartdevicelink.proxy.LockScreenManager#setHMILevel(HMILevel)}
+	 */
     public void testHmiLevelStatus(){
         LockScreenManager lockMan = new LockScreenManager();
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
-        assertEquals(ERROR_MSG, HMILevel.HMI_BACKGROUND, lockMan.getLockObj().getHMILevel());
+        assertEquals(Test.MATCH, HMILevel.HMI_BACKGROUND, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
-        assertEquals(ERROR_MSG, HMILevel.HMI_FULL, lockMan.getLockObj().getHMILevel());
+        assertEquals(Test.MATCH, HMILevel.HMI_FULL, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
-        assertEquals(ERROR_MSG, HMILevel.HMI_LIMITED, lockMan.getLockObj().getHMILevel());
+        assertEquals(Test.MATCH, HMILevel.HMI_LIMITED, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
-        assertEquals(ERROR_MSG, HMILevel.HMI_NONE, lockMan.getLockObj().getHMILevel());
+        assertEquals(Test.MATCH, HMILevel.HMI_NONE, lockMan.getLockObj().getHMILevel());
 
         lockMan.setHMILevel(null);
-        assertNull(ERROR_MSG, lockMan.getLockObj().getHMILevel());
+        assertNull(Test.NULL, lockMan.getLockObj().getHMILevel());
     }
 
-    // test lock screen status when no setters are called
+    /**
+     * Test the lock screen status when no setter methods are called.
+     */
     public void testLockScreenStatusNull(){
         LockScreenManager lockMan = new LockScreenManager();
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertNotNull(ERROR_MSG, result);
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertNotNull(Test.NOT_NULL, result);
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
     }
 
+    /**
+     * Test the invalid settings of lock screen status.
+     */
     public void testLockScreenStatusDriverDistNull(){
         LockScreenManager lockMan = new LockScreenManager();
-        // driver dist status is null
-
-        // HMI level is null
+      
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
     }
 
+    /**
+     * Test the enabled settings of lock screen status.
+     */
     public void testLockScreenStatusDriverDistEnabled(){
         LockScreenManager lockMan = new LockScreenManager();
         lockMan.setDriverDistStatus(true);
 
         // HMI level is null
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.REQUIRED, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.REQUIRED, result.getShowLockScreen());
     }
 
+    /**
+     * Test the disabled settings of lock screen status.
+     */
     public void testLockScreenStatusDriverDistDisabled(){
         LockScreenManager lockMan = new LockScreenManager();
         lockMan.setDriverDistStatus(false);
 
-        // HMI level is null
         OnLockScreenStatus result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_NONE);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_BACKGROUND);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OFF, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OFF, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_FULL);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
 
         lockMan.setHMILevel(HMILevel.HMI_LIMITED);
         result = lockMan.getLockObj();
-        assertEquals(ERROR_MSG, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
+        assertEquals(Test.MATCH, LockScreenStatus.OPTIONAL, result.getShowLockScreen());
     }
-
 }
