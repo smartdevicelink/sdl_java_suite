@@ -3,50 +3,105 @@ package com.smartdevicelink.trace;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.Mod;
 
-
 public class DiagLevel {
 
 	static private DetailLevel[] levels;
 	
-	static {   // this is a static c-tor!!
+	// This is a static constructor.
+	static {
 		levels = new DetailLevel[Mod.values().length];
 		setAllLevels(DetailLevel.OFF);
 	}
 	
-	public static void setAllLevels(DetailLevel thisDetail) {
-		for (int i=0; i < levels.length; i++) {
-			levels[i] = thisDetail; //  
+	/**
+	 * Sets all DetailLevels to the given value.
+	 * 
+	 * @param detail The object to be stored.
+	 * 
+	 * @return True if set properly, false otherwise.
+	 */
+	public static boolean setAllLevels(DetailLevel detail) {
+		if (detail != null) {
+			return false;
+		}		
+		
+		for (int index = 0; index < levels.length; index++) {
+			levels[index] = detail;
 		}
+		return true;
 	}
 	
-    public static void setLevel(Mod thisMod, DetailLevel thisDetail) {
-    	levels[thisMod.ordinal()] = thisDetail;
+	/**
+	 * Sets the DetailLevel of the given Mod.
+	 * 
+	 * @param mod A key.
+	 * @param detail The object to be stored.
+	 * 
+	 * @return True if set properly, false otherwise.
+	 */
+    public static boolean setLevel(Mod mod, DetailLevel detail) {
+    	if (mod == null || detail == null) {
+    		return false;
+    	}
+    	
+    	levels[mod.ordinal()] = detail;
+    	return true;
     }
-	
-	public static DetailLevel getLevel(Mod thisMod) {
-		return levels[thisMod.ordinal()];
+    
+    /**
+	 * Retrieves the DetailLevel corresponding to the given Mod.
+	 * 
+	 * @param mod A key.
+	 * 
+	 * @return DetailLevel that corresponds to the given Mod, null otherwise.
+	 */
+	public static DetailLevel getLevel(Mod mod) {
+		if (mod == null) {
+			return null;
+		}
+		
+		return levels[mod.ordinal()];
 	}
 	
-	public static boolean isValidDetailLevel(String dtString) {
-		// Assume false
-		Boolean isValid = false;
+	/**
+	 * Determines if the given string corresponds to a valid DetailLevel.
+	 * 
+	 * @param key A string key.
+	 * 
+	 * @return True if a corresponding DetailLevel was found, false otherwise.
+	 */
+	public static boolean isValidDetailLevel(String key) {
+		if (key == null) {
+			return false;
+		}
 		
-		if (dtString.equalsIgnoreCase("verbose"))
-			isValid = true;
-		else if (dtString.equalsIgnoreCase("terse"))
-			isValid = true;
-		else if (dtString.equalsIgnoreCase("off"))
-			isValid = true;
+		if (key.equalsIgnoreCase("verbose") || 
+			key.equalsIgnoreCase("terse")   || 
+			key.equalsIgnoreCase("off")) {
+			return true;
+		}
 		
-		return isValid;
+		return false;
 	}
 	
-	public static DetailLevel toDetailLevel(String dtString) {
-		DetailLevel dt = DetailLevel.OFF;
-		if (dtString.equalsIgnoreCase("verbose"))
-			dt = DetailLevel.VERBOSE;
-		else if (dtString.equalsIgnoreCase("terse"))
-			dt = DetailLevel.TERSE;
-		return dt;
+	/**
+	 * Converts the given string to a DetailLevel, if the string is valid.
+	 * 
+	 * @param key A string key.
+	 * 
+	 * @return The corresponding DetailLevel from the given string key or 'OFF'
+	 * if the key was null or invalid.
+	 */
+	public static DetailLevel toDetailLevel(String key) {
+		if (key == null) {
+			return DetailLevel.OFF;
+		}
+		
+		DetailLevel detailLevel = DetailLevel.OFF;
+		if (key.equalsIgnoreCase("verbose"))
+			detailLevel = DetailLevel.VERBOSE;
+		else if (key.equalsIgnoreCase("terse"))
+			detailLevel = DetailLevel.TERSE;
+		return detailLevel;
 	}
 }
