@@ -3,6 +3,7 @@ package com.smartdevicelink.transport;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
 public abstract class SdlTransport {
