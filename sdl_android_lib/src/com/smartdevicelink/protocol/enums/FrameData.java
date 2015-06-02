@@ -1,39 +1,33 @@
 package com.smartdevicelink.protocol.enums;
 
-import java.util.Vector;
-
-import com.smartdevicelink.util.ByteEnumer;
-
-public class FrameData extends ByteEnumer {
-
-	private static Vector<FrameData> theList = new Vector<FrameData>();
-	public static Vector<FrameData> getList() { return theList; } 
+public enum FrameData {
 	
-	byte i = 0x00;
+	LAST_FRAME         ((byte) 0x00),
+	FIRST_FRAME        ((byte) 0x00),
+	SINGLE_FRAME       ((byte) 0x00),
+	CONSECUTIVE_FRAME  ((byte) 0x00),
 	
-	protected FrameData(byte value, String name) {super(value, name);}
-	public final static FrameData StartSession = new FrameData((byte)0x01, "StartSession");
-	public final static FrameData StartSessionACK = new FrameData((byte)0x02, "StartSessionACK");
-	public final static FrameData StartSessionNACK = new FrameData((byte)0x03, "StartSessionNACK");
-	public final static FrameData EndSession = new FrameData((byte)0x04, "EndSession");
+	START_SESSION      ((byte) 0x01),
+	START_SESSION_ACK  ((byte) 0x02),
+	START_SESSION_NACK ((byte) 0x03),
+	END_SESSION        ((byte) 0x04);
 	
-	public final static FrameData SingleFrame = new FrameData((byte)0x00, "SingleFrame");
-	public final static FrameData FirstFrame = new FrameData((byte)0x00, "FirstFrame");
-	public final static FrameData ConsecutiveFrame = new FrameData((byte)0x00, "ConsecutiveFrame");
-	public final static byte LastFrame = (byte)0x00;
+	private final byte id;
 	
-	static {
-		theList.addElement(StartSession);
-		theList.addElement(StartSessionACK);
-		theList.addElement(StartSessionNACK);
-		theList.addElement(EndSession);	
+	FrameData (byte id) {
+		this.id = id;
 	}
 	
-	public static FrameData valueOf(String passedButton) {
-		return (FrameData) get(theList, passedButton);
+	public byte getId () {
+		return id;
 	}
 	
-	public static FrameData[] values() {
-		return (FrameData[]) theList.toArray();
+	public static FrameData valueOf (byte key) {
+		for(FrameData value : FrameData.values()) {
+			if (value.getId() == key) {
+				return value;
+			}
+		}
+		return null;
 	}
 }

@@ -252,13 +252,13 @@ public class SdlTrace {
 	} // end-method
 
 	private static String getProtocolFrameType(FrameType f) {
-		if (f == FrameType.Control)
+		if (f == FrameType.CONTROL)
 			return "Control";
-		else if (f == FrameType.Consecutive)
+		else if (f == FrameType.CONSECUTIVE)
 			return "Consecutive";
-		else if (f == FrameType.First)
+		else if (f == FrameType.FIRST)
 			return "First";
-		else if (f == FrameType.Single)
+		else if (f == FrameType.SINGLE)
 			return "Single";
 
 		return "Unknown";
@@ -293,29 +293,29 @@ public class SdlTrace {
 		sb.append("</sz>");
 
 		int frameData = hdr.getFrameData();
-		if (hdr.getFrameType() == FrameType.Control) {
+		if (hdr.getFrameType() == FrameType.CONTROL) {
 			sb.append("<ca>");
-			if (frameData == FrameDataControlFrameType.StartSession.getValue()) 
+			if (frameData == FrameDataControlFrameType.START_SESSION.getId()) 
 				sb.append("StartSession");
-			else if (frameData == FrameDataControlFrameType.StartSessionACK.getValue())
+			else if (frameData == FrameDataControlFrameType.START_SESSION_ACK.getId())
 				sb.append("StartSessionACK");
-			else if (frameData == FrameDataControlFrameType.StartSessionNACK.getValue())
+			else if (frameData == FrameDataControlFrameType.START_SESSION_NACK.getId())
 				sb.append("StartSessionNACK");
-			else if (frameData == FrameDataControlFrameType.EndSession.getValue())
+			else if (frameData == FrameDataControlFrameType.END_SESSION.getId())
 				sb.append("EndSession");
 			sb.append("</ca>");
-		} else if (hdr.getFrameType() == FrameType.Consecutive ) {
+		} else if (hdr.getFrameType() == FrameType.CONSECUTIVE) {
 			sb.append("<fsn>");
 			if (frameData == 0 )
 				sb.append("lastFrame");
 			else
 				sb.append(String.format("%02X",frameData)); 
 			sb.append("</fsn>");
-		} else if (hdr.getFrameType() == FrameType.First ) {
+		} else if (hdr.getFrameType() == FrameType.FIRST ) {
 			int totalSize = BitConverter.intFromByteArray(buf, 0);			
 			int numFrames = BitConverter.intFromByteArray(buf, 4);
 			sb.append("<total>" + totalSize + "</total><numframes>" + numFrames + "</numframes>");
-		} else if (hdr.getFrameType() == FrameType.Single ) {
+		} else if (hdr.getFrameType() == FrameType.SINGLE ) {
 			sb.append("<single/>");
 		}
 

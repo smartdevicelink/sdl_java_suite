@@ -1,15 +1,18 @@
 package com.smartdevicelink.protocol;
 
-import com.smartdevicelink.protocol.enums.*;
+import com.smartdevicelink.protocol.enums.FrameData;
+import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
+import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.SessionType;
 
 public class ProtocolFrameHeaderFactory {
 
 	public static ProtocolFrameHeader createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Control);
+		msg.setFrameType(FrameType.CONTROL);
 		msg.setSessionType(serviceType);
-		msg.setFrameData(FrameDataControlFrameType.StartSession.value());
+		msg.setFrameData(FrameDataControlFrameType.START_SESSION.getId());
 		msg.setMessageID(messageID);
 		msg.setSessionID(sessionID);
 
@@ -19,33 +22,33 @@ public class ProtocolFrameHeaderFactory {
     public static ProtocolFrameHeader createHeartbeat(SessionType serviceType, byte sessionID, 
             byte version) {
 		return createControlFrame(serviceType, sessionID, version,
-		FrameDataControlFrameType.Heartbeat);
+		FrameDataControlFrameType.HEARTBEAT);
     }
 
 	public static ProtocolFrameHeader createHeartbeatACK(
 			SessionType serviceType, byte sessionID, byte version) {
 		return createControlFrame(serviceType, sessionID, version,
-		FrameDataControlFrameType.HeartbeatACK);
+		FrameDataControlFrameType.HEARTBEAT_ACK);
 	}
 
 	private static ProtocolFrameHeader createControlFrame(SessionType serviceType, byte sessionID, byte version,
 	            												FrameDataControlFrameType frameData) {
 	        ProtocolFrameHeader msg = new ProtocolFrameHeader();
 	        msg.setVersion(version);
-	        msg.setFrameType(FrameType.Control);
+	        msg.setFrameType(FrameType.CONTROL);
 	        msg.setSessionType(serviceType);
 	        msg.setSessionID(sessionID);
-	        msg.setFrameData(frameData.value());
+	        msg.setFrameData(frameData.getId());
 	        return msg;
 	}	
 	
 	public static ProtocolFrameHeader createStartSessionACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Control);
+		msg.setFrameType(FrameType.CONTROL);
 		msg.setSessionType(serviceType);
 		msg.setSessionID(sessionID);
-		msg.setFrameData(FrameDataControlFrameType.StartSessionACK.value());
+		msg.setFrameData(FrameDataControlFrameType.START_SESSION_ACK.getId());
 		msg.setMessageID(messageID);
 
 		return msg;
@@ -54,10 +57,10 @@ public class ProtocolFrameHeaderFactory {
 	public static ProtocolFrameHeader createStartSessionNACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Control);
+		msg.setFrameType(FrameType.CONTROL);
 		msg.setSessionType(serviceType);
 		msg.setSessionID(sessionID);
-		msg.setFrameData(FrameDataControlFrameType.StartSessionNACK.value());
+		msg.setFrameData(FrameDataControlFrameType.START_SESSION_NACK.getId());
 		msg.setMessageID(messageID);
 
 		return msg;
@@ -66,10 +69,10 @@ public class ProtocolFrameHeaderFactory {
 	public static ProtocolFrameHeader createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Control);
+		msg.setFrameType(FrameType.CONTROL);
 		msg.setSessionType(serviceType);
 		msg.setSessionID(sessionID);
-		msg.setFrameData(FrameDataControlFrameType.EndSession.value());
+		msg.setFrameData(FrameDataControlFrameType.END_SESSION.getId());
 		msg.setMessageID(messageID);
 
 		return msg;
@@ -79,7 +82,7 @@ public class ProtocolFrameHeaderFactory {
 			int dataLength, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Single);
+		msg.setFrameType(FrameType.SINGLE);
 		msg.setSessionType(serviceType);
 		msg.setFrameData(ProtocolFrameHeader.FrameDataSingleFrame);
 		msg.setSessionID(sessionID);
@@ -93,7 +96,7 @@ public class ProtocolFrameHeaderFactory {
 			int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.First);
+		msg.setFrameType(FrameType.FIRST);
 		msg.setSessionType(serviceType);
 		msg.setFrameData(ProtocolFrameHeader.FrameDataFirstFrame);
 		msg.setSessionID(sessionID);
@@ -107,7 +110,7 @@ public class ProtocolFrameHeaderFactory {
 			int dataLength, byte frameSequenceNumber, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Consecutive);
+		msg.setFrameType(FrameType.CONSECUTIVE);
 		msg.setSessionType(serviceType);
 		msg.setFrameData(frameSequenceNumber/*FrameData.ConsecutiveFrame.value()*/);
 		msg.setSessionID(sessionID);
@@ -121,9 +124,9 @@ public class ProtocolFrameHeaderFactory {
 			int dataLength, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
-		msg.setFrameType(FrameType.Consecutive);
+		msg.setFrameType(FrameType.CONSECUTIVE);
 		msg.setSessionType(serviceType);
-		msg.setFrameData(FrameData.ConsecutiveFrame.value());
+		msg.setFrameData(FrameData.CONSECUTIVE_FRAME.getId());
 		msg.setSessionID(sessionID);
 		msg.setDataSize(dataLength);
 		msg.setMessageID(messageID);

@@ -1,37 +1,29 @@
 package com.smartdevicelink.protocol.enums;
 
-import java.util.Vector;
-
-import com.smartdevicelink.util.ByteEnumer;
-
-
-public class SessionType extends ByteEnumer {
-
-	private static Vector<SessionType> theList = new Vector<SessionType>();
-	public static Vector<SessionType> getList() { return theList; } 
+public enum SessionType {
 	
-	byte i = 0x00;
+	CONTROL   ((byte) 0x00),
+	RPC       ((byte) 0x07),
+	PCM       ((byte) 0x0A),
+	NAV       ((byte) 0x0B),
+	BULK_DATA ((byte) 0xF);
 	
-	protected SessionType(byte value, String name) {super(value, name);}
-	public final static SessionType CONTROL = new SessionType((byte) 0, "CONTROL");
-	public final static SessionType RPC = new SessionType((byte)0x07, "RPC");
-	public final static SessionType PCM = new SessionType((byte)0x0A, "PCM");
-	public final static SessionType NAV = new SessionType((byte)0x0B, "NAV");
-	public final static SessionType BULK_DATA = new SessionType((byte)0xF, "BULK_DATA");
-
-	static {
-		theList.addElement(RPC);
-		theList.addElement(PCM);
-		theList.addElement(NAV);
-		theList.addElement(BULK_DATA);
-		theList.addElement(CONTROL);
+	private final byte id;
+	
+	SessionType (byte id) {
+		this.id = id;
 	}
 	
-	public static SessionType valueOf(byte passedButton) {
-		return (SessionType) get(theList, passedButton);
+	public byte getId () {
+		return id;
 	}
 	
-	public static SessionType[] values() {
-		return (SessionType[]) theList.toArray();
+	public static SessionType valueOf (byte key) {
+		for(SessionType value : SessionType.values()) {
+			if (value.getId() == key) {
+				return value;
+			}
+		}
+		return null;
 	}
 }

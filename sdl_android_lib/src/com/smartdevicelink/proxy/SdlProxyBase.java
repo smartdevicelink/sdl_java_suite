@@ -279,7 +279,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-			updateBroadcastIntent(sendIntent, "COMMENT2", " SessionType: " + sessionType.getName());
+			updateBroadcastIntent(sendIntent, "COMMENT2", " SessionType: " + sessionType.toString());
 			sendBroadcastIntent(sendIntent);	
 			
 			setWiProVersion(version);
@@ -291,9 +291,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	             sdlSession.setHeartbeatMonitor(heartbeatMonitor);
 			 }			
 			
-			if (sessionType.eq(SessionType.RPC)) {			
+			if (sessionType.equals(SessionType.RPC)) {			
 				startRPCProtocolSession(sessionID, correlationID);
-			} else if (sessionType.eq(SessionType.NAV)) {
+			} else if (sessionType.equals(SessionType.NAV)) {
 				NavServiceStarted();
 			} else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
@@ -306,7 +306,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onProtocolSessionNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
-			if (sessionType.eq(SessionType.NAV)) {
+			if (sessionType.equals(SessionType.NAV)) {
 				NavServiceEnded();
 			}
 		}

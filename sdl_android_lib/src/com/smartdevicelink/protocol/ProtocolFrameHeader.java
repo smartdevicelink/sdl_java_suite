@@ -7,7 +7,7 @@ import com.smartdevicelink.util.BitConverter;
 public class ProtocolFrameHeader {
 	private byte version = 1;
 	private boolean compressed = false;
-	private FrameType frameType = FrameType.Control;
+	private FrameType frameType = FrameType.CONTROL;
 	private SessionType sessionType = SessionType.RPC;
 	private byte frameData = 0;
 	private byte sessionID;
@@ -58,9 +58,9 @@ public class ProtocolFrameHeader {
 		header <<= 1;
 		header |= (compressed ? 1 : 0);
 		header <<= 3;
-		header |= (frameType.value() & 0x07);
+		header |= (frameType.getId() & 0x07);
 		header <<= 8;
-		header |= (sessionType.value() & 0xFF);
+		header |= (sessionType.getId() & 0xFF);
 		header <<= 8;
 		header |= (frameData & 0xFF);
 		header <<= 8;

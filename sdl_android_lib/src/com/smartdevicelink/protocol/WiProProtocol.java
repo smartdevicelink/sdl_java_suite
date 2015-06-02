@@ -344,7 +344,7 @@ public class WiProProtocol extends AbstractProtocol {
 		
 		protected void notifyIfFinished(ProtocolFrameHeader header) {
 			//if (framesRemaining == 0) {
-			if (header.getFrameType() == FrameType.Consecutive && header.getFrameData() == 0x0) 
+			if (header.getFrameType() == FrameType.CONSECUTIVE && header.getFrameData() == 0x0) 
 			{
 				ProtocolMessage message = new ProtocolMessage();
 				message.setSessionType(header.getSessionType());
@@ -378,7 +378,7 @@ public class WiProProtocol extends AbstractProtocol {
 		protected void handleMultiFrameMessageFrame(ProtocolFrameHeader header, byte[] data) {
 			//if (!hasFirstFrame) {
 			//	hasFirstFrame = true;
-			if (header.getFrameType() == FrameType.First)
+			if (header.getFrameType() == FrameType.FIRST)
 			{
 				handleFirstDataFrame(header, data);
 			}
@@ -398,12 +398,12 @@ public class WiProProtocol extends AbstractProtocol {
 		} // end-method
 		
 		protected void handleFrame(ProtocolFrameHeader header, byte[] data) {
-			if (header.getFrameType().equals(FrameType.Control)) {
+			if (header.getFrameType().equals(FrameType.CONTROL)) {
 				handleControlFrame(header, data);
 			} else {
 				// Must be a form of data frame (single, first, consecutive, etc.)
-				if (   header.getFrameType() == FrameType.First
-					|| header.getFrameType() == FrameType.Consecutive
+				if (   header.getFrameType() == FrameType.FIRST
+					|| header.getFrameType() == FrameType.CONSECUTIVE
 					) {
 					handleMultiFrameMessageFrame(header, data);
 				} else {
@@ -418,12 +418,12 @@ public class WiProProtocol extends AbstractProtocol {
         } // end-method		
 		
 		private void handleControlFrame(ProtocolFrameHeader header, byte[] data) {
-            if (header.getFrameData() == FrameDataControlFrameType.HeartbeatACK.getValue()) {
+            if (header.getFrameData() == FrameDataControlFrameType.HEARTBEAT.getId()) {
                 handleProtocolHeartbeatACK(header, data);
             }
-            else if (header.getFrameData() == FrameDataControlFrameType.StartSession.getValue()) {
+            else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION.getId()) {
 				sendStartProtocolSessionACK(header.getSessionType(), header.getSessionID());
-			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionACK.getValue()) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION_ACK.getId()) {
 				// Use this sessionID to create a message lock
 				Object messageLock = _messageLocks.get(header.getSessionID());
 				if (messageLock == null) {
@@ -433,19 +433,19 @@ public class WiProProtocol extends AbstractProtocol {
 				//hashID = BitConverter.intFromByteArray(data, 0);
 				if (_version > 1) hashID = header.getMessageID();
 				handleProtocolSessionStarted(header.getSessionType(), header.getSessionID(), _version, "");				
-			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionNACK.getValue()) {
-				if (header.getSessionType().eq(SessionType.NAV)) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION_NACK.getId()) {
+				if (header.getSessionType().equals(SessionType.NAV)) {
 					handleProtocolSessionNACKed(header.getSessionType(), header.getSessionID(), _version, "");
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + header.getSessionID(), null);
 				}
-			} else if (header.getFrameData() == FrameDataControlFrameType.EndSession.getValue()) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.END_SESSION.getId()) {
 				//if (hashID == BitConverter.intFromByteArray(data, 0)) 
 				if (_version > 1) {
 					if (hashID == header.getMessageID())
 						handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 				} else handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
-			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionACK.getValue()) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.END_SESSION_ACK.getId()) {
 				handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 			}
 		} // end-method
