@@ -35,14 +35,11 @@ import android.util.Log;
 
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.rpc.PutFile;
-import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
-import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
-import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
-import com.smartdevicelink.Dispatcher.OutgoingProtocolMessageComparitor;
-import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.dispatcher.Dispatcher;
+import com.smartdevicelink.dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -130,9 +127,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private TraceDeviceInfo _traceDeviceInterrogator = null;
 		
 	// Declare Queuing Threads
-	private ProxyMessageDispatcher<ProtocolMessage> _incomingProxyMessageDispatcher;
-	private ProxyMessageDispatcher<ProtocolMessage> _outgoingProxyMessageDispatcher;
-	private ProxyMessageDispatcher<InternalProxyMessage> _internalProxyMessageDispatcher;
+	private Dispatcher<ProtocolMessage> _incomingProxyMessageDispatcher;
+	private Dispatcher<ProtocolMessage> _outgoingProxyMessageDispatcher;
+	private Dispatcher<InternalProxyMessage> _internalProxyMessageDispatcher;
 	
 	// Flag indicating if callbacks should be called from UIThread
 	private Boolean _callbackToUIThread = false;
@@ -456,8 +453,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_internalProxyMessageDispatcher = null;
 			}
 			
-			_internalProxyMessageDispatcher = new ProxyMessageDispatcher<InternalProxyMessage>("INTERNAL_MESSAGE_DISPATCHER",
-					new InternalProxyMessageComparitor(),
+			_internalProxyMessageDispatcher = new Dispatcher<InternalProxyMessage>("INTERNAL_MESSAGE_DISPATCHER",
 					new IDispatchingStrategy<InternalProxyMessage>() {
 
 						@Override
@@ -485,8 +481,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_incomingProxyMessageDispatcher = null;
 			}
 			
-			_incomingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",
-					new IncomingProtocolMessageComparitor(),
+			_incomingProxyMessageDispatcher = new Dispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",
 					new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
@@ -513,8 +508,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_outgoingProxyMessageDispatcher = null;
 			}
 			
-			_outgoingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",
-					new OutgoingProtocolMessageComparitor(),
+			_outgoingProxyMessageDispatcher = new Dispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",
 					new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {

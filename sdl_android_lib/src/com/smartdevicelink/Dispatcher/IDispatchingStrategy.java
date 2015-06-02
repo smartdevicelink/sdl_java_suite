@@ -1,6 +1,7 @@
-package com.smartdevicelink.Dispatcher;
+package com.smartdevicelink.dispatcher;
 
 public interface IDispatchingStrategy<T> {
+	
 	public void dispatch(T message);
 	
 	public void handleDispatchingError(String info, Exception ex);
