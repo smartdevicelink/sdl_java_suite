@@ -16,11 +16,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 
-	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. Or I will punch you.
+	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	public static final String INTENT_FOR_OTHER_BT_SERVER_INSTANCE_EXTRA	= "otherinstanceintent";
 	public static final String LOCAL_BT_SERVER_VERSION_NUMBER_EXTRA 		= "versionextra";
-	public static final String TRANSPORT_GLOBAL_PREFS 						= "LivioBluetooth"; //This is legacy, do not refactor this. Or I will punch you.
-	public static final String IS_TRANSPORT_CONNECTED						= "isBluetoothConnected"; //This is legacy, do not refactor this. Or I will punch you.
+	public static final String TRANSPORT_GLOBAL_PREFS 						= "SdlTransportPrefs"; 
+	public static final String IS_TRANSPORT_CONNECTED						= "isTransportConnected"; 
 		
 	public static String runningBluetoothServicePackage = null;
 

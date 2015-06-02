@@ -1,18 +1,14 @@
 package com.smartdevicelink.transport;
 
 import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
+import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
-import static com.smartdevicelink.transport.TransportConstants.PACKET_TO_SEND_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_ACTION;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.UNREGISTER_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
-import java.util.UUID;
 import java.util.Vector;
 
 import org.json.JSONException;
@@ -51,8 +47,10 @@ import com.smartdevicelink.util.BitConverter;
 public abstract class SdlRouterService extends Service{
 	
 	private static final String TAG = "Sdl Router Service";
-	
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 4;
+	/**
+	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
+	 */
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 1;	
 	
 	public static final String START_ROUTER_SERVICE_ACTION 					= "sdl.router"+ TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX;
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
@@ -336,7 +334,6 @@ public abstract class SdlRouterService extends Service{
 		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(REGISTER_WITH_ROUTER_ACTION);
-		filter.addAction(TransportConstants.REQUEST_BT_CLIENT_CONNECT);
 		registerReceiver(mainServiceReceiver,filter);
 		
 		registerReceiver(altTransportReceiver, new IntentFilter(TransportConstants.ALT_TRANSPORT_RECEIVER)); //For reading/writing off alt transport
@@ -508,12 +505,12 @@ public abstract class SdlRouterService extends Service{
 			sendBroadcast(unregisterIntent);
 			return;
 		}
-		Message message = new Message();
+		Message message = Message.obtain();
+		message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
 		Bundle bundle = new Bundle();
-		
 		bundle.putString(HARDWARE_DISCONNECTED, type.name());
 		bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-		message.setData(bundle);		
+		message.setData(bundle);		//TODO should we add a transport event what message type?
 		notifyClient(message);
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
@@ -651,10 +648,10 @@ public abstract class SdlRouterService extends Service{
 	    			if(mes==null){
 	    				return false;
 	    			}
-	    			Message message = new Message();
+	    			Message message = Message.obtain();
 	    			//TODO put arg1 and 2
 	    			Bundle bundle = new Bundle();
-	    			bundle.putParcelable(PACKET_TO_SEND_EXTRA_NAME, packet);
+	    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
 	    			message.setData(bundle);
 	    			try {
 						mes.send(message);
@@ -904,27 +901,7 @@ public abstract class SdlRouterService extends Service{
 		
 	}
 	
-    /**
-     * Command to the service to register a client, receiving callbacks
-     * from the service.  The Message's replyTo field must be a Messenger of
-     * the client where callbacks should be sent.
-     */
-    static final int ROUTER_REGISTER_CLIENT = 1;
-
-    /**
-     * Command to the service to unregister a client, ot stop receiving callbacks
-     * from the service.  The Message's replyTo field must be a Messenger of
-     * the client as previously given with MSG_REGISTER_CLIENT.
-     */
-    static final int ROUTER_UNREGISTER_CLIENT = 2;
-
-    /**
-     * Command to service to send a packet
-     */
-    static final int ROUTER_SEND_PACKET = 3;
-
     
-    static final int ROUTER_REQUEST_BT_CLIENT_CONNECT = 4;
     
 	 /**
      * Handler of incoming messages from clients.
@@ -935,7 +912,7 @@ public abstract class SdlRouterService extends Service{
         	Bundle receivedBundle = msg.getData();
         	Bundle returnBundle;
             switch (msg.what) {
-            case ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
+            case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
             	if(receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
         				&& !connectAsClient){		//We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
         				//Log.d(TAG,"Attempting to connect as bt client");
@@ -947,19 +924,30 @@ public abstract class SdlRouterService extends Service{
         				}
         			}
             	//We don't break here so we can let the app register as well
-                case ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
+                case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
+                	Message message = Message.obtain();
+                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
                 	if(msg.arg1<0 || msg.replyTo == null){
                 		Log.w(TAG, "Unable to requster app as no id or messenger was included");
+                		if(msg.replyTo!=null){
+                			msg.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
+                			try {
+								msg.replyTo.send(message);
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+                		}
                 		break;
                 	}
+                	
                 	RegisteredApp app = new RegisteredApp(msg.arg1,msg.replyTo);
                 	registeredApps.put(app.getAppId(), app);
             		onAppRegistered(app);
             		
             		//TODO reply to this messanger.
-            		Message message = new Message();
             		returnBundle = new Bundle();
-       
+            		
+            		
             		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
             			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
             		}
@@ -968,10 +956,11 @@ public abstract class SdlRouterService extends Service{
             		app.sendMessage(message);
 
                     break;
-                case ROUTER_UNREGISTER_CLIENT:
+                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
                 	registeredApps.remove(msg.arg1);//TODO check if this works
+                	//TODO send response
                     break;
-                case ROUTER_SEND_PACKET:
+                case TransportConstants.ROUTER_SEND_PACKET:
                 	
                 	byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
     				int offset = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array

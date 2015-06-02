@@ -7,10 +7,18 @@ import java.util.Locale;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.util.Log;
 
 
@@ -19,13 +27,131 @@ public class TransportBroker {
 	private static final String TAG = "SdlTransportBroker";
 
 	private final String WHERE_TO_REPLY_PREFIX							 = "com.sdl.android.";
-	private static String appId = null,whereToReply = null, sendPacketAddress = null;;
+	private static String appId = null,whereToReply = null;// sendPacketAddress = null;
 	private Context currentContext = null;
 	
 	private Object INIT_LOCK = new Object();
 	
 	private TransportType queuedOnTransportConnect = null;
 	
+	Messenger routerService = null;
+	final Messenger mMessenger = new Messenger(new ClientHandler());
+
+	boolean isBound;
+	
+	private ServiceConnection routerConnection = new ServiceConnection() {
+		
+        public void onServiceConnected(ComponentName className, IBinder service) {
+        	Log.d(TAG, "Bound to service " + className.toString());
+        	routerService = new Messenger(service);
+            isBound = true;
+            //So we just established our connection
+            //TODO register with router service
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+        	Log.d(TAG, "UN-Bound to service");
+        	routerService = null;
+            isBound = false;
+        }
+    };
+    
+    private void sendMessageToRouterService(Message message){
+    	if(isBound){
+    		try {
+				routerService.send(message);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+    	}else{
+    		Log.e(TAG, "Unable to send message to router service. Not bound.");
+    	}
+    }
+    
+    BroadcastReceiver routerDiscoveryReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(intent!=null){
+				if(intent.hasExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA)
+						&& intent.hasExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA)){
+					//We now know the location of the router service that is currently up and running
+					
+					Intent bindingIntent = new Intent();
+					bindingIntent.setClassName(intent.getStringExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA), intent.getStringExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA));//This sets an explicit intent
+					context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+				}
+				
+			}
+
+			
+		}
+    	
+    };
+    /**
+     * Handler of incoming messages from service.
+     */
+    class ClientHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+        	Bundle bundle = msg.getData();
+            /* DO NOT MOVE
+             * This needs to be first to make sure we already know if we are attempting to enter legacy mode or not
+             */
+        	if(bundle !=null && bundle.containsKey(TransportConstants.ENABLE_LEGACY_MODE_EXTRA)){
+				boolean enableLegacy = bundle.getBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, false);
+				Log.d(TAG, "Setting legacy mode: " +enableLegacy );
+				enableLegacyMode(enableLegacy);
+			}
+            
+        	//Find out what message we have and what to do with it
+            switch (msg.what) {//FIXME
+            	case TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE:
+            		if(msg.arg1==TransportConstants.REGISTRATION_RESPONSE_SUCESS){
+            			//TODO yay! we have been registered. Now what?
+            			registeredWithRouterService = true;
+            			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
+        					//Keep track if we actually get this
+        				}
+            			if(queuedOnTransportConnect!=null){
+        					onHardwareConnected(queuedOnTransportConnect);
+        					queuedOnTransportConnect = null;
+        				}	
+            		}else{
+            			registeredWithRouterService = false; 
+            			Log.w(TAG, "Registration denied from router service. Reason - " + msg.arg1);
+            		}
+            	
+            		break;
+            	case TransportConstants.ROUTER_RECEIVED_PACKET:
+					//So the intent has a packet with it. PEFRECT! Let's send it through the library
+            		if(bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
+            			Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
+    					if(packet!=null){
+    						onPacketReceived(packet);
+    					}else{
+    						Log.w(TAG, "Received null packet from router service, not passing along");
+    					}
+            		}
+            		break;
+            	case TransportConstants.HARDWARE_CONNECTION_EVENT:
+        			if(bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
+        				//We should shut down, so call 
+        				onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        			}
+        			
+        			if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+        				onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+        				
+        			}
+            		break;
+            	default:
+                    super.handleMessage(msg);
+            }   
+            
+        }
+    }
+    
 	 BroadcastReceiver packetReceiver = new BroadcastReceiver() 
 		{
 			@Override
@@ -44,12 +170,6 @@ public class TransportBroker {
 				}
 				if(intent.hasExtra(TransportConstants.HARDWARE_CONNECTED)){
 					onHardwareConnected(TransportType.valueOf(intent.getStringExtra(TransportConstants.HARDWARE_CONNECTED)));
-					
-				}
-				if(intent.hasExtra(TransportConstants.UNREGISTER_EXTRA)){
-					//We should shut down, so call 									
-					sendPacketAddress = null;
-					onServiceUnregsiteredFromRouterService(intent.getIntExtra(TransportConstants.UNREGISTER_EXTRA, 0));
 					
 				}
 				if(intent.hasExtra(SdlRouterService.REGISTER_WITH_ROUTER_ACTION)){
@@ -87,10 +207,10 @@ public class TransportBroker {
 						queuedOnTransportConnect = null;
 					}
 				}
-				if(intent.hasExtra(TransportConstants.PACKET_TO_SEND_EXTRA_NAME)){
+				if(intent.hasExtra(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
 					//So the intent has a packet with it. PEFRECT! Let's send it through the library
 					//1/15/2015 this is now a parceable object being sent
-					Parcelable packet = intent.getParcelableExtra(TransportConstants.PACKET_TO_SEND_EXTRA_NAME);
+					Parcelable packet = intent.getParcelableExtra(TransportConstants.FORMED_PACKET_EXTRA_NAME);
 					if(packet!=null){
 						onPacketReceived(packet);
 					}else{
@@ -147,7 +267,7 @@ public class TransportBroker {
 			//Log.d(TAG, "RESETING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
-				sendPacketAddress = null;
+				routerService = null; //TODO make sure theres nothing else we need
 				queuedOnTransportConnect = null;
 			}
 		}
@@ -158,7 +278,7 @@ public class TransportBroker {
 			//Log.d(TAG, "STOPPING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
-				sendPacketAddress = null;
+				routerService = null;
 				queuedOnTransportConnect = null;
 				try{
 					if(currentContext!=null){
@@ -191,7 +311,7 @@ public class TransportBroker {
 		
 		public boolean onHardwareConnected(TransportType type){
 			synchronized(INIT_LOCK){
-				if(sendPacketAddress==null){
+				if(routerService==null){
 					queuedOnTransportConnect = type;
 					return false;
 				}
@@ -219,41 +339,30 @@ public class TransportBroker {
 			ActivityManager manager = (ActivityManager) context.getSystemService("activity");
 		    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 		    	//We will check to see if it contains this name, should be pretty specific
-		    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) { //TODO fix to look for correct name
+		    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) { 
 		            return true;
 		        }
 		    }			
 			return false;
 		}
 		
-		public void sendPacketToRouterService(char[] packet){
-			//Log.d(TAG,whereToReply + " sending packet to Bluetooth Service");
-
-			if(sendPacketAddress==null){
-				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
-				return;
-			}
-			Intent test = new Intent();
-			test.setAction(sendPacketAddress);
-			test.putExtra(TransportConstants.PACKET_TO_SEND_EXTRA_NAME, packet);
-			currentContext.sendBroadcast(test);
-		}
-		
 		
 		public void sendPacketToRouterService(byte[] bytes, int offset, int count){
 			//Log.d(TAG,whereToReply + " sending packet to Bluetooth Service");
 
-			if(sendPacketAddress==null){
+			if(routerService==null){
 				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
 				return;
 			}
-			Intent test = new Intent();
-			test.setAction(sendPacketAddress);
-			test.putExtra(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes);
-			test.putExtra(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, offset);
-			test.putExtra(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, count);
+			Message message = Message.obtain();
+			message.what = TransportConstants.ROUTER_SEND_PACKET;
+			Bundle bundle = new Bundle();
+			bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes);
+			bundle.putLong(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, offset);
+			bundle.putLong(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, count);
+			message.setData(bundle);
 			
-			currentContext.sendBroadcast(test);
+			sendMessageToRouterService(message);
 		}
 		
 		/**
@@ -264,10 +373,12 @@ public class TransportBroker {
 				Log.e(TAG, "Context set to null, failing out");
 				return;
 			}
-			if(sendPacketAddress!=null){
+			//FIXME we need a different boolean to store our registered state
+			if(routerService!=null){
 				Log.w(TAG, "Already registered with router service");
 				return;
 			}
+			
 			Intent intent = null;
 			if(!isRouterServiceRunning(getContext()) ){
 				Log.w(TAG, "No instance of the Sdl router service to register with");
@@ -286,13 +397,14 @@ public class TransportBroker {
 			currentContext.sendBroadcast(intent);
 			
 		}
+		
 		private void unregisterWithRouterService(){
 			Log.i(TAG, "Attempting to unregister with Sdl Router Service");
 			Intent unregisterWithService = new Intent();
 			unregisterWithService.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
 			unregisterWithService.putExtra(TransportConstants.UNREGISTER_EXTRA, Long.valueOf(appId));
 			currentContext.sendBroadcast(unregisterWithService);
-			sendPacketAddress = null;
+			//TODO do I need to do this? routerService = null;
 		}
 		
 
