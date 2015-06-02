@@ -9,15 +9,92 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
 /**
- * If the app recognizes during the app registration that the Sdl HMI language
+ * If the app recognizes during the app registration that the SDL HMI language
  * (voice/TTS and/or display) does not match the app language, the app will be
  * able (but does not need) to change this registration with changeRegistration
- * prior to app being brought into focus
+ * prior to app being brought into focus.
  * <p>
  * Function Group: Base
  * <p>
  * <b>HMILevel can by any</b>
  * <p>
+ * <b>Note:</b><br>
+ * <p>
+  *  SDL will send the language value confirmed to be supported by HMI via UI.GetCapabilities.<br>
+  * <p><b> Parameter List</b>
+ * <table border="1" rules="all">
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>Language</td>
+ * 			<td>Language</td>
+ * 			<td>Requested SDL voice engine (VR+TTS) language registration.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>hmiDisplayLanguage</td>
+ * 			<td>Language</td>
+ * 			<td>Request display language registration.</td>
+ *                 <td>Y</td>
+ * 			<td>Minvalue=0 <br>Maxvalue=2000000000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+*            <tr>
+ * 			<td>appName</td>
+ * 			<td>String</td>
+ * 			<td>Request new app name registration</td>
+ *                 <td>N</td>
+ *                 <td>maxlength:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ttsName</td>
+ * 			<td>TTSChunk</td>
+ * 			<td>Request new ttsName registration</td>
+ *                 <td>N</td>
+ *                 <td>minsize:1<br> maxsize:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *            <tr>
+ * 			<td>ngnMediaScreenAppName</td>
+ * 			<td>String</td>
+ * 			<td>Request new app short name registration</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vrSynonyms</td>
+ * 			<td>String</td>
+ * 			<td>Request new VR synonyms registration</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 40<br>minsize:1<br>maxsize:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
+ * <p>  
+ * <b>Response </b><br>
+ * <p>
+ * <b>Non-default Result Codes:</b><br>
+ * ¥	SUCCESS<br>
+ * ¥	INVALID_DATA<br>
+ * ¥	OUT_OF_MEMORY<br>
+ * ¥	TOO_MANY_PENDING_REQUESTS<br>
+ * ¥	APPLICATION_NOT_REGISTERED<br>
+ * ¥	GENERIC_ERROR<br>
+ * ¥	REJECTED<br>
+ * ¥   DISALLOWED<br>
+ 
  * 
  * @since SmartDeviceLink 2.0
  * @see RegisterAppInterface

@@ -12,6 +12,21 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * </p>
+ *  <b>Request</b><br>
+
+No parameters.<br><p>
+<b>Response</b> <br>
+<b>Non-default Result Codes:</b><br>
+	- SUCCESS<br>
+	- INVALID_DATA<br>
+	- OUT_OF_MEMORY<br>
+	- TOO_MANY_PENDING_REQUESTS<br>
+	- APPLICATION_NOT_REGISTERED<br>
+	- GENERIC_ERROR      <br>
+	- REJECTED<br>
+	- DISALLOWED  <br>
+<p>
+
  * @since SmartDeviceLink 2.0
  * @see PerformAudioPassThru
  */

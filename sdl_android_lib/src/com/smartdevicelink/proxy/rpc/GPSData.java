@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -55,21 +55,21 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 		<tr>
  * 			<td>utcHours</td>
  * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 23
+ * 			<td>Minvalue: 0<b>Maxvalue: 23
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>utcMinutes</td>
  * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 59
+ * 			<td>Minvalue: 0<b>Maxvalue: 59
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
  * 		<tr>
  * 			<td>utcSeconds</td>
  * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 59
+ * 			<td>Minvalue: 0<b>Maxvalue: 59
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 

@@ -7,12 +7,51 @@ import com.smartdevicelink.proxy.RPCRequest;
 
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
- * vehicle module
+ * vehicle module.
  * <p>
  * Function Group: ProprietaryData
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * <p>
+  * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ecuName</td>
+ * 			<td>Integer</td>
+ * 			<td>Name of ECU.</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value: 65535</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>dtcMask</td>
+ * 			<td>Integer</td>
+ * 			<td>DTC Mask Byte to be sent in diagnostic request to module.</td>
+ *                 <td>N</td>
+ *                 <td>Min Value: 0<br>Max Value: 255</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ *  </table>
+ * <b>Response</b><br>
+ * <p>
+ * <b>Non-default Result Codes:</b><br>- 
+ * SUCCESS<br>- 
+ * INVALID_DATA<br>- OUT_OF_MEMORY<br>- 
+ * TOO_MANY_PENDING_REQUESTS<br>
+ * - APPLICATION_NOT_REGISTERED<br>
+ * - GENERIC_ERROR<br>    
+ * - REJECTED<br>  
+ * - DISALLOWED  <br> 
+ * - USER_DISALLOWED<br>   
+ * @since SmartDeviceLink 2.0
  */
 public class GetDTCs extends RPCRequest {
 	public static final String KEY_DTC_MASK = "dtcMask";

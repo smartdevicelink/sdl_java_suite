@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
 /**
  * Struct defining the characteristics of a displayed field on the HMI.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -52,6 +52,15 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 1.0
+ * <p>
+ * @see TextFieldName
+ * @see Alert
+ * @see Show
+ * @see PerformInteraction
+ * @see ScrollableMessage
+ * @see PerformAudioPassThru
+ * @see ShowConstantTBT
+ * 
  */
 public class TextField extends RPCStruct {
 	public static final String KEY_WIDTH = "width";

@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

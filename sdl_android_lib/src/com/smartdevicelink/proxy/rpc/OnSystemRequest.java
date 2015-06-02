@@ -14,7 +14,70 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-
+/**
+ * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud<br>Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
+ * <p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestType</td>
+ * 			<td>RequestType</td>
+ * 			<td>The type of system request.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>url</td>
+ * 			<td>Array of Strings</td>
+ * 			<td>Optional URL for HTTP requests.<br>If blank, the binary data shall be forwarded to the app.<br>If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 1000 <br>minsize:1<br> maxsize: 100</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeout</td>
+ * 			<td>Integer</td>
+ * 			<td>Optional timeout for HTTP requests<br>Required if a URL is provided</td>
+ *                 <td>N</td>
+ *                 <td>minvalue:0<br> maxvalue: 2000000000</td>
+ * 			<td>SmartDeviceLink </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Optional file type (meant for HTTP file requests).</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>offset</td>
+ * 			<td>Float</td>
+ * 			<td>Optional offset in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ *                 <td>minvalue:0<br> maxvalue:100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>length</td>
+ * 			<td>Float</td>
+ * 			<td>Optional length in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ *                 <td>minvalue: 0<br> maxvalue:100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ *  </table>	      	
+ * @since SmartDeviceLink 2.3.2
+ */
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
@@ -31,6 +94,12 @@ public class OnSystemRequest extends RPCNotification {
 	private String body;
 	private Headers headers;
 	
+	Hashtable<String, Object> httpreqparams = null;
+	JSONObject myJSONObj = null;
+	/** Constructs a new OnSystemsRequest object
+	 * 	
+	 */
+
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }

@@ -1,5 +1,9 @@
 package com.smartdevicelink.proxy.rpc.enums;
-
+/**
+ * Enumeration listing possible asynchronous requests.
+ * 
+ *
+ */
 public enum RequestType {
 
 	HTTP,
@@ -65,7 +69,11 @@ public enum RequestType {
      */
     FOTA,
 	;
-     
+	/**
+     * Convert String to RequestType
+     * @param value String
+     * @return RequestType
+     */  
     public static RequestType valueForString(String value) {
         try{
             return valueOf(value);

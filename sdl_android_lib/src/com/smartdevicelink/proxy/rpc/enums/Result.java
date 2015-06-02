@@ -169,6 +169,11 @@ public enum Result {
      * The provided hash ID does not match the hash of the current set of registered data or the core could not resume the previous data.
      */
     RESUME_FAILED;
+	 /**
+     * Convert String to Result
+     * @param value String
+     * @return Result
+     */
 
     public static Result valueForString(String value) {
         try{

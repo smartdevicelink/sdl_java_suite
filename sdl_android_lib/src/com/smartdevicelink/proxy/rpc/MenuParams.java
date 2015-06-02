@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 /**
  * Used when adding a sub menu to an application menu or existing sub menu.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -25,7 +25,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  *			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
-  * 		<tr>
+ * 		<tr>
  * 			<td>position</td>
  * 			<td>Int16</td>
  * 			<td>Position within the items of the parent Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. 
@@ -52,6 +52,8 @@ import com.smartdevicelink.proxy.RPCStruct;
  * 		</tr>
  * </table>
  * @since SmartDeviceLink 1.0
+ * @see AddCommand 
+ * @see AddSubMenu
  */
 public class MenuParams extends RPCStruct {
 	public static final String KEY_PARENT_ID = "parentID";

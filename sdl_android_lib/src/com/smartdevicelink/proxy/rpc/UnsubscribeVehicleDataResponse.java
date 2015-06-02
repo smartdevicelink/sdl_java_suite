@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.util.DebugTool;
 
 /**
- * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called
+ * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called.
  * 
  * @since SmartDeviceLink 2.0
  */

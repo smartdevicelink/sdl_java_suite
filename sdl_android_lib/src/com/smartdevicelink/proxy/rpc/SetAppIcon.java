@@ -9,8 +9,41 @@ import com.smartdevicelink.proxy.RPCRequest;
  * Used to set existing local file on SDL as the app's icon. Not supported on
  * first generation SDL vehicles
  * <p>
- * 
+ * <p><b>Parameter List</b>
+ * <p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>SDLFileName</td>
+ * 			<td>String</td>
+ * 			<td>File reference name.</td>
+ *                 <td>Y</td>
+ * 			<td>Maxlength=500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *  </table>
+ *  <p>
+*<b>Response </b>
+*<b> Non-default Result Codes: </b><br>
+*<p>
+*	 SUCCESS <br>
+*	 INVALID_DATA<br>
+*	 OUT_OF_MEMORY<br>
+*     TOO_MANY_PENDING_REQUESTS<br>
+*     APPLICATION_NOT_REGISTERED<br>
+*     GENERIC_ERROR<br>
+*     REJECTED<br>
+*
  * @since SmartDeviceLink 2.0
+ * @see Image
  */
 public class SetAppIcon extends RPCRequest {
 	public static final String KEY_SDL_FILE_NAME = "syncFileName";

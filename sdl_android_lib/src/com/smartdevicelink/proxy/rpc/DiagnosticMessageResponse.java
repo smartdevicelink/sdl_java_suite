@@ -5,9 +5,16 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-
+/**
+ * Diagnostic Message Response is sent, when DiagnosticMessage has been called.
+ * 
+ * @since SmartDeviceLink 3.0
+ */
 public class DiagnosticMessageResponse extends RPCResponse {
 	public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
+	/** 
+	 * Constructs a new DiagnosticMessageResponse object
+	 */
 
     public DiagnosticMessageResponse() {
         super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
