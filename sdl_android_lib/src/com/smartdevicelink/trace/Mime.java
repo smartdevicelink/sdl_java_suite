@@ -4,66 +4,115 @@ package com.smartdevicelink.trace;
 
 public class Mime {
 	
-	private static String m_base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-	
+	/**
+	 * Encodes the given string using 64 alphanumeric characters, including the
+	 * '+' and '/' characters and suffixed with either '=' or '=='.
+	 * 
+	 * @param str The string to be encoded.
+	 * 
+	 * @return The encoded string, null if the given string was null or 
+	 * contained invalid characters and could not be encoded.
+	 */
 	public static String base64Encode(String str) {
-		String b64String = "";
 		try {
-			byte[] strBytes = str.getBytes("US-ASCII");
-			b64String = base64Encode(strBytes);
+			return base64Encode(str.getBytes("US-ASCII"));
 		} catch (Exception ex) {
-			// Don't care?
-		} // end-catch
-		return b64String;
-	} // end-method
+			return null;
+		}
+	}
 
-	public static String base64Encode(byte bytesToEncode[]) {
-		return base64Encode(bytesToEncode, 0, bytesToEncode.length);
-	} // end-method
+	/**
+	 * Encodes the given byte array using 64 alphanumeric characters, including
+	 * the '+' and '/' characters and suffixed with either '=' or '=='.
+	 * 
+	 * @param bytes The byte array to be encoded.
+	 * 
+	 * @return The encoded string, null if the given string was null or 
+	 * contained invalid characters and could not be encoded.
+	 */
+	public static String base64Encode(byte[] bytes) {
+		return base64Encode(bytes, 0, bytes.length);
+	}
 
-	public static String base64Encode(byte bytesToEncode[], int offset, int length) {
-		StringBuilder sb = new StringBuilder();
+	/**
+	 * Encodes the given byte array using 64 alphanumeric characters, including
+	 * the '+' and '/' characters and suffixed with either '=' or '=='.
+	 * 
+	 * @param bytes The byte array to be encoded.
+	 * @param offset The position indicating where to begin converting. If the 
+	 * offset is greater than the number of elements in the byte array then an 
+	 * empty string will be returned.
+	 * @param length The number of bytes to be encoded. If the length given is 
+	 * greater than the number of bytes in the array everything after the 
+	 * offset will be encoded and returned.
+	 * 
+	 * @return The encoded string, null if the given string was null or 
+	 * contained invalid characters and could not be encoded, or if the offset
+	 * was invalid.
+	 */
+	public static String base64Encode(byte[] bytes, int offset, int length) {
+		if (bytes == null) { 
+			return null; 
+		}
+		
+		// If the offset is greater than the length of the array then there are
+		// no values that need to be converted, so the method returns an empty
+		// string. This avoids a potential ArrayIndexOutOfBoundsException.
+		if (offset > bytes.length) {
+			return new String();
+		}
+		
+		// An array of valid base 64 characters.
+		final char[] BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
 
-		int		idxin = 0;
-		int		b64idx = 0;
-
-		for (idxin=offset;idxin < offset + length;idxin++) {
-			switch ((idxin-offset) % 3) {
+		// Avoids an ArrayIndexOutOfBoundsException by setting an appropriate 
+		// limit to the number of bytes to be converted, since the conversion 
+		// string can be a subset of those bytes.
+		length = Math.min(bytes.length, (offset + length));
+		
+		StringBuilder builder = new StringBuilder();
+		int		binaryArrayIndex = 0;
+		int		base64Index = 0;
+		
+		try {
+			for (binaryArrayIndex = offset; binaryArrayIndex < length; binaryArrayIndex++) {
+				switch ((binaryArrayIndex-offset) % 3) {
+					case 0:
+						base64Index = (bytes[binaryArrayIndex] >> 2) & 0x3f;
+						break;
+					case 1:
+						base64Index = (bytes[binaryArrayIndex] >> 4) & 0x0f;
+						base64Index |= ((bytes[binaryArrayIndex-1] << 4)& 0x30);
+						break;
+					case 2:
+						base64Index = (bytes[binaryArrayIndex] >> 6) & 0x03;
+						base64Index |= ((bytes[binaryArrayIndex-1] << 2)& 0x3c);
+						builder.append(BASE64[base64Index]);
+						base64Index = bytes[binaryArrayIndex] & 0x3f;
+						break;
+				}
+				builder.append(BASE64[base64Index]);
+			}
+	
+			switch ((binaryArrayIndex-offset) % 3) {
 				case 0:
-					b64idx = (bytesToEncode[idxin] >> 2) & 0x3f;
 					break;
 				case 1:
-					b64idx = (bytesToEncode[idxin] >> 4) & 0x0f;
-					b64idx |= ((bytesToEncode[idxin-1] << 4)& 0x30);
+					base64Index = (bytes[binaryArrayIndex-1] << 4) & 0x30;
+					builder.append(BASE64[base64Index]);
+					builder.append("==");
 					break;
 				case 2:
-					b64idx = (bytesToEncode[idxin] >> 6) & 0x03;
-					b64idx |= ((bytesToEncode[idxin-1] << 2)& 0x3c);
-					sb.append(m_base64Chars.charAt(b64idx));
-					b64idx = bytesToEncode[idxin] & 0x3f;
+					base64Index = ((bytes[binaryArrayIndex-1] << 2)& 0x3c);
+					builder.append(BASE64[base64Index]);
+					builder.append('=');
 					break;
-			} // end-switch
-			sb.append(m_base64Chars.charAt(b64idx));
-		} // end-for
-
-		switch ((idxin-offset) % 3) {
-			case 0:
-				break;
-			case 1:
-				b64idx = (bytesToEncode[idxin-1] << 4) & 0x30;
-				sb.append(m_base64Chars.charAt(b64idx));
-				sb.append("==");
-				break;
-			case 2:
-				b64idx = ((bytesToEncode[idxin-1] << 2)& 0x3c);
-				sb.append(m_base64Chars.charAt(b64idx));
-				sb.append('=');
-				break;
-		} // end-switch
-		
-		return sb.toString();
-
-	} // end-method
+			}			
+			return builder.toString();
+		} catch (Exception e) {
+			return null;
+		}
+	} 
 
 	@SuppressWarnings("unused")
     private byte[] base64Decode(String base64String) {

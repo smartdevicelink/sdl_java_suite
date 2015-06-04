@@ -1,28 +1,78 @@
 package com.smartdevicelink.util;
 
-public class BitConverter {
-	public static String bytesToHex(byte [] bytes) {
-		return bytesToHex(bytes, 0, bytes.length);
-	} // end-method
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
+public class BitConverter {
+	
+	/**
+	 * Takes an array of binary (base 2) elements and converts them left to 
+	 * right into a string of hexadecimal (base 16) characters.
+	 * 
+	 * @param bytes The array to be converted.
+	 * 
+	 * @return A string of hexadecimal characters.
+	 * 
+	 * @see {@link #bytesToHex(byte[], int, int)}
+	 */
+	public static String bytesToHex(byte [] bytes) {
+		
+		// This method assumes that the caller wants the entire array to be
+		// converted into a hexadecimal string.
+		return bytesToHex(bytes, 0, bytes.length);
+	}
+	
+	/**
+	 * Takes an array of binary (base 2) elements and converts them, or a subset
+	 * of the array, left to right into a string of hexadecimal (base 16) 
+	 * characters.
+	 * 
+	 * @param bytes The array to be converted.
+	 * @param offset The position indicating where to begin converting. If the 
+	 * offset is greater than the number of elements in the byte array then an 
+	 * empty string will be returned.
+	 * @param length The number of bytes to be converted into hexadecimal. If 
+	 * the length given is greater than the number of bytes in the array 
+	 * everything after the offset will be converted and returned.
+	 * 
+	 * @return A string of hexadecimal characters.
+	 */
 	public static String bytesToHex(byte[] bytes, int offset, int length) {
-		if (bytes == null) { return null; }
-		final char[] HexDigits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-		byte b;
+		if (bytes == null) { 
+			return null; 
+		}
+		
+		// If the offset is greater than the length of the array then there are
+		// no values that need to be converted, so the method returns an empty
+		// string. This avoids a potential ArrayIndexOutOfBoundsException.
+		if (offset > bytes.length) {
+			return new String();
+		}		
+		
+		// An array of valid hexadecimal characters.
+		final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
+		
+		// Will store the conversion.
 		char[] hexChars = new char[2 * length];
-		//StringBuffer sb = new StringBuffer();
-		int upperBound = Math.min(bytes.length, (offset + length));
-		int baidx = 0;
-		int sidx = 0;
-		for (baidx = offset; baidx < upperBound; baidx++) {
-			// Get the byte from the array
-			b = bytes[baidx];
-			// Use nibbles as index into hex digit array (left nibble, then right)
-			hexChars[sidx++] = HexDigits[(b & 0xf0) >> 4];
-			hexChars[sidx++] = HexDigits[(b & 0x0f)];
-		} // end-for
+
+		// Avoids an ArrayIndexOutOfBoundsException by setting an appropriate
+		// limit to the number of bytes to be converted, since the conversion 
+		// string can be a subset of those bytes.
+		length = Math.min(bytes.length, (offset + length));
+		
+		for (int binaryArrayIndex = offset; binaryArrayIndex < length; binaryArrayIndex++) {
+			int hexArrayIndex = 0;
+			
+			// Get a single byte from the array.
+			byte unit = bytes[binaryArrayIndex];
+			
+			// Use nibbles as index into hex digit array (left nibble, then right).
+			hexChars[hexArrayIndex++] = HEX_DIGITS[(unit & 0xf0) >> 4];
+			hexChars[hexArrayIndex++] = HEX_DIGITS[(unit & 0x0f)];
+		}
+		
 		return new String(hexChars);
-	} // end-method
+	}
 
 	public static byte [] hexToBytes(String hexString) {
 		if (hexString == null) { return null; }
@@ -36,7 +86,7 @@ public class BitConverter {
 			theBytes[i/2] = theByte;
 		}
 		return theBytes;
-	} // end-method
+	}
 
 	public static final byte[] intToByteArray(int value) {
 		return new byte[] {
@@ -46,13 +96,28 @@ public class BitConverter {
 				(byte)value};
 	}
 	
-	public static int intFromByteArray(byte[] sizeBuf, int offset) {
-    	int ret = 0;
-    	for (int i = offset; i < offset + 4; i++) {
-    		ret <<= 8;
-    		ret |= 0xFF & sizeBuf[i];
-    	}
-    	return ret;
+	/**
+	 * Takes an array of binary (base 2) elements and converts them, or a subset
+	 * of the array, into an integer (base 10).
+	 * 
+	 * @param bytes The array to be converted.
+	 * @param offset The position indicating where to begin converting. If the 
+	 * offset is greater than the number of elements in the byte array then 0
+	 * will be returned.
+	 * 
+	 * @return An integer, 0 if the array of bytes given was null or the offset
+	 * was invalid.
+	 */
+	public static int intFromByteArray(byte[] bytes, int offset) {
+		if (bytes == null) {
+			return 0;
+		}
+		
+		if (offset > bytes.length) {
+			return 0;
+		}
+		
+		return ByteBuffer.wrap(Arrays.copyOfRange(bytes, offset, bytes.length)).getInt();
     }
 
 	public static final byte[] shortToByteArray(short value) {
@@ -61,12 +126,27 @@ public class BitConverter {
 				(byte)value};
 	}
 	
-	public static short shortFromByteArray(byte[] sizeBuf, int offset) {
-    	short ret = 0;
-    	for (int i = offset; i < offset + 2; i++) {
-    		ret <<= 8;
-    		ret |= 0xFF & sizeBuf[i];
-    	}
-    	return ret;
+	/**
+	 * Takes an array of binary (base 2) elements and converts them, or a subset
+	 * of the array, into a short (base 10).
+	 * 
+	 * @param bytes The array to be converted.
+	 * @param offset The position indicating where to begin converting. If the 
+	 * offset is greater than the number of elements in the byte array then 0
+	 * will be returned.
+	 * 
+	 * @return A short, 0 if the array of bytes given was null or the offset was
+	 * invalid.
+	 */
+	public static short shortFromByteArray(byte[] bytes, int offset) {
+		if (bytes == null) {
+			return 0;
+		}
+		
+		if (offset > bytes.length) {
+			return 0;
+		}
+		
+		return ByteBuffer.wrap(Arrays.copyOfRange(bytes, offset, bytes.length)).getShort();
     }
 }
