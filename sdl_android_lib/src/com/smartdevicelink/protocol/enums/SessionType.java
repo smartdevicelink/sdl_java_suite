@@ -32,6 +32,6 @@ public class SessionType extends ByteEnumer {
 	}
 	
 	public static SessionType[] values() {
-		return (SessionType[]) theList.toArray();
+		return theList.toArray(new SessionType[theList.size()]);
 	}
 }
