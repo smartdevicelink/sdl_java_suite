@@ -3,8 +3,8 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Creates a full screen or pop-up overlay (depending on platform) with a single
@@ -18,7 +18,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @since SmartDeviceLink 2.0
  * 
  */
-public class Slider extends RPCRequest {
+public class Slider extends RpcRequest {
 
 	public static final String KEY_NUM_TICKS = "numTicks";
 	public static final String KEY_SLIDER_HEADER = "sliderHeader";
@@ -29,7 +29,7 @@ public class Slider extends RPCRequest {
 	 * Constructs a new Slider object
 	 */
     public Slider() {
-        super(FunctionID.SLIDER.toString());
+        super(FunctionId.SLIDER.toString());
     }
 
 	/**

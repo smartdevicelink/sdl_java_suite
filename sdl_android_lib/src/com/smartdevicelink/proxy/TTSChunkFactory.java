@@ -2,37 +2,37 @@ package com.smartdevicelink.proxy;
 
 import java.util.Vector;
 
-import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TtsChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
-public class TTSChunkFactory {
+public class TtsChunkFactory {
 
-	public static TTSChunk createChunk(SpeechCapabilities type, String text) {
-		TTSChunk ret = new TTSChunk();
+	public static TtsChunk createChunk(SpeechCapabilities type, String text) {
+		TtsChunk ret = new TtsChunk();
 		ret.setType(type);
 		ret.setText(text);
 		return ret;
 	}
 
-	public static Vector<TTSChunk> createSimpleTTSChunks(String simple) {
+	public static Vector<TtsChunk> createSimpleTtsChunks(String simple) {
 		if (simple == null) {
 			return null;
 		}
 		
-		Vector<TTSChunk> chunks = new Vector<TTSChunk>();
+		Vector<TtsChunk> chunks = new Vector<TtsChunk>();
 		
-		TTSChunk chunk = createChunk(SpeechCapabilities.TEXT, simple);
+		TtsChunk chunk = createChunk(SpeechCapabilities.TEXT, simple);
 		chunks.add(chunk);
 		return chunks;
 	}
 
-	public static Vector<TTSChunk> createPrerecordedTTSChunks(String prerecorded) {
+	public static Vector<TtsChunk> createPrerecordedTtsChunks(String prerecorded) {
 		if (prerecorded == null) {
 			return null;
 		}
 		
-		Vector<TTSChunk> chunks = new Vector<TTSChunk>();
-		TTSChunk chunk = createChunk(SpeechCapabilities.PRE_RECORDED, prerecorded);
+		Vector<TtsChunk> chunks = new Vector<TtsChunk>();
+		TtsChunk chunk = createChunk(SpeechCapabilities.PRE_RECORDED, prerecorded);
 		chunks.add(chunk);
 		return chunks;
 	}

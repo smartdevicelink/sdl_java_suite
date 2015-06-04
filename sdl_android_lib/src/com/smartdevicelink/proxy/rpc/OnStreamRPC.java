@@ -1,15 +1,15 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
 
-public class OnStreamRPC extends RPCNotification {
+public class OnStreamRpc extends RpcNotification {
 	public static final String KEY_FILENAME = "fileName";
 	public static final String KEY_BYTESCOMPLETE = "bytesComplete";
 	public static final String KEY_FILESIZE = "fileSize";
 	
-	public OnStreamRPC() {
-		super(FunctionID.ON_STREAM_RPC.toString());
+	public OnStreamRpc() {
+		super(FunctionId.ON_STREAM_RPC.toString());
 	}
 		
 	public void setFileName(String fileName) {

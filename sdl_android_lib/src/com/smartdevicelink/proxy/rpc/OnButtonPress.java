@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
 
@@ -87,7 +87,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
  * @see SubscribeButton
  * @see UnsubscribeButton
  */
-public class OnButtonPress extends RPCNotification {
+public class OnButtonPress extends RpcNotification {
 	public static final String KEY_BUTTON_PRESS_MODE = "buttonPressMode";
 	public static final String KEY_BUTTON_NAME = "buttonName";
 	public static final String KEY_CUSTOM_BUTTON_ID = "customButtonID";
@@ -95,7 +95,7 @@ public class OnButtonPress extends RPCNotification {
 	*Constructs a newly allocated OnButtonPress object
 	*/   
     public OnButtonPress() {
-        super(FunctionID.ON_BUTTON_PRESS.toString());
+        super(FunctionId.ON_BUTTON_PRESS.toString());
     }
     /**
 	 * <p>
@@ -156,9 +156,9 @@ public class OnButtonPress extends RPCNotification {
             parameters.remove(KEY_BUTTON_PRESS_MODE);
         }
     }
-    public void setCustomButtonName(Integer customButtonID) {
-    	if (customButtonID != null) {
-    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
+    public void setCustomButtonName(Integer customButtonId) {
+    	if (customButtonId != null) {
+    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonId);
     	} else {
     		parameters.remove(KEY_CUSTOM_BUTTON_ID);
     	}

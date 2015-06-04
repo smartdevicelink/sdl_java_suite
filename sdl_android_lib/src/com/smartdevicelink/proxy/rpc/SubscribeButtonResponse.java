@@ -2,21 +2,21 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Sub scribeButton Response is sent, when SubscribeButton has been called
  * 
  * @since SmartDeviceLink 1.0
  */
-public class SubscribeButtonResponse extends RPCResponse {
+public class SubscribeButtonResponse extends RpcResponse {
 
 	/**
 	 * Constructs a new SubscribeButtonResponse object
 	 */
     public SubscribeButtonResponse() {
-        super(FunctionID.SUBSCRIBE_BUTTON.toString());
+        super(FunctionId.SUBSCRIBE_BUTTON.toString());
     }
 
 	/**

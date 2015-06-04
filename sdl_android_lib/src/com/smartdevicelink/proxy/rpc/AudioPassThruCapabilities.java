@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
@@ -41,7 +41,7 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class AudioPassThruCapabilities extends RPCStruct {
+public class AudioPassThruCapabilities extends RpcStruct {
 	public static final String KEY_SAMPLING_RATE = "samplingRate";
 	public static final String KEY_AUDIO_TYPE = "audioType";
 	public static final String KEY_BITS_PER_SAMPLE = "bitsPerSample";

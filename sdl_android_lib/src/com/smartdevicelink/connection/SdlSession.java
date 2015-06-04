@@ -1,14 +1,15 @@
-package com.smartdevicelink.SdlConnection;
+package com.smartdevicelink.connection;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.util.Log;
 
+import com.smartdevicelink.connection.interfaces.ISdlConnectionListener;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
-import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
+import com.smartdevicelink.protocol.interfaces.IHeartbeatMonitor;
+import com.smartdevicelink.protocol.interfaces.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportType;
@@ -16,13 +17,13 @@ import com.smartdevicelink.transport.TransportType;
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener {
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
 	
-	SdlConnection _sdlConnection = null;
+	SdlConnection sdlConnection = null;
 	private byte sessionId;
 	@SuppressWarnings("unused")
     private byte wiproProcolVer;
 	private ISdlConnectionListener sessionListener;
 	private BaseTransportConfig transportConfig;
-    IHeartbeatMonitor _heartbeatMonitor = null;
+    IHeartbeatMonitor heartbeatMonitor = null;
     private static final String TAG = "SdlSession";
     private LockScreenManager lockScreenMan  = new LockScreenManager();
 
@@ -51,12 +52,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
     public IHeartbeatMonitor getHeartbeatMonitor() {
-        return _heartbeatMonitor;
+        return heartbeatMonitor;
     }
 
     public void setHeartbeatMonitor(IHeartbeatMonitor heartbeatMonitor) {
-        this._heartbeatMonitor = heartbeatMonitor;
-        _heartbeatMonitor.setListener(this);
+        this.heartbeatMonitor = heartbeatMonitor;
+        heartbeatMonitor.setListener(this);
     }	
 	
 	
@@ -65,18 +66,18 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
 	public SdlConnection getSdlConnection() {
-		return this._sdlConnection;
+		return this.sdlConnection;
 	}
 	
 	public void close() {
-		if (_sdlConnection != null) { //sessionId == 0 means session is not started.
-			_sdlConnection.unregisterSession(this);
+		if (sdlConnection != null) { //sessionId == 0 means session is not started.
+			sdlConnection.unregisterSession(this);
 			
-			if (_sdlConnection.getRegisterCount() == 0) {
-				shareConnections.remove(_sdlConnection);
+			if (sdlConnection.getRegisterCount() == 0) {
+				shareConnections.remove(sdlConnection);
 			}
 
-			_sdlConnection = null;
+			sdlConnection = null;
 		}
 	}
 	
@@ -85,7 +86,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		if (myTransport.shareConnection()) {
 			 connection = findTheProperConnection(myTransport);			
 		} else {
-			connection = this._sdlConnection;
+			connection = this.sdlConnection;
 		}
 		
 		if (connection != null)
@@ -108,32 +109,32 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			connection = new SdlConnection(this.transportConfig);
 		}
 		
-		this._sdlConnection = connection;
+		this.sdlConnection = connection;
 		connection.registerSession(this); //Handshake will start when register.
 	}
 	
-    private void initialiseSession() {
-        if (_heartbeatMonitor != null) {
-            _heartbeatMonitor.start();
+    private void initializeSession() {
+        if (heartbeatMonitor != null) {
+            heartbeatMonitor.start();
         }
     }	
 	
 	public void sendMessage(ProtocolMessage msg) {
-		if (_sdlConnection == null) 
+		if (sdlConnection == null) 
 			return;
-		_sdlConnection.sendMessage(msg);
+		sdlConnection.sendMessage(msg);
 	}
 	
 	public TransportType getCurrentTransportType() {
-		if (_sdlConnection == null) 
+		if (sdlConnection == null) 
 			return null;
-		return _sdlConnection.getCurrentTransportType();
+		return sdlConnection.getCurrentTransportType();
 	}
 	
 	public boolean getIsConnected() {
-		if (_sdlConnection == null) 
+		if (sdlConnection == null) 
 			return false;
-		return _sdlConnection != null && _sdlConnection.getIsConnected();
+		return sdlConnection != null && sdlConnection.getIsConnected();
 	}
 
 	@Override
@@ -152,26 +153,26 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
 	@Override
-	public void onHeartbeatTimedOut(byte sessionID) {
-		this.sessionListener.onHeartbeatTimedOut(sessionID);
+	public void onHeartbeatTimedOut(byte sessionId) {
+		this.sessionListener.onHeartbeatTimedOut(sessionId);
 		
 	}
 		
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		this.sessionId = sessionID;
-		lockScreenMan.setSessionID(sessionID);
-		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+			byte sessionId, byte version, String correlationId) {
+		this.sessionId = sessionId;
+		lockScreenMan.setSessionId(sessionId);
+		this.sessionListener.onProtocolSessionStarted(sessionType, sessionId, version, correlationId);
 		//if (version == 3)
-			initialiseSession();
+			initializeSession();
 	}
 
 	@Override
-	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-			String correlationID) {
-		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+	public void onProtocolSessionEnded(SessionType sessionType, byte sessionId,
+			String correlationId) {
+		this.sessionListener.onProtocolSessionEnded(sessionType, sessionId, correlationId);
 	}
 
 	@Override
@@ -182,14 +183,14 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     @Override
     public void sendHeartbeat(IHeartbeatMonitor monitor) {
         Log.d(TAG, "Asked to send heartbeat");
-        if (_sdlConnection != null)
-        	_sdlConnection.sendHeartbeat(this);
+        if (sdlConnection != null)
+        	sdlConnection.sendHeartbeat(this);
     }
 
     @Override
     public void heartbeatTimedOut(IHeartbeatMonitor monitor) {     
-        if (_sdlConnection != null)
-        	_sdlConnection._connectionListener.onHeartbeatTimedOut(this.sessionId);
+        if (sdlConnection != null)
+        	sdlConnection.connectionListener.onHeartbeatTimedOut(this.sessionId);
         close();
     }
 
@@ -210,8 +211,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
-	public void onProtocolSessionNACKed(SessionType sessionType,
+	public void onProtocolSessionNack(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);		
+		this.sessionListener.onProtocolSessionNack(sessionType, sessionID, version, correlationID);		
 	}	
 }

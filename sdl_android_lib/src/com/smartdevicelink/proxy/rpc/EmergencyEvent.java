@@ -2,12 +2,12 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
-public class EmergencyEvent extends RPCStruct {
+public class EmergencyEvent extends RpcStruct {
     public static final String KEY_EMERGENCY_EVENT_TYPE = "emergencyEventType";
     public static final String KEY_FUEL_CUTOFF_STATUS = "fuelCutoffStatus";
     public static final String KEY_ROLLOVER_EVENT = "rolloverEvent";

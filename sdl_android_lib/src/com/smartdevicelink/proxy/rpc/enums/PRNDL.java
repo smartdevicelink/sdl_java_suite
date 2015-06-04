@@ -4,7 +4,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * The selected gear.
  * @since SmartDeviceLink 2.0
  */
-public enum PRNDL {
+public enum Prndl {
 	/**
 	 * Parking
 	 */
@@ -60,7 +60,7 @@ public enum PRNDL {
      * @param value String
      * @return PRNDL
      */         
-    public static PRNDL valueForString(String value) {
+    public static Prndl valueForString(String value) {
         try{
             return valueOf(value);
         }catch(Exception e){

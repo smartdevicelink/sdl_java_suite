@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Subscribes for specific published vehicle data items. The data will be only
@@ -21,7 +21,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see UnsubscribeVehicleData
  * @see GetVehicleData
  */
-public class SubscribeVehicleData extends RPCRequest {
+public class SubscribeVehicleData extends RpcRequest {
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
 	public static final String KEY_FUEL_LEVEL = "fuelLevel";
@@ -51,7 +51,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * Constructs a new SubscribeVehicleData object
 	 */
     public SubscribeVehicleData() {
-        super(FunctionID.SUBSCRIBE_VEHICLE_DATA.toString());
+        super(FunctionId.SUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**

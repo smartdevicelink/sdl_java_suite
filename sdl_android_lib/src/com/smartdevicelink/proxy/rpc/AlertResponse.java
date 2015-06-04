@@ -2,22 +2,22 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Alert Response is sent, when Alert has been called
  * 
  * @since SmartDeviceLink 1.0
  */
-public class AlertResponse extends RPCResponse {
+public class AlertResponse extends RpcResponse {
 	public static final String KEY_TRY_AGAIN_TIME = "tryAgainTime";
 
 	/**
 	 * Constructs a new AlertResponse object
 	 */
     public AlertResponse() {
-        super(FunctionID.ALERT.toString());
+        super(FunctionId.ALERT.toString());
     }
 
 	/**

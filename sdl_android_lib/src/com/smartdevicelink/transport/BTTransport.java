@@ -13,46 +13,47 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Build.VERSION;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.exception.enums.SdlExceptionCause;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
+import com.smartdevicelink.transport.interfaces.ITransportListener;
 import com.smartdevicelink.util.DebugTool;
 
 /**
  * Bluetooth Transport Implementation. This transport advertises its existence to SDL by publishing an SDP record and waiting for an incoming connection from SDL. Connection is verified by checking for the SDL UUID. For more detailed information please refer to the <a href="#bluetoothTransport">Bluetooth Transport Guide</a>.
  *
  */
-public class BTTransport extends SdlTransport {	
+public class BtTransport extends SdlTransport {	
 	//936DA01F9ABD4D9D80C702AF85C822A8
 	private final static UUID SDL_V4_MOBILE_APPLICATION_SVC_CLASS = new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
 
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
-	private BluetoothAdapter _adapter = null;
-	private BluetoothSocket _activeSocket = null;
-	private InputStream _input = null;
-	private UUID _listeningServiceUUID = SDL_V4_MOBILE_APPLICATION_SVC_CLASS;
-	private BluetoothAdapterMonitor _bluetoothAdapterMonitor = null;
-	private TransportReaderThread _transportReader = null;
-	private OutputStream _output = null;
-	private BluetoothServerSocket _serverSocket = null;
+	private BluetoothAdapter adapter = null;
+	private BluetoothSocket activeSocket = null;
+	private InputStream input = null;
+	private UUID listeningServiceUuid = SDL_V4_MOBILE_APPLICATION_SVC_CLASS;
+	private BluetoothAdapterMonitor bluetoothAdapterMonitor = null;
+	private TransportReaderThread transportReader = null;
+	private OutputStream output = null;
+	private BluetoothServerSocket serverSocket = null;
 	
 	private String sComment = "";
 	private boolean bKeepSocketActive = true;
 	
 	// Boolean to monitor if the transport is in a disconnecting state
-    private boolean _disconnecting = false;
+    private boolean disconnecting = false;
 	
-	public BTTransport(ITransportListener transportListener) {
+	public BtTransport(ITransportListener transportListener) {
 		super(transportListener);
 	} // end-ctor
 
-	public BTTransport(ITransportListener transportListener, boolean bKeepSocket) {
+	public BtTransport(ITransportListener transportListener, boolean bKeepSocket) {
 		super(transportListener);
 		bKeepSocketActive = bKeepSocket;		
 	} // end-ctor	
 	
-	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
+	public BluetoothSocket getBtSocket(BluetoothServerSocket bsSocket){
 	    Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    @SuppressWarnings("unused")
@@ -134,22 +135,22 @@ public class BTTransport extends SdlTransport {
 	
 	public void openConnection () throws SdlException {    	
 		
-		if (_serverSocket != null) {
+		if (serverSocket != null) {
 			return;
 		}		
 		
 		// Get the device's default Bluetooth Adapter
-		_adapter = BluetoothAdapter.getDefaultAdapter();
+		adapter = BluetoothAdapter.getDefaultAdapter();
 		
 			
 		// Test if Adapter exists
-		if (_adapter == null) {
+		if (adapter == null) {
 			throw new SdlException("No Bluetooth adapter found. Bluetooth adapter must exist to communicate with SDL.", SdlExceptionCause.BLUETOOTH_ADAPTER_NULL);
 		}
 		
 		// Test if Bluetooth is enabled
 		try {
-			if (!_adapter.isEnabled()) {
+			if (!adapter.isEnabled()) {
 				throw new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED);
 			}
 		} catch (SecurityException e) {
@@ -157,11 +158,11 @@ public class BTTransport extends SdlTransport {
 		}
 		
 		// Start BluetoothAdapterMonitor to ensure the Bluetooth Adapter continues to be enabled
-		_bluetoothAdapterMonitor = new BluetoothAdapterMonitor(_adapter);
+		bluetoothAdapterMonitor = new BluetoothAdapterMonitor(adapter);
 		
 		try {
-			_serverSocket = _adapter.listenUsingRfcommWithServiceRecord("SdlProxy", _listeningServiceUUID);				
-			BluetoothSocket mySock = getBTSocket(_serverSocket);
+			serverSocket = adapter.listenUsingRfcommWithServiceRecord("SdlProxy", listeningServiceUuid);				
+			BluetoothSocket mySock = getBtSocket(serverSocket);
 			int iSocket = getChannel(mySock);
 
 			sComment = "Accepting Connections on SDP Server Port Number: " + iSocket + "\r\n";
@@ -177,7 +178,7 @@ public class BTTransport extends SdlTransport {
 		} catch (Exception ex) {
 			
 			// Test to determine if the bluetooth has been disabled since last check			
-			if (!_adapter.isEnabled()) {
+			if (!adapter.isEnabled()) {
 				throw new SdlException("Bluetooth adapter must be on to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED);
 			}
 
@@ -190,17 +191,17 @@ public class BTTransport extends SdlTransport {
 		} 
 		
 		// Test to ensure serverSocket is not null
-		if (_serverSocket == null) {
+		if (serverSocket == null) {
 			throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.SDL_CONNECTION_FAILED);
 		}
 		
-		SdlTrace.logTransportEvent("BTTransport: listening for incoming connect to service ID " + _listeningServiceUUID, null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
+		SdlTrace.logTransportEvent("BTTransport: listening for incoming connect to service ID " + listeningServiceUuid, null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
 		
 		// Setup transportReader thread
-		_transportReader = new TransportReaderThread();
-		_transportReader.setName("TransportReader");
-		_transportReader.setDaemon(true);
-		_transportReader.start();
+		transportReader = new TransportReaderThread();
+		transportReader.setName("TransportReader");
+		transportReader.setDaemon(true);
+		transportReader.start();
 		
 		// Initialize the SiphonServer
 		if (SiphonServer.getSiphonEnabledStatus()) {
@@ -221,11 +222,11 @@ public class BTTransport extends SdlTransport {
 	 */
 	private synchronized void disconnect(String msg, Exception ex) {		
 		// If already disconnecting, return
-		if (_disconnecting) {
+		if (disconnecting) {
 			// No need to recursively call
 			return;
 		}		
-		_disconnecting = true;
+		disconnecting = true;
 		
 		String disconnectMsg = (msg == null ? "" : msg);
 		if (ex != null) {
@@ -235,54 +236,54 @@ public class BTTransport extends SdlTransport {
 		SdlTrace.logTransportEvent("BTTransport.disconnect: " + disconnectMsg, null, InterfaceActivityDirection.Transmit, null, 0, SDL_LIB_TRACE_KEY);
 
 		try {			
-			if (_transportReader != null) {
-				_transportReader.halt();
-				_transportReader = null;
+			if (transportReader != null) {
+				transportReader.halt();
+				transportReader = null;
 			}
 		} catch (Exception e) {
 			DebugTool.logError("Failed to stop transport reader thread.", e);
 		} // end-catch	
 		
 		try {
-			if (_bluetoothAdapterMonitor != null) {
-				_bluetoothAdapterMonitor.halt();
-				_bluetoothAdapterMonitor = null;
+			if (bluetoothAdapterMonitor != null) {
+				bluetoothAdapterMonitor.halt();
+				bluetoothAdapterMonitor = null;
 			}
 		} catch (Exception e) {
 			DebugTool.logError("Failed to stop adapter monitor thread.", e);
 		}
 		
 		try {
-			if (_serverSocket != null) {
-				_serverSocket.close();
-				_serverSocket = null;
+			if (serverSocket != null) {
+				serverSocket.close();
+				serverSocket = null;
 			} 
 		} catch (Exception e) {
 			DebugTool.logError("Failed to close serverSocket", e);
 		} // end-catch
 		
 		try {
-			if (_activeSocket != null) {
-				_activeSocket.close();
-				_activeSocket = null;
+			if (activeSocket != null) {
+				activeSocket.close();
+				activeSocket = null;
 			}
 		} catch (Exception e) {
 			DebugTool.logError("Failed to close activeSocket", e);
 		} // end-catch
 		
 		try {
-			if (_input != null) {
-				_input.close();
-				_input = null;
+			if (input != null) {
+				input.close();
+				input = null;
 			}
 		} catch (Exception e) {
 			DebugTool.logError("Failed to close input stream", e);
 		} // end-catch
 		
 		try {
-			if (_output != null) {
-				_output.close();
-				_output = null;
+			if (output != null) {
+				output.close();
+				output = null;
 			}
 		} catch (Exception e) {
 			DebugTool.logError("Failed to close output stream", e);
@@ -297,7 +298,7 @@ public class BTTransport extends SdlTransport {
 			// that there was a transport error.
 			handleTransportError(msg, ex);
 		}
-		_disconnecting = false;
+		disconnecting = false;
 	} // end-method
 
 	
@@ -308,7 +309,7 @@ public class BTTransport extends SdlTransport {
 	public boolean sendBytesOverTransport(byte[] msgBytes, int offset, int length) {
 		boolean sendResult = false;
 		try {
-			_output.write(msgBytes, offset, length);
+			output.write(msgBytes, offset, length);
 			sendResult = true;
 		} catch (Exception ex) {
 			DebugTool.logError("Error writing to Bluetooth socket: " + ex.toString(), ex);
@@ -334,7 +335,7 @@ public class BTTransport extends SdlTransport {
 			
 			try {
 				// Blocks thread until connection established.
-				_activeSocket = _serverSocket.accept();
+				activeSocket = serverSocket.accept();
 				
 				// If halted after serverSocket.accept(), then return immediately
 				if (isHalted) {
@@ -342,12 +343,12 @@ public class BTTransport extends SdlTransport {
 				}
 				
 				// Log info of the connected device
-				BluetoothDevice btDevice = _activeSocket.getRemoteDevice();
+				BluetoothDevice btDevice = activeSocket.getRemoteDevice();
 				String btDeviceInfoXml = SdlTrace.getBTDeviceInfo(btDevice);
 				SdlTrace.logTransportEvent("BTTransport: RFCOMM Connection Accepted", btDeviceInfoXml, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
 				
-				_output = _activeSocket.getOutputStream();
-				_input = _activeSocket.getInputStream();
+				output = activeSocket.getOutputStream();
+				input = activeSocket.getInputStream();
 
 				handleTransportConnected();
 				
@@ -357,20 +358,20 @@ public class BTTransport extends SdlTransport {
 					// Only call disconnect if the thread has not been halted
 					
 					// Check to see if Bluetooth was disabled
-					if (_adapter != null && !_adapter.isEnabled()) {
+					if (adapter != null && !adapter.isEnabled()) {
 						disconnect("Bluetooth Adapater has been disabled.", new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", e, SdlExceptionCause.BLUETOOTH_DISABLED));
 					} else {
 						disconnect("Failed to accept connection", e);
 					}
 				} 
 			}  finally {
-					if (!bKeepSocketActive && _serverSocket != null && !isHalted && (VERSION.SDK_INT > 0x00000010 /*VERSION_CODES.JELLY_BEAN*/) ) {
+					if (!bKeepSocketActive && serverSocket != null && !isHalted && (VERSION.SDK_INT > 0x00000010 /*VERSION_CODES.JELLY_BEAN*/) ) {
 						try {
-							_serverSocket.close();
+							serverSocket.close();
 						} catch (IOException e) {
 							//do nothing
 						}
-						_serverSocket = null;
+						serverSocket = null;
 					}
 			}
 		}
@@ -379,13 +380,13 @@ public class BTTransport extends SdlTransport {
 			try {
 				int bytesRead = -1;
 				try {
-					bytesRead = _input.read(buf);
+					bytesRead = input.read(buf);
 				} catch (Exception e) {
 					if (!isHalted) {
 						// Only call disconnect if the thread has not been halted
 						
 						// Check to see if Bluetooth was disabled
-						if (_adapter != null && !_adapter.isEnabled()) {
+						if (adapter != null && !adapter.isEnabled()) {
 							disconnect("Bluetooth Adapater has been disabled.", new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", e, SdlExceptionCause.BLUETOOTH_DISABLED));
 						} else {
 							disconnect("Failed to read from Bluetooth transport.", e);
@@ -426,10 +427,10 @@ public class BTTransport extends SdlTransport {
 	}
 	
 	private class BluetoothAdapterMonitor {
-		private boolean _isHalted = false;
-		private BluetoothAdapter _bluetoothAdapter = null;
+		private boolean isHalted = false;
+		private BluetoothAdapter bluetoothAdapter = null;
 		private final String THREAD_NAME = "BluetoothAdapterMonitor";
-		private Thread _bluetoothAdapterMonitorThread = null;
+		private Thread bluetoothAdapterMonitorThread = null;
 		
 		public BluetoothAdapterMonitor(BluetoothAdapter bluetoothAdapter) {
 			if (bluetoothAdapter == null) {
@@ -437,12 +438,12 @@ public class BTTransport extends SdlTransport {
 			}
 			
 			// Set the bluetooth adapter
-			_bluetoothAdapter = bluetoothAdapter;
+			this.bluetoothAdapter = bluetoothAdapter;
 			
-			_bluetoothAdapterMonitorThread = new Thread(new Runnable() {
+			bluetoothAdapterMonitorThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					while (!_isHalted) {
+					while (!isHalted) {
 						checkIfBluetoothAdapterDisabled();
 						try {
 							Thread.sleep(15000);
@@ -453,13 +454,13 @@ public class BTTransport extends SdlTransport {
 					}
 				}
 			});
-			_bluetoothAdapterMonitorThread.setName(THREAD_NAME);
-			_bluetoothAdapterMonitorThread.setDaemon(true);
-			_bluetoothAdapterMonitorThread.start();
+			bluetoothAdapterMonitorThread.setName(THREAD_NAME);
+			bluetoothAdapterMonitorThread.setDaemon(true);
+			bluetoothAdapterMonitorThread.start();
 		}
 		
 		private void checkIfBluetoothAdapterDisabled() {
-			if (_bluetoothAdapter != null && !_bluetoothAdapter.isEnabled()) {
+			if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
 				// Bluetooth adapter has been disabled, disconnect the transport
 				disconnect("Bluetooth adapter has been disabled.", 
 						   new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED));
@@ -467,8 +468,8 @@ public class BTTransport extends SdlTransport {
 		}
 		
 		public void halt() {
-			_isHalted = true;
-			_bluetoothAdapterMonitorThread.interrupt();
+			isHalted = true;
+			bluetoothAdapterMonitorThread.interrupt();
 		}
 	}
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
@@ -22,7 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
  * @since SmartDeviceLink 2.0
  * @see EndAudioPassThru
  */
-public class PerformAudioPassThru extends RPCRequest {
+public class PerformAudioPassThru extends RpcRequest {
 	public static final String KEY_MAX_DURATION = "maxDuration";
 	public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1 = "audioPassThruDisplayText1";
 	public static final String KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2 = "audioPassThruDisplayText2";
@@ -36,7 +36,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Constructs a new PerformAudioPassThru object
 	 */
     public PerformAudioPassThru() {
-        super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
+        super(FunctionId.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
 	/**
@@ -69,7 +69,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <li>Array Maxsize: 100</li>
 	 *            </ul>
 	 */
-    public void setInitialPrompt(List<TTSChunk> initialPrompt) {
+    public void setInitialPrompt(List<TtsChunk> initialPrompt) {
     	if (initialPrompt != null) {
     		parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
     	} else {
@@ -86,17 +86,17 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *         by SDL
 	 */
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getInitialPrompt() {
+    public List<TtsChunk> getInitialPrompt() {
     	if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }

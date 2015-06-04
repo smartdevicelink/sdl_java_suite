@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 
@@ -96,7 +96,7 @@ import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class DeviceStatus extends RPCStruct {
+public class DeviceStatus extends RpcStruct {
     public static final String KEY_VOICE_REC_ON = "voiceRecOn";
     public static final String KEY_BT_ICON_ON = "btIconOn";
     public static final String KEY_CALL_ACTIVE = "callActive";

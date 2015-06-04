@@ -1,10 +1,10 @@
-package com.smartdevicelink.util;
+package com.smartdevicelink.util.interfaces;
 
 
 public interface IConsole {
 	void logInfo(String msg);
 	void logError(String msg);
 	void logError(String msg, Throwable ex);
-	void logRPCSend(String rpcMsg);
-	void logRPCReceive(String rpcMsg);
+	void logRpcSend(String rpcMsg);
+	void logRpcReceive(String rpcMsg);
 }

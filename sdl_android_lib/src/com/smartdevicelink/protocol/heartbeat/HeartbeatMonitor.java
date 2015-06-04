@@ -1,13 +1,16 @@
 package com.smartdevicelink.protocol.heartbeat;
 
+import com.smartdevicelink.protocol.interfaces.IHeartbeatMonitor;
+import com.smartdevicelink.protocol.interfaces.IHeartbeatMonitorListener;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
 public class HeartbeatMonitor implements IHeartbeatMonitor {
     private static final String TAG = HeartbeatMonitor.class.getSimpleName();
-    private final Object HeartbeatThreadHandler_Lock = new Object();
-    private final Object Listener_Lock = new Object();
+    private final Object HEARTBEAT_THREAD_HANDLER_LOCK = new Object();
+    private final Object LISTENER_LOCK = new Object();
     //
     private int interval;
     private IHeartbeatMonitorListener listener;
@@ -20,7 +23,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
         @Override
         public void run() {
         	
-            synchronized (Listener_Lock) {
+            synchronized (LISTENER_LOCK) {
                 Log.d(TAG, "run()");
 
                 if (ackReceived) {
@@ -46,7 +49,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
         }
 
         private void rescheduleHeartbeat() {
-            synchronized (HeartbeatThreadHandler_Lock) {
+            synchronized (HEARTBEAT_THREAD_HANDLER_LOCK) {
                 if (heartbeatThreadHandler != null) {
                     if (!Thread.interrupted()) {
                         Log.d(TAG, "Rescheduling run()");
@@ -69,7 +72,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
 
     @Override
     public void start() {
-        synchronized (HeartbeatThreadHandler_Lock) {
+        synchronized (HEARTBEAT_THREAD_HANDLER_LOCK) {
             if (heartbeatThread == null) {
                 heartbeatThread = new Thread(new Runnable() {
                     @Override
@@ -104,7 +107,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
 
     @Override
     public void stop() {
-        synchronized (HeartbeatThreadHandler_Lock) {
+        synchronized (HEARTBEAT_THREAD_HANDLER_LOCK) {
         	
             if (heartbeatThread != null) {
                 heartbeatThread.interrupt();
@@ -155,7 +158,7 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
 
     @Override
     public void notifyTransportActivity() {
-        synchronized (HeartbeatThreadHandler_Lock) {
+        synchronized (HEARTBEAT_THREAD_HANDLER_LOCK) {
             if (heartbeatThreadHandler != null) {
                 heartbeatThreadHandler.removeCallbacks(
                         heartbeatTimeoutRunnable);
@@ -168,8 +171,8 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
     }
 
     @Override
-    public void heartbeatACKReceived() {
-        synchronized (Listener_Lock) {
+    public void heartbeatAckReceived() {
+        synchronized (LISTENER_LOCK) {
             Log.d(TAG, "ACK received");
             ackReceived = true;
         }

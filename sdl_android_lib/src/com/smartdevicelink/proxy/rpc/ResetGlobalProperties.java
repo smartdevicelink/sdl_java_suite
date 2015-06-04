@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 /**
  * Resets the passed global properties to their default values as defined by
@@ -23,13 +23,13 @@ import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
  * @since SmartDeviceLink 1.0
  * @see SetGlobalProperties
  */
-public class ResetGlobalProperties extends RPCRequest {
+public class ResetGlobalProperties extends RpcRequest {
 	public static final String KEY_PROPERTIES = "properties";
 	/**
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
+        super(FunctionId.RESET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable

@@ -7,16 +7,16 @@ import com.smartdevicelink.util.BitConverter;
 public class ProtocolFrameHeader {
 	private byte version = 1;
 	private boolean compressed = false;
-	private FrameType frameType = FrameType.Control;
+	private FrameType frameType = FrameType.CONTROL;
 	private SessionType sessionType = SessionType.RPC;
 	private byte frameData = 0;
-	private byte sessionID;
+	private byte sessionId;
 	private int dataSize;
-	private int messageID;
+	private int messageId;
 	
-	public static final byte FrameDataSingleFrame = 0x00;
-	public static final byte FrameDataFirstFrame = 0x00;
-	public static final byte FrameDataFinalConsecutiveFrame = 0x00;
+	public static final byte FRAME_DATA_SINGLE = 0x00;
+	public static final byte FRAME_DATA_FIRST = 0x00;
+	public static final byte FRAME_DATA_FINAL_CONSECUTIVE = 0x00;
 	
 	public ProtocolFrameHeader() {}
 	
@@ -38,16 +38,16 @@ public class ProtocolFrameHeader {
 		byte frameData = header[2];
 		msg.setFrameData(frameData);
 		
-		byte sessionID = header[3];
-		msg.setSessionID(sessionID);
+		byte sessionId = header[3];
+		msg.setSessionId(sessionId);
 		
 		int dataSize = BitConverter.intFromByteArray(header, 4);
 		msg.setDataSize(dataSize);
 		
 		if (version > 1) {
-			int messageID = BitConverter.intFromByteArray(header, 8);
-			msg.setMessageID(messageID);
-		} else msg.setMessageID(0);
+			int messageId = BitConverter.intFromByteArray(header, 8);
+			msg.setMessageId(messageId);
+		} else msg.setMessageId(0);
 		
 		return msg;
 	}
@@ -64,7 +64,7 @@ public class ProtocolFrameHeader {
 		header <<= 8;
 		header |= (frameData & 0xFF);
 		header <<= 8;
-		header |= (sessionID & 0xFF);
+		header |= (sessionId & 0xFF);
 		
 		if (version == 1) {
 			byte[] ret = new byte[8];
@@ -76,7 +76,7 @@ public class ProtocolFrameHeader {
 			byte[] ret = new byte[12];
 			System.arraycopy(BitConverter.intToByteArray(header), 0, ret, 0, 4);
 			System.arraycopy(BitConverter.intToByteArray(dataSize), 0, ret, 4, 4);
-			System.arraycopy(BitConverter.intToByteArray(messageID), 0, ret, 8, 4);
+			System.arraycopy(BitConverter.intToByteArray(messageId), 0, ret, 8, 4);
 			
 			return ret;
 		} else return null;
@@ -87,9 +87,9 @@ public class ProtocolFrameHeader {
 		ret += "version " + version + ", " + (compressed ? "compressed" : "uncompressed") + "\n";
 		ret += "frameType " + frameType + ", serviceType " + sessionType;
 		ret += "\nframeData " + frameData;
-		ret += ", sessionID " + sessionID;
+		ret += ", sessionID " + sessionId;
 		ret += ", dataSize " + dataSize;
-		ret += ", messageID " + messageID;
+		ret += ", messageID " + messageId;
 		return ret;
 	}
 	
@@ -117,12 +117,12 @@ public class ProtocolFrameHeader {
 		this.frameData = frameData;
 	}
 
-	public byte getSessionID() {
-		return sessionID;
+	public byte getSessionId() {
+		return sessionId;
 	}
 
-	public void setSessionID(byte sessionID) {
-		this.sessionID = sessionID;
+	public void setSessionId(byte sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public int getDataSize() {
@@ -133,12 +133,12 @@ public class ProtocolFrameHeader {
 		this.dataSize = dataSize;
 	}
 
-	public int getMessageID() {
-		return messageID;
+	public int getMessageId() {
+		return messageId;
 	}
 
-	public void setMessageID(int messageID) {
-		this.messageID = messageID;
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
 	}
 
 	public FrameType getFrameType() {

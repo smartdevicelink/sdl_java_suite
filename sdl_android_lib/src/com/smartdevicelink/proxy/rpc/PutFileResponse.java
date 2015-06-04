@@ -2,22 +2,22 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Put File Response is sent, when PutFile has been called
  * 
  * @since SmartDeviceLink 2.0
  */
-public class PutFileResponse extends RPCResponse {
+public class PutFileResponse extends RpcResponse {
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
 	/**
 	 * Constructs a new PutFileResponse object
 	 */
     public PutFileResponse() {
-        super(FunctionID.PUT_FILE.toString());
+        super(FunctionId.PUT_FILE.toString());
     }
 
 	/**

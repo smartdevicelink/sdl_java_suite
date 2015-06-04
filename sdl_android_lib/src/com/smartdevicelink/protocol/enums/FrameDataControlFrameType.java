@@ -12,24 +12,24 @@ public class FrameDataControlFrameType extends ByteEnumer {
     private byte _i = 0x00;
 
 	protected FrameDataControlFrameType(byte value, String name) {super(value, name);}
-	public final static FrameDataControlFrameType Heartbeat = new FrameDataControlFrameType((byte)0x0, "Heartbeat");
-	public final static FrameDataControlFrameType StartSession = new FrameDataControlFrameType((byte)0x01, "StartSession");
-	public final static FrameDataControlFrameType StartSessionACK = new FrameDataControlFrameType((byte)0x02, "StartSessionACK");
-	public final static FrameDataControlFrameType StartSessionNACK = new FrameDataControlFrameType((byte)0x03, "StartSessionNACK");
-	public final static FrameDataControlFrameType EndSession = new FrameDataControlFrameType((byte)0x04, "EndSession");
-	public final static FrameDataControlFrameType EndSessionACK = new FrameDataControlFrameType((byte)0x05, "EndSessionACK");
-	public final static FrameDataControlFrameType EndSessionNACK = new FrameDataControlFrameType((byte)0x06, "EndSessionNACK");
-	public final static FrameDataControlFrameType HeartbeatACK = new FrameDataControlFrameType((byte)0xFF, "HeartbeatACK");
+	public final static FrameDataControlFrameType HEARTBEAT = new FrameDataControlFrameType((byte)0x0, "Heartbeat");
+	public final static FrameDataControlFrameType START_SESSION = new FrameDataControlFrameType((byte)0x01, "StartSession");
+	public final static FrameDataControlFrameType START_SESSION_ACK = new FrameDataControlFrameType((byte)0x02, "StartSessionACK");
+	public final static FrameDataControlFrameType START_SESSION_NACK = new FrameDataControlFrameType((byte)0x03, "StartSessionNACK");
+	public final static FrameDataControlFrameType END_SESSION = new FrameDataControlFrameType((byte)0x04, "EndSession");
+	public final static FrameDataControlFrameType END_SESSION_ACK = new FrameDataControlFrameType((byte)0x05, "EndSessionACK");
+	public final static FrameDataControlFrameType END_SESSION_NACK = new FrameDataControlFrameType((byte)0x06, "EndSessionNACK");
+	public final static FrameDataControlFrameType HEARTBEAT_ACK = new FrameDataControlFrameType((byte)0xFF, "HeartbeatACK");
 
 	static {
-		theList.addElement(Heartbeat);
-		theList.addElement(StartSession);
-		theList.addElement(StartSessionACK);
-		theList.addElement(StartSessionNACK);
-		theList.addElement(EndSession);	
-		theList.addElement(EndSessionACK);
-		theList.addElement(EndSessionNACK);
-		theList.addElement(HeartbeatACK);
+		theList.addElement(HEARTBEAT);
+		theList.addElement(START_SESSION);
+		theList.addElement(START_SESSION_ACK);
+		theList.addElement(START_SESSION_NACK);
+		theList.addElement(END_SESSION);	
+		theList.addElement(END_SESSION_ACK);
+		theList.addElement(END_SESSION_NACK);
+		theList.addElement(HEARTBEAT_ACK);
 	}
 
 	public static FrameDataControlFrameType valueOf(String passedButton) {

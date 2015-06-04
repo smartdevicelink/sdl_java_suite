@@ -3,8 +3,8 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -43,7 +43,7 @@ import com.smartdevicelink.util.DebugTool;
 * @see DeleteSubMenu
 */
 
-public class AddCommand extends RPCRequest {
+public class AddCommand extends RpcRequest {
 	public static final String KEY_CMD_ICON = "cmdIcon";
 	public static final String KEY_MENU_PARAMS = "menuParams";
 	public static final String KEY_CMD_ID = "cmdID";
@@ -53,7 +53,7 @@ public class AddCommand extends RPCRequest {
 	 * Constructs a new AddCommand object
 	 */
 	public AddCommand() {
-        super(FunctionID.ADD_COMMAND.toString());
+        super(FunctionId.ADD_COMMAND.toString());
     }
 	
 	/**
@@ -75,7 +75,7 @@ public class AddCommand extends RPCRequest {
 	 * 
 	 * @return Integer -an integer representation a Unique Command ID
 	 */
-    public Integer getCmdID() {
+    public Integer getCmdId() {
         return (Integer) parameters.get(KEY_CMD_ID);
     }
 	/**
@@ -84,14 +84,14 @@ public class AddCommand extends RPCRequest {
 	 * selected by the user
 	 * <p>
 	 * 
-	 * @param cmdID
+	 * @param cmdId
 	 *            an integer object representing a Command ID
 	 *            <p>
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000
 	 */
-    public void setCmdID(Integer cmdID) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID);
+    public void setCmdId(Integer cmdId) {
+        if (cmdId != null) {
+            parameters.put(KEY_CMD_ID, cmdId);
         } else {
             parameters.remove(KEY_CMD_ID);
         }

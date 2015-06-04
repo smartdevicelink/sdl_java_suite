@@ -3,30 +3,30 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
-public class DiagnosticMessage extends RPCRequest {
+public class DiagnosticMessage extends RpcRequest {
 	public static final String KEY_TARGET_ID = "targetID";
 	public static final String KEY_MESSAGE_LENGTH = "messageLength";
 	public static final String KEY_MESSAGE_DATA = "messageData";
 
     public DiagnosticMessage() {
-        super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
+        super(FunctionId.DIAGNOSTIC_MESSAGE.toString());
     }
 
     public DiagnosticMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
     
-    public void setTargetID(Integer targetID) {
-    	if (targetID != null) {
-    		parameters.put(KEY_TARGET_ID, targetID);
+    public void setTargetId(Integer targetId) {
+    	if (targetId != null) {
+    		parameters.put(KEY_TARGET_ID, targetId);
     	} else {
     		parameters.remove(KEY_TARGET_ID);
     	}
     }
-    public Integer getTargetID() {
+    public Integer getTargetId() {
     	return (Integer) parameters.get(KEY_TARGET_ID);
     }    
 

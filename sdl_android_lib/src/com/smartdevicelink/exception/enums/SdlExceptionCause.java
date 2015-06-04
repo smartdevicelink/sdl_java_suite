@@ -1,4 +1,4 @@
-package com.smartdevicelink.exception;
+package com.smartdevicelink.exception.enums;
 
 public enum SdlExceptionCause {
 	BLUETOOTH_ADAPTER_NULL,

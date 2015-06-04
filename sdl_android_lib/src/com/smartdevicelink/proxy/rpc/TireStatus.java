@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.util.DebugTool;
 
-public class TireStatus extends RPCStruct {
+public class TireStatus extends RpcStruct {
 	public static final String KEY_PRESSURE_TELL_TALE = "pressureTellTale";
 	public static final String KEY_LEFT_FRONT = "leftFront";
 	public static final String KEY_RIGHT_FRONT = "rightFront";

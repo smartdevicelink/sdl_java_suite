@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.interfaces;
 
-public interface IProxyListenerALM extends IProxyListenerBase {
+public interface IProxyListenerAlm extends IProxyListenerBase {
 	// Adds Advanced Life-cycle Management call-backs to the IProxyListenerAbstract interface
 	
 	/**

@@ -35,12 +35,12 @@ import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TtsChunk;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.AppHmiType;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -53,64 +53,64 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 
-public class RPCRequestFactory {
+public class RpcRequestFactory {
 
 	public static final int SDL_MSG_MAJOR_VERSION = 1;
 	public static final int SDL_MSG_MINOR_VERSION = 0;
 
 	
 	public static SystemRequest buildSystemRequest(
-			String data, Integer correlationID) {
+			String data, Integer correlationId) {
 		
 		if(data == null) return null;
 		
 		SystemRequest msg = new SystemRequest();
 		msg.setRequestType(RequestType.PROPRIETARY);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setBulkData(data.getBytes());
 		return msg;
 	}	
 	
 	
 	public static SystemRequest buildSystemRequestLegacy(
-			Vector<String> data, Integer correlationID) {
+			Vector<String> data, Integer correlationId) {
 		
 		if(data == null) return null;
 		
 		SystemRequest msg = new SystemRequest(true);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setLegacyData(data);
 		return msg;
 	}	
 	
 
-	public static AddCommand buildAddCommand(Integer commandID,
-			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, Image cmdIcon, Integer correlationID) {
+	public static AddCommand buildAddCommand(Integer commandId,
+			String menuText, Integer parentId, Integer position,
+			Vector<String> vrCommands, Image cmdIcon, Integer correlationId) {
 		AddCommand msg = new AddCommand();
-		msg.setCorrelationID(correlationID);
-		msg.setCmdID(commandID);
+		msg.setCorrelationId(correlationId);
+		msg.setCmdId(commandId);
 		msg.setVrCommands(vrCommands);
 		
 		if (cmdIcon != null) msg.setCmdIcon(cmdIcon);
 		
-		if(menuText != null || parentID != null || position != null) {
+		if(menuText != null || parentId != null || position != null) {
 			MenuParams menuParams = new MenuParams();
 			menuParams.setMenuName(menuText);
 			menuParams.setPosition(position);
-			menuParams.setParentID(parentID);
+			menuParams.setParentId(parentId);
 			msg.setMenuParams(menuParams);
 		}
 		
 		return msg;
 	}
 	
-	public static AddCommand buildAddCommand(Integer commandID,
-			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) {
+	public static AddCommand buildAddCommand(Integer commandId,
+			String menuText, Integer parentId, Integer position,
+			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationId) {
 		AddCommand msg = new AddCommand();
-		msg.setCorrelationID(correlationID);
-		msg.setCmdID(commandID);
+		msg.setCorrelationId(correlationId);
+		msg.setCmdId(commandId);
 		
 		if (vrCommands != null) msg.setVrCommands(vrCommands);
 		
@@ -125,11 +125,11 @@ public class RPCRequestFactory {
 		
 		if (cmdIcon != null) msg.setCmdIcon(cmdIcon);
 		
-		if(menuText != null || parentID != null || position != null) {
+		if(menuText != null || parentId != null || position != null) {
 			MenuParams menuParams = new MenuParams();
 			menuParams.setMenuName(menuText);
 			menuParams.setPosition(position);
-			menuParams.setParentID(parentID);
+			menuParams.setParentId(parentId);
 			msg.setMenuParams(menuParams);
 		}
 		
@@ -137,54 +137,54 @@ public class RPCRequestFactory {
 	}
 
 		
-	public static AddCommand buildAddCommand(Integer commandID,
-			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, Integer correlationID) {
+	public static AddCommand buildAddCommand(Integer commandId,
+			String menuText, Integer parentId, Integer position,
+			Vector<String> vrCommands, Integer correlationId) {
 		AddCommand msg = new AddCommand();
-		msg.setCorrelationID(correlationID);
-		msg.setCmdID(commandID);
+		msg.setCorrelationId(correlationId);
+		msg.setCmdId(commandId);
 		msg.setVrCommands(vrCommands);
 		
-		if(menuText != null || parentID != null || position != null) {
+		if(menuText != null || parentId != null || position != null) {
 			MenuParams menuParams = new MenuParams();
 			menuParams.setMenuName(menuText);
 			menuParams.setPosition(position);
-			menuParams.setParentID(parentID);
+			menuParams.setParentId(parentId);
 			msg.setMenuParams(menuParams);
 		}
 		
 		return msg;
 	}
 	
-	public static AddCommand buildAddCommand(Integer commandID,
-			String menuText, Vector<String> vrCommands, Integer correlationID) {
-		AddCommand msg = buildAddCommand(commandID, menuText, null, null,
-				vrCommands, correlationID);
+	public static AddCommand buildAddCommand(Integer commandId,
+			String menuText, Vector<String> vrCommands, Integer correlationId) {
+		AddCommand msg = buildAddCommand(commandId, menuText, null, null,
+				vrCommands, correlationId);
 		return msg;
 	}
 	
-	public static AddCommand buildAddCommand(Integer commandID,
-			Vector<String> vrCommands, Integer correlationID) {
+	public static AddCommand buildAddCommand(Integer commandId,
+			Vector<String> vrCommands, Integer correlationId) {
 		AddCommand msg = new AddCommand();
-		msg.setCorrelationID(correlationID);
-		msg.setCmdID(commandID);
+		msg.setCorrelationId(correlationId);
+		msg.setCmdId(commandId);
 		msg.setVrCommands(vrCommands);
 
 		return msg;
 	}
 
-	public static AddSubMenu buildAddSubMenu(Integer menuID, String menuName,
-			Integer correlationID) {
-		AddSubMenu msg = buildAddSubMenu(menuID, menuName, null, correlationID);
+	public static AddSubMenu buildAddSubMenu(Integer menuId, String menuName,
+			Integer correlationId) {
+		AddSubMenu msg = buildAddSubMenu(menuId, menuName, null, correlationId);
 		return msg;
 	}
 
-	public static AddSubMenu buildAddSubMenu(Integer menuID, String menuName,
-			Integer position, Integer correlationID) {
+	public static AddSubMenu buildAddSubMenu(Integer menuId, String menuName,
+			Integer position, Integer correlationId) {
 		AddSubMenu msg = new AddSubMenu();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setMenuName(menuName);
-		msg.setMenuID(menuID);
+		msg.setMenuId(menuId);
 		msg.setPosition(position);
 
 		return msg;
@@ -192,42 +192,42 @@ public class RPCRequestFactory {
 	
 
 	public static Alert buildAlert(String ttsText, Boolean playTone, Vector<SoftButton> softButtons,
-			Integer correlationID) {
-		Vector<TTSChunk> chunks = TTSChunkFactory
-				.createSimpleTTSChunks(ttsText);
+			Integer correlationId) {
+		Vector<TtsChunk> chunks = TtsChunkFactory
+				.createSimpleTtsChunks(ttsText);
 		Alert msg = buildAlert(chunks, null, null, null, playTone, null, softButtons,
-				correlationID);
+				correlationId);
 		return msg;
 	}
 	
 	public static Alert buildAlert(String alertText1, String alertText2, String alertText3,
-			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) {
-		Alert msg = buildAlert((Vector<TTSChunk>) null, alertText1, alertText2, alertText3,
-				null, duration, softButtons, correlationID);
+			Integer duration, Vector<SoftButton> softButtons, Integer correlationId) {
+		Alert msg = buildAlert((Vector<TtsChunk>) null, alertText1, alertText2, alertText3,
+				null, duration, softButtons, correlationId);
 		return msg;
 	}
 	
 	public static Alert buildAlert(String ttsText, String alertText1,
 			String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
-			Integer correlationID) {
-		Vector<TTSChunk> chunks = TTSChunkFactory
-				.createSimpleTTSChunks(ttsText);
+			Integer correlationId) {
+		Vector<TtsChunk> chunks = TtsChunkFactory
+				.createSimpleTtsChunks(ttsText);
 		Alert msg = buildAlert(chunks, alertText1, alertText2, alertText3, playTone, 
-				duration, softButtons, correlationID);
+				duration, softButtons, correlationId);
 		return msg;
 	}
 	
-	public static Alert buildAlert(Vector<TTSChunk> chunks, Boolean playTone, Vector<SoftButton> softButtons,
-			Integer correlationID) {
-		Alert msg = buildAlert(chunks, null, null, null, playTone, null, softButtons, correlationID);
+	public static Alert buildAlert(Vector<TtsChunk> chunks, Boolean playTone, Vector<SoftButton> softButtons,
+			Integer correlationId) {
+		Alert msg = buildAlert(chunks, null, null, null, playTone, null, softButtons, correlationId);
 		return msg;
 	}
 	
-	public static Alert buildAlert(Vector<TTSChunk> ttsChunks,
+	public static Alert buildAlert(Vector<TtsChunk> ttsChunks,
 			String alertText1, String alertText2, String alertText3, Boolean playTone,
-			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) {
+			Integer duration, Vector<SoftButton> softButtons, Integer correlationId) {
 		Alert msg = new Alert();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setAlertText1(alertText1);
 		msg.setAlertText2(alertText2);
 		msg.setAlertText3(alertText3);
@@ -242,43 +242,43 @@ public class RPCRequestFactory {
 	
 	
 	public static Alert buildAlert(String ttsText, Boolean playTone,
-			Integer correlationID) {
-		Vector<TTSChunk> chunks = TTSChunkFactory
-				.createSimpleTTSChunks(ttsText);
+			Integer correlationId) {
+		Vector<TtsChunk> chunks = TtsChunkFactory
+				.createSimpleTtsChunks(ttsText);
 		Alert msg = buildAlert(chunks, null, null, playTone, null,
-				correlationID);
+				correlationId);
 		return msg;
 	}
 	
 	public static Alert buildAlert(String alertText1, String alertText2,
-			Integer duration, Integer correlationID) {
-		Alert msg = buildAlert((Vector<TTSChunk>) null, alertText1, alertText2,
-				null, duration, correlationID);
+			Integer duration, Integer correlationId) {
+		Alert msg = buildAlert((Vector<TtsChunk>) null, alertText1, alertText2,
+				null, duration, correlationId);
 		return msg;
 	}
 	
 	public static Alert buildAlert(String ttsText, String alertText1,
 			String alertText2, Boolean playTone, Integer duration,
-			Integer correlationID) {
-		Vector<TTSChunk> chunks = TTSChunkFactory
-				.createSimpleTTSChunks(ttsText);
+			Integer correlationId) {
+		Vector<TtsChunk> chunks = TtsChunkFactory
+				.createSimpleTtsChunks(ttsText);
 		Alert msg = buildAlert(chunks, alertText1, alertText2, playTone,
-				duration, correlationID);
+				duration, correlationId);
 		return msg;
 	}
 	
-	public static Alert buildAlert(Vector<TTSChunk> chunks, Boolean playTone,
-			Integer correlationID) {
+	public static Alert buildAlert(Vector<TtsChunk> chunks, Boolean playTone,
+			Integer correlationId) {
 		Alert msg = buildAlert(chunks, null, null, playTone, null,
-				correlationID);
+				correlationId);
 		return msg;
 	}
 	
-	public static Alert buildAlert(Vector<TTSChunk> ttsChunks,
+	public static Alert buildAlert(Vector<TtsChunk> ttsChunks,
 			String alertText1, String alertText2, Boolean playTone,
-			Integer duration, Integer correlationID) {
+			Integer duration, Integer correlationId) {
 		Alert msg = new Alert();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setAlertText1(alertText1);
 		msg.setAlertText2(alertText2);
 		msg.setDuration(duration);
@@ -289,214 +289,214 @@ public class RPCRequestFactory {
 	}
 	
 	public static CreateInteractionChoiceSet buildCreateInteractionChoiceSet(
-			Vector<Choice> choiceSet, Integer interactionChoiceSetID,
-			Integer correlationID) {
+			Vector<Choice> choiceSet, Integer interactionChoiceSetId,
+			Integer correlationId) {
 		CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet();
 		msg.setChoiceSet(choiceSet);
-		msg.setInteractionChoiceSetID(interactionChoiceSetID);
-		msg.setCorrelationID(correlationID);
+		msg.setInteractionChoiceSetId(interactionChoiceSetId);
+		msg.setCorrelationId(correlationId);
 		return msg;
 	}
 	
-	public static DeleteCommand buildDeleteCommand(Integer commandID,
-			Integer correlationID) {
+	public static DeleteCommand buildDeleteCommand(Integer commandId,
+			Integer correlationId) {
 		DeleteCommand msg = new DeleteCommand();
-		msg.setCmdID(commandID);
-		msg.setCorrelationID(correlationID);
+		msg.setCmdId(commandId);
+		msg.setCorrelationId(correlationId);
 		return msg;
 	}
 	
 	public static DeleteFile buildDeleteFile(String sdlFileName,
-			Integer correlationID) {
+			Integer correlationId) {
 		DeleteFile deleteFile = new DeleteFile();
-		deleteFile.setCorrelationID(correlationID);
+		deleteFile.setCorrelationId(correlationId);
 		deleteFile.setSdlFileName(sdlFileName);
 		return deleteFile;
 	}
 	
 	public static DeleteInteractionChoiceSet buildDeleteInteractionChoiceSet(
-			Integer interactionChoiceSetID, Integer correlationID) {
+			Integer interactionChoiceSetId, Integer correlationId) {
 		DeleteInteractionChoiceSet msg = new DeleteInteractionChoiceSet();
-		msg.setInteractionChoiceSetID(interactionChoiceSetID);
-		msg.setCorrelationID(correlationID);
+		msg.setInteractionChoiceSetId(interactionChoiceSetId);
+		msg.setCorrelationId(correlationId);
 
 		return msg;
 	}
 	
-	public static DeleteSubMenu buildDeleteSubMenu(Integer menuID,
-			Integer correlationID) {
+	public static DeleteSubMenu buildDeleteSubMenu(Integer menuId,
+			Integer correlationId) {
 		DeleteSubMenu msg = new DeleteSubMenu();
-		msg.setCorrelationID(correlationID);
-		msg.setMenuID(menuID);
+		msg.setCorrelationId(correlationId);
+		msg.setMenuId(menuId);
 
 		return msg;
 	}
 	
-	public static ListFiles buildListFiles(Integer correlationID) {
+	public static ListFiles buildListFiles(Integer correlationId) {
 		ListFiles listFiles = new ListFiles();
-		listFiles.setCorrelationID(correlationID);
+		listFiles.setCorrelationId(correlationId);
 		return listFiles;
 	}
 
 	
 	public static PerformInteraction buildPerformInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
-			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
+			Vector<TtsChunk> initChunks, String displayText,
+			Vector<Integer> interactionChoiceSetIdList,
+			Vector<TtsChunk> helpChunks, Vector<TtsChunk> timeoutChunks,
 			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
+			Integer correlationId) {
 		PerformInteraction msg = new PerformInteraction();
 		msg.setInitialPrompt(initChunks);
 		msg.setInitialText(displayText);
-		msg.setInteractionChoiceSetIDList(interactionChoiceSetIDList);
+		msg.setInteractionChoiceSetIdList(interactionChoiceSetIdList);
 		msg.setInteractionMode(interactionMode);
 		msg.setTimeout(timeout);
 		msg.setHelpPrompt(helpChunks);
 		msg.setTimeoutPrompt(timeoutChunks);
 		msg.setVrHelp(vrHelp);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		return msg;
 	}
 
 	public static PerformInteraction buildPerformInteraction(
 			String initPrompt, 	String displayText, 
-			Vector<Integer> interactionChoiceSetIDList,
+			Vector<Integer> interactionChoiceSetIdList,
 			String helpPrompt, String timeoutPrompt,
 			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
-		Vector<TTSChunk> initChunks = TTSChunkFactory
-				.createSimpleTTSChunks(initPrompt);
-		Vector<TTSChunk> helpChunks = TTSChunkFactory
-				.createSimpleTTSChunks(helpPrompt);
-		Vector<TTSChunk> timeoutChunks = TTSChunkFactory
-				.createSimpleTTSChunks(timeoutPrompt);
+			Integer correlationId) {
+		Vector<TtsChunk> initChunks = TtsChunkFactory
+				.createSimpleTtsChunks(initPrompt);
+		Vector<TtsChunk> helpChunks = TtsChunkFactory
+				.createSimpleTtsChunks(helpPrompt);
+		Vector<TtsChunk> timeoutChunks = TtsChunkFactory
+				.createSimpleTtsChunks(timeoutPrompt);
 		return buildPerformInteraction(initChunks,
-				displayText, interactionChoiceSetIDList, helpChunks,
-				timeoutChunks, interactionMode, timeout, vrHelp, correlationID);
+				displayText, interactionChoiceSetIdList, helpChunks,
+				timeoutChunks, interactionMode, timeout, vrHelp, correlationId);
 	}
 	
 	public static PerformInteraction buildPerformInteraction(
 			String initPrompt, 	String displayText, 
-			Integer interactionChoiceSetID,
+			Integer interactionChoiceSetId,
 			String helpPrompt, String timeoutPrompt,
 			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
+			Integer correlationId) {
 		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
-			interactionChoiceSetIDs.add(interactionChoiceSetID);
+			interactionChoiceSetIDs.add(interactionChoiceSetId);
 		
 		return buildPerformInteraction(
 				initPrompt, displayText, interactionChoiceSetIDs, 
 				helpPrompt, timeoutPrompt, interactionMode, 
-				timeout, vrHelp, correlationID);
+				timeout, vrHelp, correlationId);
 	}
 	
 	public static PerformInteraction buildPerformInteraction(String initPrompt,
-			String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
+			String displayText, Integer interactionChoiceSetId, Vector<VrHelpItem> vrHelp,
+			Integer correlationId) {
 
 		return buildPerformInteraction(initPrompt, displayText, 
-				interactionChoiceSetID, null, null,
-				InteractionMode.BOTH, null, vrHelp, correlationID);
+				interactionChoiceSetId, null, null,
+				InteractionMode.BOTH, null, vrHelp, correlationId);
 	}
 	
 	
 	public static PerformInteraction buildPerformInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
-			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
+			Vector<TtsChunk> initChunks, String displayText,
+			Vector<Integer> interactionChoiceSetIdList,
+			Vector<TtsChunk> helpChunks, Vector<TtsChunk> timeoutChunks,
 			InteractionMode interactionMode, Integer timeout,
-			Integer correlationID) {
+			Integer correlationId) {
 		PerformInteraction msg = new PerformInteraction();
 		msg.setInitialPrompt(initChunks);
 		msg.setInitialText(displayText);
-		msg.setInteractionChoiceSetIDList(interactionChoiceSetIDList);
+		msg.setInteractionChoiceSetIdList(interactionChoiceSetIdList);
 		msg.setInteractionMode(interactionMode);
 		msg.setTimeout(timeout);
 		msg.setHelpPrompt(helpChunks);
 		msg.setTimeoutPrompt(timeoutChunks);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		return msg;
 	}
 
 	public static PerformInteraction buildPerformInteraction(
 			String initPrompt, 	String displayText, 
-			Vector<Integer> interactionChoiceSetIDList,
+			Vector<Integer> interactionChoiceSetIdList,
 			String helpPrompt, String timeoutPrompt,
 			InteractionMode interactionMode, Integer timeout,
-			Integer correlationID) {
-		Vector<TTSChunk> initChunks = TTSChunkFactory
-				.createSimpleTTSChunks(initPrompt);
-		Vector<TTSChunk> helpChunks = TTSChunkFactory
-				.createSimpleTTSChunks(helpPrompt);
-		Vector<TTSChunk> timeoutChunks = TTSChunkFactory
-				.createSimpleTTSChunks(timeoutPrompt);
+			Integer correlationId) {
+		Vector<TtsChunk> initChunks = TtsChunkFactory
+				.createSimpleTtsChunks(initPrompt);
+		Vector<TtsChunk> helpChunks = TtsChunkFactory
+				.createSimpleTtsChunks(helpPrompt);
+		Vector<TtsChunk> timeoutChunks = TtsChunkFactory
+				.createSimpleTtsChunks(timeoutPrompt);
 		return buildPerformInteraction(initChunks,
-				displayText, interactionChoiceSetIDList, helpChunks,
-				timeoutChunks, interactionMode, timeout, correlationID);
+				displayText, interactionChoiceSetIdList, helpChunks,
+				timeoutChunks, interactionMode, timeout, correlationId);
 	}
 	
 	public static PerformInteraction buildPerformInteraction(
 			String initPrompt, 	String displayText, 
-			Integer interactionChoiceSetID,
+			Integer interactionChoiceSetId,
 			String helpPrompt, String timeoutPrompt,
 			InteractionMode interactionMode, Integer timeout,
-			Integer correlationID) {
-		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
-			interactionChoiceSetIDs.add(interactionChoiceSetID);
+			Integer correlationId) {
+		Vector<Integer> interactionChoiceSetIds = new Vector<Integer>();
+			interactionChoiceSetIds.add(interactionChoiceSetId);
 		
 		return buildPerformInteraction(
-				initPrompt, displayText, interactionChoiceSetIDs, 
+				initPrompt, displayText, interactionChoiceSetIds, 
 				helpPrompt, timeoutPrompt, interactionMode, 
-				timeout, correlationID);
+				timeout, correlationId);
 	}
 	
 	public static PerformInteraction buildPerformInteraction(String initPrompt,
-			String displayText, Integer interactionChoiceSetID,
-			Integer correlationID) {
+			String displayText, Integer interactionChoiceSetId,
+			Integer correlationId) {
 
 		return buildPerformInteraction(initPrompt, displayText, 
-				interactionChoiceSetID, null, null,
-				InteractionMode.BOTH, null, correlationID);
+				interactionChoiceSetId, null, null,
+				InteractionMode.BOTH, null, correlationId);
 	}
 	
 	@Deprecated
 	public static PerformInteraction buildPerformInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
-			Vector<TTSChunk> helpChunks, InteractionMode interactionMode,
-			Integer timeout, Integer correlationID) {
+			Vector<TtsChunk> initChunks, String displayText,
+			Vector<Integer> interactionChoiceSetIdList,
+			Vector<TtsChunk> helpChunks, InteractionMode interactionMode,
+			Integer timeout, Integer correlationId) {
 		PerformInteraction msg = new PerformInteraction();
 		msg.setInitialPrompt(initChunks);
 		msg.setInitialText(displayText);
-		msg.setInteractionChoiceSetIDList(interactionChoiceSetIDList);
+		msg.setInteractionChoiceSetIdList(interactionChoiceSetIdList);
 		msg.setInteractionMode(interactionMode);
 		msg.setTimeout(timeout);
 		msg.setHelpPrompt(helpChunks);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		return msg;
 	}
 	
 	@Deprecated
 	public static PerformInteraction buildPerformInteraction(String initPrompt,
-			String displayText, Vector<Integer> interactionChoiceSetIDList,
+			String displayText, Vector<Integer> interactionChoiceSetIdList,
 			String helpPrompt, InteractionMode interactionMode,
-			Integer timeout, Integer correlationID) {
-		Vector<TTSChunk> initChunks = TTSChunkFactory
-				.createSimpleTTSChunks(initPrompt);
-		Vector<TTSChunk> helpChunks = TTSChunkFactory
-				.createSimpleTTSChunks(helpPrompt);
+			Integer timeout, Integer correlationId) {
+		Vector<TtsChunk> initChunks = TtsChunkFactory
+				.createSimpleTtsChunks(initPrompt);
+		Vector<TtsChunk> helpChunks = TtsChunkFactory
+				.createSimpleTtsChunks(helpPrompt);
 		PerformInteraction msg = buildPerformInteraction(initChunks,
-				displayText, interactionChoiceSetIDList, helpChunks,
-				interactionMode, timeout, correlationID);
+				displayText, interactionChoiceSetIdList, helpChunks,
+				interactionMode, timeout, correlationId);
 		return msg;
 	}
 	
 	public static PutFile buildPutFile(String sdlFileName, FileType fileType,
-			Boolean persistentFile, byte[] fileData, Integer correlationID) {
+			Boolean persistentFile, byte[] fileData, Integer correlationId) {
 		PutFile putFile = new PutFile();
-		putFile.setCorrelationID(correlationID);
+		putFile.setCorrelationId(correlationId);
 		putFile.setSdlFileName(sdlFileName);
 		putFile.setFileType(fileType);
 		putFile.setPersistentFile(persistentFile);
@@ -506,7 +506,7 @@ public class RPCRequestFactory {
 	
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength) {
 		PutFile putFile = new PutFile();
-		putFile.setCorrelationID(10000);
+		putFile.setCorrelationId(10000);
 		putFile.setSdlFileName(sdlFileName);		
 		putFile.setFileType(FileType.BINARY);
 		putFile.setSystemFile(true);
@@ -517,7 +517,7 @@ public class RPCRequestFactory {
 
 	public static PutFile buildPutFile(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
 		PutFile putFile = new PutFile();
-		putFile.setCorrelationID(10000);
+		putFile.setCorrelationId(10000);
 		putFile.setSdlFileName(syncFileName);
 		putFile.setFileType(fileType);
 		putFile.setPersistentFile(bPersistentFile);
@@ -527,9 +527,9 @@ public class RPCRequestFactory {
 		return putFile;
 	}
 	
-	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
+	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationId) {
 		PutFile putFile = new PutFile();
-		putFile.setCorrelationID(iCorrelationID);
+		putFile.setCorrelationId(iCorrelationId);
 		putFile.setSdlFileName(sdlFileName);
 		putFile.setFileType(fileType);
 		putFile.setPersistentFile(bPersistentFile);
@@ -539,28 +539,28 @@ public class RPCRequestFactory {
 		return putFile;
 	}	
 		
-	public static RegisterAppInterface buildRegisterAppInterface(String appName, String appID) {
-		return buildRegisterAppInterface(appName, false, appID);
+	public static RegisterAppInterface buildRegisterAppInterface(String appName, String appId) {
+		return buildRegisterAppInterface(appName, false, appId);
 	}
 		
 	public static RegisterAppInterface buildRegisterAppInterface(
-			String appName, Boolean isMediaApp, String appID) {
+			String appName, Boolean isMediaApp, String appId) {
 		
 		return buildRegisterAppInterface(null, appName, null, null, null, isMediaApp, 
-				null, null, null, appID, null); 
+				null, null, null, appId, null); 
 	}	
 		
 	public static RegisterAppInterface buildRegisterAppInterface(
-			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, 
+			SdlMsgVersion sdlMsgVersion, String appName, Vector<TtsChunk> ttsName, 
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, Integer correlationID) {
+			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHmiType> appType,
+			String appId, Integer correlationId) {
 		RegisterAppInterface msg = new RegisterAppInterface();
 		
-		if (correlationID == null) {
-			correlationID = 1;
+		if (correlationId == null) {
+			correlationId = 1;
 		}
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		if (sdlMsgVersion == null) {
 			sdlMsgVersion = new SdlMsgVersion();
@@ -598,33 +598,33 @@ public class RPCRequestFactory {
 		
 		msg.setHmiDisplayLanguageDesired(hmiDisplayLanguageDesired);
 		
-		msg.setAppHMIType(appType);
+		msg.setAppHmiType(appType);
 		
-		msg.setAppID(appID);
+		msg.setAppId(appId);
 
 		return msg;
 	}
 	
 	public static SetAppIcon buildSetAppIcon(String sdlFileName,
-			Integer correlationID) {
+			Integer correlationId) {
 		SetAppIcon setAppIcon = new SetAppIcon();
-		setAppIcon.setCorrelationID(correlationID);
+		setAppIcon.setCorrelationId(correlationId);
 		setAppIcon.setSdlFileName(sdlFileName);
 		return setAppIcon;
 	}
 	
 	public static SetGlobalProperties buildSetGlobalProperties(
-			String helpPrompt, String timeoutPrompt, Integer correlationID) {
-		return buildSetGlobalProperties(TTSChunkFactory
-				.createSimpleTTSChunks(helpPrompt), TTSChunkFactory
-				.createSimpleTTSChunks(timeoutPrompt), correlationID);
+			String helpPrompt, String timeoutPrompt, Integer correlationId) {
+		return buildSetGlobalProperties(TtsChunkFactory
+				.createSimpleTtsChunks(helpPrompt), TtsChunkFactory
+				.createSimpleTtsChunks(timeoutPrompt), correlationId);
 	}
 	
 	public static SetGlobalProperties buildSetGlobalProperties(
-			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			Integer correlationID) {
+			Vector<TtsChunk> helpChunks, Vector<TtsChunk> timeoutChunks,
+			Integer correlationId) {
 		SetGlobalProperties req = new SetGlobalProperties();
-		req.setCorrelationID(correlationID);
+		req.setCorrelationId(correlationId);
 
 		req.setHelpPrompt(helpChunks);
 		req.setTimeoutPrompt(timeoutChunks);
@@ -635,19 +635,19 @@ public class RPCRequestFactory {
 	
 	public static SetGlobalProperties buildSetGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, 
-			Vector<VrHelpItem> vrHelp, Integer correlationID) {
-		return buildSetGlobalProperties(TTSChunkFactory
-				.createSimpleTTSChunks(helpPrompt), TTSChunkFactory
-				.createSimpleTTSChunks(timeoutPrompt), vrHelpTitle, vrHelp, correlationID);
+			Vector<VrHelpItem> vrHelp, Integer correlationId) {
+		return buildSetGlobalProperties(TtsChunkFactory
+				.createSimpleTtsChunks(helpPrompt), TtsChunkFactory
+				.createSimpleTtsChunks(timeoutPrompt), vrHelpTitle, vrHelp, correlationId);
 	}
 
 
 	public static SetGlobalProperties buildSetGlobalProperties(
-			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, 
+			Vector<TtsChunk> helpChunks, Vector<TtsChunk> timeoutChunks, 
 			String vrHelpTitle, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
+			Integer correlationId) {
 		SetGlobalProperties req = new SetGlobalProperties();
-		req.setCorrelationID(correlationID);
+		req.setCorrelationId(correlationId);
 
 		req.setHelpPrompt(helpChunks);
 		req.setTimeoutPrompt(timeoutChunks);
@@ -660,7 +660,7 @@ public class RPCRequestFactory {
 	
 	public static SetMediaClockTimer buildSetMediaClockTimer(Integer hours,
 			Integer minutes, Integer seconds, UpdateMode updateMode,
-			Integer correlationID) {
+			Integer correlationId) {
 
 		SetMediaClockTimer msg = new SetMediaClockTimer();
 		if (hours != null || minutes != null || seconds != null) {
@@ -672,20 +672,20 @@ public class RPCRequestFactory {
 		}
 
 		msg.setUpdateMode(updateMode);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 
 		return msg;
 	}
 	
 	@Deprecated
 	public static SetMediaClockTimer buildSetMediaClockTimer(
-			UpdateMode updateMode, Integer correlationID) {
+			UpdateMode updateMode, Integer correlationId) {
 		Integer hours = null;
 		Integer minutes = null;
 		Integer seconds = null;
 
 		SetMediaClockTimer msg = buildSetMediaClockTimer(hours, minutes,
-				seconds, updateMode, correlationID);
+				seconds, updateMode, correlationId);
 		return msg;
 	}
 	
@@ -694,9 +694,9 @@ public class RPCRequestFactory {
 			String mainText3, String mainText4,
 			String statusBar, String mediaClock, String mediaTrack,
 			Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
-			TextAlignment alignment, Integer correlationID) {
+			TextAlignment alignment, Integer correlationId) {
 		Show msg = new Show();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setMainField1(mainText1);
 		msg.setMainField2(mainText2);
 		msg.setStatusBar(statusBar);
@@ -713,18 +713,18 @@ public class RPCRequestFactory {
 	}
 	
 	public static Show buildShow(String mainText1, String mainText2, String mainText3, String mainText4,
-			TextAlignment alignment, Integer correlationID) {
+			TextAlignment alignment, Integer correlationId) {
 		Show msg = buildShow(mainText1, mainText2, mainText3, mainText4, null, null, null, null, null, null, alignment,
-				correlationID);
+				correlationId);
 		return msg;
 	}
 		
 	@SuppressWarnings("deprecation")
     public static Show buildShow(String mainText1, String mainText2,
 			String statusBar, String mediaClock, String mediaTrack,
-			TextAlignment alignment, Integer correlationID) {
+			TextAlignment alignment, Integer correlationId) {
 		Show msg = new Show();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setMainField1(mainText1);
 		msg.setMainField2(mainText2);
 		msg.setStatusBar(statusBar);
@@ -736,23 +736,23 @@ public class RPCRequestFactory {
 	}
 	
 	public static Show buildShow(String mainText1, String mainText2,
-			TextAlignment alignment, Integer correlationID) {
+			TextAlignment alignment, Integer correlationId) {
 		Show msg = buildShow(mainText1, mainText2, null, null, null, alignment,
-				correlationID);
+				correlationId);
 		return msg;
 	}
 	
-	public static Speak buildSpeak(String ttsText, Integer correlationID) {
-		Speak msg = buildSpeak(TTSChunkFactory.createSimpleTTSChunks(ttsText),
-				correlationID);
+	public static Speak buildSpeak(String ttsText, Integer correlationId) {
+		Speak msg = buildSpeak(TtsChunkFactory.createSimpleTtsChunks(ttsText),
+				correlationId);
 		return msg;
 	}
 	
-	public static Speak buildSpeak(Vector<TTSChunk> ttsChunks,
-			Integer correlationID) {
+	public static Speak buildSpeak(Vector<TtsChunk> ttsChunks,
+			Integer correlationId) {
 
 		Speak msg = new Speak();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 
 		msg.setTtsChunks(ttsChunks);
 
@@ -760,38 +760,38 @@ public class RPCRequestFactory {
 	}
 	
 	public static SubscribeButton buildSubscribeButton(ButtonName buttonName,
-			Integer correlationID) {
+			Integer correlationId) {
 
 		SubscribeButton msg = new SubscribeButton();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setButtonName(buttonName);
 
 		return msg;
 	}
 	
 	public static UnregisterAppInterface buildUnregisterAppInterface(
-			Integer correlationID) {
+			Integer correlationId) {
 		UnregisterAppInterface msg = new UnregisterAppInterface();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 
 		return msg;
 	}
 	
 	public static UnsubscribeButton buildUnsubscribeButton(
-			ButtonName buttonName, Integer correlationID) {
+			ButtonName buttonName, Integer correlationId) {
 
 		UnsubscribeButton msg = new UnsubscribeButton();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setButtonName(buttonName);
 
 		return msg;
 	}	
 	
 	@SuppressWarnings("deprecation")
-    public static SubscribeVehicleData BuildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+    public static SubscribeVehicleData buildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 																 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-																 boolean driverBraking, Integer correlationID) 
+																 boolean driverBraking, Integer correlationId) 
 	{
 		SubscribeVehicleData msg = new SubscribeVehicleData();
 		msg.setGps(gps);
@@ -808,16 +808,16 @@ public class RPCRequestFactory {
 		msg.setBodyInformation(bodyInformation);
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		return msg;
 	}
 
 	@SuppressWarnings("deprecation")
-    public static UnsubscribeVehicleData BuildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+    public static UnsubscribeVehicleData buildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																	 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 																	 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-																	 boolean driverBraking, Integer correlationID) 
+																	 boolean driverBraking, Integer correlationId) 
 	{
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
 		msg.setGps(gps);
@@ -834,16 +834,16 @@ public class RPCRequestFactory {
 		msg.setBodyInformation(bodyInformation);
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		return msg;		
 	}
 	
 	@SuppressWarnings("deprecation")
-    public static GetVehicleData BuildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+    public static GetVehicleData buildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 			 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-			 boolean driverBraking, Integer correlationID)
+			 boolean driverBraking, Integer correlationId)
 	{
 		GetVehicleData msg = new GetVehicleData();
 		msg.setGps(gps);
@@ -861,16 +861,16 @@ public class RPCRequestFactory {
 		msg.setBodyInformation(bodyInformation);
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		
 		return msg;
 	}	
 	
-	public static ScrollableMessage BuildScrollableMessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID)	
+	public static ScrollableMessage buildScrollableMessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationId)	
 	{
 		ScrollableMessage msg = new ScrollableMessage();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setScrollableMessageBody(scrollableMessageBody);
 		msg.setTimeout(timeout);
 		msg.setSoftButtons(softButtons);
@@ -878,10 +878,10 @@ public class RPCRequestFactory {
 		return msg;		
 	}
 	
-	public static Slider BuildSlider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID)
+	public static Slider buildSlider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationId)
 	{
 		Slider msg = new Slider();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setNumTicks(numTicks);
 		msg.setPosition(position);
 		msg.setSliderHeader(sliderHeader);
@@ -891,44 +891,44 @@ public class RPCRequestFactory {
 		return msg;
 	}
 	
-	public static ChangeRegistration BuildChangeRegistration(Language language, Language hmiDisplayLanguage, Integer correlationID)
+	public static ChangeRegistration buildChangeRegistration(Language language, Language hmiDisplayLanguage, Integer correlationId)
 	{
 		ChangeRegistration msg = new ChangeRegistration();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setLanguage(language);
 		msg.setHmiDisplayLanguage(hmiDisplayLanguage);
 		
 		return msg;
 	}
 	
-	public static SetDisplayLayout BuildSetDisplayLayout(String displayLayout, Integer correlationID)
+	public static SetDisplayLayout buildSetDisplayLayout(String displayLayout, Integer correlationId)
 	{
 		SetDisplayLayout msg = new SetDisplayLayout();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setDisplayLayout(displayLayout);
 		
 		return msg;
 	}
 	
-	public static PerformAudioPassThru BuildPerformAudioPassThru(String ttsText, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
+	public static PerformAudioPassThru buildPerformAudioPassThru(String ttsText, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
 														  SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
-														  AudioType audioType, Boolean muteAudio, Integer correlationID)
+														  AudioType audioType, Boolean muteAudio, Integer correlationId)
 	{
-		Vector<TTSChunk> chunks = TTSChunkFactory
-				.createSimpleTTSChunks(ttsText);
+		Vector<TtsChunk> chunks = TtsChunkFactory
+				.createSimpleTtsChunks(ttsText);
 		
-		PerformAudioPassThru msg = BuildPerformAudioPassThru(chunks, audioPassThruDisplayText1, audioPassThruDisplayText2,
-															 samplingRate, maxDuration, bitsPerSample,audioType,  muteAudio, correlationID);
+		PerformAudioPassThru msg = buildPerformAudioPassThru(chunks, audioPassThruDisplayText1, audioPassThruDisplayText2,
+															 samplingRate, maxDuration, bitsPerSample,audioType,  muteAudio, correlationId);
 		
 		return msg;
 	}
 	
-	public static PerformAudioPassThru BuildPerformAudioPassThru(Vector<TTSChunk> initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
+	public static PerformAudioPassThru buildPerformAudioPassThru(Vector<TtsChunk> initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
 			  SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
-			  AudioType audioType, Boolean muteAudio, Integer correlationID)
+			  AudioType audioType, Boolean muteAudio, Integer correlationId)
 	{
 		PerformAudioPassThru msg = new PerformAudioPassThru();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		msg.setInitialPrompt(initialPrompt);
 		msg.setAudioPassThruDisplayText1(audioPassThruDisplayText1);
 		msg.setAudioPassThruDisplayText2(audioPassThruDisplayText2);
@@ -941,10 +941,10 @@ public class RPCRequestFactory {
 		return msg;
 	}
 	
-	public static EndAudioPassThru BuildEndAudioPassThru(Integer correlationID)
+	public static EndAudioPassThru buildEndAudioPassThru(Integer correlationId)
 	{
 		EndAudioPassThru msg = new EndAudioPassThru();
-		msg.setCorrelationID(correlationID);
+		msg.setCorrelationId(correlationId);
 		
 		return msg;
 	}

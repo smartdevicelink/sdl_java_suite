@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -42,7 +42,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class ParameterPermissions extends RPCStruct {
+public class ParameterPermissions extends RpcStruct {
 	public static final String KEY_ALLOWED = "allowed";
 	public static final String KEY_USER_DISALLOWED = "userDisallowed";
 

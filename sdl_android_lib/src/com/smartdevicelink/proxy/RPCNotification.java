@@ -5,17 +5,17 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-public class RPCNotification extends RPCMessage {
+public class RpcNotification extends RpcMessage {
 
-	public RPCNotification(String functionName) {
+	public RpcNotification(String functionName) {
 		super(functionName, "notification");
 	}
 
-	public RPCNotification(Hashtable<String, Object> hash) {
+	public RpcNotification(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
-	public RPCNotification(RPCMessage rpcMsg) {
+	public RpcNotification(RpcMessage rpcMsg) {
 		super(rpcMsg);
 	}
 } // end-class

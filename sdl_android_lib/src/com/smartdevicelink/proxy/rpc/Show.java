@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
@@ -16,7 +16,7 @@ import com.smartdevicelink.util.DebugTool;
  * calls to Show
  * <p>
  * The content of the application's display text area is visible to the user
- * when the application's {@linkplain com.smartdevicelink.proxy.rpc.enums.HMILevel}
+ * when the application's {@linkplain com.smartdevicelink.proxy.rpc.enums.HmiLevel}
  * is FULL or LIMITED, and the
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.SystemContext}=MAIN and no
  * {@linkplain Alert} is in progress
@@ -32,7 +32,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see Alert
  * @see SetMediaClockTimer
  */
-public class Show extends RPCRequest {
+public class Show extends RpcRequest {
 	public static final String KEY_GRAPHIC = "graphic";
 	public static final String KEY_CUSTOM_PRESETS = "customPresets";
 	public static final String KEY_MAIN_FIELD_1 = "mainField1";
@@ -49,7 +49,7 @@ public class Show extends RPCRequest {
 	 * Constructs a new Show object
 	 */
 	public Show() {
-        super(FunctionID.SHOW.toString());
+        super(FunctionId.SHOW.toString());
     }
 	/**
 	 * Constructs a new Show object indicated by the Hashtable parameter

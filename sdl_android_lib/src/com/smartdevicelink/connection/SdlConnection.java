@@ -1,4 +1,4 @@
-package com.smartdevicelink.SdlConnection;
+package com.smartdevicelink.connection;
 
 
 import java.io.InputStream;
@@ -8,29 +8,32 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.util.Log;
+
+import com.smartdevicelink.connection.interfaces.ISdlConnectionListener;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.AbstractProtocol;
-import com.smartdevicelink.protocol.IProtocolListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.interfaces.IProtocolListener;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.streaming.AbstractPacketizer;
-import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
-import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.StreamRpcPacketizer;
+import com.smartdevicelink.streaming.interfaces.IStreamListener;
 import com.smartdevicelink.transport.*;
+import com.smartdevicelink.transport.interfaces.ITransportListener;
 
 public class SdlConnection implements IProtocolListener, ITransportListener, IStreamListener  {
 
-	SdlTransport _transport = null;
-	AbstractProtocol _protocol = null;
-	ISdlConnectionListener _connectionListener = null;
+	SdlTransport transport = null;
+	AbstractProtocol protocol = null;
+	ISdlConnectionListener connectionListener = null;
 	AbstractPacketizer mPacketizer = null;
 
 	// Thread safety locks
-	Object TRANSPORT_REFERENCE_LOCK = new Object();
-	Object PROTOCOL_REFERENCE_LOCK = new Object();
+	Object transportReferenceLock = new Object();
+	Object protocolReferenceLock = new Object();
 	
 	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
 	
@@ -41,105 +44,105 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	 * @param transportConfig Transport configuration for this connection.
 	 */
 	public SdlConnection(BaseTransportConfig transportConfig) {
-		_connectionListener = new InternalMsgDispatcher();
+		connectionListener = new InternalMsgDispatcher();
 		
 		// Initialize the transport
-		synchronized(TRANSPORT_REFERENCE_LOCK) {
+		synchronized(transportReferenceLock) {
 			// Ensure transport is null
-			if (_transport != null) {
-				if (_transport.getIsConnected()) {
-					_transport.disconnect();
+			if (transport != null) {
+				if (transport.getIsConnected()) {
+					transport.disconnect();
 				}
-				_transport = null;
+				transport = null;
 			}
 			
 			if (transportConfig.getTransportType() == TransportType.BLUETOOTH)
 			{				
-				BTTransportConfig myConfig = (BTTransportConfig) transportConfig;				
-				_transport = new BTTransport(this, myConfig.getKeepSocketActive());
+				BtTransportConfig myConfig = (BtTransportConfig) transportConfig;				
+				transport = new BtTransport(this, myConfig.getKeepSocketActive());
 			}
 			else if (transportConfig.getTransportType() == TransportType.TCP)
 			{
-                _transport = new TCPTransport((TCPTransportConfig) transportConfig, this);
+                transport = new TcpTransport((TcpTransportConfig) transportConfig, this);
             } else if (transportConfig.getTransportType() == TransportType.USB) {
-                _transport = new USBTransport((USBTransportConfig) transportConfig, this);
+                transport = new UsbTransport((UsbTransportConfig) transportConfig, this);
             }
 		}
 		
 		// Initialize the protocol
-		synchronized(PROTOCOL_REFERENCE_LOCK) {
+		synchronized(protocolReferenceLock) {
 			// Ensure protocol is null
-			if (_protocol != null) {
-				_protocol = null;
+			if (protocol != null) {
+				protocol = null;
 			}
 			
-			_protocol = new WiProProtocol(this);
+			protocol = new WiProProtocol(this);
 		}
 	}
 	
 	public AbstractProtocol getWiProProtocol(){
-		return _protocol;
+		return protocol;
 	}
 	
 
 	
 	
-	private void closeConnection(boolean willRecycle, byte rpcSessionID) {
-		synchronized(PROTOCOL_REFERENCE_LOCK) {
-			if (_protocol != null) {
+	private void closeConnection(boolean willRecycle, byte rpcSessionId) {
+		synchronized(protocolReferenceLock) {
+			if (protocol != null) {
 				// If transport is still connected, sent EndProtocolSessionMessage
-				if (_transport != null && _transport.getIsConnected()) {
-					_protocol.EndProtocolSession(SessionType.RPC, rpcSessionID);
+				if (transport != null && transport.getIsConnected()) {
+					protocol.endProtocolSession(SessionType.RPC, rpcSessionId);
 				}
 				if (willRecycle) {
-				_protocol = null;
+				protocol = null;
 				}
 			} // end-if
 		}
 		
-		synchronized (TRANSPORT_REFERENCE_LOCK) {
+		synchronized (transportReferenceLock) {
 			if (willRecycle) {
-			if (_transport != null) {
-				_transport.disconnect();
+			if (transport != null) {
+				transport.disconnect();
 			}
-			_transport = null;
+			transport = null;
 		}
 	}
 	}
 		
 	
 	public void startTransport() throws SdlException {
-		_transport.openConnection();
+		transport.openConnection();
 	}
 	
 	public Boolean getIsConnected() {
 		
 		// If _transport is null, then it can't be connected
-		if (_transport == null) {
+		if (transport == null) {
 			return false;
 		}
 		
-		return _transport.getIsConnected();
+		return transport.getIsConnected();
 	}
 	
 	public String getBroadcastComment() {
 		
-		if (_transport == null) {
+		if (transport == null) {
 			return "";
 		}
 		
-		return _transport.getBroadcastComment();
+		return transport.getBroadcastComment();
 	}
 	
 	public void sendMessage(ProtocolMessage msg) {
-		if(_protocol != null)
-			_protocol.SendMessage(msg);
+		if(protocol != null)
+			protocol.sendMessage(msg);
 	}
 	
 	void startHandShake() {
-		synchronized(PROTOCOL_REFERENCE_LOCK){
-			if(_protocol != null){
-				_protocol.StartProtocolSession(SessionType.RPC);
+		synchronized(protocolReferenceLock){
+			if(protocol != null){
+				protocol.startProtocolSession(SessionType.RPC);
 			}
 		}
 	}	
@@ -148,17 +151,17 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public void onTransportBytesReceived(byte[] receivedBytes,
 			int receivedBytesLength) {
 		// Send bytes to protocol to be interpreted 
-		synchronized(PROTOCOL_REFERENCE_LOCK) {
-			if (_protocol != null) {
-				_protocol.HandleReceivedBytes(receivedBytes, receivedBytesLength);
+		synchronized(protocolReferenceLock) {
+			if (protocol != null) {
+				protocol.handleReceivedBytes(receivedBytes, receivedBytesLength);
 			}
 		}
 	}
 
 	@Override
 	public void onTransportConnected() {
-		synchronized(PROTOCOL_REFERENCE_LOCK){
-			if(_protocol != null){
+		synchronized(protocolReferenceLock){
+			if(protocol != null){
 					for (SdlSession s : listenerList) {
 						if (s.getSessionId() == 0) {
 							startHandShake();
@@ -171,52 +174,52 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	@Override
 	public void onTransportDisconnected(String info) {
 		// Pass directly to connection listener
-		_connectionListener.onTransportDisconnected(info);
+		connectionListener.onTransportDisconnected(info);
 	}
 
 	@Override
 	public void onTransportError(String info, Exception e) {
 		// Pass directly to connection listener
-		_connectionListener.onTransportError(info, e);
+		connectionListener.onTransportError(info, e);
 	}
 
 	@Override
 	public void onProtocolMessageBytesToSend(byte[] msgBytes, int offset,
 			int length) {
 		// Protocol has packaged bytes to send, pass to transport for transmission 
-		synchronized(TRANSPORT_REFERENCE_LOCK) {
-			if (_transport != null) {
-				_transport.sendBytes(msgBytes, offset, length);
+		synchronized(transportReferenceLock) {
+			if (transport != null) {
+				transport.sendBytes(msgBytes, offset, length);
 			}
 		}
 	}
 	
 	@Override
 	public void onProtocolMessageReceived(ProtocolMessage msg) {
-		_connectionListener.onProtocolMessageReceived(msg);
+		connectionListener.onProtocolMessageReceived(msg);
 	}
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+			byte sessionId, byte version, String correlationId) {
+		connectionListener.onProtocolSessionStarted(sessionType, sessionId, version, correlationId);
 	}
 
 	@Override
-	public void onProtocolSessionNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+	public void onProtocolSessionNack(SessionType sessionType,
+			byte sessionId, byte version, String correlationId) {
+		connectionListener.onProtocolSessionNack(sessionType, sessionId, version, correlationId);
 	}
 
 	@Override
-	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-			String correlationID) {
-		_connectionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+	public void onProtocolSessionEnded(SessionType sessionType, byte sessionId,
+			String correlationId) {
+		connectionListener.onProtocolSessionEnded(sessionType, sessionId, correlationId);
 	}
 
 	@Override
 	public void onProtocolError(String info, Exception e) {
-		_connectionListener.onProtocolError(info, e);
+		connectionListener.onProtocolError(info, e);
 	}
 	
 	/**
@@ -227,22 +230,22 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	 * @see TransportType
 	 */
 	public TransportType getCurrentTransportType() {
-		return _transport.getTransportType();
+		return transport.getTransportType();
 	}
-	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) {
+	public void startStream(InputStream is, SessionType sType, byte rpcSessionId) {
 		try {
-            mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+            mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionId);
 			mPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
 	}
 	
-	public OutputStream startStream(SessionType sType, byte rpcSessionID) {
+	public OutputStream startStream(SessionType sType, byte rpcSessionId) {
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
+			mPacketizer = new StreamPacketizer(this, is, sType, rpcSessionId);
 			mPacketizer.start();
 			return os;
 		} catch (Exception e) {
@@ -251,20 +254,20 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		return null;
 	}
 		
-	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
+	public void startRpcStream(InputStream is, RpcRequest request, SessionType sType, byte rpcSessionId, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
+            mPacketizer = new StreamRpcPacketizer(null, this, is, request, sType, rpcSessionId, wiproVersion, 0);
 			mPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
 	}
 	
-	public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
+	public OutputStream startRpcStream(RpcRequest request, SessionType sType, byte rpcSessionId, byte wiproVersion) {
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
+			mPacketizer = new StreamRpcPacketizer(null, this, is, request, sType, rpcSessionId, wiproVersion, 0);
 			mPacketizer.start();
 			return os;
 		} catch (Exception e) {
@@ -273,7 +276,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		return null;
 	}
 
-	public void pauseRPCStream()
+	public void pauseRpcStream()
 	{
 		if (mPacketizer != null)
 		{
@@ -281,7 +284,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 	}
 
-	public void resumeRPCStream()
+	public void resumeRpcStream()
 	{
 		if (mPacketizer != null)
 		{
@@ -289,7 +292,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 	}
 
-	public void stopRPCStream()
+	public void stopRpcStream()
 	{
 		if (mPacketizer != null)
 		{
@@ -302,18 +305,18 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		sendMessage(pm);
 	}
 	
-	public void startService (SessionType sessionType, byte sessionID) {
-		synchronized(PROTOCOL_REFERENCE_LOCK){
-			if(_protocol != null){
-				_protocol.StartProtocolService(sessionType, sessionID);
+	public void startService (SessionType sessionType, byte sessionId) {
+		synchronized(protocolReferenceLock){
+			if(protocol != null){
+				protocol.startProtocolService(sessionType, sessionId);
 			}
 		}
 	}
 	
-	public void endService (SessionType sessionType, byte sessionID) {
-		synchronized(PROTOCOL_REFERENCE_LOCK){
-			if(_protocol != null){
-				_protocol.EndProtocolSession(sessionType, sessionID);
+	public void endService (SessionType sessionType, byte sessionId) {
+		synchronized(protocolReferenceLock){
+			if(protocol != null){
+				protocol.endProtocolSession(sessionType, sessionId);
 			}
 		}
 	}
@@ -328,8 +331,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 	
 	public void sendHeartbeat(SdlSession mySession) {
-		if(_protocol != null && mySession != null)
-			_protocol.SendHeartBeat(mySession.getSessionId());
+		if(protocol != null && mySession != null)
+			protocol.sendHeartBeat(mySession.getSessionId());
 	}	
 	
 	public void unregisterSession(SdlSession registerListener) {
@@ -365,7 +368,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onProtocolMessageReceived(ProtocolMessage msg) {
-			SdlSession session = findSessionById(msg.getSessionID());
+			SdlSession session = findSessionById(msg.getSessionId());
 			if (session != null) {
 				session.onProtocolMessageReceived(msg);
 			}
@@ -373,10 +376,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionId, byte version, String correlationId) {
 			for (SdlSession session : listenerList) {
 				if (session.getSessionId() == 0 || sessionType == SessionType.NAV) {
-					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+					session.onProtocolSessionStarted(sessionType, sessionId, version, correlationId);
 					break; //FIXME: need changes on SDL side, as the sessionID is devided by SDL.
 				}
 			}
@@ -384,10 +387,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onProtocolSessionEnded(SessionType sessionType,
-				byte sessionID, String correlationID) {
-			SdlSession session = findSessionById(sessionID);
+				byte sessionId, String correlationId) {
+			SdlSession session = findSessionById(sessionId);
 			if (session != null) {
-				session.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+				session.onProtocolSessionEnded(sessionType, sessionId, correlationId);
 			}
 		}
 
@@ -399,10 +402,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 
 		@Override
-		public void onProtocolSessionNACKed(SessionType sessionType,
+		public void onProtocolSessionNack(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
 			for (SdlSession session : listenerList) {
-				session.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+				session.onProtocolSessionNack(sessionType, sessionID, version, correlationID);
 			}			
 		}
 
@@ -420,24 +423,24 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 
     @Override
-    public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
+    public void onProtocolHeartbeatAck(SessionType sessionType, byte sessionId) {
         
-    	SdlSession mySession = findSessionById(sessionID);
+    	SdlSession mySession = findSessionById(sessionId);
     	if (mySession == null) return;
     	
-    	if (mySession._heartbeatMonitor != null) {
-    		mySession._heartbeatMonitor.heartbeatACKReceived();
+    	if (mySession.heartbeatMonitor != null) {
+    		mySession.heartbeatMonitor.heartbeatAckReceived();
         }
     }
 
     @Override
-    public void onResetHeartbeat(SessionType sessionType, byte sessionID){
+    public void onResetHeartbeat(SessionType sessionType, byte sessionId){
     	
-    	SdlSession mySession = findSessionById(sessionID);
+    	SdlSession mySession = findSessionById(sessionId);
     	if (mySession == null) return;
     	
-    	if (mySession._heartbeatMonitor != null) {
-    		mySession._heartbeatMonitor.notifyTransportActivity();
+    	if (mySession.heartbeatMonitor != null) {
+    		mySession.heartbeatMonitor.notifyTransportActivity();
         }
     }
 }

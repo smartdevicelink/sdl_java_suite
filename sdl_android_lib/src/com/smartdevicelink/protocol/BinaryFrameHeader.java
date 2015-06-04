@@ -3,107 +3,107 @@ package com.smartdevicelink.protocol;
 import com.smartdevicelink.util.BitConverter;
 
 public class BinaryFrameHeader {
-	private byte _rpcType;
-	private int _functionID;
-	private int _correlationID;
-	private int _jsonSize;
+	private byte rpcType;
+	private int functionId;
+	private int correlationId;
+	private int jsonSize;
 	
-	private byte[] _jsonData;
-	private byte[] _bulkData;
+	private byte[] jsonData;
+	private byte[] bulkData;
 	
 	public BinaryFrameHeader() {}
 	
 	public static BinaryFrameHeader parseBinaryHeader(byte[] binHeader) {
 		BinaryFrameHeader msg = new BinaryFrameHeader();
 		
-		byte RPC_Type = (byte) (binHeader[0] >>> 4);
-		msg.setRPCType(RPC_Type);
+		byte rpcType = (byte) (binHeader[0] >>> 4);
+		msg.setRpcType(rpcType);
 		
-		int _functionID = (BitConverter.intFromByteArray(binHeader, 0) & 0x0FFFFFFF);
-		msg.setFunctionID(_functionID);
+		int functionId = (BitConverter.intFromByteArray(binHeader, 0) & 0x0FFFFFFF);
+		msg.setFunctionId(functionId);
 		
-		int corrID = BitConverter.intFromByteArray(binHeader, 4);
-		msg.setCorrID(corrID);
+		int corrId = BitConverter.intFromByteArray(binHeader, 4);
+		msg.setCorrId(corrId);
 		
-		int _jsonSize = BitConverter.intFromByteArray(binHeader, 8);
-		msg.setJsonSize(_jsonSize);
+		int jsonSize = BitConverter.intFromByteArray(binHeader, 8);
+		msg.setJsonSize(jsonSize);
 		
-		if (_jsonSize > 0) {
-			byte[] _jsonData = new byte[_jsonSize];
-			System.arraycopy(binHeader, 12, _jsonData, 0, _jsonSize);
-			msg.setJsonData(_jsonData);
+		if (jsonSize > 0) {
+			byte[] jsonData = new byte[jsonSize];
+			System.arraycopy(binHeader, 12, jsonData, 0, jsonSize);
+			msg.setJsonData(jsonData);
 		}
 		
-		if (binHeader.length - _jsonSize - 12 > 0) {
-			byte[] _bulkData = new byte[binHeader.length - _jsonSize - 12];
-			System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length);
-			msg.setBulkData(_bulkData);
+		if (binHeader.length - jsonSize - 12 > 0) {
+			byte[] bulkData = new byte[binHeader.length - jsonSize - 12];
+			System.arraycopy(binHeader, 12 + jsonSize, bulkData, 0, bulkData.length);
+			msg.setBulkData(bulkData);
 		}		
 		
 		return msg;
 	}
 	
 	protected byte[] assembleHeaderBytes() {
-		int binHeader = _functionID;
+		int binHeader = functionId;
         // reset the 4 leftmost bits, for _rpcType
         binHeader &= 0xFFFFFFFF >>> 4;
-		binHeader |= (_rpcType << 28);
+		binHeader |= (rpcType << 28);
 		
 		byte[] ret = new byte[12];
 		System.arraycopy(BitConverter.intToByteArray(binHeader), 0, ret, 0, 4);
-		System.arraycopy(BitConverter.intToByteArray(_correlationID), 0, ret, 4, 4);
-		System.arraycopy(BitConverter.intToByteArray(_jsonSize), 0, ret, 8, 4);
+		System.arraycopy(BitConverter.intToByteArray(correlationId), 0, ret, 4, 4);
+		System.arraycopy(BitConverter.intToByteArray(jsonSize), 0, ret, 8, 4);
 		
 		return ret;
 	}
 	
-	public byte getRPCType() {
-		return _rpcType;
+	public byte getRpcType() {
+		return rpcType;
 	}
 
-	public void setRPCType(byte _rpcType) {
-		this._rpcType = _rpcType;
+	public void setRpcType(byte rpcType) {
+		this.rpcType = rpcType;
 	}
 
-	public int getFunctionID() {
-		return _functionID;
+	public int getFunctionId() {
+		return functionId;
 	}
 
-	public void setFunctionID(int _functionID) {
-		this._functionID = _functionID;
+	public void setFunctionId(int functionId) {
+		this.functionId = functionId;
 	}
 
-	public int getCorrID() {
-		return _correlationID;
+	public int getCorrId() {
+		return correlationId;
 	}
 
-	public void setCorrID(int _correlationID) {
-		this._correlationID = _correlationID;
+	public void setCorrId(int correlationId) {
+		this.correlationId = correlationId;
 	}
 
 	public int getJsonSize() {
-		return _jsonSize;
+		return jsonSize;
 	}
 
-	public void setJsonSize(int _jsonSize) {
-		this._jsonSize = _jsonSize;
+	public void setJsonSize(int jsonSize) {
+		this.jsonSize = jsonSize;
 	}
 	
 	public byte[] getJsonData() {
-		return _jsonData;
+		return jsonData;
 	}
 	
-	public void setJsonData(byte[] _jsonData) {
-		this._jsonData = new byte[this._jsonSize];
-		System.arraycopy(_jsonData, 0, this._jsonData, 0, _jsonSize);
-		//this._jsonData = _jsonData;
+	public void setJsonData(byte[] jsonData) {
+		this.jsonData = new byte[this.jsonSize];
+		System.arraycopy(jsonData, 0, this.jsonData, 0, jsonSize);
+		//this.jsonData = jsonData;
 	}
 	
 	public byte[] getBulkData() {
-		return _bulkData;
+		return bulkData;
 	}
 	
-	public void setBulkData(byte[] _bulkData) {
-		this._bulkData = _bulkData;
+	public void setBulkData(byte[] bulkData) {
+		this.bulkData = bulkData;
 	}
 }

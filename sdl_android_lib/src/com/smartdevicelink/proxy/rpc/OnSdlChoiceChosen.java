@@ -3,25 +3,25 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
-public class OnSdlChoiceChosen extends RPCNotification {
+public class OnSdlChoiceChosen extends RpcNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
 	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
 	
 	public class SdlSubMenu {
-		private Integer _menuID = null;
+		private Integer menuId = null;
 		@SuppressWarnings("unused")
-        private Integer _position = null;
-		private String _menuName = null;
+        private Integer position = null;
+		private String menuName = null;
 		
 		// Constructor
 		SdlSubMenu(Integer menuID, Integer position, String menuName) {
-			_menuID = menuID;
-			_position = position;
-			_menuName = menuName;
+			this.menuId = menuID;
+			this.position = position;
+			this.menuName = menuName;
 		}
 		
 		// Restrict no-arg constructor
@@ -29,34 +29,34 @@ public class OnSdlChoiceChosen extends RPCNotification {
         private SdlSubMenu() {}
 		
 		// Public Getters
-		public Integer getMenuID() {
-			return _menuID;
+		public Integer getMenuId() {
+			return menuId;
 		}
 		
 		public String getMenuName() {
-			return _menuName;
+			return menuName;
 		}
 		
 		public String toString() {
-			return _menuName;
+			return menuName;
 		}
 	}
 	
 	public class SdlCommand {
-		private Integer _commandID = null;
-		private SdlSubMenu _parentSubMenu = null;
+		private Integer commandId = null;
+		private SdlSubMenu parentSubMenu = null;
 		@SuppressWarnings("unused")
-        private Integer _position = null;
-		private String _menuName = null;
-		private List<String> _vrCommands = null;
+        private Integer position = null;
+		private String menuName = null;
+		private List<String> vrCommands = null;
 		
 		// Constructor
-		SdlCommand(Integer commandID, SdlSubMenu parentSubMenu, Integer position, String menuName, List<String> vrCommands) {
-			_commandID = commandID;
-			_parentSubMenu = parentSubMenu;
-			_position = position;
-			_menuName = menuName;
-			_vrCommands = vrCommands;
+		SdlCommand(Integer commandId, SdlSubMenu parentSubMenu, Integer position, String menuName, List<String> vrCommands) {
+			this.commandId = commandId;
+			this.parentSubMenu = parentSubMenu;
+			this.position = position;
+			this.menuName = menuName;
+			this.vrCommands = vrCommands;
 		}
 		
 		// Restrict no-arg constructor
@@ -64,73 +64,73 @@ public class OnSdlChoiceChosen extends RPCNotification {
         private SdlCommand() {}
 		
 		// Public Getters
-		public Integer getCommandID() {
-			return _commandID;
+		public Integer getCommandId() {
+			return commandId;
 		}
 		
 		public SdlSubMenu getParentSubMenu() {
-			return _parentSubMenu;
+			return parentSubMenu;
 		}
 		
 		public String getMenuName() {
-			return _menuName;
+			return menuName;
 		}
 		
 		public List<String> getVrCommands() {
-			return _vrCommands;
+			return vrCommands;
 		}
 		
 		public String toString() {
-			return _menuName;
+			return menuName;
 		}
 	}
 	
 	public class SdlChoice {
 		
-		private Choice _choice = null;
+		private Choice choice = null;
 		
 		// Constructor
 		public SdlChoice(Choice choice) {
-			_choice = choice;
+			this.choice = choice;
 		}
 		
 		public Choice getChoice() {
-			return _choice;
+			return choice;
 		}
 		
-		public Integer getChoiceID() {
-			return _choice.getChoiceID();
+		public Integer getChoiceId() {
+			return choice.getChoiceId();
 		}
 		
 		public String getMenuName() {
-			return _choice.getMenuName();
+			return choice.getMenuName();
 		}
 		
 		public List<String> getVrCommands() {
-			return _choice.getVrCommands();
+			return choice.getVrCommands();
 		}
 		
 		public String toString() {
-			return _choice.getMenuName();
+			return choice.getMenuName();
 		}
 	}
 	
 	public class SdlChoiceSet {
-		private Integer _choiceSetID = null;
-		private List<SdlChoice> _choiceSet = null;
+		private Integer choiceSetId = null;
+		private List<SdlChoice> choiceSet = null;
 		
 		// Constructor
-		SdlChoiceSet(Integer choiceSetID, List<SdlChoice> choiceSet) {
-			_choiceSetID = choiceSetID;
-			_choiceSet = choiceSet;
+		SdlChoiceSet(Integer choiceSetId, List<SdlChoice> choiceSet) {
+			this.choiceSetId = choiceSetId;
+			this.choiceSet = choiceSet;
 		}
 		
-		public Integer getChoiceSetID() {
-			return _choiceSetID;
+		public Integer getChoiceSetId() {
+			return choiceSetId;
 		}
 		
 		public List<SdlChoice> getChoiceSet() {
-			return _choiceSet;
+			return choiceSet;
 		}
 	}
 	
@@ -138,7 +138,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 
 	public OnSdlChoiceChosen() {
-		super(FunctionID.ON_SDL_CHOICE_CHOSEN.toString());
+		super(FunctionId.ON_SDL_CHOICE_CHOSEN.toString());
 	}
 	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
 		super(hash);

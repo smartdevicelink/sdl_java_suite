@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 import java.util.Hashtable;
 
-public class TouchCoord extends RPCStruct {
+public class TouchCoord extends RpcStruct {
     public static final String KEY_X = "x";
     public static final String KEY_Y = "y";
     public TouchCoord() {}

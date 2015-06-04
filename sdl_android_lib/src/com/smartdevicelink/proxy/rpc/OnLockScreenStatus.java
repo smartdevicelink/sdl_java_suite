@@ -1,17 +1,17 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
+import com.smartdevicelink.proxy.rpc.enums.HmiLevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 
-public class OnLockScreenStatus extends RPCNotification {
+public class OnLockScreenStatus extends RpcNotification {
 	public static final String KEY_DRIVER_DISTRACTION = "driverDistraction";
 	public static final String KEY_SHOW_LOCK_SCREEN = "showLockScreen";
 	public static final String KEY_USER_SELECTED = "userSelected";
 
 	public OnLockScreenStatus() {
-		super(FunctionID.ON_LOCK_SCREEN_STATUS.toString());
+		super(FunctionId.ON_LOCK_SCREEN_STATUS.toString());
 	}
 	
 	public Boolean getDriverDistractionStatus() {
@@ -51,13 +51,13 @@ public class OnLockScreenStatus extends RPCNotification {
         }
 	}		
 	
-	public HMILevel getHMILevel() {
-		return (HMILevel)parameters.get(OnHMIStatus.KEY_HMI_LEVEL);
+	public HmiLevel getHmiLevel() {
+		return (HmiLevel)parameters.get(OnHMIStatus.KEY_HMI_LEVEL);
 	}
 	
-	public void setHMILevel(HMILevel setHMILevel) {
-		if (setHMILevel != null) {
-			parameters.put(OnHMIStatus.KEY_HMI_LEVEL, setHMILevel );
+	public void setHmiLevel(HmiLevel setHmiLevel) {
+		if (setHmiLevel != null) {
+			parameters.put(OnHMIStatus.KEY_HMI_LEVEL, setHmiLevel );
         } else {
         	parameters.remove(OnHMIStatus.KEY_HMI_LEVEL);
         }

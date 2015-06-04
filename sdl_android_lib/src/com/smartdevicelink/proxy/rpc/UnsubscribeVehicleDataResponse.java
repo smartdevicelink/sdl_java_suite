@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -11,7 +11,7 @@ import com.smartdevicelink.util.DebugTool;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class UnsubscribeVehicleDataResponse extends RPCResponse {
+public class UnsubscribeVehicleDataResponse extends RpcResponse {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_FUEL_LEVEL = "fuelLevel";
@@ -41,7 +41,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	 * Constructs a new UnsubscribeVehicleDataResponse object
 	 */
     public UnsubscribeVehicleDataResponse() {
-        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
+        super(FunctionId.UNSUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**
@@ -204,7 +204,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevel_State
+     * @param FUEL_LEVEL_STATE
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
         if (fuelLevelState != null) {

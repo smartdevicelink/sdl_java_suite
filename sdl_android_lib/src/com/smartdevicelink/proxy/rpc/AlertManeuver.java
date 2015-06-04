@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * This will bring up an alert with information related to the next navigation maneuver including potential voice
@@ -19,7 +19,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @since SmartDeviceLink 2.0
  * @see ShowConstantTbt
  */
-public class AlertManeuver extends RPCRequest{
+public class AlertManeuver extends RpcRequest{
 
     public static final String KEY_TTS_CHUNKS   = "ttsChunks";
     public static final String KEY_SOFT_BUTTONS = "softButtons";
@@ -28,7 +28,7 @@ public class AlertManeuver extends RPCRequest{
      * Constructs a new AlertManeuver object
      */
     public AlertManeuver(){
-        super(FunctionID.ALERT_MANEUVER.toString());
+        super(FunctionId.ALERT_MANEUVER.toString());
     }
 
     /**
@@ -100,18 +100,18 @@ public class AlertManeuver extends RPCRequest{
      * @return List -a List<TTSChunk> value specify what is to be spoken to the user
      */
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTtsChunks(){
+    public List<TtsChunk> getTtsChunks(){
         if(parameters.get(KEY_TTS_CHUNKS) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_TTS_CHUNKS);
             if(list != null && list.size() > 0){
                 Object obj = list.get(0);
-                if(obj instanceof TTSChunk){
-                    return (List<TTSChunk>) list;
+                if(obj instanceof TtsChunk){
+                    return (List<TtsChunk>) list;
                 }
                 else if(obj instanceof Hashtable){
-                    List<TTSChunk> newList = new ArrayList<TTSChunk>();
+                    List<TtsChunk> newList = new ArrayList<TtsChunk>();
                     for(Object hashObj : list){
-                        newList.add(new TTSChunk((Hashtable<String, Object>) hashObj));
+                        newList.add(new TtsChunk((Hashtable<String, Object>) hashObj));
                     }
                     return newList;
                 }
@@ -127,7 +127,7 @@ public class AlertManeuver extends RPCRequest{
      *            <p>
      *            <b>Notes: </b>Array must have a least one element
      */
-    public void setTtsChunks(List<TTSChunk> ttsChunks){
+    public void setTtsChunks(List<TtsChunk> ttsChunks){
         if(ttsChunks != null){
             parameters.put(KEY_TTS_CHUNKS, ttsChunks);
         }

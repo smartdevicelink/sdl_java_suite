@@ -1,4 +1,4 @@
-package com.smartdevicelink.SdlConnection;
+package com.smartdevicelink.connection.interfaces;
 
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -11,7 +11,7 @@ public interface ISdlConnectionListener {
 	
 	public void onProtocolMessageReceived(ProtocolMessage msg);
 	
-	public void onProtocolSessionNACKed(SessionType sessionType,
+	public void onProtocolSessionNack(SessionType sessionType,
 			byte sessionID, byte version, String correlationID);	
 	
 	public void onProtocolSessionStarted(SessionType sessionType,

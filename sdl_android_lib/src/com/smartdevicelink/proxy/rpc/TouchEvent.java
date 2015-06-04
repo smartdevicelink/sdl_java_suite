@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
-public class TouchEvent extends RPCStruct {
+public class TouchEvent extends RpcStruct {
     public static final String KEY_ID = "id";
     public static final String KEY_TS = "ts";
     public static final String KEY_C = "c";

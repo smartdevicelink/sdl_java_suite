@@ -5,16 +5,16 @@ import com.smartdevicelink.protocol.enums.SessionType;
 
 public class ProtocolMessage {
 	private byte version = 1;
-	private SessionType _sessionType = SessionType.RPC;
-	private MessageType _messageType = MessageType.UNDEFINED;
-	private byte _sessionID = 0;
-	private byte _rpcType;
-	private int _functionID;
-	private int _correlationID;
-	private int _jsonSize;
+	private SessionType sessionType = SessionType.RPC;
+	private MessageType messageType = MessageType.UNDEFINED;
+	private byte sessionId = 0;
+	private byte rpcType;
+	private int functionId;
+	private int correlationId;
+	private int jsonSize;
 	
-	private byte[] _data = null;
-	private byte[] _bulkData = null;
+	private byte[] data = null;
+	private byte[] bulkData = null;
 	
 	public ProtocolMessage() {}
 
@@ -26,100 +26,100 @@ public class ProtocolMessage {
 		this.version = version;
 	}
 
-	public byte getSessionID() {
-		return _sessionID;
+	public byte getSessionId() {
+		return sessionId;
 	}
 
-	public void setSessionID(byte sessionID) {
-		this._sessionID = sessionID;
+	public void setSessionId(byte sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public byte[] getData() {
-		return _data;
+		return data;
 	}
 
 	public void setData(byte[] data) {
-		this._data = data;
-		this._jsonSize = data.length;
+		this.data = data;
+		this.jsonSize = data.length;
 	}
 	
 	public void setData(byte[] data, int length) {
-		if (this._data != null)
-			this._data = null;
-		this._data = new byte[length];
-		System.arraycopy(data, 0, this._data, 0, length);
-		this._jsonSize = 0;
+		if (this.data != null)
+			this.data = null;
+		this.data = new byte[length];
+		System.arraycopy(data, 0, this.data, 0, length);
+		this.jsonSize = 0;
 	}	
 
 	public byte[] getBulkData() {
-		return _bulkData;
+		return bulkData;
 	}
 
 	public void setBulkDataNoCopy(byte[] bulkData) {
-		this._bulkData = bulkData;
+		this.bulkData = bulkData;
 	}
 
 	public void setBulkData(byte[] bulkData) {
-		if (this._bulkData != null)
-			this._bulkData = null;
-		this._bulkData = new byte[bulkData.length];
-		System.arraycopy(bulkData, 0, this._bulkData, 0, bulkData.length);
+		if (this.bulkData != null)
+			this.bulkData = null;
+		this.bulkData = new byte[bulkData.length];
+		System.arraycopy(bulkData, 0, this.bulkData, 0, bulkData.length);
 		//this._bulkData = bulkData;
 	}
 	
 	public void setBulkData(byte[] bulkData, int length) {
-		if (this._bulkData != null)
-			this._bulkData = null;
-		this._bulkData = new byte[length];
-		System.arraycopy(bulkData, 0, this._bulkData, 0, length);
+		if (this.bulkData != null)
+			this.bulkData = null;
+		this.bulkData = new byte[length];
+		System.arraycopy(bulkData, 0, this.bulkData, 0, length);
 		//this._bulkData = bulkData;
 	}
 
 	public SessionType getSessionType() {
-		return _sessionType;
+		return sessionType;
 	}
 
 	public void setSessionType(SessionType sessionType) {
-		this._sessionType = sessionType;
+		this.sessionType = sessionType;
 	}
 
 	public MessageType getMessageType() {
-		return _messageType;
+		return messageType;
 	}
 
 	public void setMessageType(MessageType messageType) {
-		this._messageType = messageType;
+		this.messageType = messageType;
 	}
 	
-	public byte getRPCType() {
-		return _rpcType;
+	public byte getRpcType() {
+		return rpcType;
 	}
 	
-	public void setRPCType(byte _rpcType) {
-		this._rpcType = _rpcType;
+	public void setRpcType(byte rpcType) {
+		this.rpcType = rpcType;
 	}
 	
-	public int getFunctionID() {
-		return _functionID;
+	public int getFunctionId() {
+		return functionId;
 	}
 	
-	public void setFunctionID(int _functionID) {
-		this._functionID = _functionID;
+	public void setFunctionId(int functionId) {
+		this.functionId = functionId;
 	}
 	
-	public int getCorrID() {
-		return _correlationID;
+	public int getCorrId() {
+		return correlationId;
 	}
 	
-	public void setCorrID(int _correlationID) {
-		this._correlationID = _correlationID;
+	public void setCorrId(int correlationId) {
+		this.correlationId = correlationId;
 	}
 
 	public int getJsonSize() {
-		return _jsonSize;
+		return jsonSize;
 	}
 
-	public void setJsonSize(int _jsonSize) {
-		this._jsonSize = _jsonSize;
+	public void setJsonSize(int jsonSize) {
+		this.jsonSize = jsonSize;
 	}
 } // end-class

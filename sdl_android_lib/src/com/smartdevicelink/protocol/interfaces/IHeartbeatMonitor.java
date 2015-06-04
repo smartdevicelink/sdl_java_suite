@@ -1,4 +1,5 @@
-package com.smartdevicelink.protocol.heartbeat;
+package com.smartdevicelink.protocol.interfaces;
+
 
 
 public interface IHeartbeatMonitor {
@@ -50,5 +51,5 @@ public interface IHeartbeatMonitor {
     /**
      * Notifies the monitor about a received heartbeat ACK message.
      */
-    public void heartbeatACKReceived();
+    public void heartbeatAckReceived();
 }

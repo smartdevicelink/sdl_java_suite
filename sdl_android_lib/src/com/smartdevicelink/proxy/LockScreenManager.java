@@ -1,20 +1,20 @@
 package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.HmiLevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 
 public class LockScreenManager {
 	
 	private Boolean bUserSelected = false;
 	private Boolean bDriverDistStatus = null;
-	private HMILevel  hmiLevel = null;
+	private HmiLevel  hmiLevel = null;
 	@SuppressWarnings("unused")
-    private int iSessionID;
+    private int iSessionId;
 
-	public synchronized void setSessionID(int iVal)
+	public synchronized void setSessionId(int iVal)
 	{
-			iSessionID = iVal;
+			iSessionId = iVal;
 	}
 	
 	private synchronized void setUserSelectedStatus(boolean bVal)
@@ -27,13 +27,13 @@ public class LockScreenManager {
 			bDriverDistStatus = bVal;	
 	}
 
-	public synchronized void setHMILevel(HMILevel hmiVal)
+	public synchronized void setHMILevel(HmiLevel hmiVal)
 	{		
 		hmiLevel = hmiVal;
 		
-		if ( (hmiVal.equals(HMILevel.HMI_FULL)) || (hmiVal.equals(HMILevel.HMI_LIMITED)) )
+		if ( (hmiVal.equals(HmiLevel.HMI_FULL)) || (hmiVal.equals(HmiLevel.HMI_LIMITED)) )
 			setUserSelectedStatus(true);
-		else if (hmiVal.equals(HMILevel.HMI_NONE))
+		else if (hmiVal.equals(HmiLevel.HMI_NONE))
 			setUserSelectedStatus(false);				
 	}
 	
@@ -42,7 +42,7 @@ public class LockScreenManager {
 		//int iSessionID = SessionID;
 		OnLockScreenStatus myLock = new OnLockScreenStatus();
 		myLock.setDriverDistractionStatus(bDriverDistStatus);
-		myLock.setHMILevel(hmiLevel);
+		myLock.setHmiLevel(hmiLevel);
 		myLock.setUserSelected(bUserSelected);
 		myLock.setShowLockScreen(getLockScreenStatus());
 		
@@ -52,11 +52,11 @@ public class LockScreenManager {
 	private synchronized LockScreenStatus getLockScreenStatus() 
 	{
 		
-		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE)) )
+		if ( (hmiLevel == null) || (hmiLevel.equals(HmiLevel.HMI_NONE)) )
 		{
 			return LockScreenStatus.OFF;
 		}
-		else if ( hmiLevel.equals(HMILevel.HMI_BACKGROUND) )
+		else if ( hmiLevel.equals(HmiLevel.HMI_BACKGROUND) )
 		{
 			if (bDriverDistStatus == null)
 			{
@@ -79,7 +79,7 @@ public class LockScreenManager {
 				return LockScreenStatus.OFF;
 			}
 		}
-		else if ( (hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED)) )
+		else if ( (hmiLevel.equals(HmiLevel.HMI_FULL)) || (hmiLevel.equals(HmiLevel.HMI_LIMITED)) )
 		{
 			if ( (bDriverDistStatus != null) && (!bDriverDistStatus) )
 			{

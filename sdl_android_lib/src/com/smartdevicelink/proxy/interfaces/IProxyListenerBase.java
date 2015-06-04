@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
-import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetDtcsResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
@@ -28,14 +28,14 @@ import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
-import com.smartdevicelink.proxy.rpc.OnTBTClientState;
-import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.OnTbtClientState;
+import com.smartdevicelink.proxy.rpc.OnStreamRpc;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
-import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.ReadDidResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
@@ -46,7 +46,7 @@ import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
-import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
+import com.smartdevicelink.proxy.rpc.StreamRpcResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
@@ -79,9 +79,9 @@ public interface IProxyListenerBase  {
 	 */
 	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason);
 	
-	public void onOnStreamRPC(OnStreamRPC notification);
+	public void onOnStreamRPC(OnStreamRpc notification);
 	
-	public void onStreamRPCResponse(StreamRPCResponse response);
+	public void onStreamRPCResponse(StreamRpcResponse response);
 	/**
 	 * onProxyError() being called indicates that the SDL Proxy experenced an error.
 	 * 
@@ -287,7 +287,7 @@ public interface IProxyListenerBase  {
 	
 	public void onOnDriverDistraction(OnDriverDistraction notification);
 		
-	public void onOnTBTClientState(OnTBTClientState notification);
+	public void onOnTBTClientState(OnTbtClientState notification);
 	
 	public void onOnSystemRequest(OnSystemRequest notification);
 	
@@ -299,9 +299,9 @@ public interface IProxyListenerBase  {
 	
 	public void onDiagnosticMessageResponse(DiagnosticMessageResponse response);
 	
-	public void onReadDIDResponse(ReadDIDResponse response);
+	public void onReadDIDResponse(ReadDidResponse response);
 	
-	public void onGetDTCsResponse(GetDTCsResponse response);
+	public void onGetDTCsResponse(GetDtcsResponse response);
 	
 	public void onOnLockScreenNotification(OnLockScreenStatus notification);
 	

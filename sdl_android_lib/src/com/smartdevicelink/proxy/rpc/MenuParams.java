@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 /**
  * Used when adding a sub menu to an application menu or existing sub menu.
  * <p><b> Parameter List
@@ -53,7 +53,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  * </table>
  * @since SmartDeviceLink 1.0
  */
-public class MenuParams extends RPCStruct {
+public class MenuParams extends RpcStruct {
 	public static final String KEY_PARENT_ID = "parentID";
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_MENU_NAME = "menuName";
@@ -73,17 +73,17 @@ public class MenuParams extends RPCStruct {
      *	If this element is not provided, the command will be added to the top level of the Command Menu.
      * @return parentID Min: 0 Max: 2000000000
      */    
-    public Integer getParentID() {
+    public Integer getParentId() {
         return (Integer) store.get( KEY_PARENT_ID );
     }
     /**
      * Set the unique ID of an existing submenu to which a command will be added.
      *	If this element is not provided, the command will be added to the top level of the Command Menu.
-     * @param parentID Min: 0; Max: 2000000000
+     * @param parentId Min: 0; Max: 2000000000
      */    
-    public void setParentID( Integer parentID ) {
-        if (parentID != null) {
-            store.put(KEY_PARENT_ID, parentID );
+    public void setParentId( Integer parentId ) {
+        if (parentId != null) {
+            store.put(KEY_PARENT_ID, parentId );
         } else {
         	store.remove(KEY_PARENT_ID);
         }

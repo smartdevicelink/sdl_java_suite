@@ -1,20 +1,20 @@
 package com.smartdevicelink.proxy;
 
-import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.StreamRpcPacketizer;
 
-public class RPCStreamController {
-	private StreamRPCPacketizer rpcPacketizer;
-	private Integer iCorrelationID;
+public class RpcStreamController {
+	private StreamRpcPacketizer rpcPacketizer;
+	private Integer iCorrelationId;
 
-	public RPCStreamController(StreamRPCPacketizer rpcPacketizer, Integer iCorrelationID)
+	public RpcStreamController(StreamRpcPacketizer rpcPacketizer, Integer iCorrelationId)
 	{
 		this.rpcPacketizer = rpcPacketizer;
-		this.iCorrelationID = iCorrelationID;
+		this.iCorrelationId = iCorrelationId;
 	}	
 	
-	public Integer getCorrelationID()
+	public Integer getCorrelationId()
 	{
-		return iCorrelationID;
+		return iCorrelationId;
 	}
 	
 	public void pause()

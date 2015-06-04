@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
@@ -39,7 +39,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  * </table> 
  * @since SmartDeviceLink 1.0
  */
-public class SdlMsgVersion extends RPCStruct {
+public class SdlMsgVersion extends RpcStruct {
 	public static final String KEY_MAJOR_VERSION = "majorVersion";
 	public static final String KEY_MINOR_VERSION = "minorVersion";
 

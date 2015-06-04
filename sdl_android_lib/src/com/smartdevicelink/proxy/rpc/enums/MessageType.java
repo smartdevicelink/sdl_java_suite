@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 public enum MessageType {
-    request,
-    response,
-    notification;
+    REQUEST,
+    RESPONSE,
+    NOTIFICATION;
 
     public static MessageType valueForString(String value) {
         try{

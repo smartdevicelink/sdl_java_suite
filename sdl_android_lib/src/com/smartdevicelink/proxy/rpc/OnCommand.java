@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
 /**
@@ -51,14 +51,14 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
  * @see DeleteCommand
  * @see DeleteSubMenu
  */
-public class OnCommand extends RPCNotification {
+public class OnCommand extends RpcNotification {
 	public static final String KEY_CMD_ID = "cmdID";
 	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnCommand() {
-        super(FunctionID.ON_COMMAND.toString());
+        super(FunctionId.ON_COMMAND.toString());
     }
     /**
     *<p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>
@@ -71,16 +71,16 @@ public class OnCommand extends RPCNotification {
      * <p>Returns an <i>Integer</i> object representing the Command ID</p>
      * @return Integer an integer representation of this object
      */    
-    public Integer getCmdID() {
+    public Integer getCmdId() {
         return (Integer) parameters.get( KEY_CMD_ID );
     }
     /**
      * <p>Sets a Command ID</p>    
-     * @param cmdID an integer object representing a Command ID
+     * @param cmdId an integer object representing a Command ID
      */    
-    public void setCmdID( Integer cmdID ) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID );
+    public void setCmdId( Integer cmdId ) {
+        if (cmdId != null) {
+            parameters.put(KEY_CMD_ID, cmdId );
         } else {
             parameters.remove(KEY_CMD_ID);
         }

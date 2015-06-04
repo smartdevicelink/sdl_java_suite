@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * Describes a navigation turn including an optional icon
@@ -35,7 +35,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class Turn extends RPCStruct{
+public class Turn extends RpcStruct{
     public static final String KEY_NAVIGATION_TEXT = "navigationText";
     public static final String KEY_TURN_IMAGE = "turnIcon";
     

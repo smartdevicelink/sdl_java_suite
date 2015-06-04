@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 
 /**
@@ -43,7 +43,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * </table>
  * @since SmartDeviceLink 1.0
  */
-public class ButtonCapabilities extends RPCStruct {
+public class ButtonCapabilities extends RpcStruct {
 	public static final String KEY_NAME = "name";
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";

@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
-public class AirbagStatus extends RPCStruct {
+public class AirbagStatus extends RpcStruct {
     public static final String KEY_DRIVER_AIRBAG_DEPLOYED = "driverAirbagDeployed";
     public static final String KEY_DRIVER_SIDE_AIRBAG_DEPLOYED = "driverSideAirbagDeployed";
     public static final String KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED = "driverCurtainAirbagDeployed";

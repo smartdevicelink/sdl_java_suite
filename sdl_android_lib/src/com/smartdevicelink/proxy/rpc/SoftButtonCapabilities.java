@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * Contains information about a SoftButton's capabilities.
@@ -48,7 +48,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class SoftButtonCapabilities extends RPCStruct {
+public class SoftButtonCapabilities extends RpcStruct {
 	public static final String KEY_IMAGE_SUPPORTED = "imageSupported";
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";

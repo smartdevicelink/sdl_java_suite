@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * This RPC is used to update the user with navigation information for the constantly shown screen (base screen), but
@@ -20,7 +20,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see AlertManeuver
  * @see UpdateTurnList
  */
-public class ShowConstantTbt extends RPCRequest{
+public class ShowConstantTbt extends RpcRequest{
 
     public static final String KEY_TEXT1                   = "navigationText1";
     public static final String KEY_TEXT2                   = "navigationText2";
@@ -38,7 +38,7 @@ public class ShowConstantTbt extends RPCRequest{
      * Constructs a new ShowConstantTbt object
      */
     public ShowConstantTbt(){
-        super(FunctionID.SHOW_CONSTANT_TBT.toString());
+        super(FunctionId.SHOW_CONSTANT_TBT.toString());
     }
 
     /**

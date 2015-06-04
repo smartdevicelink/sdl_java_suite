@@ -1,6 +1,5 @@
-package com.smartdevicelink.proxy;
+package com.smartdevicelink.proxy.interfaces;
 
-import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;

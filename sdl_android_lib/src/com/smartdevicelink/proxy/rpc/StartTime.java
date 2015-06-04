@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * Describes the hour, minute and second values used to set the media clock.
@@ -37,7 +37,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  * </table>
  * @since SmartDeviceLink 1.0
  */
-public class StartTime extends RPCStruct {
+public class StartTime extends RpcStruct {
 	public static final String KEY_MINUTES = "minutes";
 	public static final String KEY_SECONDS = "seconds";
 	public static final String KEY_HOURS = "hours";

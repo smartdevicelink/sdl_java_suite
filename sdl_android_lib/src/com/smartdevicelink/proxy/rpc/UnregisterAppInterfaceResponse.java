@@ -2,21 +2,21 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Unregister AppInterface Response is sent, when UnregisterAppInterface has been called
  * 
  * @since SmartDeviceLink 1.0
  */
-public class UnregisterAppInterfaceResponse extends RPCResponse {
+public class UnregisterAppInterfaceResponse extends RpcResponse {
 
 	/**
 	 * Constructs a new UnregisterAppInterfaceResponse object
 	 */
     public UnregisterAppInterfaceResponse() {
-        super(FunctionID.UNREGISTER_APP_INTERFACE.toString());
+        super(FunctionId.UNREGISTER_APP_INTERFACE.toString());
     }
 
 	/**

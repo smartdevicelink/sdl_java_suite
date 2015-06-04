@@ -2,24 +2,24 @@ package com.smartdevicelink.proxy.callbacks;
 
 public class OnError extends InternalProxyMessage {
 
-	private String _info;
-	private Exception _e;
+	private String info;
+	private Exception e;
 	
 	public OnError() {
-		super(InternalProxyMessage.OnProxyError);
+		super(InternalProxyMessage.ON_PROXY_ERROR);
 	}
 
 	public OnError(String info, Exception e) {
-		super(InternalProxyMessage.OnProxyError);
-		this._info = info;
-		this._e = e;
+		super(InternalProxyMessage.ON_PROXY_ERROR);
+		this.info = info;
+		this.e = e;
 	}
 	
 	public String getInfo() {
-		return _info;
+		return info;
 	}
 	
 	public Exception getException() {
-		return _e;
+		return e;
 	}
 }

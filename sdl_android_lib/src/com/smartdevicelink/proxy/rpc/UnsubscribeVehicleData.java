@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * This function is used to unsubscribe the notifications from the
@@ -18,7 +18,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see SubscribeVehicleData
  * @see GetVehicleData
  */
-public class UnsubscribeVehicleData extends RPCRequest {
+public class UnsubscribeVehicleData extends RpcRequest {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
@@ -49,7 +49,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Constructs a new UnsubscribeVehicleData object
 	 */
     public UnsubscribeVehicleData() {
-        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
+        super(FunctionId.UNSUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**

@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * When this request is invoked, the audio capture stops
@@ -15,13 +15,13 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @since SmartDeviceLink 2.0
  * @see PerformAudioPassThru
  */
-public class EndAudioPassThru extends RPCRequest {
+public class EndAudioPassThru extends RpcRequest {
 
 	/**
 	 * Constructs a new EndAudioPassThru object
 	 */
     public EndAudioPassThru() {
-        super(FunctionID.END_AUDIO_PASS_THRU.toString());
+        super(FunctionId.END_AUDIO_PASS_THRU.toString());
     }
     
     /**

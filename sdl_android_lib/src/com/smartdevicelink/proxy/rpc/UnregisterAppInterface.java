@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Terminates an application's interface registration. This causes SDL&reg; to
@@ -21,12 +21,12 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see RegisterAppInterface
  * @see OnAppInterfaceUnregistered
  */
-public class UnregisterAppInterface extends RPCRequest {
+public class UnregisterAppInterface extends RpcRequest {
 	/**
 	 * Constructs a new UnregisterAppInterface object
 	 */
     public UnregisterAppInterface() {
-        super(FunctionID.UNREGISTER_APP_INTERFACE.toString());
+        super(FunctionId.UNREGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new UnregisterAppInterface object indicated by the Hashtable

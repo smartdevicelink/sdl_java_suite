@@ -14,12 +14,12 @@ public class SiphonServer {
 	private SiphonServer() {}
 	
 	enum SiphonDataType {
-		fromSdl,				
-		fromApp,				
-		appLog,
-		formattedTrace,
-		baselineTimeStamp,		
-		traceSettings			
+		FROM_SDL,				
+		FROM_APP,				
+		APP_LOG,
+		FORMATTED_TRACE,
+		BASELINE_TIMESTAMP,		
+		TRACE_SETTINGS			
 	}
 	
 	// Boolean to enable/disable the siphon
@@ -137,7 +137,7 @@ public class SiphonServer {
 			return false;
 		}
 		
-		return sendSiphonData(SiphonDataType.fromApp, msgBytes, offset, length);
+		return sendSiphonData(SiphonDataType.FROM_APP, msgBytes, offset, length);
 	} // end-method
 
 	public static Boolean sendBytesFromSDL(byte[] msgBytes, int offset, int length) {		
@@ -146,7 +146,7 @@ public class SiphonServer {
 			return false;
 		}
 		
-		return sendSiphonData(SiphonDataType.fromSdl, msgBytes, offset, length);
+		return sendSiphonData(SiphonDataType.FROM_SDL, msgBytes, offset, length);
 	} // end-method
 	
 	public static Boolean sendSiphonLogData(String message) {
@@ -169,7 +169,7 @@ public class SiphonServer {
 		}
 		
 		messageLength = messageBytes.length;
-		return sendSiphonData(SiphonDataType.appLog, messageBytes, 0, messageLength);
+		return sendSiphonData(SiphonDataType.APP_LOG, messageBytes, 0, messageLength);
 		
 	}
 	
@@ -189,7 +189,7 @@ public class SiphonServer {
 		}
 		
 		messageLength = messageBytes.length;
-		if (sendSiphonData(SiphonDataType.formattedTrace, messageBytes, 0, messageLength)) {
+		if (sendSiphonData(SiphonDataType.FORMATTED_TRACE, messageBytes, 0, messageLength)) {
 			m_sendingFormattedTrace = true;
 			return true;
 		} else {
@@ -206,22 +206,22 @@ public class SiphonServer {
 		deltaTimeMills = (int)(currentDateTime - m_startTimeStamp);
 		
 		switch(direction) {
-			case fromSdl:
+			case FROM_SDL:
 				siphonDataTypeIndicator = 0x00;
 				break;
-			case fromApp:
+			case FROM_APP:
 				siphonDataTypeIndicator = 0x01;
 				break;
-			case appLog:
+			case APP_LOG:
 				siphonDataTypeIndicator = 0x02;
 				break;
-			case formattedTrace:
+			case FORMATTED_TRACE:
 				siphonDataTypeIndicator = 0x03;
 				break;
-			case baselineTimeStamp:
+			case BASELINE_TIMESTAMP:
 				siphonDataTypeIndicator = 0x04;
 				break;
-			case traceSettings:
+			case TRACE_SETTINGS:
 				siphonDataTypeIndicator = 0x05;
 				break;
 			default:

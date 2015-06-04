@@ -37,9 +37,9 @@ import android.util.Log;
  * 3. set minimum SDK version to 12:
  * <uses-sdk android:minSdkVersion="12"/>
  */
-public class USBAccessoryAttachmentActivity extends Activity {
+public class UsbAccessoryAttachmentActivity extends Activity {
     private static final String TAG =
-            USBAccessoryAttachmentActivity.class.getSimpleName();
+            UsbAccessoryAttachmentActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
         if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
             Intent usbAccessoryAttachedIntent =
-                    new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
+                    new Intent(UsbTransport.ACTION_USB_ACCESSORY_ATTACHED);
             usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY,
                     intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY));
             usbAccessoryAttachedIntent

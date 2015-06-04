@@ -4,38 +4,39 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RpcRequest;
+import com.smartdevicelink.streaming.interfaces.IStreamListener;
 
 abstract public class AbstractPacketizer {
 
-	protected IStreamListener _streamListener = null;
+	protected IStreamListener streamListener = null;
 
-	protected byte _rpcSessionID = 0;
+	protected byte rpcSessionId = 0;
 	
-	protected SessionType _session = null;
+	protected SessionType session = null;
 	protected InputStream is = null;
 	protected byte[] buffer = new byte[1000000];
 	protected boolean upts = false;
-	protected RPCRequest _request = null;
-	protected byte _wiproVersion = 1;
+	protected RpcRequest request = null;
+	protected byte wiproVersion = 1;
 	
 	//protected long ts = 0, intervalBetweenReports = 5000, delta = 0;
 	protected long intervalBetweenReports = 5000, delta = 0;
 
-	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
-        this._streamListener = streamListener;
+	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionId) throws IOException {
+        this.streamListener = streamListener;
 		this.is = is;
-		_rpcSessionID = rpcSessionID;
-		_session = sType;
+		this.rpcSessionId = rpcSessionId;
+		session = sType;
 	}
 	
-	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) throws IOException {
-        this._streamListener = streamListener;
+	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RpcRequest request, SessionType sType, byte rpcSessionId, byte wiproVersion) throws IOException {
+        this.streamListener = streamListener;
 		this.is = is;
-		_rpcSessionID = rpcSessionID;
-		_session = sType;
-		_request = request;
-		_wiproVersion = wiproVersion;
+		this.rpcSessionId = rpcSessionId;
+		session = sType;
+		this.request = request;
+		this.wiproVersion = wiproVersion;
 	}	
 
 	public abstract void start() throws IOException;

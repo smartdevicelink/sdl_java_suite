@@ -2,22 +2,22 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Slider Response is sent, when Slider has been called
  * 
  * @since SmartDeviceLink 2.0
  */
-public class SliderResponse extends RPCResponse {
+public class SliderResponse extends RpcResponse {
 	public static final String KEY_SLIDER_POSITION = "sliderPosition";
 
 	/**
 	 * Constructs a new SliderResponse object
 	 */
     public SliderResponse() {
-        super(FunctionID.SLIDER.toString());
+        super(FunctionId.SLIDER.toString());
     }
 
 	/**

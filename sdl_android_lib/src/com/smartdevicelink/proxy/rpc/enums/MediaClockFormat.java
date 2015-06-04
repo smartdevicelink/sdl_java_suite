@@ -20,7 +20,7 @@ public enum MediaClockFormat {
 	 * @since SmartDeviceLink 1.0
 	 * 
 	 */
-	CLOCK1,
+	CLOCK_1,
 	/**
 	 * <p>
 	 * </p>
@@ -33,7 +33,7 @@ public enum MediaClockFormat {
 	 * @since SmartDeviceLink 1.0
 	 * 
 	 */    
-	CLOCK2,
+	CLOCK_2,
 	/**
 	 * <p>
 	 * </p>
@@ -46,7 +46,7 @@ public enum MediaClockFormat {
 	 * @since SmartDeviceLink 2.0
 	 * 
 	 */
-    CLOCK3,
+    CLOCK_3,
 	/**
 	 * <p>
 	 * </p>
@@ -62,7 +62,7 @@ public enum MediaClockFormat {
 	 * 
 	 * @since SmartDeviceLink 1.0
 	 */    
-    CLOCKTEXT1,
+    CLOCK_TEXT_1,
 	/**
 	 * <p>
 	 * </p>
@@ -80,7 +80,7 @@ public enum MediaClockFormat {
 	 * 
 	 * @since SmartDeviceLink 1.0
 	 */    
-    CLOCKTEXT2,
+    CLOCK_TEXT_2,
 	/**
 	 * <p>
 	 * </p>
@@ -99,7 +99,7 @@ public enum MediaClockFormat {
 	 * 
 	 * @since SmartDeviceLink 1.0
 	 */    
-    CLOCKTEXT3,
+    CLOCK_TEXT_3,
 	/**
 	 * <p>
 	 * </p>
@@ -114,7 +114,7 @@ public enum MediaClockFormat {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-    CLOCKTEXT4;
+    CLOCK_TEXT_4;
 
     public static MediaClockFormat valueForString(String value) {
         try{

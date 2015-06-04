@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
@@ -38,7 +38,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see Show
  * @see Speak
  */
-public class Alert extends RPCRequest {
+public class Alert extends RpcRequest {
 	public static final String KEY_PLAY_TONE = "playTone";
 	public static final String KEY_DURATION = "duration";
 	public static final String KEY_ALERT_TEXT_1 = "alertText1";
@@ -52,7 +52,7 @@ public class Alert extends RPCRequest {
 	 * Constructs a new Alert object
 	 */    
 	public Alert() {
-        super(FunctionID.ALERT.toString());
+        super(FunctionId.ALERT.toString());
     }
 	/**
 	 * Constructs a new Alert object indicated by the Hashtable parameter
@@ -176,17 +176,17 @@ public class Alert extends RPCRequest {
 	 *         the user
 	 */    
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTtsChunks() {
+    public List<TtsChunk> getTtsChunks() {
         if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -202,7 +202,7 @@ public class Alert extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes: </b>Array must have a least one element
 	 */    
-    public void setTtsChunks(List<TTSChunk> ttsChunks) {
+    public void setTtsChunks(List<TtsChunk> ttsChunks) {
         if (ttsChunks != null) {
             parameters.put(KEY_TTS_CHUNKS, ttsChunks);
         } else {

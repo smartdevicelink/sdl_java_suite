@@ -2,12 +2,12 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 
-public class ClusterModeStatus extends RPCStruct {
+public class ClusterModeStatus extends RpcStruct {
     public static final String KEY_POWER_MODE_ACTIVE = "powerModeActive";
     public static final String KEY_POWER_MODE_QUALIFICATION_STATUS = "powerModeQualificationStatus";
     public static final String KEY_CAR_MODE_STATUS = "carModeStatus";

@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -11,7 +11,7 @@ import com.smartdevicelink.util.DebugTool;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class SubscribeVehicleDataResponse extends RPCResponse {
+public class SubscribeVehicleDataResponse extends RpcResponse {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_FUEL_LEVEL = "fuelLevel";
@@ -41,7 +41,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	 * Constructs a new SubscribeVehicleDataResponse object
 	 */
     public SubscribeVehicleDataResponse() {
-        super(FunctionID.SUBSCRIBE_VEHICLE_DATA.toString());
+        super(FunctionId.SUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**

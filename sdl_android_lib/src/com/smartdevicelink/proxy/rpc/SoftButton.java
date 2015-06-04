@@ -2,12 +2,12 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.util.DebugTool;
 
-public class SoftButton extends RPCStruct {
+public class SoftButton extends RpcStruct {
 
 	public static final String KEY_IS_HIGHLIGHTED = "isHighlighted";
 	public static final String KEY_SOFT_BUTTON_ID = "softButtonID";
@@ -77,14 +77,14 @@ public class SoftButton extends RPCStruct {
     public Boolean getIsHighlighted() {
         return (Boolean) store.get(KEY_IS_HIGHLIGHTED);
     }
-    public void setSoftButtonID(Integer softButtonID) {
-        if (softButtonID != null) {
-            store.put(KEY_SOFT_BUTTON_ID, softButtonID);
+    public void setSoftButtonId(Integer softButtonId) {
+        if (softButtonId != null) {
+            store.put(KEY_SOFT_BUTTON_ID, softButtonId);
         } else {
         	store.remove(KEY_SOFT_BUTTON_ID);
         }
     }
-    public Integer getSoftButtonID() {
+    public Integer getSoftButtonId() {
         return (Integer) store.get(KEY_SOFT_BUTTON_ID);
     }
     public void setSystemAction(SystemAction systemAction) {

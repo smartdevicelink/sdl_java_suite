@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
 /**
@@ -11,7 +11,7 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
  * 
  * @since SmartDeviceLink 1.0
  */
-public class PerformInteractionResponse extends RPCResponse {
+public class PerformInteractionResponse extends RpcResponse {
     public static final String KEY_MANUAL_TEXT_ENTRY = "manualTextEntry";
     public static final String KEY_TRIGGER_SOURCE = "triggerSource";
     public static final String KEY_CHOICE_ID = "choiceID";
@@ -20,7 +20,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	 * Constructs a new PerformInteractionResponse object
 	 */
     public PerformInteractionResponse() {
-        super(FunctionID.PERFORM_INTERACTION.toString());
+        super(FunctionId.PERFORM_INTERACTION.toString());
     }
 
 	/**
@@ -38,16 +38,16 @@ public class PerformInteractionResponse extends RPCResponse {
      * Gets the application-scoped identifier that uniquely identifies this choice.
      * @return choiceID Min: 0  Max: 65535
      */   
-    public Integer getChoiceID() {
+    public Integer getChoiceId() {
         return (Integer) parameters.get( KEY_CHOICE_ID );
     }
     /**
      * Sets the application-scoped identifier that uniquely identifies this choice.
-     * @param choiceID Min: 0  Max: 65535
+     * @param choiceId Min: 0  Max: 65535
      */ 
-    public void setChoiceID( Integer choiceID ) {
-        if (choiceID != null) {
-            parameters.put(KEY_CHOICE_ID, choiceID );
+    public void setChoiceId( Integer choiceId ) {
+        if (choiceId != null) {
+            parameters.put(KEY_CHOICE_ID, choiceId );
         } else {
             parameters.remove(KEY_CHOICE_ID);
         }

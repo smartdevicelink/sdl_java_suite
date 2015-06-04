@@ -2,16 +2,16 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.HmiLevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 /**
  * <p>Notifies an application that HMI conditions have changed for the application. This indicates whether the application 
  * can speak phrases, display text, perform interactions, receive button presses and events, stream audio, etc. This 
  * notification will be sent to the application when there has been a change in any one or several of the indicated 
- * states ({@linkplain HMILevel}, {@linkplain AudioStreamingState} or {@linkplain SystemContext}) for the application</p>
+ * states ({@linkplain HmiLevel}, {@linkplain AudioStreamingState} or {@linkplain SystemContext}) for the application</p>
  * <p>All three values are, in principle, independent of each other (though there may be some relationships). A value for 
  * one parameter should not be interpreted from the value of another parameter.</p>
  * <p>There are no guarantees about the timeliness or latency of the OnHMIStatus notification. Therefore, for example, 
@@ -29,7 +29,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
  * </tr>
  * <tr>
  * <td>hmiLevel</td>
- * <td>{@linkplain HMILevel}</td>
+ * <td>{@linkplain HmiLevel}</td>
  * <td>The current HMI Level in effect for the application.</td>
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
@@ -61,7 +61,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
  * @since SmartDeviceLink 1.0
  * @see RegisterAppInterface 
  */
-public class OnHMIStatus extends RPCNotification {
+public class OnHMIStatus extends RpcNotification {
 	public static final String KEY_AUDIO_STREAMING_STATE = "audioStreamingState";
 	public static final String KEY_SYSTEM_CONTEXT = "systemContext";
 	public static final String KEY_HMI_LEVEL = "hmiLevel";
@@ -72,7 +72,7 @@ public class OnHMIStatus extends RPCNotification {
 	*Constructs a newly allocated OnHMIStatus object
 	*/ 	
     public OnHMIStatus() {
-        super(FunctionID.ON_HMI_STATUS.toString());
+        super(FunctionId.ON_HMI_STATUS.toString());
     }
     /**
     *<p>Constructs a newly allocated OnHMIStatus object indicated by the Hashtable parameter</p>
@@ -83,14 +83,14 @@ public class OnHMIStatus extends RPCNotification {
     }
     /**
      * <p>Get HMILevel in effect for the application</p>
-     * @return {@linkplain HMILevel} the current HMI Level in effect for the application
+     * @return {@linkplain HmiLevel} the current HMI Level in effect for the application
      */    
-    public HMILevel getHmiLevel() {
+    public HmiLevel getHmiLevel() {
         Object obj = parameters.get(KEY_HMI_LEVEL);
-        if (obj instanceof HMILevel) {
-            return (HMILevel) obj;
+        if (obj instanceof HmiLevel) {
+            return (HmiLevel) obj;
         } else if (obj instanceof String) {
-            return HMILevel.valueForString((String) obj);
+            return HmiLevel.valueForString((String) obj);
         }
         return null;
     }
@@ -98,7 +98,7 @@ public class OnHMIStatus extends RPCNotification {
      * <p>Set the HMILevel of OnHMIStatus</p>
      * @param hmiLevel the HMILevel to set
      */    
-    public void setHmiLevel( HMILevel hmiLevel ) {
+    public void setHmiLevel( HmiLevel hmiLevel ) {
         if (hmiLevel != null) {
             parameters.put(KEY_HMI_LEVEL, hmiLevel );
         } else {

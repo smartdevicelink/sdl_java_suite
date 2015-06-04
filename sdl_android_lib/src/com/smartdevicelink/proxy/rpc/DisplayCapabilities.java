@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.util.DebugTool;
@@ -48,7 +48,7 @@ import com.smartdevicelink.util.DebugTool;
  * </table>
  * @since SmartDeviceLink 1.0
  */
-public class DisplayCapabilities extends RPCStruct {
+public class DisplayCapabilities extends RpcStruct {
 	public static final String KEY_DISPLAY_TYPE = "displayType";
 	public static final String KEY_MEDIA_CLOCK_FORMATS = "mediaClockFormats";
 	public static final String KEY_TEXT_FIELDS = "textFields";

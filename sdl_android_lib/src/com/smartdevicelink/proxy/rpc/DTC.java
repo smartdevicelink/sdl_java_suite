@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * String containing hexadecimal identifier as well as other common names.
@@ -27,19 +27,19 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class DTC extends RPCStruct {
+public class Dtc extends RpcStruct {
 	public static final String KEY_IDENTIFIER = "identifier";
 	public static final String KEY_STATUS_BYTE = "statusByte";
 	/**
 	 * Constructs a newly allocated DTC object
 	 */
-    public DTC() { }
+    public Dtc() { }
     
     /**
      * Constructs a newly allocated DTC object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public DTC(Hashtable<String, Object> hash) {
+    public Dtc(Hashtable<String, Object> hash) {
         super(hash);
     }
     

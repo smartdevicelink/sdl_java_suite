@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Creates a Choice Set which can be used in subsequent <i>
@@ -20,7 +20,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see DeleteInteractionChoiceSet
  * @see PerformInteraction
  */
-public class CreateInteractionChoiceSet extends RPCRequest {
+public class CreateInteractionChoiceSet extends RpcRequest {
 	public static final String KEY_CHOICE_SET = "choiceSet";
 	public static final String KEY_INTERACTION_CHOICE_SET_ID = "interactionChoiceSetID";
 
@@ -28,7 +28,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * Constructs a new CreateInteractionChoiceSet object
 	 */    
 	public CreateInteractionChoiceSet() {
-        super(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString());
+        super(FunctionId.CREATE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
 	 * Constructs a new CreateInteractionChoiceSet object indicated by the
@@ -46,20 +46,20 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * 
 	 * @return Integer -an Integer representing the Choice Set ID
 	 */    
-    public Integer getInteractionChoiceSetID() {
+    public Integer getInteractionChoiceSetId() {
         return (Integer) parameters.get( KEY_INTERACTION_CHOICE_SET_ID );
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
 	 * 
-	 * @param interactionChoiceSetID
+	 * @param interactionChoiceSetId
 	 *            an Integer value representing the Choice Set ID
 	 *            <p>
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
-    public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-        if (interactionChoiceSetID != null) {
-            parameters.put(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID );
+    public void setInteractionChoiceSetId( Integer interactionChoiceSetId ) {
+        if (interactionChoiceSetId != null) {
+            parameters.put(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetId );
         } else {
         	parameters.remove(KEY_INTERACTION_CHOICE_SET_ID);
         }

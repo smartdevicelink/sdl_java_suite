@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Deletes a submenu from the Command Menu
@@ -19,13 +19,13 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see AddSubMenu
  * @see DeleteCommand
  */
-public class DeleteSubMenu extends RPCRequest {
+public class DeleteSubMenu extends RpcRequest {
 	public static final String KEY_MENU_ID = "menuID";
 	/**
 	* Constructs a new DeleteSubMenu object
 	*/
 	public DeleteSubMenu() {
-        super(FunctionID.DELETE_SUB_MENU.toString());
+        super(FunctionId.DELETE_SUB_MENU.toString());
     }
     /**
      * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter<p>    
@@ -38,18 +38,18 @@ public class DeleteSubMenu extends RPCRequest {
      * Gets the Menu ID that identifies the SubMenu to be delete
      * @return Integer -an Integer value representing menuID that identifies the SubMenu to be delete
      */    
-    public Integer getMenuID() {
+    public Integer getMenuId() {
         return (Integer) parameters.get( KEY_MENU_ID );
     }
     /**
      * Sets the MenuID that identifies the SubMenu to be delete  
-     * @param menuID an Integer value representing menuID that identifies the SubMenu to be delete
+     * @param menuId an Integer value representing menuID that identifies the SubMenu to be delete
      * <p>
      * <b>Notes: </b>Min Value: 0; Max Value: 2000000000
      */    
-    public void setMenuID( Integer menuID ) {
-        if (menuID != null) {
-            parameters.put(KEY_MENU_ID, menuID );
+    public void setMenuId( Integer menuId ) {
+        if (menuId != null) {
+            parameters.put(KEY_MENU_ID, menuId );
         } else {
             parameters.remove(KEY_MENU_ID);
         }

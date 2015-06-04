@@ -6,30 +6,30 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.marshall.JsonRpcMarshaller;
 
-public class RPCStruct {
+public class RpcStruct {
     public static final String KEY_BULK_DATA = "bulkData";
 
-	private byte[] _bulkData = null;
+	private byte[] bulkData = null;
 
 	protected Hashtable<String, Object> store = null;
 	
-	public RPCStruct() {
+	public RpcStruct() {
 		store = new Hashtable<String, Object>();
 	}
 	
-	protected RPCStruct(RPCStruct rpcs) {
+	protected RpcStruct(RpcStruct rpcs) {
 		this.store = rpcs.store;
 	}
 	
-	public RPCStruct(Hashtable<String, Object> hashtable) {
+	public RpcStruct(Hashtable<String, Object> hashtable) {
 		store = hashtable;
 		//store = (Hashtable<String, Object>) ObjectCopier.copy(hashtable);
 	}
 	
 	public void deserializeJSON(JSONObject jsonObject) throws JSONException {
-		store = JsonRPCMarshaller.deserializeJSONObject(jsonObject);
+		store = JsonRpcMarshaller.deserializeJsonObject(jsonObject);
 	}
 	
 	// deserializeJSONObject method moved to JsonRPCMarshaller for consistency
@@ -37,34 +37,34 @@ public class RPCStruct {
 	@Deprecated
 	public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
 			throws JSONException {
-		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
+		return JsonRpcMarshaller.deserializeJsonObject(jsonObject);
 	}
 	
-	public JSONObject serializeJSON() throws JSONException {
-		return JsonRPCMarshaller.serializeHashtable(store);
+	public JSONObject serializeJson() throws JSONException {
+		return JsonRpcMarshaller.serializeHashtable(store);
 	}
 	
 	@SuppressWarnings("unchecked")
-    public JSONObject serializeJSON(byte version) throws JSONException {
+    public JSONObject serializeJson(byte version) throws JSONException {
 		if (version > 1) {
 			String messageType = getMessageTypeName(store.keySet());
 			Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
-			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
-			return JsonRPCMarshaller.serializeHashtable(parameters);
-		} else return JsonRPCMarshaller.serializeHashtable(store);
+			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RpcMessage.KEY_PARAMETERS);
+			return JsonRpcMarshaller.serializeHashtable(parameters);
+		} else return JsonRpcMarshaller.serializeHashtable(store);
 	}
 
 	public byte[] getBulkData() {
-		return this._bulkData;
+		return this.bulkData;
 	}
 
 	public void setBulkData(byte[] bulkData) {
 		if (bulkData != null) {
-			this._bulkData = new byte[bulkData.length];
-			System.arraycopy(bulkData, 0, _bulkData, 0, bulkData.length);
+			this.bulkData = new byte[bulkData.length];
+			System.arraycopy(bulkData, 0, bulkData, 0, bulkData.length);
 		}
 		else{
-		    this._bulkData = null;
+		    this.bulkData = null;
 		}
 	}
 	
@@ -73,8 +73,8 @@ public class RPCStruct {
 	          if (key == null) {
 	              continue;
 	          }
-	          if (key.equals(RPCMessage.KEY_REQUEST) || key.equals(RPCMessage.KEY_RESPONSE) ||
-	                  key.equals(RPCMessage.KEY_NOTIFICATION)) {
+	          if (key.equals(RpcMessage.KEY_REQUEST) || key.equals(RpcMessage.KEY_RESPONSE) ||
+	                  key.equals(RpcMessage.KEY_NOTIFICATION)) {
 	              return key;
 	          }
 	      }

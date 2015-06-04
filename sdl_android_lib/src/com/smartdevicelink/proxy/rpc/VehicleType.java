@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 /**
  * Describes the type of vehicle the mobile phone is connected with.
@@ -57,7 +57,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class VehicleType extends RPCStruct {
+public class VehicleType extends RpcStruct {
 	public static final String KEY_MAKE = "make";
 	public static final String KEY_MODEL = "model";
 	public static final String KEY_MODEL_YEAR = "modelYear";

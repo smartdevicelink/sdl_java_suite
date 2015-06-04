@@ -2,9 +2,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
-public class DeviceInfo extends RPCStruct{
+public class DeviceInfo extends RpcStruct{
     public static final String KEY_HARDWARE = "hardware";
     public static final String KEY_FIRMWARE_REV = "firmwareRev";
     public static final String KEY_OS = "os";
@@ -78,13 +78,13 @@ public String getCarrier() {
    return (String) store.get(KEY_CARRIER);
 } 
 
-public Integer getMaxNumberRFCOMMPorts() {
+public Integer getMaxNumberRfCommPorts() {
     return (Integer) store.get( KEY_MAX_NUMBER_RFCOMM_PORTS );
 }
 
-public void setMaxNumberRFCOMMPorts( Integer maxNumberRFCOMMPorts ) {
-    if (maxNumberRFCOMMPorts != null) {
-        store.put(KEY_MAX_NUMBER_RFCOMM_PORTS, maxNumberRFCOMMPorts );
+public void setMaxNumberRfCommPorts( Integer maxNumberRfCommPorts ) {
+    if (maxNumberRfCommPorts != null) {
+        store.put(KEY_MAX_NUMBER_RFCOMM_PORTS, maxNumberRfCommPorts );
     }
     else {
     	store.remove(KEY_MAX_NUMBER_RFCOMM_PORTS);

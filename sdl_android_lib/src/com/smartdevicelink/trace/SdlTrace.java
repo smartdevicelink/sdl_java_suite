@@ -1,21 +1,24 @@
 package com.smartdevicelink.trace;
 
 import java.sql.Timestamp;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Process;
+
 import com.smartdevicelink.protocol.ProtocolFrameHeader;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.RpcMessage;
+import com.smartdevicelink.proxy.RpcRequest;
+import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.trace.enums.Mod;
+import com.smartdevicelink.trace.interfaces.IStListener;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
@@ -41,7 +44,7 @@ public class SdlTrace {
 	private final static String KeyStr = SDL_LIB_TRACE_KEY;
 	private static boolean acceptAPITraceAdjustments = true;
 
-	protected static ISTListener m_appTraceListener = null;
+	protected static IStListener m_appTraceListener = null;
 
 	///
 	///  The PUBLIC interface to SdlTrace starts here
@@ -58,7 +61,7 @@ public class SdlTrace {
 		return acceptAPITraceAdjustments;
 	}
 	
-	public static void setAppTraceListener(ISTListener listener) {
+	public static void setAppTraceListener(IStListener listener) {
 		m_appTraceListener = listener;
 	} // end-method
 
@@ -70,32 +73,32 @@ public class SdlTrace {
 
 	public static void setAppTraceLevel(DetailLevel dt) {
 		if ( dt != null && acceptAPITraceAdjustments)
-			DiagLevel.setLevel(Mod.app, dt);
+			DiagLevel.setLevel(Mod.APP, dt);
 	} // end-method
 
 	public static void setProxyTraceLevel(DetailLevel dt) {
 		if (dt != null && acceptAPITraceAdjustments)
-			DiagLevel.setLevel(Mod.proxy, dt);
+			DiagLevel.setLevel(Mod.PROXY, dt);
 	} // end-method
 
 	public static void setRpcTraceLevel(DetailLevel dt) {
 		if (dt != null && acceptAPITraceAdjustments)
-			DiagLevel.setLevel(Mod.rpc, dt);
+			DiagLevel.setLevel(Mod.RPC, dt);
 	} // end-method
 
 	public static void setMarshallingTraceLevel(DetailLevel dt) {
 		if (dt != null && acceptAPITraceAdjustments)
-			DiagLevel.setLevel(Mod.mar, dt);
+			DiagLevel.setLevel(Mod.MARSHALL, dt);
 	} // end-method
 
 	public static void setProtocolTraceLevel(DetailLevel dt) {
 		if (dt != null && acceptAPITraceAdjustments)
-			DiagLevel.setLevel(Mod.proto, dt);
+			DiagLevel.setLevel(Mod.PROTOCOL, dt);
 	} // end-method
 
 	public static void setTransportTraceLevel(DetailLevel dt) {
 		if (dt != null && acceptAPITraceAdjustments)
-				DiagLevel.setLevel(Mod.tran, dt);
+				DiagLevel.setLevel(Mod.TRANSPORT, dt);
 	} // end-method
 
 	private static String encodeTraceMessage(long timestamp, Mod module, InterfaceActivityDirection msgDirection, String msgBodyXml) {
@@ -140,50 +143,50 @@ public class SdlTrace {
 	} // end-method
 	
 	public static void logProxyEvent(String eventText, String token) {
-		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.PROXY) == DetailLevel.OFF || !token.equals(KeyStr)) {
 			return;
 		} // end-if
 
 		String msg = SdlTrace.B64EncodeForXML(eventText);
-		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.proxy, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
+		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.PROXY, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
 		writeXmlTraceMessage(xml);
 	} // end-method
 
 	public static void logAppEvent(String eventText) {
-		if (DiagLevel.getLevel(Mod.app) == DetailLevel.OFF) {
+		if (DiagLevel.getLevel(Mod.APP) == DetailLevel.OFF) {
 			return;
 		} // end-if
 
 		long timestamp = SdlTrace.getBaseTicsDelta();
 		String msg = SdlTrace.B64EncodeForXML(eventText);
-		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.app, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
+		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.APP, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
 		writeXmlTraceMessage(xml);
 	} // end-method
 
-	public static void logRPCEvent(InterfaceActivityDirection msgDirection, RPCMessage rpcMsg, String token) {
-		DetailLevel dl = DiagLevel.getLevel(Mod.rpc);
+	public static void logRpcEvent(InterfaceActivityDirection msgDirection, RpcMessage rpcMsg, String token) {
+		DetailLevel dl = DiagLevel.getLevel(Mod.RPC);
 		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
 			return;
 		} // end-if
 
 		long timestamp = SdlTrace.getBaseTicsDelta();
-		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.rpc, msgDirection, rpc2Xml(dl, rpcMsg));
+		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.RPC, msgDirection, rpc2Xml(dl, rpcMsg));
 		writeXmlTraceMessage(xml);
 	} // end-method
 
-	private static String rpc2Xml(DetailLevel dl, RPCMessage rpcMsg) {
+	private static String rpc2Xml(DetailLevel dl, RpcMessage rpcMsg) {
 		StringBuilder rpcAsXml = new StringBuilder();
 		rpcAsXml.append("<op>");
 		rpcAsXml.append(rpcMsg.getFunctionName());
 		rpcAsXml.append("</op>");
 		boolean hasCorrelationID = false;
 		Integer correlationID = -1;
-		if (rpcMsg instanceof RPCRequest) {
+		if (rpcMsg instanceof RpcRequest) {
 			hasCorrelationID = true;
-			correlationID = ((RPCRequest)rpcMsg).getCorrelationID();
-		} else if (rpcMsg instanceof RPCResponse) {
+			correlationID = ((RpcRequest)rpcMsg).getCorrelationId();
+		} else if (rpcMsg instanceof RpcResponse) {
 			hasCorrelationID = true;
-			correlationID = ((RPCResponse)rpcMsg).getCorrelationID();
+			correlationID = ((RpcResponse)rpcMsg).getCorrelationId();
 		} // end-if
 		if (hasCorrelationID) {
 			rpcAsXml.append("<cid>");
@@ -196,7 +199,7 @@ public class SdlTrace {
 		//rpcAsXml.append(newline);
 
 		if (dl == DetailLevel.VERBOSE) {
-			OpenRPCMessage orpcmsg = new OpenRPCMessage(rpcMsg);
+			OpenRpcMessage orpcmsg = new OpenRpcMessage(rpcMsg);
 			String rpcParamList = orpcmsg.msgDump();
 			String msg = SdlTrace.B64EncodeForXML(rpcParamList);
 			rpcAsXml.append("<d>");
@@ -207,7 +210,7 @@ public class SdlTrace {
 	} // end-method
 
 	public static void logMarshallingEvent(InterfaceActivityDirection msgDirection, byte[] marshalledMessage, String token) {
-		DetailLevel dl = DiagLevel.getLevel(Mod.mar);
+		DetailLevel dl = DiagLevel.getLevel(Mod.MARSHALL);
 		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
 			return;
 		} // end-fif
@@ -223,12 +226,12 @@ public class SdlTrace {
 			// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: msg.append(Base64.encodeToString(marshalledMessage, Base64.DEFAULT));
 			msg.append("</d>");
 		} // end-if
-		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.mar, msgDirection, msg.toString());
+		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.MARSHALL, msgDirection, msg.toString());
 		writeXmlTraceMessage(xml);
 	} // end-method
 
 	public static void logProtocolEvent(InterfaceActivityDirection frameDirection, ProtocolFrameHeader frameHeader, byte[] frameData, int frameDataOffset, int frameDataLength, String token) {
-		DetailLevel dl = DiagLevel.getLevel(Mod.proto);
+		DetailLevel dl = DiagLevel.getLevel(Mod.PROTOCOL);
 		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
 			return;
 		} // end-if
@@ -247,18 +250,18 @@ public class SdlTrace {
 			} // end-if
 		} // end-if
 		protoMsg.append("</frame>");
-		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.proto, frameDirection, protoMsg.toString());
+		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.PROTOCOL, frameDirection, protoMsg.toString());
 		writeXmlTraceMessage(xml);
 	} // end-method
 
 	private static String getProtocolFrameType(FrameType f) {
-		if (f == FrameType.Control)
+		if (f == FrameType.CONTROL)
 			return "Control";
-		else if (f == FrameType.Consecutive)
+		else if (f == FrameType.CONSECUTIVE)
 			return "Consecutive";
-		else if (f == FrameType.First)
+		else if (f == FrameType.FIRST)
 			return "First";
-		else if (f == FrameType.Single)
+		else if (f == FrameType.SINGLE)
 			return "Single";
 
 		return "Unknown";
@@ -287,35 +290,35 @@ public class SdlTrace {
 		sb.append("</ft><st>");
 		sb.append(getProtocolSessionType(hdr.getSessionType()));
 		sb.append("</st><sid>");
-		sb.append(hdr.getSessionID());
+		sb.append(hdr.getSessionId());
 		sb.append("</sid><sz>");
 		sb.append(hdr.getDataSize());
 		sb.append("</sz>");
 
 		int frameData = hdr.getFrameData();
-		if (hdr.getFrameType() == FrameType.Control) {
+		if (hdr.getFrameType() == FrameType.CONTROL) {
 			sb.append("<ca>");
-			if (frameData == FrameDataControlFrameType.StartSession.getValue()) 
+			if (frameData == FrameDataControlFrameType.START_SESSION.getValue()) 
 				sb.append("StartSession");
-			else if (frameData == FrameDataControlFrameType.StartSessionACK.getValue())
+			else if (frameData == FrameDataControlFrameType.START_SESSION_ACK.getValue())
 				sb.append("StartSessionACK");
-			else if (frameData == FrameDataControlFrameType.StartSessionNACK.getValue())
+			else if (frameData == FrameDataControlFrameType.START_SESSION_NACK.getValue())
 				sb.append("StartSessionNACK");
-			else if (frameData == FrameDataControlFrameType.EndSession.getValue())
+			else if (frameData == FrameDataControlFrameType.END_SESSION.getValue())
 				sb.append("EndSession");
 			sb.append("</ca>");
-		} else if (hdr.getFrameType() == FrameType.Consecutive ) {
+		} else if (hdr.getFrameType() == FrameType.CONSECUTIVE ) {
 			sb.append("<fsn>");
 			if (frameData == 0 )
 				sb.append("lastFrame");
 			else
 				sb.append(String.format("%02X",frameData)); 
 			sb.append("</fsn>");
-		} else if (hdr.getFrameType() == FrameType.First ) {
+		} else if (hdr.getFrameType() == FrameType.FIRST ) {
 			int totalSize = BitConverter.intFromByteArray(buf, 0);			
 			int numFrames = BitConverter.intFromByteArray(buf, 4);
 			sb.append("<total>" + totalSize + "</total><numframes>" + numFrames + "</numframes>");
-		} else if (hdr.getFrameType() == FrameType.Single ) {
+		} else if (hdr.getFrameType() == FrameType.SINGLE ) {
 			sb.append("<single/>");
 		}
 
@@ -348,7 +351,7 @@ public class SdlTrace {
 	} // end-method
 
 	public static void logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
-		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.TRANSPORT) == DetailLevel.OFF || !token.equals(KeyStr)) {
 			return;
 		} // end-if
 
@@ -365,7 +368,7 @@ public class SdlTrace {
 			msg.append("<sz>");
 			msg.append(byteLength);
 			msg.append("</sz>");
-			DetailLevel dl = DiagLevel.getLevel(Mod.tran);
+			DetailLevel dl = DiagLevel.getLevel(Mod.TRANSPORT);
 			if (dl == DetailLevel.VERBOSE) {
 				if (buf != null && byteLength > 0) {
 					msg.append("<d>");
@@ -376,7 +379,7 @@ public class SdlTrace {
 				} // end-if
 			} // end-if
 		} // end-if
-		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.tran, msgDirection, msg.toString());
+		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.TRANSPORT, msgDirection, msg.toString());
 		writeXmlTraceMessage(xml);
 	} // end-method
 
@@ -402,7 +405,7 @@ public class SdlTrace {
 				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
 			}
 			
-			ISTListener localTraceListener = m_appTraceListener;
+			IStListener localTraceListener = m_appTraceListener;
 
 			if (localTraceListener != null) {
 				try {
@@ -458,12 +461,12 @@ public class SdlTrace {
 				+ "</sequencenum>" + "<dumpreason>" + dumpReason
 				+ "</dumpreason><tracelevel>");
 
-		write.append("<tran>" + DiagLevel.getLevel(Mod.tran) + "</tran>");
-		write.append("<proto>" + DiagLevel.getLevel(Mod.proto) + "</proto>");
-		write.append("<mar>" + DiagLevel.getLevel(Mod.mar) + "</mar>");
-		write.append("<rpc>" + DiagLevel.getLevel(Mod.rpc) + "</rpc>");
-		write.append("<proxy>" + DiagLevel.getLevel(Mod.proxy) + "</proxy>");
-		write.append("<app>" + DiagLevel.getLevel(Mod.app) + "</app>");
+		write.append("<tran>" + DiagLevel.getLevel(Mod.TRANSPORT) + "</tran>");
+		write.append("<proto>" + DiagLevel.getLevel(Mod.PROTOCOL) + "</proto>");
+		write.append("<mar>" + DiagLevel.getLevel(Mod.MARSHALL) + "</mar>");
+		write.append("<rpc>" + DiagLevel.getLevel(Mod.RPC) + "</rpc>");
+		write.append("<proxy>" + DiagLevel.getLevel(Mod.PROXY) + "</proxy>");
+		write.append("<app>" + DiagLevel.getLevel(Mod.APP) + "</app>");
 
 		write.append("</tracelevel>");
 		write.append("</SmartDeviceLinktraceroot>");

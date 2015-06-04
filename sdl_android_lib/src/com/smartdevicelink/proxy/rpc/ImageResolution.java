@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 import java.util.Hashtable;
 
-public class ImageResolution extends RPCStruct {
+public class ImageResolution extends RpcStruct {
 	public static final String KEY_RESOLUTION_WIDTH = "resolutionWidth";
 	public static final String KEY_RESOLUTION_HEIGHT = "resolutionHeight";
 	

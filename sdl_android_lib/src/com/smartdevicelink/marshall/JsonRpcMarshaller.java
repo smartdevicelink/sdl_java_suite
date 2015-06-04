@@ -1,4 +1,4 @@
-package com.smartdevicelink.marshal;
+package com.smartdevicelink.marshall;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -9,8 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcMessage;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.trace.*;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.util.DebugTool;
@@ -20,14 +20,14 @@ import com.smartdevicelink.util.DebugTool;
  * over transmission
  */
 
-public class JsonRPCMarshaller {
+public class JsonRpcMarshaller {
 	
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
-	public static byte[] marshall(RPCMessage msg, byte version) {
+	public static byte[] marshall(RpcMessage msg, byte version) {
 		byte[] jsonBytes = null;
 		try {
-			JSONObject jsonObject = msg.serializeJSON(version);
+			JSONObject jsonObject = msg.serializeJson(version);
 			jsonBytes = jsonObject.toString().getBytes();
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
@@ -43,7 +43,7 @@ public class JsonRPCMarshaller {
 		try {
 			String jsonString = new String(message);
 			JSONObject jsonObject = new JSONObject(jsonString);
-			ret = deserializeJSONObject(jsonObject);
+			ret = deserializeJsonObject(jsonObject);
 		} catch (JSONException e) {
 			DebugTool.logError("Failed to parse JSON", e);
 		}
@@ -51,7 +51,7 @@ public class JsonRPCMarshaller {
 	}
 	
 	@SuppressWarnings("unchecked")
-    public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
+    public static Hashtable<String, Object> deserializeJsonObject(JSONObject jsonObject) 
 			throws JSONException {
 		Hashtable<String, Object> ret = new Hashtable<String, Object>();
 		Iterator<String> it = jsonObject.keys();
@@ -60,14 +60,14 @@ public class JsonRPCMarshaller {
 			key = it.next();
 			Object value = jsonObject.get(key);
 			if (value instanceof JSONObject) {
-				ret.put(key, deserializeJSONObject((JSONObject)value));
+				ret.put(key, deserializeJsonObject((JSONObject)value));
 			} else if (value instanceof JSONArray) {
 				JSONArray arrayValue = (JSONArray) value;
 				List<Object> putList = new ArrayList<Object>(arrayValue.length());
 				for (int i = 0; i < arrayValue.length(); i++) {
 					Object anObject = arrayValue.get(i); 
 					if (anObject instanceof JSONObject) {
-						Hashtable<String, Object> deserializedObject = deserializeJSONObject((JSONObject)anObject);
+						Hashtable<String, Object> deserializedObject = deserializeJsonObject((JSONObject)anObject);
 						putList.add(deserializedObject);
 					} else {
 						putList.add(anObject);
@@ -87,9 +87,9 @@ public class JsonRPCMarshaller {
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
 		while(valueIterator.hasNext()){
 			Object anObject = valueIterator.next();
-			if (anObject instanceof RPCStruct) {
-				RPCStruct toSerialize = (RPCStruct) anObject;
-				toPut.put(toSerialize.serializeJSON());
+			if (anObject instanceof RpcStruct) {
+				RpcStruct toSerialize = (RpcStruct) anObject;
+				toPut.put(toSerialize.serializeJson());
 			} else if(anObject instanceof Hashtable){
 				Hashtable<String, Object> toSerialize = (Hashtable<String, Object>)anObject;
 				toPut.put(serializeHashtable(toSerialize));
@@ -107,8 +107,8 @@ public class JsonRPCMarshaller {
 		while (hashKeyIterator.hasNext()){
 			String key = (String) hashKeyIterator.next();
 			Object value = hash.get(key);
-			if (value instanceof RPCStruct) {
-				obj.put(key, ((RPCStruct) value).serializeJSON());
+			if (value instanceof RpcStruct) {
+				obj.put(key, ((RpcStruct) value).serializeJson());
 			} else if (value instanceof List<?>) {
 				obj.put(key, serializeList((List<?>) value));
 			} else if (value instanceof Hashtable) {

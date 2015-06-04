@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 
-public class BodyInformation extends RPCStruct {
+public class BodyInformation extends RpcStruct {
     public static final String KEY_PARK_BRAKE_ACTIVE = "parkBrakeActive";
     public static final String KEY_IGNITION_STABLE_STATUS = "ignitionStableStatus";
     public static final String KEY_IGNITION_STATUS = "ignitionStatus";

@@ -2,21 +2,21 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Set Media Clock Timer Response is sent, when SetMediaClockTimer has been called
  * 
  * @since SmartDeviceLink 1.0
  */
-public class SetMediaClockTimerResponse extends RPCResponse {
+public class SetMediaClockTimerResponse extends RpcResponse {
 
 	/**
 	 * Constructs a new SetMediaClockTimerResponse object
 	 */
     public SetMediaClockTimerResponse() {
-        super(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
+        super(FunctionId.SET_MEDIA_CLOCK_TIMER.toString());
     }
 
 	/**

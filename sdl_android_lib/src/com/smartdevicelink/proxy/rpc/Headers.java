@@ -2,9 +2,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
-public class Headers extends RPCStruct {
+public class Headers extends RpcStruct {
 	public static final String KEY_CONTENT_TYPE = "ContentType";
 	public static final String KEY_CONNECT_TIMEOUT = "ConnectTimeout";
 	public static final String KEY_DO_OUTPUT = "DoOutput";

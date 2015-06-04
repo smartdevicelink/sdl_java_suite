@@ -1,4 +1,4 @@
-package com.smartdevicelink.Dispatcher;
+package com.smartdevicelink.dispatch;
 
 import java.util.Comparator;
 

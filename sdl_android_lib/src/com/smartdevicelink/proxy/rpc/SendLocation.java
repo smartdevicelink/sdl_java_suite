@@ -3,8 +3,8 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
 
@@ -14,7 +14,7 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * @since SmartDeviceLink 3.0
  *
  */
-public class SendLocation extends RPCRequest{
+public class SendLocation extends RpcRequest{
 
     public static final String KEY_LAT_DEGREES          = "latitudeDegrees";
     public static final String KEY_LON_DEGREES          = "longitudeDegrees";
@@ -28,7 +28,7 @@ public class SendLocation extends RPCRequest{
      * Constructs a new SendLocation object
      */
     public SendLocation(){
-        super(FunctionID.SEND_LOCATION.toString());
+        super(FunctionId.SEND_LOCATION.toString());
     }
 
     /**

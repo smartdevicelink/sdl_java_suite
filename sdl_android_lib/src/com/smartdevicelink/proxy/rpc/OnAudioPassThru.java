@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
 
 /**
  * Binary data is in binary part of hybrid msg.
@@ -40,12 +40,12 @@ import com.smartdevicelink.proxy.RPCNotification;
  * </p>
  *
  */
-public class OnAudioPassThru extends RPCNotification {
+public class OnAudioPassThru extends RpcNotification {
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnAudioPassThru() {
-        super(FunctionID.ON_AUDIO_PASS_THRU.toString());
+        super(FunctionId.ON_AUDIO_PASS_THRU.toString());
     }
     /**
      *<p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>

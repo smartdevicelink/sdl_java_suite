@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
@@ -53,7 +53,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
  *  </table>
  * @since SmartDeviceLink 1.0
  */
-public class TextField extends RPCStruct {
+public class TextField extends RpcStruct {
 	public static final String KEY_WIDTH = "width";
 	public static final String KEY_CHARACTER_SET = "characterSet";
 	public static final String KEY_ROWS = "rows";

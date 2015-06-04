@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
 /**
@@ -22,7 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * @since SmartDeviceLink 2.0
  * @see RegisterAppInterface
  */
-public class ChangeRegistration extends RPCRequest {
+public class ChangeRegistration extends RpcRequest {
 	public static final String KEY_LANGUAGE = "language";
     public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
     public static final String KEY_APP_NAME = "appName";
@@ -34,7 +34,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * Constructs a new ChangeRegistration object
 	 */
     public ChangeRegistration() {
-        super(FunctionID.CHANGE_REGISTRATION.toString());
+        super(FunctionId.CHANGE_REGISTRATION.toString());
     }
 
 	/**
@@ -158,7 +158,7 @@ public class ChangeRegistration extends RPCRequest {
      * 
      * @param ttsName The TTS name to set
      */
-    public void setTtsName(List<TTSChunk> ttsName){
+    public void setTtsName(List<TtsChunk> ttsName){
         if(ttsName != null){
             parameters.put(KEY_TTS_NAME, ttsName);
         }
@@ -173,17 +173,17 @@ public class ChangeRegistration extends RPCRequest {
      * @return The TTS name
      */
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTtsName(){
+    public List<TtsChunk> getTtsName(){
         if (parameters.get(KEY_TTS_NAME) instanceof List<?>) {
             List<?> list = (List<?>)parameters.get(KEY_TTS_NAME);
             if (list != null && list.size() > 0) {
                 Object obj = list.get(0);
-                if (obj instanceof TTSChunk) {
-                    return (List<TTSChunk>) list;
+                if (obj instanceof TtsChunk) {
+                    return (List<TtsChunk>) list;
                 } else if (obj instanceof Hashtable) {
-                    List<TTSChunk> newList = new ArrayList<TTSChunk>();
+                    List<TtsChunk> newList = new ArrayList<TtsChunk>();
                     for (Object hashObj : list) {
-                        newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+                        newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
                     }
                     return newList;
                 }

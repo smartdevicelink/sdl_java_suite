@@ -43,7 +43,7 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
  * </li>
  * </ul>
  */
-public class RPCResponse extends RPCMessage {
+public class RpcResponse extends RpcMessage {
 	public static final String KEY_SUCCESS = "success";
 	public static final String KEY_INFO = "info";
 	public static final String KEY_RESULT_CODE = "resultCode";
@@ -51,21 +51,21 @@ public class RPCResponse extends RPCMessage {
 	*<p>Constructs a newly allocated RPCResponse object using function name</p>
 	*@param functionName a string that indicates the function's name
 	*/
-	public RPCResponse(String functionName) {
-		super(functionName, RPCMessage.KEY_RESPONSE);
+	public RpcResponse(String functionName) {
+		super(functionName, RpcMessage.KEY_RESPONSE);
 	}
 	/**
      *<p>Constructs a newly allocated RPCResponse object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */   
-	public RPCResponse(Hashtable<String, Object> hash) {
+	public RpcResponse(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 	/**
      *<p>Constructs a newly allocated RPCResponse object using a RPCMessage object</p>
-     *@param rpcMsg The {@linkplain RPCMessage} to use
+     *@param rpcMsg The {@linkplain RpcMessage} to use
      */   
-	public RPCResponse(RPCMessage rpcMsg) {
+	public RpcResponse(RpcMessage rpcMsg) {
 		super(rpcMsg);
 	}
 
@@ -76,8 +76,8 @@ public class RPCResponse extends RPCMessage {
 	 * 
 	 * @return int  the ID of the request
 	 */
-	public Integer getCorrelationID() {
-		return (Integer)function.get(RPCMessage.KEY_CORRELATION_ID);
+	public Integer getCorrelationId() {
+		return (Integer)function.get(RpcMessage.KEY_CORRELATION_ID);
 	}
 	
 	/**
@@ -85,14 +85,14 @@ public class RPCResponse extends RPCMessage {
 	 * Set the correlationID
 	 * </p>
 	 * 
-	 * @param correlationID
+	 * @param correlationId
 	 *            the ID of the response
 	 */
-	public void setCorrelationID(Integer correlationID) {
-		if (correlationID != null) {
-            function.put(RPCMessage.KEY_CORRELATION_ID, correlationID );
+	public void setCorrelationId(Integer correlationId) {
+		if (correlationId != null) {
+            function.put(RpcMessage.KEY_CORRELATION_ID, correlationId );
         } else {
-        	function.remove(RPCMessage.KEY_CORRELATION_ID);
+        	function.remove(RpcMessage.KEY_CORRELATION_ID);
         }
 	}
 	/**
@@ -103,7 +103,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return Boolean  the status of whether the request is successfully done
 	 */
 	public Boolean getSuccess() {
-        return (Boolean) parameters.get( RPCResponse.KEY_SUCCESS );
+        return (Boolean) parameters.get( RpcResponse.KEY_SUCCESS );
     }
 	/**
 	 * <p>
@@ -115,7 +115,7 @@ public class RPCResponse extends RPCMessage {
 	 */
     public void setSuccess( Boolean success ) {
         if (success != null) {
-            parameters.put(RPCResponse.KEY_SUCCESS, success );
+            parameters.put(RpcResponse.KEY_SUCCESS, success );
         }
     }
 	/**
@@ -126,7 +126,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return {@linkplain Result}  the status of whether the request is successfully done
 	 */
     public Result getResultCode() {
-        Object obj = parameters.get(RPCResponse.KEY_RESULT_CODE);
+        Object obj = parameters.get(RpcResponse.KEY_RESULT_CODE);
         if (obj instanceof Result) {
             return (Result) obj;
         } else if (obj instanceof String) {
@@ -144,7 +144,7 @@ public class RPCResponse extends RPCMessage {
 	 */
     public void setResultCode( Result resultCode ) {
         if (resultCode != null) {
-            parameters.put(RPCResponse.KEY_RESULT_CODE, resultCode );
+            parameters.put(RpcResponse.KEY_RESULT_CODE, resultCode );
         }
     }
 	/**
@@ -155,7 +155,7 @@ public class RPCResponse extends RPCMessage {
 	 * @return String  A string of text representing additional information returned from SDL
 	 */
     public String getInfo() {
-        return (String) parameters.get( RPCResponse.KEY_INFO );
+        return (String) parameters.get( RpcResponse.KEY_INFO );
     }
 	/**
 	 * <p>
@@ -167,7 +167,7 @@ public class RPCResponse extends RPCMessage {
 	 */
     public void setInfo( String info ) {
         if (info != null) {
-            parameters.put(RPCResponse.KEY_INFO, info );
+            parameters.put(RpcResponse.KEY_INFO, info );
         }
     }
 }

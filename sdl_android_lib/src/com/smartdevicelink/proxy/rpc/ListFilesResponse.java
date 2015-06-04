@@ -3,15 +3,15 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * List Files Response is sent, when ListFiles has been called
  * 
  * @since SmartDeviceLink 2.0
  */
-public class ListFilesResponse extends RPCResponse {
+public class ListFilesResponse extends RpcResponse {
 	public static final String KEY_FILENAMES = "filenames";
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
@@ -19,7 +19,7 @@ public class ListFilesResponse extends RPCResponse {
 	 * Constructs a new ListFilesResponse object
 	 */
     public ListFilesResponse() {
-        super(FunctionID.LIST_FILES.toString());
+        super(FunctionId.LIST_FILES.toString());
     }
     public ListFilesResponse(Hashtable<String, Object> hash) {
         super(hash);

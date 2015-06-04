@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -18,7 +18,7 @@ import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
  * 
  * @since SmartDeviceLink 1.0
  */
-public class RegisterAppInterfaceResponse extends RPCResponse {
+public class RegisterAppInterfaceResponse extends RpcResponse {
 	public static final String KEY_VEHICLE_TYPE 				= "vehicleType";
 	public static final String KEY_SPEECH_CAPABILITIES 			= "speechCapabilities";
 	public static final String KEY_VR_CAPABILITIES 				= "vrCapabilities";
@@ -42,7 +42,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * Constructs a new RegisterAppInterfaceResponse object
 	 */
     public RegisterAppInterfaceResponse() {
-        super(FunctionID.REGISTER_APP_INTERFACE.toString());
+        super(FunctionId.REGISTER_APP_INTERFACE.toString());
     }
 
 	/**
@@ -540,7 +540,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return null;
     }
     
-    public void setHmiCapabilities(HMICapabilities hmiCapabilities) {
+    public void setHmiCapabilities(HmiCapabilities hmiCapabilities) {
         if (hmiCapabilities != null) {
         	parameters.put(KEY_HMI_CAPABILITIES, hmiCapabilities);
         }else{
@@ -549,12 +549,12 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
 
     @SuppressWarnings("unchecked")
-    public HMICapabilities getHmiCapabilities() {
+    public HmiCapabilities getHmiCapabilities() {
     	Object obj = parameters.get(KEY_HMI_CAPABILITIES);
-        if (obj instanceof HMICapabilities) {
-        	return (HMICapabilities)obj;
+        if (obj instanceof HmiCapabilities) {
+        	return (HmiCapabilities)obj;
         } else if (obj instanceof Hashtable) {
-        	return new HMICapabilities((Hashtable<String, Object>)obj);
+        	return new HmiCapabilities((Hashtable<String, Object>)obj);
         }
         return null;
     }  

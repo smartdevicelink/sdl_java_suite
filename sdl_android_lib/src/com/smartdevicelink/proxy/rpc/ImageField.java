@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.util.DebugTool;
 
-public class ImageField extends RPCStruct {
+public class ImageField extends RpcStruct {
     public static final String KEY_IMAGE_TYPE_SUPPORTED = "imageTypeSupported";
     public static final String KEY_IMAGE_RESOLUTION = "imageResolution";
     public static final String KEY_NAME = "name";

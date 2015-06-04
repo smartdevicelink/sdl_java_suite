@@ -1,4 +1,4 @@
-package com.smartdevicelink.streaming;
+package com.smartdevicelink.streaming.interfaces;
 
 import com.smartdevicelink.protocol.ProtocolMessage;
 

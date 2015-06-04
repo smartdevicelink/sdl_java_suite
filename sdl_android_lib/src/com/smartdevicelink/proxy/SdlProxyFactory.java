@@ -1,6 +1,7 @@
 package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.proxy.interfaces.IProxyListener;
 @Deprecated
 public class SdlProxyFactory {
 	
@@ -15,10 +16,10 @@ public class SdlProxyFactory {
 		return ret;
 	}
 	@Deprecated
-	public static SdlProxy buildSdlProxy(IProxyListener listener, String sAppName, String sAppID) {
+	public static SdlProxy buildSdlProxy(IProxyListener listener, String sAppName, String sAppId) {
 		SdlProxy ret = null;
 		try {
-			ret = new SdlProxy(listener,sAppName,sAppID);
+			ret = new SdlProxy(listener,sAppName,sAppId);
 		} catch (SdlException e) {
 			e.printStackTrace();
 		}

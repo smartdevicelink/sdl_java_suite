@@ -8,14 +8,14 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.marshall.JsonRpcMarshaller;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 
-public class OnSystemRequest extends RPCNotification {
+public class OnSystemRequest extends RpcNotification {
 	public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
 	public static final String KEY_TIMEOUT_V1 = "Timeout";
@@ -32,11 +32,11 @@ public class OnSystemRequest extends RPCNotification {
 	private Headers headers;
 	
     public OnSystemRequest() {
-        super(FunctionID.ON_SYSTEM_REQUEST.toString());
+        super(FunctionId.ON_SYSTEM_REQUEST.toString());
     }
 
     public OnSystemRequest(Hashtable<String, Object> hash) {
-        this(hash, (byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
+        this(hash, (byte[]) hash.get(RpcStruct.KEY_BULK_DATA));
     }
     
     public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
@@ -88,7 +88,7 @@ public class OnSystemRequest extends RPCNotification {
         
         try{
             JSONObject httpHeadersJson = httpJson.getJSONObject("headers");
-            Hashtable<String, Object> httpHeadersHash = JsonRPCMarshaller.deserializeJSONObject(httpHeadersJson);
+            Hashtable<String, Object> httpHeadersHash = JsonRpcMarshaller.deserializeJsonObject(httpHeadersJson);
             result = new Headers(httpHeadersHash);
         }catch(JSONException e){
             Log.e("OnSystemRequest", "\"headers\" key doesn't exist in bulk data.");

@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
-public class BeltStatus extends RPCStruct {
+public class BeltStatus extends RpcStruct {
     public static final String KEY_DRIVER_BELT_DEPLOYED = "driverBeltDeployed";
     public static final String KEY_PASSENGER_BELT_DEPLOYED = "passengerBeltDeployed";
     public static final String KEY_PASSENGER_BUCKLE_BELTED = "passengerBuckleBelted";

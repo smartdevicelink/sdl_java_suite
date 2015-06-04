@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
@@ -14,15 +14,15 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * <p>
  */
-public class GetDTCs extends RPCRequest {
+public class GetDtcs extends RpcRequest {
 	public static final String KEY_DTC_MASK = "dtcMask";
 	public static final String KEY_ECU_NAME = "ecuName";
 
 	/**
 	 * Constructs a new GetDTCs object
 	 */
-    public GetDTCs() {
-        super(FunctionID.GET_DTCS.toString());
+    public GetDtcs() {
+        super(FunctionId.GET_DTCS.toString());
     }
 
 	/**
@@ -32,7 +32,7 @@ public class GetDTCs extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public GetDTCs(Hashtable<String, Object> hash) {
+    public GetDtcs(Hashtable<String, Object> hash) {
         super(hash);
     }
 

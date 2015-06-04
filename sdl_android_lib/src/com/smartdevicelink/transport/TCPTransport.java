@@ -3,7 +3,8 @@ package com.smartdevicelink.transport;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.exception.enums.SdlExceptionCause;
+import com.smartdevicelink.transport.interfaces.ITransportListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,7 @@ import java.net.Socket;
 /**
  * Class that implements TCP transport
  */
-public class TCPTransport extends SdlTransport {
+public class TcpTransport extends SdlTransport {
 
     /**
      * Size of the read buffer.
@@ -59,7 +60,7 @@ public class TCPTransport extends SdlTransport {
     /**
      * Instance of TCP transport configuration
      */
-    private TCPTransportConfig mConfig = null;
+    private TcpTransportConfig mConfig = null;
 
     /**
      * Instance of the client socket
@@ -93,7 +94,7 @@ public class TCPTransport extends SdlTransport {
      * @param tcpTransportConfig Instance of the TCP transport configuration
      * @param transportListener Listener that will be notified on different TCP transport activities
      */
-    public TCPTransport(TCPTransportConfig tcpTransportConfig, ITransportListener transportListener) {
+    public TcpTransport(TcpTransportConfig tcpTransportConfig, ITransportListener transportListener) {
         super(transportListener);
         this.mConfig = tcpTransportConfig;
     }
@@ -314,7 +315,7 @@ public class TCPTransport extends SdlTransport {
             boolean bConnected;
             int remainingRetry = RECONNECT_RETRY_COUNT;
 
-            synchronized (TCPTransport.this) {
+            synchronized (TcpTransport.this) {
                 do {
                     try {
 
@@ -372,7 +373,7 @@ public class TCPTransport extends SdlTransport {
                     break;
                 }
 
-                synchronized (TCPTransport.this) {
+                synchronized (TcpTransport.this) {
                     setCurrentState(TCPTransportState.CONNECTED);
                     handleTransportConnected();
                 }
@@ -389,7 +390,7 @@ public class TCPTransport extends SdlTransport {
                         break;
                     }
 
-                    synchronized (TCPTransport.this) {
+                    synchronized (TcpTransport.this) {
                         if (mThread.isInterrupted()) {
                             logInfo("TCPTransport.run: Got new data but thread is interrupted");
                             break;
@@ -404,7 +405,7 @@ public class TCPTransport extends SdlTransport {
                         logInfo("TCPTransport.run: Received zero bytes");
                     } else {
                         logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
-                        synchronized (TCPTransport.this) {
+                        synchronized (TcpTransport.this) {
                             handleReceivedBytes(buffer, bytesRead);
                         }
                     }

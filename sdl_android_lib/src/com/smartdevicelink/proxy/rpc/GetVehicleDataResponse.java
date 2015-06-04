@@ -3,16 +3,16 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
-import com.smartdevicelink.proxy.rpc.enums.PRNDL;
+import com.smartdevicelink.proxy.rpc.enums.Prndl;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
-public class GetVehicleDataResponse extends RPCResponse {
+public class GetVehicleDataResponse extends RpcResponse {
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
@@ -41,12 +41,12 @@ public class GetVehicleDataResponse extends RPCResponse {
 
 
     public GetVehicleDataResponse() {
-        super(FunctionID.GET_VEHICLE_DATA.toString());
+        super(FunctionId.GET_VEHICLE_DATA.toString());
     }
     public GetVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setGps(GPSData gps) {
+    public void setGps(GpsData gps) {
     	if (gps != null) {
     		parameters.put(KEY_GPS, gps);
     	} else {
@@ -54,14 +54,14 @@ public class GetVehicleDataResponse extends RPCResponse {
     	}
     }
     @SuppressWarnings("unchecked")
-    public GPSData getGps() {
+    public GpsData getGps() {
     	Object obj = parameters.get(KEY_GPS);
-        if (obj instanceof GPSData) {
-            return (GPSData) obj;
+        if (obj instanceof GpsData) {
+            return (GpsData) obj;
         } else if (obj instanceof Hashtable) {
-        	GPSData theCode = null;
+        	GpsData theCode = null;
             try {
-                theCode = new GPSData((Hashtable<String, Object>) obj);
+                theCode = new GpsData((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
             }
@@ -179,19 +179,19 @@ public class GetVehicleDataResponse extends RPCResponse {
     public String getVin() {
     	return (String) parameters.get(KEY_VIN);
     }
-    public void setPrndl(PRNDL prndl) {
+    public void setPrndl(Prndl prndl) {
     	if (prndl != null) {
     		parameters.put(KEY_PRNDL, prndl);
     	} else {
     		parameters.remove(KEY_PRNDL);
     	}
     }
-    public PRNDL getPrndl() {
+    public Prndl getPrndl() {
         Object obj = parameters.get(KEY_PRNDL);
-        if (obj instanceof PRNDL) {
-            return (PRNDL) obj;
+        if (obj instanceof Prndl) {
+            return (Prndl) obj;
         } else if (obj instanceof String) {
-        	return PRNDL.valueForString((String) obj);
+        	return Prndl.valueForString((String) obj);
         }
         return null;
     }

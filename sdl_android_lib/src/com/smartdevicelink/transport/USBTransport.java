@@ -10,13 +10,13 @@ import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.exception.enums.SdlExceptionCause;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.SdlTransport;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.interfaces.ITransportListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.FileDescriptor;
@@ -35,7 +35,7 @@ import java.io.OutputStream;
  * the other side will NOT be notified and unblocked from reading data until
  * some data is sent again or the USB is physically disconnected.
  */
-public class USBTransport extends SdlTransport {
+public class UsbTransport extends SdlTransport {
     /**
      * Broadcast action: sent when a USB accessory is attached.
      *
@@ -47,7 +47,7 @@ public class USBTransport extends SdlTransport {
     /**
      * String tag for logging.
      */
-    private static final String TAG = USBTransport.class.getSimpleName();
+    private static final String TAG = UsbTransport.class.getSimpleName();
     /**
      * Key for SdlTrace.
      */
@@ -130,7 +130,7 @@ public class USBTransport extends SdlTransport {
     /**
      * USB config object.
      */
-    private USBTransportConfig mConfig = null;
+    private UsbTransportConfig mConfig = null;
     /**
      * Current state of transport.
      *
@@ -169,7 +169,7 @@ public class USBTransport extends SdlTransport {
      * @param transportListener  Listener that gets notified on different
      *                           transport events
      */
-    public USBTransport(USBTransportConfig usbTransportConfig,
+    public UsbTransport(UsbTransportConfig usbTransportConfig,
                         ITransportListener transportListener) {
         super(transportListener);
         this.mConfig = usbTransportConfig;
@@ -692,7 +692,7 @@ public class USBTransport extends SdlTransport {
             switch (state) {
                 case LISTENING:
 
-                    synchronized (USBTransport.this) {
+                    synchronized (UsbTransport.this) {
                         try {
                             mParcelFD =
                                     getUsbManager().openAccessory(mAccessory);
@@ -721,7 +721,7 @@ public class USBTransport extends SdlTransport {
 
                     logI("Accessory opened!");
 
-                    synchronized (USBTransport.this) {
+                    synchronized (UsbTransport.this) {
                         setState(State.CONNECTED);
                         handleTransportConnected();
                     }
@@ -779,7 +779,7 @@ public class USBTransport extends SdlTransport {
                 }
 
                 if (bytesRead > 0) {
-                    synchronized (USBTransport.this) {
+                    synchronized (UsbTransport.this) {
                         handleReceivedBytes(buffer, bytesRead);
                     }
                 }

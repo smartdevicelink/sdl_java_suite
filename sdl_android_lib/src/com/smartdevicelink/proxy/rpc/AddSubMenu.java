@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Add a SubMenu to the Command Menu
@@ -20,7 +20,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @see AddCommand
  * @see DeleteCommand
  */
-public class AddSubMenu extends RPCRequest {
+public class AddSubMenu extends RpcRequest {
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_MENU_NAME = "menuName";
 	public static final String KEY_MENU_ID = "menuID";
@@ -29,7 +29,7 @@ public class AddSubMenu extends RPCRequest {
 	 * Constructs a new AddSubMenu object
 	 */
 	public AddSubMenu() {
-        super(FunctionID.ADD_SUB_MENU.toString());
+        super(FunctionId.ADD_SUB_MENU.toString());
     }
 	/**
 	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
@@ -49,7 +49,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @return Integer -an integer representing the Menu ID that identifies a sub
 	 *         menu
 	 */
-    public Integer getMenuID() {
+    public Integer getMenuId() {
         return (Integer) parameters.get( KEY_MENU_ID );
     }
 	/**
@@ -58,14 +58,14 @@ public class AddSubMenu extends RPCRequest {
 	 * being added
 	 * <p>
 	 * 
-	 * @param menuID
+	 * @param menuId
 	 *            an integer object representing a Menu ID
 	 *            <p>
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000
 	 */    
-    public void setMenuID( Integer menuID ) {
-        if (menuID != null) {
-            parameters.put(KEY_MENU_ID, menuID );
+    public void setMenuId( Integer menuId ) {
+        if (menuId != null) {
+            parameters.put(KEY_MENU_ID, menuId );
         } else {
             parameters.remove(KEY_MENU_ID);
         }

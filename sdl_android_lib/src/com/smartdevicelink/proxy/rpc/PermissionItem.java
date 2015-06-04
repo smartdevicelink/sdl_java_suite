@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.util.DebugTool;
 
-public class PermissionItem extends RPCStruct {
+public class PermissionItem extends RpcStruct {
 	public static final String KEY_RPC_NAME = "rpcName";
 	public static final String KEY_HMI_PERMISSIONS = "hmiPermissions";
 	public static final String KEY_PARAMETER_PERMISSIONS = "parameterPermissions";
@@ -25,20 +25,20 @@ public class PermissionItem extends RPCStruct {
         }
     }
     @SuppressWarnings("unchecked")
-    public HMIPermissions getHMIPermissions() {
+    public HmiPermissions getHmiPermissions() {
     	Object obj = store.get(KEY_HMI_PERMISSIONS);
-        if (obj instanceof HMIPermissions) {
-            return (HMIPermissions) obj;
+        if (obj instanceof HmiPermissions) {
+            return (HmiPermissions) obj;
         } else if (obj instanceof Hashtable) {
         	try {
-        		return new HMIPermissions((Hashtable<String, Object>) obj);
+        		return new HmiPermissions((Hashtable<String, Object>) obj);
             } catch (Exception e) {
             	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_PERMISSIONS, e);
             }
         }
         return null;
     }
-    public void setHMIPermissions(HMIPermissions hmiPermissions) {
+    public void setHmiPermissions(HmiPermissions hmiPermissions) {
         if (hmiPermissions != null) {
         	store.put(KEY_HMI_PERMISSIONS, hmiPermissions);
         } else {

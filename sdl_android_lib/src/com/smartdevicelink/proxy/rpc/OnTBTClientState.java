@@ -2,9 +2,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.rpc.enums.TBTState;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcNotification;
+import com.smartdevicelink.proxy.rpc.enums.TbtState;
 
 /**
  * <p>Notifies the application of the current TBT client status on the module.</p>
@@ -30,7 +30,7 @@ import com.smartdevicelink.proxy.rpc.enums.TBTState;
  * </tr>
  * <tr>
  * <td>state</td>
- * <td>{@linkplain TBTState}</td>
+ * <td>{@linkplain TbtState}</td>
  * <td>Current state of TBT client.</td>
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
@@ -38,31 +38,31 @@ import com.smartdevicelink.proxy.rpc.enums.TBTState;
  * @since SmartDeviceLink 1.0
  * 
  */
-public class OnTBTClientState extends RPCNotification {
+public class OnTbtClientState extends RpcNotification {
 	public static final String KEY_STATE = "state";
 	/**
 	*Constructs a newly allocated OnTBTClientState object
 	*/ 
-    public OnTBTClientState() {
-        super(FunctionID.ON_TBT_CLIENT_STATE.toString());
+    public OnTbtClientState() {
+        super(FunctionId.ON_TBT_CLIENT_STATE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnTBTClientState object indicated by the Hashtable parameter</p>
      *@param hash The Hashtable to use
      */    
-    public OnTBTClientState(Hashtable<String, Object> hash) {
+    public OnTbtClientState(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
      * <p>Called to get the current state of TBT client</p>
-     * @return {@linkplain TBTState} the current state of TBT client
+     * @return {@linkplain TbtState} the current state of TBT client
      */    
-    public TBTState getState() {
+    public TbtState getState() {
         Object obj = parameters.get(KEY_STATE);
-        if (obj instanceof TBTState) {
-        	return (TBTState)obj;
+        if (obj instanceof TbtState) {
+        	return (TbtState)obj;
         } else if(obj instanceof String) {
-        	return TBTState.valueForString((String) obj);
+        	return TbtState.valueForString((String) obj);
         }    	
     	return null;
     }
@@ -70,7 +70,7 @@ public class OnTBTClientState extends RPCNotification {
      * <p>Called to set the current state of TBT client</p>
      * @param state current state of TBT client
      */    
-    public void setState( TBTState state ) {
+    public void setState( TbtState state ) {
         if (state != null) {
             parameters.put(KEY_STATE, state );
         } else {

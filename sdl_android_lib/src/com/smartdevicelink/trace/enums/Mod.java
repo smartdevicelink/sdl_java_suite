@@ -1,12 +1,12 @@
 package com.smartdevicelink.trace.enums;
 
 public enum Mod {
-	  tran,
-	  proto,
-	  mar,
-	  rpc,
-	  app,
-	  proxy;
+	  TRANSPORT,
+	  PROTOCOL,
+	  MARSHALL,
+	  RPC,
+	  APP,
+	  PROXY;
 
 	public static Mod valueForString(String value) {
 		try{

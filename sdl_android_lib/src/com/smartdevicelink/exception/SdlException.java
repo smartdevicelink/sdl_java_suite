@@ -1,22 +1,24 @@
 package com.smartdevicelink.exception;
 
+import com.smartdevicelink.exception.enums.SdlExceptionCause;
+
 
 public class SdlException extends Exception {
 	
 	private static final long serialVersionUID = 5922492291870772815L;
 	
 	protected Throwable detail = null;
-	private SdlExceptionCause _sdlExceptionCause = null;
+	private SdlExceptionCause sdlExceptionCause = null;
 	
 	public SdlException(String msg, SdlExceptionCause exceptionCause) {
 		super(msg);
-		_sdlExceptionCause = exceptionCause;
+		sdlExceptionCause = exceptionCause;
 	}
 	
 	public SdlException(String msg, Throwable ex, SdlExceptionCause exceptionCause) {
 		super(msg + " --- Check inner exception for diagnostic details");
 		detail = ex;
-		_sdlExceptionCause = exceptionCause;
+		sdlExceptionCause = exceptionCause;
 	}
 	
 	public SdlException(Throwable ex) {
@@ -25,7 +27,7 @@ public class SdlException extends Exception {
 	}
 	
 	public SdlExceptionCause getSdlExceptionCause() {
-		return _sdlExceptionCause;
+		return sdlExceptionCause;
 	}
 	
 	public Throwable getInnerException() {

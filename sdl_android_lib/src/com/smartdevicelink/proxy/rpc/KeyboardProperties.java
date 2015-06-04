@@ -3,12 +3,12 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
-public class KeyboardProperties extends RPCStruct {
+public class KeyboardProperties extends RpcStruct {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
 	public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
 	public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";

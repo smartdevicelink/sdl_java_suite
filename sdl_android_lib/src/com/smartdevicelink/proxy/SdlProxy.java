@@ -3,11 +3,12 @@ package com.smartdevicelink.proxy;
 import java.util.Vector;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.exception.enums.SdlExceptionCause;
+import com.smartdevicelink.proxy.interfaces.IProxyListener;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.trace.SdlTrace;
-import com.smartdevicelink.transport.BTTransportConfig;
+import com.smartdevicelink.transport.BtTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
 @Deprecated
@@ -40,7 +41,7 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*App ID*/null,
 				/*autoActivateID*/null,
 				/*callbackToUIThread*/ true,
-				new BTTransportConfig());
+				new BtTransportConfig());
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener.", SDL_LIB_TRACE_KEY);
 	}
@@ -50,11 +51,11 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * 
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
 	 * @param sAppName
-	 * @param sAppID
+	 * @param sAppId
 	 * @throws SdlException
 	 */
 	@Deprecated
-	public SdlProxy(IProxyListener listener, String sAppName, String sAppID) throws SdlException {
+	public SdlProxy(IProxyListener listener, String sAppName, String sAppId) throws SdlException {
 		super(	listener, 
 				/*application context*/null, 
 				/*enable advanced lifecycle management*/false, 
@@ -67,10 +68,10 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*language desired*/null,
 				/*HMI Display Language Desired*/null,
 				/*App Type*/null,
-				/*App ID*/sAppID,
+				/*App ID*/sAppId,
 				/*autoActivateID*/null,
 				/*callbackToUIThread*/ true,
-				new BTTransportConfig());
+				new BtTransportConfig());
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener.", SDL_LIB_TRACE_KEY);
 	}	
@@ -100,7 +101,7 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*App ID*/null,
 				/*autoActivateID*/null,
 				/*callbackToUIThread*/ true,
-				new BTTransportConfig());
+				new BtTransportConfig());
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, SdlProxyConfigurationResources.", SDL_LIB_TRACE_KEY);
 	}
@@ -109,11 +110,11 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
 	 * 
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
-	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
+	 * @param callbackToUiThread - If true, all callbacks will occur on the UI thread.
 	 * @throws SdlException
 	 */
 	@Deprecated
-	public SdlProxy(IProxyListener listener, boolean callbackToUIThread) throws SdlException {
+	public SdlProxy(IProxyListener listener, boolean callbackToUiThread) throws SdlException {
 		super(	listener,  
 				/*sdl proxy configuration resources*/null,
 				/*enable advanced lifecycle management*/false, 
@@ -128,8 +129,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*App Type*/null,
 				/*App ID*/null,
 				/*autoActivateID*/null,
-				callbackToUIThread,
-				new BTTransportConfig());
+				callbackToUiThread,
+				new BtTransportConfig());
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
 	}
@@ -139,12 +140,12 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * 
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL.
 	 * @param sdlProxyConfigurationResources 
-	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
+	 * @param callbackToUiThread - If true, all callbacks will occur on the UI thread.
 	 * @throws SdlException
 	 */
 	@Deprecated
 	public SdlProxy(IProxyListener listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
-			boolean callbackToUIThread) throws SdlException {
+			boolean callbackToUiThread) throws SdlException {
 		super(	listener,  
 				sdlProxyConfigurationResources,
 				/*enable advanced lifecycle management*/false, 
@@ -159,8 +160,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*App Type*/null,
 				/*App ID*/null,
 				/*autoActivateID*/null,
-				callbackToUIThread,
-				new BTTransportConfig());
+				callbackToUiThread,
+				new BtTransportConfig());
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
 	}
@@ -232,12 +233,12 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
 	 * 
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
-	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
+	 * @param callbackToUiThread - If true, all callbacks will occur on the UI thread.
 	 * @param transportConfig Initial configuration for transport.
 	 * @throws SdlException
 	 */
 	@Deprecated
-	public SdlProxy(IProxyListener listener, boolean callbackToUIThread, BaseTransportConfig transportConfig) throws SdlException {
+	public SdlProxy(IProxyListener listener, boolean callbackToUiThread, BaseTransportConfig transportConfig) throws SdlException {
 		super(	listener,  
 				/*sdl proxy configuration resources*/null,
 				/*enable advanced lifecycle management*/false, 
@@ -252,7 +253,7 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*App Type*/null,
 				/*App ID*/null,
 				/*autoActivateID*/null,
-				callbackToUIThread,
+				callbackToUiThread,
 				transportConfig);
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
@@ -263,13 +264,13 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * 
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL.
 	 * @param sdlProxyConfigurationResources 
-	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
+	 * @param callbackToUiThread - If true, all callbacks will occur on the UI thread.
 	 * @param transportConfig Initial configuration for transport.
 	 * @throws SdlException
 	 */
 	@Deprecated
 	public SdlProxy(IProxyListener listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
-			boolean callbackToUIThread, BaseTransportConfig transportConfig) throws SdlException {
+			boolean callbackToUiThread, BaseTransportConfig transportConfig) throws SdlException {
 		super(	listener,  
 				sdlProxyConfigurationResources,
 				/*enable advanced lifecycle management*/false, 
@@ -284,7 +285,7 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*App Type*/null,
 				/*App ID*/null,
 				/*autoActivateID*/null,
-				callbackToUIThread,
+				callbackToUiThread,
 				transportConfig);
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
@@ -302,8 +303,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 *  @param vrSynonyms
 	 *  @param isMediaApp
 	 *  @param languageDesired
-	 *  @param autoActivateID
-	 *  @param correlationID
+	 *  @param autoActivateId
+	 *  @param correlationId
 	 *  
 	 *  @throws SdlException
 	 */
@@ -311,11 +312,11 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	public void registerAppInterface(
 			SdlMsgVersion sdlMsgVersion, String appName, String ngnMediaScreenAppName,
 			Vector<String> vrSynonyms, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired,
-			String appID, String autoActivateID, Integer correlationID) 
+			String appID, String autoActivateId, Integer correlationId) 
 			throws SdlException {
 		
 		// Test if proxy has been disposed
-		if (_proxyDisposed) {
+		if (proxyDisposed) {
 			throw new SdlException("This SdlProxy object has been disposed, it is no long capable of sending requests.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
 		
@@ -330,8 +331,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				hmiDisplayLanguageDesired,
 				null,
 				appID,
-				autoActivateID,
-				correlationID);
+				autoActivateId,
+				correlationId);
 	}
 	
 	/**
@@ -339,12 +340,12 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * 
 	 * @param appName
 	 * @param isMediaApp
-	 * @param autoActivateID
+	 * @param autoActivateId
 	 * @throws SdlException
 	 */
 	@Deprecated
 	public void registerAppInterface(
-			String appName, Boolean isMediaApp, String appID, String autoActivateID, Integer correlationID) 
+			String appName, Boolean isMediaApp, String appId, String autoActivateId, Integer correlationId) 
 			throws SdlException {
 		
 		registerAppInterface(
@@ -355,9 +356,9 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				isMediaApp, 
 				/*languageDesired*/null,
 				/*hmiDisplayLanguageDesired*/null,
-				appID,
-				autoActivateID,
-				correlationID);
+				appId,
+				autoActivateId,
+				correlationId);
 	}
 	
 	/**
@@ -367,28 +368,28 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	 * @throws SdlException
 	 */
 	@Deprecated
-	public void registerAppInterface(String appName, String appID, Integer correlationID) 
+	public void registerAppInterface(String appName, String appId, Integer correlationId) 
 			throws SdlException {
 		
-		registerAppInterface(appName, false, appID, "", correlationID);
+		registerAppInterface(appName, false, appId, "", correlationId);
 	}
 	
 	/**
 	 * Sends an UnregisterAppInterface RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param correlationID
+	 * @param correlationId
 	 * @throws SdlException
 	 */
 	@Deprecated
-	public void unregisterAppInterface(Integer correlationID) 
+	public void unregisterAppInterface(Integer correlationId) 
 			throws SdlException {		
 		// Test if proxy has been disposed
-		if (_proxyDisposed) {
+		if (proxyDisposed) {
 			throw new SdlException("This SdlProxy object has been disposed, it is no long capable of executing methods.", 
 										SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}		
 				
-		unregisterAppInterfacePrivate(correlationID);
+		unregisterAppInterfacePrivate(correlationId);
 	}
 	
 	/**

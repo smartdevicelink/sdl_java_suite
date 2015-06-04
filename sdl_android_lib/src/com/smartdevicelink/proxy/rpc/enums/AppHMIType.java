@@ -4,7 +4,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * Enumeration listing possible app hmi types.
  * @since SmartDeviceLink 2.0
  */
-public enum AppHMIType {
+public enum AppHmiType {
 	/**
 	 * The App will have default rights.
 	 */
@@ -48,7 +48,7 @@ public enum AppHMIType {
      * @param value String
      * @return AppHMIType
      */      
-    public static AppHMIType valueForString(String value) {
+    public static AppHmiType valueForString(String value) {
         try{
             return valueOf(value);
         }catch(Exception e){

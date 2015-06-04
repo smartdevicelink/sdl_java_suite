@@ -2,7 +2,7 @@ package com.smartdevicelink.util;
 
 public class Base64 {
 
-	private static final String defaultString = "Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure";
+	private static final String DEFAULT_STRING = "Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure";
 
 	private static char[] map = new char[64];
 	private static byte[] unmap = new byte['z' + 1];
@@ -33,7 +33,7 @@ public class Base64 {
 	 */
 	public static void main(String[] args) {
 
-		String toEncode = defaultString;
+		String toEncode = DEFAULT_STRING;
 		if (args.length > 0) {
 			toEncode = args[0];
 		}

@@ -2,21 +2,21 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Set Global Properties Response is sent, when SetGlobalProperties has been called
  * 
  * @since SmartDeviceLink 1.0
  */
-public class SetGlobalPropertiesResponse extends RPCResponse {
+public class SetGlobalPropertiesResponse extends RpcResponse {
 
 	/**
 	 * Constructs a new SetGlobalPropertiesResponse object
 	 */
     public SetGlobalPropertiesResponse() {
-        super(FunctionID.SET_GLOBAL_PROPERTIES.toString());
+        super(FunctionId.SET_GLOBAL_PROPERTIES.toString());
     }
 
 	/**

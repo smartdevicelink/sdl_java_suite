@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.util.SdlDataTypeConverter;
@@ -142,7 +142,7 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class GPSData extends RPCStruct {
+public class GpsData extends RpcStruct {
 	public static final String KEY_LONGITUDE_DEGREES = "longitudeDegrees";
 	public static final String KEY_LATITUDE_DEGREES = "latitudeDegrees";
 	public static final String KEY_UTC_YEAR = "utcYear";
@@ -165,13 +165,13 @@ public class GPSData extends RPCStruct {
 	/**
 	 * Constructs a newly allocated GPSData object
 	 */
-    public GPSData() { }
+    public GpsData() { }
     
     /**
      * Constructs a newly allocated GPSData object indicated by the Hashtable parameter 
      * @param hash The Hashtable to use
      */    
-    public GPSData(Hashtable<String, Object> hash) {
+    public GpsData(Hashtable<String, Object> hash) {
         super(hash);
     }
     

@@ -1,4 +1,4 @@
-package com.smartdevicelink.Dispatcher;
+package com.smartdevicelink.dispatch.interfaces;
 
 public interface IDispatchingStrategy<T> {
 	public void dispatch(T message);

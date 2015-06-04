@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 /**
@@ -24,7 +24,7 @@ import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
  * @see CreateInteractionChoiceSet
  * @see DeleteInteractionChoiceSet
  */
-public class PerformInteraction extends RPCRequest {
+public class PerformInteraction extends RpcRequest {
 	public static final String KEY_INITIAL_TEXT = "initialText";
 	public static final String KEY_INTERACTION_MODE = "interactionMode";
 	public static final String KEY_INTERACTION_CHOICE_SET_ID_LIST = "interactionChoiceSetIDList";
@@ -38,7 +38,7 @@ public class PerformInteraction extends RPCRequest {
 	 * Constructs a new PerformInteraction object
 	 */
     public PerformInteraction() {
-        super(FunctionID.PERFORM_INTERACTION.toString());
+        super(FunctionId.PERFORM_INTERACTION.toString());
     }
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable
@@ -86,17 +86,17 @@ public class PerformInteraction extends RPCRequest {
 	 *         spoken to the user at the start of an interaction
 	 */
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getInitialPrompt() {
+    public List<TtsChunk> getInitialPrompt() {
         if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -112,7 +112,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            a List<TTSChunk> value, specify what is to be spoken to the
 	 *            user at the start of an interaction
 	 */    
-    public void setInitialPrompt(List<TTSChunk> initialPrompt) {
+    public void setInitialPrompt(List<TtsChunk> initialPrompt) {
         if (initialPrompt != null) {
             parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
         } else {
@@ -161,7 +161,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         of the specified Choice Sets
 	 */    
     @SuppressWarnings("unchecked")
-    public List<Integer> getInteractionChoiceSetIDList() {
+    public List<Integer> getInteractionChoiceSetIdList() {
     	if(parameters.get(KEY_INTERACTION_CHOICE_SET_ID_LIST) instanceof List<?>){
     		List<?> list = (List<?>)parameters.get(KEY_INTERACTION_CHOICE_SET_ID_LIST);
     		if(list != null && list.size()>0){
@@ -177,16 +177,16 @@ public class PerformInteraction extends RPCRequest {
 	 * Sets a List<Integer> representing an Array of one or more Choice Set
 	 * IDs. User can select any choice from any of the specified Choice Sets
 	 * 
-	 * @param interactionChoiceSetIDList
+	 * @param interactionChoiceSetIdList
 	 *            -a List<Integer> representing an Array of one or more Choice
 	 *            Set IDs. User can select any choice from any of the specified
 	 *            Choice Sets
 	 *            <p>
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */    
-    public void setInteractionChoiceSetIDList(List<Integer> interactionChoiceSetIDList) {
-        if (interactionChoiceSetIDList != null) {
-            parameters.put(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
+    public void setInteractionChoiceSetIdList(List<Integer> interactionChoiceSetIdList) {
+        if (interactionChoiceSetIdList != null) {
+            parameters.put(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIdList);
         } else {
         	parameters.remove(KEY_INTERACTION_CHOICE_SET_ID_LIST);
         }
@@ -200,17 +200,17 @@ public class PerformInteraction extends RPCRequest {
 	 *         during the VR session
 	 */    
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getHelpPrompt() {
+    public List<TtsChunk> getHelpPrompt() {
         if(parameters.get(KEY_HELP_PROMPT) instanceof List<?>){
         	List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -234,7 +234,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            phrase to be spoken when the user says "help" during the VR
 	 *            session
 	 */    
-    public void setHelpPrompt(List<TTSChunk> helpPrompt) {
+    public void setHelpPrompt(List<TtsChunk> helpPrompt) {
         if (helpPrompt != null) {
             parameters.put(KEY_HELP_PROMPT, helpPrompt);
         } else {
@@ -249,17 +249,17 @@ public class PerformInteraction extends RPCRequest {
 	 *         spoken when the listen times out during the VR session
 	 */    
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTimeoutPrompt() {
+    public List<TtsChunk> getTimeoutPrompt() {
         if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -278,7 +278,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            a List<TTSChunk> specify the phrase to be spoken when the
 	 *            listen times out during the VR session
 	 */    
-    public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
+    public void setTimeoutPrompt(List<TtsChunk> timeoutPrompt) {
         if (timeoutPrompt != null) {
             parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
         } else {

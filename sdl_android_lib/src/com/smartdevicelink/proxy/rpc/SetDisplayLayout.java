@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Used to set an alternate display layout. If not sent, default screen for
@@ -12,13 +12,13 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class SetDisplayLayout extends RPCRequest {
+public class SetDisplayLayout extends RpcRequest {
 	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
 	/**
 	 * Constructs a new SetDisplayLayout object
 	 */
     public SetDisplayLayout() {
-        super(FunctionID.SET_DISPLAY_LAYOUT.toString());
+        super(FunctionId.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**

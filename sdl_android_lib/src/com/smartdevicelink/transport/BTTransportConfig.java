@@ -3,7 +3,7 @@ package com.smartdevicelink.transport;
 /**
  * Container of Bluetooth transport specific configuration.
  */
-public final class BTTransportConfig extends BaseTransportConfig {
+public final class BtTransportConfig extends BaseTransportConfig {
 
 	private boolean bKeepSocketActive = true;
 	
@@ -18,11 +18,11 @@ public final class BTTransportConfig extends BaseTransportConfig {
 		return TransportType.BLUETOOTH;
 	}
 	
-	public BTTransportConfig() {
+	public BtTransportConfig() {
 		this(true);
 	}
 		 
-	public BTTransportConfig(boolean shareConnection) {
+	public BtTransportConfig(boolean shareConnection) {
 		super.shareConnection = shareConnection;
 	}	
 	

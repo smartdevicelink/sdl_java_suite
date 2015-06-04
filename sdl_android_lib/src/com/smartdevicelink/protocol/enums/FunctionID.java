@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public enum FunctionID{
+public enum FunctionId{
     // DEPRECATED FUNCTIONS
     SYNC_P_DATA(65537, "SyncPData"),
     ON_SYNC_P_DATA(98305, "OnSyncPData"),
@@ -86,7 +86,7 @@ public enum FunctionID{
     private final int                       ID;
     private final String                    JSON_NAME;
 
-    private FunctionID(int id, String jsonName){
+    private FunctionId(int id, String jsonName){
         this.ID = id;
         this.JSON_NAME = jsonName;
     }
@@ -103,7 +103,7 @@ public enum FunctionID{
     private static void initFunctionMap(){
         functionMap = new HashMap<String, Integer>(values().length);
 
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)){
+        for(FunctionId value : EnumSet.allOf(FunctionId.class)){
             functionMap.put(value.toString(), value.getId());
         }
     }

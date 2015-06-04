@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 /**
  * Establishes a subscription to button notifications for HMI buttons. Buttons
@@ -55,14 +55,14 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * @since SmartDeviceLink 1.0
  * @see UnsubscribeButton
  */
-public class SubscribeButton extends RPCRequest {
+public class SubscribeButton extends RpcRequest {
 	public static final String KEY_BUTTON_NAME = "buttonName";
 
 	/**
 	 * Constructs a new SubscribeButton object
 	 */
     public SubscribeButton() {
-        super(FunctionID.SUBSCRIBE_BUTTON.toString());
+        super(FunctionId.SUBSCRIBE_BUTTON.toString());
     }
 	/**
 	 * Constructs a new SubscribeButton object indicated by the Hashtable

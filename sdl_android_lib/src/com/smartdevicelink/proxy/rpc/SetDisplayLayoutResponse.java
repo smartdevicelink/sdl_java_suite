@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
  * 
  * @since SmartDeviceLink 2.0
  */
-public class SetDisplayLayoutResponse extends RPCResponse {
+public class SetDisplayLayoutResponse extends RpcResponse {
 	public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
 	public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
@@ -22,7 +22,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	 * Constructs a new SetDisplayLayoutResponse object
 	 */
     public SetDisplayLayoutResponse() {
-        super(FunctionID.SET_DISPLAY_LAYOUT.toString());
+        super(FunctionId.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**

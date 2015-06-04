@@ -4,7 +4,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * Describes possible states of turn-by-turn module.
  * @since  SmartDeviceLink 1.0
  */
-public enum TBTState {
+public enum TbtState {
 	/**
 	 * Indicates that driver requested a route update.
 	 */
@@ -24,7 +24,7 @@ public enum TBTState {
      * @param value String
      * @return TBTState
      */
-    public static TBTState valueForString(String value) {
+    public static TbtState valueForString(String value) {
         try{
             return valueOf(value);
         }catch(Exception e){

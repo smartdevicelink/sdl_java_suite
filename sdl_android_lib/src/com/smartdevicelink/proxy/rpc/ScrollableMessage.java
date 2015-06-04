@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Creates a full screen overlay containing a large block of formatted text that
@@ -16,7 +16,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <b>HMILevel needs to be FULL</b>
  * <p>
  */
-public class ScrollableMessage extends RPCRequest {
+public class ScrollableMessage extends RpcRequest {
 	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
 	public static final String KEY_TIMEOUT = "timeout";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
@@ -25,7 +25,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * Constructs a new ScrollableMessage object
 	 */
     public ScrollableMessage() {
-        super(FunctionID.SCROLLABLE_MESSAGE.toString());
+        super(FunctionId.SCROLLABLE_MESSAGE.toString());
     }
 
 	/**

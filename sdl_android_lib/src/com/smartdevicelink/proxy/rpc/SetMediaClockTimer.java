@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 /**
  * Sets the media clock/timer value and the update method (e.g.count-up,
@@ -15,7 +15,7 @@ import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
  * 
  * @since SmartDeviceLink 1.0
  */
-public class SetMediaClockTimer extends RPCRequest {
+public class SetMediaClockTimer extends RpcRequest {
 	public static final String KEY_START_TIME = "startTime";
 	public static final String KEY_END_TIME = "endTime";
 	public static final String KEY_UPDATE_MODE = "updateMode";
@@ -23,7 +23,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * Constructs a new SetMediaClockTimer object
 	 */
     public SetMediaClockTimer() {
-        super(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
+        super(FunctionId.SET_MEDIA_CLOCK_TIMER.toString());
     }
 	/**
 	 * Constructs a new SetMediaClockTimer object indicated by the Hashtable

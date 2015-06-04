@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
+import com.smartdevicelink.proxy.rpc.enums.AppHmiType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
@@ -21,7 +21,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * <p>
  * Until the application receives its first <i>{@linkplain OnHMIStatus}</i>
  * Notification, its HMI Status is assumed to be: <i>
- * {@linkplain com.smartdevicelink.proxy.rpc.enums.HMILevel}</i>=NONE, <i>
+ * {@linkplain com.smartdevicelink.proxy.rpc.enums.HmiLevel}</i>=NONE, <i>
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.AudioStreamingState}
  * </i>=NOT_AUDIBLE, <i>
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.SystemContext}</i>=MAIN
@@ -61,7 +61,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * between SDL&reg; and the mobile application is lost, such as the vehicle is
  * turned off while the application is running, the autoActivateID can then be
  * passed in another call to RegisterAppInterface to re-acquire <i>
- * {@linkplain com.smartdevicelink.proxy.rpc.enums.HMILevel}</i>=FULL
+ * {@linkplain com.smartdevicelink.proxy.rpc.enums.HmiLevel}</i>=FULL
  * <p>
  * If the application intends to stream audio it is important to indicate so via
  * the isMediaApp parameter. When set to true, audio will reliably stream
@@ -79,7 +79,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * @see UnregisterAppInterface
  * @see OnAppInterfaceUnregistered
  */
-public class RegisterAppInterface extends RPCRequest {
+public class RegisterAppInterface extends RpcRequest {
 	public static final String KEY_TTS_NAME = "ttsName";
 	public static final String KEY_HMI_DISPLAY_LANGUAGE_DESIRED = "hmiDisplayLanguageDesired";
 	public static final String KEY_APP_HMI_TYPE = "appHMIType";
@@ -96,7 +96,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Constructs a new RegisterAppInterface object
 	 */
     public RegisterAppInterface() {
-        super(FunctionID.REGISTER_APP_INTERFACE.toString());
+        super(FunctionId.REGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
@@ -209,17 +209,17 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTtsName() {
+    public List<TtsChunk> getTtsName() {
         if (parameters.get(KEY_TTS_NAME) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TTS_NAME);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>) hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>) hashObj));
 	                }
 	                return newList;
 	            }
@@ -246,7 +246,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setTtsName(List<TTSChunk> ttsName) {
+    public void setTtsName(List<TtsChunk> ttsName) {
         if (ttsName != null) {
             parameters.put(KEY_TTS_NAME, ttsName);
         } else {
@@ -432,18 +432,18 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLinke 2.0
 	 */
     @SuppressWarnings("unchecked")
-    public List<AppHMIType> getAppHMIType() {
+    public List<AppHmiType> getAppHmiType() {
         if (parameters.get(KEY_APP_HMI_TYPE) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_APP_HMI_TYPE);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof AppHMIType) {
-	                return (List<AppHMIType>) list;
+	            if (obj instanceof AppHmiType) {
+	                return (List<AppHmiType>) list;
 	            } else if (obj instanceof String) {
-	            	List<AppHMIType> newList = new ArrayList<AppHMIType>();
+	            	List<AppHmiType> newList = new ArrayList<AppHmiType>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    AppHMIType toAdd = AppHMIType.valueForString(strFormat);
+	                    AppHmiType toAdd = AppHmiType.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -460,7 +460,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * to be given to the app. e.g. for platforms , like GEN2, this will
 	 * determine which "corner(s)" the app can populate
 	 * 
-	 * @param appHMIType
+	 * @param appHmiType
 	 *            a List<AppHMIType>
 	 *            <p>
 	 *            <b>Notes: </b>
@@ -470,21 +470,21 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAppHMIType(List<AppHMIType> appHMIType) {
-        if (appHMIType != null) {
-            parameters.put(KEY_APP_HMI_TYPE, appHMIType);
+    public void setAppHmiType(List<AppHmiType> appHmiType) {
+        if (appHmiType != null) {
+            parameters.put(KEY_APP_HMI_TYPE, appHmiType);
         } else {
         	parameters.remove(KEY_APP_HMI_TYPE);
         }
     }
     
-    public String getHashID() {
+    public String getHashId() {
         return (String) parameters.get(KEY_HASH_ID);
     }
    
-    public void setHashID(String hashID) {
-        if (hashID != null) {
-            parameters.put(KEY_HASH_ID, hashID);
+    public void setHashId(String hashId) {
+        if (hashId != null) {
+            parameters.put(KEY_HASH_ID, hashId);
         } else {
         	parameters.remove(KEY_HASH_ID);
         }
@@ -497,23 +497,23 @@ public class RegisterAppInterface extends RPCRequest {
 	 *         will be given when approved
 	 * @since SmartDeviceLink 2.0
 	 */
-    public String getAppID() {
+    public String getAppId() {
         return (String) parameters.get(KEY_APP_ID);
     }
 
 	/**
 	 * Sets a unique ID, which an app will be given when approved
 	 * 
-	 * @param appID
+	 * @param appId
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
 	 *            <p>
 	 *            <b>Notes: </b>Maxlength = 100
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAppID(String appID) {
-        if (appID != null) {
-            parameters.put(KEY_APP_ID, appID);
+    public void setAppId(String appId) {
+        if (appId != null) {
+            parameters.put(KEY_APP_ID, appId);
         } else {
         	parameters.remove(KEY_APP_ID);
         }

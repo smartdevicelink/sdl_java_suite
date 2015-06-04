@@ -8,16 +8,16 @@ public enum GlobalProperty{
 	/**
 	 * The help prompt to be spoken if the user needs assistance during a user-initiated interaction.
 	 */
-    HELPPROMPT,
+    HELP_PROMPT,
     /**
      * The prompt to be spoken if the user-initiated interaction times out waiting for the user's verbal input.
      */
-    TIMEOUTPROMPT,
-    VRHELPTITLE,
-    VRHELPITEMS,
-    MENUNAME,
-    MENUICON,
-    KEYBOARDPROPERTIES;
+    TIMEOUT_PROMPT,
+    VR_HELP_TITLE,
+    VR_HELP_ITEMS,
+    MENU_NAME,
+    MENU_ICON,
+    KEYBOARD_PROPERTIES;
 
     /**
      * Convert String to GlobalProperty

@@ -2,16 +2,16 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
-public class DIDResult extends RPCStruct {
+public class DidResult extends RpcStruct {
 	public static final String KEY_RESULT_CODE = "resultCode";
 	public static final String KEY_DATA = "data";
 	public static final String KEY_DID_LOCATION = "didLocation";
 	
-    public DIDResult() {}
-    public DIDResult(Hashtable<String, Object> hash) {
+    public DidResult() {}
+    public DidResult(Hashtable<String, Object> hash) {
         super(hash);
     }
     public void setResultCode(VehicleDataResultCode resultCode) {

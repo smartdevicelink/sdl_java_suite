@@ -7,7 +7,7 @@ import java.util.EnumSet;
  * <p>
  * @since SmartDeviceLink 1.0
  */
-public enum HMILevel {
+public enum HmiLevel {
 	/**
 	 * The application has full use of the SDL HMI. The app may output via TTS, display, or streaming audio and may gather input via VR, Menu, and button presses
 	 */
@@ -42,7 +42,7 @@ public enum HMILevel {
 
     private final String INTERNAL_NAME;
     
-    private HMILevel(String internalName) {
+    private HmiLevel(String internalName) {
         this.INTERNAL_NAME = internalName;
     }
     
@@ -55,12 +55,12 @@ public enum HMILevel {
      * @param value a String
      * @return HMILevel -a String value (FULL, LIMITED, BACKGROUND or NONE)
      */
-    public static HMILevel valueForString(String value) {
+    public static HmiLevel valueForString(String value) {
         if(value == null){
             return null;
         }
         
-        for (HMILevel anEnum : EnumSet.allOf(HMILevel.class)) {
+        for (HmiLevel anEnum : EnumSet.allOf(HmiLevel.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }

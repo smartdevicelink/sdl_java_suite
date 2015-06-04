@@ -3,15 +3,16 @@ package com.smartdevicelink.transport;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
+import com.smartdevicelink.transport.interfaces.ITransportListener;
 import com.smartdevicelink.util.DebugTool;
 
 public abstract class SdlTransport {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
-	private final static String FailurePropagating_Msg = "Failure propagating ";
+	private final static String FAILURE_PROPOGATING_MSG = "Failure propagating ";
 	private Boolean isConnected = false;
 	
-	private String _sendLockObj = "lock";
+	private String sendLockObj = "lock";
 	
 	
 	// Get status of transport connection
@@ -24,7 +25,7 @@ public abstract class SdlTransport {
     	if (transportListener == null) {
     		throw new IllegalArgumentException("Provided transport listener interface reference is null");
     	} // end-if
-    	_transportListener = transportListener;
+    	this.transportListener = transportListener;
     } // end-method
     
     // This method is called by the subclass to indicate that data has arrived from
@@ -37,11 +38,11 @@ public abstract class SdlTransport {
 				SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
 				SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
 				
-				_transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
+				transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
 			} // end-if
 		} catch (Exception excp) {
-			DebugTool.logError(FailurePropagating_Msg + "handleBytesFromTransport: " + excp.toString(), excp);
-			handleTransportError(FailurePropagating_Msg, excp);
+			DebugTool.logError(FAILURE_PROPOGATING_MSG + "handleBytesFromTransport: " + excp.toString(), excp);
+			handleTransportError(FAILURE_PROPOGATING_MSG, excp);
 		} // end-catch
     } // end-method
 
@@ -60,7 +61,7 @@ public abstract class SdlTransport {
     // sent out over transport.
     public boolean sendBytes(byte[] message, int offset, int length) {
         boolean bytesWereSent = false;
-        synchronized (_sendLockObj) {
+        synchronized (sendLockObj) {
         	bytesWereSent = sendBytesOverTransport(message, offset, length);
         } // end-lock
         // Send transport data to the siphon server
@@ -70,7 +71,7 @@ public abstract class SdlTransport {
         return bytesWereSent;
     } // end-method
 
-    private ITransportListener _transportListener = null;
+    private ITransportListener transportListener = null;
 
     // This method is called by the subclass to indicate that transport connection
     // has been established.
@@ -78,10 +79,10 @@ public abstract class SdlTransport {
 		isConnected = true;
 		try {
 	    	SdlTrace.logTransportEvent("Transport.connected", null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
-			_transportListener.onTransportConnected();
+			transportListener.onTransportConnected();
 		} catch (Exception excp) {
-			DebugTool.logError(FailurePropagating_Msg + "onTransportConnected: " + excp.toString(), excp);
-			handleTransportError(FailurePropagating_Msg + "onTransportConnected", excp);
+			DebugTool.logError(FAILURE_PROPOGATING_MSG + "onTransportConnected: " + excp.toString(), excp);
+			handleTransportError(FAILURE_PROPOGATING_MSG + "onTransportConnected", excp);
 		} // end-catch
 	} // end-method
 	
@@ -92,16 +93,16 @@ public abstract class SdlTransport {
 
 		try {
 	    	SdlTrace.logTransportEvent("Transport.disconnect: " + info, null, InterfaceActivityDirection.Transmit, null, 0, SDL_LIB_TRACE_KEY);
-			_transportListener.onTransportDisconnected(info);
+			transportListener.onTransportDisconnected(info);
 		} catch (Exception excp) {
-			DebugTool.logError(FailurePropagating_Msg + "onTransportDisconnected: " + excp.toString(), excp);
+			DebugTool.logError(FAILURE_PROPOGATING_MSG + "onTransportDisconnected: " + excp.toString(), excp);
 		} // end-catch
 	} // end-method
 	
 	// This method is called by the subclass to indicate a transport error has occurred.
 	protected void handleTransportError(final String message, final Exception ex) {
 		isConnected = false;
-		_transportListener.onTransportError(message, ex);
+		transportListener.onTransportError(message, ex);
 	}
 
 	public abstract void openConnection() throws SdlException;

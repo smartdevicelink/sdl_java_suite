@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Updates the list of next maneuvers, which can be requested by the user pressing the softbutton "Turns" on the
@@ -19,7 +19,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @since SmartDeviceLink 2.0
  * @see ShowConstantTbt
  */
-public class UpdateTurnList extends RPCRequest{
+public class UpdateTurnList extends RpcRequest{
     public static final String KEY_TURN_LIST = "turnList";
     public static final String KEY_SOFT_BUTTONS = "softButtons";
 
@@ -27,7 +27,7 @@ public class UpdateTurnList extends RPCRequest{
      * Constructs a new UpdateTurnList object
      */
     public UpdateTurnList() {
-        super(FunctionID.UPDATE_TURN_LIST.toString());
+        super(FunctionId.UPDATE_TURN_LIST.toString());
     }
     
     /**

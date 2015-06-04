@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Requests the current list of resident filenames for the registered app. Not
@@ -12,13 +12,13 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class ListFiles extends RPCRequest {
+public class ListFiles extends RpcRequest {
 
 	/**
 	 * Constructs a new ListFiles object
 	 */
     public ListFiles() {
-        super(FunctionID.LIST_FILES.toString());
+        super(FunctionId.LIST_FILES.toString());
     }
 
 	/**

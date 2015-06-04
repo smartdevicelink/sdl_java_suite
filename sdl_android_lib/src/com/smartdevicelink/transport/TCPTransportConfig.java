@@ -3,7 +3,7 @@ package com.smartdevicelink.transport;
 /**
  * Container of TCP transport specific configuration. 
  */
-public final class TCPTransportConfig extends BaseTransportConfig {
+public final class TcpTransportConfig extends BaseTransportConfig {
 	
 	/**
 	 * Value of port to use in TCP connection.
@@ -28,7 +28,7 @@ public final class TCPTransportConfig extends BaseTransportConfig {
      * @param autoReconnect Flag which must be set to true if tcp connection must be automatically reestablished in
      *                      case of disconnection
 	 */
-    public TCPTransportConfig(int port, String ipAddress, boolean autoReconnect) {
+    public TcpTransportConfig(int port, String ipAddress, boolean autoReconnect) {
 		mPort = port;
 		mIpAddress = ipAddress;
         mAutoReconnect = autoReconnect;

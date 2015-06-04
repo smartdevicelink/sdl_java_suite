@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 
-public class HeadLampStatus extends RPCStruct {
+public class HeadLampStatus extends RpcStruct {
 	public static final String KEY_AMBIENT_LIGHT_SENSOR_STATUS = "ambientLightSensorStatus";
 	public static final String KEY_HIGH_BEAMS_ON = "highBeamsOn";
     public static final String KEY_LOW_BEAMS_ON = "lowBeamsOn";

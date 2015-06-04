@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 /**
@@ -37,18 +37,18 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
  *  </table>
  * @since SmartDeviceLink 1.0
  */
-public class TTSChunk extends RPCStruct {
+public class TtsChunk extends RpcStruct {
 	public static final String KEY_TEXT = "text";
 	public static final String KEY_TYPE = "type";
 	/**
 	 * Constructs a newly allocated TTSChunk object
 	 */
-    public TTSChunk() { }
+    public TtsChunk() { }
     /**
      * Constructs a newly allocated TTSChunk object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */    
-    public TTSChunk(Hashtable<String, Object> hash) {
+    public TtsChunk(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**

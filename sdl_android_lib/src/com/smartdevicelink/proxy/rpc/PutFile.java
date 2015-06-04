@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 
 /**
@@ -15,7 +15,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
  * @see DeleteFile
  * @see ListFiles
  */
-public class PutFile extends RPCRequest {
+public class PutFile extends RpcRequest {
 	public static final String KEY_PERSISTENT_FILE = "persistentFile";
     public static final String KEY_SYSTEM_FILE = "systemFile";
     public static final String KEY_FILE_TYPE = "fileType";
@@ -28,7 +28,7 @@ public class PutFile extends RPCRequest {
 	 * Constructs a new PutFile object
 	 */
     public PutFile() {
-        super(FunctionID.PUT_FILE.toString());
+        super(FunctionId.PUT_FILE.toString());
     }
 
 	/**

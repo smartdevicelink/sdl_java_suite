@@ -1,4 +1,4 @@
-package com.smartdevicelink.util;
+ package com.smartdevicelink.util;
 
 import java.util.Vector;
 
@@ -7,6 +7,7 @@ import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.transport.SiphonServer;
+import com.smartdevicelink.util.interfaces.IConsole;
 
 public class DebugTool {
 	
@@ -170,17 +171,17 @@ public class DebugTool {
 		}
 	}
 
-	public static void logRPCSend(String rpcMsg) {
+	public static void logRpcSend(String rpcMsg) {
 		if (isRPCEnabled) {
 			Log.d(TAG, "Sending RPC message: " + rpcMsg);
-			logRPCSendToConsole(rpcMsg);
+			logRpcSendToConsole(rpcMsg);
 		}
 	}
 
-	public static void logRPCReceive(String rpcMsg) {
+	public static void logRpcReceive(String rpcMsg) {
 		if (isRPCEnabled) {
 			Log.d(TAG, "Received RPC message: " + rpcMsg);
-			logRPCSendToConsole(rpcMsg);
+			logRpcSendToConsole(rpcMsg);
 		}
 	}
 
@@ -235,7 +236,7 @@ public class DebugTool {
 	}
 	
 	@SuppressWarnings("unchecked")
-    protected static void logRPCSendToConsole(String msg) {
+    protected static void logRpcSendToConsole(String msg) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();
@@ -244,7 +245,7 @@ public class DebugTool {
 		for (int i = 0; i < localList.size(); i++) {
 			IConsole consoleListener = (IConsole) localList.elementAt(i);
 			try {
-				consoleListener.logRPCSend(msg);
+				consoleListener.logRpcSend(msg);
 			} catch (Exception ex) {
 				Log.e(TAG, "Failure propagating logRPCSend: " + ex.toString(), ex);
 			} // end-catch
@@ -252,7 +253,7 @@ public class DebugTool {
 	}
 	
 	@SuppressWarnings("unchecked")
-    protected static void logRPCReceiveToConsole(String msg) {
+    protected static void logRpcReceiveToConsole(String msg) {
 		Vector<IConsole> localList;
 		synchronized(consoleListenerList) {
 			localList = (Vector<IConsole>) consoleListenerList.clone();
@@ -261,7 +262,7 @@ public class DebugTool {
 		for (int i = 0; i < localList.size(); i++) {
 			IConsole consoleListener = (IConsole) localList.elementAt(i);
 			try {
-				consoleListener.logRPCReceive(msg);
+				consoleListener.logRpcReceive(msg);
 			} catch (Exception ex) {
 				Log.e(TAG, "Failure propagating logRPCReceive: " + ex.toString(), ex);
 			} // end-catch

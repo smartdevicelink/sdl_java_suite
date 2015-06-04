@@ -2,20 +2,20 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Dials a phone number and switches to phone application.
  *
  * @since SmartDeviceLink 4.0
  */
-public class DialNumber extends RPCRequest {
+public class DialNumber extends RpcRequest {
 	public static final String KEY_NUMBER = "number";
 
 
 	public DialNumber(){
-        super(FunctionID.DIAL_NUMBER.toString());
+        super(FunctionId.DIAL_NUMBER.toString());
 	}
 	
 	public DialNumber(Hashtable<String, Object> hash) {

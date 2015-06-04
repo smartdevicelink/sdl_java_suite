@@ -2,12 +2,12 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.util.DebugTool;
 
-public class ScreenParams extends RPCStruct {
+public class ScreenParams extends RpcStruct {
     public static final String KEY_RESOLUTION = "resolution";
     public static final String KEY_TOUCH_EVENT_AVAILABLE = "touchEventAvailable";
 

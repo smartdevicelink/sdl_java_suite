@@ -2,15 +2,15 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
-public class HMICapabilities extends RPCStruct{
+public class HmiCapabilities extends RpcStruct{
     public static final String KEY_NAVIGATION = "navigation";
     public static final String KEY_PHONE_CALL = "phoneCall";
 	
-	 public HMICapabilities() { }
+	 public HmiCapabilities() { }
 	  
-	 public HMICapabilities(Hashtable<String, Object> hash) {
+	 public HmiCapabilities(Hashtable<String, Object> hash) {
 		 super(hash);
 	 }
 	 

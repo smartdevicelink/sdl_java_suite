@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 
 import java.util.Hashtable;
 
-public class TouchEventCapabilities extends RPCStruct {
+public class TouchEventCapabilities extends RpcStruct {
     public static final String KEY_PRESS_AVAILABLE = "pressAvailable";
     public static final String KEY_MULTI_TOUCH_AVAILABLE = "multiTouchAvailable";
     public static final String KEY_DOUBLE_PRESS_AVAILABLE = "doublePressAvailable";

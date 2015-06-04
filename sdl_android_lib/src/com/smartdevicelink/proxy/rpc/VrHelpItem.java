@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.util.DebugTool;
 
-public class VrHelpItem extends RPCStruct {
+public class VrHelpItem extends RpcStruct {
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_TEXT = "text";
 	public static final String KEY_IMAGE = "image";

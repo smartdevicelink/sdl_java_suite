@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 
-public class MyKey extends RPCStruct {
+public class MyKey extends RpcStruct {
     public static final String KEY_E_911_OVERRIDE = "e911Override";
 
     public MyKey() { }

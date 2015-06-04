@@ -3,8 +3,8 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Non periodic vehicle data read request. This is an RPC to get diagnostics
@@ -18,15 +18,15 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class ReadDID extends RPCRequest {
+public class ReadDid extends RpcRequest {
 	public static final String KEY_ECU_NAME = "ecuName";
 	public static final String KEY_DID_LOCATION = "didLocation";
 
 	/**
 	 * Constructs a new ReadDID object
 	 */
-    public ReadDID() {
-        super(FunctionID.READ_DID.toString());
+    public ReadDid() {
+        super(FunctionId.READ_DID.toString());
     }
 
 	/**
@@ -36,7 +36,7 @@ public class ReadDID extends RPCRequest {
 	 * @param hash
 	 *            The Hashtable to use
 	 */
-    public ReadDID(Hashtable<String, Object> hash) {
+    public ReadDid(Hashtable<String, Object> hash) {
         super(hash);
     }
 

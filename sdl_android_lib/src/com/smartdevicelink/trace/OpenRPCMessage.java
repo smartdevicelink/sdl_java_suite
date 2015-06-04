@@ -4,16 +4,16 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcMessage;
+import com.smartdevicelink.proxy.RpcStruct;
 
-class OpenRPCMessage extends RPCMessage {
-	private OpenRPCMessage() {super("");}
-	public OpenRPCMessage(RPCMessage rpcm) {
+class OpenRpcMessage extends RpcMessage {
+	private OpenRpcMessage() {super("");}
+	public OpenRpcMessage(RpcMessage rpcm) {
 		super(rpcm);
 	} // end-method
 
-	public OpenRPCMessage(RPCStruct rpcs) {
+	public OpenRpcMessage(RpcStruct rpcs) {
 		super(rpcs);
 	} // end-method
 
@@ -64,9 +64,9 @@ class OpenRPCMessage extends RPCMessage {
 			pd.append("[");
 			dumpParams((Hashtable<String, Object>)obj, pd);
 			pd.append("]");
-		} else if (obj instanceof RPCStruct) {
+		} else if (obj instanceof RpcStruct) {
 			pd.append("[");
-			OpenRPCMessage orpcm = new OpenRPCMessage((RPCStruct)obj);
+			OpenRpcMessage orpcm = new OpenRpcMessage((RpcStruct)obj);
 			orpcm.msgDump(pd);
 			pd.append("]");
 		} else if (obj instanceof List) {

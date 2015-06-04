@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Speaks a phrase over the vehicle audio system using SDL's TTS
@@ -72,14 +72,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  * @since SmartDeviceLink 1.0
  * @see Alert
  */
-public class Speak extends RPCRequest {
+public class Speak extends RpcRequest {
 	public static final String KEY_TTS_CHUNKS = "ttsChunks";
 
 	/**
 	 * Constructs a new Speak object
 	 */    
 	public Speak() {
-        super(FunctionID.SPEAK.toString());
+        super(FunctionId.SPEAK.toString());
     }
 	/**
 	 * Constructs a new Speak object indicated by the Hashtable parameter
@@ -98,17 +98,17 @@ public class Speak extends RPCRequest {
 	 * @return List<TTSChunk> -an Array of 1-100 TTSChunk specify the phrase to be spoken
 	 */    
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTtsChunks() {
+    public List<TtsChunk> getTtsChunks() {
     	if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -132,7 +132,7 @@ public class Speak extends RPCRequest {
 	 *            <li>Each chunk can be no more than 500 characters</li>
 	 *            </ul>
 	 */    
-    public void setTtsChunks( List<TTSChunk> ttsChunks ) {
+    public void setTtsChunks( List<TtsChunk> ttsChunks ) {
         if (ttsChunks != null) {
             parameters.put(KEY_TTS_CHUNKS, ttsChunks );
         } else {

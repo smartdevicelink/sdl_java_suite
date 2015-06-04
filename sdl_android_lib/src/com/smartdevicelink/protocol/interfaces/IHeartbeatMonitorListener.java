@@ -1,4 +1,5 @@
-package com.smartdevicelink.protocol.heartbeat;
+package com.smartdevicelink.protocol.interfaces;
+
 
 /**
  * Listener (aka delegate) that actually knows how to work with the outside

@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 
 /**
@@ -26,7 +26,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class SingleTireStatus extends RPCStruct {
+public class SingleTireStatus extends RpcStruct {
 	public static final String KEY_STATUS = "status";
 
 	/**

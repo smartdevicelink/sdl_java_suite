@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.RpcStruct;
+import com.smartdevicelink.proxy.rpc.enums.HmiLevel;
 /**
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
  * <p><b>Parameter List
@@ -41,19 +41,19 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
  *  </table>
  * @since SmartDeviceLink 2.0
  */
-public class HMIPermissions extends RPCStruct {
+public class HmiPermissions extends RpcStruct {
 	public static final String KEY_ALLOWED = "allowed";
 	public static final String KEY_USER_DISALLOWED = "userDisallowed";
 	/**
 	 * Constructs a newly allocated HMIPermissions object
 	 */
-    public HMIPermissions() { }
+    public HmiPermissions() { }
     
     /**
      * Constructs a newly allocated HMIPermissions object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
      */
-    public HMIPermissions(Hashtable<String, Object> hash) {
+    public HmiPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
     
@@ -62,18 +62,18 @@ public class HMIPermissions extends RPCStruct {
      * @return   a set of all HMI levels that are permitted for this given RPC
      */
     @SuppressWarnings("unchecked")
-    public List<HMILevel> getAllowed() {
+    public List<HmiLevel> getAllowed() {
         if (store.get(KEY_ALLOWED) instanceof List<?>) {
 	    	List<?> list = (List<?>)store.get(KEY_ALLOWED);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
+	            if (obj instanceof HmiLevel) {
+	                return (List<HmiLevel>) list;
 	            } else if (obj instanceof String) {
-	            	List<HMILevel> newList = new ArrayList<HMILevel>();
+	            	List<HmiLevel> newList = new ArrayList<HmiLevel>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = HMILevel.valueForString(strFormat);
+	                    HmiLevel toAdd = HmiLevel.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -89,7 +89,7 @@ public class HMIPermissions extends RPCStruct {
      * set  HMI level that is permitted for this given RPC.
      * @param allowed HMI level that is permitted for this given RPC
      */
-    public void setAllowed(List<HMILevel> allowed) {
+    public void setAllowed(List<HmiLevel> allowed) {
         if (allowed != null) {
             store.put(KEY_ALLOWED, allowed);
         } else {
@@ -102,18 +102,18 @@ public class HMIPermissions extends RPCStruct {
      * @return a set of all HMI levels that are prohibited for this given RPC
      */
     @SuppressWarnings("unchecked")
-    public List<HMILevel> getUserDisallowed() {
+    public List<HmiLevel> getUserDisallowed() {
         if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
 	    	List<?> list = (List<?>)store.get(KEY_USER_DISALLOWED);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
+	            if (obj instanceof HmiLevel) {
+	                return (List<HmiLevel>) list;
 	            } else if (obj instanceof String) {
-	                List<HMILevel> newList = new ArrayList<HMILevel>();
+	                List<HmiLevel> newList = new ArrayList<HmiLevel>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = HMILevel.valueForString(strFormat);
+	                    HmiLevel toAdd = HmiLevel.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -129,7 +129,7 @@ public class HMIPermissions extends RPCStruct {
      * set a set of all HMI levels that are prohibited for this given RPC
      * @param userDisallowed  HMI level that is prohibited for this given RPC
      */
-    public void setUserDisallowed(List<HMILevel> userDisallowed) {
+    public void setUserDisallowed(List<HmiLevel> userDisallowed) {
         if (userDisallowed != null) {
             store.put(KEY_USER_DISALLOWED, userDisallowed);
         } else {

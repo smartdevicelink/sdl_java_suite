@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 
-public class VehicleDataResult extends RPCStruct {
+public class VehicleDataResult extends RpcStruct {
 	public static final String KEY_DATA_TYPE = "dataType";
 	public static final String KEY_RESULT_CODE = "resultCode";
 

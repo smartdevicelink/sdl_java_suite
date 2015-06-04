@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 
-public class ECallInfo extends RPCStruct {
+public class ECallInfo extends RpcStruct {
     public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
     public static final String KEY_AUX_E_CALL_NOTIFICATION_STATUS = "auxECallNotificationStatus";
     public static final String KEY_E_CALL_CONFIRMATION_STATUS = "eCallConfirmationStatus";

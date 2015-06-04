@@ -3,21 +3,21 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 
-public class SystemRequest extends RPCRequest {
+public class SystemRequest extends RpcRequest {
 	public static final String KEY_FILE_NAME = "fileName";
 	public static final String KEY_REQUEST_TYPE = "requestType";
 	public static final String KEY_DATA = "data";
 	
     public SystemRequest() {
-        super(FunctionID.SYSTEM_REQUEST.toString());
+        super(FunctionId.SYSTEM_REQUEST.toString());
     }
 
 	public SystemRequest(boolean bLegacy) {
-        super(FunctionID.ENCODED_SYNC_P_DATA.toString());
+        super(FunctionId.ENCODED_SYNC_P_DATA.toString());
     }
     
     public SystemRequest(Hashtable<String, Object> hash) {

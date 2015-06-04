@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 
 /**
  * Used to set existing local file on SDL as the app's icon. Not supported on
@@ -12,14 +12,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 
  * @since SmartDeviceLink 2.0
  */
-public class SetAppIcon extends RPCRequest {
+public class SetAppIcon extends RpcRequest {
 	public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
 	/**
 	 * Constructs a new SetAppIcon object
 	 */
     public SetAppIcon() {
-        super(FunctionID.SET_APP_ICON.toString());
+        super(FunctionId.SET_APP_ICON.toString());
     }
 
 	/**

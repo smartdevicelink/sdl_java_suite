@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy;
 import java.util.Hashtable;
 
 
-public class RPCMessage extends RPCStruct  {
+public class RpcMessage extends RpcStruct  {
     public static final String KEY_REQUEST = "request";
     public static final String KEY_RESPONSE = "response";
     public static final String KEY_NOTIFICATION = "notification";
@@ -11,20 +11,20 @@ public class RPCMessage extends RPCStruct  {
     public static final String KEY_PARAMETERS = "parameters";
     public static final String KEY_CORRELATION_ID = "correlationID";
 
-	public RPCMessage(String functionName) {
+	public RpcMessage(String functionName) {
 		this(functionName, "request");
 	}
 	
-	protected RPCMessage(RPCMessage rpcm) {
+	protected RpcMessage(RpcMessage rpcm) {
 		this(rpcm.store);
 	}
 	
-	protected RPCMessage(RPCStruct rpcs) {
+	protected RpcMessage(RpcStruct rpcs) {
 		this("", "");
 		this.parameters = rpcs.store;
 	}
 	
-	public RPCMessage(String functionName, String messageType) {
+	public RpcMessage(String functionName, String messageType) {
 		function = new Hashtable<String, Object>();
 		this.messageType = messageType;
 		store.put(messageType, function);
@@ -34,13 +34,13 @@ public class RPCMessage extends RPCStruct  {
 	}
 
 	@SuppressWarnings("unchecked")
-    public RPCMessage(Hashtable<String, Object> hash) {
+    public RpcMessage(Hashtable<String, Object> hash) {
         store = hash;
         messageType = getMessageTypeName(hash.keySet());
         function = (Hashtable<String, Object>) hash.get(messageType);
         parameters = (Hashtable<String, Object>) function.get(KEY_PARAMETERS);
-        if (hasKey(hash.keySet(), RPCStruct.KEY_BULK_DATA)) {
-            setBulkData((byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
+        if (hasKey(hash.keySet(), RpcStruct.KEY_BULK_DATA)) {
+            setBulkData((byte[]) hash.get(RpcStruct.KEY_BULK_DATA));
         }
 	}
 

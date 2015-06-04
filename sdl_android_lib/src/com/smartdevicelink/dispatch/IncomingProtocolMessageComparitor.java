@@ -1,10 +1,10 @@
-package com.smartdevicelink.Dispatcher;
+package com.smartdevicelink.dispatch;
 
 import java.util.Comparator;
 
 import com.smartdevicelink.protocol.ProtocolMessage;
 
-public class OutgoingProtocolMessageComparitor implements Comparator<ProtocolMessage> {
+public class IncomingProtocolMessageComparitor implements Comparator<ProtocolMessage> {
 
 	@Override
 	public int compare(ProtocolMessage arg0, ProtocolMessage arg1) {
@@ -12,4 +12,3 @@ public class OutgoingProtocolMessageComparitor implements Comparator<ProtocolMes
 		return 0;
 	}
 }
-

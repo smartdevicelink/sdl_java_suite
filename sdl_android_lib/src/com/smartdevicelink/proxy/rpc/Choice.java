@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.RpcStruct;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -50,7 +50,7 @@ import com.smartdevicelink.util.DebugTool;
  * 
   * @since SmartDeviceLink 1.0
  */
-public class Choice extends RPCStruct {
+public class Choice extends RpcStruct {
 	public static final String KEY_SECONDARY_TEXT = "secondaryText";
 	public static final String KEY_TERTIARY_TEXT = "tertiaryText";
 	public static final String KEY_SECONDARY_IMAGE = "secondaryImage";
@@ -73,16 +73,16 @@ public class Choice extends RPCStruct {
      * Get the application-scoped identifier that uniquely identifies this choice.
      * @return choiceID Min: 0  Max: 65535
      */    
-    public Integer getChoiceID() {
+    public Integer getChoiceId() {
         return (Integer) store.get(KEY_CHOICE_ID);
     }
     /**
      * Set the application-scoped identifier that uniquely identifies this choice.
-     * @param choiceID Min: 0  Max: 65535
+     * @param choiceId Min: 0  Max: 65535
      */    
-    public void setChoiceID(Integer choiceID) {
-        if (choiceID != null) {
-            store.put(KEY_CHOICE_ID, choiceID);
+    public void setChoiceId(Integer choiceId) {
+        if (choiceId != null) {
+            store.put(KEY_CHOICE_ID, choiceId);
         } else {
         	store.remove(KEY_CHOICE_ID);
         }

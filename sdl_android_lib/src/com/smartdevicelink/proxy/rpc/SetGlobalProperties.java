@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcRequest;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Sets value(s) for the specified global property(ies)
@@ -17,7 +17,7 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  * @see ResetGlobalProperties
  */
-public class SetGlobalProperties extends RPCRequest {
+public class SetGlobalProperties extends RpcRequest {
 	public static final String KEY_VR_HELP_TITLE = "vrHelpTitle";
 	public static final String KEY_MENU_TITLE = "menuTitle";
 	public static final String KEY_MENU_ICON = "menuIcon";
@@ -29,7 +29,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * Constructs a new SetGlobalProperties object
 	 */
     public SetGlobalProperties() {
-        super(FunctionID.SET_GLOBAL_PROPERTIES.toString());
+        super(FunctionId.SET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new SetGlobalProperties object indicated by the Hashtable
@@ -51,17 +51,17 @@ public class SetGlobalProperties extends RPCRequest {
 	 *         specifying the help prompt used in an interaction started by PTT
 	 */    
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getHelpPrompt() {
+    public List<TtsChunk> getHelpPrompt() {
     	if (parameters.get(KEY_HELP_PROMPT) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -83,7 +83,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            <li>Only optional it timeoutPrompt has been specified</li>
 	 *            </ul>
 	 */    
-    public void setHelpPrompt(List<TTSChunk> helpPrompt) {
+    public void setHelpPrompt(List<TtsChunk> helpPrompt) {
         if (helpPrompt != null) {
             parameters.put(KEY_HELP_PROMPT, helpPrompt);
         } else {
@@ -99,17 +99,17 @@ public class SetGlobalProperties extends RPCRequest {
 	 *         specifying the help prompt used in an interaction started by PTT
 	 */    
     @SuppressWarnings("unchecked")
-    public List<TTSChunk> getTimeoutPrompt() {
+    public List<TtsChunk> getTimeoutPrompt() {
         if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
 	        if (list != null && list.size() > 0) {
 	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
+	            if (obj instanceof TtsChunk) {
+	                return (List<TtsChunk>) list;
 	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	            	List<TtsChunk> newList = new ArrayList<TtsChunk>();
 	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                    newList.add(new TtsChunk((Hashtable<String, Object>)hashObj));
 	                }
 	                return newList;
 	            }
@@ -123,7 +123,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * started by PTT
 	 * 
 	 */    
-    public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
+    public void setTimeoutPrompt(List<TtsChunk> timeoutPrompt) {
         if (timeoutPrompt != null) {
             parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
         } else {

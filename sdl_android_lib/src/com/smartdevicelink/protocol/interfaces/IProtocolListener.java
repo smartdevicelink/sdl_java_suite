@@ -1,5 +1,6 @@
-package com.smartdevicelink.protocol;
+package com.smartdevicelink.protocol.interfaces;
 
+import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.*;
 
 public interface IProtocolListener {
@@ -12,18 +13,18 @@ public interface IProtocolListener {
 	void onProtocolMessageReceived(ProtocolMessage msg);
 
 	// Called to indicate that a protocol session has been started (from either side)
-	void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID);
+	void onProtocolSessionStarted(SessionType sessionType, byte sessionId, byte version, String correlationId);
 	
-	void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID);	
+	void onProtocolSessionNack(SessionType sessionType, byte sessionId, byte version, String correlationId);	
 
 	// Called to indicate that a protocol session has ended (from either side)
-	void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
+	void onProtocolSessionEnded(SessionType sessionType, byte sessionId, String correlationId /*, String info, Exception ex*/);
  	/**
      * Called when a protocol heartbeat ACK message has been received from SDL.
      */
-    void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID);
+    void onProtocolHeartbeatAck(SessionType sessionType, byte sessionId);
 
-    void onResetHeartbeat(SessionType sessionType, byte sessionID);
+    void onResetHeartbeat(SessionType sessionType, byte sessionId);
 
 	// Called to indicate that a protocol error was detected in received data.
 	void onProtocolError(String info, Exception e);

@@ -7,12 +7,12 @@ import com.smartdevicelink.proxy.SdlProxyBase;
 public class NativeLogTool {
 	
 	static private boolean logToSystemEnabled = true;
-	private static final int ChunkSize = 4000;
+	private static final int CHUNK_SIZE = 4000;
 	
 	private enum LogTarget {
-		Info
-		,Warning
-		,Error
+		INFO
+		,WARNING
+		,ERROR
 	}
 
 	public static void setEnableState(boolean en) {
@@ -29,7 +29,7 @@ public class NativeLogTool {
 	
 	public static void logInfo(String tag, String message) {
 		if (logToSystemEnabled) {
-			log(LogTarget.Info, tag, message);
+			log(LogTarget.INFO, tag, message);
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class NativeLogTool {
 	
 	public static void logWarning(String tag, String message) {
 		if (logToSystemEnabled) {
-			log(LogTarget.Warning, tag, message);
+			log(LogTarget.WARNING, tag, message);
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class NativeLogTool {
 	
 	public static void logError(String tag, String message) {
 		if (logToSystemEnabled) {
-			log(LogTarget.Error, tag, message);
+			log(LogTarget.ERROR, tag, message);
 		}
 	}
 	
@@ -76,16 +76,16 @@ public class NativeLogTool {
 		String chunk = null;
 		try {
 			for (int idx=0;idx < logMsg.length();idx += substrSize) {
-				substrSize = Math.min(ChunkSize, logMsg.length() - idx);
+				substrSize = Math.min(CHUNK_SIZE, logMsg.length() - idx);
 				chunk = logMsg.substring(idx, idx + substrSize);
 				switch (ltarg) {
-					case Info:
+					case INFO:
 						bytesWritten = Log.i(tag, chunk);
 						break;
-					case Warning:
+					case WARNING:
 						bytesWritten = Log.w(tag, chunk);
 						break;
-					case Error:
+					case ERROR:
 						bytesWritten = Log.e(tag, chunk);
 						break;
 				} // end-switch

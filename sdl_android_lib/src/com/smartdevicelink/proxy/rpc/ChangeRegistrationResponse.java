@@ -2,21 +2,21 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.proxy.RpcResponse;
 
 /**
  * Change Registration Response is sent, when ChangeRegistration has been called
  * 
  * @since SmartDeviceLink 2.0
  */
-public class ChangeRegistrationResponse extends RPCResponse {
+public class ChangeRegistrationResponse extends RpcResponse {
 
 	/**
 	 * Constructs a new ChangeRegistrationResponse object
 	 */
     public ChangeRegistrationResponse() {
-        super(FunctionID.CHANGE_REGISTRATION.toString());
+        super(FunctionId.CHANGE_REGISTRATION.toString());
     }
 
 	/**

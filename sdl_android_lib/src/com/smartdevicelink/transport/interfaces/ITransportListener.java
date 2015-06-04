@@ -1,4 +1,4 @@
-package com.smartdevicelink.transport;
+package com.smartdevicelink.transport.interfaces;
 
 public interface ITransportListener {
 	// Called to indicate and deliver bytes received from transport
