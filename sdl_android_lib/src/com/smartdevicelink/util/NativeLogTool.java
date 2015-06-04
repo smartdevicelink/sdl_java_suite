@@ -23,52 +23,56 @@ public class NativeLogTool {
 		return logToSystemEnabled;
 	} // end-method
 	
-	public static void logInfo(String message) {
-		logInfo(SdlProxyBase.TAG, message);
+	public static boolean logInfo(String message) {		
+		return logInfo(SdlProxyBase.TAG, message);
 	}
 	
-	public static void logInfo(String tag, String message) {
+	public static boolean logInfo(String tag, String message) {
 		if (logToSystemEnabled) {
-			log(LogTarget.Info, tag, message);
+			return log(LogTarget.Info, tag, message);
 		}
+		return false;
 	}
 	
-	public static void logWarning(String message) {
-		logWarning(SdlProxyBase.TAG, message);
+	public static boolean logWarning(String message) {
+		return logWarning(SdlProxyBase.TAG, message);
 	}
 	
-	public static void logWarning(String tag, String message) {
+	public static boolean logWarning(String tag, String message) {
 		if (logToSystemEnabled) {
-			log(LogTarget.Warning, tag, message);
+			return log(LogTarget.Warning, tag, message);
 		}
+		return false;
 	}
 	
-	public static void logError(String message) {
-		logError(SdlProxyBase.TAG, message);
+	public static boolean logError(String message) {
+		return logError(SdlProxyBase.TAG, message);
 	}
 	
-	public static void logError(String tag, String message) {
+	public static boolean logError(String tag, String message) {
 		if (logToSystemEnabled) {
-			log(LogTarget.Error, tag, message);
+			return log(LogTarget.Error, tag, message);
 		}
+		return false;
 	}
 	
-	public static void logError(String message, Throwable t) {
-		logError(SdlProxyBase.TAG, message, t);
+	public static boolean logError(String message, Throwable t) {
+		return logError(SdlProxyBase.TAG, message, t);
 	}
 	
-	public static void logError(String tag, String message, Throwable t) {
+	public static boolean logError(String tag, String message, Throwable t) {
 		// If the call to logError is passed a throwable, write directly to the system log
 		if (logToSystemEnabled) {
 			Log.e(tag, message, t);
 		}
+		return logToSystemEnabled;
 	}
 	
-	private static void log(LogTarget ltarg, String source, String logMsg) {
+	private static boolean log(LogTarget ltarg, String source, String logMsg) {
 		// Don't log empty messages
 		if (logMsg == null || logMsg.length() == 0) {
-			return;
-		} // end-if
+			return false;
+		}
 
 		int bytesWritten = 0;
 		int substrSize = 0;
@@ -88,13 +92,15 @@ public class NativeLogTool {
 					case Error:
 						bytesWritten = Log.e(tag, chunk);
 						break;
-				} // end-switch
+				}
 				if (bytesWritten < chunk.length()) {
 					Log.e(SdlProxyBase.TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
-				} // end-if
-			} // end-while
+				}
+			}			
 		} catch (Exception ex) {
 			Log.e(SdlProxyBase.TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString());
-		} // end-catch
-	} // end-method
+			return false;
+		}		
+		return true;
+	} 
 }
