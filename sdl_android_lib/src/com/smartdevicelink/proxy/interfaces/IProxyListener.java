@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.interfaces;
 
-import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
+import com.smartdevicelink.rpc.notifications.OnAppInterfaceUnregistered;
+import com.smartdevicelink.rpc.responses.RegisterAppInterfaceResponse;
+import com.smartdevicelink.rpc.responses.UnregisterAppInterfaceResponse;
 
 public interface IProxyListener extends IProxyListenerBase{
 	// Adds Legacy Life-cycle Management call-backs to the IProxyListenerAbstract interface

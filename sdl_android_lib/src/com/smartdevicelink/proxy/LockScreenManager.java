@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy;
 
-import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
-import com.smartdevicelink.proxy.rpc.enums.HmiLevel;
-import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.rpc.enums.HmiLevel;
+import com.smartdevicelink.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.rpc.notifications.OnLockScreenStatus;
 
 public class LockScreenManager {
 	

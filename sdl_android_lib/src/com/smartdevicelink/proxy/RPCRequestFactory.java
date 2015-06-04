@@ -2,56 +2,56 @@ package com.smartdevicelink.proxy;
 
 import java.util.Vector;
 
-import com.smartdevicelink.proxy.rpc.AddCommand;
-import com.smartdevicelink.proxy.rpc.AddSubMenu;
-import com.smartdevicelink.proxy.rpc.Alert;
-import com.smartdevicelink.proxy.rpc.ChangeRegistration;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.DeleteCommand;
-import com.smartdevicelink.proxy.rpc.DeleteFile;
-import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
-import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
-import com.smartdevicelink.proxy.rpc.GetVehicleData;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ListFiles;
-import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
-import com.smartdevicelink.proxy.rpc.PerformInteraction;
-import com.smartdevicelink.proxy.rpc.PutFile;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
-import com.smartdevicelink.proxy.rpc.ScrollableMessage;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SetAppIcon;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
-import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
-import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
-import com.smartdevicelink.proxy.rpc.Show;
-import com.smartdevicelink.proxy.rpc.Slider;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.Speak;
-import com.smartdevicelink.proxy.rpc.StartTime;
-import com.smartdevicelink.proxy.rpc.SubscribeButton;
-import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
-import com.smartdevicelink.proxy.rpc.SystemRequest;
-import com.smartdevicelink.proxy.rpc.TtsChunk;
-import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
-import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
-import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.enums.AppHmiType;
-import com.smartdevicelink.proxy.rpc.enums.AudioType;
-import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
-import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
-import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.rpc.datatypes.Choice;
+import com.smartdevicelink.rpc.datatypes.Image;
+import com.smartdevicelink.rpc.datatypes.MenuParams;
+import com.smartdevicelink.rpc.datatypes.SdlMsgVersion;
+import com.smartdevicelink.rpc.datatypes.SoftButton;
+import com.smartdevicelink.rpc.datatypes.StartTime;
+import com.smartdevicelink.rpc.datatypes.TtsChunk;
+import com.smartdevicelink.rpc.datatypes.VrHelpItem;
+import com.smartdevicelink.rpc.enums.AppHmiType;
+import com.smartdevicelink.rpc.enums.AudioType;
+import com.smartdevicelink.rpc.enums.BitsPerSample;
+import com.smartdevicelink.rpc.enums.ButtonName;
+import com.smartdevicelink.rpc.enums.FileType;
+import com.smartdevicelink.rpc.enums.ImageType;
+import com.smartdevicelink.rpc.enums.InteractionMode;
+import com.smartdevicelink.rpc.enums.Language;
+import com.smartdevicelink.rpc.enums.RequestType;
+import com.smartdevicelink.rpc.enums.SamplingRate;
+import com.smartdevicelink.rpc.enums.TextAlignment;
+import com.smartdevicelink.rpc.enums.UpdateMode;
+import com.smartdevicelink.rpc.requests.AddCommand;
+import com.smartdevicelink.rpc.requests.AddSubMenu;
+import com.smartdevicelink.rpc.requests.Alert;
+import com.smartdevicelink.rpc.requests.ChangeRegistration;
+import com.smartdevicelink.rpc.requests.CreateInteractionChoiceSet;
+import com.smartdevicelink.rpc.requests.DeleteCommand;
+import com.smartdevicelink.rpc.requests.DeleteFile;
+import com.smartdevicelink.rpc.requests.DeleteInteractionChoiceSet;
+import com.smartdevicelink.rpc.requests.DeleteSubMenu;
+import com.smartdevicelink.rpc.requests.EndAudioPassThru;
+import com.smartdevicelink.rpc.requests.GetVehicleData;
+import com.smartdevicelink.rpc.requests.ListFiles;
+import com.smartdevicelink.rpc.requests.PerformAudioPassThru;
+import com.smartdevicelink.rpc.requests.PerformInteraction;
+import com.smartdevicelink.rpc.requests.PutFile;
+import com.smartdevicelink.rpc.requests.RegisterAppInterface;
+import com.smartdevicelink.rpc.requests.ScrollableMessage;
+import com.smartdevicelink.rpc.requests.SetAppIcon;
+import com.smartdevicelink.rpc.requests.SetDisplayLayout;
+import com.smartdevicelink.rpc.requests.SetGlobalProperties;
+import com.smartdevicelink.rpc.requests.SetMediaClockTimer;
+import com.smartdevicelink.rpc.requests.Show;
+import com.smartdevicelink.rpc.requests.Slider;
+import com.smartdevicelink.rpc.requests.Speak;
+import com.smartdevicelink.rpc.requests.SubscribeButton;
+import com.smartdevicelink.rpc.requests.SubscribeVehicleData;
+import com.smartdevicelink.rpc.requests.UnregisterAppInterface;
+import com.smartdevicelink.rpc.requests.UnsubscribeButton;
+import com.smartdevicelink.rpc.requests.UnsubscribeVehicleData;
+import com.smartdevicelink.rpc.responses.SystemRequest;
 
 public class RpcRequestFactory {
 
@@ -504,6 +504,7 @@ public class RpcRequestFactory {
 		return putFile;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationId(10000);
@@ -515,6 +516,7 @@ public class RpcRequestFactory {
 		return putFile;
 	}	
 
+	@SuppressWarnings("deprecation")
 	public static PutFile buildPutFile(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationId(10000);
@@ -527,6 +529,7 @@ public class RpcRequestFactory {
 		return putFile;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationId) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationId(iCorrelationId);

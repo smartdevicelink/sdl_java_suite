@@ -14,11 +14,11 @@ import com.smartdevicelink.proxy.RpcResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
-import com.smartdevicelink.proxy.rpc.OnStreamRpc;
-import com.smartdevicelink.proxy.rpc.PutFile;
-import com.smartdevicelink.proxy.rpc.PutFileResponse;
-import com.smartdevicelink.proxy.rpc.StreamRpcResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.rpc.enums.Result;
+import com.smartdevicelink.rpc.notifications.OnStreamRpc;
+import com.smartdevicelink.rpc.requests.PutFile;
+import com.smartdevicelink.rpc.responses.PutFileResponse;
+import com.smartdevicelink.rpc.responses.StreamRpcResponse;
 import com.smartdevicelink.streaming.interfaces.IStreamListener;
 
 public class StreamRpcPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{

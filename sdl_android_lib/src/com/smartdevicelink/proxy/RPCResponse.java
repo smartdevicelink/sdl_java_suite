@@ -5,7 +5,7 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.rpc.enums.Result;
 
 /**
  * Result sent by SDL after an RPC is processed, consists of four parts: 
