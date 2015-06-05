@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.RpcNotification;
 import com.smartdevicelink.rpc.datatypes.Choice;
 import com.smartdevicelink.rpc.enums.TriggerSource;
 
-public class OnSdlChoiceChosen extends RpcNotification {
+public class OnChoice extends RpcNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
 	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
 	
@@ -138,10 +138,10 @@ public class OnSdlChoiceChosen extends RpcNotification {
 	
 	
 
-	public OnSdlChoiceChosen() {
+	public OnChoice() {
 		super(FunctionId.ON_SDL_CHOICE_CHOSEN.toString());
 	}
-	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
+	public OnChoice(Hashtable<String, Object> hash){
 		super(hash);
 	}
     public SdlChoice getSdlChoice() {
