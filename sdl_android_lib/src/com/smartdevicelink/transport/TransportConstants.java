@@ -76,9 +76,13 @@ public class TransportConstants {
      * from the service.  The Message's replyTo field must be a Messenger of
      * the client as previously given with MSG_REGISTER_CLIENT. Also include the app id as arg1.
      */
-	public static final int ROUTER_UNREGISTER_CLIENT 						= 0x03;
-	public static final int ROUTER_UNREGISTER_CLIENT_RESPONSE 				= 0x04;
-    
+	public static final int ROUTER_UNREGISTER_CLIENT 								= 0x03;
+	public static final int ROUTER_UNREGISTER_CLIENT_RESPONSE 						= 0x04;
+	//Response arguments
+	public static final int UNREGISTRATION_RESPONSE_SUCESS 							= 0x00;
+	public static final int UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND 		= 0x01;
+	
+	
 	/**
 	 * what message type to notify apps of a hardware connection event. The connection event will be placed in the bundle
 	 * attached to the message
@@ -92,7 +96,7 @@ public class TransportConstants {
 	public static final int ROUTER_REQUEST_ADDITIONAL_SERVICE_RESPONSE 		= 0x13;
 
     /**
-     * Command to service to send a packet
+     * Command to have router service to send a packet
      */
 	public  static final int ROUTER_SEND_PACKET 							= 0x20;
 	

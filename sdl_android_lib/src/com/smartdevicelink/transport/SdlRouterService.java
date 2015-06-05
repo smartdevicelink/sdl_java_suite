@@ -75,7 +75,7 @@ public abstract class SdlRouterService extends Service{
     
     private Handler versionCheckTimeOutHandler;
     private Runnable versionCheckRunable;
-    private LocalBluetoothService localCompareTo = null;
+    private LocalRouterService localCompareTo = null;
     private final static int VERSION_TIMEOUT_RUNNABLE = 750; 
 	
 	
@@ -144,7 +144,7 @@ public abstract class SdlRouterService extends Service{
 
 		}
 
-		Log.i(TAG, app.getReplyAddress() + " has just been registered with SDL Router Service");
+		Log.i(TAG, app.appId + " has just been registered with SDL Router Service");
 	}
 	
 	
@@ -166,7 +166,7 @@ public abstract class SdlRouterService extends Service{
 							
 							if(localCompareTo == null || (versionOfIntent>localCompareTo.version)){
 								Intent savedIntent = (Intent)intent.getParcelableExtra(SdlBroadcastReceiver.INTENT_FOR_OTHER_BT_SERVER_INSTANCE_EXTRA);
-								localCompareTo = new LocalBluetoothService(savedIntent,versionOfIntent);
+								localCompareTo = new LocalRouterService(savedIntent,versionOfIntent);
 							}
 							return;
 							
@@ -198,13 +198,13 @@ public abstract class SdlRouterService extends Service{
 						return;
 					}
 
-					closeBluetoothSerialServer();
+					//TODO make sure it's ok to comment out closeBluetoothSerialServer();
 					connectAsClient=false;
 					
 					if(action!=null && intent.getAction().equalsIgnoreCase("android.bluetooth.adapter.action.STATE_CHANGED") 
 							&&(	(BluetoothAdapter.getDefaultAdapter().getState() == BluetoothAdapter.STATE_TURNING_OFF) 
 							|| (BluetoothAdapter.getDefaultAdapter().getState() == BluetoothAdapter.STATE_OFF))){
-							Log.d(TAG, "Bluetooth is shutting off, LivioBluetoothService is closing.");
+							Log.d(TAG, "Bluetooth is shutting off, SDL Router Service is closing.");
 							//Since BT is shutting off...there's no reason for us to be on now. 
 							//Let's take a break...I'm sleepy
 							shouldServiceKeepRunning(intent);
@@ -286,7 +286,7 @@ public abstract class SdlRouterService extends Service{
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return this.mMessenger.getBinder(); 
+		return this.routerMessenger.getBinder(); 
 	}
 
 	
@@ -350,17 +350,9 @@ public abstract class SdlRouterService extends Service{
 		 }
 		 if(intent != null ){
 		 if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
-			Log.i(TAG, "Received an intent with request to register service: ");
-			 Intent registerIntent = new Intent(REGISTER_WITH_ROUTER_ACTION); //TODO ok so this has the request with it
-			 registerIntent.putExtras(intent); //FIXME we should be able to remove this
-			 if(startSequenceComplete){
-				 sendBroadcast(registerIntent);
-			 }else{
-				 //long appId = intent.getLongExtra(TransportConstants.APP_ID_EXTRA, 0);
-				 //RegisteredApp app = new RegisteredApp(appId,intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
-				 sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
-				 //sendBroadcast(registerApp(app, registerIntent));
-			 }
+			Log.i(TAG, "Received an intent with request to register service: "); //Reply as usual
+			sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
+			
 		 }else if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA)){
 			 Log.d(TAG, "Service started by alt transport");
 			 altTransportAddress = intent.getStringExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA);
@@ -451,6 +443,7 @@ public abstract class SdlRouterService extends Service{
 	 * just a simple class we have to know how to shut down.
 	 */
 	public void closeSelf(){
+		closing = true;
 		storeConnectedStatus(false);
 		if(getBaseContext()!=null){
 			stopSelf();
@@ -640,25 +633,21 @@ public abstract class SdlRouterService extends Service{
 		 * @param packet the packet that is received
 		 * @return whether or not the sending was successful 
 		 */
-		public boolean sendPacketToRegisteredApp(Parcelable packet) {
+		public boolean sendPacketToRegisteredApp(SdlPacket packet) {
 			if(registeredApps!=null && (registeredApps.size()>0)){
-	    		Long appid = getAppIDForSession(((SdlPacket)packet).getSessionId()); //Find where this packet should go
+	    		Long appid = getAppIDForSession(packet.getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
-	    			Messenger mes = registeredApps.get(appid).messenger;
-	    			if(mes==null){
+	    			RegisteredApp app = registeredApps.get(appid);
+	    			if(app==null){
 	    				return false;
 	    			}
 	    			Message message = Message.obtain();
 	    			//TODO put arg1 and 2
+	    			message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
 	    			Bundle bundle = new Bundle();
 	    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
 	    			message.setData(bundle);
-	    			try {
-						mes.send(message);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-						return false;
-					}	    			
+	    			app.sendMessage(message);		
 	    			return true;	//We should have sent our packet, so we can return true now
 	    		}else{	//If we can't find a session for this packet we just drop the packet
 	    			Log.e(TAG, "App Id was NULL!");
@@ -781,12 +770,12 @@ public abstract class SdlRouterService extends Service{
 	 * @param appId
 	 */
 	public static void requestAdditionalService(Context context, long appId){
-		Intent request = new Intent(SdlRouterService.REQUEST_EXTRA_SESSION_FOR_APPID_ACTION);
+		Intent request = new Intent(SdlRouterService.REQUEST_EXTRA_SESSION_FOR_APPID_ACTION); //FIXME this will no longer work
 		request.putExtra(EXTRA_SESSION_APPID_EXTRA, appId);
 		context.sendBroadcast(request);
 	}
 	
-	private LocalBluetoothService getLocalBluetoothServiceComapre(){
+	private LocalRouterService getLocalBluetoothServiceComapre(){
 		return this.localCompareTo;
 	}
 	
@@ -799,7 +788,7 @@ public abstract class SdlRouterService extends Service{
 		versionCheckRunable = new Runnable() {           
             public void run() {
             	Log.i(TAG, "Starting up Version Checking ");
-            	LocalBluetoothService local = getLocalBluetoothServiceComapre();
+            	LocalRouterService local = getLocalBluetoothServiceComapre();
             	if(local!=null && ROUTER_SERVICE_VERSION_NUMBER < local.version){
             		Log.d(TAG, "There is a newer version of the Router Service, starting it up");
                 	closing = true;
@@ -830,7 +819,7 @@ public abstract class SdlRouterService extends Service{
 	
 	private Long getAppIDForSession(int sessionId){
 		synchronized(SESSION_LOCK){
-		//Log.d(TAG, "Looking for session: " + sessionId);
+		Log.d(TAG, "Looking for session: " + sessionId);
 		Long appId = sessionMap.get(sessionId);
 		if(appId==null){
 			int pos;
@@ -902,6 +891,10 @@ public abstract class SdlRouterService extends Service{
 	}
 	
     
+    /**
+     * Target we publish for clients to send messages to RouterHandler.
+     */
+    final Messenger routerMessenger = new Messenger(new RouterHandler());
     
 	 /**
      * Handler of incoming messages from clients.
@@ -923,11 +916,12 @@ public abstract class SdlRouterService extends Service{
         					connectAsClient = false;
         				}
         			}
-            	//We don't break here so we can let the app register as well
+            	//**************** We don't break here so we can let the app register as well
                 case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
                 	Message message = Message.obtain();
                 	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
-                	if(msg.arg1<0 || msg.replyTo == null){
+                	long appId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+                	if(appId<0 || msg.replyTo == null){
                 		Log.w(TAG, "Unable to requster app as no id or messenger was included");
                 		if(msg.replyTo!=null){
                 			msg.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
@@ -940,13 +934,12 @@ public abstract class SdlRouterService extends Service{
                 		break;
                 	}
                 	
-                	RegisteredApp app = new RegisteredApp(msg.arg1,msg.replyTo);
+                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
                 	registeredApps.put(app.getAppId(), app);
             		onAppRegistered(app);
             		
             		//TODO reply to this messanger.
             		returnBundle = new Bundle();
-            		
             		
             		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
             			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
@@ -957,11 +950,26 @@ public abstract class SdlRouterService extends Service{
 
                     break;
                 case TransportConstants.ROUTER_UNREGISTER_CLIENT:
-                	registeredApps.remove(msg.arg1);//TODO check if this works
-                	//TODO send response
+                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+                	
+                	RegisteredApp unregisteredApp = registeredApps.remove(appIdToUnregister);//TODO check if this works
+                	Message response = Message.obtain();
+                	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
+                	if(unregisteredApp == null){
+                		msg.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
+                	}else{
+                		msg.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
+                	}
+                	try {
+                		msg.replyTo.send(response); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
+                	} catch (RemoteException e) {
+                		e.printStackTrace();
+                		break;
+                	}
+                	
                     break;
                 case TransportConstants.ROUTER_SEND_PACKET:
-                	
+                	Log.d(TAG, "Received packet to send");
                 	byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
     				int offset = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
     				int count = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
@@ -974,10 +982,7 @@ public abstract class SdlRouterService extends Service{
             }
         }
     }
-    /**
-     * Target we publish for clients to send messages to IncomingHandler.
-     */
-    final Messenger mMessenger = new Messenger(new RouterHandler());
+
 	
 	/* ****************************************************************************************************************************************
 	// **********************************************************   TINY CLASSES   ************************************************************
@@ -990,11 +995,11 @@ public abstract class SdlRouterService extends Service{
 	 * @author Joey Grover
 	 *
 	 */
-	class LocalBluetoothService{
+	class LocalRouterService{
 		Intent launchIntent = null;
 		int version = 0;
 		
-		private LocalBluetoothService(Intent intent, int version){
+		private LocalRouterService(Intent intent, int version){
 			this.launchIntent = intent;
 			this.version = version;
 		}
@@ -1003,7 +1008,7 @@ public abstract class SdlRouterService extends Service{
 		 * @param service
 		 * @return
 		 */
-		public boolean isNewer(LocalBluetoothService service){
+		public boolean isNewer(LocalRouterService service){
 			return (service.version>this.version);
 		}
 		
@@ -1018,7 +1023,6 @@ public abstract class SdlRouterService extends Service{
 	 */
 	class RegisteredApp {
 		long appId;
-		String replyAddress; //possible package name? Probably a good idea. meh for now
 		Messenger messenger;
 		Vector<Long> sessionIds;
 	
@@ -1035,10 +1039,6 @@ public abstract class SdlRouterService extends Service{
 		}
 		public long getAppId() {
 			return appId;
-		}
-
-		public String getReplyAddress() {
-			return replyAddress;
 		}
 
 		/**
