@@ -14,10 +14,6 @@ public class ProtocolFrameHeader {
 	private int dataSize;
 	private int messageID;
 	
-	public static final byte FrameDataSingleFrame = 0x00;
-	public static final byte FrameDataFirstFrame = 0x00;
-	public static final byte FrameDataFinalConsecutiveFrame = 0x00;
-	
 	public ProtocolFrameHeader() {}
 	
 	public static ProtocolFrameHeader parseWiProHeader(byte[] header) {

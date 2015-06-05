@@ -140,14 +140,13 @@ public class WiProProtocol extends AbstractProtocol {
 				for (int i = 0; i < frameCount; i++) {
 					if (i < (frameCount - 1)) {
 	                     ++frameSequenceNumber;
-	                        if (frameSequenceNumber ==
-	                                ProtocolFrameHeader.FrameDataFinalConsecutiveFrame) {
+	                        if (frameSequenceNumber == FrameData.CONSECUTIVE_FRAME.getId()) {
 	                            // we can't use 0x00 as frameSequenceNumber, because
 	                            // it's reserved for the last frame
 	                            ++frameSequenceNumber;
 	                        }
 					} else {
-						frameSequenceNumber = ProtocolFrameHeader.FrameDataFinalConsecutiveFrame;
+						frameSequenceNumber = FrameData.CONSECUTIVE_FRAME.getId();
 					} // end-if
 					
 					int bytesToWrite = data.length - currentOffset;

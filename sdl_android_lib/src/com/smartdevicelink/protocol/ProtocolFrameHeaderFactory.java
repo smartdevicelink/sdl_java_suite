@@ -84,7 +84,7 @@ public class ProtocolFrameHeaderFactory {
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.SINGLE);
 		msg.setSessionType(serviceType);
-		msg.setFrameData(ProtocolFrameHeader.FrameDataSingleFrame);
+		msg.setFrameData(FrameData.SINGLE_FRAME.getId());
 		msg.setSessionID(sessionID);
 		msg.setDataSize(dataLength);
 		msg.setMessageID(messageID);
@@ -98,7 +98,7 @@ public class ProtocolFrameHeaderFactory {
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.FIRST);
 		msg.setSessionType(serviceType);
-		msg.setFrameData(ProtocolFrameHeader.FrameDataFirstFrame);
+		msg.setFrameData(FrameData.FIRST_FRAME.getId());
 		msg.setSessionID(sessionID);
 		msg.setDataSize(8);
 		msg.setMessageID(messageID);
@@ -112,7 +112,7 @@ public class ProtocolFrameHeaderFactory {
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.CONSECUTIVE);
 		msg.setSessionType(serviceType);
-		msg.setFrameData(frameSequenceNumber/*FrameData.ConsecutiveFrame.value()*/);
+		msg.setFrameData(frameSequenceNumber);
 		msg.setSessionID(sessionID);
 		msg.setDataSize(dataLength);
 		msg.setMessageID(messageID);
