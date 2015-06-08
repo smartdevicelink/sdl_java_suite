@@ -3,14 +3,14 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 public class DiagnosticMessageResponse extends RPCResponse {
 	public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
 
     public DiagnosticMessageResponse() {
-        super(FunctionId.DIAGNOSTIC_MESSAGE.toString());
+        super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
     public DiagnosticMessageResponse(Hashtable<String, Object> hash) {
         super(hash);

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
@@ -36,7 +36,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Constructs a new PerformAudioPassThru object
 	 */
     public PerformAudioPassThru() {
-        super(FunctionId.PERFORM_AUDIO_PASS_THRU.toString());
+        super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
 	/**

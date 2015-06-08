@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 
@@ -44,7 +44,7 @@ public class OnTBTClientState extends RPCNotification {
 	*Constructs a newly allocated OnTBTClientState object
 	*/ 
     public OnTBTClientState() {
-        super(FunctionId.ON_TBT_CLIENT_STATE.toString());
+        super(FunctionID.ON_TBT_CLIENT_STATE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnTBTClientState object indicated by the Hashtable parameter</p>

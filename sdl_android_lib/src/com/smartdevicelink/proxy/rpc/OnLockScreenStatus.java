@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
@@ -11,7 +11,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	public static final String KEY_USER_SELECTED = "userSelected";
 
 	public OnLockScreenStatus() {
-		super(FunctionId.ON_LOCK_SCREEN_STATUS.toString());
+		super(FunctionID.ON_LOCK_SCREEN_STATUS.toString());
 	}
 	
 	public Boolean getDriverDistractionStatus() {

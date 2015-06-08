@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
@@ -58,7 +58,7 @@ public class OnCommand extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnCommand() {
-        super(FunctionId.ON_COMMAND.toString());
+        super(FunctionID.ON_COMMAND.toString());
     }
     /**
     *<p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>

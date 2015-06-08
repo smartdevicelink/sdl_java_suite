@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -29,7 +29,7 @@ public class Slider extends RPCRequest {
 	 * Constructs a new Slider object
 	 */
     public Slider() {
-        super(FunctionId.SLIDER.toString());
+        super(FunctionID.SLIDER.toString());
     }
 
 	/**

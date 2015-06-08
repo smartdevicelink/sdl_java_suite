@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
@@ -21,7 +21,7 @@ public class DeleteFile extends RPCRequest {
 	 * Constructs a new DeleteFile object
 	 */
     public DeleteFile() {
-        super(FunctionId.DELETE_FILE.toString());
+        super(FunctionID.DELETE_FILE.toString());
     }
 
 	/**

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISoftButton;
 
@@ -53,7 +53,7 @@ public class Alert extends RPCRequest implements ISoftButton {
 	 * Constructs a new Alert object
 	 */    
 	public Alert() {
-        super(FunctionId.ALERT.toString());
+        super(FunctionID.ALERT.toString());
     }
 	/**
 	 * Constructs a new Alert object indicated by the Hashtable parameter

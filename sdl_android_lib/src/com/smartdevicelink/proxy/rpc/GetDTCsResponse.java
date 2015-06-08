@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
 /**
@@ -17,7 +17,7 @@ public class GetDTCsResponse extends RPCResponse{
     public static final String KEY_DTC = "dtc";
 
     public GetDTCsResponse(){
-        super(FunctionId.GET_DTCS.toString());
+        super(FunctionID.GET_DTCS.toString());
     }
 
     public GetDTCsResponse(Hashtable<String, Object> hash){

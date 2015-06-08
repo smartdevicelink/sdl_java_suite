@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 /**
@@ -23,7 +23,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * Constructs a new SetMediaClockTimer object
 	 */
     public SetMediaClockTimer() {
-        super(FunctionId.SET_MEDIA_CLOCK_TIMER.toString());
+        super(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
     }
 	/**
 	 * Constructs a new SetMediaClockTimer object indicated by the Hashtable

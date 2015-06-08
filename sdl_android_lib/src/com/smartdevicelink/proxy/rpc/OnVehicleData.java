@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.protocol.enums.FunctionId;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
@@ -39,7 +39,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_MY_KEY = "myKey";
 
     public OnVehicleData() {
-        super(FunctionId.ON_VEHICLE_DATA.toString());
+        super(FunctionID.ON_VEHICLE_DATA.toString());
     }
     public OnVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -101,19 +101,31 @@ public class OnVehicleData extends RPCNotification {
     }
     @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
+        setFuelLevelState(fuelLevel_State);
+    }
+    @Deprecated
+    public ComponentVolumeStatus getFuelLevel_State() {
+        return getFuelLevelState();
+    }
+    public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
+        if (fuelLevelState != null) {
+            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
         } else {
             parameters.remove(KEY_FUEL_LEVEL_STATE);
         }
     }
-    @Deprecated
-    public ComponentVolumeStatus getFuelLevel_State() {
+    public ComponentVolumeStatus getFuelLevelState() {
         Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
         if (obj instanceof ComponentVolumeStatus) {
             return (ComponentVolumeStatus) obj;
         } else if (obj instanceof String) {
-        	return ComponentVolumeStatus.valueForString((String) obj);
+            ComponentVolumeStatus theCode = null;
+            try {
+                theCode = ComponentVolumeStatus.valueForString((String) obj);
+            } catch (Exception e) {
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+            }
+            return theCode;
         }
         return null;
     }
