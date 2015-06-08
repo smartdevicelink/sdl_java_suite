@@ -253,7 +253,7 @@ public abstract class SdlRouterService extends Service{
 			}
 		};
 		
-		BroadcastReceiver sdlCustomReceiver = new BroadcastReceiver() 
+		BroadcastReceiver sdlCustomReceiver = new BroadcastReceiver() //FIXME remove this, make it a message
 		{
 			@Override
 			public void onReceive(Context context, Intent intent) 
@@ -286,17 +286,25 @@ public abstract class SdlRouterService extends Service{
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		//TODO check intent to send back the correct binder (app binding vs alt transport)
 		return this.routerMessenger.getBinder(); 
 	}
 
 	
-	//FIXME change to message
-	private void notifyClient(Message message){
+	
+	@Override
+	public boolean onUnbind(Intent intent) {
+		// TODO If we are supposed to be shutting down, we need to try again.
+		return super.onUnbind(intent);
+	}
+
+	
+	private void notifyClients(Message message){
 		if(message==null){
+			Log.w(TAG, "Can't notify clients, message was null");
 			return;
 		}
 		Log.d(TAG, "Notifying "+ registeredApps.size()+ " clients");
-		//registeredApps;
 		for (RegisteredApp app : registeredApps.values()) {
 			app.sendMessage(message);
 		}
@@ -342,29 +350,29 @@ public abstract class SdlRouterService extends Service{
 		startSequenceComplete= true;
 	}
 
-	
-	 @Override
+
+	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		 if(registeredApps == null){
-			 registeredApps = new HashMap<Long,RegisteredApp>();
-		 }
-		 if(intent != null ){
-		 if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
-			Log.i(TAG, "Received an intent with request to register service: "); //Reply as usual
-			sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
-			
-		 }else if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA)){
-			 Log.d(TAG, "Service started by alt transport");
-			 altTransportAddress = intent.getStringExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA);
-			 Intent ackIntent = new Intent();
-			 ackIntent.setAction(altTransportAddress);
-			 //ackIntent.putExtra(name, value);;
-			 storeConnectedStatus(true);
-			 sendBroadcast(ackIntent);
-			 lastReceivedStartIntent = intent;
-		 }
+		if(registeredApps == null){
+			registeredApps = new HashMap<Long,RegisteredApp>();
 		}
-		 shouldServiceKeepRunning(intent);
+		if(intent != null ){
+			if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
+				Log.i(TAG, "Received an intent with request to register service: "); //Reply as usual
+				sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
+
+			}else if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA)){
+				Log.d(TAG, "Service started by alt transport");
+				altTransportAddress = intent.getStringExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA);
+				Intent ackIntent = new Intent();
+				ackIntent.setAction(altTransportAddress);
+				//ackIntent.putExtra(name, value);;
+				storeConnectedStatus(true);
+				sendBroadcast(ackIntent);
+				lastReceivedStartIntent = intent;
+			}
+		}
+		shouldServiceKeepRunning(intent);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -504,7 +512,7 @@ public abstract class SdlRouterService extends Service{
 		bundle.putString(HARDWARE_DISCONNECTED, type.name());
 		bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
 		message.setData(bundle);		//TODO should we add a transport event what message type?
-		notifyClient(message);
+		notifyClients(message);
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
 			sessionMap.clear();
@@ -904,6 +912,7 @@ public abstract class SdlRouterService extends Service{
         public void handleMessage(Message msg) {
         	Bundle receivedBundle = msg.getData();
         	Bundle returnBundle;
+        	
             switch (msg.what) {
             case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
             	if(receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
@@ -944,8 +953,9 @@ public abstract class SdlRouterService extends Service{
             		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
             			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
             		}
-            		
-            		message.setData(returnBundle);
+            		if(!returnBundle.isEmpty()){
+            			message.setData(returnBundle);
+            		}
             		app.sendMessage(message);
 
                     break;
