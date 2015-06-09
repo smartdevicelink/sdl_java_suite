@@ -1,5 +1,9 @@
 package com.smartdevicelink.util;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -40,6 +44,7 @@ public class SdlLog {
 	
 	private static int enabledLevel = 0;
 	private static boolean isTraceEnabled = true;
+	private static boolean isFileLoggingEnabled = false;
 
 	private final static String TAG = "SDL Log";
 	private final static String SDL = "<SDL> ";
@@ -57,11 +62,30 @@ public class SdlLog {
 	/**
 	 * Toggles the trace logging functionality.
 	 * 
-	 * @param trace Whether trace logging is to be enabled or disabled.
+	 * @param log Whether trace logging is to be enabled or disabled.
 	 */
-	public static void setTraceEnabled(boolean trace) {
-		isTraceEnabled = trace;
-		Log.i(TAG, "Trace Logging " + ((trace) ? "On" : "Off"));
+	public static void setTraceEnabled(boolean log) {
+		isTraceEnabled = log;
+		Log.i(TAG, "Trace Logging " + ((log) ? "On" : "Off"));
+	}
+	
+	/**
+	 * Provides whether file logging is enabled or disabled.
+	 * 
+	 * @return (boolean) The file logging toggle.
+	 */
+	public static boolean isFileLoggingEnabled() {
+		return isFileLoggingEnabled;
+	}
+	
+	/**
+	 * Toggles the file logging functionality.
+	 * 
+	 * @param log Whether file logging is to be enabled or disabled.
+	 */
+	public static void enableWritingToFile(boolean log) {
+		isFileLoggingEnabled = log;
+		Log.i(TAG, "File Logging " + ((log) ? "On" : "Off"));
 	}
 	
 	/**
@@ -92,7 +116,7 @@ public class SdlLog {
 		enabledLevel = level;
 		Log.i(TAG, "Logging Level Enabled: " + level);
 	}
-	
+		
 	/**
 	 * Logs messages to the native Android log tool if trace logging has been
 	 * enabled.
@@ -230,10 +254,47 @@ public class SdlLog {
 				case WARNING: if (enabledLevel < 4) Log.w(TAG, SDL + message, details); break;
 				case ERROR:   if (enabledLevel < 5) Log.e(TAG, SDL + message, details); break;
 				default: return false;
-			}			
+			}
+			
+			if (isFileLoggingEnabled) {
+				StringBuilder build = new StringBuilder(TAG);
+				if (level == TRACE) build.append(SDL_TRACE);
+				else build.append(SDL);
+				build.append(message);
+				build.append("\n");
+				if (details != null) build.append(details.getMessage());
+				x(build.toString());
+			}
 		} catch (Throwable t) {
 			// This should never happen!
 			Log.wtf(TAG, "Logging failure!", t);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private static boolean x(String message) {
+		
+		File logFile = new File("sdcard/sdllog.txt");
+		
+		if (!logFile.exists()) {
+			try {
+				logFile.createNewFile();
+			} catch (Throwable t) {
+				e("Could not create log file on device.", t);
+				return false;
+			}
+		}
+		
+		try {
+			i("Logging to file 'sdllog.txt' on external storage.");
+			BufferedWriter buff = new BufferedWriter(new FileWriter(logFile, true));
+			buff.append(message);
+			buff.newLine();
+			buff.close();
+		} catch (Throwable t) {
+			e("Error writing to log file on device.", t);
 			return false;
 		}
 		
