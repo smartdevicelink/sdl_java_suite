@@ -37,7 +37,7 @@ public class OnHMIStatusTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_HMI_STATUS;
+        return FunctionID.ON_HMI_STATUS.toString();
     }
 
     @Override

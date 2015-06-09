@@ -51,7 +51,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * Constructs a new SubscribeVehicleData object
 	 */
     public SubscribeVehicleData() {
-        super(FunctionID.SUBSCRIBE_VEHICLE_DATA);
+        super(FunctionID.SUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**
@@ -171,11 +171,7 @@ public class SubscribeVehicleData extends RPCRequest {
      */
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setFuelLevelState(fuelLevel_State);
     }
 
     /**
@@ -187,7 +183,7 @@ public class SubscribeVehicleData extends RPCRequest {
      */
     @Deprecated
     public Boolean getFuelLevel_State() {
-        return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
+        return getFuelLevelState();
     }
 
     /**

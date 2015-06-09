@@ -32,7 +32,7 @@ public class EndAudioPassThruTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.END_AUDIO_PASS_THRU;
+        return FunctionID.END_AUDIO_PASS_THRU.toString();
     }
 
     @Override

@@ -49,7 +49,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-    	return FunctionID.ON_VEHICLE_DATA;
+    	return FunctionID.ON_VEHICLE_DATA.toString();
     }
 
     @Override

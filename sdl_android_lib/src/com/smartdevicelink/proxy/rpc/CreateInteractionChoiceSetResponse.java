@@ -14,7 +14,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class CreateInteractionChoiceSetResponse extends RPCResponse {
 
     public CreateInteractionChoiceSetResponse() {
-        super(FunctionID.CREATE_INTERACTION_CHOICE_SET);
+        super(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString());
     }
     public CreateInteractionChoiceSetResponse(Hashtable<String, Object> hash) {
         super(hash);

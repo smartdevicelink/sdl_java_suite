@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * <p>Notifies the application of the current TBT client status on the module.</p>
@@ -45,7 +44,7 @@ public class OnTBTClientState extends RPCNotification {
 	*Constructs a newly allocated OnTBTClientState object
 	*/ 
     public OnTBTClientState() {
-        super(FunctionID.ON_TBT_CLIENT_STATE);
+        super(FunctionID.ON_TBT_CLIENT_STATE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnTBTClientState object indicated by the Hashtable parameter</p>
@@ -63,13 +62,7 @@ public class OnTBTClientState extends RPCNotification {
         if (obj instanceof TBTState) {
         	return (TBTState)obj;
         } else if(obj instanceof String) {
-        	TBTState theCode = null;
-        	try{
-        		theCode = TBTState.valueForString((String) obj);
-        	} catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
-            }
-        	return theCode;
+        	return TBTState.valueForString((String) obj);
         }    	
     	return null;
     }

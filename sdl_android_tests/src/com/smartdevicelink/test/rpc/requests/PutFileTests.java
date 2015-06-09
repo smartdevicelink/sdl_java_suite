@@ -28,8 +28,8 @@ public class PutFileTests extends BaseRpcTests {
 		msg.setFileType(Test.GENERAL_FILETYPE);
 		msg.setPersistentFile(Test.GENERAL_BOOLEAN);
 		msg.setSystemFile(Test.GENERAL_BOOLEAN);
-		msg.setOffset(Test.GENERAL_INT);
-		msg.setLength(Test.GENERAL_INT);
+		msg.setOffset(Test.GENERAL_LONG);
+		msg.setLength(Test.GENERAL_LONG);
 
 		return msg;
 	}
@@ -41,7 +41,7 @@ public class PutFileTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.PUT_FILE;
+		return FunctionID.PUT_FILE.toString();
 	}
 
 	@Override
@@ -69,15 +69,15 @@ public class PutFileTests extends BaseRpcTests {
 		FileType testFileType = ( (PutFile) msg ).getFileType();
 		boolean  testPersistentFile = ( (PutFile) msg ).getPersistentFile();
 		boolean  testSystemFile = ( (PutFile) msg ).getSystemFile();
-		Integer  testOffset = ( (PutFile) msg ).getOffset();
-		Integer  testLength = ( (PutFile) msg ).getLength();
+		Long     testOffset = ( (PutFile) msg ).getOffset();
+		Long     testLength = ( (PutFile) msg ).getLength();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, testFileType);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testPersistentFile);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSystemFile);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testOffset);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testLength);
+		assertEquals(Test.MATCH, Test.GENERAL_LONG, testOffset);
+		assertEquals(Test.MATCH, Test.GENERAL_LONG, testLength);
 	
 		// Invalid/Null Tests
 		PutFile msg = new PutFile();

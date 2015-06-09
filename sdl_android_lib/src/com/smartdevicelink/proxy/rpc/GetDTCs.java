@@ -22,7 +22,7 @@ public class GetDTCs extends RPCRequest {
 	 * Constructs a new GetDTCs object
 	 */
     public GetDTCs() {
-        super(FunctionID.GET_DTCS);
+        super(FunctionID.GET_DTCS.toString());
     }
 
 	/**

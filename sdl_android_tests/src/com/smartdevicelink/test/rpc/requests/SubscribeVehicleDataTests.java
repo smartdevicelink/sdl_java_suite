@@ -59,7 +59,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.SUBSCRIBE_VEHICLE_DATA;
+		return FunctionID.SUBSCRIBE_VEHICLE_DATA.toString();
 	}
 
 	@Override

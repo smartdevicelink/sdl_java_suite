@@ -33,7 +33,7 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_MY_KEY = "myKey";
 
     public GetVehicleData() {
-        super(FunctionID.GET_VEHICLE_DATA);
+        super(FunctionID.GET_VEHICLE_DATA.toString());
     }
     public GetVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -80,15 +80,11 @@ public class GetVehicleData extends RPCRequest {
     }
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setFuelLevelState(fuelLevel_State);
     }
     @Deprecated
     public Boolean getFuelLevel_State() {
-        return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
+        return getFuelLevelState();
     }
     public void setFuelLevelState(Boolean fuelLevelState) {
         if (fuelLevelState != null) {

@@ -56,7 +56,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.REGISTER_APP_INTERFACE;
+		return FunctionID.REGISTER_APP_INTERFACE.toString();
 	}
 
 	@Override

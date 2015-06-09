@@ -39,7 +39,7 @@ public class PerformInteractionResponseTest extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.PERFORM_INTERACTION;
+		return FunctionID.PERFORM_INTERACTION.toString();
 	}
 
 	@Override

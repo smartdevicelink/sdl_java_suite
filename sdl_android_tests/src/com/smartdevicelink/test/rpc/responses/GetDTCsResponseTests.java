@@ -38,7 +38,7 @@ public class GetDTCsResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.GET_DTCS;
+        return FunctionID.GET_DTCS.toString();
     }
 
     @Override

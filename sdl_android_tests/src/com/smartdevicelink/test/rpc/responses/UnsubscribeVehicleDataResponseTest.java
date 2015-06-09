@@ -66,7 +66,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.UNSUBSCRIBE_VEHICLE_DATA;
+		return FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString();
 	}
 
 	@Override

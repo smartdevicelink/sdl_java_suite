@@ -32,7 +32,7 @@ public class SetAppIconResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SET_APP_ICON;
+        return FunctionID.SET_APP_ICON.toString();
     }
 
     @Override

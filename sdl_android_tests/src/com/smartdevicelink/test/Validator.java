@@ -253,6 +253,23 @@ public class Validator{
 
         return true;
     }
+    
+    public static boolean validateLongList(List<Long> intList1, List<Long> intList2){
+        if(intList1 == null){
+            return ( intList2 == null );
+        }
+        if(intList2 == null){
+            return ( intList1 == null );
+        }
+
+        for(int i = 0; i < intList1.size(); i++){
+            if(!intList1.get(i).equals(intList2.get(i))){
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public static boolean validateSoftButtons(List<SoftButton> list1, List<SoftButton> list2){
         if(list1 == null){
@@ -1010,8 +1027,8 @@ public class Validator{
         
         List<TouchCoord> tc1 = item1.getC();
         List<TouchCoord> tc2 = item2.getC();
-        List<Integer> ts1 = item1.getTs();
-        List<Integer> ts2 = item2.getTs();
+        List<Long> ts1 = item1.getTs();
+        List<Long> ts2 = item2.getTs();
         
         for(int i=0; i<tc1.size(); i++){
             if( ! validateTouchCoord(tc1.get(i), tc2.get(i)) ){

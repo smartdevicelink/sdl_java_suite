@@ -50,7 +50,7 @@ public class PerformAudioPassThruTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.PERFORM_AUDIO_PASS_THRU;
+		return FunctionID.PERFORM_AUDIO_PASS_THRU.toString();
 	}
 
 	@Override

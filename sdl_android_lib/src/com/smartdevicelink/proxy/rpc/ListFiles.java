@@ -18,7 +18,7 @@ public class ListFiles extends RPCRequest {
 	 * Constructs a new ListFiles object
 	 */
     public ListFiles() {
-        super(FunctionID.LIST_FILES);
+        super(FunctionID.LIST_FILES.toString());
     }
 
 	/**

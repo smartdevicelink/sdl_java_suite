@@ -29,7 +29,7 @@ public class Slider extends RPCRequest {
 	 * Constructs a new Slider object
 	 */
     public Slider() {
-        super(FunctionID.SLIDER);
+        super(FunctionID.SLIDER.toString());
     }
 
 	/**

@@ -33,7 +33,7 @@ public class OnLanguageChangeTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_LANGUAGE_CHANGE;
+        return FunctionID.ON_LANGUAGE_CHANGE.toString();
     }
 
     @Override

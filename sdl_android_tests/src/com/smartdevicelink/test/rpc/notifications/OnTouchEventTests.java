@@ -36,7 +36,7 @@ public class OnTouchEventTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_TOUCH_EVENT;
+        return FunctionID.ON_TOUCH_EVENT.toString();
     }
 
     @Override

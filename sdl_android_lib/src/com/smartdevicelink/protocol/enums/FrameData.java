@@ -37,6 +37,6 @@ public class FrameData extends ByteEnumer {
 	}
 	
 	public static FrameData[] values() {
-		return (FrameData[]) theList.toArray();
+		return theList.toArray(new FrameData[theList.size()]);
 	}
 }

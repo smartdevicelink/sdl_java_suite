@@ -36,7 +36,7 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_SDL_CHOICE_CHOSEN;
+        return FunctionID.ON_SDL_CHOICE_CHOSEN.toString();
     }
 
     @Override

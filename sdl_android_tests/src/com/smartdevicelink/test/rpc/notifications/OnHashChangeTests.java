@@ -33,7 +33,7 @@ public class OnHashChangeTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_HASH_CHANGE;
+        return FunctionID.ON_HASH_CHANGE.toString();
     }
 
     @Override

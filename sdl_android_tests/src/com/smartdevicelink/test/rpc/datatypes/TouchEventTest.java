@@ -26,7 +26,7 @@ public class TouchEventTest extends TestCase {
 	public void setUp() {		
 		msg = new TouchEvent();
 		msg.setId(Test.GENERAL_INT);
-		msg.setTs(Test.GENERAL_INTEGER_LIST);
+		msg.setTs(Test.GENERAL_LONG_LIST);
 		msg.setC(Test.GENERAL_TOUCHCOORD_LIST);
 	}
 
@@ -36,12 +36,12 @@ public class TouchEventTest extends TestCase {
     public void testRpcValues () {
     	// Test Values
 		Integer id = msg.getId();
-		List<Integer> timestamp = msg.getTs();
+		List<Long> timestamp = msg.getTs();
 		List<TouchCoord> coordTest = msg.getC();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, id);
-    	assertTrue(Test.TRUE, Validator.validateIntegerList(Test.GENERAL_INTEGER_LIST, timestamp));
+    	assertTrue(Test.TRUE, Validator.validateLongList(Test.GENERAL_LONG_LIST, timestamp));
 		assertEquals(Test.MATCH, Test.GENERAL_TOUCHCOORD_LIST.size(), coordTest.size());
 		
 		for (int index = 0; index < Test.GENERAL_TOUCHCOORD_LIST.size(); index++) {

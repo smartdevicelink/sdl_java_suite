@@ -38,7 +38,7 @@ public class AddSubmenuTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ADD_SUB_MENU;
+        return FunctionID.ADD_SUB_MENU.toString();
     }
 
     @Override

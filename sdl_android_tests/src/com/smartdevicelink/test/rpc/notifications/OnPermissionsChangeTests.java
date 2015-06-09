@@ -35,7 +35,7 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_PERMISSIONS_CHANGE;
+        return FunctionID.ON_PERMISSIONS_CHANGE.toString();
     }
 
     @Override

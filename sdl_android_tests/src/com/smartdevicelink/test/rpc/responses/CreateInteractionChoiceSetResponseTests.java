@@ -26,7 +26,7 @@ public class CreateInteractionChoiceSetResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.CREATE_INTERACTION_CHOICE_SET;
+        return FunctionID.CREATE_INTERACTION_CHOICE_SET.toString();
     }
 
     @Override

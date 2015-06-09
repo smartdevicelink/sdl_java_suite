@@ -36,7 +36,7 @@ public class DeleteFileResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.DELETE_FILE;
+        return FunctionID.DELETE_FILE.toString();
     }
 
     @Override

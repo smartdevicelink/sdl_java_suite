@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class ShowConstantTbtResponse extends RPCResponse{
 
     public ShowConstantTbtResponse() {
-        super(FunctionID.SHOW_CONSTANT_TBT);
+        super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
     
     public ShowConstantTbtResponse(Hashtable<String, Object> hash) {

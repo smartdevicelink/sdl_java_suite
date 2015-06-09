@@ -32,7 +32,7 @@ public class ScrollableMessageResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SCROLLABLE_MESSAGE;
+        return FunctionID.SCROLLABLE_MESSAGE.toString();
     }
 
     @Override

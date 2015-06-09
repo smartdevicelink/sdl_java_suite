@@ -32,7 +32,7 @@ public class DeleteCommandResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.DELETE_COMMAND;
+        return FunctionID.DELETE_COMMAND.toString();
     }
 
     @Override

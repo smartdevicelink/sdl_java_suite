@@ -17,7 +17,7 @@ public class AlertResponse extends RPCResponse {
 	 * Constructs a new AlertResponse object
 	 */
     public AlertResponse() {
-        super(FunctionID.ALERT);
+        super(FunctionID.ALERT.toString());
     }
 
 	/**

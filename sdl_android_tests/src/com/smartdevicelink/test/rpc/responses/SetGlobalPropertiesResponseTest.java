@@ -32,7 +32,7 @@ public class SetGlobalPropertiesResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SET_GLOBAL_PROPERTIES;
+        return FunctionID.SET_GLOBAL_PROPERTIES.toString();
     }
 
     @Override

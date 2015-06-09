@@ -32,7 +32,7 @@ public class UnregisterAppInterfaceTests extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.UNREGISTER_APP_INTERFACE;
+        return FunctionID.UNREGISTER_APP_INTERFACE.toString();
     }
 
     @Override

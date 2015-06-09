@@ -16,7 +16,7 @@ public class ResetGlobalPropertiesResponse extends RPCResponse {
 	 * Constructs a new ResetGlobalPropertiesResponse object
 	 */
     public ResetGlobalPropertiesResponse() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES);
+        super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
 
 	/**

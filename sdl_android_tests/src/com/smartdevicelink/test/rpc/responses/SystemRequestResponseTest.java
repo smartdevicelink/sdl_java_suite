@@ -32,7 +32,7 @@ public class SystemRequestResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SYSTEM_REQUEST;
+        return FunctionID.SYSTEM_REQUEST.toString();
     }
 
     @Override

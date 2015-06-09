@@ -33,7 +33,7 @@ public class OnKeyboardInputTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_KEYBOARD_INPUT;
+        return FunctionID.ON_KEYBOARD_INPUT.toString();
     }
 
     @Override

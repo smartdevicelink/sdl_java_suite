@@ -36,7 +36,7 @@ public class SliderResponseTest extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.SLIDER;
+		return FunctionID.SLIDER.toString();
 	}
 
 	@Override

@@ -27,8 +27,8 @@ public class SendLocationTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
     	SendLocation msg = new SendLocation();
     	
-    	msg.setLatitudeDegrees(Test.GENERAL_FLOAT);
-    	msg.setLongitudeDegrees(Test.GENERAL_FLOAT);
+    	msg.setLatitudeDegrees(Test.GENERAL_DOUBLE);
+    	msg.setLongitudeDegrees(Test.GENERAL_DOUBLE);
     	msg.setLocationName(Test.GENERAL_STRING);
     	msg.setLocationDescription(Test.GENERAL_STRING);
     	msg.setPhoneNumber(Test.GENERAL_STRING);
@@ -45,7 +45,7 @@ public class SendLocationTests extends BaseRpcTests {
     
     @Override
     protected String getCommandType(){
-        return FunctionID.SEND_LOCATION;
+        return FunctionID.SEND_LOCATION.toString();
     }
     
     @Override
@@ -53,8 +53,8 @@ public class SendLocationTests extends BaseRpcTests {
     	JSONObject result = new JSONObject();
     	
     	try {
-    		result.put(SendLocation.KEY_LAT_DEGREES, Test.GENERAL_FLOAT);
-    		result.put(SendLocation.KEY_LON_DEGREES, Test.GENERAL_FLOAT);
+    		result.put(SendLocation.KEY_LAT_DEGREES, Test.GENERAL_DOUBLE);
+    		result.put(SendLocation.KEY_LON_DEGREES, Test.GENERAL_DOUBLE);
     		result.put(SendLocation.KEY_LOCATION_NAME, Test.GENERAL_STRING);
     		result.put(SendLocation.KEY_LOCATION_DESCRIPTION, Test.GENERAL_STRING);
     		result.put(SendLocation.KEY_PHONE_NUMBER, Test.GENERAL_STRING);
@@ -72,8 +72,8 @@ public class SendLocationTests extends BaseRpcTests {
 	 */
     public void testRpcValues () {    	
     	// Test Values
-    	Float latitude = ((SendLocation) msg).getLatitudeDegrees();
-        Float longitude = ((SendLocation) msg).getLongitudeDegrees();
+    	Double latitude = ((SendLocation) msg).getLatitudeDegrees();
+        Double longitude = ((SendLocation) msg).getLongitudeDegrees();
         String locationName = ((SendLocation) msg).getLocationName();
     	String locationDesc = ((SendLocation) msg).getLocationDescription();
     	String phoneNumber = ((SendLocation) msg).getPhoneNumber();
@@ -81,8 +81,8 @@ public class SendLocationTests extends BaseRpcTests {
     	Image locationImage = ((SendLocation) msg).getLocationImage();
     	
     	// Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, longitude);
-        assertEquals(Test.MATCH, Test.GENERAL_FLOAT, latitude);
+        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, longitude);
+        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, latitude);
     	assertEquals(Test.MATCH, Test.GENERAL_STRING, locationDesc);
     	assertEquals(Test.MATCH, Test.GENERAL_STRING, locationName);
     	assertEquals(Test.MATCH, Test.GENERAL_STRING, phoneNumber);

@@ -32,7 +32,7 @@ public class SpeakResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SPEAK;
+        return FunctionID.SPEAK.toString();
     }
 
     @Override

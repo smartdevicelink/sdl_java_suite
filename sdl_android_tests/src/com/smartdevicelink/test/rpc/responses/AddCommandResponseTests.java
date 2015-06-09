@@ -33,7 +33,7 @@ public class AddCommandResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ADD_COMMAND;
+        return FunctionID.ADD_COMMAND.toString();
     }
 
     @Override

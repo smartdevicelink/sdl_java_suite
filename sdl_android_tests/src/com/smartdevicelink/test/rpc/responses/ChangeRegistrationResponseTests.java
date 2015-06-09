@@ -32,7 +32,7 @@ public class ChangeRegistrationResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.CHANGE_REGISTRATION;
+        return FunctionID.CHANGE_REGISTRATION.toString();
     }
 
     @Override

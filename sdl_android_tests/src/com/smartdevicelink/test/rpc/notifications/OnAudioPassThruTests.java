@@ -26,7 +26,7 @@ public class OnAudioPassThruTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_AUDIO_PASS_THRU;
+        return FunctionID.ON_AUDIO_PASS_THRU.toString();
     }
 
     @Override

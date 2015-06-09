@@ -41,7 +41,7 @@ public class ReadDIDResponseTest extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.READ_DID;
+		return FunctionID.READ_DID.toString();
 	}
 
 	@Override

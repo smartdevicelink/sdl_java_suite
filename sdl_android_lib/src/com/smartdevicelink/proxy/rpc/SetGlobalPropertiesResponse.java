@@ -16,7 +16,7 @@ public class SetGlobalPropertiesResponse extends RPCResponse {
 	 * Constructs a new SetGlobalPropertiesResponse object
 	 */
     public SetGlobalPropertiesResponse() {
-        super(FunctionID.SET_GLOBAL_PROPERTIES);
+        super(FunctionID.SET_GLOBAL_PROPERTIES.toString());
     }
 
 	/**

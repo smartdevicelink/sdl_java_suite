@@ -8,7 +8,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -97,7 +96,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Constructs a new RegisterAppInterface object
 	 */
     public RegisterAppInterface() {
-        super(FunctionID.REGISTER_APP_INTERFACE);
+        super(FunctionID.REGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
@@ -367,13 +366,7 @@ public class RegisterAppInterface extends RPCRequest {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE_DESIRED, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -408,13 +401,7 @@ public class RegisterAppInterface extends RPCRequest {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE_DESIRED, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -456,11 +443,7 @@ public class RegisterAppInterface extends RPCRequest {
 	            	List<AppHMIType> newList = new ArrayList<AppHMIType>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    AppHMIType toAdd = null;
-	                    try {
-	                        toAdd = AppHMIType.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);	                    }
+	                    AppHMIType toAdd = AppHMIType.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }

@@ -39,7 +39,7 @@ public class StreamRpcPacketizerTests extends TestCase {
 		    URLConnection urlConnection = url.openConnection();
 			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
 			
-			StreamRPCPacketizer testStreamRpcPacketizer = new StreamRPCPacketizer(testListener, testInputStream, testRequest, testSessionType, testSessionId, testWV);
+			StreamRPCPacketizer testStreamRpcPacketizer = new StreamRPCPacketizer(null, testListener, testInputStream, testRequest, testSessionType, testSessionId, testWV, testWV);
 			assertNotNull(Test.NOT_NULL, testStreamRpcPacketizer);
 			
 			// NOTE: Cannot test thread handling methods currently.

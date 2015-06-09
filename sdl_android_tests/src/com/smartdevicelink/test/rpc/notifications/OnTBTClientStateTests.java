@@ -32,7 +32,7 @@ public class OnTBTClientStateTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_TBT_CLIENT_STATE;
+        return FunctionID.ON_TBT_CLIENT_STATE.toString();
     }
 
     @Override

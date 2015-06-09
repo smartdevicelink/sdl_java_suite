@@ -47,7 +47,7 @@ public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.SET_DISPLAY_LAYOUT;
+		return FunctionID.SET_DISPLAY_LAYOUT.toString();
 	}
 
 	@Override

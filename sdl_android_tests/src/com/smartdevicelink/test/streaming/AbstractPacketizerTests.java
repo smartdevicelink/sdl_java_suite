@@ -109,4 +109,7 @@ class MockPacketizer extends AbstractPacketizer {
 	public byte getSessionId           () { return _rpcSessionID;   }
 	public RPCRequest getRPCRequest    () { return _request;        }
 	public byte getWiproVersion        () { return _wiproVersion;   }
+	
+	@Override public void pause() { }
+	@Override public void resume() { }
 }

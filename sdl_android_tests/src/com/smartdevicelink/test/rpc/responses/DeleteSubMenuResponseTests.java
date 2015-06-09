@@ -32,7 +32,7 @@ public class DeleteSubMenuResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.DELETE_SUB_MENU;
+        return FunctionID.DELETE_SUB_MENU.toString();
     }
 
     @Override

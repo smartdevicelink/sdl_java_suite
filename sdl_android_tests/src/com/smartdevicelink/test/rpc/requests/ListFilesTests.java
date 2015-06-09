@@ -32,7 +32,7 @@ public class ListFilesTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.LIST_FILES;
+        return FunctionID.LIST_FILES.toString();
     }
 
     @Override

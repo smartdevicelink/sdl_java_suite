@@ -32,7 +32,7 @@ public class ShowResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SHOW;
+        return FunctionID.SHOW.toString();
     }
 
     @Override

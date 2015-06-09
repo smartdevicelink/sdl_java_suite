@@ -24,8 +24,8 @@ public class OnSystemRequestTests extends BaseRpcTests{
         OnSystemRequest msg = new OnSystemRequest();
 
         msg.setFileType(Test.GENERAL_FILETYPE);
-        msg.setLength(Test.GENERAL_INT);
-        msg.setOffset(Test.GENERAL_INT);
+        msg.setLength(Test.GENERAL_LONG);
+        msg.setOffset(Test.GENERAL_LONG);
         msg.setRequestType(Test.GENERAL_REQUESTTYPE);
         msg.setTimeout(Test.GENERAL_INT);
         msg.setUrl(Test.GENERAL_STRING);
@@ -40,7 +40,7 @@ public class OnSystemRequestTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_SYSTEM_REQUEST;
+        return FunctionID.ON_SYSTEM_REQUEST.toString();
     }
 
     @Override
@@ -67,18 +67,18 @@ public class OnSystemRequestTests extends BaseRpcTests{
     public void testRpcValues () {       	
     	// Test Values
         FileType fileType = ( (OnSystemRequest) msg ).getFileType();
-        int length = ( (OnSystemRequest) msg ).getLength();
+        Long length = ( (OnSystemRequest) msg ).getLength();
         int timeout = ( (OnSystemRequest) msg ).getTimeout();
-        int offset = ( (OnSystemRequest) msg ).getOffset();
+        Long offset = ( (OnSystemRequest) msg ).getOffset();
         String url = ( (OnSystemRequest) msg ).getUrl();
         RequestType requestType = ( (OnSystemRequest) msg ).getRequestType();
         
         
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, fileType);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, length);
+        assertEquals(Test.MATCH, Test.GENERAL_LONG, length);
         assertEquals(Test.MATCH, Test.GENERAL_INT, timeout);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, offset);
+        assertEquals(Test.MATCH, Test.GENERAL_LONG, offset);
         assertEquals(Test.MATCH, Test.GENERAL_STRING, url);
         assertEquals(Test.MATCH, Test.GENERAL_REQUESTTYPE, requestType);
         

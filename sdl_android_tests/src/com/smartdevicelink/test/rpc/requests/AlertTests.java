@@ -49,7 +49,7 @@ public class AlertTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ALERT;
+        return FunctionID.ALERT.toString();
     }
 
     @Override

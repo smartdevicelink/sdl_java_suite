@@ -40,7 +40,7 @@ public class DiagnosticMessageTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.DIAGNOSTIC_MESSAGE;
+        return FunctionID.DIAGNOSTIC_MESSAGE.toString();
     }
 
     @Override

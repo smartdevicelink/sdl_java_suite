@@ -35,7 +35,7 @@ public class OnButtonPressTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_BUTTON_PRESS;
+        return FunctionID.ON_BUTTON_PRESS.toString();
     }
 
     @Override

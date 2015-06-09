@@ -36,7 +36,7 @@ public class PutFileResponseTest extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.PUT_FILE;
+		return FunctionID.PUT_FILE.toString();
 	}
 
 	@Override

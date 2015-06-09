@@ -33,7 +33,7 @@ public class SendLocationResponseTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.SEND_LOCATION;
+		return FunctionID.SEND_LOCATION.toString();
 	}
 
 	@Override

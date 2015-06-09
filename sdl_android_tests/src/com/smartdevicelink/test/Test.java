@@ -112,6 +112,7 @@ public class Test {
 	
 	// RPC Request/Response/Notification/Datatype Test Values
 	public static final int                            GENERAL_INT                            = 100;
+	public static final Long                           GENERAL_LONG                           = 100L;
 	public static final Turn                           GENERAL_TURN                           = new Turn();
 	public static final float                          GENERAL_FLOAT                          = 100f;
 	public static final Image                          GENERAL_IMAGE                          = new Image();	
@@ -196,6 +197,7 @@ public class Test {
 	public static final VehicleDataNotificationStatus  GENERAL_VEHICLEDATANOTIFICATIONSTATUS  = VehicleDataNotificationStatus.NORMAL;
 	public static final AppInterfaceUnregisteredReason GENERAL_APPINTERFACEUNREGISTEREDREASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 	
+	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
 	public static final List<String>                    GENERAL_STRING_LIST                    = Arrays.asList(new String[] { "a", "b"});
@@ -284,7 +286,7 @@ public class Test {
 		GENERAL_TOUCHCOORD_LIST.add(GENERAL_TOUCHCOORD);
 		
 		GENERAL_TOUCHEVENT.setId(GENERAL_INT);
-		GENERAL_TOUCHEVENT.setTs(GENERAL_INTEGER_LIST);
+		GENERAL_TOUCHEVENT.setTs(GENERAL_LONG_LIST);
 		GENERAL_TOUCHEVENT.setC(GENERAL_TOUCHCOORD_LIST);		
 		GENERAL_TOUCHEVENT_LIST.add(GENERAL_TOUCHEVENT);
 		

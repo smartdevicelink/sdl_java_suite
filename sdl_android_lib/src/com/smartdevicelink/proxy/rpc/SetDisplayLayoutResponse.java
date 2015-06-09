@@ -22,7 +22,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	 * Constructs a new SetDisplayLayoutResponse object
 	 */
     public SetDisplayLayoutResponse() {
-        super(FunctionID.SET_DISPLAY_LAYOUT);
+        super(FunctionID.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**

@@ -60,7 +60,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.GET_VEHICLE_DATA;
+        return FunctionID.GET_VEHICLE_DATA.toString();
     }
 
     @Override

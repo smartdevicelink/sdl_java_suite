@@ -34,7 +34,7 @@ public class OnDriverDistractionTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_DRIVER_DISTRACTION;
+        return FunctionID.ON_DRIVER_DISTRACTION.toString();
     }
 
     @Override

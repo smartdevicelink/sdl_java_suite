@@ -26,7 +26,7 @@ public class GenericResponseTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.GENERIC_RESPONSE;
+        return FunctionID.GENERIC_RESPONSE.toString();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class AlertManeuverResponseTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.ALERT_MANEUVER;
+		return FunctionID.ALERT_MANEUVER.toString();
 	}
 
 	@Override

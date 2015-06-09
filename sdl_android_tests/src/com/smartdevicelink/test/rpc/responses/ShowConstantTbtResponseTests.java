@@ -33,7 +33,7 @@ public class ShowConstantTbtResponseTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.SHOW_CONSTANT_TBT;
+		return FunctionID.SHOW_CONSTANT_TBT.toString();
 	}
 
 	@Override

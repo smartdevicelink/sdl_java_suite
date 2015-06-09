@@ -9,7 +9,7 @@ public class OnHashChange extends RPCNotification {
 	public static final String KEY_HASH_ID = "hashID";
 
     public OnHashChange() {
-        super(FunctionID.ON_HASH_CHANGE);
+        super(FunctionID.ON_HASH_CHANGE.toString());
     }
 
     public OnHashChange(Hashtable<String, Object> hash) {

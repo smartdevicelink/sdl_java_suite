@@ -106,8 +106,8 @@ public class SessionTypeTests extends TestCase {
 			enumTestList.add(SessionType.RPC);
 			enumTestList.add(SessionType.PCM);
 			enumTestList.add(SessionType.NAV);
-			enumTestList.add(SessionType.Bulk_Data);
-			enumTestList.add(SessionType.Heartbeat);
+			enumTestList.add(SessionType.BULK_DATA);
+			enumTestList.add(SessionType.CONTROL);
 			
 			assertTrue("List does not match enum test list.",
 						list.containsAll(enumTestList) &&
@@ -116,8 +116,8 @@ public class SessionTypeTests extends TestCase {
 			// Test Array
 			SessionType[] enumValueArray = SessionType.values();
 			SessionType[] enumTestArray = { SessionType.RPC, SessionType.PCM, 
-										    SessionType.NAV, SessionType.Bulk_Data,
-										    SessionType.Heartbeat };
+										    SessionType.NAV, SessionType.BULK_DATA,
+										    SessionType.CONTROL };
 			
 			assertTrue("Array does not match enum values array.",
 						Validator.validateSessionTypeArray(enumValueArray, enumTestArray));

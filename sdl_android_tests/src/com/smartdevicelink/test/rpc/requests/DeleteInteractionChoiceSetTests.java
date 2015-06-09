@@ -36,7 +36,7 @@ public class DeleteInteractionChoiceSetTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.DELETE_INTERACTION_CHOICE_SET;
+        return FunctionID.DELETE_INTERACTION_CHOICE_SET.toString();
     }
 
     @Override

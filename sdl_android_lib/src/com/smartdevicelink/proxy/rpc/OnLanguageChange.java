@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Provides information to what language the Sdl HMI language was changed
@@ -64,7 +63,7 @@ public class OnLanguageChange extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnLanguageChange() {
-        super(FunctionID.ON_LANGUAGE_CHANGE);
+        super(FunctionID.ON_LANGUAGE_CHANGE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>
@@ -93,13 +92,7 @@ public class OnLanguageChange extends RPCNotification {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-        	Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -123,13 +116,7 @@ public class OnLanguageChange extends RPCNotification {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-        	Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
-            }
-            return theCode;
+        	return Language.valueForString((String) obj);
         }
         return null;
     }

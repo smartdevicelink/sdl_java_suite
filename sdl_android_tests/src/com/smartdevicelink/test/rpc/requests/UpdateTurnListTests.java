@@ -43,7 +43,7 @@ public class UpdateTurnListTests extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.UPDATE_TURN_LIST;
+        return FunctionID.UPDATE_TURN_LIST.toString();
     }
     
     @Override

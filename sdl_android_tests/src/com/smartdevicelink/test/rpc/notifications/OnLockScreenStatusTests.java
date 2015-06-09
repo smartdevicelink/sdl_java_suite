@@ -37,7 +37,7 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
 
     @Override
     protected String getCommandType(){
-        return FunctionID.ON_LOCK_SCREEN_STATUS;
+        return FunctionID.ON_LOCK_SCREEN_STATUS.toString();
     }
 
     @Override

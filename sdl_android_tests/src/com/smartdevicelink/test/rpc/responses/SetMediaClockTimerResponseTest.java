@@ -32,7 +32,7 @@ public class SetMediaClockTimerResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.SET_MEDIA_CLOCK_TIMER;
+        return FunctionID.SET_MEDIA_CLOCK_TIMER.toString();
     }
 
     @Override

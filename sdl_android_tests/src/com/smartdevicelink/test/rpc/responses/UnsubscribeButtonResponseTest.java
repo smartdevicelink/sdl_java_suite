@@ -32,7 +32,7 @@ public class UnsubscribeButtonResponseTest extends BaseRpcTests {
 
     @Override
     protected String getCommandType(){
-        return FunctionID.UNSUBSCRIBE_BUTTON;
+        return FunctionID.UNSUBSCRIBE_BUTTON.toString();
     }
 
     @Override
