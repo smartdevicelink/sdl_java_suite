@@ -14,7 +14,7 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
@@ -156,7 +156,7 @@ public class OnSystemRequest extends RPCNotification {
             try {
                 theCode = RequestType.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError(
+                SdlLog.e(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_REQUEST_TYPE, e);
             }
@@ -207,7 +207,7 @@ public class OnSystemRequest extends RPCNotification {
             try {
                 theCode = FileType.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError(
+                SdlLog.e(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_FILE_TYPE, e);
             }

@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * PerformInteraction Response is sent, when PerformInteraction has been called
@@ -66,7 +66,7 @@ public class PerformInteractionResponse extends RPCResponse {
             try {
                 theCode = TriggerSource.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
             }
             return theCode;
         }

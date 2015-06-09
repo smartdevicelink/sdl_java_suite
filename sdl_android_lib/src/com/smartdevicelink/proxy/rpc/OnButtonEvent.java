@@ -6,7 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * Notifies application that user has depressed or released a button to which
@@ -118,7 +118,7 @@ public class OnButtonEvent extends RPCNotification {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
             }
             return theCode;
         }
@@ -148,7 +148,7 @@ public class OnButtonEvent extends RPCNotification {
             try {
                 theCode = ButtonEventMode.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_EVENT_MODE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_EVENT_MODE, e);
             }
             return theCode;
         }

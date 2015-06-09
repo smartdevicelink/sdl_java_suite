@@ -1,5 +1,12 @@
 package com.smartdevicelink.transport;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,18 +20,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.transport.ITransportListener;
-import com.smartdevicelink.transport.SdlTransport;
-import com.smartdevicelink.transport.SiphonServer;
-import com.smartdevicelink.transport.TransportType;
-import com.smartdevicelink.util.LogTool;
-
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * Class that implements USB transport.
@@ -75,14 +71,6 @@ public class USBTransport extends SdlTransport {
      */
     private final static String ACCESSORY_VERSION = "1.0";
     /**
-     * Prefix string to indicate debug output.
-     */
-    private static final String DEBUG_PREFIX = "DEBUG: ";
-    /**
-     * String to prefix exception output.
-     */
-    private static final String EXCEPTION_STRING = " Exception String: ";
-    /**
      * Broadcast receiver that receives different USB-related intents: USB
      * accessory connected, disconnected, and permission granted.
      */
@@ -90,21 +78,21 @@ public class USBTransport extends SdlTransport {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            logD("USBReceiver Action: " + action);
+            SdlLog.d("USBReceiver Action: " + action);
 
             UsbAccessory accessory =
                     intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
             if (accessory != null) {
                 if (ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
-                    logI("Accessory " + accessory + " attached");
+                	SdlLog.i("Accessory " + accessory + " attached");
                     if (isAccessorySupported(accessory)) {
                         connectToAccessory(accessory);
                     } else {
-                        logW("Attached accessory is not supported!");
+                    	SdlLog.w("Attached accessory is not supported!");
                     }
                 } else if (UsbManager.ACTION_USB_ACCESSORY_DETACHED
                         .equals(action)) {
-                    logI("Accessory " + accessory + " detached");
+                	SdlLog.i("Accessory " + accessory + " detached");
                     final String msg = "USB accessory has been detached";
                     disconnect(msg, new SdlException(msg,
                             SdlExceptionCause.SDL_USB_DETACHED));
@@ -112,18 +100,18 @@ public class USBTransport extends SdlTransport {
                     boolean permissionGranted = intent.getBooleanExtra(
                             UsbManager.EXTRA_PERMISSION_GRANTED, false);
                     if (permissionGranted) {
-                        logI("Permission granted for accessory " + accessory);
+                    	SdlLog.i("Permission granted for accessory " + accessory);
                         openAccessory(accessory);
                     } else {
                         final String msg =
                                 "Permission denied for accessory " + accessory;
-                        logW(msg);
+                        SdlLog.w(msg);
                         disconnect(msg, new SdlException(msg,
                                 SdlExceptionCause.SDL_USB_PERMISSION_DENIED));
                     }
                 }
             } else {
-                logW("Accessory is null");
+            	SdlLog.w("Accessory is null");
             }
         }
     };
@@ -191,7 +179,7 @@ public class USBTransport extends SdlTransport {
      * @param state New state
      */
     private void setState(State state) {
-        logD("Changing state " + this.mState + " to " + state);
+    	SdlLog.d("Changing state " + this.mState + " to " + state);
         this.mState = state;
     }
 
@@ -206,7 +194,7 @@ public class USBTransport extends SdlTransport {
     @Override
     protected boolean sendBytesOverTransport(byte[] msgBytes, int offset,
                                              int length) {
-        logD("SendBytes: array size " + msgBytes.length + ", offset " + offset +
+    	SdlLog.d("SendBytes: array size " + msgBytes.length + ", offset " + offset +
                 ", length " + length);
 
         boolean result = false;
@@ -219,27 +207,27 @@ public class USBTransport extends SdlTransport {
                             mOutputStream.write(msgBytes, offset, length);
                             result = true;
 
-                            logI("Bytes successfully sent");
+                            SdlLog.i("Bytes successfully sent");
                             SdlTrace.logTransportEvent(TAG + ": bytes sent",
                                     null, InterfaceActivityDirection.Transmit,
                                     msgBytes, offset, length,
                                     SDL_LIB_TRACE_KEY);
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";
-                            logW(msg, e);
+                            SdlLog.e(msg, e);
                             handleTransportError(msg, e);
                         }
                     } else {
                         final String msg =
                                 "Can't send bytes when output stream is null";
-                        logW(msg);
+                        SdlLog.w(msg);
                         handleTransportError(msg, null);
                     }
                 }
                 break;
 
             default:
-                logW("Can't send bytes from " + state + " state");
+            	SdlLog.w("Can't send bytes from " + state + " state");
                 break;
         }
 
@@ -268,11 +256,11 @@ public class USBTransport extends SdlTransport {
         switch (state) {
             case IDLE:
                 synchronized (this) {
-                    logI("openConnection()");
+                	SdlLog.i("openConnection()");
                     setState(State.LISTENING);
                 }
 
-                logD("Registering receiver");
+                SdlLog.d("Registering receiver");
                 try {
                     IntentFilter filter = new IntentFilter();
                     filter.addAction(ACTION_USB_ACCESSORY_ATTACHED);
@@ -283,7 +271,7 @@ public class USBTransport extends SdlTransport {
                     initializeAccessory();
                 } catch (Exception e) {
                     String msg = "Couldn't start opening connection";
-                    logE(msg, e);
+                    SdlLog.e(msg, e);
                     throw new SdlException(msg, e,
                             SdlExceptionCause.SDL_CONNECTION_FAILED);
                 }
@@ -291,7 +279,7 @@ public class USBTransport extends SdlTransport {
                 break;
 
             default:
-                logW("openConnection() called from state " + state +
+            	SdlLog.w("openConnection() called from state " + state +
                         "; doing nothing");
                 break;
         }
@@ -311,7 +299,7 @@ public class USBTransport extends SdlTransport {
      */
     //@Override
     public void stopReading() {
-        LogTool.logInfo("USBTransport: stop reading requested, doing nothing");
+    	SdlLog.i("USBTransport: stop reading requested, doing nothing");
         // TODO - put back stopUSBReading(); @see <a href="https://adc.luxoft.com/jira/browse/SmartDeviceLink-3450">SmartDeviceLink-3450</a>
     }
 
@@ -320,14 +308,14 @@ public class USBTransport extends SdlTransport {
         final State state = getState();
         switch (state) {
             case CONNECTED:
-                logI("Stopping reading");
+            	SdlLog.i("Stopping reading");
                 synchronized (this) {
                     stopReaderThread();
                 }
                 break;
 
             default:
-                logW("Stopping reading called from state " + state +
+            	SdlLog.w("Stopping reading called from state " + state +
                         "; doing nothing");
                 break;
         }
@@ -338,12 +326,12 @@ public class USBTransport extends SdlTransport {
      */
     private void stopReaderThread() {
         if (mReaderThread != null) {
-            logI("Interrupting USB reader");
+        	SdlLog.i("Interrupting USB reader");
             mReaderThread.interrupt();
             // don't join() now
             mReaderThread = null;
         } else {
-            logD("USB reader is null");
+        	SdlLog.d("USB reader is null");
         }
     }
 
@@ -359,7 +347,7 @@ public class USBTransport extends SdlTransport {
             case LISTENING:
             case CONNECTED:
                 synchronized (this) {
-                    logI("Disconnect from state " + getState() + "; message: " +
+                	SdlLog.i("Disconnect from state " + getState() + "; message: " +
                             msg + "; exception: " + ex);
                     setState(State.IDLE);
 
@@ -374,7 +362,7 @@ public class USBTransport extends SdlTransport {
                             try {
                                 mOutputStream.close();
                             } catch (IOException e) {
-                                logW("Can't close output stream", e);
+                            	SdlLog.e("Can't close output stream", e);
                                 mOutputStream = null;
                             }
                         }
@@ -382,7 +370,7 @@ public class USBTransport extends SdlTransport {
                             try {
                                 mInputStream.close();
                             } catch (IOException e) {
-                                logW("Can't close input stream", e);
+                            	SdlLog.e("Can't close input stream", e);
                                 mInputStream = null;
                             }
                         }
@@ -390,7 +378,7 @@ public class USBTransport extends SdlTransport {
                             try {
                                 mParcelFD.close();
                             } catch (IOException e) {
-                                logW("Can't close file descriptor", e);
+                            	SdlLog.e("Can't close file descriptor", e);
                                 mParcelFD = null;
                             }
                         }
@@ -399,11 +387,11 @@ public class USBTransport extends SdlTransport {
                     }
                 }
 
-                logD("Unregistering receiver");
+                SdlLog.d("Unregistering receiver");
                 try {
                     getContext().unregisterReceiver(mUSBReceiver);
                 } catch (IllegalArgumentException e) {
-                    logW("Receiver was already unregistered", e);
+                	SdlLog.e("Receiver was already unregistered", e);
                 }
 
                 String disconnectMsg = (msg == null ? "" : msg);
@@ -414,18 +402,18 @@ public class USBTransport extends SdlTransport {
                 if (ex == null) {
                     // This disconnect was not caused by an error, notify the
                     // proxy that the transport has been disconnected.
-                    logI("Disconnect is correct. Handling it");
+                	SdlLog.i("Disconnect is correct. Handling it");
                     handleTransportDisconnected(disconnectMsg);
                 } else {
                     // This disconnect was caused by an error, notify the proxy
                     // that there was a transport error.
-                    logI("Disconnect is incorrect. Handling it as error");
+                	SdlLog.i("Disconnect is incorrect. Handling it as error");
                     handleTransportError(disconnectMsg, ex);
                 }
                 break;
 
             default:
-                logW("Disconnect called from state " + state +
+            	SdlLog.w("Disconnect called from state " + state +
                         "; doing nothing");
                 break;
         }
@@ -446,11 +434,11 @@ public class USBTransport extends SdlTransport {
      * Looks for an already connected compatible accessory and connect to it.
      */
     private void initializeAccessory() {
-        logI("Looking for connected accessories");
+    	SdlLog.i("Looking for connected accessories");
         UsbManager usbManager = getUsbManager();
         UsbAccessory[] accessories = usbManager.getAccessoryList();
         if (accessories != null) {
-            logD("Found total " + accessories.length + " accessories");
+        	SdlLog.d("Found total " + accessories.length + " accessories");
             for (UsbAccessory accessory : accessories) {
                 if (isAccessorySupported(accessory)) {
                     connectToAccessory(accessory);
@@ -458,7 +446,7 @@ public class USBTransport extends SdlTransport {
                 }
             }
         } else {
-            logI("No connected accessories found");
+        	SdlLog.i("No connected accessories found");
         }
     }
 
@@ -491,10 +479,10 @@ public class USBTransport extends SdlTransport {
             case LISTENING:
                 UsbManager usbManager = getUsbManager();
                 if (usbManager.hasPermission(accessory)) {
-                    logI("Already have permission to use " + accessory);
+                	SdlLog.i("Already have permission to use " + accessory);
                     openAccessory(accessory);
                 } else {
-                    logI("Requesting permission to use " + accessory);
+                	SdlLog.i("Requesting permission to use " + accessory);
 
                     PendingIntent permissionIntent = PendingIntent
                             .getBroadcast(getContext(), 0,
@@ -505,7 +493,7 @@ public class USBTransport extends SdlTransport {
                 break;
 
             default:
-                logW("connectToAccessory() called from state " + state +
+            	SdlLog.w("connectToAccessory() called from state " + state +
                         "; doing nothing");
         }
     }
@@ -532,7 +520,7 @@ public class USBTransport extends SdlTransport {
         switch (state) {
             case LISTENING:
                 synchronized (this) {
-                    logI("Opening accessory " + accessory);
+                	SdlLog.i("Opening accessory " + accessory);
                     mAccessory = accessory;
 
                     mReaderThread = new Thread(new USBTransportReader());
@@ -540,72 +528,14 @@ public class USBTransport extends SdlTransport {
                     mReaderThread
                             .setName(USBTransportReader.class.getSimpleName());
                     mReaderThread.start();
-
-                    // Initialize the SiphonServer
-                    if (SiphonServer.getSiphonEnabledStatus()) {
-                    	SiphonServer.init();
-                    }
                 }
 
                 break;
 
             default:
-                logW("openAccessory() called from state " + state +
+            	SdlLog.w("openAccessory() called from state " + state +
                         "; doing nothing");
         }
-    }
-
-    /**
-     * Logs the string and the throwable with ERROR level.
-     *
-     * @param s  string to log
-     * @param tr throwable to log
-     */
-    private void logE(String s, Throwable tr) {
-        LogTool.logError(s, tr);
-    }
-
-    /**
-     * Logs the string with WARN level.
-     *
-     * @param s string to log
-     */
-    private void logW(String s) {
-        LogTool.logWarning(s);
-    }
-
-    /**
-     * Logs the string and the throwable with WARN level.
-     *
-     * @param s  string to log
-     * @param tr throwable to log
-     */
-    private void logW(String s, Throwable tr) {
-        StringBuilder res = new StringBuilder(s);
-        if (tr != null) {
-            res.append(EXCEPTION_STRING);
-            res.append(tr.toString());
-        }
-        logW(res.toString());
-    }
-
-    /**
-     * Logs the string with INFO level.
-     *
-     * @param s string to log
-     */
-    private void logI(String s) {
-        LogTool.logInfo(s);
-    }
-
-    /**
-     * Logs the string with DEBUG level.
-     *
-     * @param s string to log
-     */
-    private void logD(String s) {
-        // LogTool doesn't support DEBUG level, so we use INFO instead
-        LogTool.logInfo(DEBUG_PREFIX + s);
     }
 
     /**
@@ -668,13 +598,13 @@ public class USBTransport extends SdlTransport {
          */
         @Override
         public void run() {
-            logD("USB reader started!");
+        	SdlLog.d("USB reader started!");
 
             if (connect()) {
                 readFromTransport();
             }
 
-            logD("USB reader finished!");
+            SdlLog.d("USB reader finished!");
         }
 
         /**
@@ -684,7 +614,7 @@ public class USBTransport extends SdlTransport {
          */
         private boolean connect() {
             if (isInterrupted()) {
-                logI("Thread is interrupted, not connecting");
+            	SdlLog.i("Thread is interrupted, not connecting");
                 return false;
             }
 
@@ -699,15 +629,15 @@ public class USBTransport extends SdlTransport {
                         } catch (Exception e) {
                             final String msg =
                                     "Have no permission to open the accessory";
-                            logE(msg, e);
+                            SdlLog.e(msg, e);
                             disconnect(msg, e);
                             return false;
                         }
                         if (mParcelFD == null) {
                             if (isInterrupted()) {
-                                logW("Can't open accessory, and thread is interrupted");
+                            	SdlLog.w("Can't open accessory, and thread is interrupted");
                             } else {
-                                logW("Can't open accessory, disconnecting!");
+                            	SdlLog.w("Can't open accessory, disconnecting!");
                                 String msg = "Failed to open USB accessory";
                                 disconnect(msg, new SdlException(msg,
                                         SdlExceptionCause.SDL_CONNECTION_FAILED));
@@ -719,7 +649,7 @@ public class USBTransport extends SdlTransport {
                         mOutputStream = new FileOutputStream(fd);
                     }
 
-                    logI("Accessory opened!");
+                    SdlLog.i("Accessory opened!");
 
                     synchronized (USBTransport.this) {
                         setState(State.CONNECTED);
@@ -728,7 +658,7 @@ public class USBTransport extends SdlTransport {
                     break;
 
                 default:
-                    logW("connect() called from state " + state +
+                	SdlLog.w("connect() called from state " + state +
                             ", will not try to connect");
                     return false;
             }
@@ -751,30 +681,30 @@ public class USBTransport extends SdlTransport {
                     bytesRead = mInputStream.read(buffer);
                     if (bytesRead == -1) {
                         if (isInterrupted()) {
-                            logI("EOF reached, and thread is interrupted");
+                        	SdlLog.i("EOF reached, and thread is interrupted");
                         } else {
-                            logI("EOF reached, disconnecting!");
+                        	SdlLog.i("EOF reached, disconnecting!");
                             disconnect("EOF reached", null);
                         }
                         return;
                     }
                 } catch (IOException e) {
                     if (isInterrupted()) {
-                        logW("Can't read data, and thread is interrupted", e);
+                    	SdlLog.e("Can't read data, and thread is interrupted", e);
                     } else {
-                        logW("Can't read data, disconnecting!", e);
+                    	SdlLog.e("Can't read data, disconnecting!", e);
                         disconnect("Can't read data from USB", e);
                     }
                     return;
                 }
 
-                logD("Read " + bytesRead + " bytes");
+                SdlLog.d("Read " + bytesRead + " bytes");
                 SdlTrace.logTransportEvent(TAG + ": read bytes", null,
                         InterfaceActivityDirection.Receive, buffer, bytesRead,
                         SDL_LIB_TRACE_KEY);
 
                 if (isInterrupted()) {
-                    logI("Read some data, but thread is interrupted");
+                	SdlLog.i("Read some data, but thread is interrupted");
                     return;
                 }
 
@@ -784,33 +714,6 @@ public class USBTransport extends SdlTransport {
                     }
                 }
             }
-        }
-
-        // Log functions
-
-        private void logD(String s) {
-            LogTool.logInfo(DEBUG_PREFIX + s);
-        }
-
-        private void logI(String s) {
-            LogTool.logInfo(s);
-        }
-
-        private void logW(String s) {
-            LogTool.logWarning(s);
-        }
-
-        private void logW(String s, Throwable tr) {
-            StringBuilder res = new StringBuilder(s);
-            if (tr != null) {
-                res.append(EXCEPTION_STRING);
-                res.append(tr.toString());
-            }
-            logW(res.toString());
-        }
-
-        private void logE(String s, Throwable tr) {
-            LogTool.logError(s, tr);
         }
     }
 

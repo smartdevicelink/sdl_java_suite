@@ -12,7 +12,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -112,7 +112,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
             }
             return theCode;
         }
@@ -154,7 +154,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
             }
             return theCode;
         }
@@ -322,7 +322,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	                    try {
 	                        toAdd = HmiZoneCapabilities.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_ZONE_CAPABILITIES, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_ZONE_CAPABILITIES, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -367,7 +367,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	                    try {
 	                        toAdd = SpeechCapabilities.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEECH_CAPABILITIES, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEECH_CAPABILITIES, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -408,7 +408,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	                    try {
 	                        toAdd = PrerecordedSpeech.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRERECORDED_SPEECH, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRERECORDED_SPEECH, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
@@ -451,7 +451,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	                    try {
 	                        toAdd = VrCapabilities.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_VR_CAPABILITIES, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_VR_CAPABILITIES, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);

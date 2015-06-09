@@ -3,7 +3,7 @@ package com.smartdevicelink.transport;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public abstract class SdlTransport {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
@@ -33,14 +33,12 @@ public abstract class SdlTransport {
 		try {
 			// Trace received data
 			if (receivedBytesLength > 0) {
-				// Send transport data to the siphon server
-				SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
 				SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
 				
 				_transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
 			} // end-if
 		} catch (Exception excp) {
-			LogTool.logError(FailurePropagating_Msg + "handleBytesFromTransport: " + excp.toString(), excp);
+			SdlLog.e(FailurePropagating_Msg + "handleBytesFromTransport: " + excp.toString(), excp);
 			handleTransportError(FailurePropagating_Msg, excp);
 		} // end-catch
     } // end-method
@@ -62,10 +60,7 @@ public abstract class SdlTransport {
         boolean bytesWereSent = false;
         synchronized (_sendLockObj) {
         	bytesWereSent = sendBytesOverTransport(message, offset, length);
-        } // end-lock
-        // Send transport data to the siphon server
-		SiphonServer.sendBytesFromAPP(message, offset, length);
-        
+        } // end-lock        
 		SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Transmit, message, offset, length, SDL_LIB_TRACE_KEY);
         return bytesWereSent;
     } // end-method
@@ -80,7 +75,7 @@ public abstract class SdlTransport {
 	    	SdlTrace.logTransportEvent("Transport.connected", null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
 			_transportListener.onTransportConnected();
 		} catch (Exception excp) {
-			LogTool.logError(FailurePropagating_Msg + "onTransportConnected: " + excp.toString(), excp);
+			SdlLog.e(FailurePropagating_Msg + "onTransportConnected: " + excp.toString(), excp);
 			handleTransportError(FailurePropagating_Msg + "onTransportConnected", excp);
 		} // end-catch
 	} // end-method
@@ -94,7 +89,7 @@ public abstract class SdlTransport {
 	    	SdlTrace.logTransportEvent("Transport.disconnect: " + info, null, InterfaceActivityDirection.Transmit, null, 0, SDL_LIB_TRACE_KEY);
 			_transportListener.onTransportDisconnected(info);
 		} catch (Exception excp) {
-			LogTool.logError(FailurePropagating_Msg + "onTransportDisconnected: " + excp.toString(), excp);
+			SdlLog.e(FailurePropagating_Msg + "onTransportDisconnected: " + excp.toString(), excp);
 		} // end-catch
 	} // end-method
 	

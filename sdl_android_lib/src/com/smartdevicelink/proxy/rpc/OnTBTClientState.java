@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * <p>Notifies the application of the current TBT client status on the module.</p>
@@ -67,7 +67,7 @@ public class OnTBTClientState extends RPCNotification {
         	try{
         		theCode = TBTState.valueForString((String) obj);
         	} catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
             }
         	return theCode;
         }    	

@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -96,7 +96,7 @@ public class PutFile extends RPCRequest {
             try {
                 theCode = FileType.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FILE_TYPE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_FILE_TYPE, e);
             }
             return theCode;
         }

@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class MyKey extends RPCStruct {
     public static final String KEY_E_911_OVERRIDE = "e911Override";
@@ -30,7 +30,7 @@ public class MyKey extends RPCStruct {
             try {
                 theCode = VehicleDataStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_911_OVERRIDE, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_911_OVERRIDE, e);
             }
             return theCode;
         }

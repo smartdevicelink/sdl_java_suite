@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class BodyInformation extends RPCStruct {
     public static final String KEY_PARK_BRAKE_ACTIVE = "parkBrakeActive";
@@ -47,7 +47,7 @@ public class BodyInformation extends RPCStruct {
             try {
                 theCode = IgnitionStableStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STABLE_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STABLE_STATUS, e);
             }
             return theCode;
         }
@@ -69,7 +69,7 @@ public class BodyInformation extends RPCStruct {
             try {
                 theCode = IgnitionStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IGNITION_STATUS, e);
             }
             return theCode;
         }

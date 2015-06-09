@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
 * <p>
@@ -114,7 +114,7 @@ public class AddCommand extends RPCRequest {
         	try {
         		return new MenuParams((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_PARAMS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_PARAMS, e);
             }
         }
         return null;
@@ -197,7 +197,7 @@ public class AddCommand extends RPCRequest {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CMD_ICON, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_CMD_ICON, e);
             }
         }
         return null;

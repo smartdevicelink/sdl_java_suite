@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Hashtable;
+import java.util.List;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.LogTool;
-
-import java.util.Hashtable;
-import java.util.List;
+import com.smartdevicelink.util.SdlLog;
 
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
@@ -68,7 +68,7 @@ public class SystemRequest extends RPCRequest {
             try {
                 theCode = RequestType.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError(
+                SdlLog.e(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_REQUEST_TYPE, e);
             }

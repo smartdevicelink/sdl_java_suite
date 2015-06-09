@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class KeyboardProperties extends RPCStruct {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
@@ -38,7 +38,7 @@ public class KeyboardProperties extends RPCStruct {
             try {
                 theCode = Language.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError(
+                SdlLog.e(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_LANGUAGE, e);
             }
@@ -64,7 +64,7 @@ public class KeyboardProperties extends RPCStruct {
             try {
                 theCode = KeyboardLayout.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError(
+                SdlLog.e(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_KEYBOARD_LAYOUT, e);
             }
@@ -90,7 +90,7 @@ public class KeyboardProperties extends RPCStruct {
             try {
                 theCode = KeypressMode.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError(
+                SdlLog.e(
                         "Failed to parse " + getClass().getSimpleName() + "." +
                         		KEY_KEYPRESS_MODE, e);
             }

@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class EmergencyEvent extends RPCStruct {
     public static final String KEY_EMERGENCY_EVENT_TYPE = "emergencyEventType";
@@ -36,7 +36,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = EmergencyEventType.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT_TYPE, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT_TYPE, e);
             }
             return theCode;
         }
@@ -58,7 +58,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = FuelCutoffStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_CUTOFF_STATUS, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_CUTOFF_STATUS, e);
             }
             return theCode;
         }
@@ -80,7 +80,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ROLLOVER_EVENT, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_ROLLOVER_EVENT, e);
             }
             return theCode;
         }
@@ -112,7 +112,7 @@ public class EmergencyEvent extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MULTIPLE_EVENTS, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MULTIPLE_EVENTS, e);
             }
             return theCode;
         }

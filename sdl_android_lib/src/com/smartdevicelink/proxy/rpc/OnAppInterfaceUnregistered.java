@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources 
@@ -69,7 +69,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
             try {
                 theCode = AppInterfaceUnregisteredReason.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_REASON, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_REASON, e);
             }
             return theCode;
         }

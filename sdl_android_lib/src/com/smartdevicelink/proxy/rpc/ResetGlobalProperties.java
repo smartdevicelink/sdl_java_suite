@@ -7,7 +7,7 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -66,7 +66,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	                    try {
 	                        toAdd = GlobalProperty.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PROPERTIES, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PROPERTIES, e);
 	                    }
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);

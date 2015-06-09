@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.rpc.enums.TouchType;
-import com.smartdevicelink.util.LogTool;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.util.SdlLog;
 
 public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_EVENT = "event";
@@ -37,7 +37,7 @@ public class OnTouchEvent extends RPCNotification {
             try {
                 theCode = TouchType.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_TYPE, e);
             }
             return theCode;
         }

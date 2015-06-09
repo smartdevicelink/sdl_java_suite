@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class AirbagStatus extends RPCStruct {
     public static final String KEY_DRIVER_AIRBAG_DEPLOYED = "driverAirbagDeployed";
@@ -37,7 +37,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -59,7 +59,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -81,7 +81,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -103,7 +103,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -125,7 +125,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -147,7 +147,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -169,7 +169,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }
@@ -191,7 +191,7 @@ public class AirbagStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, e);
             }
             return theCode;
         }

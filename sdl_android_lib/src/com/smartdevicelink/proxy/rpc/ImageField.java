@@ -7,7 +7,7 @@ import java.util.List;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class ImageField extends RPCStruct {
     public static final String KEY_IMAGE_TYPE_SUPPORTED = "imageTypeSupported";
@@ -29,7 +29,7 @@ public class ImageField extends RPCStruct {
             try {
                 theCode = ImageFieldName.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
             }
             return theCode;
         }
@@ -59,7 +59,7 @@ public class ImageField extends RPCStruct {
                           try {
                             theCode = FileType.valueForString(strFormat);
                           } catch (Exception e) {
-                            LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
+                            SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
                         }
                         if (theCode != null) {
                             newList.add(theCode);
@@ -88,7 +88,7 @@ public class ImageField extends RPCStruct {
         	try {
         		return new ImageResolution((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_RESOLUTION, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_RESOLUTION, e);
             }
         }
         return null;

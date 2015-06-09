@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  *Specifies, which image shall be used, e.g. in Alerts or on Softbuttons provided the display supports it.
@@ -98,7 +98,7 @@ public class Image extends RPCStruct {
             try {
                 theCode = ImageType.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE, e);
             }
             return theCode;
         }

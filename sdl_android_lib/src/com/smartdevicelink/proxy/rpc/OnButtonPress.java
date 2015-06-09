@@ -6,7 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * <p>
@@ -123,7 +123,7 @@ public class OnButtonPress extends RPCNotification {
             try {
                 theCode = ButtonName.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
             }
             return theCode;
         }
@@ -152,7 +152,7 @@ public class OnButtonPress extends RPCNotification {
             try {
                 theCode = ButtonPressMode.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_PRESS_MODE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_PRESS_MODE, e);
             }
             return theCode;
         }

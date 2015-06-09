@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 /**
  * Sets the media clock/timer value and the update method (e.g.count-up,
  * count-down, etc.)
@@ -107,7 +107,7 @@ public class SetMediaClockTimer extends RPCRequest {
             try {
                 theCode = UpdateMode.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_UPDATE_MODE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_UPDATE_MODE, e);
             }
             return theCode;
         }

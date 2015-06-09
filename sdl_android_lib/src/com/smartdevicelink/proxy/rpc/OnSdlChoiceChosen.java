@@ -6,7 +6,7 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class OnSdlChoiceChosen extends RPCNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
@@ -163,7 +163,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
             try {
                 theCode = TriggerSource.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
             }
             return theCode;
         }

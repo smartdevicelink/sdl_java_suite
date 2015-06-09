@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
@@ -243,7 +243,7 @@ public class DeviceStatus extends RPCStruct {
             try {
                 theCode = DeviceLevelStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BATT_LEVEL_STATUS, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BATT_LEVEL_STATUS, e);
             }
             return theCode;
         }
@@ -315,7 +315,7 @@ public class DeviceStatus extends RPCStruct {
             try {
                 theCode = DeviceLevelStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SIGNAL_LEVEL_STATUS, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_SIGNAL_LEVEL_STATUS, e);
             }
             return theCode;
         }
@@ -347,7 +347,7 @@ public class DeviceStatus extends RPCStruct {
             try {
                 theCode = PrimaryAudioSource.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRIMARY_AUDIO_SOURCE, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRIMARY_AUDIO_SOURCE, e);
             }
             return theCode;
         }

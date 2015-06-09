@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class ClusterModeStatus extends RPCStruct {
     public static final String KEY_POWER_MODE_ACTIVE = "powerModeActive";
@@ -45,7 +45,7 @@ public class ClusterModeStatus extends RPCStruct {
 	            try {
 	                theCode = PowerModeQualificationStatus.valueForString((String) obj);
 	            } catch (Exception e) {
-	                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_POWER_MODE_QUALIFICATION_STATUS, e);
+	            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_POWER_MODE_QUALIFICATION_STATUS, e);
 	            }
 	            return theCode;
 	        }
@@ -67,7 +67,7 @@ public class ClusterModeStatus extends RPCStruct {
 	            try {
 	                theCode = CarModeStatus.valueForString((String) obj);
 	            } catch (Exception e) {
-	                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CAR_MODE_STATUS, e);
+	            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_CAR_MODE_STATUS, e);
 	            }
 	            return theCode;
 	        }
@@ -89,7 +89,7 @@ public class ClusterModeStatus extends RPCStruct {
 	            try {
 	                theCode = PowerModeStatus.valueForString((String) obj);
 	            } catch (Exception e) {
-	                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_POWER_MODE_STATUS, e);
+	            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_POWER_MODE_STATUS, e);
 	            }
 	            return theCode;
 	        }

@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class BeltStatus extends RPCStruct {
     public static final String KEY_DRIVER_BELT_DEPLOYED = "driverBeltDeployed";
@@ -44,7 +44,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BELT_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BELT_DEPLOYED, e);
             }
             return theCode;
         }
@@ -66,7 +66,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BELT_DEPLOYED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BELT_DEPLOYED, e);
             }
             return theCode;
         }
@@ -88,7 +88,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BUCKLE_BELTED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -110,7 +110,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BUCKLE_BELTED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -132,7 +132,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_2_BUCKLE_BELTED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_2_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -154,7 +154,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CHILD_DETECTED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CHILD_DETECTED, e);
             }
             return theCode;
         }
@@ -176,7 +176,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_2_BUCKLE_BELTED, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_2_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -198,7 +198,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_2_BUCKLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_2_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -220,7 +220,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_3_BUCKLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_3_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -242,7 +242,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_3_BUCKLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_3_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -264,7 +264,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_3_BUCKLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_3_BUCKLE_BELTED, e);
             }
             return theCode;
         }
@@ -286,7 +286,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_REAR_INFLATABLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_REAR_INFLATABLE_BELTED, e);
             }
             return theCode;
         }
@@ -308,7 +308,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR_INFLATABLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR_INFLATABLE_BELTED, e);
             }
             return theCode;
         }
@@ -330,7 +330,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BELT_DEPLOYED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BELT_DEPLOYED, e);
             }
             return theCode;
         }
@@ -352,7 +352,7 @@ public class BeltStatus extends RPCStruct {
             try {
                 theCode = VehicleDataEventStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BUCKLE_BELTED, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BUCKLE_BELTED, e);
             }
             return theCode;
         }

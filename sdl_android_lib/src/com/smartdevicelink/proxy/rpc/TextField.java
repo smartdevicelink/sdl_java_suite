@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * Struct defining the characteristics of a displayed field on the HMI.
@@ -83,7 +83,7 @@ public class TextField extends RPCStruct {
             try {
                 theCode = TextFieldName.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
             }
             return theCode;
         }
@@ -113,7 +113,7 @@ public class TextField extends RPCStruct {
             try {
                 theCode = CharacterSet.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CHARACTER_SET, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_CHARACTER_SET, e);
             }
             return theCode;
         }

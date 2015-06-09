@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class VehicleDataResult extends RPCStruct {
 	public static final String KEY_DATA_TYPE = "dataType";
@@ -31,7 +31,7 @@ public class VehicleDataResult extends RPCStruct {
             try {
                 theCode = VehicleDataType.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DATA_TYPE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DATA_TYPE, e);
             }
             return theCode;
         }
@@ -53,7 +53,7 @@ public class VehicleDataResult extends RPCStruct {
             try {
                 theCode = VehicleDataResultCode.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESULT_CODE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESULT_CODE, e);
             }
             return theCode;
         }

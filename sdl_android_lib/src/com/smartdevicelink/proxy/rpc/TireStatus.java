@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class TireStatus extends RPCStruct {
 	public static final String KEY_PRESSURE_TELL_TALE = "pressureTellTale";
@@ -35,7 +35,7 @@ public class TireStatus extends RPCStruct {
             try {
                 theCode = WarningLightStatus.valueForString((String) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRESSURE_TELL_TALE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRESSURE_TELL_TALE, e);
             }
             return theCode;
         }
@@ -57,7 +57,7 @@ public class TireStatus extends RPCStruct {
         	try {
         		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_FRONT, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_FRONT, e);
             }
         }
         return null;
@@ -78,7 +78,7 @@ public class TireStatus extends RPCStruct {
         	try {
         		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_FRONT, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_FRONT, e);
             }
         }
         return null;
@@ -99,7 +99,7 @@ public class TireStatus extends RPCStruct {
         	try {
         		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_REAR, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_REAR, e);
             }
         }
         return null;
@@ -120,7 +120,7 @@ public class TireStatus extends RPCStruct {
         	try {
         		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR, e);
             }
         }
         return null;
@@ -141,7 +141,7 @@ public class TireStatus extends RPCStruct {
         	try {
         		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_LEFT_REAR, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_LEFT_REAR, e);
             }
         }
         return null;
@@ -162,7 +162,7 @@ public class TireStatus extends RPCStruct {
         	try {
         		return new SingleTireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_RIGHT_REAR, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_RIGHT_REAR, e);
             }
         }
         return null;

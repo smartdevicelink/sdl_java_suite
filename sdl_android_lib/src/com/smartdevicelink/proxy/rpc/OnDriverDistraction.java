@@ -2,13 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
 
-
-
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * <p>Notifies the application of the current driver distraction state (whether driver distraction rules are in effect, or 
@@ -70,7 +67,7 @@ public class OnDriverDistraction  extends RPCNotification {
         	try {
         		theCode = DriverDistractionState.valueForString((String) obj);
         	} catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_STATE, e);
             }
         	return theCode;
         }    	
