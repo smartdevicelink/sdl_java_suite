@@ -6,12 +6,36 @@ import com.smartdevicelink.exception.SdlException;
 
 public class SdlLog {
 	
-	// Priority log level values.
-	private final static int VERBOSE = 0;	
+	/** 
+	 * Should be used for non-critical information needed for development only.
+	 */
+	private final static int VERBOSE = 0;
+	
+	/** 
+	 * Should be used for information needed for development only.
+	 */
 	private final static int DEBUG   = 1;
+	
+	/**
+	 * Should be used to log information reports of successful operations.
+	 */
 	private final static int INFO    = 2;
+	
+	/**
+	 * Should be used to log information when an unexpected but tolerable 
+	 * behavior occurs.
+	 */
 	private final static int WARNING = 3;
+	
+	/**
+	 * Should be used to log information when an unexpected breaking behavior 
+	 * occurs.
+	 */
 	private final static int ERROR   = 4;
+	
+	/**
+	 * Should be used to log SDL specific information.
+	 */
 	private final static int TRACE   = 5; // Logs handled seperately.
 	
 	private static int enabledLevel = 0;
