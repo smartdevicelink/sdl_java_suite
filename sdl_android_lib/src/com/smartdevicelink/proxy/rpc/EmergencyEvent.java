@@ -6,7 +6,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.DebugTool;
 
 public class EmergencyEvent extends RPCStruct {
     public static final String KEY_EMERGENCY_EVENT_TYPE = "emergencyEventType";
@@ -32,13 +31,7 @@ public class EmergencyEvent extends RPCStruct {
         if (obj instanceof EmergencyEventType) {
             return (EmergencyEventType) obj;
         } else if (obj instanceof String) {
-        	EmergencyEventType theCode = null;
-            try {
-                theCode = EmergencyEventType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT_TYPE, e);
-            }
-            return theCode;
+        	return EmergencyEventType.valueForString((String) obj);
         }
         return null;
     }
@@ -54,13 +47,7 @@ public class EmergencyEvent extends RPCStruct {
         if (obj instanceof FuelCutoffStatus) {
             return (FuelCutoffStatus) obj;
         } else if (obj instanceof String) {
-        	FuelCutoffStatus theCode = null;
-            try {
-                theCode = FuelCutoffStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_CUTOFF_STATUS, e);
-            }
-            return theCode;
+        	return FuelCutoffStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -76,13 +63,7 @@ public class EmergencyEvent extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ROLLOVER_EVENT, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -108,13 +89,7 @@ public class EmergencyEvent extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MULTIPLE_EVENTS, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }

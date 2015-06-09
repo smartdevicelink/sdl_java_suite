@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.util.DebugTool;
 /**
  * Establishes a subscription to button notifications for HMI buttons. Buttons
  * are not necessarily physical buttons, but can also be "soft" buttons on a
@@ -63,7 +62,7 @@ public class SubscribeButton extends RPCRequest {
 	 * Constructs a new SubscribeButton object
 	 */
     public SubscribeButton() {
-        super(FunctionID.SUBSCRIBE_BUTTON);
+        super(FunctionID.SUBSCRIBE_BUTTON.toString());
     }
 	/**
 	 * Constructs a new SubscribeButton object indicated by the Hashtable
@@ -85,13 +84,7 @@ public class SubscribeButton extends RPCRequest {
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
-            ButtonName theCode = null;
-            try {
-                theCode = ButtonName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
-            }
-            return theCode;
+            return ButtonName.valueForString((String) obj);
         }
         return null;
     }

@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-import com.smartdevicelink.util.DebugTool;
 
 public class BeltStatus extends RPCStruct {
     public static final String KEY_DRIVER_BELT_DEPLOYED = "driverBeltDeployed";
@@ -40,13 +39,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BELT_DEPLOYED, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -62,13 +55,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BELT_DEPLOYED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -84,13 +71,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -106,13 +87,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -128,13 +103,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_2_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -150,13 +119,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PASSENGER_CHILD_DETECTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -172,13 +135,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_2_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -194,13 +151,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_2_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -216,13 +167,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_3_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -238,13 +183,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_ROW_3_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -260,13 +199,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_ROW_3_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -282,13 +215,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_REAR_INFLATABLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -304,13 +231,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR_INFLATABLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -326,13 +247,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BELT_DEPLOYED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -348,13 +263,7 @@ public class BeltStatus extends RPCStruct {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MIDDLE_ROW_1_BUCKLE_BELTED, e);
-            }
-            return theCode;
+            return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }

@@ -54,7 +54,7 @@ public class OnPermissionsChange extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
 	public OnPermissionsChange() {
-		super(FunctionID.ON_PERMISSIONS_CHANGE);
+		super(FunctionID.ON_PERMISSIONS_CHANGE.toString());
 	}
 	/**
      *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>

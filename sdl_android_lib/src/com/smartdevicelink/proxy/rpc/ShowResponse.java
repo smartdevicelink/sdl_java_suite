@@ -16,7 +16,7 @@ public class ShowResponse extends RPCResponse {
 	 * Constructs a new ShowResponse object
 	 */
     public ShowResponse() {
-        super(FunctionID.SHOW);
+        super(FunctionID.SHOW.toString());
     }
 
 	/**

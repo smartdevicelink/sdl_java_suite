@@ -26,7 +26,7 @@ public class ReadDID extends RPCRequest {
 	 * Constructs a new ReadDID object
 	 */
     public ReadDID() {
-        super(FunctionID.READ_DID);
+        super(FunctionID.READ_DID.toString());
     }
 
 	/**

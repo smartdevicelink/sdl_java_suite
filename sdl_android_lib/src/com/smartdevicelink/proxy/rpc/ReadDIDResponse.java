@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.DIDResult;
 
 /**
  * Read DID Response is sent, when ReadDID has been called
@@ -17,7 +16,7 @@ public class ReadDIDResponse extends RPCResponse {
 	public static final String KEY_DID_RESULT = "didResult";
 
     public ReadDIDResponse() {
-        super(FunctionID.READ_DID);
+        super(FunctionID.READ_DID.toString());
     }
     public ReadDIDResponse(Hashtable<String, Object> hash) {
         super(hash);

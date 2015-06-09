@@ -12,7 +12,7 @@ public class DiagnosticMessage extends RPCRequest {
 	public static final String KEY_MESSAGE_DATA = "messageData";
 
     public DiagnosticMessage() {
-        super(FunctionID.DIAGNOSTIC_MESSAGE);
+        super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
 
     public DiagnosticMessage(Hashtable<String, Object> hash) {

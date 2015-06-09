@@ -16,7 +16,7 @@ public class UnregisterAppInterfaceResponse extends RPCResponse {
 	 * Constructs a new UnregisterAppInterfaceResponse object
 	 */
     public UnregisterAppInterfaceResponse() {
-        super(FunctionID.UNREGISTER_APP_INTERFACE);
+        super(FunctionID.UNREGISTER_APP_INTERFACE.toString());
     }
 
 	/**

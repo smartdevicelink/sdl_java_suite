@@ -53,7 +53,7 @@ public class AddCommand extends RPCRequest {
 	 * Constructs a new AddCommand object
 	 */
 	public AddCommand() {
-        super(FunctionID.ADD_COMMAND);
+        super(FunctionID.ADD_COMMAND.toString());
     }
 	
 	/**

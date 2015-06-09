@@ -97,7 +97,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Constructs a new RegisterAppInterface object
 	 */
     public RegisterAppInterface() {
-        super(FunctionID.REGISTER_APP_INTERFACE);
+        super(FunctionID.REGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
@@ -414,13 +414,7 @@ public class RegisterAppInterface extends RPCRequest {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE_DESIRED, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -455,13 +449,7 @@ public class RegisterAppInterface extends RPCRequest {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE_DESIRED, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -525,7 +513,9 @@ public class RegisterAppInterface extends RPCRequest {
 	                    try {
 	                        toAdd = AppHMIType.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);	                    }
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);
+	                    }
+
 	                    if (toAdd != null) {
 	                    	appHMITypeList.add(toAdd);
 	                    }

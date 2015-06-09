@@ -16,7 +16,7 @@ public class UpdateTurnListResponse extends RPCResponse{
      * Constructs a new UpdateTurnListResponse object
      */
     public UpdateTurnListResponse() {
-        super(FunctionID.UPDATE_TURN_LIST);
+        super(FunctionID.UPDATE_TURN_LIST.toString());
     }
     
     public UpdateTurnListResponse(Hashtable<String, Object> hash) {

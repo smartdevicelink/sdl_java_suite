@@ -25,7 +25,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * Constructs a new ScrollableMessage object
 	 */
     public ScrollableMessage() {
-        super(FunctionID.SCROLLABLE_MESSAGE);
+        super(FunctionID.SCROLLABLE_MESSAGE.toString());
     }
 
 	/**

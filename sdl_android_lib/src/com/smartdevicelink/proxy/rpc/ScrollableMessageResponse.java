@@ -16,7 +16,7 @@ public class ScrollableMessageResponse extends RPCResponse {
 	 * Constructs a new ScrollableMessageResponse object
 	 */
     public ScrollableMessageResponse() {
-        super(FunctionID.SCROLLABLE_MESSAGE);
+        super(FunctionID.SCROLLABLE_MESSAGE.toString());
     }
 
 	/**

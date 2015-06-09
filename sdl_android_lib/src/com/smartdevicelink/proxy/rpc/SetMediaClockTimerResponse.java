@@ -16,7 +16,7 @@ public class SetMediaClockTimerResponse extends RPCResponse {
 	 * Constructs a new SetMediaClockTimerResponse object
 	 */
     public SetMediaClockTimerResponse() {
-        super(FunctionID.SET_MEDIA_CLOCK_TIMER);
+        super(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
     }
 
 	/**

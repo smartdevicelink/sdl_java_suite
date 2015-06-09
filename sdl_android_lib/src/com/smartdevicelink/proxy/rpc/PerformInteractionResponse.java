@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * PerformInteraction Response is sent, when PerformInteraction has been called
@@ -21,7 +20,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	 * Constructs a new PerformInteractionResponse object
 	 */
     public PerformInteractionResponse() {
-        super(FunctionID.PERFORM_INTERACTION);
+        super(FunctionID.PERFORM_INTERACTION.toString());
     }
 
 	/**
@@ -62,13 +61,7 @@ public class PerformInteractionResponse extends RPCResponse {
         if (obj instanceof TriggerSource) {
             return (TriggerSource) obj;
         } else if (obj instanceof String) {
-            TriggerSource theCode = null;
-            try {
-                theCode = TriggerSource.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
-            }
-            return theCode;
+            return TriggerSource.valueForString((String) obj);
         }
         return null;
     }

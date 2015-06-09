@@ -38,7 +38,7 @@ public class ShowConstantTbt extends RPCRequest{
      * Constructs a new ShowConstantTbt object
      */
     public ShowConstantTbt(){
-        super(FunctionID.SHOW_CONSTANT_TBT);
+        super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
 
     /**

@@ -27,7 +27,7 @@ public class UpdateTurnList extends RPCRequest{
      * Constructs a new UpdateTurnList object
      */
     public UpdateTurnList() {
-        super(FunctionID.UPDATE_TURN_LIST);
+        super(FunctionID.UPDATE_TURN_LIST.toString());
     }
     
     /**

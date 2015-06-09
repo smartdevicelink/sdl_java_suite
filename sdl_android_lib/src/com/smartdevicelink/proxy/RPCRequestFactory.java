@@ -813,6 +813,18 @@ public class RPCRequestFactory {
 		putFile.setLength(iLength);
 		return putFile;
 	}
+	
+	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(iCorrelationID);
+		putFile.setSdlFileName(sdlFileName);
+		putFile.setFileType(fileType);
+		putFile.setPersistentFile(bPersistentFile);
+		putFile.setSystemFile(bSystemFile);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}	
 		
 	public static RegisterAppInterface buildRegisterAppInterface(String appName, String appID) {
 		return buildRegisterAppInterface(appName, false, appID);

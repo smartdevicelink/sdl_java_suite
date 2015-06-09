@@ -93,7 +93,7 @@ public class WiProProtocol extends AbstractProtocol {
 		if (_version > 1 && sessionType != SessionType.NAV) {
 			if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
-				sessionType = SessionType.Bulk_Data;
+				sessionType = SessionType.BULK_DATA;
 			} else data = new byte[12 + protocolMsg.getJsonSize()];
 			BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
 			binFrameHeader = ProtocolFrameHeaderFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
@@ -172,6 +172,15 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 
 	public void HandleReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+
+		byte[] remainingBytes = processReceivedBytes(receivedBytes, receivedBytesLength);
+		while (remainingBytes != null)
+		{
+			remainingBytes = processReceivedBytes(remainingBytes, remainingBytes.length);
+		}
+	}
+
+	private byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
 		int receivedBytesReadPos = 0;
 		
 		//Check for a version difference
@@ -200,7 +209,7 @@ public class WiProProtocol extends AbstractProtocol {
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
 						_headerBuf, _headerBufWritePos, receivedBytesLength);
 				_headerBufWritePos += receivedBytesLength;
-				return;
+				return null;
 			} else {
 			// If I got the size, allocate the buffer
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
@@ -229,7 +238,7 @@ public class WiProProtocol extends AbstractProtocol {
 					Log.e("HandleReceivedBytes", "headerBytesNeeded: " + headerBytesNeeded);
 					handleProtocolError("Error handling protocol message from sdl, header invalid.", 
 							new SdlException("Error handling protocol message from sdl, header invalid.", SdlExceptionCause.INVALID_HEADER));
-					return;					
+					return null;
 				}
 				_dataBufWritePos = 0;
 			}
@@ -254,7 +263,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 			handleProtocolError("Error handling protocol message from sdl, header invalid.",
 					new SdlException("Error handling protocol message from sdl, data buffer is null.", SdlExceptionCause.DATA_BUFFER_NULL));
-			return;
+			return null;
 		}
 
 		int bytesLeft = receivedBytesLength - receivedBytesReadPos;
@@ -264,7 +273,7 @@ public class WiProProtocol extends AbstractProtocol {
 			System.arraycopy(receivedBytes, receivedBytesReadPos, _dataBuf,
 					_dataBufWritePos, bytesLeft);
 			_dataBufWritePos += bytesLeft;
-			return;
+			return null;
 		} else {
 		// Fill the buffer and call the handler!
 			System.arraycopy(receivedBytes, receivedBytesReadPos, _dataBuf, _dataBufWritePos, bytesNeeded);
@@ -287,9 +296,10 @@ public class WiProProtocol extends AbstractProtocol {
 				byte[] moreBytes = new byte[moreBytesLeft];
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
 						moreBytes, 0, moreBytesLeft);
-				HandleReceivedBytes(moreBytes, moreBytesLeft);
+				return moreBytes;
 			}
 		}
+		return null;
 	}
 	
 	protected MessageFrameAssembler getFrameAssemblerForFrame(ProtocolFrameHeader header) {
@@ -444,7 +454,7 @@ public class WiProProtocol extends AbstractProtocol {
 			ProtocolMessage message = new ProtocolMessage();
 			if (header.getSessionType() == SessionType.RPC) {
 				message.setMessageType(MessageType.RPC);
-			} else if (header.getSessionType() == SessionType.Bulk_Data) {
+			} else if (header.getSessionType() == SessionType.BULK_DATA) {
 				message.setMessageType(MessageType.BULK);
 			} // end-if
 			message.setSessionType(header.getSessionType());
@@ -493,7 +503,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void SendHeartBeat(byte sessionID) {
-        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.Heartbeat, sessionID, _version);        
+        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.CONTROL, sessionID, _version);        
         sendFrameToTransport(heartbeat);		
 	}
 } // end-class

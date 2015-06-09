@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class DeleteInteractionChoiceSetResponse extends RPCResponse {
 
     public DeleteInteractionChoiceSetResponse() {
-        super(FunctionID.DELETE_INTERACTION_CHOICE_SET);
+        super(FunctionID.DELETE_INTERACTION_CHOICE_SET.toString());
     }
     public DeleteInteractionChoiceSetResponse(Hashtable<String, Object> hash) {
         super(hash);

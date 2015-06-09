@@ -6,7 +6,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Notifies application that user has depressed or released a button to which
@@ -91,7 +90,7 @@ public class OnButtonEvent extends RPCNotification {
 	*Constructs a newly allocated OnButtonEvent object
 	*/
     public OnButtonEvent() {
-        super(FunctionID.ON_BUTTON_EVENT);
+        super(FunctionID.ON_BUTTON_EVENT.toString());
     }
     /**
 	 * <p>
@@ -114,13 +113,7 @@ public class OnButtonEvent extends RPCNotification {
         if (obj instanceof ButtonName) {
             return (ButtonName) obj;
         } else if (obj instanceof String) {
-            ButtonName theCode = null;
-            try {
-                theCode = ButtonName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_NAME, e);
-            }
-            return theCode;
+            return ButtonName.valueForString((String) obj);
         }
         return null;
     }
@@ -144,13 +137,7 @@ public class OnButtonEvent extends RPCNotification {
         if (obj instanceof ButtonEventMode) {
             return (ButtonEventMode) obj;
         } else if (obj instanceof String) {
-            ButtonEventMode theCode = null;
-            try {
-                theCode = ButtonEventMode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BUTTON_EVENT_MODE, e);
-            }
-            return theCode;
+            return ButtonEventMode.valueForString((String) obj);
         }
         return null;
     }

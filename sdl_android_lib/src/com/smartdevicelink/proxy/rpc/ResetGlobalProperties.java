@@ -30,7 +30,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES);
+        super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable

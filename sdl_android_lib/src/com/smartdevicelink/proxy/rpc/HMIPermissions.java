@@ -99,6 +99,7 @@ public class HMIPermissions extends RPCStruct {
 	                    } catch (Exception e) {
 	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALLOWED, e);
 	                    }
+
 	                    if (toAdd != null) {
 	                    	hmiLevelList.add(toAdd);
 	                    }
@@ -156,12 +157,7 @@ public class HMIPermissions extends RPCStruct {
 	                List<HMILevel> newList = new ArrayList<HMILevel>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = null;
-	                    try {
-	                        toAdd = HMILevel.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_USER_DISALLOWED, e);
-	                    }
+	                    HMILevel toAdd = HMILevel.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }

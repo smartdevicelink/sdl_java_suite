@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
@@ -239,13 +238,7 @@ public class DeviceStatus extends RPCStruct {
         if (obj instanceof DeviceLevelStatus) {
             return (DeviceLevelStatus) obj;
         } else if (obj instanceof String) {
-        	DeviceLevelStatus theCode = null;
-            try {
-                theCode = DeviceLevelStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BATT_LEVEL_STATUS, e);
-            }
-            return theCode;
+        	return DeviceLevelStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -311,13 +304,7 @@ public class DeviceStatus extends RPCStruct {
         if (obj instanceof DeviceLevelStatus) {
             return (DeviceLevelStatus) obj;
         } else if (obj instanceof String) {
-        	DeviceLevelStatus theCode = null;
-            try {
-                theCode = DeviceLevelStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SIGNAL_LEVEL_STATUS, e);
-            }
-            return theCode;
+        	return DeviceLevelStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -343,13 +330,7 @@ public class DeviceStatus extends RPCStruct {
         if (obj instanceof PrimaryAudioSource) {
             return (PrimaryAudioSource) obj;
         } else if (obj instanceof String) {
-        	PrimaryAudioSource theCode = null;
-            try {
-                theCode = PrimaryAudioSource.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRIMARY_AUDIO_SOURCE, e);
-            }
-            return theCode;
+        	return PrimaryAudioSource.valueForString((String) obj);
         }
         return null;
     }

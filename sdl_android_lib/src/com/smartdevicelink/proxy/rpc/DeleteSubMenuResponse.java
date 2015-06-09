@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class DeleteSubMenuResponse extends RPCResponse {
 
     public DeleteSubMenuResponse() {
-        super(FunctionID.DELETE_SUB_MENU);
+        super(FunctionID.DELETE_SUB_MENU.toString());
     }
     public DeleteSubMenuResponse(Hashtable<String, Object> hash) {
         super(hash);
