@@ -504,6 +504,7 @@ public class RPCRequestFactory {
 		return putFile;
 	}
 	
+	@Deprecated
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(10000);
@@ -513,8 +514,20 @@ public class RPCRequestFactory {
 		putFile.setOffset(iOffset);
 		putFile.setLength(iLength);
 		return putFile;
-	}	
+	}
+	
+	public static PutFile buildPutFile(String sdlFileName, Long iOffset, Long iLength) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(10000);
+		putFile.setSdlFileName(sdlFileName);		
+		putFile.setFileType(FileType.BINARY);
+		putFile.setSystemFile(true);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}
 
+	@Deprecated
 	public static PutFile buildPutFile(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(10000);
@@ -527,6 +540,19 @@ public class RPCRequestFactory {
 		return putFile;
 	}
 	
+	public static PutFile buildPutFile(String syncFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(10000);
+		putFile.setSdlFileName(syncFileName);
+		putFile.setFileType(fileType);
+		putFile.setPersistentFile(bPersistentFile);
+		putFile.setSystemFile(bSystemFile);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}
+	
+	@Deprecated
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(iCorrelationID);
@@ -538,6 +564,18 @@ public class RPCRequestFactory {
 		putFile.setLength(iLength);
 		return putFile;
 	}	
+	
+	public static PutFile buildPutFile(String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(iCorrelationID);
+		putFile.setSdlFileName(sdlFileName);
+		putFile.setFileType(fileType);
+		putFile.setPersistentFile(bPersistentFile);
+		putFile.setSystemFile(bSystemFile);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}
 		
 	public static RegisterAppInterface buildRegisterAppInterface(String appName, String appID) {
 		return buildRegisterAppInterface(appName, false, appID);
