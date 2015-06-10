@@ -62,7 +62,7 @@ public class TouchEventTest extends TestCase {
 		
 		try {			
 			reference.put(TouchEvent.KEY_ID, Test.GENERAL_INT);
-			reference.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));
+			reference.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(Test.GENERAL_LONG_LIST));
 			reference.put(TouchEvent.KEY_C, Test.JSON_TOUCHCOORDS);
 
 			JSONObject underTest = msg.serializeJSON();

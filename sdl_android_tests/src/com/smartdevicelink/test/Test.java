@@ -580,7 +580,7 @@ public class Test {
 			
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_C, JSON_TOUCHCOORDS);
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_ID, GENERAL_INT);
-			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_INTEGER_LIST));
+			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_LONG_LIST));
 			JSON_TOUCHEVENTS.put(JSON_TOUCHEVENT);
 			
 		} catch (JSONException e) {

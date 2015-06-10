@@ -49,9 +49,9 @@ public class OnSystemRequestTests extends BaseRpcTests{
 
         try{
             result.put(OnSystemRequest.KEY_FILE_TYPE, Test.GENERAL_FILETYPE);
-            result.put(OnSystemRequest.KEY_LENGTH, Test.GENERAL_INT);
+            result.put(OnSystemRequest.KEY_LENGTH, Test.GENERAL_LONG);
             result.put(OnSystemRequest.KEY_TIMEOUT, Test.GENERAL_INT);
-            result.put(OnSystemRequest.KEY_OFFSET, Test.GENERAL_INT);
+            result.put(OnSystemRequest.KEY_OFFSET, Test.GENERAL_LONG);
             result.put(OnSystemRequest.KEY_URL, Test.GENERAL_STRING);
             result.put(OnSystemRequest.KEY_REQUEST_TYPE, Test.GENERAL_REQUESTTYPE);
         } catch(JSONException e) {

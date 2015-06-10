@@ -127,11 +127,14 @@ public class DisplayCapabilitiesTests extends TestCase{
                     	assertTrue(Test.TRUE, Validator.validateImageFields(new ImageField(hashReference), new ImageField(hashTest)));
                     }
                 } else if(key.equals(DisplayCapabilities.KEY_TEXT_FIELDS)){
+                	JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
-                    List<TextField> referenceList = Test.GENERAL_TEXTFIELD_LIST;
+                    assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
                     
-                    for (int i = 0; i < referenceList.size(); i++) {
-                    	assertTrue(Test.TRUE, Validator.validateTextFields(referenceList.get(i), (TextField) underTestArray.get(i)));
+                    for(int i = 0; i < referenceArray.length(); i++){
+                    	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
+                    	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
+                    	assertTrue(Test.TRUE, Validator.validateTextFields(new TextField(hashReference), new TextField(hashTest)));
                     }
                 } else if(key.equals(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);

@@ -115,7 +115,7 @@ public class PutFileTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
 			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH), cmd.getLength());		
+			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());		
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	

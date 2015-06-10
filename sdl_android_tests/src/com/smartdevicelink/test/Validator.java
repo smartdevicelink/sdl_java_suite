@@ -1270,10 +1270,10 @@ public class Validator{
     	}
     	
     	for (int i = 0; i < item1.size(); i++) {
-    		if (item1.get(i).getNavigationText().equals(item2.get(i).getNavigationText())) {
+    		if (!item1.get(i).getNavigationText().equals(item2.get(i).getNavigationText())) {
     			return false;
     		}
-    		if (validateImage(item1.get(i).getTurnIcon(), item2.get(i).getTurnIcon())) {
+    		if (!validateImage(item1.get(i).getTurnIcon(), item2.get(i).getTurnIcon())) {
     			return false;
     		}
     	}
