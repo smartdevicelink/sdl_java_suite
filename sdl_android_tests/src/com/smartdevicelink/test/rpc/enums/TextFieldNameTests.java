@@ -7,6 +7,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.test.Test;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -66,6 +67,14 @@ public class TextFieldNameTests extends TestCase {
 		TextFieldName enumTertiaryText = TextFieldName.valueForString(example);
 		example = "menuTitle";
 		TextFieldName enumMenuTitle = TextFieldName.valueForString(example);
+		example = "locationName";
+		TextFieldName enumLocName = TextFieldName.valueForString(example);
+		example = "locationDescription";
+		TextFieldName enumLocDesc = TextFieldName.valueForString(example);
+		example = "addressLines";
+		TextFieldName enumAddLines = TextFieldName.valueForString(example);
+		example = "phoneNumber";
+		TextFieldName enumPhone = TextFieldName.valueForString(example);
 		
 		assertNotNull("mainField1 returned null", enumMainField1);
 		assertNotNull("mainField2 returned null", enumMainField2);
@@ -91,6 +100,11 @@ public class TextFieldNameTests extends TestCase {
 		assertNotNull("secondaryText returned null", enumSecondaryText);
 		assertNotNull("tertiaryText returned null", enumTertiaryText);
 		assertNotNull("menuTitle returned null", enumMenuTitle);
+		
+		assertNotNull(Test.NOT_NULL, enumLocName);
+		assertNotNull(Test.NOT_NULL, enumLocDesc);
+		assertNotNull(Test.NOT_NULL, enumAddLines);
+		assertNotNull(Test.NOT_NULL, enumPhone);
 	}
 
 	/**
@@ -152,6 +166,11 @@ public class TextFieldNameTests extends TestCase {
 		enumTestList.add(TextFieldName.secondaryText);		
 		enumTestList.add(TextFieldName.tertiaryText);
 		enumTestList.add(TextFieldName.menuTitle);	
+		
+		enumTestList.add(TextFieldName.locationName);	
+		enumTestList.add(TextFieldName.locationDescription);	
+		enumTestList.add(TextFieldName.addressLines);	
+		enumTestList.add(TextFieldName.phoneNumber);	
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

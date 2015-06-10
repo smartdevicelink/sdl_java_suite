@@ -123,8 +123,8 @@ public class SendLocationTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
     		
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LAT_DEGREES).floatValue(), cmd.getLatitudeDegrees());
-			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LON_DEGREES).floatValue(), cmd.getLongitudeDegrees());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LAT_DEGREES), cmd.getLatitudeDegrees());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, SendLocation.KEY_LON_DEGREES), cmd.getLongitudeDegrees());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_NAME), cmd.getLocationName());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_LOCATION_DESCRIPTION), cmd.getLocationDescription());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendLocation.KEY_PHONE_NUMBER), cmd.getPhoneNumber());

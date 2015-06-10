@@ -151,6 +151,24 @@ public final class JsonUtils {
 		
 		return null;
 	}
+	
+	public static List<Long> readLongListFromJsonObject(JSONObject json, String key){
+		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
+		
+		if(jsonArray != null){
+			int len = jsonArray.length();
+			List<Long> result = new ArrayList<Long>(len);
+			for(int i=0; i<len; i++){
+				try {
+					Long str = jsonArray.getLong(i);
+					result.add(str);
+				} catch (JSONException e) {}
+			}
+			return result;
+		}
+		
+		return null;
+	}
 
 	public static List<JSONObject> readJsonObjectListFromJsonObject(JSONObject json, String key){
 		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);

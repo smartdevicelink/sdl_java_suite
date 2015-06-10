@@ -26,11 +26,14 @@ public class KeyboardEventTests extends TestCase {
 		KeyboardEvent enumEntryCancelled = KeyboardEvent.valueForString(example);
 		example = "ENTRY_ABORTED";
 		KeyboardEvent enumEntryAborted = KeyboardEvent.valueForString(example);
+		example = "ENTRY_VOICE";
+		KeyboardEvent enumEntryVoice = KeyboardEvent.valueForString(example);
 		
 		assertNotNull("KEYPRESS returned null", enumKeypress);
 		assertNotNull("ENTRY_SUBMITTED returned null", enumEntrySubmitted);
 		assertNotNull("ENTRY_CANCELLED returned null", enumEntryCancelled);
 		assertNotNull("ENTRY_ABORTED returned null", enumEntryAborted);
+		assertNotNull("ENTRY_VOICE returned null", enumEntryVoice);
 	}
 
 	/**
@@ -72,6 +75,7 @@ public class KeyboardEventTests extends TestCase {
 		enumTestList.add(KeyboardEvent.ENTRY_SUBMITTED);
 		enumTestList.add(KeyboardEvent.ENTRY_CANCELLED);
 		enumTestList.add(KeyboardEvent.ENTRY_ABORTED);
+		enumTestList.add(KeyboardEvent.ENTRY_VOICE);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

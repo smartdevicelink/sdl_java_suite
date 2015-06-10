@@ -75,8 +75,8 @@ public class TouchEventTest extends TestCase {
 				if (key.equals(TouchEvent.KEY_C)) {
 	                assertTrue(Test.TRUE, JsonUtils.readIntegerFromJsonObject(reference, key) == JsonUtils.readIntegerFromJsonObject(underTest, key));
 	            } else if (key.equals(TouchEvent.KEY_TS)) {				
-					List<Integer> tsListReference = JsonUtils.readIntegerListFromJsonObject(reference, key);
-					List<Integer> tsListTest = JsonUtils.readIntegerListFromJsonObject(underTest, key);
+					List<Long> tsListReference = JsonUtils.readLongListFromJsonObject(reference, key);
+					List<Long> tsListTest = JsonUtils.readLongListFromJsonObject(underTest, key);
 					assertTrue(Test.TRUE, tsListReference.containsAll(tsListTest) && tsListTest.containsAll(tsListReference));
 				} else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

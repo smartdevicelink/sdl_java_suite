@@ -20,6 +20,8 @@ public class VehicleDataResultCodeTests extends TestCase {
 	public void testValidEnums () {	
 		String example = "SUCCESS";
 		VehicleDataResultCode enumSuccess = VehicleDataResultCode.valueForString(example);
+		example = "TRUNCATED_DATA";
+		VehicleDataResultCode enumTruncData = VehicleDataResultCode.valueForString(example);
 		example = "DISALLOWED";
 		VehicleDataResultCode enumDisallowed = VehicleDataResultCode.valueForString(example);
 		example = "USER_DISALLOWED";
@@ -36,6 +38,7 @@ public class VehicleDataResultCodeTests extends TestCase {
 		VehicleDataResultCode enumIgnored = VehicleDataResultCode.valueForString(example);
 		
 		assertNotNull("SUCCESS returned null", enumSuccess);
+		assertNotNull("TRUNCATED_DATA returned null", enumTruncData);
 		assertNotNull("DISALLOWED returned null", enumDisallowed);
 		assertNotNull("USER_DISALLOWED returned null", enumUserDisallowed);
 		assertNotNull("INVALID_ID returned null", enumInvalidId);
@@ -81,6 +84,7 @@ public class VehicleDataResultCodeTests extends TestCase {
 
 		List<VehicleDataResultCode> enumTestList = new ArrayList<VehicleDataResultCode>();
 		enumTestList.add(VehicleDataResultCode.SUCCESS);
+		enumTestList.add(VehicleDataResultCode.TRUNCATED_DATA);
 		enumTestList.add(VehicleDataResultCode.DISALLOWED);
 		enumTestList.add(VehicleDataResultCode.USER_DISALLOWED);
 		enumTestList.add(VehicleDataResultCode.INVALID_ID);

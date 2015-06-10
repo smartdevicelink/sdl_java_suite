@@ -40,7 +40,9 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 		AppInterfaceUnregisteredReason enumFactoryDefaults = AppInterfaceUnregisteredReason.valueForString(example);
 		example = "APP_UNAUTHORIZED";
 		AppInterfaceUnregisteredReason enumAppAuthorized = AppInterfaceUnregisteredReason.valueForString(example);
-		
+		example = "PROTOCOL_VIOLATION";
+		AppInterfaceUnregisteredReason enumProtocolViolation = AppInterfaceUnregisteredReason.valueForString(example);
+				
 		assertNotNull("USER_EXIT returned null", enumUserExit);
 		assertNotNull("IGNITION_OFF returned null", enumIgnitionOff);
 		assertNotNull("BLUETOOTH_OFF returned null", enumBluetoothOff);
@@ -52,6 +54,7 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 		assertNotNull("MASTER_RESET returned null", enumMasterReset);
 		assertNotNull("FACTORY_DEFAULTS returned null", enumFactoryDefaults);
 		assertNotNull("APP_UNAUTHORIZED returned null", enumAppAuthorized);
+		assertNotNull("PROTOCOL_VIOLATION returned null", enumProtocolViolation);
 	}
 	
 	/**
@@ -99,7 +102,8 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 		enumTestList.add(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE);	
 		enumTestList.add(AppInterfaceUnregisteredReason.MASTER_RESET);
 		enumTestList.add(AppInterfaceUnregisteredReason.FACTORY_DEFAULTS);	
-		enumTestList.add(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED);	
+		enumTestList.add(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED);
+		enumTestList.add(AppInterfaceUnregisteredReason.PROTOCOL_VIOLATION);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

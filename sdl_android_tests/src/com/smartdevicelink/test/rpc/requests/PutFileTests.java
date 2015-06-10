@@ -52,8 +52,8 @@ public class PutFileTests extends BaseRpcTests {
 			result.put(PutFile.KEY_FILE_TYPE, Test.GENERAL_FILETYPE);
 			result.put(PutFile.KEY_PERSISTENT_FILE, Test.GENERAL_BOOLEAN);
 			result.put(PutFile.KEY_SYSTEM_FILE, Test.GENERAL_BOOLEAN);
-			result.put(PutFile.KEY_OFFSET, Test.GENERAL_INT);
-			result.put(PutFile.KEY_LENGTH, Test.GENERAL_INT);			
+			result.put(PutFile.KEY_OFFSET, Test.GENERAL_LONG);
+			result.put(PutFile.KEY_LENGTH, Test.GENERAL_LONG);			
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -114,7 +114,7 @@ public class PutFileTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_SYSTEM_FILE), cmd.getSystemFile());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET), cmd.getOffset());
+			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH), cmd.getLength());		
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
