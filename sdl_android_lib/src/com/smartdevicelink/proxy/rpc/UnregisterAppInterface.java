@@ -26,7 +26,7 @@ public class UnregisterAppInterface extends RPCRequest {
 	 * Constructs a new UnregisterAppInterface object
 	 */
     public UnregisterAppInterface() {
-        super(FunctionID.UNREGISTER_APP_INTERFACE);
+        super(FunctionID.UNREGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new UnregisterAppInterface object indicated by the Hashtable

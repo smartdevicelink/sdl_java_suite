@@ -27,7 +27,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * Constructs a new DeleteInteractionChoiceSet object
 	 */
     public DeleteInteractionChoiceSet() {
-        super(FunctionID.DELETE_INTERACTION_CHOICE_SET);
+        super(FunctionID.DELETE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
 	 * Constructs a new DeleteInteractionChoiceSet object indicated by the

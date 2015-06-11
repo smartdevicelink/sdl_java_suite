@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class GenericResponse extends RPCResponse {
 
     public GenericResponse() {
-        super(FunctionID.GENERIC_RESPONSE);
+        super(FunctionID.GENERIC_RESPONSE.toString());
     }
     public GenericResponse(Hashtable<String, Object> hash) {
         super(hash);

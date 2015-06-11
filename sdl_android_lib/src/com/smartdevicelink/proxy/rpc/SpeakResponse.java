@@ -16,7 +16,7 @@ public class SpeakResponse extends RPCResponse {
 	 * Constructs a new SpeakResponse object
 	 */
     public SpeakResponse() {
-        super(FunctionID.SPEAK);
+        super(FunctionID.SPEAK.toString());
     }
 
 	/**

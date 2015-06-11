@@ -5,15 +5,13 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
-import com.smartdevicelink.util.SdlLog;
-
 
 public class OnKeyboardInput extends RPCNotification {
 	public static final String KEY_DATA = "data";
 	public static final String KEY_EVENT = "event";
 
     public OnKeyboardInput() {
-        super(FunctionID.ON_KEYBOARD_INPUT);
+        super(FunctionID.ON_KEYBOARD_INPUT.toString());
     }
 
     public OnKeyboardInput(Hashtable<String, Object> hash) {
@@ -25,13 +23,7 @@ public class OnKeyboardInput extends RPCNotification {
         if (obj instanceof KeyboardEvent) {
             return (KeyboardEvent) obj;
         } else if (obj instanceof String) {
-            KeyboardEvent theCode = null;
-            try {
-                theCode = KeyboardEvent.valueForString((String) obj);
-            } catch (Exception e) {
-                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_EVENT, e);
-            }
-            return theCode;
+            return KeyboardEvent.valueForString((String) obj);
         }
         return null;
     }

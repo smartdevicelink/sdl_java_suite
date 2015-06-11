@@ -26,7 +26,7 @@ public class DeleteCommand extends RPCRequest {
 	 * Constructs a new DeleteCommand object
 	 */
 	public DeleteCommand() {
-        super(FunctionID.DELETE_COMMAND);
+        super(FunctionID.DELETE_COMMAND.toString());
     }
 	/**
 	 * Constructs a new DeleteCommand object indicated by the Hashtable

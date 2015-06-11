@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class AddCommandResponse extends RPCResponse {
 
     public AddCommandResponse() {
-        super(FunctionID.ADD_COMMAND);
+        super(FunctionID.ADD_COMMAND.toString());
     }
 
     public AddCommandResponse(Hashtable<String, Object> hash) {

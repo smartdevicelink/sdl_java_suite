@@ -18,7 +18,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 * Constructs a new SetDisplayLayout object
 	 */
     public SetDisplayLayout() {
-        super(FunctionID.SET_DISPLAY_LAYOUT);
+        super(FunctionID.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**

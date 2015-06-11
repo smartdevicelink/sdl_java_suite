@@ -16,7 +16,7 @@ public class EndAudioPassThruResponse extends RPCResponse {
 	 * Constructs a new EndAudioPassThruResponse object
 	 */
     public EndAudioPassThruResponse() {
-        super(FunctionID.END_AUDIO_PASS_THRU);
+        super(FunctionID.END_AUDIO_PASS_THRU.toString());
     }
     public EndAudioPassThruResponse(Hashtable<String, Object> hash) {
         super(hash);

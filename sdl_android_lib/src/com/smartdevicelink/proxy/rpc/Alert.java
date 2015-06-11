@@ -52,7 +52,7 @@ public class Alert extends RPCRequest {
 	 * Constructs a new Alert object
 	 */    
 	public Alert() {
-        super(FunctionID.ALERT);
+        super(FunctionID.ALERT.toString());
     }
 	/**
 	 * Constructs a new Alert object indicated by the Hashtable parameter

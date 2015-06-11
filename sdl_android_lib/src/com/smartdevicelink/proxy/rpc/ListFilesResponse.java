@@ -19,7 +19,7 @@ public class ListFilesResponse extends RPCResponse {
 	 * Constructs a new ListFilesResponse object
 	 */
     public ListFilesResponse() {
-        super(FunctionID.LIST_FILES);
+        super(FunctionID.LIST_FILES.toString());
     }
     public ListFilesResponse(Hashtable<String, Object> hash) {
         super(hash);

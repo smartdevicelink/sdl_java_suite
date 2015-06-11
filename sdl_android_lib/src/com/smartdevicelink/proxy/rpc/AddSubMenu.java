@@ -29,7 +29,7 @@ public class AddSubMenu extends RPCRequest {
 	 * Constructs a new AddSubMenu object
 	 */
 	public AddSubMenu() {
-        super(FunctionID.ADD_SUB_MENU);
+        super(FunctionID.ADD_SUB_MENU.toString());
     }
 	/**
 	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
