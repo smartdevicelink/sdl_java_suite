@@ -1,15 +1,17 @@
 package com.smartdevicelink.trace;
 
 import java.sql.Timestamp;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Process;
+import android.text.format.DateFormat;
+
 import com.smartdevicelink.protocol.ProtocolFrameHeader;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
-import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -37,7 +39,7 @@ public class SdlTrace {
 		
 	public static final String SYSTEM_LOG_TAG = "SdlTrace";
 	
-	private static long baseTics  = java.lang.System.currentTimeMillis();
+	static final long BASE_TICS  = java.lang.System.currentTimeMillis();
 	private final static String KeyStr = SDL_LIB_TRACE_KEY;
 	private static boolean acceptAPITraceAdjustments = true;
 
@@ -110,28 +112,13 @@ public class SdlTrace {
 		sb.append("</mod>");
 		if (msgDirection != InterfaceActivityDirection.None) {
 			sb.append("<dir>");
-			sb.append(interfaceActivityDirectionToString(msgDirection));
+			sb.append(msgDirection.toString());
 			sb.append("</dir>");
 		} // end-if
 		sb.append(msgBodyXml);
 		sb.append("</msg>");
 
 		return sb.toString();
-	} // end-method
-
-	private static String interfaceActivityDirectionToString(InterfaceActivityDirection iaDirection) {
-		String str = "";
-		switch (iaDirection) {
-			case Receive:
-				str = "rx";
-				break;
-			case Transmit:
-				str = "tx";
-				break;
-        default:
-            break;
-		} // end-switch
-		return str;
 	} // end-method
 
 	static String B64EncodeForXML(String data) {
@@ -251,30 +238,6 @@ public class SdlTrace {
 		return writeXmlTraceMessage(xml);
 	}
 
-	private static String getProtocolFrameType(FrameType f) {
-		if (f == FrameType.Control)
-			return "Control";
-		else if (f == FrameType.Consecutive)
-			return "Consecutive";
-		else if (f == FrameType.First)
-			return "First";
-		else if (f == FrameType.Single)
-			return "Single";
-
-		return "Unknown";
-	} // end-method
-
-	private static String getProtocolSessionType(SessionType serviceType) {
-		String s;
-		if (serviceType == SessionType.RPC )
-			s = "rpc";
-		else if (serviceType == SessionType.BULK_DATA)
-			s = "bulk";
-		else
-			s = "Unknown";
-		return s;
-	} // end-method
-
 	private static String getProtocolFrameHeaderInfo(ProtocolFrameHeader hdr, byte[] buf) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<hdr>");
@@ -283,9 +246,9 @@ public class SdlTrace {
 		sb.append("</ver><cmp>");
 		sb.append(hdr.isCompressed());
 		sb.append("</cmp><ft>");
-		sb.append(getProtocolFrameType(hdr.getFrameType()));
+		sb.append(hdr.getFrameType().toString());
 		sb.append("</ft><st>");
-		sb.append(getProtocolSessionType(hdr.getSessionType()));
+		sb.append(hdr.getSessionType().toString());
 		sb.append("</st><sid>");
 		sb.append(hdr.getSessionID());
 		sb.append("</sid><sz>");
@@ -382,14 +345,9 @@ public class SdlTrace {
 
 	// Package-scoped
 	static long getBaseTicsDelta() {
-		return java.lang.System.currentTimeMillis() - getBaseTics();
+		return java.lang.System.currentTimeMillis() - BASE_TICS;
 	}
-
-	// Package-scoped
-	static long getBaseTics() {
-		return baseTics;
-	} // end-method
-
+	
 	public static Boolean writeMessageToSiphonServer(String info) {
 		return SiphonServer.sendFormattedTraceMessage(info);
 	}
@@ -420,57 +378,101 @@ public class SdlTrace {
 		return true;
 	}
 	
-	// Package-scoped
-	@SuppressWarnings("deprecation")
-    public static String getLogHeader(String dumpReason, int seqNo) {
-		final String Sep = "-";
-		StringBuilder write = new StringBuilder("<?xml version=\"1.0\"?>" + "<logs>");
-		write.append("<info>");
-		StringBuilder infoBlock = new StringBuilder();
-		String hostInfo = Build.BRAND + Sep + Build.MANUFACTURER + Sep + Build.MODEL + "(" + Build.HOST + ")";
-		infoBlock.append("<host>" + SdlTrace.B64EncodeForXML(hostInfo) + "</host>");
-		String osv = Build.VERSION.RELEASE + " (" + Build.VERSION.CODENAME + ")";
-		infoBlock.append("<osv>" + SdlTrace.B64EncodeForXML(osv) + "</osv>");
-		infoBlock.append(TraceDeviceInfo.getTelephonyHeader());
+	public static String getLogHeader(String dumpReason, int seqNo) {
+    	
+    	// Indicates which version of XML to parse the message with.
+    	StringBuilder result = new StringBuilder("<?xml version=\"1.0\"?>");
+    	
+    	// The block that contains all of the XML information.
+    	result.append("<info>");
+    	
+    	// Hardware and carrier information.
+    	result.append("<host>");    	
+    	StringBuilder hostInfo = new StringBuilder(Build.BRAND);
+    	hostInfo.append("-");
+    	hostInfo.append(Build.MANUFACTURER);
+    	hostInfo.append("-");
+    	hostInfo.append(Build.MODEL);
+    	hostInfo.append("(");
+    	hostInfo.append(Build.HOST);
+    	hostInfo.append(")");
+    	result.append(SdlTrace.B64EncodeForXML(hostInfo.toString()));
+    	result.append("</host>");
+    	
+    	// Release information.
+    	result.append("<osv>");    	
+    	StringBuilder osvInfo = new StringBuilder(Build.VERSION.RELEASE);
+    	osvInfo.append("(");
+    	osvInfo.append(Build.VERSION.CODENAME);
+    	osvInfo.append(")");
+    	result.append(SdlTrace.B64EncodeForXML(osvInfo.toString()));
+    	result.append("</osv>");
+    	
+    	// Network information.
+    	result.append(TraceDeviceInfo.getTelephonyHeader());
+    	    	
+    	// Memory information.
+    	result.append("<mem>");
+    	result.append("<hf>");
+    	result.append((Debug.getNativeHeapFreeSize() / 1024));
+    	result.append("KB");
+    	result.append("</hf>");
+    	result.append("<ha>");
+    	result.append((Debug.getNativeHeapAllocatedSize() / 1024));
+    	result.append("KB");
+    	result.append("</ha>");
+    	result.append("</mem>");
 
-		long heapSize = Debug.getNativeHeapFreeSize() / 1024;
-		long heapAllocated = Debug.getNativeHeapAllocatedSize() / 1024;
-		infoBlock.append("<mem><hf>" + heapSize + "KB</hf><ha>" + heapAllocated + "KB</ha></mem>");
-		infoBlock.append("<np>" + Runtime.getRuntime().availableProcessors() + "</np>");
-		infoBlock.append("<pid>" + Process.myPid() + "</pid>");
-		infoBlock.append("<tid>" + Thread.currentThread().getId() + "</tid>");
-
-		// String dateStamp = (String)
-		// DateFormat.format("yy-MM-dd hh:mm:ss SSS", new Timestamp(baseTics));
-		Timestamp stamp = new Timestamp(SdlTrace.getBaseTics());
-		String GMTtime = stamp.toGMTString().substring(0, 19);
-		long fracSec = stamp.getNanos() / 1000000; // divide by a million
-		String fracSecStr = String.format("%03d", fracSec);
-		infoBlock.append("<utc>" + GMTtime + "." + fracSecStr + "</utc>");
-
-		infoBlock.append(TraceDeviceInfo.getLogHeaderBluetoothPairs());
-		infoBlock.append(getSmartDeviceLinkTraceRoot(dumpReason, seqNo));
-
-		write.append(infoBlock);
-
-		write.append("</info>" + "<msgs>");
-		return write.toString();
-	} // end-method
-	
-	private static String getSmartDeviceLinkTraceRoot(String dumpReason, int seqNo) {
-		StringBuilder write = new StringBuilder("<SmartDeviceLinktraceroot>" + "<sequencenum>" + seqNo
-				+ "</sequencenum>" + "<dumpreason>" + dumpReason
-				+ "</dumpreason><tracelevel>");
-
-		write.append("<tran>" + DiagLevel.getLevel(Mod.tran) + "</tran>");
-		write.append("<proto>" + DiagLevel.getLevel(Mod.proto) + "</proto>");
-		write.append("<mar>" + DiagLevel.getLevel(Mod.mar) + "</mar>");
-		write.append("<rpc>" + DiagLevel.getLevel(Mod.rpc) + "</rpc>");
-		write.append("<proxy>" + DiagLevel.getLevel(Mod.proxy) + "</proxy>");
-		write.append("<app>" + DiagLevel.getLevel(Mod.app) + "</app>");
-
-		write.append("</tracelevel>");
-		write.append("</SmartDeviceLinktraceroot>");
-		return write.toString();
-	} // end-method
-} // end-class
+    	// Process and thread information.
+    	result.append("<np>");
+    	result.append(Runtime.getRuntime().availableProcessors());
+    	result.append("</np>");
+    	result.append("<pid>");
+    	result.append(Process.myPid());
+    	result.append("</pid>");
+    	result.append("<tid>");
+    	result.append(Thread.currentThread().getId());
+    	result.append("</tid>");
+    	
+    	// Time of message construction.
+    	result.append("<utc>");
+    	result.append(DateFormat.format("yy-MM-dd hh:mm:ss SSS", new Timestamp(java.lang.System.currentTimeMillis())));
+    	result.append("</utc>");
+    	
+    	// Bluetooth information.
+    	result.append(TraceDeviceInfo.getLogHeaderBluetoothPairs());
+    	
+    	// SDL specific information.
+    	result.append("<SmartDeviceLinktraceroot>");    	
+    	result.append("<sequencenum>");
+    	result.append(seqNo);
+    	result.append("</sequencenum>");    	
+    	result.append("<dumpreason>");
+    	result.append(dumpReason);
+    	result.append("</dumpreason>");    	
+    	result.append("<tracelevel>");
+    	result.append("<tran>");
+    	result.append(DiagLevel.getLevel(Mod.tran));
+    	result.append("</tran>");
+    	result.append("<proto>");
+    	result.append(DiagLevel.getLevel(Mod.proto));
+    	result.append("</proto>");
+    	result.append("<mar>");
+    	result.append(DiagLevel.getLevel(Mod.mar));
+    	result.append("</mar>");
+    	result.append("<rpc>");
+    	result.append(DiagLevel.getLevel(Mod.rpc));
+    	result.append("</rpc>");
+    	result.append("<proxy>");
+    	result.append(DiagLevel.getLevel(Mod.proxy));
+    	result.append("</proxy>");
+    	result.append("<app>");
+    	result.append(DiagLevel.getLevel(Mod.app));
+    	result.append("</app>");
+    	result.append("</tracelevel>");    	
+    	result.append("</SmartDeviceLinktraceroot>");    	    	
+		result.append("</info>");
+		
+		return result.toString();
+	}
+}
