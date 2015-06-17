@@ -10,7 +10,6 @@ import android.os.Process;
 import android.text.format.DateFormat;
 
 import com.smartdevicelink.protocol.ProtocolFrameHeader;
-import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -256,24 +255,14 @@ public class SdlTrace {
 		sb.append("</sid><sz>");
 		sb.append(hdr.getDataSize());
 		sb.append("</sz>");
-
-		int frameData = hdr.getFrameData();
+		
 		if (hdr.getFrameType() == FrameType.Control) {
 			sb.append("<ca>");
-			if (frameData == FrameDataControlFrameType.StartSession.getValue())
-				sb.append("StartSession");
-			else if (frameData == FrameDataControlFrameType.StartSessionACK
-					.getValue())
-				sb.append("StartSessionACK");
-			else if (frameData == FrameDataControlFrameType.StartSessionNACK
-					.getValue())
-				sb.append("StartSessionNACK");
-			else if (frameData == FrameDataControlFrameType.EndSession
-					.getValue())
-				sb.append("EndSession");
+			sb.append(hdr);			
 			sb.append("</ca>");
 		} else if (hdr.getFrameType() == FrameType.Consecutive) {
 			sb.append("<fsn>");
+			int frameData = hdr.getFrameData();
 			if (frameData == 0)
 				sb.append("lastFrame");
 			else
@@ -287,7 +276,6 @@ public class SdlTrace {
 		} else if (hdr.getFrameType() == FrameType.Single) {
 			sb.append("<single/>");
 		}
-
 		sb.append("</hdr>");
 
 		return sb.toString();
@@ -369,32 +357,19 @@ public class SdlTrace {
 	}
 
 	private static boolean writeXmlTraceMessage(String msg) {
+		
+		if (m_appTraceListener == null) {
+			return false;
+		}
+		
 		try {
-			// Attempt to write formatted message to the Siphon
-			if (false == writeMessageToSiphonServer(msg)) {
-				// If writing to the Siphon fails, write to the native log
-				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
-				return false;
-			}
-
-			ISTListener localTraceListener = m_appTraceListener;
-
-			if (localTraceListener != null) {
-				try {
-					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
-				} catch (Exception ex) {
-					DebugTool
-							.logError(
-									"Failure calling ISTListener: "
-											+ ex.toString(), ex);
-					return false;
-				}
-			}
+			m_appTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 		} catch (Exception ex) {
 			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG,
 					"Failure writing XML trace message: " + ex.toString());
 			return false;
 		}
+		
 		return true;
 	}
 
