@@ -27,7 +27,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
@@ -56,8 +55,6 @@ public abstract class SdlRouterService extends Service{
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
 	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
-	public static final String REQUEST_EXTRA_SESSION_FOR_APPID_ACTION 	    = "com.sdl.android.session.addition"; 
-	public static final String EXTRA_SESSION_APPID_EXTRA 	    			= "appid"; 
 	
 	/** Message types sent from the BluetoothReadService Handler */
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -175,7 +172,7 @@ public abstract class SdlRouterService extends Service{
 			};
 	
 	/**
-	 * If the user disconnects the bluetooth device we will want to stop Livio Connect and our current
+	 * If the user disconnects the bluetooth device we will want to stop SDL and our current
 	 * connection through RFCOMM
 	 */
 	BroadcastReceiver mListenForDisconnect = new BroadcastReceiver() 
@@ -253,28 +250,6 @@ public abstract class SdlRouterService extends Service{
 			}
 		};
 		
-		BroadcastReceiver sdlCustomReceiver = new BroadcastReceiver() //FIXME remove this, make it a message
-		{
-			@Override
-			public void onReceive(Context context, Intent intent) 
-			{
-				if(intent.getAction().equals(REQUEST_EXTRA_SESSION_FOR_APPID_ACTION)){
-					if(intent.hasExtra(EXTRA_SESSION_APPID_EXTRA)){
-						synchronized(SESSION_LOCK){
-							if(registeredApps!=null){
-								RegisteredApp app = registeredApps.get(intent.getLongExtra(EXTRA_SESSION_APPID_EXTRA, (long)-1));
-								if(app!=null){
-									app.getSessionIds().add((long)-1); //Adding an extra session
-								}
-							}
-							
-						}
-					}
-				}
-				
-			}
-		};
-		
 /* **************************************************************************************************************************************
 ***********************************************  Broadcast Receivers End  **************************************************************
 ****************************************************************************************************************************************/
@@ -326,8 +301,6 @@ public abstract class SdlRouterService extends Service{
 		synchronized(SESSION_LOCK){
 			sessionMap = new SparseArray<Long>();
 		}
-		IntentFilter filter = new IntentFilter(REQUEST_EXTRA_SESSION_FOR_APPID_ACTION);
-		registerReceiver(sdlCustomReceiver,filter);
 	}
 	
 	private void startUpSequence(){
@@ -394,7 +367,6 @@ public abstract class SdlRouterService extends Service{
 	private void unregisterAllReceivers(){
 		try{
 			unregisterReceiver(registerAnInstanceOfSerialServer);		///This should be first. It will always be registered, these others may not be and cause an exception.
-			unregisterReceiver(sdlCustomReceiver);
 			unregisterReceiver(mListenForDisconnect);
 			unregisterReceiver(mainServiceReceiver);
 			unregisterReceiver(altTransportReceiver);
@@ -770,19 +742,6 @@ public abstract class SdlRouterService extends Service{
 	 * *****************************************************************  CUSTOM ADDITIONS  ************************************************************************************
 	 *************************************************************************************************************************************************************************/
 
-	
-	/**
-	 * Use this method to let the router service know that you are requesting an additional service from the head unit. This should not be used for the first service request, 
-	 * as every registered app will automatically have one service request pending.
-	 * @param context
-	 * @param appId
-	 */
-	public static void requestAdditionalService(Context context, long appId){
-		Intent request = new Intent(SdlRouterService.REQUEST_EXTRA_SESSION_FOR_APPID_ACTION); //FIXME this will no longer work
-		request.putExtra(EXTRA_SESSION_APPID_EXTRA, appId);
-		context.sendBroadcast(request);
-	}
-	
 	private LocalRouterService getLocalBluetoothServiceComapre(){
 		return this.localCompareTo;
 	}
@@ -966,15 +925,17 @@ public abstract class SdlRouterService extends Service{
                 	Message response = Message.obtain();
                 	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
                 	if(unregisteredApp == null){
-                		msg.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
+                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
                 	}else{
-                		msg.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
+                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
                 	}
                 	try {
                 		msg.replyTo.send(response); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
                 	} catch (RemoteException e) {
                 		e.printStackTrace();
-                		break;
+                		
+                	}catch(NullPointerException e2){
+                		Log.e(TAG, "No reply address included, can't send a reply");
                 	}
                 	
                     break;
@@ -986,7 +947,33 @@ public abstract class SdlRouterService extends Service{
     				
     				send(packet,offset,count);
                     break;
-
+                case TransportConstants.ROUTER_REQUEST_EXTRA_SESSION:
+                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+                	Message extraSessionResponse = Message.obtain();
+                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE;
+                	if(appIdRequesting>0){
+						synchronized(SESSION_LOCK){
+							if(registeredApps!=null){
+								RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
+								if(appRequesting!=null){
+									appRequesting.getSessionIds().add((long)-1); //Adding an extra session
+									extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_SUCESS;
+								}else{
+									extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
+								}
+							}
+						}		
+					}else{
+						extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL;
+					}
+                	try {
+                		msg.replyTo.send(extraSessionResponse); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
+                	} catch (RemoteException e) {
+                		e.printStackTrace();
+                	}catch(NullPointerException e2){
+                		Log.e(TAG, "No reply address included, can't send a reply");
+                	}
+                	break;
                 default:
                     super.handleMessage(msg);
             }
