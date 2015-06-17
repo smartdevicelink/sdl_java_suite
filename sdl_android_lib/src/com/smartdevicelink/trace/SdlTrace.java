@@ -24,46 +24,43 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.NativeLogTool;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
-   1. System defaults
-   2. Application XML config
-   3. Programmatic requests from application itself
+ 1. System defaults
+ 2. Application XML config
+ 3. Programmatic requests from application itself
 
-   It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
+ It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
  */
 
 @SuppressLint("DefaultLocale")
 public class SdlTrace {
-	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-		
-	public static final String SYSTEM_LOG_TAG = "SdlTrace";
-	
-	static final long BASE_TICS  = java.lang.System.currentTimeMillis();
-	private final static String KeyStr = SDL_LIB_TRACE_KEY;
-	private static boolean acceptAPITraceAdjustments = true;
 
+	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
+	public static final String SYSTEM_LOG_TAG = "SdlTrace";
+	static final long BASE_TICS = java.lang.System.currentTimeMillis();
+	private static boolean acceptAPITraceAdjustments = true;
 	protected static ISTListener m_appTraceListener = null;
 
-	///
-	///  The PUBLIC interface to SdlTrace starts here
-	///
+	// /
+	// / The PUBLIC interface to SdlTrace starts here
+	// /
 
-
-	public static void setAcceptAPITraceAdjustments(Boolean APITraceAdjustmentsAccepted) {
+	public static void setAcceptAPITraceAdjustments(
+			Boolean APITraceAdjustmentsAccepted) {
 		if (APITraceAdjustmentsAccepted != null) {
 			acceptAPITraceAdjustments = APITraceAdjustmentsAccepted;
 		}
 	}
-	
+
 	public static boolean getAcceptAPITraceAdjustments() {
 		return acceptAPITraceAdjustments;
 	}
-	
+
 	public static void setAppTraceListener(ISTListener listener) {
 		m_appTraceListener = listener;
 	}
 
 	public static void setAppTraceLevel(DetailLevel dt) {
-		if ( dt != null && acceptAPITraceAdjustments)
+		if (dt != null && acceptAPITraceAdjustments)
 			DiagLevel.setLevel(Mod.app, dt);
 	}
 
@@ -89,10 +86,11 @@ public class SdlTrace {
 
 	public static void setTransportTraceLevel(DetailLevel dt) {
 		if (dt != null && acceptAPITraceAdjustments)
-				DiagLevel.setLevel(Mod.tran, dt);
+			DiagLevel.setLevel(Mod.tran, dt);
 	}
 
-	private static String encodeTraceMessage(Mod module, InterfaceActivityDirection msgDirection, String msgBodyXml) {
+	private static String encodeTraceMessage(Mod module,
+			InterfaceActivityDirection msgDirection, String msgBodyXml) {
 		long timestamp = java.lang.System.currentTimeMillis() - BASE_TICS;
 		StringBuilder sb = new StringBuilder("<msg><dms>");
 		sb.append(timestamp);
@@ -112,20 +110,17 @@ public class SdlTrace {
 		sb.append("</msg>");
 
 		return sb.toString();
-	} 
-
-	static String B64EncodeForXML(String data) {
-		return Mime.base64Encode(data);
-		// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: return Base64.encodeToString(data.getBytes(), Base64.DEFAULT);
 	}
-	
+
 	public static boolean logProxyEvent(String eventText, String token) {
-		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF
+				|| !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
-		String msg = SdlTrace.B64EncodeForXML(eventText);
-		String xml = SdlTrace.encodeTraceMessage(Mod.proxy, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
+		String msg = Mime.base64Encode(eventText);
+		String xml = SdlTrace.encodeTraceMessage(Mod.proxy,
+				InterfaceActivityDirection.None, "<d>" + msg + "</d>");
 		return writeXmlTraceMessage(xml);
 	}
 
@@ -134,18 +129,21 @@ public class SdlTrace {
 			return false;
 		}
 
-		String msg = SdlTrace.B64EncodeForXML(eventText);
-		String xml = SdlTrace.encodeTraceMessage(Mod.app, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
+		String msg = Mime.base64Encode(eventText);
+		String xml = SdlTrace.encodeTraceMessage(Mod.app,
+				InterfaceActivityDirection.None, "<d>" + msg + "</d>");
 		return writeXmlTraceMessage(xml);
 	}
 
-	public static boolean logRPCEvent(InterfaceActivityDirection msgDirection, RPCMessage rpcMsg, String token) {
+	public static boolean logRPCEvent(InterfaceActivityDirection msgDirection,
+			RPCMessage rpcMsg, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.rpc);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
-		String xml = SdlTrace.encodeTraceMessage(Mod.rpc, msgDirection, rpc2Xml(dl, rpcMsg));
+		String xml = SdlTrace.encodeTraceMessage(Mod.rpc, msgDirection,
+				rpc2Xml(dl, rpcMsg));
 		return writeXmlTraceMessage(xml);
 	}
 
@@ -158,10 +156,10 @@ public class SdlTrace {
 		Integer correlationID = -1;
 		if (rpcMsg instanceof RPCRequest) {
 			hasCorrelationID = true;
-			correlationID = ((RPCRequest)rpcMsg).getCorrelationID();
+			correlationID = ((RPCRequest) rpcMsg).getCorrelationID();
 		} else if (rpcMsg instanceof RPCResponse) {
 			hasCorrelationID = true;
-			correlationID = ((RPCResponse)rpcMsg).getCorrelationID();
+			correlationID = ((RPCResponse) rpcMsg).getCorrelationID();
 		}
 		if (hasCorrelationID) {
 			rpcAsXml.append("<cid>");
@@ -171,12 +169,12 @@ public class SdlTrace {
 		rpcAsXml.append("<type>");
 		rpcAsXml.append(rpcMsg.getMessageType());
 		rpcAsXml.append("</type>");
-		//rpcAsXml.append(newline);
+		// rpcAsXml.append(newline);
 
 		if (dl == DetailLevel.VERBOSE) {
 			OpenRPCMessage orpcmsg = new OpenRPCMessage(rpcMsg);
 			String rpcParamList = orpcmsg.msgDump();
-			String msg = SdlTrace.B64EncodeForXML(rpcParamList);
+			String msg = Mime.base64Encode(rpcParamList);
 			rpcAsXml.append("<d>");
 			rpcAsXml.append(msg);
 			rpcAsXml.append("</d>");
@@ -184,9 +182,11 @@ public class SdlTrace {
 		return rpcAsXml.toString();
 	}
 
-	public static boolean logMarshallingEvent(InterfaceActivityDirection msgDirection, byte[] marshalledMessage, String token) {
+	public static boolean logMarshallingEvent(
+			InterfaceActivityDirection msgDirection, byte[] marshalledMessage,
+			String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.mar);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -197,38 +197,50 @@ public class SdlTrace {
 		if (dl == DetailLevel.VERBOSE) {
 			msg.append("<d>");
 			msg.append(Mime.base64Encode(marshalledMessage));
-			// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: msg.append(Base64.encodeToString(marshalledMessage, Base64.DEFAULT));
+			// Base64 only available in 2.2, when SmartDeviceLink base is 2.2
+			// use: msg.append(Base64.encodeToString(marshalledMessage,
+			// Base64.DEFAULT));
 			msg.append("</d>");
 		}
-		String xml = SdlTrace.encodeTraceMessage(Mod.mar, msgDirection, msg.toString());
+		String xml = SdlTrace.encodeTraceMessage(Mod.mar, msgDirection,
+				msg.toString());
 		return writeXmlTraceMessage(xml);
 	}
 
-	public static boolean logProtocolEvent(InterfaceActivityDirection frameDirection, ProtocolFrameHeader frameHeader, byte[] frameData, int frameDataOffset, int frameDataLength, String token) {
+	public static boolean logProtocolEvent(
+			InterfaceActivityDirection frameDirection,
+			ProtocolFrameHeader frameHeader, byte[] frameData,
+			int frameDataOffset, int frameDataLength, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.proto);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
 		StringBuffer protoMsg = new StringBuffer();
 		protoMsg.append("<frame>");
-		protoMsg.append(SdlTrace.getProtocolFrameHeaderInfo(frameHeader, frameData));
+		protoMsg.append(SdlTrace.getProtocolFrameHeaderInfo(frameHeader,
+				frameData));
 		if (dl == DetailLevel.VERBOSE) {
 			if (frameData != null && frameDataLength > 0) {
 				protoMsg.append("<d>");
 				String bytesInfo = "";
-				bytesInfo = Mime.base64Encode(frameData, frameDataOffset, frameDataLength);
-				// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: bytesInfo = Base64.encodeToString(frameData, frameDataOffset, frameDataLength, Base64.DEFAULT);
+				bytesInfo = Mime.base64Encode(frameData, frameDataOffset,
+						frameDataLength);
+				// Base64 only available in 2.2, when SmartDeviceLink base is
+				// 2.2 use: bytesInfo = Base64.encodeToString(frameData,
+				// frameDataOffset, frameDataLength, Base64.DEFAULT);
 				protoMsg.append(bytesInfo);
 				protoMsg.append("</d>");
 			}
 		}
 		protoMsg.append("</frame>");
-		String xml = SdlTrace.encodeTraceMessage(Mod.proto, frameDirection, protoMsg.toString());
+		String xml = SdlTrace.encodeTraceMessage(Mod.proto, frameDirection,
+				protoMsg.toString());
 		return writeXmlTraceMessage(xml);
 	}
 
-	private static String getProtocolFrameHeaderInfo(ProtocolFrameHeader hdr, byte[] buf) {
+	private static String getProtocolFrameHeaderInfo(ProtocolFrameHeader hdr,
+			byte[] buf) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<hdr>");
 		sb.append("<ver>");
@@ -248,27 +260,31 @@ public class SdlTrace {
 		int frameData = hdr.getFrameData();
 		if (hdr.getFrameType() == FrameType.Control) {
 			sb.append("<ca>");
-			if (frameData == FrameDataControlFrameType.StartSession.getValue()) 
+			if (frameData == FrameDataControlFrameType.StartSession.getValue())
 				sb.append("StartSession");
-			else if (frameData == FrameDataControlFrameType.StartSessionACK.getValue())
+			else if (frameData == FrameDataControlFrameType.StartSessionACK
+					.getValue())
 				sb.append("StartSessionACK");
-			else if (frameData == FrameDataControlFrameType.StartSessionNACK.getValue())
+			else if (frameData == FrameDataControlFrameType.StartSessionNACK
+					.getValue())
 				sb.append("StartSessionNACK");
-			else if (frameData == FrameDataControlFrameType.EndSession.getValue())
+			else if (frameData == FrameDataControlFrameType.EndSession
+					.getValue())
 				sb.append("EndSession");
 			sb.append("</ca>");
-		} else if (hdr.getFrameType() == FrameType.Consecutive ) {
+		} else if (hdr.getFrameType() == FrameType.Consecutive) {
 			sb.append("<fsn>");
-			if (frameData == 0 )
+			if (frameData == 0)
 				sb.append("lastFrame");
 			else
-				sb.append(String.format("%02X",frameData)); 
+				sb.append(String.format("%02X", frameData));
 			sb.append("</fsn>");
-		} else if (hdr.getFrameType() == FrameType.First ) {
-			int totalSize = BitConverter.intFromByteArray(buf, 0);			
+		} else if (hdr.getFrameType() == FrameType.First) {
+			int totalSize = BitConverter.intFromByteArray(buf, 0);
 			int numFrames = BitConverter.intFromByteArray(buf, 4);
-			sb.append("<total>" + totalSize + "</total><numframes>" + numFrames + "</numframes>");
-		} else if (hdr.getFrameType() == FrameType.Single ) {
+			sb.append("<total>" + totalSize + "</total><numframes>" + numFrames
+					+ "</numframes>");
+		} else if (hdr.getFrameType() == FrameType.Single) {
 			sb.append("<single/>");
 		}
 
@@ -282,7 +298,7 @@ public class SdlTrace {
 		sb.append("<btp>");
 		String btdn = btDevice.getName();
 		sb.append("<btn>");
-		sb.append(SdlTrace.B64EncodeForXML(btdn));
+		sb.append(Mime.base64Encode(btdn));
 		sb.append("</btn>");
 		sb.append("<bta>" + btDevice.getAddress() + "</bta>");
 		sb.append("<bts>" + btDevice.getBondState() + "</bts>");
@@ -290,23 +306,36 @@ public class SdlTrace {
 		return sb.toString();
 	}
 
-	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int byteLength, String token) {
-		return logTransportEvent(preamble, transportSpecificInfoXml, msgDirection, buf, 0, byteLength, token);
-	} 
+	public static boolean logTransportEvent(String preamble,
+			String transportSpecificInfoXml,
+			InterfaceActivityDirection msgDirection, byte buf[],
+			int byteLength, String token) {
+		return logTransportEvent(preamble, transportSpecificInfoXml,
+				msgDirection, buf, 0, byteLength, token);
+	}
 
-	private static void checkB64(String x, byte[] buf, int offset, int byteLength) {
+	private static void checkB64(String x, byte[] buf, int offset,
+			int byteLength) {
 		if ((x.length() % 4) != 0) {
-			NativeLogTool.logWarning(SdlTrace.SYSTEM_LOG_TAG, "b64 string length (" + x.length() + ") isn't multiple of 4: buf.length=" + buf.length + ", offset=" + offset + ", len=" + byteLength);
+			NativeLogTool.logWarning(SdlTrace.SYSTEM_LOG_TAG,
+					"b64 string length (" + x.length()
+							+ ") isn't multiple of 4: buf.length=" + buf.length
+							+ ", offset=" + offset + ", len=" + byteLength);
 		}
 	}
 
-	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
-		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(KeyStr)) {
+	public static boolean logTransportEvent(String preamble,
+			String transportSpecificInfoXml,
+			InterfaceActivityDirection msgDirection, byte buf[], int offset,
+			int byteLength, String token) {
+		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF
+				|| !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
 		StringBuilder msg = new StringBuilder();
-		if (transportSpecificInfoXml != null && transportSpecificInfoXml.length() > 0) {
+		if (transportSpecificInfoXml != null
+				&& transportSpecificInfoXml.length() > 0) {
 			msg.append(transportSpecificInfoXml);
 		}
 		if (preamble != null && preamble.length() > 0) {
@@ -322,142 +351,149 @@ public class SdlTrace {
 			if (dl == DetailLevel.VERBOSE) {
 				if (buf != null && byteLength > 0) {
 					msg.append("<d>");
-					String bytesInfo = Mime.base64Encode(buf, offset, byteLength);
+					String bytesInfo = Mime.base64Encode(buf, offset,
+							byteLength);
 					checkB64(bytesInfo, buf, offset, byteLength);
 					msg.append(bytesInfo);
 					msg.append("</d>");
 				}
 			}
 		}
-		String xml = SdlTrace.encodeTraceMessage(Mod.tran, msgDirection, msg.toString());
+		String xml = SdlTrace.encodeTraceMessage(Mod.tran, msgDirection,
+				msg.toString());
 		return writeXmlTraceMessage(xml);
 	}
-	
+
 	public static Boolean writeMessageToSiphonServer(String info) {
 		return SiphonServer.sendFormattedTraceMessage(info);
 	}
 
 	private static boolean writeXmlTraceMessage(String msg) {
-		try {			
+		try {
 			// Attempt to write formatted message to the Siphon
-			if (false == writeMessageToSiphonServer(msg)) {				
+			if (false == writeMessageToSiphonServer(msg)) {
 				// If writing to the Siphon fails, write to the native log
 				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
 				return false;
 			}
-			
+
 			ISTListener localTraceListener = m_appTraceListener;
 
 			if (localTraceListener != null) {
 				try {
-					localTraceListener.logXmlMsg(msg, KeyStr);
+					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 				} catch (Exception ex) {
-					DebugTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
+					DebugTool
+							.logError(
+									"Failure calling ISTListener: "
+											+ ex.toString(), ex);
 					return false;
 				}
 			}
 		} catch (Exception ex) {
-			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG, "Failure writing XML trace message: " + ex.toString());
+			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG,
+					"Failure writing XML trace message: " + ex.toString());
 			return false;
 		}
 		return true;
 	}
-	
-	public static String getLogHeader(String dumpReason, int seqNo) {
-    	
-    	// Indicates which version of XML to parse the message with.
-    	StringBuilder result = new StringBuilder("<?xml version=\"1.0\"?>");
-    	
-    	// The block that contains all of the XML information.
-    	result.append("<info>");
-    	
-    	// Hardware and carrier information.
-    	result.append("<host>");    	
-    	StringBuilder hostInfo = new StringBuilder(Build.BRAND);
-    	hostInfo.append("-");
-    	hostInfo.append(Build.MANUFACTURER);
-    	hostInfo.append("-");
-    	hostInfo.append(Build.MODEL);
-    	hostInfo.append("(");
-    	hostInfo.append(Build.HOST);
-    	hostInfo.append(")");
-    	result.append(SdlTrace.B64EncodeForXML(hostInfo.toString()));
-    	result.append("</host>");
-    	
-    	// Release information.
-    	result.append("<osv>");    	
-    	StringBuilder osvInfo = new StringBuilder(Build.VERSION.RELEASE);
-    	osvInfo.append("(");
-    	osvInfo.append(Build.VERSION.CODENAME);
-    	osvInfo.append(")");
-    	result.append(SdlTrace.B64EncodeForXML(osvInfo.toString()));
-    	result.append("</osv>");
-    	
-    	// Network information.
-    	result.append(TraceDeviceInfo.getTelephonyHeader());
-    	    	
-    	// Memory information.
-    	result.append("<mem>");
-    	result.append("<hf>");
-    	result.append((Debug.getNativeHeapFreeSize() / 1024));
-    	result.append("KB");
-    	result.append("</hf>");
-    	result.append("<ha>");
-    	result.append((Debug.getNativeHeapAllocatedSize() / 1024));
-    	result.append("KB");
-    	result.append("</ha>");
-    	result.append("</mem>");
 
-    	// Process and thread information.
-    	result.append("<np>");
-    	result.append(Runtime.getRuntime().availableProcessors());
-    	result.append("</np>");
-    	result.append("<pid>");
-    	result.append(Process.myPid());
-    	result.append("</pid>");
-    	result.append("<tid>");
-    	result.append(Thread.currentThread().getId());
-    	result.append("</tid>");
-    	
-    	// Time of message construction.
-    	result.append("<utc>");
-    	result.append(DateFormat.format("yy-MM-dd hh:mm:ss SSS", new Timestamp(java.lang.System.currentTimeMillis())));
-    	result.append("</utc>");
-    	
-    	// Bluetooth information.
-    	result.append(TraceDeviceInfo.getLogHeaderBluetoothPairs());
-    	
-    	// SDL specific information.
-    	result.append("<sdltraceroot>");    	
-    	result.append("<sequencenum>");
-    	result.append(seqNo);
-    	result.append("</sequencenum>");    	
-    	result.append("<dumpreason>");
-    	result.append(dumpReason);
-    	result.append("</dumpreason>");    	
-    	result.append("<tracelevel>");
-    	result.append("<tran>");
-    	result.append(DiagLevel.getLevel(Mod.tran));
-    	result.append("</tran>");
-    	result.append("<proto>");
-    	result.append(DiagLevel.getLevel(Mod.proto));
-    	result.append("</proto>");
-    	result.append("<mar>");
-    	result.append(DiagLevel.getLevel(Mod.mar));
-    	result.append("</mar>");
-    	result.append("<rpc>");
-    	result.append(DiagLevel.getLevel(Mod.rpc));
-    	result.append("</rpc>");
-    	result.append("<proxy>");
-    	result.append(DiagLevel.getLevel(Mod.proxy));
-    	result.append("</proxy>");
-    	result.append("<app>");
-    	result.append(DiagLevel.getLevel(Mod.app));
-    	result.append("</app>");
-    	result.append("</tracelevel>");    	
-    	result.append("</sdltraceroot>");    	    	
+	public static String getLogHeader(String dumpReason, int seqNo) {
+
+		// Indicates which version of XML to parse the message with.
+		StringBuilder result = new StringBuilder("<?xml version=\"1.0\"?>");
+
+		// The block that contains all of the XML information.
+		result.append("<info>");
+
+		// Hardware and carrier information.
+		result.append("<host>");
+		StringBuilder hostInfo = new StringBuilder(Build.BRAND);
+		hostInfo.append("-");
+		hostInfo.append(Build.MANUFACTURER);
+		hostInfo.append("-");
+		hostInfo.append(Build.MODEL);
+		hostInfo.append("(");
+		hostInfo.append(Build.HOST);
+		hostInfo.append(")");
+		result.append(Mime.base64Encode(hostInfo.toString()));
+		result.append("</host>");
+
+		// Release information.
+		result.append("<osv>");
+		StringBuilder osvInfo = new StringBuilder(Build.VERSION.RELEASE);
+		osvInfo.append("(");
+		osvInfo.append(Build.VERSION.CODENAME);
+		osvInfo.append(")");
+		result.append(Mime.base64Encode(osvInfo.toString()));
+		result.append("</osv>");
+
+		// Network information.
+		result.append(TraceDeviceInfo.getTelephonyHeader());
+
+		// Memory information.
+		result.append("<mem>");
+		result.append("<hf>");
+		result.append((Debug.getNativeHeapFreeSize() / 1024));
+		result.append("KB");
+		result.append("</hf>");
+		result.append("<ha>");
+		result.append((Debug.getNativeHeapAllocatedSize() / 1024));
+		result.append("KB");
+		result.append("</ha>");
+		result.append("</mem>");
+
+		// Process and thread information.
+		result.append("<np>");
+		result.append(Runtime.getRuntime().availableProcessors());
+		result.append("</np>");
+		result.append("<pid>");
+		result.append(Process.myPid());
+		result.append("</pid>");
+		result.append("<tid>");
+		result.append(Thread.currentThread().getId());
+		result.append("</tid>");
+
+		// Time of message construction.
+		result.append("<utc>");
+		result.append(DateFormat.format("yy-MM-dd hh:mm:ss SSS", new Timestamp(
+				java.lang.System.currentTimeMillis())));
+		result.append("</utc>");
+
+		// Bluetooth information.
+		result.append(TraceDeviceInfo.getLogHeaderBluetoothPairs());
+
+		// SDL specific information.
+		result.append("<sdltraceroot>");
+		result.append("<sequencenum>");
+		result.append(seqNo);
+		result.append("</sequencenum>");
+		result.append("<dumpreason>");
+		result.append(dumpReason);
+		result.append("</dumpreason>");
+		result.append("<tracelevel>");
+		result.append("<tran>");
+		result.append(DiagLevel.getLevel(Mod.tran));
+		result.append("</tran>");
+		result.append("<proto>");
+		result.append(DiagLevel.getLevel(Mod.proto));
+		result.append("</proto>");
+		result.append("<mar>");
+		result.append(DiagLevel.getLevel(Mod.mar));
+		result.append("</mar>");
+		result.append("<rpc>");
+		result.append(DiagLevel.getLevel(Mod.rpc));
+		result.append("</rpc>");
+		result.append("<proxy>");
+		result.append(DiagLevel.getLevel(Mod.proxy));
+		result.append("</proxy>");
+		result.append("<app>");
+		result.append(DiagLevel.getLevel(Mod.app));
+		result.append("</app>");
+		result.append("</tracelevel>");
+		result.append("</sdltraceroot>");
 		result.append("</info>");
-		
+
 		return result.toString();
 	}
 }
