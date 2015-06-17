@@ -2,7 +2,6 @@ package com.smartdevicelink.trace;
 
 import java.sql.Timestamp;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Debug;
@@ -17,9 +16,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.trace.enums.Mod;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.util.BitConverter;
-import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.NativeLogTool;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
@@ -29,8 +26,6 @@ import com.smartdevicelink.util.NativeLogTool;
 
  It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
  */
-
-@SuppressLint("DefaultLocale")
 public class SdlTrace {
 
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
@@ -350,10 +345,6 @@ public class SdlTrace {
 		String xml = SdlTrace.encodeTraceMessage(Mod.tran, msgDirection,
 				msg.toString());
 		return writeXmlTraceMessage(xml);
-	}
-
-	public static Boolean writeMessageToSiphonServer(String info) {
-		return SiphonServer.sendFormattedTraceMessage(info);
 	}
 
 	private static boolean writeXmlTraceMessage(String msg) {
