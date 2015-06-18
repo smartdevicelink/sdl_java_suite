@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
 /**
  * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources 
@@ -40,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
  * @since SmartDeviceLink 1.0
  * @see RegisterAppInterface
  */
+@SuppressWarnings("deprecation")
 public class OnAppInterfaceUnregistered extends RPCNotification {
 	public static final String KEY_REASON = "reason";
 	/**
@@ -58,7 +60,10 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
     /**
      * <p>Get the reason the registration was terminated</p>
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
+     * 
+     * @see {@link #getDisconnectedReason()}
      */    
+    @Deprecated
     public AppInterfaceUnregisteredReason getReason() {
         Object obj = parameters.get(KEY_REASON);
         if (obj instanceof AppInterfaceUnregisteredReason) {
@@ -68,12 +73,44 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
         }
         return null;
     }
+    
+    /**
+     * <p>Get the reason the registration was terminated</p>
+     * @return {@linkplain SdlDisconnectedReason} the reason the application's interface registration was terminated.
+     */
+	public SdlDisconnectedReason getDisconnectedReason() {
+    	Object obj = parameters.get(KEY_REASON);
+        if (obj instanceof SdlDisconnectedReason) {
+            return (SdlDisconnectedReason) obj;
+        } else if (obj instanceof String) {
+            return SdlDisconnectedReason.valueForString((String) obj);
+        } else if (obj instanceof AppInterfaceUnregisteredReason) {
+        	return SdlDisconnectedReason.convertAppInterfaceUnregisteredReason((AppInterfaceUnregisteredReason) obj);
+        }
+        return null;
+    }
+    
     /**
      * <p>Set the reason application's interface was terminated</p>
      * @param reason The reason application's interface registration was terminated
-     */    
+     * 
+     * @see {@link #setDisconnectedReason()}
+     */ 
+    @Deprecated
     public void setReason( AppInterfaceUnregisteredReason reason ) {
         if (reason != null) {
+            parameters.put(KEY_REASON, reason );
+        } else {
+            parameters.remove(KEY_REASON);
+        }
+    }
+    
+    /**
+     * <p>Set the reason application's interface was terminated</p>
+     * @param reason The reason application's interface registration was terminated
+     */
+    public void setDisconnectedReason(SdlDisconnectedReason reason) {
+    	if (reason != null) {
             parameters.put(KEY_REASON, reason );
         } else {
             parameters.remove(KEY_REASON);
