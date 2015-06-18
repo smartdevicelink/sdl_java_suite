@@ -27,7 +27,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
@@ -423,8 +422,17 @@ public abstract class SdlRouterService extends Service{
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		//TODO check intent to send back the correct binder (app binding vs alt transport)
-		return this.routerMessenger.getBinder(); 
+		//Check intent to send back the correct binder (client binding vs alt transport)
+		if(intent!=null){
+			int requestType = intent.getIntExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+			switch(requestType){
+				case TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT:
+					return this.altTransportMessenger.getBinder();
+				case TransportConstants.BIND_REQUEST_TYPE_CLIENT:
+					return this.routerMessenger.getBinder();
+			}
+		}
+		return null;
 	}
 
 	

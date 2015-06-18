@@ -48,6 +48,10 @@ public class TransportConstants {
 	public static final String SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME 	= "routerintent";
 
 	
+	public static final String ROUTER_BIND_REQUEST_TYPE_EXTRA 					= "bind_request_type";
+	public static final int	BIND_REQUEST_TYPE_CLIENT							= 0x00;
+	public static final int	BIND_REQUEST_TYPE_ALT_TRANSPORT						= 0x01;
+
 	/**
 	 * Alt transport
 	 * 

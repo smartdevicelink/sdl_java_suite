@@ -3,6 +3,7 @@ package com.smartdevicelink.transport;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -369,6 +370,7 @@ public class TransportBroker {
 				Log.d(TAG, "Sending bind request to " + this.routerPackage + " - " + this.routerClassName);
 				Intent bindingIntent = new Intent();
 				bindingIntent.setClassName(this.routerPackage, this.routerClassName);//This sets an explicit intent
+				bindingIntent.putExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
 				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
 			}else{
 				return false;
