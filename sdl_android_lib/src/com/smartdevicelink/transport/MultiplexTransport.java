@@ -46,9 +46,11 @@ public class MultiplexTransport extends SdlTransport{
 							connected = false;
 							SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
 							if(isLegacyModeEnabled()){
+								Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
 								this.stop();
 								handleTransportDisconnected("");
 							}else{
+								Log.d(TAG, "Handle transport Error");
 								handleTransportError("",null); //This seems wrong, but it works
 							}
 						}

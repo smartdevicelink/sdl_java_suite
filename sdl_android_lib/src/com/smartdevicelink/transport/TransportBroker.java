@@ -60,6 +60,7 @@ public class TransportBroker {
         	routerService = null;
         	registeredWithRouterService = false;
             isBound = false;
+            onHardwareDisconnected(null);
         }
     };
     
@@ -168,12 +169,14 @@ public class TransportBroker {
             	case TransportConstants.HARDWARE_CONNECTION_EVENT:
         			if(bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
         				//We should shut down, so call 
+        				Log.d(TAG, "Hardware disconnected");
         				onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        				break;
         			}
         			
         			if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
         				onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
-        				
+        				break;
         			}
             		break;
             	default:
@@ -265,8 +268,12 @@ public class TransportBroker {
 		}
 		
 		public void onHardwareDisconnected(TransportType type){
+			if(isBound){
+				getContext().unbindService(routerConnection);
+			}
 			synchronized(INIT_LOCK){
-				//sendPacketAddress = null;
+				routerService = null;
+				routerConnection = null;
 				queuedOnTransportConnect = null;
 			}
 		}
@@ -371,7 +378,7 @@ public class TransportBroker {
 				Intent bindingIntent = new Intent();
 				bindingIntent.setClassName(this.routerPackage, this.routerClassName);//This sets an explicit intent
 				bindingIntent.putExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_ABOVE_CLIENT);
 			}else{
 				return false;
 			}
@@ -389,15 +396,17 @@ public class TransportBroker {
 		
 		private void unregisterWithRouterService(){
 			Log.i(TAG, "Attempting to unregister with Sdl Router Service");
+			if(isBound){
+				Message msg = Message.obtain();
+				msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;
+				msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
+				Bundle bundle = new Bundle();
+				bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+				msg.setData(bundle);
+				this.sendMessageToRouterService(msg);
+			}
 			
-			Message msg = Message.obtain();
-			msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;
-			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
-			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
-			msg.setData(bundle);
-			this.sendMessageToRouterService(msg);
-			//TODO do I need to do this? routerService = null;
+			routerService = null;
 		}
 		
 
