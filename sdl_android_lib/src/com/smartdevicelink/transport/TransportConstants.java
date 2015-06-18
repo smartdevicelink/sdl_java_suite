@@ -47,6 +47,33 @@ public class TransportConstants {
 	public static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
 	public static final String SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME 	= "routerintent";
 
+	
+	/**
+	 * Alt transport
+	 * 
+	 */
+	/**
+	 * This will be the response when a hardware connect event comes through from an alt transport. 
+	 * This is because it only makes sense to register an alt transport when a connection is established with that
+	 * transport, not waiting for one.
+	 */
+	public static final int ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE 						= 0x02;
+	public static final int ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS				= 0x00;
+	/**
+	 * There is already another alt transport connected, so we are unable to register this one
+	 */
+	public static final int ROUTER_REGISTER_ALT_TRANSPORT_ALREADY_CONNECTED				= 0x01;
+	
+	/**
+	 * This means the router service is shutting down for some reason. Most likely 
+	 */
+	public static final int ROUTER_SHUTTING_DOWN_NOTIFICATION							= 0x0F;
+	
+	/**
+	 * There is a newer service to start up, so this one is shutting down
+	 */
+	public static final int ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE					= 0x00;
+	
 	/**
 	 * Router to Client binding service
 	 * 
@@ -60,7 +87,7 @@ public class TransportConstants {
      */
 	public static final int ROUTER_REGISTER_CLIENT 											= 0x01;
 	/**
-	 * This response message will contain if the registration request was sucessful or not. If not, the reason will be
+	 * This response message will contain if the registration request was successful or not. If not, the reason will be
 	 * great or equal to 1 and be descriptive of why it was denied.
 	 */
 	public static final int ROUTER_REGISTER_CLIENT_RESPONSE 								= 0x02;
@@ -94,7 +121,7 @@ public class TransportConstants {
 	public static final int ROUTER_REQUEST_BT_CLIENT_CONNECT_RESPONSE						= 0x11;
 	
 	/**
-	 * This provides the app with an ability to request another session whithin the router service.
+	 * This provides the app with an ability to request another session within the router service.
 	 * A replyTo must be provided or else there won't be a response
 	 */
 	public static final int ROUTER_REQUEST_EXTRA_SESSION 									= 0x12;

@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
@@ -77,11 +78,11 @@ public abstract class SdlRouterService extends Service{
 	
 	
     private Intent lastReceivedStartIntent = null;
-	public static HashMap<Long,RegisteredApp> registeredApps; //Trying static, but i dont like it
+	public static HashMap<Long,RegisteredApp> registeredApps;
 	SparseArray<Long> sessionMap;
 	private Object SESSION_LOCK;
 	
-	private static String altTransportAddress = null;
+	private static Messenger altTransportMessager = null; //THERE CAN BE ONLY ONE!!!
 
 	private String  connectedDeviceName = "";			//The name of the connected Device
 	private boolean startSequenceComplete = false;	
@@ -99,9 +100,7 @@ public abstract class SdlRouterService extends Service{
 	{
 		@Override
 		public void onReceive(Context context, Intent intent) 
-		{	
-			//TODO just send back the current address for this service
-			
+		{				
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
 			String action =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
 			sendBroadcast(prepareRegistrationIntent(action));	
@@ -216,44 +215,207 @@ public abstract class SdlRouterService extends Service{
 					}
 			}
 		};
-	
-		/**Receiver for alt transport*/
-		BroadcastReceiver altTransportReceiver = new BroadcastReceiver(){ //connection status and readReads in data
-			@Override
-			public void onReceive(Context context, Intent intent)
-			{
-				if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_CONNECTION_STATUS_EXTRA)){ //Connection status
-					Intent ackIntent = new Intent();
-					switch(intent.getIntExtra(TransportConstants.ALT_TRANSPORT_CONNECTION_STATUS_EXTRA, 0)){
-						case TransportConstants.ALT_TRANSPORT_CONNECTED:
-							altTransportAddress = intent.getStringExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA);
-							ackIntent.setAction(altTransportAddress);
-							//ackIntent.putExtra(name, value);;
-							storeConnectedStatus(true);
-							sendBroadcast(ackIntent);
-							Toast.makeText(getBaseContext(), "Livio Connect Enabled", Toast.LENGTH_SHORT).show();
-							break;
-						case TransportConstants.ALT_TRANSPORT_DISCONNECTED:
-							storeConnectedStatus(false);
-							ackIntent.setAction(altTransportAddress);
-							sendBroadcast(ackIntent);
-							altTransportAddress = null;
-							onTransportDisconnected(TransportType.USB); //Make sure the client knows the hardware has disconnected
-							shouldServiceKeepRunning(null); //this will close the service if bluetooth is not available
-							break;
-					}
-				}else if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_READ)){ //Come in as char[]
-					//Send to the app!
-					//Toast.makeText(getBaseContext(), "Got here 1", Toast.LENGTH_SHORT).show();
-					//FIXME sendPacketToRegisteredApp(intent.getCharArrayExtra(TransportConstants.ALT_TRANSPORT_READ));
-				}
-			}
-		};
 		
 /* **************************************************************************************************************************************
 ***********************************************  Broadcast Receivers End  **************************************************************
 ****************************************************************************************************************************************/
 
+		/* **************************************************************************************************************************************
+		*********************************************** Handlers for bound clients **************************************************************
+		****************************************************************************************************************************************/
+
+		
+	    /**
+	     * Target we publish for clients to send messages to RouterHandler.
+	     */
+	    final Messenger routerMessenger = new Messenger(new RouterHandler());
+	    
+		 /**
+	     * Handler of incoming messages from clients.
+	     */
+	    class RouterHandler extends Handler {
+	        @Override
+	        public void handleMessage(Message msg) {
+	        	Bundle receivedBundle = msg.getData();
+	        	Bundle returnBundle;
+	        	
+	            switch (msg.what) {
+	            case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
+	            	if(receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
+	        				&& !connectAsClient){		//We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
+	        				//Log.d(TAG,"Attempting to connect as bt client");
+	        				BluetoothDevice device = receivedBundle.getParcelable(BluetoothDevice.EXTRA_DEVICE);
+	        				connectAsClient = true;
+	        				if(device==null || !bluetoothConnect(device)){
+	        					Log.e(TAG, "Unable to connect to bluetooth device");
+	        					connectAsClient = false;
+	        				}
+	        			}
+	            	//**************** We don't break here so we can let the app register as well
+	                case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
+	                	Message message = Message.obtain();
+	                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
+	                	long appId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	if(appId<0 || msg.replyTo == null){
+	                		Log.w(TAG, "Unable to requster app as no id or messenger was included");
+	                		if(msg.replyTo!=null){
+	                			msg.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
+	                			try {
+									msg.replyTo.send(message);
+								} catch (RemoteException e) {
+									e.printStackTrace();
+								}
+	                		}
+	                		break;
+	                	}
+	                	
+	                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
+	                	registeredApps.put(app.getAppId(), app);
+	            		onAppRegistered(app);
+	            		
+	            		//TODO reply to this messanger.
+	            		returnBundle = new Bundle();
+	            		
+	            		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+	            			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+	            		}
+	            		if(!returnBundle.isEmpty()){
+	            			message.setData(returnBundle);
+	            		}
+	            		app.sendMessage(message);
+
+	                    break;
+	                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
+	                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	
+	                	RegisteredApp unregisteredApp = registeredApps.remove(appIdToUnregister);//TODO check if this works
+	                	Message response = Message.obtain();
+	                	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
+	                	if(unregisteredApp == null){
+	                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
+	                	}else{
+	                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
+	                	}
+	                	try {
+	                		msg.replyTo.send(response); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
+	                	} catch (RemoteException e) {
+	                		e.printStackTrace();
+	                		
+	                	}catch(NullPointerException e2){
+	                		Log.e(TAG, "No reply address included, can't send a reply");
+	                	}
+	                	
+	                    break;
+	                case TransportConstants.ROUTER_SEND_PACKET:
+	                	Log.d(TAG, "Received packet to send");
+	    				writeBytesToTransport(receivedBundle);
+	                    break;
+	                case TransportConstants.ROUTER_REQUEST_EXTRA_SESSION:
+	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	Message extraSessionResponse = Message.obtain();
+	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE;
+	                	if(appIdRequesting>0){
+							synchronized(SESSION_LOCK){
+								if(registeredApps!=null){
+									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
+									if(appRequesting!=null){
+										appRequesting.getSessionIds().add((long)-1); //Adding an extra session
+										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_SUCESS;
+									}else{
+										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
+									}
+								}
+							}		
+						}else{
+							extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL;
+						}
+	                	try {
+	                		msg.replyTo.send(extraSessionResponse); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
+	                	} catch (RemoteException e) {
+	                		e.printStackTrace();
+	                	}catch(NullPointerException e2){
+	                		Log.e(TAG, "No reply address included, can't send a reply");
+	                	}
+	                	break;
+	                default:
+	                    super.handleMessage(msg);
+	            }
+	        }
+	    }
+
+	    
+	    /**
+	     * Target we publish for alternative transport (USB) clients to send messages to RouterHandler.
+	     */
+	    final Messenger altTransportMessenger = new Messenger(new AltTransportHandler());
+	    
+		 /**
+	     * Handler of incoming messages from an alternative transport (USB).
+	     */
+	    class AltTransportHandler extends Handler {
+	    	ClassLoader loader = getClass().getClassLoader();
+	        @Override
+	        public void handleMessage(Message msg) {
+	        	Bundle receivedBundle = msg.getData();
+	        	switch(msg.what){
+	        	case TransportConstants.HARDWARE_CONNECTION_EVENT:
+        			if(receivedBundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
+        				//We should shut down, so call 
+        				if(altTransportMessager != null 
+        						&& altTransportMessager.equals(msg.replyTo)){
+        					//The same transport that was connected to the router service is now telling us it's disconnected. Let's inform clients and clear our saved messenger
+        					altTransportMessager = null;
+        					storeConnectedStatus(false);
+        					onTransportDisconnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        					shouldServiceKeepRunning(null); //this will close the service if bluetooth is not available
+        				}
+        			}
+        			
+        			if(receivedBundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+    					Message retMsg =  Message.obtain();
+    					retMsg.what = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE;
+        				if(altTransportMessager == null){ //Ok no other transport is connected, this is good
+        					Log.d(TAG, "Alt transport connected.");
+        					if(msg.replyTo == null){
+        						break;
+        					}
+        					altTransportMessager = msg.replyTo;
+        					storeConnectedStatus(true);
+        					//Let the alt transport know they are good to go
+        					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS;
+        					onTransportConnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+        				}else{ //There seems to be some other transport connected
+        					//TODO error
+        					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_ALREADY_CONNECTED;
+        				}
+        				if(msg.replyTo!=null){
+        					try {retMsg.replyTo.send(retMsg);} catch (RemoteException e) {e.printStackTrace();}
+        				}
+        			}
+            		break;
+	        	case TransportConstants.ROUTER_RECEIVED_PACKET:
+	        		if(receivedBundle!=null){
+	        			receivedBundle.setClassLoader(loader);//We do this because loading a custom parceable object isn't possible without it
+	            	}else{
+	            		Log.e(TAG, "Bundle was null while sending packet to router service from alt transport");
+	            	}
+            		if(receivedBundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
+            			SdlPacket packet = receivedBundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
+    					if(packet!=null){
+    						onPacketRead(packet);
+    					}else{
+    						Log.w(TAG, "Received null packet from alt transport service");
+    					}
+            		}else{
+            			Log.w(TAG, "Flase positive packet reception");
+            		}
+            		break; 
+	        	default:
+	        		super.handleMessage(msg);
+	        	}
+	        	
+	        }
+	    };
 		
 /* **************************************************************************************************************************************
 ***********************************************  Life Cycle **************************************************************
@@ -316,9 +478,7 @@ public abstract class SdlRouterService extends Service{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(REGISTER_WITH_ROUTER_ACTION);
 		registerReceiver(mainServiceReceiver,filter);
-		
-		registerReceiver(altTransportReceiver, new IntentFilter(TransportConstants.ALT_TRANSPORT_RECEIVER)); //For reading/writing off alt transport
-		
+				
 		if(!connectAsClient){initBluetoothSerialService();}
 		startSequenceComplete= true;
 	}
@@ -334,15 +494,6 @@ public abstract class SdlRouterService extends Service{
 				Log.i(TAG, "Received an intent with request to register service: "); //Reply as usual
 				sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
 
-			}else if(intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA)){
-				Log.d(TAG, "Service started by alt transport");
-				altTransportAddress = intent.getStringExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA);
-				Intent ackIntent = new Intent();
-				ackIntent.setAction(altTransportAddress);
-				//ackIntent.putExtra(name, value);;
-				storeConnectedStatus(true);
-				sendBroadcast(ackIntent);
-				lastReceivedStartIntent = intent;
 			}
 		}
 		shouldServiceKeepRunning(intent);
@@ -353,15 +504,14 @@ public abstract class SdlRouterService extends Service{
 	public void onDestroy(){
 		if(versionCheckTimeOutHandler!=null){versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);}
 		Log.v(TAG, "Sdl Router Service Destroyed");
-	    	closing = true;
-			currentContext = null;
-			//No need for this Broadcast Receiver anymore
-			unregisterAllReceivers();
-			closeBluetoothSerialServer();
-			registeredApps = null;
-			startSequenceComplete=false;
-			
-			super.onDestroy();
+	    closing = true;
+		currentContext = null;
+		//No need for this Broadcast Receiver anymore
+		unregisterAllReceivers();
+		closeBluetoothSerialServer();
+		registeredApps = null;
+		startSequenceComplete=false;
+		super.onDestroy();
 	    }
 	
 	private void unregisterAllReceivers(){
@@ -369,10 +519,21 @@ public abstract class SdlRouterService extends Service{
 			unregisterReceiver(registerAnInstanceOfSerialServer);		///This should be first. It will always be registered, these others may not be and cause an exception.
 			unregisterReceiver(mListenForDisconnect);
 			unregisterReceiver(mainServiceReceiver);
-			unregisterReceiver(altTransportReceiver);
 		}catch(Exception e){}
 	}
 	
+	private void notifyAltTransportOfClose(int reason){
+		if(this.altTransportMessenger!=null){
+			Message msg = Message.obtain();
+			msg.what = TransportConstants.ROUTER_SHUTTING_DOWN_NOTIFICATION;
+			msg.arg1 = reason;
+			try {
+				altTransportMessenger.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	/* **************************************************************************************************************************************
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
@@ -401,8 +562,8 @@ public abstract class SdlRouterService extends Service{
 	public boolean shouldServiceKeepRunning(Intent intent){
 		Log.d(TAG, "Determining if this service should remain open");
 		
-		if(altTransportAddress!=null 
-				|| (intent!=null && intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA))){
+		if(altTransportMessager!=null 
+				|| (intent!=null && intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA))){ //FIXME how to handle 'service starts'
 			//We have been started by an alt transport, we must remain open. "My life for Auir...."
 			Log.d(TAG, "Alt Transport connected, remaining open");
 			return true;
@@ -464,7 +625,7 @@ public abstract class SdlRouterService extends Service{
 	}
 	
 	public void onTransportDisconnected(TransportType type){
-		if(altTransportAddress!=null){  //FIXME why is this here?
+		if(altTransportMessager!=null){  //If we still have an alt transport open, then we don't need to tell the clients to close
 			return;
 		}
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
@@ -565,29 +726,28 @@ public abstract class SdlRouterService extends Service{
 	            }
 	        }
 	    };
-
-	    public boolean send(byte[] bytes,int offset, int count){ 
-	    	if(bytes==null){
-	    		return false;
-	    	}
-	    	return writeBytesToTransport(bytes,offset,count);
-	    }
 		
-		
-		public boolean writeBytesToTransport(byte[] byteArray,int offset,int count){
-			//debugPacket(byteArray);
+		public boolean writeBytesToTransport(Bundle bundle){
+			if(bundle == null){
+				return false;
+			}
 			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
-				mSerialService.write(byteArray,offset,count);
-				return true;
-			}else if(sendThroughAltTransport(byteArray)){
+				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
+				int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
+				int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+				if(packet!=null){
+					mSerialService.write(packet,offset,count);
+					return true;
+				}
+				return false;
+			}else if(sendThroughAltTransport(bundle)){
 				return true;
 			}
 			else{
-				Log.e(TAG, "Can't send data, serial service is null");
+				Log.e(TAG, "Can't send data, no transport connected");
 				return false;
-			}
+			}	
 		}
-		
 		
 		
 		/**
@@ -596,12 +756,12 @@ public abstract class SdlRouterService extends Service{
 		 * @return If it was possible to send the packet off.
 		 * <p><b>NOTE: This is not guaranteed. It is a best attempt at sending the packet, it may fail.</b>
 		 */
-		private boolean sendThroughAltTransport(byte[] array){
-			if(altTransportAddress!=null){
+		private boolean sendThroughAltTransport(Bundle bundle){
+			if(altTransportMessager!=null){
 				Log.d(TAG, "Sending packet through alt transport");
-				Intent intent = new Intent(altTransportAddress);
-				intent.putExtra(TransportConstants.ALT_TRANSPORT_WRITE, array);
-				sendBroadcast(intent);
+				Message msg = Message.obtain();
+				msg.what = TransportConstants.ROUTER_SEND_PACKET;
+				msg.setData(bundle);
 				return true;
 			}		
 			return false;		
@@ -765,6 +925,7 @@ public abstract class SdlRouterService extends Service{
 						serviceIntent.putExtras(getLastReceivedStartIntent());
 					}
 					context.startService(local.launchIntent);
+					notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
 					if(getBaseContext()!=null){
 						stopSelf();
 					}else{
@@ -858,127 +1019,6 @@ public abstract class SdlRouterService extends Service{
 	}
 	
     
-    /**
-     * Target we publish for clients to send messages to RouterHandler.
-     */
-    final Messenger routerMessenger = new Messenger(new RouterHandler());
-    
-	 /**
-     * Handler of incoming messages from clients.
-     */
-    class RouterHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-        	Bundle receivedBundle = msg.getData();
-        	Bundle returnBundle;
-        	
-            switch (msg.what) {
-            case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
-            	if(receivedBundle.getBoolean(TransportConstants.CONNECT_AS_CLIENT_BOOLEAN_EXTRA, false)
-        				&& !connectAsClient){		//We check this flag to make sure we don't try to connect over and over again. On D/C we should set to false
-        				//Log.d(TAG,"Attempting to connect as bt client");
-        				BluetoothDevice device = receivedBundle.getParcelable(BluetoothDevice.EXTRA_DEVICE);
-        				connectAsClient = true;
-        				if(device==null || !bluetoothConnect(device)){
-        					Log.e(TAG, "Unable to connect to bluetooth device");
-        					connectAsClient = false;
-        				}
-        			}
-            	//**************** We don't break here so we can let the app register as well
-                case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
-                	Message message = Message.obtain();
-                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
-                	long appId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
-                	if(appId<0 || msg.replyTo == null){
-                		Log.w(TAG, "Unable to requster app as no id or messenger was included");
-                		if(msg.replyTo!=null){
-                			msg.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
-                			try {
-								msg.replyTo.send(message);
-							} catch (RemoteException e) {
-								e.printStackTrace();
-							}
-                		}
-                		break;
-                	}
-                	
-                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
-                	registeredApps.put(app.getAppId(), app);
-            		onAppRegistered(app);
-            		
-            		//TODO reply to this messanger.
-            		returnBundle = new Bundle();
-            		
-            		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
-            			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
-            		}
-            		if(!returnBundle.isEmpty()){
-            			message.setData(returnBundle);
-            		}
-            		app.sendMessage(message);
-
-                    break;
-                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
-                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
-                	
-                	RegisteredApp unregisteredApp = registeredApps.remove(appIdToUnregister);//TODO check if this works
-                	Message response = Message.obtain();
-                	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
-                	if(unregisteredApp == null){
-                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
-                	}else{
-                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
-                	}
-                	try {
-                		msg.replyTo.send(response); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
-                	} catch (RemoteException e) {
-                		e.printStackTrace();
-                		
-                	}catch(NullPointerException e2){
-                		Log.e(TAG, "No reply address included, can't send a reply");
-                	}
-                	
-                    break;
-                case TransportConstants.ROUTER_SEND_PACKET:
-                	Log.d(TAG, "Received packet to send");
-                	byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
-    				int offset = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
-    				int count = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-    				
-    				send(packet,offset,count);
-                    break;
-                case TransportConstants.ROUTER_REQUEST_EXTRA_SESSION:
-                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
-                	Message extraSessionResponse = Message.obtain();
-                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE;
-                	if(appIdRequesting>0){
-						synchronized(SESSION_LOCK){
-							if(registeredApps!=null){
-								RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
-								if(appRequesting!=null){
-									appRequesting.getSessionIds().add((long)-1); //Adding an extra session
-									extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_SUCESS;
-								}else{
-									extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
-								}
-							}
-						}		
-					}else{
-						extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL;
-					}
-                	try {
-                		msg.replyTo.send(extraSessionResponse); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
-                	} catch (RemoteException e) {
-                		e.printStackTrace();
-                	}catch(NullPointerException e2){
-                		Log.e(TAG, "No reply address included, can't send a reply");
-                	}
-                	break;
-                default:
-                    super.handleMessage(msg);
-            }
-        }
-    }
 
 	
 	/* ****************************************************************************************************************************************
