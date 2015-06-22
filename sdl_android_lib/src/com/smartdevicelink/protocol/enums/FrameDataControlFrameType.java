@@ -1,5 +1,8 @@
 package com.smartdevicelink.protocol.enums;
 
+import java.util.Arrays;
+import java.util.Vector;
+
 public enum FrameDataControlFrameType {
 	
 	HEARTBEAT          ((byte) 0x00),	
@@ -28,5 +31,10 @@ public enum FrameDataControlFrameType {
 			}
 		}
 		return null;
+	}
+	
+	@Deprecated
+	public Vector<FrameDataControlFrameType> getList() {
+		return new Vector<FrameDataControlFrameType>(Arrays.asList(values()));
 	}
 }

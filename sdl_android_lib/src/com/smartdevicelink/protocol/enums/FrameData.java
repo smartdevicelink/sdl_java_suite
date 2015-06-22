@@ -1,5 +1,8 @@
 package com.smartdevicelink.protocol.enums;
 
+import java.util.Arrays;
+import java.util.Vector;
+
 public enum FrameData {
 	
 	LAST_FRAME         ((byte) 0x00),
@@ -29,5 +32,10 @@ public enum FrameData {
 			}
 		}
 		return null;
+	}
+	
+	@Deprecated
+	public Vector<FrameData> getList() {
+		return new Vector<FrameData>(Arrays.asList(values()));
 	}
 }

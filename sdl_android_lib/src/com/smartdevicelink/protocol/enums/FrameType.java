@@ -1,5 +1,8 @@
 package com.smartdevicelink.protocol.enums;
 
+import java.util.Arrays;
+import java.util.Vector;
+
 public enum FrameType {
 	
 	CONTROL     ((byte) 0x00),
@@ -24,5 +27,10 @@ public enum FrameType {
 			}
 		}
 		return null;
+	}
+	
+	@Deprecated
+	public Vector<FrameType> getList() {
+		return new Vector<FrameType>(Arrays.asList(values()));
 	}
 }

@@ -1,5 +1,8 @@
 package com.smartdevicelink.protocol.enums;
 
+import java.util.Arrays;
+import java.util.Vector;
+
 public enum SessionType {
 	
 	CONTROL   ((byte) 0x00),
@@ -25,5 +28,10 @@ public enum SessionType {
 			}
 		}
 		return null;
+	}
+	
+	@Deprecated
+	public Vector<SessionType> getList() {
+		return new Vector<SessionType>(Arrays.asList(values()));
 	}
 }
