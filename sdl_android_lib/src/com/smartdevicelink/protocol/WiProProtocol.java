@@ -140,13 +140,13 @@ public class WiProProtocol extends AbstractProtocol {
 				for (int i = 0; i < frameCount; i++) {
 					if (i < (frameCount - 1)) {
 	                     ++frameSequenceNumber;
-	                        if (frameSequenceNumber == FrameData.CONSECUTIVE_FRAME.getId()) {
+	                        if (frameSequenceNumber == FrameData.CONSECUTIVE_FRAME.getValue()) {
 	                            // we can't use 0x00 as frameSequenceNumber, because
 	                            // it's reserved for the last frame
 	                            ++frameSequenceNumber;
 	                        }
 					} else {
-						frameSequenceNumber = FrameData.CONSECUTIVE_FRAME.getId();
+						frameSequenceNumber = FrameData.CONSECUTIVE_FRAME.getValue();
 					} // end-if
 					
 					int bytesToWrite = data.length - currentOffset;
@@ -397,7 +397,7 @@ public class WiProProtocol extends AbstractProtocol {
 		} // end-method
 		
 		protected void handleFrame(ProtocolFrameHeader header, byte[] data) {
-			if (header.getFrameType().equals(FrameType.CONTROL)) {
+			if (header.getFrameType() == FrameType.CONTROL) {
 				handleControlFrame(header, data);
 			} else {
 				// Must be a form of data frame (single, first, consecutive, etc.)
@@ -417,12 +417,12 @@ public class WiProProtocol extends AbstractProtocol {
         } // end-method		
 		
 		private void handleControlFrame(ProtocolFrameHeader header, byte[] data) {
-            if (header.getFrameData() == FrameDataControlFrameType.HEARTBEAT.getId()) {
+            if (header.getFrameData() == FrameDataControlFrameType.HEARTBEAT.getValue()) {
                 handleProtocolHeartbeatACK(header, data);
             }
-            else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION.getId()) {
+            else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION.getValue()) {
 				sendStartProtocolSessionACK(header.getSessionType(), header.getSessionID());
-			} else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION_ACK.getId()) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION_ACK.getValue()) {
 				// Use this sessionID to create a message lock
 				Object messageLock = _messageLocks.get(header.getSessionID());
 				if (messageLock == null) {
@@ -432,19 +432,19 @@ public class WiProProtocol extends AbstractProtocol {
 				//hashID = BitConverter.intFromByteArray(data, 0);
 				if (_version > 1) hashID = header.getMessageID();
 				handleProtocolSessionStarted(header.getSessionType(), header.getSessionID(), _version, "");				
-			} else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION_NACK.getId()) {
-				if (header.getSessionType().equals(SessionType.NAV)) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.START_SESSION_NACK.getValue()) {
+				if (header.getSessionType() == SessionType.NAV) {
 					handleProtocolSessionNACKed(header.getSessionType(), header.getSessionID(), _version, "");
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + header.getSessionID(), null);
 				}
-			} else if (header.getFrameData() == FrameDataControlFrameType.END_SESSION.getId()) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.END_SESSION.getValue()) {
 				//if (hashID == BitConverter.intFromByteArray(data, 0)) 
 				if (_version > 1) {
 					if (hashID == header.getMessageID())
 						handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 				} else handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
-			} else if (header.getFrameData() == FrameDataControlFrameType.END_SESSION_ACK.getId()) {
+			} else if (header.getFrameData() == FrameDataControlFrameType.END_SESSION_ACK.getValue()) {
 				handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 			}
 		} // end-method

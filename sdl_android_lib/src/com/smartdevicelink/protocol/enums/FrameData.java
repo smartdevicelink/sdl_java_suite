@@ -15,25 +15,75 @@ public enum FrameData {
 	START_SESSION_NACK ((byte) 0x03),
 	END_SESSION        ((byte) 0x04);
 	
-	private final byte id;
+	private final byte value;
 	
-	FrameData (byte id) {
-		this.id = id;
+	FrameData (byte value) {
+		this.value = value;
 	}
 	
-	public byte getId () {
-		return id;
+	public byte getValue () {
+		return value;
+	}
+	
+	/** Use enum .toString() method instead. */
+	@Deprecated
+	public String getName () {
+		return toString();
+	}
+	
+	/** Use == operator instead. */
+	@Deprecated
+	public boolean equals(FrameData other) {
+		return (this == other);
+	}
+	
+	/** Use == operator instead. */
+	@Deprecated
+	public boolean eq(FrameData other) {
+		return (this == other);
+	}
+	
+	/** Use .getValue() instead. */
+	@Deprecated
+	public byte value() {
+		return value;
 	}
 	
 	public static FrameData valueOf (byte key) {
-		for(FrameData value : FrameData.values()) {
-			if (value.getId() == key) {
+		return lookUp(FrameData.values(), key);
+	}
+	
+	/** Use .valueOf(byte) */
+	@Deprecated
+	public static FrameData get(Vector<FrameData> list, byte key) {
+		return lookUp(list.toArray(new FrameData[list.size()]), key);
+	}
+	
+	/** Use == operator instead. */
+	@Deprecated
+	public static FrameData get(Vector<FrameData> list, String key) {
+		return lookUp(list.toArray(new FrameData[list.size()]), key);
+	}
+	
+	private static FrameData lookUp (FrameData[] list, byte key) {
+		for(FrameData value : list) {
+			if (value.getValue() == key) {
 				return value;
 			}
 		}
 		return null;
 	}
 	
+	private static FrameData lookUp (FrameData[] list, String key) {
+		for(FrameData value : list) {
+			if (value.toString().equals(key)) {
+				return value;
+			}
+		}
+		return null;
+	}
+	
+	/** Use enum .values() method instead. */
 	@Deprecated
 	public Vector<FrameData> getList() {
 		return new Vector<FrameData>(Arrays.asList(values()));

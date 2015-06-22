@@ -54,9 +54,9 @@ public class ProtocolFrameHeader {
 		header <<= 1;
 		header |= (compressed ? 1 : 0);
 		header <<= 3;
-		header |= (frameType.getId() & 0x07);
+		header |= (frameType.getValue() & 0x07);
 		header <<= 8;
-		header |= (sessionType.getId() & 0xFF);
+		header |= (sessionType.getValue() & 0xFF);
 		header <<= 8;
 		header |= (frameData & 0xFF);
 		header <<= 8;

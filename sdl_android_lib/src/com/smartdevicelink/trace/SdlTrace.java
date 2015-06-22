@@ -295,13 +295,13 @@ public class SdlTrace {
 		int frameData = hdr.getFrameData();
 		if (hdr.getFrameType() == FrameType.CONTROL) {
 			sb.append("<ca>");
-			if (frameData == FrameDataControlFrameType.START_SESSION.getId()) 
+			if (frameData == FrameDataControlFrameType.START_SESSION.getValue()) 
 				sb.append("StartSession");
-			else if (frameData == FrameDataControlFrameType.START_SESSION_ACK.getId())
+			else if (frameData == FrameDataControlFrameType.START_SESSION_ACK.getValue())
 				sb.append("StartSessionACK");
-			else if (frameData == FrameDataControlFrameType.START_SESSION_NACK.getId())
+			else if (frameData == FrameDataControlFrameType.START_SESSION_NACK.getValue())
 				sb.append("StartSessionNACK");
-			else if (frameData == FrameDataControlFrameType.END_SESSION.getId())
+			else if (frameData == FrameDataControlFrameType.END_SESSION.getValue())
 				sb.append("EndSession");
 			sb.append("</ca>");
 		} else if (hdr.getFrameType() == FrameType.CONSECUTIVE) {
