@@ -60,9 +60,8 @@ public class BitConverter {
 		// string can be a subset of those bytes.
 		length = Math.min(bytes.length, (offset + length));
 		
-		for (int binaryArrayIndex = offset; binaryArrayIndex < length; binaryArrayIndex++) {
-			int hexArrayIndex = 0;
-			
+		int hexArrayIndex = 0;		
+		for (int binaryArrayIndex = offset; binaryArrayIndex < length; binaryArrayIndex++) {			
 			// Get a single byte from the array.
 			byte unit = bytes[binaryArrayIndex];
 			
@@ -82,7 +81,7 @@ public class BitConverter {
 		byte [] theBytes = new byte[hexString.length() / 2];
 		for (int i = 0; i < hexString.length(); i += 2) {
 			String byteString = hexString.substring(i, i + 2);
-			byte theByte = (byte)Integer.parseInt(byteString, 16);
+			byte theByte = ((Integer) Integer.parseInt(byteString, 16)).byteValue();
 			theBytes[i/2] = theByte;
 		}
 		return theBytes;
@@ -113,6 +112,9 @@ public class BitConverter {
 			return 0;
 		}
 		
+		// If the offset is greater than the length of the array then there are
+		// no values that need to be converted, so the method returns zero. This
+		// avoids a potential ArrayIndexOutOfBoundsException.
 		if (offset > bytes.length) {
 			return 0;
 		}
@@ -143,6 +145,9 @@ public class BitConverter {
 			return 0;
 		}
 		
+		// If the offset is greater than the length of the array then there are
+		// no values that need to be converted, so the method returns zero. This
+		// avoids a potential ArrayIndexOutOfBoundsException.
 		if (offset > bytes.length) {
 			return 0;
 		}
