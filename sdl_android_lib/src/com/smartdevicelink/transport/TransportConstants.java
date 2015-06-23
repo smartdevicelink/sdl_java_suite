@@ -52,6 +52,8 @@ public class TransportConstants {
 	public static final int	BIND_REQUEST_TYPE_CLIENT							= 0x00;
 	public static final int	BIND_REQUEST_TYPE_ALT_TRANSPORT						= 0x01;
 
+	
+	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
 	/**
 	 * Alt transport
 	 * 

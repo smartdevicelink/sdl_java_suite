@@ -440,6 +440,7 @@ public abstract class SdlRouterService extends Service{
 	@Override
 	public boolean onUnbind(Intent intent) {
 		// TODO If we are supposed to be shutting down, we need to try again.
+		Log.d(TAG, "Unbind being called.");
 		return super.onUnbind(intent);
 	}
 
@@ -501,7 +502,11 @@ public abstract class SdlRouterService extends Service{
 			if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
 				Log.i(TAG, "Received an intent with request to register service: "); //Reply as usual
 				sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
-
+			}
+			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
+				//Make sure we are listening on RFCOMM
+				Log.i(TAG, "Received ping, making sure we are listening to bluetooth rfcomm");
+				initBluetoothSerialService();
 			}
 		}
 		shouldServiceKeepRunning(intent);

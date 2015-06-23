@@ -43,27 +43,31 @@ public class TransportBroker {
 	
 	
 	
-	private ServiceConnection routerConnection = new ServiceConnection() {
-		
-        public void onServiceConnected(ComponentName className, IBinder service) {
-        	Log.d(TAG, "Bound to service " + className.toString());
-        	
-        	routerService = new Messenger(service);
-            isBound = true;
-            //So we just established our connection
-            //Register with router service
-            sendRegistrationMessage();    
-        }
+	private ServiceConnection routerConnection;
+	
+	private void initRouterConnection(){
+		routerConnection= new ServiceConnection() {
 
-        public void onServiceDisconnected(ComponentName className) {
-        	Log.d(TAG, "UN-Bound to service");
-        	routerService = null;
-        	registeredWithRouterService = false;
-            isBound = false;
-            onHardwareDisconnected(null);
-        }
-    };
-    
+			public void onServiceConnected(ComponentName className, IBinder service) {
+				Log.d(TAG, "Bound to service " + className.toString());
+
+				routerService = new Messenger(service);
+				isBound = true;
+				//So we just established our connection
+				//Register with router service
+				sendRegistrationMessage();    
+			}
+
+			public void onServiceDisconnected(ComponentName className) {
+				Log.d(TAG, "UN-Bound to service");
+				routerService = null;
+				registeredWithRouterService = false;
+				isBound = false;
+				onHardwareDisconnected(null);
+			}
+		};
+	}
+
     private void sendMessageToRouterService(Message message){
     	Log.i(TAG, "Attempting to send message type - " + message.what);
     	if(isBound){
@@ -196,6 +200,7 @@ public class TransportBroker {
 		@SuppressLint("SimpleDateFormat")
 		public TransportBroker(Context context, String appId){
 			synchronized(INIT_LOCK){
+				initRouterConnection();
 				//So the user should have set the AppId, lets define where the intents need to be sent
 				SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss"); //So we have a time stamp of the event
 				String timeStamp = s.format(new Date(System.currentTimeMillis()));
@@ -223,6 +228,9 @@ public class TransportBroker {
 				if(currentContext==null){
 					throw new IllegalStateException("This instance can't be started since it's local reference of context is null. Ensure when suppling a context to the TransportBroker that it is valid");
 				}
+				if(routerConnection==null){
+					initRouterConnection();
+				}
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
 				registerWithRouterService();
 			}
@@ -234,6 +242,7 @@ public class TransportBroker {
 				unregisterWithRouterService();
 				routerService = null; //TODO make sure theres nothing else we need
 				queuedOnTransportConnect = null;
+				unBindFromRouterService();
 			}
 		}
 		/**
@@ -243,6 +252,7 @@ public class TransportBroker {
 			Log.d(TAG, "STOPPING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
+				unBindFromRouterService();
 				routerService = null;
 				queuedOnTransportConnect = null;
 				try{
@@ -257,7 +267,14 @@ public class TransportBroker {
 			}
 		}
 		
-
+		private void unBindFromRouterService(){
+			try{
+				getContext().unbindService(routerConnection);
+				
+			}catch(IllegalArgumentException e){
+				//This is ok
+			}
+		}
 		/***************************************************************************************************************************************
 		***********************************************  Event Callbacks  **************************************************************
 		****************************************************************************************************************************************/	
@@ -268,10 +285,8 @@ public class TransportBroker {
 		}
 		
 		public void onHardwareDisconnected(TransportType type){
-			if(isBound){
-				getContext().unbindService(routerConnection);
-			}
 			synchronized(INIT_LOCK){
+				unBindFromRouterService();
 				routerService = null;
 				routerConnection = null;
 				queuedOnTransportConnect = null;
@@ -396,7 +411,7 @@ public class TransportBroker {
 		
 		private void unregisterWithRouterService(){
 			Log.i(TAG, "Attempting to unregister with Sdl Router Service");
-			if(isBound){
+			if(isBound && routerService!=null){
 				Message msg = Message.obtain();
 				msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;
 				msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
@@ -404,6 +419,8 @@ public class TransportBroker {
 				bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
 				msg.setData(bundle);
 				this.sendMessageToRouterService(msg);
+			}else{
+				Log.w(TAG, "Unable to unregister, not bound to router service");
 			}
 			
 			routerService = null;

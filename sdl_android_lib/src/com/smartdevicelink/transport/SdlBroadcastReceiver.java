@@ -65,7 +65,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    }
 	    
 		//Basically if the service is already running somewhere, let it know what version this app is running
-		if(isRouterServiceRunning(context)){
+		if(isRouterServiceRunning(context, true)){
 			//So we know an instance is running, but we need to make sure it is the most upto date
 			//We will send it an intent with the version number of the local instance and an intent to start this instance
 			Log.i(TAG, "An instance of the Router Service is already running");
@@ -101,9 +101,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	/**
 	 * Determines if an instance of the Router Service is currently running on the device. 
 	 * @param context A context to access Android system services through.
+	 * @param pingService Set this to true if you want to make sure the service is up and listening to bluetooth
 	 * @return True if a Livio Bluetooth Service is currently running, false otherwise.
 	 */
-	private static boolean isRouterServiceRunning(Context context){
+	private static boolean isRouterServiceRunning(Context context, boolean pingService){
 		Log.d(TAG, "Looking for Service: "+ SDL_ROUTER_SERVICE_CLASS_NAME);
 		ActivityManager manager = (ActivityManager) context.getSystemService("activity");
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -111,7 +112,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
 	    	if ((service.service.getClassName()).toLowerCase().contains(SDL_ROUTER_SERVICE_CLASS_NAME)) {
 	    		runningBluetoothServicePackage = service.service.getPackageName();	//Store which instance is running
-	            return true;
+	            if(pingService){
+	            	Intent intent = new Intent();
+	            	intent.setClassName(service.service.getPackageName(), service.service.getClassName());
+	            	intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, pingService);
+	            	context.startService(intent);
+	            }
+	    		return true;
 	        }
 	    }
 		
@@ -125,7 +132,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return True if a transport connection is established, false otherwise.
 	 */
 	public static boolean isTransportConnected(Context context){
-		if(isRouterServiceRunning(context)){	//So there is a service up, let's see if it's connected
+		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {
 				con = context.createPackageContext(runningBluetoothServicePackage, 0);
