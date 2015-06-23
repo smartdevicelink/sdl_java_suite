@@ -171,10 +171,12 @@ public class SendLocation extends RPCRequest{
         if(parameters.get(KEY_ADDRESS_LINES) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_ADDRESS_LINES);
             if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof String){
-                    return (List<String>) list;
-                }
+            	for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
+        		}
+        		return (List<String>) list;
             }
         }
         return null;
@@ -185,7 +187,16 @@ public class SendLocation extends RPCRequest{
      * @param addressLines The address lines of the location
      */
     public void setAddressLines(List<String> addressLines){
-        if(addressLines != null){
+
+    	boolean valid = true;
+    	
+    	for (String item : addressLines ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (addressLines != null) && (addressLines.size() > 0) && valid) {
             parameters.put(KEY_ADDRESS_LINES, addressLines);
         }
         else{
