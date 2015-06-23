@@ -4333,11 +4333,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * A value greater than zero is used for resuming partial data chunks.
 	 * @param iLength - The total length of the file being sent.
 	 * @throws SdlException
+	 * @see {@link#putFileStream(InputStream, String, Long, Long)}
 	*/
+	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		startRPCStream(is, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param inputStream The input stream of byte data that will be read from.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @throws SdlException
+	 */
+	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		startRPCStream(inputStream, msg);
 	}
 	
 	/** 
@@ -4351,12 +4370,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SdlException
-	*/
+	 * @see {@link#putFileStream(String, Long, Long)}
+	 */
+	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		return startRPCStream(msg);
 	}	
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @throws SdlException
+	 */
+	public void putFileStream(String fileName, Long offset, Long length) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		startRPCStream(msg);
+	}
 
 	/**
 	 * Used to push a binary stream of file data onto the module from a mobile device.
@@ -4371,11 +4408,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @throws SdlException
-	*/
+	 * @see {@link#putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean)}
+	 */
+	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		startRPCStream(is, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param inputStream The input stream of byte data that will be read from.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @throws SdlException
+	 */
+	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		startRPCStream(inputStream, msg);
 	}
 	
 	/**
@@ -4391,11 +4453,35 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SdlException
-	*/
+	 * @see {@link#putFileStream(String, Long, Long, FileType, Boolean, Boolean)}
+	 */
+	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		return startRPCStream(msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @throws SdlException
+	 */
+	public void putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		startRPCStream(msg);
 	}
 	
 	/**
@@ -4412,11 +4498,40 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
 	 * @throws SdlException
-	*/	
+	 * @see {@link#putFileStream(String, String, Long, FileType, Boolean, Boolean, Integer)}
+	 */	
+	@Deprecated
 	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(sPath, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param path The physical file path on the mobile device.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @param correlationId A unique id that correlates each RPCRequest and 
+	 * RPCResponse.
+	 * @return RPCStreamController If the putFileStream was not started 
+	 * successfully null is returned, otherwise a valid object reference is 
+	 * returned .
+	 * @throws SdlException
+	 */
+	public void putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, correlationId);
+		startRPCStream(msg);
 	}
 
 	/**
@@ -4433,11 +4548,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
 	 * @throws SdlException
-	*/	
+	 * @see {@link#putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, Integer)}
+	 */	
+	@Deprecated
 	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(is, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param inputStream The input stream of byte data that will be read from.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @param correlationId A unique id that correlates each RPCRequest and 
+	 * RPCResponse.
+	 * @throws SdlException
+	 */
+	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, correlationId);
+		startRPCStream(msg);
 	}
 
 	/**
