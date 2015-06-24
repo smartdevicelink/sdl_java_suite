@@ -6,7 +6,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 
-
 public class OnKeyboardInput extends RPCNotification {
 	public static final String KEY_DATA = "data";
 	public static final String KEY_EVENT = "event";

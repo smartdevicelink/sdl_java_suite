@@ -3,9 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class ScreenParams extends RPCStruct {
     public static final String KEY_RESOLUTION = "resolution";
@@ -26,7 +24,7 @@ public class ScreenParams extends RPCStruct {
         	try {
         		return new ImageResolution((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESOLUTION, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_RESOLUTION, e);
             }
         }
         return null;
@@ -48,7 +46,7 @@ public class ScreenParams extends RPCStruct {
         	try {
         		return new TouchEventCapabilities((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TOUCH_EVENT_AVAILABLE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_TOUCH_EVENT_AVAILABLE, e);
             }
         }
         return null;

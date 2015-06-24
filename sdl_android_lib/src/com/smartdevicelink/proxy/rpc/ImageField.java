@@ -7,7 +7,7 @@ import java.util.List;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class ImageField extends RPCStruct {
     public static final String KEY_IMAGE_TYPE_SUPPORTED = "imageTypeSupported";
@@ -72,7 +72,7 @@ public class ImageField extends RPCStruct {
 	                      try {
 	                        theCode = FileType.valueForString(strFormat);
 	                      } catch (Exception e) {
-	                        DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
+	                        SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
 	                    }
 	                    if (theCode != null) {
 	                        fileTypeList.add(theCode);
@@ -120,7 +120,7 @@ public class ImageField extends RPCStruct {
         	try {
         		return new ImageResolution((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_RESOLUTION, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_RESOLUTION, e);
             }
         }
         return null;

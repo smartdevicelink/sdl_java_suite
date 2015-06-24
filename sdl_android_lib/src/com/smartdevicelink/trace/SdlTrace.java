@@ -1,11 +1,13 @@
 package com.smartdevicelink.trace;
 
 import java.sql.Timestamp;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Process;
+
 import com.smartdevicelink.protocol.ProtocolFrameHeader;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
@@ -16,10 +18,8 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.trace.enums.Mod;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.util.BitConverter;
-import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
    1. System defaults
@@ -334,7 +334,7 @@ public class SdlTrace {
 
 	private static void checkB64(String x, byte[] buf, int offset, int byteLength) {
 		if ((x.length() % 4) != 0) {
-			NativeLogTool.logWarning(SdlTrace.SYSTEM_LOG_TAG, "b64 string length (" + x.length() + ") isn't multiple of 4: buf.length=" + buf.length + ", offset=" + offset + ", len=" + byteLength);
+			SdlLog.w("b64 string length (" + x.length() + ") isn't multiple of 4: buf.length=" + buf.length + ", offset=" + offset + ", len=" + byteLength);
 		} // end-if
 	} // end-method
 
@@ -381,32 +381,19 @@ public class SdlTrace {
 		return baseTics;
 	} // end-method
 
-	public static Boolean writeMessageToSiphonServer(String info) {
-		return SiphonServer.sendFormattedTraceMessage(info);
-	}
-
 	private static boolean writeXmlTraceMessage(String msg) {
-		try {			
-			// Attempt to write formatted message to the Siphon
-			if (false == writeMessageToSiphonServer(msg)) {				
-				// If writing to the Siphon fails, write to the native log
-				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
-				return false;
-			}
-			
+		try {
 			ISTListener localTraceListener = m_appTraceListener;
 
 			if (localTraceListener != null) {
 				try {
 					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 				} catch (Exception ex) {
-					DebugTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
-					return false;
+					SdlLog.e("Failure calling ISTListener: " + ex.toString(), ex);
 				}
 			}
 		} catch (Exception ex) {
-			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG, "Failure writing XML trace message: " + ex.toString());
-			return false;
+			SdlLog.e("Failure writing XML trace message: " + ex);
 		}
 		return true;
 	}

@@ -6,11 +6,11 @@ package com.smartdevicelink.trace;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.smartdevicelink.util.DebugTool;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.telephony.TelephonyManager;
+
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * @author vvolkman
@@ -43,7 +43,7 @@ public class TraceDeviceInfo {
 			try { // getDeviceId() requires android.permission.READ_PHONE_STATE
 				info = "<deviceid>" + m_telephonyManager.getDeviceId() + "</deviceid>";
 			} catch (Exception e1) {
-				DebugTool.logError("Failure getting telephony device ID: " + e1.toString(), e1);
+				SdlLog.e("Failure getting telephony device ID: " + e1.toString(), e1);
 			}
 	
 			info = "<pt>";

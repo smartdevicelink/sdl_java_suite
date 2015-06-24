@@ -8,7 +8,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -513,7 +513,7 @@ public class RegisterAppInterface extends RPCRequest {
 	                    try {
 	                        toAdd = AppHMIType.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);
 	                    }
 
 	                    if (toAdd != null) {
