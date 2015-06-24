@@ -20,6 +20,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.SdlLog;
 
 /**
@@ -423,7 +424,7 @@ public class USBTransport extends SdlTransport {
      * Returns the type of the transport.
      *
      * @return TransportType.USB
-     * @see com.smartdevicelink.transport.TransportType
+     * @see com.smartdevicelink.transport.enums.TransportType
      */
     @Override
     public TransportType getTransportType() {

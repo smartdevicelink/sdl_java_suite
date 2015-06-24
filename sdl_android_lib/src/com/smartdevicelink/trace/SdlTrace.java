@@ -32,13 +32,10 @@ import com.smartdevicelink.util.SdlLog;
 @SuppressLint("DefaultLocale")
 public class SdlTrace {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
-	static boolean canWriteLogs = false;
-		
+			
 	public static final String SYSTEM_LOG_TAG = "SdlTrace";
 	
 	private static long baseTics  = java.lang.System.currentTimeMillis();
-	private final static String KeyStr = SDL_LIB_TRACE_KEY;
 	private static boolean acceptAPITraceAdjustments = true;
 
 	protected static ISTListener m_appTraceListener = null;
@@ -60,12 +57,6 @@ public class SdlTrace {
 	
 	public static void setAppTraceListener(ISTListener listener) {
 		m_appTraceListener = listener;
-	} // end-method
-
-	public static void setTracingEnable(Boolean enable) {
-		if (enable != null) {
-			canWriteLogs = enable;
-		}
 	} // end-method
 
 	public static void setAppTraceLevel(DetailLevel dt) {
@@ -140,7 +131,7 @@ public class SdlTrace {
 	} // end-method
 	
 	public static boolean logProxyEvent(String eventText, String token) {
-		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -162,7 +153,7 @@ public class SdlTrace {
 
 	public static boolean logRPCEvent(InterfaceActivityDirection msgDirection, RPCMessage rpcMsg, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.rpc);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -208,7 +199,7 @@ public class SdlTrace {
 
 	public static boolean logMarshallingEvent(InterfaceActivityDirection msgDirection, byte[] marshalledMessage, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.mar);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -229,7 +220,7 @@ public class SdlTrace {
 
 	public static boolean logProtocolEvent(InterfaceActivityDirection frameDirection, ProtocolFrameHeader frameHeader, byte[] frameData, int frameDataOffset, int frameDataLength, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.proto);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -348,7 +339,7 @@ public class SdlTrace {
 	} // end-method
 
 	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
-		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -396,11 +387,11 @@ public class SdlTrace {
 
 			if (localTraceListener != null) {
 				try {
-					localTraceListener.logXmlMsg(msg, KeyStr);
+					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 				} catch (Exception ex) {
 					SdlLog.e("Failure calling ISTListener: " + ex.toString(), ex);
-				} // end-catch
-			} // end-if
+				}
+			}
 		} catch (Exception ex) {
 			SdlLog.e("Failure writing XML trace message: " + ex);
 		}

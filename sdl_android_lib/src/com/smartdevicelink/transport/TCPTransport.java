@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import java.io.IOException;
 import java.io.InputStream;
