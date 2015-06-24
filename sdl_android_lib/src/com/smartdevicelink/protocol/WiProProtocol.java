@@ -5,10 +5,14 @@ import java.util.Hashtable;
 
 import android.util.Log;
 
-import com.smartdevicelink.exception.*;
-import com.smartdevicelink.protocol.enums.*;
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
+import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.MessageType;
+import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.util.BitConverter;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
@@ -366,7 +370,7 @@ public class WiProProtocol extends AbstractProtocol {
 				try {
 					handleProtocolMessageReceived(message);
 				} catch (Exception excp) {
-					DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
+					SdlLog.e(FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
 				} // end-catch
 				
 				hasFirstFrame = false;
@@ -476,7 +480,7 @@ public class WiProProtocol extends AbstractProtocol {
 			try {
 				handleProtocolMessageReceived(message);
 			} catch (Exception ex) {
-				DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
+				SdlLog.e(FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
 				handleProtocolError(FailurePropagating_Msg + "onProtocolMessageReceived: ", ex);
 			} // end-catch
 		} // end-method

@@ -7,7 +7,7 @@ import java.util.List;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 /**
  * Contains information about the display for the SDL system to which the application is currently connected.
   * <p><b> Parameter List
@@ -77,13 +77,7 @@ public class DisplayCapabilities extends RPCStruct {
         if (obj instanceof DisplayType) {
             return (DisplayType) obj;
         } else if (obj instanceof String) {
-            DisplayType theCode = null;
-            try {
-                theCode = DisplayType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DISPLAY_TYPE, e);
-            }
-            return theCode;
+            return DisplayType.valueForString((String) obj);
         }
         return null;
     }
@@ -291,7 +285,7 @@ public class DisplayCapabilities extends RPCStruct {
 	                    try {
 	                        toAdd = MediaClockFormat.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                        DebugTool.logError("Failed to parse MediaClockFormat from " + getClass().getSimpleName() + "." + KEY_MEDIA_CLOCK_FORMATS, e);
+	                        SdlLog.e("Failed to parse MediaClockFormat from " + getClass().getSimpleName() + "." + KEY_MEDIA_CLOCK_FORMATS, e);
 	                    }
 	                    if (toAdd != null) {
 	                    	mediaClockFormatList.add(toAdd);
@@ -407,7 +401,7 @@ public class DisplayCapabilities extends RPCStruct {
             try {
                 return new ScreenParams((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SCREEN_PARAMS, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_SCREEN_PARAMS, e);
             }
         }
         return null;

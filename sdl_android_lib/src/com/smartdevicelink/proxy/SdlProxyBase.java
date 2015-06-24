@@ -31,7 +31,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.rpc.PutFile;
@@ -88,13 +87,11 @@ import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
-	// Used for calls to Android Log class.
-	public static final String TAG = "SdlProxy";
+
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	private static final int PROX_PROT_VER_ONE = 1;
 	
@@ -249,7 +246,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onTransportError(String info, Exception e) {
-			DebugTool.logError("Transport failure: " + info, e);
+			SdlLog.e("Transport failure: " + info, e);
 			
 			notifyPutFileStreamError(e, info);
 			
@@ -327,7 +324,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onHeartbeatTimedOut(byte sessionID) {
             final String msg = "Heartbeat timeout";
-            DebugTool.logInfo(msg);
+            SdlLog.i(msg);
             
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onHeartbeatTimedOut");
@@ -686,11 +683,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			updateBroadcastIntent(sendIntent, "COMMENT1", outFile);
 		} catch (FileNotFoundException e) {
 			updateBroadcastIntent(sendIntent, "COMMENT2", "writeToFile FileNotFoundException " + e);
-			Log.i("sdlp", "FileNotFoundException: " + e);
+			SdlLog.i("FileNotFoundException: " + e);
 			e.printStackTrace();
 		} catch (IOException e) {
 			updateBroadcastIntent(sendIntent, "COMMENT2", "writeToFile IOException " + e);
-			Log.i("sdlp", "IOException: " + e);
+			SdlLog.i("IOException: " + e);
 			e.printStackTrace();
 		}
 		finally
@@ -841,7 +838,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (urlConnection == null)
 			{
-	            Log.i(TAG, "urlConnection is null, check RPC input parameters");
+	            SdlLog.i("urlConnection is null, check RPC input parameters");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "urlConnection is null, check RPC input parameters");
 	            return;
 			}
@@ -865,7 +862,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (iResponseCode != HttpURLConnection.HTTP_OK)
 			{
-	            Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+	            SdlLog.i("Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "Response code not HTTP_OK, aborting request. ");
 	            return;
 	        }
@@ -880,7 +877,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		        response.append('\r');
 			}
 		    rd.close();
-		    Log.i(TAG, "response: " + response.toString());			    		    
+		    SdlLog.i("response: " + response.toString());			    		    
 		    
 		    writeToFile(response.toString(), "responseFromCloud");
 
@@ -898,19 +895,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					if (jsonArray.get(i) instanceof String) 
 					{
 						cloudDataReceived.add(jsonArray.getString(i));
-						//Log.i("sendOnSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
 					}
 				}
 			} 
 			else if (jsonResponse.get("data") instanceof String) 
 			{
 				cloudDataReceived.add(jsonResponse.getString("data"));
-				//Log.i("sendOnSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
 			} 
 			else 
 			{
-				DebugTool.logError("sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-				//Log.i("sendOnSystemRequestToUrl", "sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+				SdlLog.e("sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
 				return;
 			}
 				
@@ -934,7 +928,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (getIsConnected()) 
 			{			    	
 				sendRPCRequestPrivate(mySystemRequest);
-				Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
+				SdlLog.i("sendOnSystemRequestToUrl sent to sdl");											
 										
 				updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 				updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
@@ -943,45 +937,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		catch (SdlException e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: Could not get data from JSONObject received.", e);
+			SdlLog.e("sendOnSystemRequestToUrl: Could not get data from JSONObject received.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " SdlException encountered sendOnSystemRequestToUrl: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: Could not get data from JSONObject received."+ e);
 		} 
 		catch (JSONException e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: JSONException: ", e);
+			SdlLog.e("sendOnSystemRequestToUrl: JSONException: ", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " JSONException encountered sendOnSystemRequestToUrl: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: JSONException: "+ e);
 		} 
 		catch (UnsupportedEncodingException e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: Could not encode string.", e);
+			SdlLog.e("sendOnSystemRequestToUrl: Could not encode string.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " UnsupportedEncodingException encountered sendOnSystemRequestToUrl: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: Could not encode string."+ e);
 		} 
 		catch (ProtocolException e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: Could not set request method to post.", e);
+			SdlLog.e("sendOnSystemRequestToUrl: Could not set request method to post.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " ProtocolException encountered sendOnSystemRequestToUrl: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: Could not set request method to post."+ e);
 		} 
 		catch (MalformedURLException e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
+			SdlLog.e("sendOnSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " MalformedURLException encountered sendOnSystemRequestToUrl: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: URL Exception when sending SystemRequest to an external server."+ e);
 		} 
 		catch (IOException e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: IOException: ", e);
+			SdlLog.e("sendOnSystemRequestToUrl: IOException: ", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " IOException while sending to cloud: IOException: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: IOException: "+ e);
 		} 
 		catch (Exception e) 
 		{
-			DebugTool.logError("sendOnSystemRequestToUrl: Unexpected Exception: ", e);
+			SdlLog.e("sendOnSystemRequestToUrl: Unexpected Exception: ", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " Exception encountered sendOnSystemRequestToUrl: "+ e);
-			//Log.i("pt", "sendOnSystemRequestToUrl: Unexpected Exception: " + e);
 		}
 		finally
 		{
@@ -1074,61 +1061,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		updateBroadcastIntent(sendIntent, "COMMENT1", sTransComment);
 		sendBroadcastIntent(sendIntent);		
 	}
-	
-	
-	/**
-	 *  Public method to enable the siphon transport
-	 */
-	public void enableSiphonDebug() {
-
-		short enabledPortNumber = SiphonServer.enableSiphonServer();
-		String sSiphonPortNumber = "Enabled Siphon Port Number: " + enabledPortNumber;
-		Intent sendIntent = createBroadcastIntent();
-		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "enableSiphonDebug");
-		updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
-		sendBroadcastIntent(sendIntent);
-	}
-
-
-	
-	/**
-	 *  Public method to disable the Siphon Trace Server
-	 */
-	public void disableSiphonDebug() {
-
-		short disabledPortNumber = SiphonServer.disableSiphonServer();
-		if (disabledPortNumber != -1) {
-		    String sSiphonPortNumber = "Disabled Siphon Port Number: " + disabledPortNumber;
-		    Intent sendIntent = createBroadcastIntent();
-		    updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "disableSiphonDebug");
-		    updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
-		    sendBroadcastIntent(sendIntent);
-		}
-	}
-
-	
-	
-	/**
-	 *  Public method to enable the Debug Tool
-	 */
-	public static void enableDebugTool() {
-		DebugTool.enableDebugTool();
-	}
-	
-	/**
-	 *  Public method to disable the Debug Tool
-	 */
-	public static void disableDebugTool() {
-		DebugTool.disableDebugTool();
-	}	
-
-	/**
-	* Public method to determine Debug Tool enabled
-	*/
-	public static boolean isDebugEnabled() {
-		return DebugTool.isDebugEnabled();
-	}	
-	
 	
 	@Deprecated
 	public void close() throws SdlException {
@@ -1295,7 +1227,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (functionName != null) {
 							hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
 						} else {
-							DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
+							SdlLog.w("Dispatch Incoming Message - function name is null unknown RPC.  FunctionID: " + message.getFunctionID());
 							return;
 						}
 						if (message.getRPCType() == 0x00) {
@@ -1312,7 +1244,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					handleRPCMessage(hash);							
 				} catch (final Exception excp) {
-					DebugTool.logError("Failure handling protocol message: " + excp.toString(), excp);
+					SdlLog.e("Failure handling protocol message: " + excp.toString(), excp);
 					passErrorToProxyListener("Error handing incoming protocol message.", excp);
 				} // end-catch
 			} else {
@@ -1320,7 +1252,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		} catch (final Exception e) {
 			// Pass error to application through listener 
-			DebugTool.logError("Error handing proxy event.", e);
+			SdlLog.e("Error handing proxy event.", e);
 			passErrorToProxyListener("Error handing incoming protocol message.", e);
 		}
 	}
@@ -1342,7 +1274,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		catch (final Exception e) 
 		{
-			DebugTool.logError("Error handing proxy event.", e);
+			SdlLog.e("Error handing proxy event.", e);
 			passErrorToProxyListener("Error serializing message.", e);
 			return null;
 		}
@@ -1411,13 +1343,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else {
 				// Diagnostics
 				SdlTrace.logProxyEvent("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.", SDL_LIB_TRACE_KEY);
-				DebugTool.logError("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.");
+				SdlLog.e("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.");
 			}
 			
 		SdlTrace.logProxyEvent("Proxy fired callback: " + message.getFunctionName(), SDL_LIB_TRACE_KEY);
 		} catch(final Exception e) {
 			// Pass error to application through listener 
-			DebugTool.logError("Error handing proxy event.", e);
+			SdlLog.e("Error handing proxy event.", e);
 			if (_callbackToUIThread) {
 				// Run in UI thread
 				_mainUIHandler.post(new Runnable() {
@@ -1433,11 +1365,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 	private void handleErrorsFromInternalMessageDispatcher(String info, Exception e) {
-		DebugTool.logError(info, e);
+		SdlLog.e(info, e);
 		// This error cannot be passed to the user, as it indicates an error
 		// in the communication between the proxy and the application.
 		
-		DebugTool.logError("InternalMessageDispatcher failed.", e);
+		SdlLog.e("InternalMessageDispatcher failed.", e);
 		
 		// Note, this is the only place where the _proxyListener should be referenced asdlhronously,
 		// with an error on the internalMessageDispatcher, we have no other reliable way of 
@@ -1543,15 +1475,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_diagModes = msg.getSupportedDiagModes();
 					
 					String sVersionInfo = "SDL Proxy Version: " + _proxyVersionInfo;
-													
-					if (!isDebugEnabled()) 
-					{
-						enableDebugTool();
-						DebugTool.logInfo(sVersionInfo, false);
-						disableDebugTool();
-					}					
-					else
-						DebugTool.logInfo(sVersionInfo, false);
+					SdlLog.i(sVersionInfo);
 					
 					sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "RAI_RESPONSE");
@@ -1589,7 +1513,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA.toString())) {
 						
-					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
+					SdlLog.i("Policy Table: POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					
@@ -1610,7 +1534,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ENCODED_SYNC_P_DATA.toString())) {
 
-					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
+					SdlLog.i("Policy Table: POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
 					final SystemRequestResponse msg = new SystemRequestResponse(hash);
 					
 					Intent sendIntent = createBroadcastIntent();
@@ -1692,14 +1616,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				_diagModes = msg.getSupportedDiagModes();				
 				
-				if (!isDebugEnabled()) 
-				{
-					enableDebugTool();
-					DebugTool.logInfo("SDL Proxy Version: " + _proxyVersionInfo);
-					disableDebugTool();
-				}					
-				else
-					DebugTool.logInfo("SDL Proxy Version: " + _proxyVersionInfo);				
+				SdlLog.i("SDL Proxy Version: " + _proxyVersionInfo);				
 				
 				// RegisterAppInterface
 				if (_advancedLifecycleManagementEnabled) {
@@ -2317,10 +2234,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             }
 			else {
 				if (_sdlMsgVersion != null) {
-					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
+					SdlLog.e("Unrecognized response Message: " + functionName.toString() + 
 							"SDL Message Version = " + _sdlMsgVersion);
 				} else {
-					DebugTool.logError("Unrecognized response Message: " + functionName.toString());
+					SdlLog.e("Unrecognized response Message: " + functionName.toString());
 				}
 			} // end-if
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
@@ -2426,7 +2343,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl());
 					sendBroadcastIntent(sendIntent);				
 					
-					Log.i("pt", "send to url");
+					SdlLog.i("Policy Table: send to url");
 					
 					if ( (msg.getUrl() != null) )
 					{
@@ -2662,10 +2579,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else {
 				if (_sdlMsgVersion != null) {
-					DebugTool.logInfo("Unrecognized notification Message: " + functionName.toString() + 
+					SdlLog.i("Unrecognized notification Message: " + functionName.toString() + 
 							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
 				} else {
-					DebugTool.logInfo("Unrecognized notification Message: " + functionName.toString());
+					SdlLog.i("Unrecognized notification Message: " + functionName.toString());
 				}
 			} // end-if
 		} // end-if notification
@@ -2851,7 +2768,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 			return streamController;
 		} catch (Exception e) {
-            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            SdlLog.e("SyncConnection: Unable to start streaming:" + e.toString());  
             return null;
         }			
 	}
@@ -2875,7 +2792,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 			return streamController;
 		} catch (Exception e) {
-            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            SdlLog.e("SyncConnection: Unable to start streaming:" + e.toString());  
             return null;
         }			
 	}

@@ -11,9 +11,9 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.trace.*;
+import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 
 /*
  * Responsible for marshalling and unmarshing between RPC Objects and byte streams that are sent
@@ -32,7 +32,7 @@ public class JsonRPCMarshaller {
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
 		} catch (JSONException e) {
-			DebugTool.logError("Failed to encode messages to JSON.", e);
+			SdlLog.e("Failed to encode messages to JSON.", e);
 		}
 		return jsonBytes;
 	}
@@ -45,7 +45,7 @@ public class JsonRPCMarshaller {
 			JSONObject jsonObject = new JSONObject(jsonString);
 			ret = deserializeJSONObject(jsonObject);
 		} catch (JSONException e) {
-			DebugTool.logError("Failed to parse JSON", e);
+			SdlLog.e("Failed to parse JSON.", e);
 		}
 		return ret;
 	}

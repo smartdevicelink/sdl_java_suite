@@ -17,7 +17,7 @@ import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.trace.enums.Mod;
 import com.smartdevicelink.util.BitConverter;
-import com.smartdevicelink.util.NativeLogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
    1. System defaults
@@ -299,8 +299,7 @@ public class SdlTrace {
 	private static void checkB64(String x, byte[] buf, int offset,
 			int byteLength) {
 		if ((x.length() % 4) != 0) {
-			NativeLogTool.logWarning(SdlTrace.SYSTEM_LOG_TAG,
-					"b64 string length (" + x.length()
+			SdlLog.w("b64 string length (" + x.length()
 							+ ") isn't multiple of 4: buf.length=" + buf.length
 							+ ", offset=" + offset + ", len=" + byteLength);
 		}
@@ -351,8 +350,7 @@ public class SdlTrace {
 		try {
 			m_appTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 		} catch (Exception ex) {
-			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG,
-					"Failure writing XML trace message: " + ex.toString());
+			SdlLog.e("Failure writing XML trace message: " + ex.toString());
 			return false;
 		}
 		
