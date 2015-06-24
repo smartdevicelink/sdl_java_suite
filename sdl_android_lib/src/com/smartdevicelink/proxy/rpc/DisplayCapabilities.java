@@ -77,7 +77,13 @@ public class DisplayCapabilities extends RPCStruct {
         if (obj instanceof DisplayType) {
             return (DisplayType) obj;
         } else if (obj instanceof String) {
-            return DisplayType.valueForString((String) obj);
+            DisplayType theCode = null;
+            try {
+                theCode = DisplayType.valueForString((String) obj);
+            } catch (Exception e) {
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DISPLAY_TYPE, e);
+            }
+            return theCode;
         }
         return null;
     }
@@ -102,16 +108,43 @@ public class DisplayCapabilities extends RPCStruct {
         if (store.get(KEY_TEXT_FIELDS) instanceof List<?>) {
         	List<?> list = (List<?>)store.get(KEY_TEXT_FIELDS);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TextField) {
-	                return (List<TextField>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TextField> newList = new ArrayList<TextField>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TextField((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TextField> textFieldList  = new ArrayList<TextField>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TextField and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TextField) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			textFieldList.add(new TextField((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TextField>) list;
+	        	} else if (flagHash) {
+	        		return textFieldList;
+	        	}
 	        }
         }
         return null;
@@ -122,7 +155,16 @@ public class DisplayCapabilities extends RPCStruct {
      * @param textFields the List of textFields
      */    
     public void setTextFields( List<TextField> textFields ) {
-        if (textFields != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TextField item : textFields ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (textFields != null) && (textFields.size() > 0) && valid) {
             store.put(KEY_TEXT_FIELDS, textFields );
         } else {
         	store.remove(KEY_TEXT_FIELDS);
@@ -136,23 +178,59 @@ public class DisplayCapabilities extends RPCStruct {
         if (store.get(KEY_IMAGE_FIELDS) instanceof List<?>) {
             List<?> list = (List<?>)store.get(KEY_IMAGE_FIELDS);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ImageField) {
-	                return (List<ImageField>) list;
-	            } else if (obj instanceof Hashtable) {
-	                List<ImageField> newList = new ArrayList<ImageField>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ImageField((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<ImageField> imageFieldList  = new ArrayList<ImageField>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw ImageField and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof ImageField) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			imageFieldList.add(new ImageField((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<ImageField>) list;
+	        	} else if (flagHash) {
+	        		return imageFieldList;
+	        	}
 	        }
         }
         return null;
     }
   
     public void setImageFields( List<ImageField> imageFields ) {
-        if (imageFields != null) {
+
+    	boolean valid = true;
+    	
+    	for ( ImageField item : imageFields ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (imageFields != null) && (imageFields.size() > 0) && valid) {
             store.put(KEY_IMAGE_FIELDS, imageFields );
         }
         else
@@ -184,20 +262,52 @@ public class DisplayCapabilities extends RPCStruct {
         if (store.get(KEY_MEDIA_CLOCK_FORMATS) instanceof List<?>) {
         	List<?> list = (List<?>)store.get(KEY_MEDIA_CLOCK_FORMATS);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof MediaClockFormat) {
-	                return (List<MediaClockFormat>) list;
-	            } else if (obj instanceof String) {
-	            	List<MediaClockFormat> newList = new ArrayList<MediaClockFormat>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    MediaClockFormat toAdd = MediaClockFormat.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+	            
+	        	List<MediaClockFormat> mediaClockFormatList  = new ArrayList<MediaClockFormat>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw MediaClockFormat and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof MediaClockFormat) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			String strFormat = (String) obj;
+	                    MediaClockFormat toAdd = null;
+	                    try {
+	                        toAdd = MediaClockFormat.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                        DebugTool.logError("Failed to parse MediaClockFormat from " + getClass().getSimpleName() + "." + KEY_MEDIA_CLOCK_FORMATS, e);
 	                    }
-	                }
-	                return newList;
-	            }
+	                    if (toAdd != null) {
+	                    	mediaClockFormatList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<MediaClockFormat>) list;
+	        	} else if (flagHash) {
+	        		return mediaClockFormatList;
+	        	}
 	        }
         }
         return null;
@@ -207,7 +317,16 @@ public class DisplayCapabilities extends RPCStruct {
      * @param mediaClockFormats the List of MediaClockFormat
      */    
     public void setMediaClockFormats( List<MediaClockFormat> mediaClockFormats ) {
-        if (mediaClockFormats != null) {
+
+    	boolean valid = true;
+    	
+    	for ( MediaClockFormat item : mediaClockFormats ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (mediaClockFormats != null) && (mediaClockFormats.size() > 0) && valid) {
             store.put(KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats );
         } else {
         	store.remove(KEY_MEDIA_CLOCK_FORMATS);
@@ -241,17 +360,28 @@ public class DisplayCapabilities extends RPCStruct {
         if (store.get(KEY_TEMPLATES_AVAILABLE) instanceof List<?>) {
         	List<?> list = (List<?>)store.get( KEY_TEMPLATES_AVAILABLE);
         	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
+        		for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
         		}
+        		return (List<String>) list;
         	}
         }
         return null;
     }   
     
     public void setTemplatesAvailable(List<String> templatesAvailable) {
-        if (templatesAvailable != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : templatesAvailable ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (templatesAvailable != null) && (templatesAvailable.size() > 0) && valid) {
             store.put(KEY_TEMPLATES_AVAILABLE, templatesAvailable);
         }
         else

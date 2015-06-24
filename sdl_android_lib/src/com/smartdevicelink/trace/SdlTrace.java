@@ -20,11 +20,11 @@ import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.NativeLogTool;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
- 1. System defaults
- 2. Application XML config
- 3. Programmatic requests from application itself
+   1. System defaults
+   2. Application XML config
+   3. Programmatic requests from application itself
 
- It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
+   It is manifested in the <SmartDeviceLink>...</SmartDeviceLink> tags
  */
 public class SdlTrace {
 
@@ -159,11 +159,10 @@ public class SdlTrace {
 			rpcAsXml.append("<cid>");
 			rpcAsXml.append(correlationID);
 			rpcAsXml.append("</cid>");
-		} // end-if
+		}
 		rpcAsXml.append("<type>");
 		rpcAsXml.append(rpcMsg.getMessageType());
 		rpcAsXml.append("</type>");
-		// rpcAsXml.append(newline);
 
 		if (dl == DetailLevel.VERBOSE) {
 			OpenRPCMessage orpcmsg = new OpenRPCMessage(rpcMsg);
@@ -307,12 +306,8 @@ public class SdlTrace {
 		}
 	}
 
-	public static boolean logTransportEvent(String preamble,
-			String transportSpecificInfoXml,
-			InterfaceActivityDirection msgDirection, byte buf[], int offset,
-			int byteLength, String token) {
-		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF
-				|| !token.equals(SDL_LIB_TRACE_KEY)) {
+	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
+		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 

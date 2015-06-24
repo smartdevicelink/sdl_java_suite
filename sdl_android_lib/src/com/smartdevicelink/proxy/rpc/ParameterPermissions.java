@@ -68,10 +68,12 @@ public class ParameterPermissions extends RPCStruct {
         if (store.get(KEY_ALLOWED) instanceof List<?>) {
         	List<?> list = (List<?>)store.get( KEY_ALLOWED);
         	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
+        		for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
         		}
+        		return (List<String>) list;
         	}
         }
         return null;
@@ -82,7 +84,16 @@ public class ParameterPermissions extends RPCStruct {
      * @param allowed parameter that is permitted for this given RPC
      */
     public void setAllowed(List<String> allowed) {
-        if (allowed != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : allowed ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (allowed != null) && (allowed.size() > 0) && valid) {
             store.put(KEY_ALLOWED, allowed);
         } else {
     		store.remove(KEY_ALLOWED);
@@ -98,10 +109,12 @@ public class ParameterPermissions extends RPCStruct {
         if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
             List<?> list = (List<?>)store.get( KEY_USER_DISALLOWED);
         	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
+        		for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
         		}
+        		return (List<String>) list;
         	}
         }
         return null;
@@ -112,7 +125,16 @@ public class ParameterPermissions extends RPCStruct {
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
     public void setUserDisallowed(List<String> userDisallowed) {
-        if (userDisallowed != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : userDisallowed ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (userDisallowed != null) && (userDisallowed.size() > 0) && valid) {
             store.put(KEY_USER_DISALLOWED, userDisallowed);
         } else {
     		store.remove(KEY_USER_DISALLOWED);

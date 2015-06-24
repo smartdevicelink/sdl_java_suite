@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
+import com.smartdevicelink.util.DebugTool;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -112,7 +113,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
+            Language theCode = null;
+            try {
+                theCode = Language.valueForString((String) obj);
+            } catch (Exception e) {
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
+            }
+            return theCode;
         }
         return null;
     }
@@ -148,7 +155,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
+            Language theCode = null;
+            try {
+                theCode = Language.valueForString((String) obj);
+            } catch (Exception e) {
+            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
+            }
+            return theCode;
         }
         return null;
     }
@@ -205,16 +218,43 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (parameters.get(KEY_BUTTON_CAPABILITIES) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_BUTTON_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ButtonCapabilities) {
-	                return (List<ButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<ButtonCapabilities> buttonCapabilitiesList  = new ArrayList<ButtonCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw ButtonCapabilities and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof ButtonCapabilities) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			buttonCapabilitiesList.add(new ButtonCapabilities((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<ButtonCapabilities>) list;
+	        	} else if (flagHash) {
+	        		return buttonCapabilitiesList;
+	        	}
 	        }
         }
         return null;
@@ -224,7 +264,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param buttonCapabilities
      */
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for (ButtonCapabilities item : buttonCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (buttonCapabilities != null) && (buttonCapabilities.size() > 0) && valid) {
             parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
         } else {
         	parameters.remove(KEY_BUTTON_CAPABILITIES);
@@ -240,16 +289,43 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (parameters.get(KEY_SOFT_BUTTON_CAPABILITIES) instanceof List<?>) {
 	    	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButtonCapabilities) {
-	                return (List<SoftButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<SoftButtonCapabilities> softButtonCapabilitiesList  = new ArrayList<SoftButtonCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw SoftButtonCapabilities and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof SoftButtonCapabilities) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			softButtonCapabilitiesList.add(new SoftButtonCapabilities((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<SoftButtonCapabilities>) list;
+	        	} else if (flagHash) {
+	        		return softButtonCapabilitiesList;
+	        	}
 	        }
         }
         return null;
@@ -259,7 +335,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param softButtonCapabilities
      */
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for (SoftButtonCapabilities item : softButtonCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (softButtonCapabilities != null) && (softButtonCapabilities.size() > 0) && valid) {
             parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
         } else {
         	parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);
@@ -302,21 +387,53 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public List<HmiZoneCapabilities> getHmiZoneCapabilities() {
         if (parameters.get(KEY_HMI_ZONE_CAPABILITIES) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_HMI_ZONE_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HmiZoneCapabilities) {
-	                return (List<HmiZoneCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<HmiZoneCapabilities> newList = new ArrayList<HmiZoneCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HmiZoneCapabilities toAdd = HmiZoneCapabilities.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+	        if (list != null && list.size() > 0) {	            
+
+	        	List<HmiZoneCapabilities> hmiZoneCapabilitiesList  = new ArrayList<HmiZoneCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw HmiZoneCapabilities and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof HmiZoneCapabilities) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			String strFormat = (String) obj;
+	                    HmiZoneCapabilities toAdd = null;
+	                    try {
+	                        toAdd = HmiZoneCapabilities.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_ZONE_CAPABILITIES, e);
 	                    }
-	                }
-	                return newList;
-	            }
+	                    if (toAdd != null) {
+	                    	hmiZoneCapabilitiesList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<HmiZoneCapabilities>) list;
+	        	} else if (flagHash) {
+	        		return hmiZoneCapabilitiesList;
+	        	}
 	        }
         }
         return null;
@@ -326,7 +443,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param hmiZoneCapabilities
      */
     public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
-        if (hmiZoneCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for (HmiZoneCapabilities item : hmiZoneCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (hmiZoneCapabilities != null) && (hmiZoneCapabilities.size() > 0) && valid) {
             parameters.put(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
         } else {
         	parameters.remove(KEY_HMI_ZONE_CAPABILITIES);
@@ -342,21 +468,53 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public List<SpeechCapabilities> getSpeechCapabilities() {
         if (parameters.get(KEY_SPEECH_CAPABILITIES) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_SPEECH_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SpeechCapabilities) {
-	                return (List<SpeechCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<SpeechCapabilities> newList = new ArrayList<SpeechCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    SpeechCapabilities toAdd = SpeechCapabilities.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+	        if (list != null && list.size() > 0) {	            
+
+	        	List<SpeechCapabilities> speechCapabilitiesList  = new ArrayList<SpeechCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagStr = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw SpeechCapabilities and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof SpeechCapabilities) {
+	        			if (flagStr) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagStr = true;
+	        			String strFormat = (String) obj;
+	                    SpeechCapabilities toAdd = null;
+	                    try {
+	                        toAdd = SpeechCapabilities.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEECH_CAPABILITIES, e);
 	                    }
-	                }
-	                return newList;
-	            }
+	                    if (toAdd != null) {
+	                    	speechCapabilitiesList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<SpeechCapabilities>) list;
+	        	} else if (flagStr) {
+	        		return speechCapabilitiesList;
+	        	}
 	        }
         }
         return null;
@@ -366,7 +524,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param speechCapabilities
      */
     public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
-        if (speechCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for (SpeechCapabilities item : speechCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (speechCapabilities != null) && (speechCapabilities.size() > 0) && valid) {
             parameters.put(KEY_SPEECH_CAPABILITIES, speechCapabilities);
         } else {
         	parameters.remove(KEY_SPEECH_CAPABILITIES);
@@ -379,27 +546,68 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (parameters.get(KEY_PRERECORDED_SPEECH) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_PRERECORDED_SPEECH);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof PrerecordedSpeech) {
-	                return (List<PrerecordedSpeech>) list;
-	            } else if (obj instanceof String) {
-	            	List<PrerecordedSpeech> newList = new ArrayList<PrerecordedSpeech>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    PrerecordedSpeech toAdd = PrerecordedSpeech.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+	        	
+	        	List<PrerecordedSpeech> prerecordedSpeechList  = new ArrayList<PrerecordedSpeech>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagStr = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw PrerecordedSpeech and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof PrerecordedSpeech) {
+	        			if (flagStr) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagStr = true;
+	        			String strFormat = (String) obj;
+	                    PrerecordedSpeech toAdd = null;
+	                    try {
+	                        toAdd = PrerecordedSpeech.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRERECORDED_SPEECH, e);
 	                    }
-	                }
-	                return newList;
-	            }
+	                    if (toAdd != null) {
+	                    	prerecordedSpeechList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<PrerecordedSpeech>) list;
+	        	} else if (flagStr) {
+	        		return prerecordedSpeechList;
+	        	}
 	        }
         }
         return null;
     }
 
     public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
-        if (prerecordedSpeech != null) {
+
+    	boolean valid = true;
+    	
+    	for ( PrerecordedSpeech item : prerecordedSpeech ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (prerecordedSpeech != null) && (prerecordedSpeech.size() > 0) && valid) {
             parameters.put(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
         } else {
         	parameters.remove(KEY_PRERECORDED_SPEECH);
@@ -417,20 +625,52 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (parameters.get(KEY_VR_CAPABILITIES) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_VR_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrCapabilities) {
-	                return (List<VrCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<VrCapabilities> newList = new ArrayList<VrCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    VrCapabilities toAdd = VrCapabilities.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+
+	        	List<VrCapabilities> vrCapabilitiesList  = new ArrayList<VrCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagStr = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw VrCapabilities and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof VrCapabilities) {
+	        			if (flagStr) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagStr = true;
+	        			String strFormat = (String) obj;
+	                    VrCapabilities toAdd = null;
+	                    try {
+	                        toAdd = VrCapabilities.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_VR_CAPABILITIES, e);
 	                    }
-	                }
-	                return newList;
-	            }
+	                    if (toAdd != null) {
+	                    	vrCapabilitiesList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<VrCapabilities>) list;
+	        	} else if (flagStr) {
+	        		return vrCapabilitiesList;
+	        	}
 	        }
         }
         return null;
@@ -440,7 +680,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param vrCapabilities
      */
     public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
-        if (vrCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for ( VrCapabilities item : vrCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (vrCapabilities != null) && (vrCapabilities.size() > 0) && valid) {
             parameters.put(KEY_VR_CAPABILITIES, vrCapabilities);
         } else {
         	parameters.remove(KEY_VR_CAPABILITIES);
@@ -484,16 +733,43 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (parameters.get(KEY_AUDIO_PASS_THRU_CAPABILITIES) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_AUDIO_PASS_THRU_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof AudioPassThruCapabilities) {
-	                return (List<AudioPassThruCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<AudioPassThruCapabilities> newList = new ArrayList<AudioPassThruCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new AudioPassThruCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<AudioPassThruCapabilities> audioPassThruCapabilitiesList  = new ArrayList<AudioPassThruCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw AudioPassThruCapabilities and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof AudioPassThruCapabilities) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			audioPassThruCapabilitiesList.add(new AudioPassThruCapabilities((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<AudioPassThruCapabilities>) list;
+	        	} else if (flagHash) {
+	        		return audioPassThruCapabilitiesList;
+	        	}
 	        }
         }
         return null;
@@ -503,7 +779,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param audioPassThruCapabilities
      */
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
-        if (audioPassThruCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for ( AudioPassThruCapabilities item : audioPassThruCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (audioPassThruCapabilities != null) && (audioPassThruCapabilities.size() > 0) && valid) {
             parameters.put(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
         } else {
         	parameters.remove(KEY_AUDIO_PASS_THRU_CAPABILITIES);
@@ -516,7 +801,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		return null;
     }
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
-        if (supportedDiagModes != null) {
+
+    	boolean valid = true;
+    	
+    	for ( Integer item : supportedDiagModes ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (supportedDiagModes != null) && (supportedDiagModes.size() > 0) && valid) {
         	parameters.put(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
         }
         else
@@ -531,10 +825,12 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     	if (parameters.get(KEY_SUPPORTED_DIAG_MODES) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get( KEY_SUPPORTED_DIAG_MODES);
         	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof Integer) {
-                	return (List<Integer>) list;
+        		for( Object obj : list ) {
+        			if (!(obj instanceof Integer)) {
+        				return null;
+        			}
         		}
+        		return (List<Integer>) list;
         	}
         }
         return null;
