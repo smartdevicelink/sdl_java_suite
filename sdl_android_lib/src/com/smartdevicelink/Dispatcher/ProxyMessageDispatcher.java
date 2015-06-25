@@ -3,7 +3,7 @@ package com.smartdevicelink.Dispatcher;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 
 public class ProxyMessageDispatcher<T> {
 	PriorityBlockingQueue<T> _queue = null;
@@ -48,7 +48,7 @@ public class ProxyMessageDispatcher<T> {
 			// Thread was interrupted by dispose() method, no action required
 			return;
 		} catch (Exception e) {
-			DebugTool.logError("Error occurred dispating message.", e);
+			SdlLog.e("Error occurred dispating message.", e);
 			_strategy.handleDispatchingError("Error occurred dispating message.", e);
 		}
 	}

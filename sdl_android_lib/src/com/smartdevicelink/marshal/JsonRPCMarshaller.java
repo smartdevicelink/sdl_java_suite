@@ -11,9 +11,8 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.trace.*;
-import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
+import com.smartdevicelink.util.SdlLog.Mod;
 
 /*
  * Responsible for marshalling and unmarshing between RPC Objects and byte streams that are sent
@@ -21,31 +20,29 @@ import com.smartdevicelink.util.DebugTool;
  */
 
 public class JsonRPCMarshaller {
-	
-	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
+		
 	public static byte[] marshall(RPCMessage msg, byte version) {
 		byte[] jsonBytes = null;
 		try {
 			JSONObject jsonObject = msg.serializeJSON(version);
 			jsonBytes = jsonObject.toString().getBytes();
 			
-			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
+			SdlLog.t(Mod.MARSHALL, SdlLog.buildBasicTraceMessage("Transmit", null, jsonBytes));
 		} catch (JSONException e) {
-			DebugTool.logError("Failed to encode messages to JSON.", e);
+			SdlLog.e("Failed to encode messages to JSON.", e);
 		}
 		return jsonBytes;
 	}
 	
 	public static Hashtable<String, Object> unmarshall(byte[] message) {
-		SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Receive, message, SDL_LIB_PRIVATE_KEY);
+		SdlLog.t(Mod.MARSHALL, SdlLog.buildBasicTraceMessage("Receive", null, message));
 		Hashtable<String, Object> ret = null;
 		try {
 			String jsonString = new String(message);
 			JSONObject jsonObject = new JSONObject(jsonString);
 			ret = deserializeJSONObject(jsonObject);
 		} catch (JSONException e) {
-			DebugTool.logError("Failed to parse JSON", e);
+			SdlLog.e("Failed to parse JSON.", e);
 		}
 		return ret;
 	}

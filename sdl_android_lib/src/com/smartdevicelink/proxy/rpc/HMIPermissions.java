@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 /**
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
  * <p><b>Parameter List
@@ -97,7 +97,7 @@ public class HMIPermissions extends RPCStruct {
 	                    try {
 	                        toAdd = HMILevel.valueForString(strFormat);
 	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALLOWED, e);
+	                    	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALLOWED, e);
 	                    }
 
 	                    if (toAdd != null) {

@@ -14,10 +14,9 @@ import android.os.Build.VERSION;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.trace.SdlTrace;
-import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
+import com.smartdevicelink.util.SdlLog.Mod;
 
 /**
  * Bluetooth Transport Implementation. This transport advertises its existence to SDL by publishing an SDP record and waiting for an incoming connection from SDL. Connection is verified by checking for the SDL UUID. For more detailed information please refer to the <a href="#bluetoothTransport">Bluetooth Transport Guide</a>.
@@ -26,8 +25,6 @@ import com.smartdevicelink.util.DebugTool;
 public class BTTransport extends SdlTransport {	
 	//936DA01F9ABD4D9D80C702AF85C822A8
 	private final static UUID SDL_V4_MOBILE_APPLICATION_SVC_CLASS = new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
-
-	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
 	private BluetoothAdapter _adapter = null;
 	private BluetoothSocket _activeSocket = null;
@@ -195,18 +192,14 @@ public class BTTransport extends SdlTransport {
 			throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.SDL_CONNECTION_FAILED);
 		}
 		
-		SdlTrace.logTransportEvent("BTTransport: listening for incoming connect to service ID " + _listeningServiceUUID, null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
-		
+		String message = "Bluetooth Transport: Listening for incoming connection to service (id: " + _listeningServiceUUID + ").";
+		SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Receive", message, null));
+				
 		// Setup transportReader thread
 		_transportReader = new TransportReaderThread();
 		_transportReader.setName("TransportReader");
 		_transportReader.setDaemon(true);
 		_transportReader.start();
-		
-		// Initialize the SiphonServer
-		if (SiphonServer.getSiphonEnabledStatus()) {
-			SiphonServer.init();
-		}
 
 	} // end-method
 
@@ -232,16 +225,17 @@ public class BTTransport extends SdlTransport {
 		if (ex != null) {
 			disconnectMsg += ", " + ex.toString();
 		} // end-if
-
-		SdlTrace.logTransportEvent("BTTransport.disconnect: " + disconnectMsg, null, InterfaceActivityDirection.Transmit, null, 0, SDL_LIB_TRACE_KEY);
-
+		
+		String message = "Bluetooth Transport Disconnect: " + disconnectMsg;
+		SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Transmit", message, null));
+		
 		try {			
 			if (_transportReader != null) {
 				_transportReader.halt();
 				_transportReader = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError("Failed to stop transport reader thread.", e);
+			SdlLog.e("Failed to stop transport reader thread.", e);
 		} // end-catch	
 		
 		try {
@@ -250,7 +244,7 @@ public class BTTransport extends SdlTransport {
 				_bluetoothAdapterMonitor = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError("Failed to stop adapter monitor thread.", e);
+			SdlLog.e("Failed to stop adapter monitor thread.", e);
 		}
 		
 		try {
@@ -259,7 +253,7 @@ public class BTTransport extends SdlTransport {
 				_serverSocket = null;
 			} 
 		} catch (Exception e) {
-			DebugTool.logError("Failed to close serverSocket", e);
+			SdlLog.e("Failed to close serverSocket", e);
 		} // end-catch
 		
 		try {
@@ -268,7 +262,7 @@ public class BTTransport extends SdlTransport {
 				_activeSocket = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError("Failed to close activeSocket", e);
+			SdlLog.e("Failed to close activeSocket", e);
 		} // end-catch
 		
 		try {
@@ -277,7 +271,7 @@ public class BTTransport extends SdlTransport {
 				_input = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError("Failed to close input stream", e);
+			SdlLog.e("Failed to close input stream", e);
 		} // end-catch
 		
 		try {
@@ -286,7 +280,7 @@ public class BTTransport extends SdlTransport {
 				_output = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError("Failed to close output stream", e);
+			SdlLog.e("Failed to close output stream", e);
 		} // end-catch
 		
 		if (ex == null) {
@@ -312,7 +306,7 @@ public class BTTransport extends SdlTransport {
 			_output.write(msgBytes, offset, length);
 			sendResult = true;
 		} catch (Exception ex) {
-			DebugTool.logError("Error writing to Bluetooth socket: " + ex.toString(), ex);
+			SdlLog.e("Error writing to Bluetooth socket: " + ex.toString(), ex);
 			handleTransportError("Error writing to Bluetooth socket:", ex);
 			sendResult = false;
 		} // end-catch
@@ -331,7 +325,8 @@ public class BTTransport extends SdlTransport {
 		}
 		
 		private void acceptConnection() {
-			SdlTrace.logTransportEvent("BTTransport: Waiting for incoming RFCOMM connect", "", InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
+			String message = "Bluetooth Transport: Waiting for incoming RFCOMM connect.";
+			SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Receive", message, null));
 			
 			try {
 				// Blocks thread until connection established.
@@ -344,8 +339,8 @@ public class BTTransport extends SdlTransport {
 				
 				// Log info of the connected device
 				BluetoothDevice btDevice = _activeSocket.getRemoteDevice();
-				String btDeviceInfoXml = SdlTrace.getBTDeviceInfo(btDevice);
-				SdlTrace.logTransportEvent("BTTransport: RFCOMM Connection Accepted", btDeviceInfoXml, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
+				String msg = "Bluetooth Transport: RFCOMM connection accepted.";
+				SdlLog.t(Mod.TRANSPORT, SdlLog.buildTransportTraceMessage("Receive", msg, null, btDevice));
 				
 				_output = _activeSocket.getOutputStream();
 				_input = _activeSocket.getInputStream();
@@ -401,7 +396,7 @@ public class BTTransport extends SdlTransport {
 					// When bytesRead == -1, it indicates end of stream
 					if (!isHalted) {
 						// Only call disconnect if the thread has not been halted
-						DebugTool.logError("End of stream reached!");
+						SdlLog.e("End of stream reached!");
 						disconnect("End of stream reached.", null);
 					}
 				}
@@ -409,7 +404,7 @@ public class BTTransport extends SdlTransport {
 				if (!isHalted) {
 					// Only call disconnect if the thread has not been halted
 					String errString = "Failure in BTTransport reader thread: " + excp.toString();
-					DebugTool.logError(errString, excp);
+					SdlLog.e(errString, excp);
 					disconnect(errString, excp);
 				}
 				return;

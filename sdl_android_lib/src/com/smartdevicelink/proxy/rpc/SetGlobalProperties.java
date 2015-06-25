@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.SdlLog;
 /**
  * Sets value(s) for the specified global property(ies)
  * <p>
@@ -360,7 +360,7 @@ public class SetGlobalProperties extends RPCRequest {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_ICON, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_ICON, e);
             }
         }
         return null;
@@ -383,7 +383,7 @@ public class SetGlobalProperties extends RPCRequest {
         	try {
         		return new KeyboardProperties((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_KEYBOARD_PROPERTIES, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_KEYBOARD_PROPERTIES, e);
             }
         }
         return null;

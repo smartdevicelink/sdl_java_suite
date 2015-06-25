@@ -6,14 +6,14 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.SdlLog;
+import com.smartdevicelink.util.SdlLog.Mod;
 
 @Deprecated
 public class SdlProxy extends SdlProxyBase<IProxyListener> {
 	
-	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	@SuppressWarnings("unused")
     private static final String SDL_LIB_PRIVATE_TOKEN = "{DAE1A88C-6C16-4768-ACA5-6F1247EA01C2}";
 
@@ -42,7 +42,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*callbackToUIThread*/ true,
 				new BTTransportConfig());
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -72,7 +73,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*callbackToUIThread*/ true,
 				new BTTransportConfig());
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}	
 	
 	/**
@@ -102,7 +104,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*callbackToUIThread*/ true,
 				new BTTransportConfig());
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, SdlProxyConfigurationResources.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via SdlProxyConfigurationResources.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -131,7 +134,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				callbackToUIThread,
 				new BTTransportConfig());
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener and callBackToUIThread.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -162,7 +166,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				callbackToUIThread,
 				new BTTransportConfig());
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener and callBackToUIThread.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/********************************************** TRANSPORT SWITCHING SUPPORT *****************************************/
@@ -193,7 +198,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*callbackToUIThread*/ true,
 				transportConfig);
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -225,7 +231,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				/*callbackToUIThread*/ true,
 				transportConfig);
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, SdlProxyConfigurationResources.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener and SdlProxyConfigurationResources.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -255,7 +262,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				callbackToUIThread,
 				transportConfig);
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener and callBackToUIThread.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -287,7 +295,8 @@ public class SdlProxy extends SdlProxyBase<IProxyListener> {
 				callbackToUIThread,
 				transportConfig);
 		
-		SdlTrace.logProxyEvent("Application constructed SdlProxy instance passing in: IProxyListener, callBackToUIThread.", SDL_LIB_TRACE_KEY);
+		String message = "Constructad SDL proxy via IProxyListener and callBackToUIThread.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 		
 	/******************** Public Helper Methods *************************/
