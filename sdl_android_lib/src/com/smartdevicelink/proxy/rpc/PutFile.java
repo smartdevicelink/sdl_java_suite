@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCUpdateListener;
 import com.smartdevicelink.util.DebugTool;
 
 /**
@@ -191,4 +193,15 @@ public class PutFile extends RPCRequest {
         else
         	return null;
     }
+
+    @Deprecated
+	@Override
+	public void setOnRPCUpdateListener(OnRPCUpdateListener listener) {
+		super.setOnRPCUpdateListener(listener);
+	}
+    
+	public void setOnPutFileUpdateListener(OnPutFileUpdateListener listener) {
+		super.setOnRPCUpdateListener(listener); //We can use the same method because it get stored as a parent class
+	}
+    
 }

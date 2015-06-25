@@ -172,6 +172,8 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
+import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCUpdateListener;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
@@ -290,7 +292,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	protected byte _wiproVersion = 1;
 	
-	protected SparseArray<OnUpdateListener> rpcUpdateListeners = null;
+	protected SparseArray<OnRPCUpdateListener> rpcUpdateListeners = null;
 	
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -594,7 +596,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			});
 		}
 		
-		rpcUpdateListeners = new SparseArray<OnUpdateListener>();
+		rpcUpdateListeners = new SparseArray<OnRPCUpdateListener>();
 		
 		// Initialize the proxy
 		try {
@@ -1542,7 +1544,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (_outgoingProxyMessageDispatcher != null) {
 					_outgoingProxyMessageDispatcher.queueMessage(pm);
 					//Since the message is queued we can add it's listener to our list
-					OnUpdateListener listener = request.getOnUpdateListener();
+					OnRPCUpdateListener listener = request.getOnRPCUpdateListener();
 					if(request.getMessageType() ==  RPCMessage.KEY_REQUEST){//We might want to include other message types in the future
 						addOnUpdateListener(listener, request.getCorrelationID(), msgBytes.length);
 					}
@@ -1554,22 +1556,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
-	private void onPacketStart(int correlationId, long totalSize){ //May not need this
+	private void onPacketStart(int correlationId){ //May not need this
 		synchronized(ON_UPDATE_LISTENER_LOCK){
-		if(rpcUpdateListeners !=null 
-				&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
-			rpcUpdateListeners.get(correlationId).onStart(correlationId, totalSize);
-			
+			if(rpcUpdateListeners !=null 
+					&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
+				rpcUpdateListeners.get(correlationId).onStart(correlationId);
+			}
 		}
-		}
-		
 	}
+	/**
+	 * Only call this method for a PutFile response. It will cause a class cast exception if not.
+	 * @param correlationId
+	 * @param bytesWritten
+	 * @param totalSize
+	 */
 	public void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 		if(rpcUpdateListeners !=null 
 				&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
-			rpcUpdateListeners.get(correlationId).onUpdate(correlationId, bytesWritten, totalSize);
-			
+			((OnPutFileUpdateListener)rpcUpdateListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
 		}
 		}
 		
@@ -1586,9 +1591,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			int correlationId = msg.getCorrelationID();
 			if(rpcUpdateListeners !=null 
 					&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
-				OnUpdateListener listener = rpcUpdateListeners.get(correlationId);
+				OnRPCUpdateListener listener = rpcUpdateListeners.get(correlationId);
 				if(msg.getSuccess()){
-					listener.onFinish(correlationId, msg, listener.totalSize);
+					listener.onFinish(correlationId, msg);
 				}else{
 					listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
 				}
@@ -1598,19 +1603,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		}
 	}
-
-	public void addOnUpdateListener(OnUpdateListener listener,int correlationId, int totalSize){
+	
+/**
+ * 
+ * @param listener
+ * @param correlationId
+ * @param totalSize only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
+ */
+	public void addOnUpdateListener(OnRPCUpdateListener listener,int correlationId, int totalSize){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 			if(rpcUpdateListeners!=null 
 					&& listener !=null){
-				listener.setTotalSize(totalSize);
-				listener.onStart(correlationId, totalSize);
+				if(listener.getListenerType() == OnRPCUpdateListener.UPDATE_LISTENER_TYPE_PUT_FILE){
+					((OnPutFileUpdateListener)listener).setTotalSize(totalSize);
+				}
+				listener.onStart(correlationId);
 				rpcUpdateListeners.put(correlationId, listener);
 			}
 		}
 	}
 	
-	public SparseArray<OnUpdateListener> getProgressListeners(){
+	public SparseArray<OnRPCUpdateListener> getProgressListeners(){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 			return this.rpcUpdateListeners;
 		}
