@@ -1,13 +1,11 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.trace.SdlTrace;
-import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.SdlLog;
+import com.smartdevicelink.util.SdlLog.Mod;
 
 public abstract class SdlTransport {
-	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	private Boolean isConnected = false;
@@ -34,7 +32,7 @@ public abstract class SdlTransport {
 		try {
 			// Trace received data
 			if (receivedBytesLength > 0) {
-				SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
+				SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Receive", null, receivedBytes));
 				
 				_transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
 			} // end-if
@@ -62,7 +60,7 @@ public abstract class SdlTransport {
         synchronized (_sendLockObj) {
         	bytesWereSent = sendBytesOverTransport(message, offset, length);
         }       
-		SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Transmit, message, offset, length, SDL_LIB_TRACE_KEY);
+		SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Transmit", null, message));
         return bytesWereSent;
     } // end-method
 
@@ -73,7 +71,8 @@ public abstract class SdlTransport {
 	protected void handleTransportConnected() {
 		isConnected = true;
 		try {
-	    	SdlTrace.logTransportEvent("Transport.connected", null, InterfaceActivityDirection.Receive, null, 0, SDL_LIB_TRACE_KEY);
+	    	String message = "SDL Transport: Connected.";
+			SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Receive", message, null));
 			_transportListener.onTransportConnected();
 		} catch (Exception excp) {
 			SdlLog.e(FailurePropagating_Msg + "onTransportConnected: " + excp.toString(), excp);
@@ -87,7 +86,8 @@ public abstract class SdlTransport {
 		isConnected = false;
 
 		try {
-	    	SdlTrace.logTransportEvent("Transport.disconnect: " + info, null, InterfaceActivityDirection.Transmit, null, 0, SDL_LIB_TRACE_KEY);
+			String message = "SDL Transport: Disconnected - " + info;
+			SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Transmit", message, null));
 			_transportListener.onTransportDisconnected(info);
 		} catch (Exception excp) {
 			SdlLog.e(FailurePropagating_Msg + "onTransportDisconnected: " + excp.toString(), excp);

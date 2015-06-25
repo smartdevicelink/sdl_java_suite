@@ -18,10 +18,9 @@ import android.os.ParcelFileDescriptor;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.trace.SdlTrace;
-import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.SdlLog;
+import com.smartdevicelink.util.SdlLog.Mod;
 
 /**
  * Class that implements USB transport.
@@ -41,15 +40,6 @@ public class USBTransport extends SdlTransport {
      */
     public static final String ACTION_USB_ACCESSORY_ATTACHED =
             "com.smartdevicelink.USB_ACCESSORY_ATTACHED";
-    /**
-     * String tag for logging.
-     */
-    private static final String TAG = USBTransport.class.getSimpleName();
-    /**
-     * Key for SdlTrace.
-     */
-    private static final String SDL_LIB_TRACE_KEY =
-            "42baba60-eb57-11df-98cf-0800200c9a66";
     /**
      * Broadcast action: sent when the user has granted access to the USB
      * accessory.
@@ -208,11 +198,8 @@ public class USBTransport extends SdlTransport {
                             mOutputStream.write(msgBytes, offset, length);
                             result = true;
 
-                            SdlLog.i("Bytes successfully sent");
-                            SdlTrace.logTransportEvent(TAG + ": bytes sent",
-                                    null, InterfaceActivityDirection.Transmit,
-                                    msgBytes, offset, length,
-                                    SDL_LIB_TRACE_KEY);
+                            String message = "USB Transport: Bytes successfully sent.";
+                			SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Receive", message, msgBytes));
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";
                             SdlLog.e(msg, e);
@@ -348,13 +335,10 @@ public class USBTransport extends SdlTransport {
             case LISTENING:
             case CONNECTED:
                 synchronized (this) {
-                	SdlLog.i("Disconnect from state " + getState() + "; message: " +
-                            msg + "; exception: " + ex);
                     setState(State.IDLE);
-
-                    SdlTrace.logTransportEvent(TAG + ": disconnect", null,
-                            InterfaceActivityDirection.None, null, 0,
-                            SDL_LIB_TRACE_KEY);
+                    
+                    String message = "USB Transport: Disconnect from state " + getState() + ", message: " + msg + ", exception: " + ex;
+        			SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage(null, message, null));
 
                     stopReaderThread();
 
@@ -578,10 +562,6 @@ public class USBTransport extends SdlTransport {
      * synchronized (USBTransport.this) { … }
      */
     private class USBTransportReader implements Runnable {
-        /**
-         * String tag for logging inside the task.
-         */
-        private final String TAG = USBTransportReader.class.getSimpleName();
 
         /**
          * Checks if the thread has been interrupted.
@@ -699,10 +679,8 @@ public class USBTransport extends SdlTransport {
                     return;
                 }
 
-                SdlLog.d("Read " + bytesRead + " bytes");
-                SdlTrace.logTransportEvent(TAG + ": read bytes", null,
-                        InterfaceActivityDirection.Receive, buffer, bytesRead,
-                        SDL_LIB_TRACE_KEY);
+                String message = "USB Transport: Bytes successfully read.";
+    			SdlLog.t(Mod.TRANSPORT, SdlLog.buildBasicTraceMessage("Receive", message, buffer));
 
                 if (isInterrupted()) {
                 	SdlLog.i("Read some data, but thread is interrupted");

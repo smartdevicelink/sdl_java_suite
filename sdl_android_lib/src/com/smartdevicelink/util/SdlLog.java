@@ -3,10 +3,16 @@ package com.smartdevicelink.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.protocol.ProtocolFrameHeader;
+import com.smartdevicelink.proxy.RPCMessage;
 
 public class SdlLog {
 	
@@ -36,37 +42,47 @@ public class SdlLog {
 	 * occurs.
 	 */
 	private final static int ERROR   = 4;
-	
-	/**
-	 * Should be used to log SDL specific information.
-	 */
-	private final static int TRACE   = 5; // Logs handled seperately.
-	
+		
 	private static int enabledLevel = 0;
-	private static boolean isTraceEnabled = true;
 	private static boolean isFileLoggingEnabled = false;
 
 	private final static String TAG = "SDL Log";
 	private final static String SDL = "<SDL> ";
 	private final static String SDL_TRACE = "<SDL TRACE> ";
 	
-	/**
-	 * Provides whether trace logging is enabled or disabled.
-	 *  
-	 * @return (boolean) The trace logging toggle.
-	 */
-	public static boolean isTraceEnabled() {
-		return isTraceEnabled;
-	}
+	public static enum Mod {
+		TRANSPORT(true),
+		PROTOCOL(true),
+		MARSHALL(true),
+		RPC(true),
+		APP(true),
+		PROXY(true);
+
+		private boolean enabled = false;
+		
+		Mod(boolean enabled) {
+			this.enabled = enabled;
+		}
+		
+		public boolean isEnabled() {
+			return enabled;
+		}
+		
+		public void setEnabled(boolean enabledState) {
+			enabled = enabledState;
+		}
+	};
 	
 	/**
-	 * Toggles the trace logging functionality.
+	 * Sets whether all kinds of trace messages will be logged or not.
 	 * 
-	 * @param log Whether trace logging is to be enabled or disabled.
+	 * @param enabledState The state to determine if trace messages will be 
+	 * logged or not.
 	 */
-	public static void setTraceEnabled(boolean log) {
-		isTraceEnabled = log;
-		Log.i(TAG, "Trace Logging " + ((log) ? "On" : "Off"));
+	public static void setAllTraceLogging(boolean enabledState) {
+		for (Mod value : Mod.values()) {
+			value.setEnabled(enabledState);
+		}
 	}
 	
 	/**
@@ -121,34 +137,12 @@ public class SdlLog {
 	 * Logs messages to the native Android log tool if trace logging has been
 	 * enabled.
 	 * 
+	 * @param mod The type of trace message to be logged.
 	 * @param message The message to be logged, may not be null or empty.
 	 * @return (boolean) Whether the message was logged successfully.
 	 */
-	public static boolean t(String message) {
-		return log(TRACE, message, null);
-	}
-	
-	/**
-	 * Logs messages to the native Android log tool if trace logging has been
-	 * enabled.
-	 * 
-	 * @param message The message to be logged, may not be null or empty.
-	 * @param details The details of an exception or error, may be null.
-	 * @return (boolean) Whether the message was logged successfully.
-	 */
-	public static boolean t(String message, Throwable details) {
-		return log(TRACE, message, details);
-	}
-	
-	/**
-	 * Logs messages to the native Android log tool if trace logging has been
-	 * enabled.
-	 * 
-	 * @param exception An SDL specific exception.
-	 * @return (boolean) Whether the message was logged successfully.
-	 */
-	public static boolean t(SdlException exception) {
-		return log(TRACE, exception.toString(), null);
+	public static boolean t(Mod mod, String message) {
+		return log(mod, message);
 	}
 	
 	/**
@@ -247,7 +241,6 @@ public class SdlLog {
 		
 		try {
 			switch (level) {
-				case TRACE:   if (isTraceEnabled)   Log.d(TAG, SDL_TRACE + message, details); break;
 				case VERBOSE: if (enabledLevel < 1) Log.v(TAG, SDL + message, details); break;
 				case INFO:    if (enabledLevel < 2) Log.i(TAG, SDL + message, details); break;
 				case DEBUG:   if (enabledLevel < 3) Log.d(TAG, SDL + message, details); break;
@@ -258,8 +251,7 @@ public class SdlLog {
 			
 			if (isFileLoggingEnabled) {
 				StringBuilder build = new StringBuilder(TAG);
-				if (level == TRACE) build.append(SDL_TRACE);
-				else build.append(SDL);
+				build.append(SDL);
 				build.append(message);
 				build.append("\n");
 				if (details != null) build.append(details.getMessage());
@@ -274,6 +266,194 @@ public class SdlLog {
 		return true;
 	}
 	
+	/**
+	 * Logs trace messages that are allowed to the native Android log tool.
+	 * 
+	 * @param type The trace type of the message.
+	 * @param message The message to be logged, may not be null or empty.
+	 * @return (boolean) Whether the message was logged successfully.
+	 */
+	private static boolean log(Mod type, String message) {
+		
+		// Do not log null or empty messages.
+		if (message == null || message.equals("")) {
+			return false;
+		}
+		
+		// Do not log the message if the type of trace logging has been disabled.
+		if (!type.isEnabled()) {
+			return false;
+		}
+		
+		// Prepend the type information to the trace message.
+		message = type + "\n" + message;
+		
+		try {
+			switch (type) {
+				case APP:       if (enabledLevel < 3) Log.d(SDL_TRACE, message); break;
+				case RPC:       if (enabledLevel < 3) Log.d(SDL_TRACE, message); break;
+				case PROXY:     if (enabledLevel < 3) Log.d(SDL_TRACE, message); break;
+				case PROTOCOL:  if (enabledLevel < 3) Log.d(SDL_TRACE, message); break;
+				case MARSHALL:  if (enabledLevel < 3) Log.d(SDL_TRACE, message); break;
+				case TRANSPORT: if (enabledLevel < 3) Log.d(SDL_TRACE, message); break;
+				default: return false;
+			}
+			
+			if (isFileLoggingEnabled) {
+				StringBuilder build = new StringBuilder(TAG);
+				build.append(SDL_TRACE);
+				build.append(message);
+				build.append("\n");
+				x(build.toString());
+			}
+		} catch (Throwable t) {
+			// This should never happen!
+			Log.wtf(TAG, "Logging failure!", t);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Constructs the basic formatted trace message.
+	 * 
+	 * @param direction Whether the message was incoming or outgoing, if it does
+	 * not have a direction the value may be null.
+	 * @param body The extra information to be logged, may be null.
+	 * @param data The byte data to be logged, may be null.
+	 * @return (String) A formatted trace message.
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public static String buildBasicTraceMessage(String direction, String body, byte[] data) {
+		StringBuilder builder = new StringBuilder();
+		
+		try {
+			builder.append(new SimpleDateFormat("MM-dd-yyyy hh:mm:sssss").format(new Date()));
+			builder.append("\n");
+		} catch (Exception e) {
+			Log.e(SDL, "Could not parse timestamp for trace message.");
+		}
+				
+		if (direction != null) { 
+			builder.append("Direction: ");
+			builder.append(direction);
+			builder.append("\n");
+		}
+		
+		if (body != null) {
+			builder.append(body);
+		}
+		
+		if (data != null) {
+			builder.append("Bytes: \n");
+			builder.append(data);
+			builder.append("\n");
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Constructs the basic formatted protocol trace message.
+	 * 
+	 * @param direction Whether the message was incoming or outgoing, if it does
+	 * not have a direction the value may be null.
+	 * @param body The extra information to be logged, may be null.
+	 * @param data The byte data to be logged, may be null.
+	 * @param header Protocol specific trace information.
+	 * @return (String) A formatted trace message.
+	 */
+	public static String buildProtocolTraceMessage(String direction, String body, byte[] data, ProtocolFrameHeader header) {
+		String basic = buildBasicTraceMessage(direction, body, data);
+		StringBuilder builder = new StringBuilder(basic);
+		
+		if (header != null) {		
+			builder.append("Version: ");
+			builder.append(header.getVersion());
+			builder.append("\n");
+			builder.append("Compressed State: ");
+			builder.append(header.isCompressed());
+			builder.append("\n");
+			builder.append("Frame Type: ");
+			builder.append(header.getFrameType());
+			builder.append("\n");
+			builder.append("Session Type: ");
+			builder.append(header.getSessionType());
+			builder.append("\n");
+			builder.append("Session Id: ");
+			builder.append(header.getSessionID());
+			builder.append("\n");
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Constructs the basic formatted transport trace message.
+	 * 
+	 * @param direction Whether the message was incoming or outgoing, if it does
+	 * not have a direction the value may be null.
+	 * @param body The extra information to be logged, may be null.
+	 * @param data The byte data to be logged, may be null.
+	 * @param btDevice Bluetooth transport specific trace information.
+	 * @return (String) A formatted trace message.
+	 */
+	public static String buildTransportTraceMessage(String direction, String body, byte[] data, BluetoothDevice btDevice) {
+		String basic = buildBasicTraceMessage(direction, body, data);
+		StringBuilder builder = new StringBuilder(basic);
+		
+		if (btDevice != null) {
+			builder.append("Bluetooth Data -- ");
+			builder.append("\n");
+			builder.append("Name: ");
+			builder.append(btDevice.getName());
+			builder.append("\n");
+			builder.append("Address: ");
+			builder.append(btDevice.getAddress());
+			builder.append("\n");
+			builder.append("Bond State: ");
+			builder.append(btDevice.getBondState());
+			builder.append("\n");
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Constructs the basic formatted rpc trace message.
+	 * 
+	 * @param direction Whether the message was incoming or outgoing, if it does
+	 * not have a direction the value may be null.
+	 * @param body The extra information to be logged, may be null.
+	 * @param data The byte data to be logged, may be null.
+	 * @param rpc The specific rpc trace information.
+	 * @return (String) A formatted trace message.
+	 */
+	public static String buildRpcTraceMessage(String direction, String body, byte[] data, RPCMessage rpc) {
+		String basic = buildBasicTraceMessage(direction, body, data);
+		StringBuilder builder = new StringBuilder(basic);
+		
+		if (rpc != null) {
+			builder.append("RPC Data -- ");
+			builder.append("\n");
+			builder.append("Function Name: ");
+			builder.append(rpc.getFunctionName());
+			builder.append("\n");
+			builder.append("Message Type: ");
+			builder.append(rpc.getMessageType());
+			builder.append("\n");
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Logs a message to a file on the external storage (SD card) of the device.
+	 * 
+	 * @param message The information to be logged to the file.
+	 * @return (boolean) Whether the message was logged successfully.
+	 */
 	private static boolean x(String message) {
 		
 		File logFile = new File("sdcard/sdllog.txt");

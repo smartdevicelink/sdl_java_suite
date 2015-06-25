@@ -1,9 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -24,16 +20,17 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.telephony.TelephonyManager;
 
-import com.smartdevicelink.proxy.RPCRequestFactory;
-import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
@@ -56,7 +53,102 @@ import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.AddCommandResponse;
+import com.smartdevicelink.proxy.rpc.AddSubMenu;
+import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
+import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
+import com.smartdevicelink.proxy.rpc.DeleteFile;
+import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
+import com.smartdevicelink.proxy.rpc.DialNumberResponse;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
+import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
+import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetVehicleData;
+import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.Headers;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.ListFiles;
+import com.smartdevicelink.proxy.rpc.ListFilesResponse;
+import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
+import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
+import com.smartdevicelink.proxy.rpc.OnCommand;
+import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnHashChange;
+import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
+import com.smartdevicelink.proxy.rpc.OnLanguageChange;
+import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.OnTBTClientState;
+import com.smartdevicelink.proxy.rpc.OnTouchEvent;
+import com.smartdevicelink.proxy.rpc.OnVehicleData;
+import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
+import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
+import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.ResetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.ScrollableMessage;
+import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SendLocationResponse;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowResponse;
+import com.smartdevicelink.proxy.rpc.Slider;
+import com.smartdevicelink.proxy.rpc.SliderResponse;
+import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.Speak;
+import com.smartdevicelink.proxy.rpc.SpeakResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
+import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
+import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
+import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -83,16 +175,13 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.trace.SdlTrace;
-import com.smartdevicelink.trace.TraceDeviceInfo;
-import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.SdlLog;
+import com.smartdevicelink.util.SdlLog.Mod;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 
-	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	private static final int PROX_PROT_VER_ONE = 1;
 	
 	private SdlSession sdlSession = null;
@@ -122,10 +211,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private boolean pcmServiceResponseReceived = false;
 	@SuppressWarnings("unused")
     private boolean pcmServiceResponse = false;
-	
-	// Device Info for logging
-	private TraceDeviceInfo _traceDeviceInterrogator = null;
-		
+			
 	// Declare Queuing Threads
 	private ProxyMessageDispatcher<ProtocolMessage> _incomingProxyMessageDispatcher;
 	private ProxyMessageDispatcher<ProtocolMessage> _outgoingProxyMessageDispatcher;
@@ -428,23 +514,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		
 		_proxyListener = listener;
-		
-		// Get information from sdlProxyConfigurationResources
-		TelephonyManager telephonyManager = null;
-		if (sdlProxyConfigurationResources != null) {
-			telephonyManager = sdlProxyConfigurationResources.getTelephonyManager();
-		} 
-		
-		// Use the telephonyManager to get and log phone info
-		if (telephonyManager != null) {
-			// Following is not quite thread-safe (because m_traceLogger could test null twice),
-			// so we need to fix this, but vulnerability (i.e. two instances of listener) is
-			// likely harmless.
-			if (_traceDeviceInterrogator == null) {
-				_traceDeviceInterrogator = new TraceDeviceInfo(sdlProxyConfigurationResources.getTelephonyManager());
-			} // end-if
-		} // end-if
-		
+						
 		// Setup Internal ProxyMessage Dispatcher
 		synchronized(INTERNAL_MESSAGE_QUEUE_THREAD_LOCK) {
 			// Ensure internalProxyMessageDispatcher is null
@@ -552,8 +622,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw e;
 		} 
 		
-		// Trace that ctor has fired
-		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
+		String message = "SdlProxy created with instance id: " + this.toString();
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
@@ -1105,7 +1175,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} catch (SdlException e) {
 			throw e;
 		} finally {
-			SdlTrace.logProxyEvent("SdlProxy cleaned.", SDL_LIB_TRACE_KEY);
+			String message = "SdlProxy cleaned.";
+			SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 		}
 	}
 	
@@ -1120,7 +1191,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		_proxyDisposed = true;
 		
-		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
+		String message = "Application called the dispose() method.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 		
 		try{
 			// Clean the proxy
@@ -1148,13 +1220,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_internalProxyMessageDispatcher.dispose();
 					_internalProxyMessageDispatcher = null;
 				}
-			}
-			
-			_traceDeviceInterrogator = null;
+			}			
 		} catch (SdlException e) {
 			throw e;
 		} finally {
-			SdlTrace.logProxyEvent("SdlProxy disposed.", SDL_LIB_TRACE_KEY);
+			String msg = "SdlProxy disposed.";
+			SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, msg, null));
 		}
 	} // end-method
 
@@ -1291,7 +1362,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				sdlSession.sendMessage(message);
 			}
 		}		
-		SdlTrace.logProxyEvent("SdlProxy sending Protocol Message: " + message.toString(), SDL_LIB_TRACE_KEY);
+		String m = "SdlProxy sending protocol message.";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, m, null));
 	}
 	
 	private void handleErrorsFromOutgoingMessageDispatcher(String info, Exception e) {
@@ -1341,12 +1413,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			/****************End Legacy Specific Call-backs************/
 			} else {
-				// Diagnostics
-				SdlTrace.logProxyEvent("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.", SDL_LIB_TRACE_KEY);
 				SdlLog.e("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.");
 			}
 			
-		SdlTrace.logProxyEvent("Proxy fired callback: " + message.getFunctionName(), SDL_LIB_TRACE_KEY);
+		String m = "SdlProxy fired callback for " + message.getFunctionName();
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, m, null));
+		
 		} catch(final Exception e) {
 			// Pass error to application through listener 
 			SdlLog.e("Error handing proxy event.", e);
@@ -1383,7 +1455,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		// error checking. 
 	private void sendRPCRequestPrivate(RPCRequest request) throws SdlException {
 			try {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
+			SdlLog.t(Mod.RPC, SdlLog.buildRpcTraceMessage("Transmit", null, null, request));
 						
 			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
 	
@@ -1410,7 +1482,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 		} catch (OutOfMemoryError e) {
-			SdlTrace.logProxyEvent("OutOfMemory exception while sending request " + request.getFunctionName(), SDL_LIB_TRACE_KEY);
+			SdlLog.e("OutOfMemory exception while sending request " + request.getFunctionName() + ".");
 			throw new SdlException("OutOfMemory exception while sending request " + request.getFunctionName(), e, SdlExceptionCause.INVALID_ARGUMENT);
 		}
 	}
@@ -1421,7 +1493,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String messageType = rpcMsg.getMessageType();
 		
 		if (messageType.equals(RPCMessage.KEY_RESPONSE)) {			
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
+			SdlLog.t(Mod.RPC, SdlLog.buildRpcTraceMessage("Receive", null, null, rpcMsg));
 
 			// Check to ensure response is not from an internal message (reserved correlation ID)
 			if (isCorrelationIDProtected((new RPCResponse(hash)).getCorrelationID())) {
@@ -2241,7 +2313,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} // end-if
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCNotification(rpcMsg), SDL_LIB_TRACE_KEY);
+			SdlLog.t(Mod.PROXY, SdlLog.buildRpcTraceMessage(null, null, null, rpcMsg));
 			if (functionName.equals(FunctionID.ON_HMI_STATUS.toString())) {
 				// OnHMIStatus
 				
@@ -2587,7 +2659,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} // end-if
 		} // end-if notification
 		
-		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
+		String message = "SDL proxy received RPC message: " + functionName + ".";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 	}
 	
 	/**
@@ -2603,32 +2676,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		// Test if request is null
 		if (request == null) {
-			SdlTrace.logProxyEvent("Application called sendRPCRequest method with a null RPCRequest.", SDL_LIB_TRACE_KEY);
+			SdlLog.e("Application called sendRPCRequest method with a null RPCRequest.");
 			throw new IllegalArgumentException("sendRPCRequest cannot be called with a null request.");
 		}
 		
-		SdlTrace.logProxyEvent("Application called sendRPCRequest method for RPCRequest: ." + request.getFunctionName(), SDL_LIB_TRACE_KEY);
+		String message = "Application called sendRPCRequest method for RPCRequest: " + request.getFunctionName() + ".";
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, message, null));
 			
 		// Test if SdlConnection is null
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession == null || !sdlSession.getIsConnected()) {
-				SdlTrace.logProxyEvent("Application attempted to send and RPCRequest without a connected transport.", SDL_LIB_TRACE_KEY);
+				SdlLog.e("Application attempted to send and RPCRequest without a connected transport.");				
 				throw new SdlException("There is no valid connection to SDL. sendRPCRequest cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
 			}
 		}
 		
 		// Test for illegal correlation ID
 		if (isCorrelationIDProtected(request.getCorrelationID())) {
-			
-			SdlTrace.logProxyEvent("Application attempted to use the reserved correlation ID, " + request.getCorrelationID(), SDL_LIB_TRACE_KEY);
+			SdlLog.e("Application attempted to use the reserved correlation ID, " + request.getCorrelationID());
 			throw new SdlException("Invalid correlation ID. The correlation ID, " + request.getCorrelationID()
 					+ " , is a reserved correlation ID.", SdlExceptionCause.RESERVED_CORRELATION_ID);
 		}
 		
 		// Throw exception if RPCRequest is sent when SDL is unavailable 
-		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
-			
-			SdlTrace.logProxyEvent("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.", SDL_LIB_TRACE_KEY);
+		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {			
+			SdlLog.e("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.");			
 			throw new SdlException("SDL is currently unavailable. RPC Requests cannot be sent.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 				
@@ -2636,7 +2708,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())
 					|| request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
 				
-				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
+				SdlLog.e("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.");
 				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
 						", is unallowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
 			}
@@ -2645,8 +2717,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sendRPCRequestPrivate(request);
 	} // end-method
 	
-	protected void notifyProxyClosed(final String info, final Exception e, final SdlDisconnectedReason reason) {		
-		SdlTrace.logProxyEvent("NotifyProxyClose", SDL_LIB_TRACE_KEY);
+	protected void notifyProxyClosed(final String info, final Exception e, final SdlDisconnectedReason reason) {
+		SdlLog.t(Mod.PROXY, SdlLog.buildBasicTraceMessage(null, "Notify SDL proxy closed.", null));
 		OnProxyClosed message = new OnProxyClosed(info, e, reason);
 		queueInternalMessage(message);
 	}
