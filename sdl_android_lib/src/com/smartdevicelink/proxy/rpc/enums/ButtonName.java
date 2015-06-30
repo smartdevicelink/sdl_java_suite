@@ -115,7 +115,16 @@ public enum ButtonName{
 	 * 
 	 * @since SmartDeviceLink 1.0
 	 */
-	PRESET_9, CUSTOM_BUTTON, SEARCH;
+	PRESET_9, 
+	CUSTOM_BUTTON, 
+	SEARCH,
+	/**
+	 * Represents the play/pause button. A typical use of this button
+	 * is to toggle between playing and pausing media.<p>
+	 * @since SmartDeviceLink 4.1
+	 */
+	PLAY_PAUSE,
+	;
 
     public static ButtonName valueForString(String value) {
         try{
