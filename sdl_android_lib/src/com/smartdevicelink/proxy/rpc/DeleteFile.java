@@ -21,7 +21,7 @@ public class DeleteFile extends RPCRequest {
 	 * Constructs a new DeleteFile object
 	 */
     public DeleteFile() {
-        super(FunctionID.DELETE_FILE);
+        super(FunctionID.DELETE_FILE.toString());
     }
 
 	/**

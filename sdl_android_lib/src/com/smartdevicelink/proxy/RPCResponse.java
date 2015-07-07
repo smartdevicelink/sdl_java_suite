@@ -4,8 +4,8 @@
 package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
+
 import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Result sent by SDL after an RPC is processed, consists of four parts: 
@@ -66,7 +66,15 @@ public class RPCResponse extends RPCMessage {
      *@param rpcMsg The {@linkplain RPCMessage} to use
      */   
 	public RPCResponse(RPCMessage rpcMsg) {
-		super(rpcMsg);
+		super(preprocessMsg(rpcMsg));
+	}
+	
+	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
+		if (rpcMsg.getMessageType() != RPCMessage.KEY_RESPONSE) {
+			rpcMsg.messageType = RPCMessage.KEY_RESPONSE;
+		}
+		
+		return rpcMsg;
 	}
 
 	/**
@@ -130,13 +138,7 @@ public class RPCResponse extends RPCMessage {
         if (obj instanceof Result) {
             return (Result) obj;
         } else if (obj instanceof String) {
-            Result theCode = null;
-            try {
-                theCode = Result.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + RPCResponse.KEY_RESULT_CODE, e);
-            }
-            return theCode;
+            return Result.valueForString((String) obj);
         }
         return null;
     }

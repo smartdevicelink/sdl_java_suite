@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
-import com.smartdevicelink.util.DebugTool;
 
 public class ECallInfo extends RPCStruct {
     public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
@@ -29,13 +28,7 @@ public class ECallInfo extends RPCStruct {
         if (obj instanceof VehicleDataNotificationStatus) {
             return (VehicleDataNotificationStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataNotificationStatus theCode = null;
-            try {
-                theCode = VehicleDataNotificationStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_NOTIFICATION_STATUS, e);
-            }
-            return theCode;
+        	return VehicleDataNotificationStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -51,13 +44,7 @@ public class ECallInfo extends RPCStruct {
         if (obj instanceof VehicleDataNotificationStatus) {
             return (VehicleDataNotificationStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataNotificationStatus theCode = null;
-            try {
-                theCode = VehicleDataNotificationStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUX_E_CALL_NOTIFICATION_STATUS, e);
-            }
-            return theCode;
+        	return VehicleDataNotificationStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -73,13 +60,7 @@ public class ECallInfo extends RPCStruct {
         if (obj instanceof ECallConfirmationStatus) {
             return (ECallConfirmationStatus) obj;
         } else if (obj instanceof String) {
-        	ECallConfirmationStatus theCode = null;
-            try {
-                theCode = ECallConfirmationStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_CONFIRMATION_STATUS, e);
-            }
-            return theCode;
+        	return ECallConfirmationStatus.valueForString((String) obj);
         }
         return null;
     }

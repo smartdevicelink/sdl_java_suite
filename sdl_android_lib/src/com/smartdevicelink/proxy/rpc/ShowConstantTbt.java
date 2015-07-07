@@ -38,7 +38,7 @@ public class ShowConstantTbt extends RPCRequest{
      * Constructs a new ShowConstantTbt object
      */
     public ShowConstantTbt(){
-        super(FunctionID.SHOW_CONSTANT_TBT);
+        super(FunctionID.SHOW_CONSTANT_TBT.toString());
     }
 
     /**
@@ -307,12 +307,21 @@ public class ShowConstantTbt extends RPCRequest{
      *            a List<SoftButton> value
      */
     public void setSoftButtons(List<SoftButton> softButtons){
-        if(softButtons != null){
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        }
-        else{
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+
+		boolean valid = true;
+		
+		for (SoftButton item : softButtons ) {
+			if (item == null) {
+				valid = false;
+			}
+		}
+		
+		if ( (softButtons != null) && (softButtons.size() > 0) && valid) {
+		    parameters.put(KEY_SOFT_BUTTONS, softButtons);
+		}
+		else{
+		    parameters.remove(KEY_SOFT_BUTTONS);
+		}
     }
 
     /**
@@ -326,16 +335,43 @@ public class ShowConstantTbt extends RPCRequest{
         if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
             List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
             if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof SoftButton) {
-                    return (List<SoftButton>) list;
-                } else if (obj instanceof Hashtable) {
-                    List<SoftButton> newList = new ArrayList<SoftButton>();
-                    for (Object hashObj : list) {
-                        newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-                    }
-                    return newList;
-                }
+
+	        	List<SoftButton> softButtonList  = new ArrayList<SoftButton>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw SoftButton and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof SoftButton) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			softButtonList.add(new SoftButton((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<SoftButton>) list;
+	        	} else if (flagHash) {
+	        		return softButtonList;
+	        	}
             }
         }
         return null;

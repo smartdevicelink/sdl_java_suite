@@ -6,7 +6,6 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.util.DebugTool;
 
 public class OnSdlChoiceChosen extends RPCNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
@@ -139,7 +138,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 
 	public OnSdlChoiceChosen() {
-		super(FunctionID.ON_SDL_CHOICE_CHOSEN);
+		super(FunctionID.ON_SDL_CHOICE_CHOSEN.toString());
 	}
 	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
 		super(hash);
@@ -159,13 +158,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
         if (obj instanceof TriggerSource) {
             return (TriggerSource) obj;
         } else if (obj instanceof String) {
-            TriggerSource theCode = null;
-            try {
-                theCode = TriggerSource.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TRIGGER_SOURCE, e);
-            }
-            return theCode;
+            return TriggerSource.valueForString((String) obj);
         }
         return null;
     }

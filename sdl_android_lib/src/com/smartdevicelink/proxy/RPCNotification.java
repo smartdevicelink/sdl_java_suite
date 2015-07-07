@@ -8,7 +8,7 @@ import java.util.Hashtable;
 public class RPCNotification extends RPCMessage {
 
 	public RPCNotification(String functionName) {
-		super(functionName, "notification");
+		super(functionName, RPCMessage.KEY_NOTIFICATION);
 	}
 
 	public RPCNotification(Hashtable<String, Object> hash) {
@@ -16,6 +16,14 @@ public class RPCNotification extends RPCMessage {
 	}
 
 	public RPCNotification(RPCMessage rpcMsg) {
-		super(rpcMsg);
+		super(preprocessMsg(rpcMsg));
 	}
-} // end-class
+	
+	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
+		if (rpcMsg.getMessageType() != RPCMessage.KEY_NOTIFICATION) {
+			rpcMsg.messageType = RPCMessage.KEY_NOTIFICATION;
+		}
+		
+		return rpcMsg;
+	}
+}

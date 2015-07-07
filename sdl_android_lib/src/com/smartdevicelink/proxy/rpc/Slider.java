@@ -29,7 +29,7 @@ public class Slider extends RPCRequest {
 	 * Constructs a new Slider object
 	 */
     public Slider() {
-        super(FunctionID.SLIDER);
+        super(FunctionID.SLIDER.toString());
     }
 
 	/**
@@ -131,7 +131,16 @@ public class Slider extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500; Minvalue=1; Maxvalue=26
 	 */
     public void setSliderFooter(List<String> sliderFooter) {
-    	if (sliderFooter != null) {
+
+    	boolean valid = true;
+    	
+    	for (String item : sliderFooter ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (sliderFooter != null) && (sliderFooter.size() > 0) && valid) {
     		parameters.put(KEY_SLIDER_FOOTER, sliderFooter);
     	} else {
     		parameters.remove(KEY_SLIDER_FOOTER);
@@ -147,11 +156,13 @@ public class Slider extends RPCRequest {
     public List<String> getSliderFooter() {
         if (parameters.get(KEY_SLIDER_FOOTER) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_SLIDER_FOOTER);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
+        	if (list != null && list.size() > 0) {
+        		for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
         		}
+        		return (List<String>) list;
         	}
         }
     	return null;

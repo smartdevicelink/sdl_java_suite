@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class SendLocationResponse extends RPCResponse{
 
     public SendLocationResponse(){
-        super(FunctionID.SEND_LOCATION);
+        super(FunctionID.SEND_LOCATION.toString());
     }
 
     public SendLocationResponse(Hashtable<String, Object> hash){

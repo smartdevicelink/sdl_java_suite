@@ -8,7 +8,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.util.DebugTool;
 /**
  * Performs an application-initiated interaction in which the user can select a
  * {@linkplain Choice} from among the specified Choice Sets. For instance, an
@@ -39,7 +38,7 @@ public class PerformInteraction extends RPCRequest {
 	 * Constructs a new PerformInteraction object
 	 */
     public PerformInteraction() {
-        super(FunctionID.PERFORM_INTERACTION);
+        super(FunctionID.PERFORM_INTERACTION.toString());
     }
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable
@@ -91,16 +90,43 @@ public class PerformInteraction extends RPCRequest {
         if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
         }
         return null;
@@ -114,7 +140,16 @@ public class PerformInteraction extends RPCRequest {
 	 *            user at the start of an interaction
 	 */    
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-        if (initialPrompt != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : initialPrompt ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (initialPrompt != null) && (initialPrompt.size() > 0) && valid) {
             parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
         } else {
         	parameters.remove(KEY_INITIAL_PROMPT);
@@ -133,13 +168,7 @@ public class PerformInteraction extends RPCRequest {
         if (obj instanceof InteractionMode) {
             return (InteractionMode) obj;
         } else if (obj instanceof String) {
-            InteractionMode theCode = null;
-            try {
-                theCode = InteractionMode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_MODE, e);
-            }
-            return theCode;
+            return InteractionMode.valueForString((String) obj);
         }
         return null;
     }
@@ -172,10 +201,12 @@ public class PerformInteraction extends RPCRequest {
     	if(parameters.get(KEY_INTERACTION_CHOICE_SET_ID_LIST) instanceof List<?>){
     		List<?> list = (List<?>)parameters.get(KEY_INTERACTION_CHOICE_SET_ID_LIST);
     		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
+    			for( Object obj : list ) {
+        			if (!(obj instanceof Integer)) {
+        				return null;
+        			}
         		}
+        		return (List<Integer>) list;
     		}
     	}
         return null;
@@ -192,7 +223,16 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */    
     public void setInteractionChoiceSetIDList(List<Integer> interactionChoiceSetIDList) {
-        if (interactionChoiceSetIDList != null) {
+
+    	boolean valid = true;
+    	
+    	for ( Integer item : interactionChoiceSetIDList ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (interactionChoiceSetIDList != null) && (interactionChoiceSetIDList.size() > 0) && valid) {
             parameters.put(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
         } else {
         	parameters.remove(KEY_INTERACTION_CHOICE_SET_ID_LIST);
@@ -211,16 +251,43 @@ public class PerformInteraction extends RPCRequest {
         if(parameters.get(KEY_HELP_PROMPT) instanceof List<?>){
         	List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
         }
         return null;
@@ -242,7 +309,16 @@ public class PerformInteraction extends RPCRequest {
 	 *            session
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-        if (helpPrompt != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : helpPrompt ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (helpPrompt != null) && (helpPrompt.size() > 0) && valid) {
             parameters.put(KEY_HELP_PROMPT, helpPrompt);
         } else {
         	parameters.remove(KEY_HELP_PROMPT);
@@ -260,16 +336,43 @@ public class PerformInteraction extends RPCRequest {
         if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
         }
         return null;
@@ -286,7 +389,16 @@ public class PerformInteraction extends RPCRequest {
 	 *            listen times out during the VR session
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-        if (timeoutPrompt != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : timeoutPrompt ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (timeoutPrompt != null) && (timeoutPrompt.size() > 0) && valid) {
             parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
         } else {
         	parameters.remove(KEY_TIMEOUT_PROMPT);
@@ -340,16 +452,43 @@ public class PerformInteraction extends RPCRequest {
         if (parameters.get(KEY_VR_HELP) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_VR_HELP);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrHelpItem) {
-	                return (List<VrHelpItem>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<VrHelpItem> newList = new ArrayList<VrHelpItem>();
-	                for (Object hashObj : list) {
-	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<VrHelpItem> vrHelpItemList  = new ArrayList<VrHelpItem>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw VrHelpItem and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof VrHelpItem) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			vrHelpItemList.add(new VrHelpItem((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<VrHelpItem>) list;
+	        	} else if (flagHash) {
+	        		return vrHelpItemList;
+	        	}
 	        }
         }
         return null;
@@ -367,7 +506,16 @@ public class PerformInteraction extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-        if (vrHelp != null) {
+
+    	boolean valid = true;
+    	
+    	for ( VrHelpItem item : vrHelp ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (vrHelp != null) && (vrHelp.size() > 0) && valid) {
             parameters.put(KEY_VR_HELP, vrHelp);
         } else {
         	parameters.remove(KEY_VR_HELP);
@@ -379,13 +527,7 @@ public class PerformInteraction extends RPCRequest {
         if (obj instanceof LayoutMode) {
             return (LayoutMode) obj;
         } else if (obj instanceof String) {
-        	LayoutMode theCode = null;
-            try {
-                theCode = LayoutMode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_LAYOUT, e);
-            }
-            return theCode;
+        	return LayoutMode.valueForString((String) obj);
         }
         return null;
     }

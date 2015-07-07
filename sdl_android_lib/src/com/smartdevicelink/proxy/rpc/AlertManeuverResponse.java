@@ -16,7 +16,7 @@ public class AlertManeuverResponse extends RPCResponse{
      * Constructs a new AlertManeuverResponse object
      */
     public AlertManeuverResponse() {
-        super(FunctionID.ALERT_MANEUVER);
+        super(FunctionID.ALERT_MANEUVER.toString());
     }
     
     /**

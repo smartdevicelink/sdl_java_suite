@@ -22,7 +22,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	 * Constructs a new SetDisplayLayoutResponse object
 	 */
     public SetDisplayLayoutResponse() {
-        super(FunctionID.SET_DISPLAY_LAYOUT);
+        super(FunctionID.SET_DISPLAY_LAYOUT.toString());
     }
 
 	/**
@@ -61,23 +61,59 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         if (parameters.get(KEY_BUTTON_CAPABILITIES) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_BUTTON_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ButtonCapabilities) {
-	                return (List<ButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<ButtonCapabilities> buttonCapabilitiesList  = new ArrayList<ButtonCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw ButtonCapabilities and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof ButtonCapabilities) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			buttonCapabilitiesList.add(new ButtonCapabilities((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<ButtonCapabilities>) list;
+	        	} else if (flagHash) {
+	        		return buttonCapabilitiesList;
+	        	}
 	        }
         }
         return null;
     }
 
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for (ButtonCapabilities item : buttonCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (buttonCapabilities != null) && (buttonCapabilities.size() > 0) && valid) {
             parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
         } else {
             parameters.remove(KEY_BUTTON_CAPABILITIES);
@@ -89,23 +125,59 @@ public class SetDisplayLayoutResponse extends RPCResponse {
         if (parameters.get(KEY_SOFT_BUTTON_CAPABILITIES) instanceof List<?>) {
             List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButtonCapabilities) {
-	                return (List<SoftButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<SoftButtonCapabilities> softButtonCapabilitiesList  = new ArrayList<SoftButtonCapabilities>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw SoftButtonCapabilities and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof SoftButtonCapabilities) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			softButtonCapabilitiesList.add(new SoftButtonCapabilities((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<SoftButtonCapabilities>) list;
+	        	} else if (flagHash) {
+	        		return softButtonCapabilitiesList;
+	        	}
 	        }
         }
         return null;
     }
 
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
+
+    	boolean valid = true;
+    	
+    	for (SoftButtonCapabilities item : softButtonCapabilities ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (softButtonCapabilities != null) && (softButtonCapabilities.size() > 0) && valid) {
             parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
         } else {
             parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);

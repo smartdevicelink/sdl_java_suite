@@ -75,7 +75,14 @@ public enum AppInterfaceUnregisteredReason {
 	 * 
 	 * @since SmartDeviceLink 2.0
 	 */
-	APP_UNAUTHORIZED;
+	APP_UNAUTHORIZED,
+	/**
+	 * The app has committed a protocol violation.
+	 * 
+	 * @since SmartDeviceLink 4.0
+	 */
+	PROTOCOL_VIOLATION,
+	;
 
     public static AppInterfaceUnregisteredReason valueForString(String value) {
         try{

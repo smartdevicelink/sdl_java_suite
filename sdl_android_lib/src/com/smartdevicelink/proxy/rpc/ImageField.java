@@ -25,13 +25,7 @@ public class ImageField extends RPCStruct {
         if (obj instanceof ImageFieldName) {
             return (ImageFieldName) obj;
         } else if (obj instanceof String) {
-        	ImageFieldName theCode = null;
-            try {
-                theCode = ImageFieldName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
-            }
-            return theCode;
+        	return ImageFieldName.valueForString((String) obj);
         }
         return null;
     } 
@@ -47,32 +41,70 @@ public class ImageField extends RPCStruct {
 	public List<FileType> getImageTypeSupported() {
         if (store.get(KEY_IMAGE_TYPE_SUPPORTED) instanceof List<?>) {
            List<?> list = (List<?>)store.get(KEY_IMAGE_TYPE_SUPPORTED);
-              if (list != null && list.size() > 0) {
-                  Object obj = list.get(0);
-                  if (obj instanceof FileType) {
-                      return (List<FileType>) list;
-                  } else if (obj instanceof String) {
-                      List<FileType> newList = new ArrayList<FileType>();
-                      for (Object hashObj : list) {
-                        String strFormat = (String)hashObj;
-                        FileType theCode = null;
-                          try {
-                            theCode = FileType.valueForString(strFormat);
-                          } catch (Exception e) {
-                            DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
-                        }
-                        if (theCode != null) {
-                            newList.add(theCode);
-                        }
-                    }
-                    return newList;
-                 }
-             }
+              if (list != null && list.size() > 0) {                    
+	
+	        	List<FileType> fileTypeList  = new ArrayList<FileType>();
+	
+	        	boolean flagRaw  = false;
+	        	boolean flagStr = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw FileType and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof FileType) {
+	        			if (flagStr) {
+	        				return null;
+	        			}
+	
+	        			flagRaw = true;
+	
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+	
+	        			flagStr = true;
+	
+	        			String strFormat = (String) obj;
+	                    FileType theCode = null;
+	                      try {
+	                        theCode = FileType.valueForString(strFormat);
+	                      } catch (Exception e) {
+	                        DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE_TYPE_SUPPORTED, e);
+	                    }
+	                    if (theCode != null) {
+	                        fileTypeList.add(theCode);
+	                    }
+	
+	        		} else {
+	        			return null;
+	        		}
+	
+	        	}
+	
+	        	if (flagRaw) {
+	        		return (List<FileType>) list;
+	        	} else if (flagStr) {
+	        		return fileTypeList;
+	        	}
+	         }
          }
          return null;
     }
+    
     public void setImageTypeSupported( List<FileType> imageTypeSupported ) {
-        if (imageTypeSupported != null) {
+
+    	boolean valid = true;
+    	
+    	for ( FileType item : imageTypeSupported ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (imageTypeSupported != null) && (imageTypeSupported.size() > 0) && valid) {
             store.put(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported );
         }
         else {
