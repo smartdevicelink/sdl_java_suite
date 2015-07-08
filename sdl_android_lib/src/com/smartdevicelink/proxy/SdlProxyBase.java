@@ -206,7 +206,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
-	private StreamRPCPacketizer rpcPacketizer = null;
 
 	protected Boolean _bResumeSuccess = false;	
 	
@@ -3000,24 +2999,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
 		return null;
 	}
-	
-	public boolean pausePutFileStream()
-	{
-		if (rpcPacketizer == null)
-			return false;
-		rpcPacketizer.pause();
-
-		return true;
-	}
-
-	public boolean resumePutFileStream()
-	{
-		if (rpcPacketizer == null)
-			return false;
-		rpcPacketizer.resume();
-
-		return true;
-	}
 
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
 		if (sdlSession == null) return false;		
@@ -3039,12 +3020,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return;
 		sdlConn.stopRPCStream();
-
-		if (rpcPacketizer != null)
-			rpcPacketizer.stop();
 	}
-	
-
 	
 	private class CallableMethod implements Callable<Void> {
 	private long waitTime;

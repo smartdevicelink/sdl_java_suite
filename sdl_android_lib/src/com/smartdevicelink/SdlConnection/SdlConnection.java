@@ -8,6 +8,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
@@ -256,8 +257,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	
 	public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
 			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
-
+			InputStream is = null;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+				is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
+			} else {
+				is = new PipedInputStream((PipedOutputStream) os);
+			}
             if (sType.equals(SessionType.NAV))
             {
                 mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
