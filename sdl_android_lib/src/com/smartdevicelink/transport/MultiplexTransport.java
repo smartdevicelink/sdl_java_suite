@@ -75,6 +75,12 @@ public class MultiplexTransport extends SdlTransport{
 
 	}
 	
+	public void requestExtraSession(){
+		if(broker!=null){
+			broker.requestExtraSession();
+		}
+	}
+	
 	/**
 	 * Overridden abstract method which returns specific type of this transport.
 	 * 

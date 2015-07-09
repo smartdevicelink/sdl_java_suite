@@ -322,6 +322,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		synchronized (SESSION_LOCK) {
 			if (!listenerList.contains(registerListener)) {
 				listenerList.add(registerListener); //TODO: check if we need to sort the list.
+				if(listenerList.size()>1  && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){
+					((MultiplexTransport)_transport).requestExtraSession();
+				}
 			}
 		}
 		
