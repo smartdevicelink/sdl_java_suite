@@ -34,9 +34,10 @@ public class FrameDataControlFrameType extends ByteEnumer {
 
 	public static FrameDataControlFrameType valueOf(String passedButton) {
 		return (FrameDataControlFrameType) get(theList, passedButton);
-	} // end-method
+	}
 
 	public static FrameDataControlFrameType[] values() {
-		return (FrameDataControlFrameType[]) theList.toArray();
-	} // end-method
-} // end-class
+		return theList.toArray(new FrameDataControlFrameType[theList.size()]);
+	}
+
+}

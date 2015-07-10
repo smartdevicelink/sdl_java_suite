@@ -13,18 +13,18 @@ public class SessionType extends ByteEnumer {
 	byte i = 0x00;
 	
 	protected SessionType(byte value, String name) {super(value, name);}
-	public final static SessionType Heartbeat = new SessionType((byte) 0, "Heartbeat_Service");
+	public final static SessionType CONTROL = new SessionType((byte) 0, "CONTROL");
 	public final static SessionType RPC = new SessionType((byte)0x07, "RPC");
 	public final static SessionType PCM = new SessionType((byte)0x0A, "PCM");
 	public final static SessionType NAV = new SessionType((byte)0x0B, "NAV");
-	public final static SessionType Bulk_Data = new SessionType((byte)0xF, "Bulk_Data");
+	public final static SessionType BULK_DATA = new SessionType((byte)0xF, "BULK_DATA");
 
 	static {
 		theList.addElement(RPC);
 		theList.addElement(PCM);
 		theList.addElement(NAV);
-		theList.addElement(Bulk_Data);
-		theList.addElement(Heartbeat);
+		theList.addElement(BULK_DATA);
+		theList.addElement(CONTROL);
 	}
 	
 	public static SessionType valueOf(byte passedButton) {
@@ -32,6 +32,6 @@ public class SessionType extends ByteEnumer {
 	}
 	
 	public static SessionType[] values() {
-		return (SessionType[]) theList.toArray();
+		return theList.toArray(new SessionType[theList.size()]);
 	}
 }

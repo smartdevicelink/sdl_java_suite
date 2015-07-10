@@ -16,7 +16,7 @@ public class SubscribeButtonResponse extends RPCResponse {
 	 * Constructs a new SubscribeButtonResponse object
 	 */
     public SubscribeButtonResponse() {
-        super(FunctionID.SUBSCRIBE_BUTTON);
+        super(FunctionID.SUBSCRIBE_BUTTON.toString());
     }
 
 	/**

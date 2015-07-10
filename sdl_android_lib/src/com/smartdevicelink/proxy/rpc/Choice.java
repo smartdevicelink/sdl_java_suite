@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.LogTool;
+import com.smartdevicelink.util.SdlLog;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
@@ -119,10 +119,12 @@ public class Choice extends RPCStruct {
         if (store.get(KEY_VR_COMMANDS) instanceof List<?>) {
         	List<?> list = (List<?>)store.get( KEY_VR_COMMANDS);
         	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
+        		for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
         		}
+        		return (List<String>) list;
         	}
         }
         return null;
@@ -133,7 +135,16 @@ public class Choice extends RPCStruct {
      * @since SmartDeviceLink 2.0
      */    
     public void setVrCommands(List<String> vrCommands) {
-        if (vrCommands != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : vrCommands ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (vrCommands != null) && (vrCommands.size() > 0) && valid) {
             store.put(KEY_VR_COMMANDS, vrCommands);
         } else {
         	store.remove(KEY_VR_COMMANDS);
@@ -163,7 +174,7 @@ public class Choice extends RPCStruct {
         	try {
         		return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
             }
         }
         return null;
@@ -212,7 +223,7 @@ public class Choice extends RPCStruct {
             try {
                 return new Image((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_IMAGE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_IMAGE, e);
             }
         }
         return null;

@@ -9,7 +9,6 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.util.LogTool;
 
 /**
  * This will open an audio pass thru session. By doing so the app can receive
@@ -37,7 +36,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Constructs a new PerformAudioPassThru object
 	 */
     public PerformAudioPassThru() {
-        super(FunctionID.PERFORM_AUDIO_PASS_THRU);
+        super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
 	/**
@@ -71,7 +70,16 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            </ul>
 	 */
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-    	if (initialPrompt != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : initialPrompt ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (initialPrompt != null) && (initialPrompt.size() > 0) && valid) {
     		parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
     	} else {
     		parameters.remove(KEY_INITIAL_PROMPT);
@@ -91,16 +99,43 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
     	}
         return null;
@@ -184,13 +219,7 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (obj instanceof SamplingRate) {
     		return (SamplingRate) obj;
     	} else if (obj instanceof String) {
-    		SamplingRate theCode = null;
-            try {
-                theCode = SamplingRate.valueForString((String) obj);
-            } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SAMPLING_RATE, e);
-            }
-            return theCode;
+    		return SamplingRate.valueForString((String) obj);
     	}
         return null;
     }
@@ -246,13 +275,7 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (obj instanceof BitsPerSample) {
     		return (BitsPerSample) obj;
     	} else if (obj instanceof String) {
-    		BitsPerSample theCode = null;
-            try {
-                theCode = BitsPerSample.valueForString((String) obj);
-            } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BITS_PER_SAMPLE, e);
-            }
-            return theCode;
+    		return BitsPerSample.valueForString((String) obj);
     	}
         return null;
     }
@@ -281,13 +304,7 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (obj instanceof AudioType) {
     		return (AudioType) obj;
     	} else if (obj instanceof String) {
-    		AudioType theCode = null;
-            try {
-                theCode = AudioType.valueForString((String) obj);
-            } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_TYPE, e);
-            }
-            return theCode;
+    		return AudioType.valueForString((String) obj);
     	}
         return null;
     }

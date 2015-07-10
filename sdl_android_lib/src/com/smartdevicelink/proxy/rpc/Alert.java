@@ -52,7 +52,7 @@ public class Alert extends RPCRequest {
 	 * Constructs a new Alert object
 	 */    
 	public Alert() {
-        super(FunctionID.ALERT);
+        super(FunctionID.ALERT.toString());
     }
 	/**
 	 * Constructs a new Alert object indicated by the Hashtable parameter
@@ -180,16 +180,43 @@ public class Alert extends RPCRequest {
         if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+	        	
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
         }
         return null;
@@ -203,7 +230,16 @@ public class Alert extends RPCRequest {
 	 *            <b>Notes: </b>Array must have a least one element
 	 */    
     public void setTtsChunks(List<TTSChunk> ttsChunks) {
-        if (ttsChunks != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : ttsChunks ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (ttsChunks != null) && (ttsChunks.size() > 0) && valid) {
             parameters.put(KEY_TTS_CHUNKS, ttsChunks);
         } else {
             parameters.remove(KEY_TTS_CHUNKS);
@@ -281,16 +317,43 @@ public class Alert extends RPCRequest {
         if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+	        	
+	        	List<SoftButton> softButtonList  = new ArrayList<SoftButton>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw SoftButton and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof SoftButton) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			softButtonList.add(new SoftButton((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<SoftButton>) list;
+	        	} else if (flagHash) {
+	        		return softButtonList;
+	        	}
 	        }
         }
         return null;
@@ -313,7 +376,16 @@ public class Alert extends RPCRequest {
 	 */
     
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
+
+    	boolean valid = true;
+    	
+    	for ( SoftButton item : softButtons ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (softButtons != null) && (softButtons.size() > 0) && valid) {
             parameters.put(KEY_SOFT_BUTTONS, softButtons);
         } else {
             parameters.remove(KEY_SOFT_BUTTONS);

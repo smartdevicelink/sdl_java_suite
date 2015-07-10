@@ -79,7 +79,7 @@ public class Speak extends RPCRequest {
 	 * Constructs a new Speak object
 	 */    
 	public Speak() {
-        super(FunctionID.SPEAK);
+        super(FunctionID.SPEAK.toString());
     }
 	/**
 	 * Constructs a new Speak object indicated by the Hashtable parameter
@@ -102,16 +102,43 @@ public class Speak extends RPCRequest {
     	if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
     	}
         return null;
@@ -133,7 +160,16 @@ public class Speak extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setTtsChunks( List<TTSChunk> ttsChunks ) {
-        if (ttsChunks != null) {
+
+    	boolean valid = true;
+    	
+    	for (TTSChunk item : ttsChunks ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (ttsChunks != null) && (ttsChunks.size() > 0) && valid) {
             parameters.put(KEY_TTS_CHUNKS, ttsChunks );
         } else {
             parameters.remove(KEY_TTS_CHUNKS);

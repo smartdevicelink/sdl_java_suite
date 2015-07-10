@@ -1,12 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import java.util.Hashtable;
+import java.util.List;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.LogTool;
-
-import java.util.Hashtable;
-import java.util.List;
 
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
@@ -14,11 +13,11 @@ public class SystemRequest extends RPCRequest {
 	public static final String KEY_DATA = "data";
 	
     public SystemRequest() {
-        super(FunctionID.SYSTEM_REQUEST);
+        super(FunctionID.SYSTEM_REQUEST.toString());
     }
 
 	public SystemRequest(boolean bLegacy) {
-        super(FunctionID.ENCODED_SYNC_P_DATA);
+        super(FunctionID.ENCODED_SYNC_P_DATA.toString());
     }
     
     public SystemRequest(Hashtable<String, Object> hash) {
@@ -30,17 +29,28 @@ public class SystemRequest extends RPCRequest {
         if (parameters.get(KEY_DATA) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_DATA);
         	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
+        		for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
         		}
+    			return (List<String>) list;
         	}
         }
     	return null;
     }
  
-    public void setLegacyData( List<String> data ) {
-    	if ( data!= null) {
+    public void setLegacyData( List<String> data ) { 
+    	
+    	boolean valid = true;
+    	
+    	for ( String item : data ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (data != null) && (data.size() > 0) && valid ) {
     		parameters.put(KEY_DATA, data );
     	} else {
             parameters.remove(KEY_DATA);
@@ -64,15 +74,7 @@ public class SystemRequest extends RPCRequest {
         if (obj instanceof RequestType) {
             return (RequestType) obj;
         } else if (obj instanceof String) {
-            RequestType theCode = null;
-            try {
-                theCode = RequestType.valueForString((String) obj);
-            } catch (Exception e) {
-                LogTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_REQUEST_TYPE, e);
-            }
-            return theCode;
+            return RequestType.valueForString((String) obj);
         }
         return null;
     }

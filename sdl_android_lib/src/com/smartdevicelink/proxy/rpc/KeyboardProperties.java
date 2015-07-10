@@ -7,7 +7,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.util.LogTool;
 
 public class KeyboardProperties extends RPCStruct {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
@@ -34,15 +33,7 @@ public class KeyboardProperties extends RPCStruct {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-                LogTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_LANGUAGE, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -60,15 +51,7 @@ public class KeyboardProperties extends RPCStruct {
         if (obj instanceof KeyboardLayout) {
             return (KeyboardLayout) obj;
         } else if (obj instanceof String) {
-            KeyboardLayout theCode = null;
-            try {
-                theCode = KeyboardLayout.valueForString((String) obj);
-            } catch (Exception e) {
-                LogTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_KEYBOARD_LAYOUT, e);
-            }
-            return theCode;
+            return KeyboardLayout.valueForString((String) obj);
         }
         return null;
     }
@@ -86,15 +69,7 @@ public class KeyboardProperties extends RPCStruct {
         if (obj instanceof KeypressMode) {
             return (KeypressMode) obj;
         } else if (obj instanceof String) {
-            KeypressMode theCode = null;
-            try {
-                theCode = KeypressMode.valueForString((String) obj);
-            } catch (Exception e) {
-                LogTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_KEYPRESS_MODE, e);
-            }
-            return theCode;
+            return KeypressMode.valueForString((String) obj);
         }
         return KEYPRESS_MODE_DEFAULT;
     }
@@ -113,17 +88,28 @@ public class KeyboardProperties extends RPCStruct {
         if (listObj instanceof List<?>) {
         	List<?> list = (List<?>) listObj;
             if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (List<String>) list;
-                }
+            	for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
+        		}
+        		return (List<String>) list;
             }
         }
         return null;
     }
 
     public void setLimitedCharacterList(List<String> limitedCharacterList) {
-        if (limitedCharacterList != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : limitedCharacterList ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (limitedCharacterList != null) && (limitedCharacterList.size() > 0) && valid) {
             store.put(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
         } else {
             store.remove(KEY_LIMITED_CHARACTER_LIST);

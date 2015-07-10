@@ -13,7 +13,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class DeleteCommandResponse extends RPCResponse {
 
     public DeleteCommandResponse() {
-        super(FunctionID.DELETE_COMMAND);
+        super(FunctionID.DELETE_COMMAND.toString());
     }
     public DeleteCommandResponse(Hashtable<String, Object> hash) {
         super(hash);

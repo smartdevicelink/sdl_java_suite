@@ -12,7 +12,7 @@ public class DiagnosticMessage extends RPCRequest {
 	public static final String KEY_MESSAGE_DATA = "messageData";
 
     public DiagnosticMessage() {
-        super(FunctionID.DIAGNOSTIC_MESSAGE);
+        super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
 
     public DiagnosticMessage(Hashtable<String, Object> hash) {
@@ -45,18 +45,29 @@ public class DiagnosticMessage extends RPCRequest {
     public List<Integer> getMessageData() {
     	if(parameters.get(KEY_MESSAGE_DATA) instanceof List<?>){
     		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
+    		if(list != null && list.size() > 0){
+        		for( Object obj : list ) {
+        			if (!(obj instanceof Integer)) {
+        				return null;
+        			}
         		}
+        		return (List<Integer>) list;
     		}
     	}
         return null;
     }
     
     public void setMessageData(List<Integer> messageData) {
-        if (messageData != null) {
+
+    	boolean valid = true;
+    	
+    	for ( Integer item : messageData ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (messageData != null) && (messageData.size() > 0) && valid) {
             parameters.put(KEY_MESSAGE_DATA, messageData);
         } else {
         	parameters.remove(KEY_MESSAGE_DATA);

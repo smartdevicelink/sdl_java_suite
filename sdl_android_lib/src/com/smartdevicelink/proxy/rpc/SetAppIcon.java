@@ -19,7 +19,7 @@ public class SetAppIcon extends RPCRequest {
 	 * Constructs a new SetAppIcon object
 	 */
     public SetAppIcon() {
-        super(FunctionID.SET_APP_ICON);
+        super(FunctionID.SET_APP_ICON.toString());
     }
 
 	/**

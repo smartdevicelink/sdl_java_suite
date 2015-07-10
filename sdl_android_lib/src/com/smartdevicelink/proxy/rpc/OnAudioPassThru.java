@@ -45,7 +45,7 @@ public class OnAudioPassThru extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnAudioPassThru() {
-        super(FunctionID.ON_AUDIO_PASS_THRU);
+        super(FunctionID.ON_AUDIO_PASS_THRU.toString());
     }
     /**
      *<p>Constructs a newly allocated OnAudioPassThru object indicated by the Hashtable parameter</p>

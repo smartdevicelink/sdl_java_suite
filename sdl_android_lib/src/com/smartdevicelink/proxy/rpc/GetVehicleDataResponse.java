@@ -9,8 +9,8 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
-import com.smartdevicelink.util.LogTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+import com.smartdevicelink.util.SdlLog;
 
 public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_SPEED = "speed";
@@ -41,7 +41,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 
 
     public GetVehicleDataResponse() {
-        super(FunctionID.GET_VEHICLE_DATA);
+        super(FunctionID.GET_VEHICLE_DATA.toString());
     }
     public GetVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
@@ -63,7 +63,7 @@ public class GetVehicleDataResponse extends RPCResponse {
             try {
                 theCode = new GPSData((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
             }
             return theCode;
         }
@@ -103,27 +103,11 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
     @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setFuelLevelState(fuelLevel_State);
     }
     @Deprecated
     public ComponentVolumeStatus getFuelLevel_State() {
-        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-            ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return getFuelLevelState();
     }
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         if (fuelLevelState != null) {
@@ -141,7 +125,7 @@ public class GetVehicleDataResponse extends RPCResponse {
             try {
                 theCode = ComponentVolumeStatus.valueForString((String) obj);
             } catch (Exception e) {
-                LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
+                SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
             }
             return theCode;
         }
@@ -191,13 +175,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof PRNDL) {
             return (PRNDL) obj;
         } else if (obj instanceof String) {
-        	PRNDL theCode = null;
-            try {
-                theCode = PRNDL.valueForString((String) obj);
-            } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
-            }
-            return theCode;
+        	return PRNDL.valueForString((String) obj);
         }
         return null;
     }
@@ -217,7 +195,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new TireStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
             }
         }
         return null;
@@ -248,7 +226,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new BeltStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
             }
         }
         return null;
@@ -269,7 +247,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new BodyInformation((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
             }
         }
         return null;
@@ -290,7 +268,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new DeviceStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
             }
         }
         return null;
@@ -307,13 +285,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -329,13 +301,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         if (obj instanceof WiperStatus) {
             return (WiperStatus) obj;
         } else if (obj instanceof String) {
-        	WiperStatus theCode = null;
-            try {
-                theCode = WiperStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
-            }
-            return theCode;
+        	return WiperStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -356,7 +322,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new HeadLampStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
             }
         }
         return null;
@@ -413,7 +379,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new ECallInfo((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
             }
         }
         return null;
@@ -435,7 +401,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new AirbagStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
             }
         }
         return null;
@@ -457,7 +423,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new EmergencyEvent((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
             }
         }
         return null;
@@ -478,7 +444,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new ClusterModeStatus((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
             }
         }
         return null;
@@ -499,7 +465,7 @@ public class GetVehicleDataResponse extends RPCResponse {
         	try {
         		return new MyKey((Hashtable<String, Object>) obj);
             } catch (Exception e) {
-            	LogTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
+            	SdlLog.e("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
             }
         }
         return null;

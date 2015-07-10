@@ -27,7 +27,7 @@ import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	
