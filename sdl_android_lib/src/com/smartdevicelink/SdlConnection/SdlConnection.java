@@ -11,6 +11,7 @@ import android.view.Surface;
 import com.smartdevicelink.encoder.SdlEncoder;
 
 import android.util.Log;
+
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
@@ -23,6 +24,7 @@ import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.transport.*;
+import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlConnection implements IProtocolListener, ITransportListener, IStreamListener  {
 

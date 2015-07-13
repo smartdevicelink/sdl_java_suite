@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.util.DebugTool;
 /**
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
  * <p><b>Parameter List
@@ -66,20 +67,54 @@ public class HMIPermissions extends RPCStruct {
         if (store.get(KEY_ALLOWED) instanceof List<?>) {
 	    	List<?> list = (List<?>)store.get(KEY_ALLOWED);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
-	            } else if (obj instanceof String) {
-	            	List<HMILevel> newList = new ArrayList<HMILevel>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = HMILevel.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+	            
+	        	List<HMILevel> hmiLevelList  = new ArrayList<HMILevel>();
+
+	        	boolean flagRaw = false;
+	        	boolean flagStr = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw HMILevel and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof HMILevel) {
+	        			if (flagStr) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagStr = true;
+	        			
+	        			String strFormat = (String) obj;
+	                    HMILevel toAdd = null;
+	                    try {
+	                        toAdd = HMILevel.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ALLOWED, e);
 	                    }
-	                }
-	                return newList;
-	            }
+
+	                    if (toAdd != null) {
+	                    	hmiLevelList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<HMILevel>) list;
+	        	} else if (flagStr) {
+	        		return hmiLevelList;
+	        	}
 	        }
         }
         return null;
@@ -90,7 +125,16 @@ public class HMIPermissions extends RPCStruct {
      * @param allowed HMI level that is permitted for this given RPC
      */
     public void setAllowed(List<HMILevel> allowed) {
-        if (allowed != null) {
+
+    	boolean valid = true;
+    	
+    	for ( HMILevel item : allowed ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (allowed != null) && (allowed.size() > 0) && valid) {
             store.put(KEY_ALLOWED, allowed);
         } else {
     		store.remove(KEY_ALLOWED);
