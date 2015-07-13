@@ -57,6 +57,8 @@ public abstract class AbstractProtocol {
     public abstract void SetHeartbeatReceiveInterval(int heartbeatReceiveInterval_ms);
     
     public abstract void SendHeartBeat(byte sessionID);
+
+	public abstract void SendHeartBeatACK(byte sessionID);
 	
 	// This method is called whenever the protocol receives a complete frame
 	protected void handleProtocolFrameReceived(ProtocolFrameHeader header, byte[] data, MessageFrameAssembler assembler) {
@@ -66,9 +68,15 @@ public abstract class AbstractProtocol {
 		assembler.handleFrame(header, data);
 	}
 	
-    private synchronized void resetHeartbeat(SessionType sessionType, byte sessionID) {
+    private synchronized void resetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {
         if (_protocolListener != null) {
-            _protocolListener.onResetHeartbeat(sessionType,sessionID);
+            _protocolListener.onResetOutgoingHeartbeat(sessionType,sessionID);
+        }
+    }
+	
+    private synchronized void resetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
+        if (_protocolListener != null) {
+            _protocolListener.onResetIncomingHeartbeat(sessionType,sessionID);
         }
     }
 
@@ -76,7 +84,7 @@ public abstract class AbstractProtocol {
 	protected void handleProtocolFrameToSend(ProtocolFrameHeader header, byte[] data, int offset, int length) {
 		SdlTrace.logProtocolEvent(InterfaceActivityDirection.Transmit, header, data, 
 				offset, length, SDL_LIB_TRACE_KEY);
-		resetHeartbeat(header.getSessionType(), header.getSessionID());
+		resetOutgoingHeartbeat(header.getSessionType(), header.getSessionID());
 		synchronized(_frameLock) {
 			byte[] frameHeader = header.assembleHeaderBytes();
 			handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
@@ -96,9 +104,6 @@ public abstract class AbstractProtocol {
 	
 	// This method handles received protocol messages. 
 	protected void handleProtocolMessageReceived(ProtocolMessage message) {
-		
-		//uncomment when SDL Core supports
-		//resetHeartbeat(message.getSessionType(), message.getSessionID());
 		_protocolListener.onProtocolMessageReceived(message);
 	}
 	
@@ -126,7 +131,17 @@ public abstract class AbstractProtocol {
 	protected void handleProtocolError(String string, Exception ex) {
 		_protocolListener.onProtocolError(string, ex);
 	}
+    protected void handleProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+        _protocolListener.onProtocolHeartbeat(sessionType, sessionID);
+    	SendHeartBeatACK(sessionID);
+    }
     protected void handleProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
         _protocolListener.onProtocolHeartbeatACK(sessionType, sessionID);
+    }
+    protected void handleProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
+        _protocolListener.onProtocolServiceDataACK(sessionType, sessionID);
+    }
+    protected void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
+		resetIncomingHeartbeat(sessionType, sessionID);
     }
 } // end-class

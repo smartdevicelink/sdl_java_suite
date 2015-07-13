@@ -22,7 +22,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     private byte wiproProcolVer;
 	private ISdlConnectionListener sessionListener;
 	private BaseTransportConfig transportConfig;
-    IHeartbeatMonitor _heartbeatMonitor = null;
+    IHeartbeatMonitor _outgoingHeartbeatMonitor = null;
+    IHeartbeatMonitor _incomingHeartbeatMonitor = null;
     private static final String TAG = "SdlSession";
     private LockScreenManager lockScreenMan  = new LockScreenManager();
 
@@ -50,13 +51,22 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private SdlSession() {
 	}
 	
-    public IHeartbeatMonitor getHeartbeatMonitor() {
-        return _heartbeatMonitor;
+    public IHeartbeatMonitor getOutgoingHeartbeatMonitor() {
+        return _outgoingHeartbeatMonitor;
+    }
+	
+    public IHeartbeatMonitor getIncomingHeartbeatMonitor() {
+        return _incomingHeartbeatMonitor;
     }
 
-    public void setHeartbeatMonitor(IHeartbeatMonitor heartbeatMonitor) {
-        this._heartbeatMonitor = heartbeatMonitor;
-        _heartbeatMonitor.setListener(this);
+    public void setOutgoingHeartbeatMonitor(IHeartbeatMonitor outgoingHeartbeatMonitor) {
+        this._outgoingHeartbeatMonitor = outgoingHeartbeatMonitor;
+        _outgoingHeartbeatMonitor.setListener(this);
+    }	
+
+    public void setIncomingHeartbeatMonitor(IHeartbeatMonitor incomingHeartbeatMonitor) {
+        this._incomingHeartbeatMonitor = incomingHeartbeatMonitor;
+        _incomingHeartbeatMonitor.setListener(this);
     }	
 	
 	
@@ -113,8 +123,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
     private void initialiseSession() {
-        if (_heartbeatMonitor != null) {
-            _heartbeatMonitor.start();
+        if (_outgoingHeartbeatMonitor != null) {
+        	_outgoingHeartbeatMonitor.start();
+        }
+        if (_incomingHeartbeatMonitor != null) {
+        	_incomingHeartbeatMonitor.start();
         }
     }	
 	
@@ -212,6 +225,26 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolSessionNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);		
+		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+	}
+
+	@Override
+	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
+		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	}
+
+	@Override
+	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+		this.sessionListener.onProtocolHeartbeat(sessionType, sessionID);
+	}
+
+	@Override
+	public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
+		this.sessionListener.onProtocolHeartbeatACK(sessionType, sessionID);
+	}
+
+	@Override
+	public void onProtocolSendHeartbeat(SdlSession mySession) {
+		this.sessionListener.onProtocolSendHeartbeat(mySession);
 	}	
 }

@@ -53,7 +53,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public void setVersion(byte version) {
 		this._version = version;
 		if (version > 1) {
-			this._version = 2;
+			this._version = version;
 			HEADER_SIZE = 12;
 			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
 			_headerBuf = new byte[HEADER_SIZE];
@@ -265,6 +265,8 @@ public class WiProProtocol extends AbstractProtocol {
 					new SdlException("Error handling protocol message from sdl, data buffer is null.", SdlExceptionCause.DATA_BUFFER_NULL));
 			return null;
 		}
+		
+		onResetIncomingHeartbeat(_currentHeader.getSessionType(), _currentHeader.getSessionID());
 
 		int bytesLeft = receivedBytesLength - receivedBytesReadPos;
 		int bytesNeeded = _dataBuf.length - _dataBufWritePos;
@@ -412,16 +414,22 @@ public class WiProProtocol extends AbstractProtocol {
 			} // end-if
 		} // end-method
 		
+        private void handleProtocolHeartbeat(ProtocolFrameHeader header,
+                byte[] data) {
+        		WiProProtocol.this.handleProtocolHeartbeat(header.getSessionType(),header.getSessionID());
+        } // end-method		
+		
         private void handleProtocolHeartbeatACK(ProtocolFrameHeader header,
                 byte[] data) {
         		WiProProtocol.this.handleProtocolHeartbeatACK(header.getSessionType(),header.getSessionID());
         } // end-method		
 		
 		private void handleControlFrame(ProtocolFrameHeader header, byte[] data) {
-            if (header.getFrameData() == FrameDataControlFrameType.HeartbeatACK.getValue()) {
+			if (header.getFrameData() == FrameDataControlFrameType.Heartbeat.getValue()) {
+                handleProtocolHeartbeat(header, data);
+            } else if (header.getFrameData() == FrameDataControlFrameType.HeartbeatACK.getValue()) {
                 handleProtocolHeartbeatACK(header, data);
-            }
-            else if (header.getFrameData() == FrameDataControlFrameType.StartSession.getValue()) {
+            } else if (header.getFrameData() == FrameDataControlFrameType.StartSession.getValue()) {
 				sendStartProtocolSessionACK(header.getSessionType(), header.getSessionID());
 			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionACK.getValue()) {
 				// Use this sessionID to create a message lock
@@ -447,6 +455,8 @@ public class WiProProtocol extends AbstractProtocol {
 				} else handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionACK.getValue()) {
 				handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
+			} else if (header.getFrameData() == FrameDataControlFrameType.ServiceDataACK.getValue()) {
+				handleProtocolServiceDataACK(header.getSessionType(), header.getSessionID());
 			}
 		} // end-method
 				
@@ -504,6 +514,12 @@ public class WiProProtocol extends AbstractProtocol {
 	@Override
 	public void SendHeartBeat(byte sessionID) {
         final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.CONTROL, sessionID, _version);        
+        sendFrameToTransport(heartbeat);		
+	}
+
+	@Override
+	public void SendHeartBeatACK(byte sessionID) {
+        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, _version);        
         sendFrameToTransport(heartbeat);		
 	}
 } // end-class

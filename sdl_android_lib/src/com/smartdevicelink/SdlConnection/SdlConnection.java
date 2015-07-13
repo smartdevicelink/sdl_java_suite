@@ -332,6 +332,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public void sendHeartbeat(SdlSession mySession) {
 		if(_protocol != null && mySession != null)
 			_protocol.SendHeartBeat(mySession.getSessionId());
+
+    	_connectionListener.onProtocolSendHeartbeat(mySession);
 	}	
 	
 	public void unregisterSession(SdlSession registerListener) {
@@ -415,10 +417,48 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			}	
 			
 		}
+
+		@Override
+		public void onProtocolServiceDataACK(SessionType sessionType,
+				byte sessionID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolServiceDataACK(sessionType, sessionID);
+			}
+		}
+
+		@Override
+		public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolHeartbeat(sessionType, sessionID);
+			}
+		}
+
+		@Override
+		public void onProtocolHeartbeatACK(SessionType sessionType,
+				byte sessionID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolHeartbeatACK(sessionType, sessionID);
+			}
+		}
+
+		@Override
+		public void onProtocolSendHeartbeat(SdlSession mySession) {
+			if (mySession != null) {
+				mySession.onProtocolSendHeartbeat(mySession);
+			}
+		}
 	}
 		
 	public int getRegisterCount() {
 		return listenerList.size();
+	}
+
+	@Override
+	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+    	_connectionListener.onProtocolHeartbeat(sessionType, sessionID);
 	}
 
     @Override
@@ -427,19 +467,40 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
-    	if (mySession._heartbeatMonitor != null) {
-    		mySession._heartbeatMonitor.heartbeatACKReceived();
+    	if (mySession._outgoingHeartbeatMonitor != null) {
+    		mySession._outgoingHeartbeatMonitor.heartbeatACKReceived();
         }
+    	if (mySession._incomingHeartbeatMonitor != null) {
+    		mySession._incomingHeartbeatMonitor.heartbeatACKReceived();
+        }
+    	
+    	_connectionListener.onProtocolHeartbeatACK(sessionType, sessionID);
     }
 
     @Override
-    public void onResetHeartbeat(SessionType sessionType, byte sessionID){
+    public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID){
     	
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
-    	if (mySession._heartbeatMonitor != null) {
-    		mySession._heartbeatMonitor.notifyTransportActivity();
+    	if (mySession._outgoingHeartbeatMonitor != null) {
+    		mySession._outgoingHeartbeatMonitor.notifyTransportActivity();
         }
     }
+
+    @Override
+    public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID){
+    	
+    	SdlSession mySession = findSessionById(sessionID);
+    	if (mySession == null) return;
+    	
+    	if (mySession._incomingHeartbeatMonitor != null) {
+    		mySession._incomingHeartbeatMonitor.notifyTransportActivity();
+        }
+    }
+
+	@Override
+	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
+		_connectionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	}
 }

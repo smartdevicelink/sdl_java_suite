@@ -308,4 +308,12 @@ public interface IProxyListenerBase  {
 	public void onDialNumberResponse(DialNumberResponse response);
 	
 	public void onSendLocationResponse(SendLocationResponse response);
+
+	public void onServiceDataACK();
+
+	public void onHeartbeat();
+
+	public void onHeartbeatACK();
+
+	public void onSendHeartbeat();
 }

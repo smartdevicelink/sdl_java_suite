@@ -1,5 +1,10 @@
 package com.smartdevicelink.protocol.heartbeat;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -16,6 +21,9 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
     private Looper heartbeatThreadLooper;
     private Handler heartbeatThreadHandler;
     
+    FutureTask<Void> fTask;
+    ScheduledExecutorService scheduler;
+    
     private Runnable heartbeatTimeoutRunnable = new Runnable() {
         @Override
         public void run() {
@@ -26,20 +34,22 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
                 if (ackReceived) {
                     Log.d(TAG,
                             "ACK has been received, sending and scheduling heartbeat");
+                    ackReceived = false;
                     if (listener != null) {
+                		fTask =  createFutureTask(new CallableMethod(2000));
+                		scheduler = createScheduler();
+                		scheduler.execute(fTask);
                         listener.sendHeartbeat(HeartbeatMonitor.this);
                     } else {
                         Log.w(TAG,
                                 "Delegate is not set, scheduling heartbeat anyway");
                     }
-                    ackReceived = false;
                 } else {
                     Log.d(TAG, "ACK has not been received");
+                	stop();
                     if (listener != null) {
-                    	stop();
                         listener.heartbeatTimedOut(HeartbeatMonitor.this);
                     }
-                    // TODO stop?
                 }
             }
             rescheduleHeartbeat();
@@ -174,4 +184,34 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
             ackReceived = true;
         }
     }
+
+	private class CallableMethod implements Callable<Void> {
+	    private long waitTime;
+	     
+	    public CallableMethod(int timeInMillis){
+	        this.waitTime=timeInMillis;
+	    }
+	    @Override
+	    public Void call() {
+	        try {
+				Thread.sleep(waitTime);
+                if (!ackReceived) {
+                    Log.d(TAG, "ACK has not been received");
+                	stop();
+                    if (listener != null) {
+                        listener.heartbeatTimedOut(HeartbeatMonitor.this);
+                    }
+                }
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+	    }
+	}
+	public FutureTask<Void> createFutureTask(CallableMethod callMethod){
+		return new FutureTask<Void>(callMethod);
+	}
+	public ScheduledExecutorService createScheduler(){
+		return  Executors.newSingleThreadScheduledExecutor();
+	}
 }

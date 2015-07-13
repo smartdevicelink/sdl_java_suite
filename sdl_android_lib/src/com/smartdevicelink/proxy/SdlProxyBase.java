@@ -282,16 +282,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			updateBroadcastIntent(sendIntent, "COMMENT2", " SessionType: " + sessionType.getName());
 			sendBroadcastIntent(sendIntent);	
 			
-			setWiProVersion(version);
-
-			 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version > 2) )
-			 {
-				 HeartbeatMonitor heartbeatMonitor = new HeartbeatMonitor();
-				 heartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
-	             sdlSession.setHeartbeatMonitor(heartbeatMonitor);
-			 }			
+			setWiProVersion(version);	
 			
-			if (sessionType.eq(SessionType.RPC)) {			
+			if (sessionType.eq(SessionType.RPC)) {	
+
+				 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version >= 2) )
+				 {
+					 HeartbeatMonitor outgoingHeartbeatMonitor = new HeartbeatMonitor();
+					 outgoingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
+		             sdlSession.setOutgoingHeartbeatMonitor(outgoingHeartbeatMonitor);
+
+					 HeartbeatMonitor incomingHeartbeatMonitor = new HeartbeatMonitor();
+					 incomingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
+		             sdlSession.setIncomingHeartbeatMonitor(incomingHeartbeatMonitor);
+				 }		
+				 
 				startRPCProtocolSession(sessionID, correlationID);
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
@@ -336,6 +341,68 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             
             notifyProxyClosed(msg, new SdlException(msg, SdlExceptionCause.HEARTBEAT_PAST_DUE), SdlDisconnectedReason.HB_TIMEOUT);
 			
+		}
+
+		@Override
+		public void onProtocolServiceDataACK(SessionType sessionType,
+				byte sessionID) {
+			if (_callbackToUIThread) {
+				// Run in UI thread
+				_mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						_proxyListener.onServiceDataACK();
+					}
+				});
+			} else {
+				_proxyListener.onServiceDataACK();						
+			}
+		}
+
+		@Override
+		public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+			if (_callbackToUIThread) {
+				// Run in UI thread
+				_mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						_proxyListener.onHeartbeat();
+					}
+				});
+			} else {
+				_proxyListener.onHeartbeat();						
+			}
+		}
+
+		@Override
+		public void onProtocolHeartbeatACK(SessionType sessionType,
+				byte sessionID) {
+			if (_callbackToUIThread) {
+				// Run in UI thread
+				_mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						_proxyListener.onHeartbeatACK();
+					}
+				});
+			} else {
+				_proxyListener.onHeartbeatACK();						
+			}
+		}
+
+		@Override
+		public void onProtocolSendHeartbeat(SdlSession mySession) {
+			if (_callbackToUIThread) {
+				// Run in UI thread
+				_mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						_proxyListener.onSendHeartbeat();
+					}
+				});
+			} else {
+				_proxyListener.onSendHeartbeat();						
+			}
 		}
 	}
 	
