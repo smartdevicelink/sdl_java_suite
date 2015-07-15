@@ -2,6 +2,8 @@ package com.smartdevicelink.proxy;
 
 import java.util.Vector;
 
+import android.os.Build;
+
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.Alert;
@@ -12,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
+import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -57,7 +60,6 @@ public class RPCRequestFactory {
 
 	public static final int SDL_MSG_MAJOR_VERSION = 1;
 	public static final int SDL_MSG_MINOR_VERSION = 0;
-
 	
 	public static SystemRequest buildSystemRequest(
 			String data, Integer correlationID) {
@@ -872,14 +874,14 @@ public class RPCRequestFactory {
 			String appName, Boolean isMediaApp, String appID) {
 		
 		return buildRegisterAppInterface(null, appName, null, null, null, isMediaApp, 
-				null, null, null, appID, null); 
+				null, null, null, appID, null, null);
 	}	
 		
 	public static RegisterAppInterface buildRegisterAppInterface(
 			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, 
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, Integer correlationID) {
+			String appID, Integer correlationID, DeviceInfo deviceInfo) {
 		RegisterAppInterface msg = new RegisterAppInterface();
 		
 		if (correlationID == null) {
@@ -893,7 +895,7 @@ public class RPCRequestFactory {
 			sdlMsgVersion.setMinorVersion(Integer.valueOf(SDL_MSG_MINOR_VERSION));
 		} 
 		msg.setSdlMsgVersion(sdlMsgVersion);
-		
+		msg.setDeviceInfo(deviceInfo);
 		msg.setAppName(appName);
 		
 		if (ttsName != null) {
@@ -1446,5 +1448,14 @@ public class RPCRequestFactory {
 		
 		return msg;
 	}
-	
+
+	public static DeviceInfo BuildDeviceInfo(String carrierName)
+	{
+		DeviceInfo msg = new DeviceInfo();
+		msg.setHardware(android.os.Build.MODEL);
+		msg.setOs(DeviceInfo.DEVICE_OS);
+		msg.setOsVersion(Build.VERSION.RELEASE);
+		msg.setCarrier(carrierName);
+		return msg;
+	}
 }
