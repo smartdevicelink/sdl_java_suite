@@ -412,9 +412,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onHeartbeatTimedOut(byte sessionID) {
-			for (SdlSession session : listenerList) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
 				session.onHeartbeatTimedOut(sessionID);
-			}	
+			}
 			
 		}
 
