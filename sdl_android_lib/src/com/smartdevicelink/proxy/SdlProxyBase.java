@@ -286,7 +286,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (sessionType.eq(SessionType.RPC)) {	
 
-				 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version >= 2) )
+				 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version >= 2))
 				 {
 					 HeartbeatMonitor outgoingHeartbeatMonitor = new HeartbeatMonitor();
 					 outgoingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());

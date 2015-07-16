@@ -134,6 +134,7 @@ public abstract class AbstractProtocol {
     protected void handleProtocolHeartbeat(SessionType sessionType, byte sessionID) {
         _protocolListener.onProtocolHeartbeat(sessionType, sessionID);
     	SendHeartBeatACK(sessionID);
+    	_protocolListener.onProtocolHeartbeat(sessionType, sessionID);
     }
     protected void handleProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
         _protocolListener.onProtocolHeartbeatACK(sessionType, sessionID);

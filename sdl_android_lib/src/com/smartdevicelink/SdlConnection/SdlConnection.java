@@ -455,15 +455,22 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public int getRegisterCount() {
 		return listenerList.size();
 	}
-
+	
 	@Override
 	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-    	_connectionListener.onProtocolHeartbeat(sessionType, sessionID);
+    	SdlSession mySession = findSessionById(sessionID);
+    	if (mySession == null) return;
+    	
+    	if (mySession._outgoingHeartbeatMonitor != null) {
+    		mySession._outgoingHeartbeatMonitor.heartbeatReceived();
+        }
+    	if (mySession._incomingHeartbeatMonitor != null) {
+    		mySession._incomingHeartbeatMonitor.heartbeatReceived();
+        }		
 	}
-
-    @Override
+    
+	@Override
     public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-        
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
