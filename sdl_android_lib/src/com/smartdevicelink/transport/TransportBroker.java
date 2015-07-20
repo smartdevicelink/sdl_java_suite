@@ -269,7 +269,11 @@ public class TransportBroker {
 		
 		private void unBindFromRouterService(){
 			try{
-				getContext().unbindService(routerConnection);
+				if(getContext()!=null){
+					getContext().unbindService(routerConnection);
+				}else{
+					Log.w(TAG, "Unable to unbind from router service, context was null");
+				}
 				
 			}catch(IllegalArgumentException e){
 				//This is ok

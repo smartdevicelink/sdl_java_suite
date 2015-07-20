@@ -22,6 +22,7 @@ import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.transport.BTTransport;
+import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.MultiplexTransport;
@@ -66,12 +67,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				_transport = null;
 			}
 			if(legacyTransportRequest ==null && //Make sure legacy mode is not enabled
-					(transportConfig.getTransportType() == TransportType.MULTIPLEX
-					||  transportConfig.getTransportType() == TransportType.BLUETOOTH)){
+					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if((legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH)
 					|| transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this);				
+			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
+				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());	//FIXME we should chage this over to a special legacy config
 			}
 			else if (transportConfig.getTransportType() == TransportType.TCP)
 			{
