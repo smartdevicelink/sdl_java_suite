@@ -393,8 +393,15 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 			int height, int bitrate, SessionType sType, byte rpcSessionID) {
 		try {
-			mSdlEncoder = new SdlEncoder(frameRate, iFrameInterval, width,
-					height, bitrate, (PipedOutputStream) startStream(sType, rpcSessionID));
+			PipedOutputStream stream = (PipedOutputStream) startStream(sType, rpcSessionID);
+			if (stream == null) return null;
+			mSdlEncoder = new SdlEncoder();
+			mSdlEncoder.setFrameRate(frameRate);
+			mSdlEncoder.setFrameInterval(iFrameInterval);
+			mSdlEncoder.setFrameWidth(width);
+			mSdlEncoder.setFrameHeight(height);
+			mSdlEncoder.setBitrate(bitrate);
+			mSdlEncoder.setOutputStream(stream);
 		} catch (IOException e) {
 			return null;
 		}
