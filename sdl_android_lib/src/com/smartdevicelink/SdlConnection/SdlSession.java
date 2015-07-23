@@ -232,19 +232,4 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
 		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
 	}
-
-	@Override
-	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-		this.sessionListener.onProtocolHeartbeat(sessionType, sessionID);
-	}
-
-	@Override
-	public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-		this.sessionListener.onProtocolHeartbeatACK(sessionType, sessionID);
-	}
-
-	@Override
-	public void onProtocolSendHeartbeat(SdlSession mySession) {
-		this.sessionListener.onProtocolSendHeartbeat(mySession);
-	}	
 }

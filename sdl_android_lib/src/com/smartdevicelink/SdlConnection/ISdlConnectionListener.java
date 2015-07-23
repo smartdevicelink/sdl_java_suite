@@ -25,10 +25,4 @@ public interface ISdlConnectionListener {
 	public void onHeartbeatTimedOut(byte sessionID);
 	
 	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID);
-
-	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID);
-
-	public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID);
-
-	public void onProtocolSendHeartbeat(SdlSession mySession);
 }

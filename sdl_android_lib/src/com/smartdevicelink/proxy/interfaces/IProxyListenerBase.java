@@ -310,10 +310,4 @@ public interface IProxyListenerBase  {
 	public void onSendLocationResponse(SendLocationResponse response);
 
 	public void onServiceDataACK();
-
-	public void onHeartbeat();
-
-	public void onHeartbeatACK();
-
-	public void onSendHeartbeat();
 }

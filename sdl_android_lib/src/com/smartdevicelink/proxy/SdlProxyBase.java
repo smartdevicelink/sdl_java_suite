@@ -358,52 +358,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_proxyListener.onServiceDataACK();						
 			}
 		}
-
-		@Override
-		public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-			if (_callbackToUIThread) {
-				// Run in UI thread
-				_mainUIHandler.post(new Runnable() {
-					@Override
-					public void run() {
-						_proxyListener.onHeartbeat();
-					}
-				});
-			} else {
-				_proxyListener.onHeartbeat();						
-			}
-		}
-
-		@Override
-		public void onProtocolHeartbeatACK(SessionType sessionType,
-				byte sessionID) {
-			if (_callbackToUIThread) {
-				// Run in UI thread
-				_mainUIHandler.post(new Runnable() {
-					@Override
-					public void run() {
-						_proxyListener.onHeartbeatACK();
-					}
-				});
-			} else {
-				_proxyListener.onHeartbeatACK();						
-			}
-		}
-
-		@Override
-		public void onProtocolSendHeartbeat(SdlSession mySession) {
-			if (_callbackToUIThread) {
-				// Run in UI thread
-				_mainUIHandler.post(new Runnable() {
-					@Override
-					public void run() {
-						_proxyListener.onSendHeartbeat();
-					}
-				});
-			} else {
-				_proxyListener.onSendHeartbeat();						
-			}
-		}
 	}
 	
 	/**
