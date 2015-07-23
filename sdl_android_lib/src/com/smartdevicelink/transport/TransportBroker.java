@@ -139,7 +139,9 @@ public class TransportBroker {
             			if(queuedOnTransportConnect!=null){
         					onHardwareConnected(queuedOnTransportConnect);
         					queuedOnTransportConnect = null;
-        				}	
+        				}else if(SdlBroadcastReceiver.isTransportConnected(getContext())){
+        					onHardwareConnected(null); //FIXME to include type
+        				}
             		}else{ //We were denied registration to the router service, let's see why
             			registeredWithRouterService = false; 
             			Log.w(TAG, "Registration denied from router service. Reason - " + msg.arg1);
