@@ -57,16 +57,16 @@ import com.smartdevicelink.proxy.RPCRequest;
  * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the Choice Set was created. 
  * <p>
  * <b>Non-default Result Codes:</b><br>
- * ¥	SUCCESS<br>
- * ¥	INVALID_DATA<br>
- * ¥	OUT_OF_MEMORY<br>
- * ¥	TOO_MANY_PENDING_REQUESTS<br>
- * ¥	APPLICATION_NOT_REGISTERED<br>
- * ¥	GENERIC_ERROR<br>
- * ¥	REJECTED<br> 
- * ¥ INVALID_ID<br>
- * ¥ DUPLICATE_NAME<br>
- * ¥ UNSUPPORTED_RESOURCE <br>    
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br> 
+ *  INVALID_ID<br>
+ *  DUPLICATE_NAME<br>
+ *  UNSUPPORTED_RESOURCE <br>    
  *  <p>
  * 
  * @since SmartDeviceLink 1.0

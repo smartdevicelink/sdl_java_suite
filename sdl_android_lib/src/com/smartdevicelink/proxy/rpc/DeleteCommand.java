@@ -38,15 +38,15 @@ import com.smartdevicelink.proxy.RPCRequest;
  * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code,<br> this means a command was removed from the Command Menu successfully. 
  * <p>
  *<b> Non-default Result Codes:</b><br>
- * ¥	SUCCESS<br>
- * ¥	INVALID_DATA<br>
- * ¥	OUT_OF_MEMORY<br>
- * ¥	TOO_MANY_PENDING_REQUESTS<br>
- * ¥	APPLICATION_NOT_REGISTERED<br>
- * ¥	GENERIC_ERROR<br>
- * ¥	REJECTED<br> 
- * ¥   INVALID_ID<br>
- * ¥   IN_USER<br>  
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br> 
+ *    INVALID_ID<br>
+ *    IN_USER<br>  
 
  * @since SmartDeviceLink 1.0
  * @see AddCommand

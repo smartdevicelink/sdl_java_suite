@@ -86,14 +86,14 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * <b>Response </b><br>
  * <p>
  * <b>Non-default Result Codes:</b><br>
- * ¥	SUCCESS<br>
- * ¥	INVALID_DATA<br>
- * ¥	OUT_OF_MEMORY<br>
- * ¥	TOO_MANY_PENDING_REQUESTS<br>
- * ¥	APPLICATION_NOT_REGISTERED<br>
- * ¥	GENERIC_ERROR<br>
- * ¥	REJECTED<br>
- * ¥   DISALLOWED<br>
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br>
+ *    DISALLOWED<br>
  
  * 
  * @since SmartDeviceLink 2.0

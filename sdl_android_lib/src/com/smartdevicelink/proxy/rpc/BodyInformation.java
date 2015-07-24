@@ -22,7 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
  * 			<td>parkBrakeActive</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>Describes, if the parkbreak is active. The information about the park brake: - ‘true’, if active - ‘false’ if not.</td>
+ * 			<td>Describes, if the parkbreak is active. The information about the park brake: - true, if active - false if not.</td>
  *  			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
@@ -43,28 +43,28 @@ import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
  * 			<td>parkBrakeActive</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>The information about the park brake: - ‘true’, if active - ‘false’ if not.</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>driverDoorAjar</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>The information about the park brake: - ‘true’, if active - ‘false’ if not.</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>passengerDoorAjar</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>The information about the park brake: - ‘true’, if active - ‘false’ if not.</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>rearLeftDoorAjar</td>
  * 			<td>Boolean</td>
  * 			<td>true</td>
- * 			<td>The information about the park brake: - ‘true’, if active - ‘false’ if not.</td>
+ * 			<td>The information about the park brake: - true, if active - false if not.</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>

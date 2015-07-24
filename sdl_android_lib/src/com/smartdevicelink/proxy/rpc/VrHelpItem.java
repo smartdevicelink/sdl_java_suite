@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
 /**
  * 
- * VR help items Ð i.e. the text strings to be displayed, and when pronounced by the user the recognition of any of which must trigger the corresponding VR command.
+ * VR help items  i.e. the text strings to be displayed, and when pronounced by the user the recognition of any of which must trigger the corresponding VR command.
  *<p>
  * <p><b>Parameter List</b>
  * <table border="1" rules="all">

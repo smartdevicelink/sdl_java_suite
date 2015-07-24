@@ -11,12 +11,12 @@ public enum VehicleDataStatus {
 	 */
 	NO_DATA_EXISTS,
 	/**
-	 * The vehicle item is in ‘Off’ state
+	 * The vehicle item is in Off state
 	 */
 
     OFF,
     /**
-     * The vehicle item is in ‘On’ state
+     * The vehicle item is in On state
      */
 
     ON;

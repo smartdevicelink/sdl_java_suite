@@ -32,13 +32,13 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <b>Response </b><br>
  * <p>
  * <b>Non-default Result Codes:</b><br>
- * ¥	SUCCESS<br>
- * ¥	INVALID_DATA<br>
- * ¥	OUT_OF_MEMORY<br>
- * ¥	TOO_MANY_PENDING_REQUESTS<br>
- * ¥	APPLICATION_NOT_REGISTERED<br>
- * ¥	GENERIC_ERROR<br>
- * ¥	REJECTED<br> 
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br> 
  * @since SmartDeviceLink 2.0
  * @see PutFile
  * @see ListFiles

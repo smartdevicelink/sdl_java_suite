@@ -77,13 +77,13 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
  * Response is sent, when the file data was copied (success case). Or when an error occurred. Not supported on First generation SDL modules.
  * <p>
  * <b>	Non-default Result Codes:</b><br>
- * ¥	SUCCESS<br>
- * ¥	INVALID_DATA<br>
- * ¥	OUT_OF_MEMORY<br>
- * ¥	TOO_MANY_PENDING_REQUESTS<br>
- * ¥	APPLICATION_NOT_REGISTERED<br>
- * ¥	GENERIC_ERROR<br>
- * ¥	REJECTED<br>
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br>
  *<p>
  * <table border="1" rules="all">
  * 		<tr>

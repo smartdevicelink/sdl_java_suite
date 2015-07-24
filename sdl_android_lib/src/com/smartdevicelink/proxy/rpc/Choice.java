@@ -8,7 +8,7 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.<br>
- *  For example, the application may request for the user`s choice among several suggested ones: ‘Yes’, ‘No’, ‘Skip’.
+ *  For example, the application may request for the user`s choice among several suggested ones: Yes, No, Skip.
  * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>

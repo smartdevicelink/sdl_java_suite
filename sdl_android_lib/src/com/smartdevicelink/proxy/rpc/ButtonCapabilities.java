@@ -43,9 +43,9 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * </table>
  * <p>
  * Upon the request HMI must provide the list of the following information:<br>
- * ¥	The names of all existing/supported hardware buttons.<br>
- * 	¥	The availability of LONG/SHORT press for each existing/supported hardware button correspondingly<br>
- * 	¥	The availability of UP/DOWN events for each existing/supported hardware button correspondingly.<br>
+ * 	The names of all existing/supported hardware buttons.<br>
+ * 		The availability of LONG/SHORT press for each existing/supported hardware button correspondingly<br>
+ * 		The availability of UP/DOWN events for each existing/supported hardware button correspondingly.<br>
  * <p>
  * @since SmartDeviceLink 1.0
  * <p>

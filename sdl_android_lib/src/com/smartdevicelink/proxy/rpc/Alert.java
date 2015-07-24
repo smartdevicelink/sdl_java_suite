@@ -47,7 +47,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>String</td>
  * 			<td>Text to be displayed in the first field of the display during the Alert. </td>
  *                 <td>N</td>
- * 			<td>¥	Length is limited to what is indicated in RegisterAppInterface response. ¥ If omitted, top display line will be cleared. Text is always centered</td>
+ * 			<td>	Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -55,7 +55,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>String</td>
  * 			<td>Text to be displayed in the second field of the display during the Alert. </td>
  *                 <td>N</td>
- * 			<td>¥	Only permitted if HMI supports a second display line.¥<br>	Length is limited to what is indicated in RegisterAppInterface response. ¥<br>	If omitted, second display line will be cleared.  </td>
+ * 			<td>	Only permitted if HMI supports a second display line.<br>	Length is limited to what is indicated in RegisterAppInterface response. <br>	If omitted, second display line will be cleared.  </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -79,7 +79,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Int32</td>
  * 			<td>The duration of the displayed portion of the alert, in milliseconds.<br> After this amount of time has passed, the display fields<br> alertText1 and alertText2 will revert to what was displayed in those fields before the alert began.</td>
  *                 <td>N</td>
- * 			<td>Min Value: 3000 <br> Max Value: 10000<br>¥	If omitted, the default is 5000 milliseconds</td>
+ * 			<td>Min Value: 3000 <br> Max Value: 10000<br>	If omitted, the default is 5000 milliseconds</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
