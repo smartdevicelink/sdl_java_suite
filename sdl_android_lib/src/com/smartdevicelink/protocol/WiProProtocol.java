@@ -52,7 +52,12 @@ public class WiProProtocol extends AbstractProtocol {
 	
 	public void setVersion(byte version) {
 		this._version = version;
-		if (version > 1) {
+		if (version > 3) {
+			this._version = 3;
+			HEADER_SIZE = 12;
+			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
+			_headerBuf = new byte[HEADER_SIZE];
+		} else if (version > 1) {
 			this._version = version;
 			HEADER_SIZE = 12;
 			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
