@@ -27,7 +27,9 @@
         
         
         <service android:name=".sdl.SdlService" ></service>
-        <service android:name=".sdl.SdlRouterService" android:exported="true"></service>
+        <service android:name=".sdl.SdlRouterService" 
+            android:exported="true"
+            android:process="smartDeviceLink.router"></service>
         
         
         <receiver android:name=".sdl.SdlReceiver" android:enabled="true" >
