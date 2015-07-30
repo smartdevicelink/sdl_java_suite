@@ -52,16 +52,7 @@ public class UpdateTurnList extends RPCRequest{
      *            <b>Notes: </b>Minsize=1; Maxsize=100
      */
     public void setTurnList(List<Turn> turnList){
-    	
-    	boolean valid = true;
-    	
-    	for (Turn item : turnList ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (turnList != null) && (turnList.size() > 0) && valid) {
+        if(turnList != null){
             parameters.put(KEY_TURN_LIST, turnList);
         }
         else{
@@ -79,43 +70,17 @@ public class UpdateTurnList extends RPCRequest{
         if(parameters.get(KEY_TURN_LIST) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_TURN_LIST);
             if(list != null && list.size() > 0){
-
-	        	List<Turn> turnList  = new ArrayList<Turn>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw Turn and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof Turn) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			turnList.add(new Turn((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<Turn>) list;
-	        	} else if (flagHash) {
-	        		return turnList;
-	        	}
+                Object obj = list.get(0);
+                if(obj instanceof Turn){
+                    return (List<Turn>) list;
+                }
+                else if(obj instanceof Hashtable){
+                    List<Turn> newList = new ArrayList<Turn>();
+                    for(Object hashObj : list){
+                        newList.add(new Turn((Hashtable<String, Object>) hashObj));
+                    }
+                    return newList;
+                }
             }
         }
         return null;
@@ -132,43 +97,17 @@ public class UpdateTurnList extends RPCRequest{
         if(parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_SOFT_BUTTONS);
             if(list != null && list.size() > 0){
-
-	        	List<SoftButton> softButtonList  = new ArrayList<SoftButton>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw SoftButton and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof SoftButton) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			softButtonList.add(new SoftButton((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<SoftButton>) list;
-	        	} else if (flagHash) {
-	        		return softButtonList;
-	        	}
+                Object obj = list.get(0);
+                if(obj instanceof SoftButton){
+                    return (List<SoftButton>) list;
+                }
+                else if(obj instanceof Hashtable){
+                    List<SoftButton> newList = new ArrayList<SoftButton>();
+                    for(Object hashObj : list){
+                        newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
+                    }
+                    return newList;
+                }
             }
         }
         return null;
@@ -190,16 +129,7 @@ public class UpdateTurnList extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        
-    	boolean valid = true;
-    	
-    	for (SoftButton item : softButtons ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (softButtons != null) && (softButtons.size() > 0) && valid) {
+        if(softButtons != null){
             parameters.put(KEY_SOFT_BUTTONS, softButtons);
         }
         else{

@@ -55,43 +55,16 @@ public class SetGlobalProperties extends RPCRequest {
     	if (parameters.get(KEY_HELP_PROMPT) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
 	        if (list != null && list.size() > 0) {
-
-	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw TTSChunk and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof TTSChunk) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<TTSChunk>) list;
-	        	} else if (flagHash) {
-	        		return ttsChunkList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof TTSChunk) {
+	                return (List<TTSChunk>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	                for (Object hashObj : list) {
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
     	}
 	    return null;
@@ -111,16 +84,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-
-    	boolean valid = true;
-    	
-    	for (TTSChunk item : helpPrompt ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (helpPrompt != null) && (helpPrompt.size() > 0) && valid) {
+        if (helpPrompt != null) {
             parameters.put(KEY_HELP_PROMPT, helpPrompt);
         } else {
             parameters.remove(KEY_HELP_PROMPT);
@@ -139,43 +103,16 @@ public class SetGlobalProperties extends RPCRequest {
         if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
 	        if (list != null && list.size() > 0) {
-
-	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw TTSChunk and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof TTSChunk) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<TTSChunk>) list;
-	        	} else if (flagHash) {
-	        		return ttsChunkList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof TTSChunk) {
+	                return (List<TTSChunk>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	                for (Object hashObj : list) {
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
         }
         return null;
@@ -187,16 +124,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-
-    	boolean valid = true;
-    	
-    	for (TTSChunk item : timeoutPrompt ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (timeoutPrompt != null) && (timeoutPrompt.size() > 0) && valid) {
+        if (timeoutPrompt != null) {
             parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
         } else {
             parameters.remove(KEY_TIMEOUT_PROMPT);
@@ -251,43 +179,16 @@ public class SetGlobalProperties extends RPCRequest {
         if (parameters.get(KEY_VR_HELP) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_VR_HELP);
 	        if (list != null && list.size() > 0) {
-
-	        	List<VrHelpItem> vrHelpItemList  = new ArrayList<VrHelpItem>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw VrHelpItem and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof VrHelpItem) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			vrHelpItemList.add(new VrHelpItem((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<VrHelpItem>) list;
-	        	} else if (flagHash) {
-	        		return vrHelpItemList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof VrHelpItem) {
+	                return (List<VrHelpItem>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<VrHelpItem> newList = new ArrayList<VrHelpItem>();
+	                for (Object hashObj : list) {
+	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
         }
         return null;
@@ -315,16 +216,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-
-    	boolean valid = true;
-    	
-    	for (VrHelpItem item : vrHelp ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (vrHelp != null) && (vrHelp.size() > 0) && valid) {
+        if (vrHelp != null) {
             parameters.put(KEY_VR_HELP, vrHelp);
         } else {
         	parameters.remove(KEY_VR_HELP);
