@@ -525,7 +525,10 @@ public abstract class SdlRouterService extends Service{
 		registeredApps = null;
 		startSequenceComplete=false;
 		super.onDestroy();
-	    }
+		try{
+			android.os.Process.killProcess(android.os.Process.myPid());
+		}catch(Exception e){}
+	}
 	
 	private void unregisterAllReceivers(){
 		try{
