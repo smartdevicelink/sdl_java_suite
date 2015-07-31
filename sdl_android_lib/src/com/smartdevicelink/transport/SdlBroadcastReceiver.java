@@ -105,6 +105,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return True if a Livio Bluetooth Service is currently running, false otherwise.
 	 */
 	private static boolean isRouterServiceRunning(Context context, boolean pingService){
+		if(context == null){
+			Log.e(TAG, "Can't look for router service, context supplied was null");
+			return false;
+		}
 		Log.d(TAG, "Looking for Service: "+ SDL_ROUTER_SERVICE_CLASS_NAME);
 		ActivityManager manager = (ActivityManager) context.getSystemService("activity");
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
