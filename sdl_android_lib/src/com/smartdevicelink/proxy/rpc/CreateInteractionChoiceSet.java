@@ -75,43 +75,16 @@ public class CreateInteractionChoiceSet extends RPCRequest {
         if (parameters.get(KEY_CHOICE_SET) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_CHOICE_SET);
 	        if (list != null && list.size() > 0) {
-
-	        	List<Choice> choiceList  = new ArrayList<Choice>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw SoftButton and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof Choice) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			choiceList.add(new Choice((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<Choice>) list;
-	        	} else if (flagHash) {
-	        		return choiceList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof Choice) {
+	                return (List<Choice>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<Choice> newList = new ArrayList<Choice>();
+	                for (Object hashObj : list) {
+	                    newList.add(new Choice((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
         }
         return null;
@@ -126,16 +99,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
     public void setChoiceSet( List<Choice> choiceSet ) {
-
-    	boolean valid = true;
-    	
-    	for ( Choice item : choiceSet ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (choiceSet != null) && (choiceSet.size() > 0) && valid) {
+        if (choiceSet != null) {
             parameters.put(KEY_CHOICE_SET, choiceSet );
         } else {
         	parameters.remove(KEY_CHOICE_SET);

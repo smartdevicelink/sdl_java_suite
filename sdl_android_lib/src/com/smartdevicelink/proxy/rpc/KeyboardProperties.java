@@ -88,28 +88,17 @@ public class KeyboardProperties extends RPCStruct {
         if (listObj instanceof List<?>) {
         	List<?> list = (List<?>) listObj;
             if (list != null && list.size() > 0) {
-            	for( Object obj : list ) {
-        			if (!(obj instanceof String)) {
-        				return null;
-        			}
-        		}
-        		return (List<String>) list;
+                Object obj = list.get(0);
+                if (obj instanceof String) {
+                    return (List<String>) list;
+                }
             }
         }
         return null;
     }
 
     public void setLimitedCharacterList(List<String> limitedCharacterList) {
-
-    	boolean valid = true;
-    	
-    	for ( String item : limitedCharacterList ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (limitedCharacterList != null) && (limitedCharacterList.size() > 0) && valid) {
+        if (limitedCharacterList != null) {
             store.put(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
         } else {
             store.remove(KEY_LIMITED_CHARACTER_LIST);

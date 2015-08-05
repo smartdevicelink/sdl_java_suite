@@ -80,16 +80,7 @@ public class ReadDID extends RPCRequest {
 	 *            </ul>
 	 */
     public void setDidLocation(List<Integer> didLocation) {
-
-    	boolean valid = true;
-    	
-    	for ( Integer item : didLocation ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (didLocation != null) && (didLocation.size() > 0) && valid) {
+    	if (didLocation != null) {
     		parameters.put(KEY_DID_LOCATION, didLocation);
     	} else {
     		parameters.remove(KEY_DID_LOCATION);
@@ -107,12 +98,10 @@ public class ReadDID extends RPCRequest {
         if (parameters.get(KEY_DID_LOCATION) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_DID_LOCATION);
         	if (list != null && list.size() > 0) {
-        		for( Object obj : list ) {
-        			if (!(obj instanceof Integer)) {
-        				return null;
-        			}
+        		Object obj = list.get(0);
+        		if (obj instanceof Integer) {
+                	return (List<Integer>) list;
         		}
-        		return (List<Integer>) list;
         	}
         }
         return null;
