@@ -45,29 +45,18 @@ public class DiagnosticMessage extends RPCRequest {
     public List<Integer> getMessageData() {
     	if(parameters.get(KEY_MESSAGE_DATA) instanceof List<?>){
     		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA);
-    		if(list != null && list.size() > 0){
-        		for( Object obj : list ) {
-        			if (!(obj instanceof Integer)) {
-        				return null;
-        			}
+    		if(list != null && list.size()>0){
+        		Object obj = list.get(0);
+        		if(obj instanceof Integer){
+        			return (List<Integer>) list;
         		}
-        		return (List<Integer>) list;
     		}
     	}
         return null;
     }
     
     public void setMessageData(List<Integer> messageData) {
-
-    	boolean valid = true;
-    	
-    	for ( Integer item : messageData ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (messageData != null) && (messageData.size() > 0) && valid) {
+        if (messageData != null) {
             parameters.put(KEY_MESSAGE_DATA, messageData);
         } else {
         	parameters.remove(KEY_MESSAGE_DATA);
