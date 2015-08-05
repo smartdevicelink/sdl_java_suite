@@ -71,8 +71,12 @@ public class TransportBroker {
 	}
 
     private void sendMessageToRouterService(Message message){
+    	if(message == null){
+    		Log.w(TAG, "Attempted to send null message");
+    		return;
+    	}
     	Log.i(TAG, "Attempting to send message type - " + message.what);
-    	if(isBound){
+    	if(isBound && routerService !=null){
     		if(registeredWithRouterService 
     				|| message.what == TransportConstants.ROUTER_REGISTER_CLIENT){ //We can send a message if we are registered or are attempting to register
     			try {
