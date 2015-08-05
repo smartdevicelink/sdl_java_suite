@@ -11,7 +11,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener {
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
@@ -213,8 +213,5 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolSessionNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
 		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);		
-	}
-
-
-	
+	}	
 }

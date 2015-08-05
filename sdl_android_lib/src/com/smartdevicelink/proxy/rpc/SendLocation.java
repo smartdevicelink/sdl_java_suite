@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 
 /**
@@ -27,7 +28,7 @@ public class SendLocation extends RPCRequest{
      * Constructs a new SendLocation object
      */
     public SendLocation(){
-        super(FunctionID.SEND_LOCATION);
+        super(FunctionID.SEND_LOCATION.toString());
     }
 
     /**
@@ -44,17 +45,24 @@ public class SendLocation extends RPCRequest{
 
     /**
      * Getter for longitude of the location to send.
+     * 
+     * <p><b>IMPORTANT NOTE:</b> A previous version of this method call returned a Float
+     * value, however, it has been changed to return a Double. This will compile, 
+     * but cause a ClassCastException if your value is not also a Double type.
+     * @since SmartDeviceLink v4.0
+     * 
      * @return The longitude of the location
      */
-    public Float getLongitudeDegrees(){
-        return (Float) parameters.get(KEY_LON_DEGREES);
+    public Double getLongitudeDegrees(){
+    	Object value = parameters.get(KEY_LON_DEGREES);    	
+    	return SdlDataTypeConverter.objectToDouble(value);
     }
 
     /**
      * Setter for longitude of the location to send.
      * @param longitudeDegrees
      */
-    public void setLongitudeDegrees(Float longitudeDegrees){
+    public void setLongitudeDegrees(Double longitudeDegrees){
         if(longitudeDegrees != null){
             parameters.put(KEY_LON_DEGREES, longitudeDegrees);
         }
@@ -65,17 +73,24 @@ public class SendLocation extends RPCRequest{
 
     /**
      * Getter for latitude of the location to send.
+     * 
+     * <p><b>IMPORTANT NOTE:</b> A previous version of this method call returned a Float
+     * value, however, it has been changed to return a Double. This will compile, 
+     * but cause a ClassCastException if your value is not also a Double type.
+     * @since SmartDeviceLink v4.0
+     * 
      * @return The latitude of the location
      */
-    public Float getLatitudeDegrees(){
-        return (Float) parameters.get(KEY_LAT_DEGREES);
+    public Double getLatitudeDegrees(){    	
+    	Object value = parameters.get(KEY_LAT_DEGREES);    	
+    	return SdlDataTypeConverter.objectToDouble(value);
     }
 
     /**
      * Setter for latitude of the location to send.
      * @param latitudeDegrees
      */
-    public void setLatitudeDegrees(Float latitudeDegrees){
+    public void setLatitudeDegrees(Double latitudeDegrees){
         if(latitudeDegrees != null){
             parameters.put(KEY_LAT_DEGREES, latitudeDegrees);
         }
@@ -156,10 +171,12 @@ public class SendLocation extends RPCRequest{
         if(parameters.get(KEY_ADDRESS_LINES) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_ADDRESS_LINES);
             if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof String){
-                    return (List<String>) list;
-                }
+            	for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
+        		}
+        		return (List<String>) list;
             }
         }
         return null;
@@ -170,7 +187,16 @@ public class SendLocation extends RPCRequest{
      * @param addressLines The address lines of the location
      */
     public void setAddressLines(List<String> addressLines){
-        if(addressLines != null){
+
+    	boolean valid = true;
+    	
+    	for (String item : addressLines ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (addressLines != null) && (addressLines.size() > 0) && valid) {
             parameters.put(KEY_ADDRESS_LINES, addressLines);
         }
         else{

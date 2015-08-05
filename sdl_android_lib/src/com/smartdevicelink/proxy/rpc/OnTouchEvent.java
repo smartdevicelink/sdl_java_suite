@@ -13,7 +13,7 @@ public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_TYPE = "type";
 	
     public OnTouchEvent() {
-        super(FunctionID.ON_TOUCH_EVENT);
+        super(FunctionID.ON_TOUCH_EVENT.toString());
     }
     public OnTouchEvent(Hashtable<String, Object> hash) {
         super(hash);
@@ -38,7 +38,16 @@ public class OnTouchEvent extends RPCNotification {
     }
     
     public void setEvent(List<TouchEvent> event) {
-        if (event != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TouchEvent item : event ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (event != null) && (event.size() > 0) && valid) {
             parameters.put(KEY_EVENT, event);
         } else {
         	parameters.remove(KEY_EVENT);
@@ -50,16 +59,43 @@ public class OnTouchEvent extends RPCNotification {
         if (parameters.get(KEY_EVENT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_EVENT);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TouchEvent) {
-	                return (List<TouchEvent>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TouchEvent> newList = new ArrayList<TouchEvent>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TouchEvent((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TouchEvent> touchEventList  = new ArrayList<TouchEvent>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TouchEvent and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TouchEvent) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			touchEventList.add(new TouchEvent((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TouchEvent>) list;
+	        	} else if (flagHash) {
+	        		return touchEventList;
+	        	}
 	        }
         }
         return null;

@@ -8,6 +8,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.util.DebugTool;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -96,7 +97,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Constructs a new RegisterAppInterface object
 	 */
     public RegisterAppInterface() {
-        super(FunctionID.REGISTER_APP_INTERFACE);
+        super(FunctionID.REGISTER_APP_INTERFACE.toString());
     }
 	/**
 	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
@@ -213,16 +214,43 @@ public class RegisterAppInterface extends RPCRequest {
         if (parameters.get(KEY_TTS_NAME) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_TTS_NAME);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
+
+	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw TTSChunk and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof TTSChunk) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<TTSChunk>) list;
+	        	} else if (flagHash) {
+	        		return ttsChunkList;
+	        	}
 	        }
         }
         return null;
@@ -247,7 +275,16 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setTtsName(List<TTSChunk> ttsName) {
-        if (ttsName != null) {
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : ttsName ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (ttsName != null) && (ttsName.size() > 0) && valid) {
             parameters.put(KEY_TTS_NAME, ttsName);
         } else {
         	parameters.remove(KEY_TTS_NAME);
@@ -300,10 +337,12 @@ public class RegisterAppInterface extends RPCRequest {
     	if (parameters.get(KEY_VR_SYNONYMS) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_VR_SYNONYMS);
     		if (list != null && list.size()>0) {
-    			Object obj = list.get(0);
-    			if (obj instanceof String) {
-    				return (List<String>) list;
-    			}
+    			for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
+        		}
+        		return (List<String>) list;
     		}
     	}
         return null;
@@ -326,7 +365,16 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        if (vrSynonyms != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : vrSynonyms ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (vrSynonyms != null) && (vrSynonyms.size() > 0) && valid) {
             parameters.put(KEY_VR_SYNONYMS, vrSynonyms);
         } else {
         	parameters.remove(KEY_VR_SYNONYMS);
@@ -436,20 +484,53 @@ public class RegisterAppInterface extends RPCRequest {
         if (parameters.get(KEY_APP_HMI_TYPE) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_APP_HMI_TYPE);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof AppHMIType) {
-	                return (List<AppHMIType>) list;
-	            } else if (obj instanceof String) {
-	            	List<AppHMIType> newList = new ArrayList<AppHMIType>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    AppHMIType toAdd = AppHMIType.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+	        	
+	        	List<AppHMIType> appHMITypeList  = new ArrayList<AppHMIType>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagHash = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw AppHMIType and a Hashtable value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof AppHMIType) {
+	        			if (flagHash) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof Hashtable) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagHash = true;
+	        			String strFormat = (String) obj;
+	                    AppHMIType toAdd = null;
+	                    try {
+	                        toAdd = AppHMIType.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_APP_HMI_TYPE, e);
 	                    }
-	                }
-	                return newList;
-	            }
+
+	                    if (toAdd != null) {
+	                    	appHMITypeList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<AppHMIType>) list;
+	        	} else if (flagHash) {
+	        		return appHMITypeList;
+	        	}
 	        }
         }
         return null;
@@ -471,7 +552,16 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppHMIType(List<AppHMIType> appHMIType) {
-        if (appHMIType != null) {
+
+    	boolean valid = true;
+    	
+    	for ( AppHMIType item : appHMIType ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (appHMIType != null) && (appHMIType.size() > 0) && valid) {
             parameters.put(KEY_APP_HMI_TYPE, appHMIType);
         } else {
         	parameters.remove(KEY_APP_HMI_TYPE);

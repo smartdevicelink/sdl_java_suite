@@ -81,10 +81,8 @@ public class WiProProtocol extends AbstractProtocol {
 		if (_version > 1 && sessionType != SessionType.NAV) {
 			if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
-				sessionType = SessionType.Bulk_Data;
-			} else {
-				data = new byte[12 + protocolMsg.getJsonSize()];
-			}//FIXME this needs to be cleaned up. There is no need to copy data to two different arrays before sending
+				sessionType = SessionType.BULK_DATA;
+			} else data = new byte[12 + protocolMsg.getJsonSize()];
 			BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
 			binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
 			System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
@@ -311,7 +309,7 @@ public class WiProProtocol extends AbstractProtocol {
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
 			if (serviceType == SessionType.RPC) {
 				message.setMessageType(MessageType.RPC);
-			} else if (serviceType == SessionType.Bulk_Data) {
+			} else if (serviceType == SessionType.BULK_DATA) {
 				message.setMessageType(MessageType.BULK);
 			} // end-if
 			message.setSessionType(serviceType);
@@ -366,7 +364,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void SendHeartBeat(byte sessionID) {
-        final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.Heartbeat, sessionID, _version);        
+        final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.CONTROL, sessionID, _version);        
         handlePacketToSend(heartbeat);		
 	}
 } // end-class

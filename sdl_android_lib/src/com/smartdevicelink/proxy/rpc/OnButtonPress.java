@@ -95,7 +95,7 @@ public class OnButtonPress extends RPCNotification {
 	*Constructs a newly allocated OnButtonPress object
 	*/   
     public OnButtonPress() {
-        super(FunctionID.ON_BUTTON_PRESS);
+        super(FunctionID.ON_BUTTON_PRESS.toString());
     }
     /**
 	 * <p>

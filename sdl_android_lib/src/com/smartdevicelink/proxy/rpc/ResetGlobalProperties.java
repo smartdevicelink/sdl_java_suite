@@ -7,6 +7,7 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
+import com.smartdevicelink.util.DebugTool;
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -29,7 +30,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES);
+        super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
@@ -54,20 +55,52 @@ public class ResetGlobalProperties extends RPCRequest {
     	if (parameters.get(KEY_PROPERTIES) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_PROPERTIES);
 	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof GlobalProperty) {
-	                return (List<GlobalProperty>) list;
-	            } else if (obj instanceof String) {
-	            	List<GlobalProperty> newList = new ArrayList<GlobalProperty>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    GlobalProperty toAdd = GlobalProperty.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
+
+	        	List<GlobalProperty> globalPropertyList  = new ArrayList<GlobalProperty>();
+
+	        	boolean flagRaw  = false;
+	        	boolean flagStr = false;
+	        	
+	        	for ( Object obj : list ) {
+	        		
+	        		// This does not currently allow for a mixing of types, meaning
+	        		// there cannot be a raw GlobalProperty and a String value in the
+	        		// same same list. It will not be considered valid currently.
+	        		if (obj instanceof SoftButton) {
+	        			if (flagStr) {
+	        				return null;
+	        			}
+
+	        			flagRaw = true;
+
+	        		} else if (obj instanceof String) {
+	        			if (flagRaw) {
+	        				return null;
+	        			}
+
+	        			flagStr = true;
+	        			String strFormat = (String) obj;
+	                    GlobalProperty toAdd = null;
+	                    try {
+	                        toAdd = GlobalProperty.valueForString(strFormat);
+	                    } catch (Exception e) {
+	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PROPERTIES, e);
 	                    }
-	                }
-	                return newList;
-	            }
+	                    if (toAdd != null) {
+	                    	globalPropertyList.add(toAdd);
+	                    }
+
+	        		} else {
+	        			return null;
+	        		}
+
+	        	}
+
+	        	if (flagRaw) {
+	        		return (List<GlobalProperty>) list;
+	        	} else if (flagStr) {
+	        		return globalPropertyList;
+	        	}
 	        }
     	}
         return null;
@@ -84,7 +117,16 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
     public void setProperties( List<GlobalProperty> properties ) {
-        if (properties != null) {
+
+		boolean valid = true;
+		
+		for (GlobalProperty item : properties ) {
+			if (item == null) {
+				valid = false;
+			}
+		}
+		
+		if ( (properties != null) && (properties.size() > 0) && valid) {
             parameters.put(KEY_PROPERTIES, properties );
         } else {
         	parameters.remove(KEY_PROPERTIES);

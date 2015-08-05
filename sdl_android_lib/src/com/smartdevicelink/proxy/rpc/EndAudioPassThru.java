@@ -21,7 +21,7 @@ public class EndAudioPassThru extends RPCRequest {
 	 * Constructs a new EndAudioPassThru object
 	 */
     public EndAudioPassThru() {
-        super(FunctionID.END_AUDIO_PASS_THRU);
+        super(FunctionID.END_AUDIO_PASS_THRU.toString());
     }
     
     /**

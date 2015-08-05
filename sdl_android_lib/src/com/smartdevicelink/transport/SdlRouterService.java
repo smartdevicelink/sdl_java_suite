@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.BitConverter;
 
 /**
@@ -794,7 +795,7 @@ public abstract class SdlRouterService extends Service{
 	    		Long appid = getAppIDForSession(packet.getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
 	    			RegisteredApp app = registeredApps.get(appid);
-	    			if(app==null){
+	    			if(app==null){Log.e(TAG, "No app found for app id");
 	    				return false;
 	    			}
 	    			Message message = Message.obtain();
@@ -977,7 +978,7 @@ public abstract class SdlRouterService extends Service{
 				}
 			}
 		}
-			//Log.d(TAG, "Returning App Id: " + appId);
+			Log.d(TAG, "Returning App Id: " + appId);
 			return appId;
 		}
 	}

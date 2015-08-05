@@ -54,7 +54,7 @@ public class OnPermissionsChange extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
 	public OnPermissionsChange() {
-		super(FunctionID.ON_PERMISSIONS_CHANGE);
+		super(FunctionID.ON_PERMISSIONS_CHANGE.toString());
 	}
 	/**
      *<p>Constructs a newly allocated OnPermissionsChange object indicated by the Hashtable parameter</p>
@@ -71,16 +71,43 @@ public class OnPermissionsChange extends RPCNotification {
 	public List<PermissionItem> getPermissionItem() {
 		List<?> list = (List<?>)parameters.get(KEY_PERMISSION_ITEM);
 		if (list != null && list.size()>0) {
-			Object obj = list.get(0);
-			if(obj instanceof PermissionItem){
-				return (List<PermissionItem>) list;
-			} else if(obj instanceof Hashtable) {
-				List<PermissionItem> newList = new ArrayList<PermissionItem>();
-				for (Object hash:list) {
-					newList.add(new PermissionItem((Hashtable<String, Object>)hash));
-				}
-				return newList;
-			}
+			
+        	List<PermissionItem> permissionItemList  = new ArrayList<PermissionItem>();
+
+        	boolean flagRaw  = false;
+        	boolean flagHash = false;
+        	
+        	for ( Object obj : list ) {
+        		
+        		// This does not currently allow for a mixing of types, meaning
+        		// there cannot be a raw PermissionItem and a Hashtable value in the
+        		// same same list. It will not be considered valid currently.
+        		if (obj instanceof PermissionItem) {
+        			if (flagHash) {
+        				return null;
+        			}
+
+        			flagRaw = true;
+
+        		} else if (obj instanceof Hashtable) {
+        			if (flagRaw) {
+        				return null;
+        			}
+
+        			flagHash = true;
+        			permissionItemList.add(new PermissionItem((Hashtable<String, Object>) obj));
+
+        		} else {
+        			return null;
+        		}
+
+        	}
+
+        	if (flagRaw) {
+        		return (List<PermissionItem>) list;
+        	} else if (flagHash) {
+        		return permissionItemList;
+        	}
 		}
 		return null;
 	}
@@ -89,7 +116,16 @@ public class OnPermissionsChange extends RPCNotification {
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
 	public void setPermissionItem(List<PermissionItem> permissionItem) {
-		if (permissionItem != null) {
+
+		boolean valid = true;
+		
+		for ( PermissionItem item : permissionItem ) {
+			if (item == null) {
+				valid = false;
+			}
+		}
+		
+		if ( (permissionItem != null) && (permissionItem.size() > 0) && valid) {
 			parameters.put(KEY_PERMISSION_ITEM, permissionItem);
 		} else {
 			parameters.remove(KEY_PERMISSION_ITEM);

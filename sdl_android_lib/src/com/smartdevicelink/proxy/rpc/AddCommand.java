@@ -53,7 +53,7 @@ public class AddCommand extends RPCRequest {
 	 * Constructs a new AddCommand object
 	 */
 	public AddCommand() {
-        super(FunctionID.ADD_COMMAND);
+        super(FunctionID.ADD_COMMAND.toString());
     }
 	
 	/**
@@ -149,10 +149,12 @@ public class AddCommand extends RPCRequest {
         if (parameters.get(KEY_VR_COMMANDS) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_VR_COMMANDS);
 	    	if (list != null && list.size() > 0) {
-	    		Object obj = list.get(0);
-	    		if (obj instanceof String) {
-	    			return (List<String>)list;
+	    		for( Object obj : list ) {
+	    			if (!(obj instanceof String)) {
+	    				return null;
+	    			}
 	    		}
+	    		return (List<String>) list;
 	    	}
     	}
     	return null;
@@ -175,7 +177,16 @@ public class AddCommand extends RPCRequest {
 	 *            not zero-length, not whitespace only) element
 	 */
     public void setVrCommands( List<String> vrCommands ) {
-        if (vrCommands != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : vrCommands ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (vrCommands != null) && (vrCommands.size() > 0) && valid) {
             parameters.put(KEY_VR_COMMANDS, vrCommands );
         } else {
             parameters.remove(KEY_VR_COMMANDS);

@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class SetAppIconResponse extends RPCResponse {
 
     public SetAppIconResponse() {
-        super(FunctionID.SET_APP_ICON);
+        super(FunctionID.SET_APP_ICON.toString());
     }
     public SetAppIconResponse(Hashtable<String, Object> hash) {
         super(hash);

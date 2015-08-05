@@ -34,7 +34,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * Constructs a new ChangeRegistration object
 	 */
     public ChangeRegistration() {
-        super(FunctionID.CHANGE_REGISTRATION);
+        super(FunctionID.CHANGE_REGISTRATION.toString());
     }
 
 	/**
@@ -159,7 +159,16 @@ public class ChangeRegistration extends RPCRequest {
      * @param ttsName The TTS name to set
      */
     public void setTtsName(List<TTSChunk> ttsName){
-        if(ttsName != null){
+
+    	boolean valid = true;
+    	
+    	for ( TTSChunk item : ttsName ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (ttsName != null) && (ttsName.size() > 0) && valid) {
             parameters.put(KEY_TTS_NAME, ttsName);
         }
         else{
@@ -177,16 +186,43 @@ public class ChangeRegistration extends RPCRequest {
         if (parameters.get(KEY_TTS_NAME) instanceof List<?>) {
             List<?> list = (List<?>)parameters.get(KEY_TTS_NAME);
             if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof TTSChunk) {
-                    return (List<TTSChunk>) list;
-                } else if (obj instanceof Hashtable) {
-                    List<TTSChunk> newList = new ArrayList<TTSChunk>();
-                    for (Object hashObj : list) {
-                        newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-                    }
-                    return newList;
-                }
+
+            	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
+
+            	boolean flagRaw  = false;
+            	boolean flagHash = false;
+            	
+            	for ( Object obj : list ) {
+            		
+            		// This does not currently allow for a mixing of types, meaning
+            		// there cannot be a raw TTSChunk and a Hashtable value in the
+            		// same same list. It will not be considered valid currently.
+            		if (obj instanceof TTSChunk) {
+            			if (flagHash) {
+            				return null;
+            			}
+
+            			flagRaw = true;
+
+            		} else if (obj instanceof Hashtable) {
+            			if (flagRaw) {
+            				return null;
+            			}
+
+            			flagHash = true;
+            			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
+
+            		} else {
+            			return null;
+            		}
+
+            	}
+
+            	if (flagRaw) {
+            		return (List<TTSChunk>) list;
+            	} else if (flagHash) {
+            		return ttsChunkList;
+            	}
             }
         }
         return null;
@@ -203,12 +239,14 @@ public class ChangeRegistration extends RPCRequest {
     @SuppressWarnings("unchecked")
     public List<String> getVrSynonyms() {
         if (parameters.get(KEY_VR_SYNONYMS) instanceof List<?>) {
-            List<?> list = (List<?>)parameters.get(KEY_VR_SYNONYMS);
-            if (list != null && list.size()>0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (List<String>) list;
-                }
+            List<?> list = (List<?>) parameters.get(KEY_VR_SYNONYMS);
+            if (list != null && list.size() > 0) {
+            	for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
+        		}
+        		return (List<String>) list;
             }
         }
         return null;
@@ -232,7 +270,16 @@ public class ChangeRegistration extends RPCRequest {
      *            </ul>
      */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        if (vrSynonyms != null) {
+
+    	boolean valid = true;
+    	
+    	for ( String item : vrSynonyms ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (vrSynonyms != null) && (vrSynonyms.size() > 0) && valid) {
             parameters.put(KEY_VR_SYNONYMS, vrSynonyms);
         } else {
             parameters.remove(KEY_VR_SYNONYMS);

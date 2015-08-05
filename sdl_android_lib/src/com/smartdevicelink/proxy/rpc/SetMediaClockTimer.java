@@ -23,7 +23,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * Constructs a new SetMediaClockTimer object
 	 */
     public SetMediaClockTimer() {
-        super(FunctionID.SET_MEDIA_CLOCK_TIMER);
+        super(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
     }
 	/**
 	 * Constructs a new SetMediaClockTimer object indicated by the Hashtable

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.transport.enums.TransportType;
 
 public class MultiplexTransport extends SdlTransport{
 	private final static String TAG = "Multiplex Transport";
@@ -39,7 +40,7 @@ public class MultiplexTransport extends SdlTransport{
 					}
 
 					@Override
-					public void onHardwareDisconnected(TransportType type) {
+					public void onHardwareDisconnected(TransportType type) {  Log.d("JOEY", "onHardwareDisc - multiplex transport");
 						super.onHardwareDisconnected(type);
 						if(connected){
 							Log.d(TAG, "Handling disconnect");

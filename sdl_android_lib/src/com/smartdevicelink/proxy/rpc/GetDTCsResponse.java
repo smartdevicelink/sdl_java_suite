@@ -17,7 +17,7 @@ public class GetDTCsResponse extends RPCResponse{
     public static final String KEY_DTC = "dtc";
 
     public GetDTCsResponse(){
-        super(FunctionID.GET_DTCS);
+        super(FunctionID.GET_DTCS.toString());
     }
 
     public GetDTCsResponse(Hashtable<String, Object> hash){
@@ -29,17 +29,28 @@ public class GetDTCsResponse extends RPCResponse{
         if(parameters.get(KEY_DTC) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_DTC);
             if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof String){
-                    return (List<String>) list;
-                }
+            	for( Object obj : list ) {
+        			if (!(obj instanceof String)) {
+        				return null;
+        			}
+        		}
+        		return (List<String>) list;
             }
         }
         return null;
     }
 
     public void setDtc(List<String> dtc){
-        if(dtc != null){
+
+    	boolean valid = true;
+    	
+    	for ( String item : dtc ) {
+    		if (item == null) {
+    			valid = false;
+    		}
+    	}
+    	
+    	if ( (dtc != null) && (dtc.size() > 0) && valid) {
             parameters.put(KEY_DTC, dtc);
         }
         else{

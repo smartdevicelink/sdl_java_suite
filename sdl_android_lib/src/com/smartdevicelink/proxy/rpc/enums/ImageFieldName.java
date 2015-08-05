@@ -11,7 +11,14 @@ public enum ImageFieldName {
 	appIcon,
 	graphic,
 	showConstantTBTIcon,
-	showConstantTBTNextTurnIcon;
+	showConstantTBTNextTurnIcon,
+	/**
+     * The optional image of a destination / location
+     * 
+     * @since SmartDeviceLink 4.0
+     */
+	locationImage,
+	;
     
 	public static ImageFieldName valueForString(String value) {
         try{

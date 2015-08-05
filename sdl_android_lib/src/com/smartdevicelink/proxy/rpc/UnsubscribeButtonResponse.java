@@ -16,7 +16,7 @@ public class UnsubscribeButtonResponse extends RPCResponse {
 	 * Constructs a new UnsubscribeButtonResponse object
 	 */
     public UnsubscribeButtonResponse() {
-        super(FunctionID.UNSUBSCRIBE_BUTTON);
+        super(FunctionID.UNSUBSCRIBE_BUTTON.toString());
     }
 
 	/**

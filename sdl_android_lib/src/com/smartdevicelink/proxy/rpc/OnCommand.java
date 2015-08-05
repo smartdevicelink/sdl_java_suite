@@ -58,7 +58,7 @@ public class OnCommand extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnCommand() {
-        super(FunctionID.ON_COMMAND);
+        super(FunctionID.ON_COMMAND.toString());
     }
     /**
     *<p>Constructs a newly allocated OnCommand object indicated by the Hashtable parameter</p>

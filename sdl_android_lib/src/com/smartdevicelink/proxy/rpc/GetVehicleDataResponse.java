@@ -41,7 +41,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 
 
     public GetVehicleDataResponse() {
-        super(FunctionID.GET_VEHICLE_DATA);
+        super(FunctionID.GET_VEHICLE_DATA.toString());
     }
     public GetVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
@@ -103,27 +103,11 @@ public class GetVehicleDataResponse extends RPCResponse {
     }
     @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setFuelLevelState(fuelLevel_State);
     }
     @Deprecated
     public ComponentVolumeStatus getFuelLevel_State() {
-        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-            ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return getFuelLevelState();
     }
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         if (fuelLevelState != null) {
