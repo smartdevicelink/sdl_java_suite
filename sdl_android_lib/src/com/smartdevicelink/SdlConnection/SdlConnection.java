@@ -324,7 +324,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 	}
 	void registerSession(SdlSession registerListener) throws SdlException {
-		listenerList.addIfAbsent(registerListener);		
+		boolean didAdd = listenerList.addIfAbsent(registerListener);	
+		if(didAdd && listenerList.size()>1  && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){
+			((MultiplexTransport)_transport).requestExtraSession();
+		}
 		if (!this.getIsConnected()) {
 			this.startTransport();
 		} else {
