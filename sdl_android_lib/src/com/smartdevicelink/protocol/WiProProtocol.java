@@ -235,13 +235,13 @@ public class WiProProtocol extends AbstractProtocol {
 				
 				
 				int iDataSize = _currentHeader.getDataSize();	
-
-				if (iDataSize <= 4000)
-				{
+				if (_version < 3 && iDataSize <= V1_V2_MTU_SIZE) {
 					_dataBuf = new byte[iDataSize];
 				}
-				else
-				{
+				else if (_version > 2 && iDataSize <= V3_V4_MTU_SIZE) {
+					_dataBuf = new byte[iDataSize];
+				}
+				else {
 					//something is wrong with the header
 					Log.e("HandleReceivedBytes", "Corrupt header found, request to allocate a byte array of size: " + iDataSize);	
 					Log.e("HandleReceivedBytes", "_headerBuf: " + _headerBuf.toString());
