@@ -1,5 +1,7 @@
 package com.smartdevicelink.transport;
 
+import android.content.Context;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 
@@ -10,75 +12,25 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 public class MultiplexTransport extends SdlTransport{
 	private final static String TAG = "Multiplex Transport";
-
-	private boolean connected = false; //This helps clear up double on hardware connects
-	
 	private String sComment = "I'm_a_little_teapot";
 	
-	TransportBroker broker;
+	TransportBrokerThread brokerThread;
 	
 	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		super(transportListener);
-		
-		broker = new TransportBroker(transportConfig.context,
-				transportConfig.appId){
-
-					@Override
-					public boolean onHardwareConnected(TransportType type) {
-						if(super.onHardwareConnected(type)){
-							Log.d(TAG, "On transport connected...");
-							if(!connected){
-								connected = true;
-								Log.d(TAG, "Handling transport connected");
-								handleTransportConnected();
-							}else{Log.d(TAG, "Already connected");}
-							return true;
-						}else{
-							this.start();
-						}
-						return false;
-					}
-
-					@Override
-					public void onHardwareDisconnected(TransportType type) {  Log.d("JOEY", "onHardwareDisc - multiplex transport");
-						super.onHardwareDisconnected(type);
-						if(connected){
-							Log.d(TAG, "Handling disconnect");
-							connected = false;
-							SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
-							if(isLegacyModeEnabled()){
-								Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
-								this.stop();
-								handleTransportDisconnected("");
-							}else{
-								Log.d(TAG, "Handle transport Error");
-								handleTransportError("",null); //This seems wrong, but it works
-							}
-						}
-					}
-
-					@Override
-					public void onPacketReceived(Parcelable packet) {
-						if(packet!=null){
-							SdlPacket sdlPacket = (SdlPacket)packet;
-							handleReceivedPacket(sdlPacket);
-						}
-					}
-			
-			
-			
-		}; 
+		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId);
+		brokerThread.start();
 
 	}
 
 	public void forceHardwareConnectEvent(TransportType type){
-		broker.onHardwareConnected(type);
+		brokerThread.onHardwareConnected(type);
 
 	}
 	
 	public void requestExtraSession(){
-		if(broker!=null){
-			broker.requestExtraSession();
+		if(brokerThread!=null){
+			brokerThread.requestExtraSession();
 		}
 	}
 	
@@ -101,27 +53,120 @@ public class MultiplexTransport extends SdlTransport{
 	protected boolean sendBytesOverTransport(byte[] msgBytes, int offset,
 			int length) {
 		
-		broker.sendPacketToRouterService(msgBytes,offset,length);
+		brokerThread.sendPacket(msgBytes,offset,length);
 		return true; //Sure why not.
 	}
 
 	@Override
 	public void openConnection() throws SdlException {
 		Log.d(TAG, "Open connection");
-		connected = false; //TODO make sure this is cooooooooool
-		broker.start(); //TODO idk if this is when to call this 
+		brokerThread.startConnection();
 		
 	}
 
 	@Override
 	public void disconnect() {
 		Log.d(TAG, "Close connection");
-		connected = false;
-		broker.stop();
-		broker = null;
+		brokerThread.cancel();
+		brokerThread = null;
 		handleTransportDisconnected(TransportType.MULTIPLEX.name());
 		
 	}
 	
 	
+
+	/**
+	 * This thread will handle the broker transaction with the router service.
+	 *
+	 */
+	private class TransportBrokerThread extends Thread{
+		private boolean connected = false; //This helps clear up double on hardware connects
+		TransportBroker broker;
+
+		public TransportBrokerThread(Context context, String appId){
+			initTransportBroker(context, appId);
+		}
+
+		public void startConnection(){
+			connected = false;
+			broker.start();
+		}
+
+		public void cancel(){
+			broker.stop();
+			broker = null;
+			connected = false;
+			this.interrupt();
+
+		}
+
+		public void onHardwareConnected(TransportType type){
+			broker.onHardwareConnected(type);
+		}
+
+		public void sendPacket(byte[] msgBytes,int offset,int length){
+			broker.sendPacketToRouterService(msgBytes,offset,length);
+		}
+
+		public void requestExtraSession(){
+			if(broker!=null){
+				broker.requestExtraSession();
+			}
+		}
+
+		@Override
+		public void run() {
+			Looper.prepare();
+			Looper.loop();
+		}
+
+		private void initTransportBroker(final Context context, final String appId){
+
+			broker = new TransportBroker(context, appId){
+
+				@Override
+				public boolean onHardwareConnected(TransportType type) {
+					if(super.onHardwareConnected(type)){
+						Log.d(TAG, "On transport connected...");
+						if(!connected){
+							connected = true;
+							Log.d(TAG, "Handling transport connected");
+							handleTransportConnected();
+						}else{Log.d(TAG, "Already connected");}
+						return true;
+					}else{
+						this.start();
+					}
+					return false;
+				}
+
+				@Override
+				public void onHardwareDisconnected(TransportType type) {
+					super.onHardwareDisconnected(type);
+					if(connected){
+						Log.d(TAG, "Handling disconnect");
+						connected = false;
+						SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
+						if(isLegacyModeEnabled()){
+							Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
+							this.stop();
+							handleTransportDisconnected("");
+						}else{
+							Log.d(TAG, "Handle transport Error");
+							handleTransportError("",null); //This seems wrong, but it works
+						}
+					}
+				}
+
+				@Override
+				public void onPacketReceived(Parcelable packet) {
+					if(packet!=null){
+						SdlPacket sdlPacket = (SdlPacket)packet;
+						handleReceivedPacket(sdlPacket);
+					}
+				}
+			}; 
+		}
+
+	}
 }
