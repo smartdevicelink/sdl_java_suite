@@ -102,6 +102,9 @@ public class TransportBroker {
 					//We now know the location of the router service that is currently up and running
 					routerPackage = intent.getStringExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA);
 					routerClassName = intent.getStringExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA);
+					if(routerConnection==null){
+						initRouterConnection();
+					}
 					sendBindingIntent(); //TODO check if we actually binded
 				}	
 			}			
