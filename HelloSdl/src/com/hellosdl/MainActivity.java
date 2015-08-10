@@ -1,6 +1,10 @@
 package com.hellosdl;
 
+import com.hellosdl.sdl.SdlReceiver;
+import com.hellosdl.sdl.SdlService;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +15,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		if(SdlReceiver.isTransportConnected(getBaseContext())){
+			Intent startIntent = new Intent(getBaseContext(), SdlService.class);
+			startIntent.putExtra(SdlReceiver.FORCE_TRANSPORT_CONNECTED, true);
+			startService(startIntent);
+		}
 	}
 
 	@Override
