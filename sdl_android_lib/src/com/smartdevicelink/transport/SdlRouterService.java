@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -282,7 +283,10 @@ public abstract class SdlRouterService extends Service{
 	            		if(!returnBundle.isEmpty()){
 	            			message.setData(returnBundle);
 	            		}
-	            		app.sendMessage(message);
+	            		int result = app.sendMessage(message);
+	            		if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+	            			registeredApps.remove(appId);
+	            		}
 
 	                    break;
 	                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
@@ -452,8 +456,12 @@ public abstract class SdlRouterService extends Service{
 			return;
 		}
 		Log.d(TAG, "Notifying "+ registeredApps.size()+ " clients");
+		int result;
 		for (RegisteredApp app : registeredApps.values()) {
-			app.sendMessage(message);
+			result = app.sendMessage(message);
+			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+				registeredApps.remove(app.getAppId());
+			}
 		}
 	
 	}
@@ -669,10 +677,11 @@ public abstract class SdlRouterService extends Service{
 			if(registeredApps==null){
 				return;
 			}
-			for (RegisteredApp app : registeredApps.values()) {
-				app.clearSessionIds();
-				app.getSessionIds().add((long)-1); //Since we should be expecting at least one session.
-			}
+			registeredApps.clear();
+			//for (RegisteredApp app : registeredApps.values()) {
+			//	app.clearSessionIds();
+			//	app.getSessionIds().add((long)-1); //Since we should be expecting at least one session.
+			//}
 		}
 		//TODO remove
 		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport disconnected", Toast.LENGTH_SHORT).show();
@@ -804,7 +813,10 @@ public abstract class SdlRouterService extends Service{
 	    			Bundle bundle = new Bundle();
 	    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
 	    			message.setData(bundle);
-	    			app.sendMessage(message);		
+	    			int result = app.sendMessage(message);
+	    			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+	    				registeredApps.remove(appid); //TODO should we send out info to head unit to let them know?
+	    			}
 	    			return true;	//We should have sent our packet, so we can return true now
 	    		}else{	//If we can't find a session for this packet we just drop the packet
 	    			Log.e(TAG, "App Id was NULL!");
@@ -1076,6 +1088,12 @@ public abstract class SdlRouterService extends Service{
 	 *
 	 */
 	class RegisteredApp {
+		protected static final int SEND_MESSAGE_SUCCESS 							= 0x00;
+		protected static final int SEND_MESSAGE_ERROR_MESSAGE_NULL 					= 0x01;
+		protected static final int SEND_MESSAGE_ERROR_MESSENGER_NULL 				= 0x02;
+		protected static final int SEND_MESSAGE_ERROR_MESSENGER_GENERIC_EXCEPTION 	= 0x03;
+		protected static final int SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT 		= 0x04;
+
 		long appId;
 		Messenger messenger;
 		Vector<Long> sessionIds;
@@ -1085,7 +1103,7 @@ public abstract class SdlRouterService extends Service{
 		 * @param appId
 		 * @param messenger
 		 */
-		public RegisteredApp(long appId, Messenger messenger){
+		public RegisteredApp(long appId, Messenger messenger){			
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
@@ -1123,16 +1141,19 @@ public abstract class SdlRouterService extends Service{
 			this.sessionIds.clear();
 		}
 		
-		public boolean sendMessage(Message message){
-			if(this.messenger == null || message == null){
-				return false;
-			}
+		public int sendMessage(Message message){
+			if(this.messenger == null){return SEND_MESSAGE_ERROR_MESSENGER_NULL;}
+			if(message == null){return SEND_MESSAGE_ERROR_MESSAGE_NULL;}
 			try {
 				this.messenger.send(message);
-				return true;
+				return SEND_MESSAGE_SUCCESS;
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				return false;
+				if(e instanceof DeadObjectException){
+					return SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT;
+				}else{
+					return SEND_MESSAGE_ERROR_MESSENGER_GENERIC_EXCEPTION;
+				}
 			}
 		}
 	}

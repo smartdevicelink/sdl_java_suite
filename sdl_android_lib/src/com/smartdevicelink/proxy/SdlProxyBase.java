@@ -1067,6 +1067,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession != null) {
+				if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
+					try {
+						sdlSession.startSession();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+				}
 				sdlSession.getSdlConnection().forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				
 			}

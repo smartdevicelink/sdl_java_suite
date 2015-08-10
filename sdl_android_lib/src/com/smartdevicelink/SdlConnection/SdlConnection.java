@@ -32,7 +32,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	AbstractPacketizer mPacketizer = null;
 
 	// Thread safety locks
-	Object TRANSPORT_REFERENCE_LOCK = new Object();
+	static Object TRANSPORT_REFERENCE_LOCK = new Object();
 	Object PROTOCOL_REFERENCE_LOCK = new Object();
 	
 	private Object SESSION_LOCK = new Object();
@@ -52,7 +52,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			// Ensure transport is null
 			if (_transport != null) {
 				if (_transport.getIsConnected()) {
-					_transport.disconnect(); Log.d("JOEY", "constructor");
+					_transport.disconnect();
 				}
 				_transport = null;
 			}
@@ -61,7 +61,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if((legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH)
 					|| transportConfig.getTransportType() == TransportType.BLUETOOTH){
-				_transport = new BTTransport(this);				
+				_transport = new BTTransport(this);
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());	//FIXME we should chage this over to a special legacy config
 			}
@@ -92,7 +92,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	
 	
 	private void closeConnection(boolean willRecycle, byte rpcSessionID) {
-		synchronized(PROTOCOL_REFERENCE_LOCK) { Log.d("JOEY", "close connection");
+		synchronized(PROTOCOL_REFERENCE_LOCK) {
 
 			if (_protocol != null) {
 				// If transport is still connected, sent EndProtocolSessionMessage
@@ -175,7 +175,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 	
 	@Override
-	public void onTransportDisconnected(String info) { Log.d("JOEY", "onTransportDisc  - SdlConnection");
+	public void onTransportDisconnected(String info) {
 		// Pass directly to connection listener
 		_connectionListener.onTransportDisconnected(info);
 	}
@@ -340,7 +340,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			_protocol.SendHeartBeat(mySession.getSessionId());
 	}	
 	
-	public void unregisterSession(SdlSession registerListener) {  Log.d("JOEY", "unRegisterSession");
+	public void unregisterSession(SdlSession registerListener) {
 		listenerList.remove(registerListener);			
 		closeConnection(listenerList.size() == 0, registerListener.getSessionId());
 	}
@@ -358,7 +358,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	private class InternalMsgDispatcher implements ISdlConnectionListener {
 
 		@Override
-		public void onTransportDisconnected(String info) { Log.d("JOEY", "onTransportDisc");
+		public void onTransportDisconnected(String info) {
 			for (SdlSession session : listenerList) {
 				session.onTransportDisconnected(info);
 			}
@@ -476,14 +476,18 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 	
 	public static void enableLegacyMode(boolean enable, TransportType type){
-		if(enable){
-			legacyTransportRequest = type;
-		}else{
-			legacyTransportRequest = null;
+		synchronized(TRANSPORT_REFERENCE_LOCK) {
+			if(enable){
+				legacyTransportRequest = type;
+			}else{
+				legacyTransportRequest = null;
+			}
 		}
 	}
 	public static boolean isLegacyModeEnabled(){
-		return (legacyTransportRequest!=null);
+		synchronized(TRANSPORT_REFERENCE_LOCK) {
+			return (legacyTransportRequest!=null);
+		}
 	}
     
 
