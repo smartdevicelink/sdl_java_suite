@@ -41,9 +41,6 @@ import android.view.Surface;
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
-import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
-import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
-import com.smartdevicelink.Dispatcher.OutgoingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
@@ -538,9 +535,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_internalProxyMessageDispatcher = null;
 			}
 			
-			_internalProxyMessageDispatcher = new ProxyMessageDispatcher<InternalProxyMessage>("INTERNAL_MESSAGE_DISPATCHER",
-					new InternalProxyMessageComparitor(),
-					new IDispatchingStrategy<InternalProxyMessage>() {
+			_internalProxyMessageDispatcher = new ProxyMessageDispatcher<InternalProxyMessage>("INTERNAL_MESSAGE_DISPATCHER", new IDispatchingStrategy<InternalProxyMessage>() {
 
 						@Override
 						public void dispatch(InternalProxyMessage message) {
@@ -567,9 +562,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_incomingProxyMessageDispatcher = null;
 			}
 			
-			_incomingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",
-					new IncomingProtocolMessageComparitor(),
-					new IDispatchingStrategy<ProtocolMessage>() {
+			_incomingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
 							dispatchIncomingMessage((ProtocolMessage)message);
@@ -595,9 +588,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_outgoingProxyMessageDispatcher = null;
 			}
 			
-			_outgoingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",
-					new OutgoingProtocolMessageComparitor(),
-					new IDispatchingStrategy<ProtocolMessage>() {
+			_outgoingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
 							dispatchOutgoingMessage((ProtocolMessage)message);
