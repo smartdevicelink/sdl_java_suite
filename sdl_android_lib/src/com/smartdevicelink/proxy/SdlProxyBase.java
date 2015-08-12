@@ -2315,6 +2315,44 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
    					_proxyListener.onDialNumberResponse(msg);	
    				}
             }
+            else if (functionName.equals(FunctionID.SHOW_CONSTANT_TBT.toString())) {
+				final ShowConstantTbtResponse msg = new ShowConstantTbtResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onShowConstantTbtResponse(msg);
+						}
+					});
+				} else {
+					_proxyListener.onShowConstantTbtResponse(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ALERT_MANEUVER.toString())) {
+				final AlertManeuverResponse msg = new AlertManeuverResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onAlertManeuverResponse(msg);
+						}
+					});
+				} else {
+					_proxyListener.onAlertManeuverResponse(msg);
+				}
+			} else if (functionName.equals(FunctionID.UPDATE_TURN_LIST.toString())) {
+				final UpdateTurnListResponse msg = new UpdateTurnListResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onUpdateTurnListResponse(msg);
+						}
+					});
+				} else {
+					_proxyListener.onUpdateTurnListResponse(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
