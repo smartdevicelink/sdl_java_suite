@@ -165,8 +165,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public void onTransportConnected() {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
+				boolean shouldRequestSession = _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX;
 					for (SdlSession s : listenerList) {
 						if (s.getSessionId() == 0) {
+							if(shouldRequestSession){
+								((MultiplexTransport)_transport).requestNewSession();
+							}
 							startHandShake();
 						}
 					}
@@ -325,12 +329,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 	void registerSession(SdlSession registerListener) throws SdlException {
 		boolean didAdd = listenerList.addIfAbsent(registerListener);	
-		if(didAdd && listenerList.size()>1  && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){
-			((MultiplexTransport)_transport).requestExtraSession();
-		}
 		if (!this.getIsConnected()) {
 			this.startTransport();
 		} else {
+			if(didAdd && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){ //If we're connected we can request the extra session now
+				((MultiplexTransport)_transport).requestNewSession();
+			}
 			this.startHandShake();
 		}
 	}
@@ -469,9 +473,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public void forceHardwareConnectEvent(TransportType type){
 		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
 			((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
-			for(int i=1;i<listenerList.size();i++){
-				((MultiplexTransport)_transport).requestExtraSession();
-			}
 		}
 	}
 	

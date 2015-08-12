@@ -28,9 +28,9 @@ public class MultiplexTransport extends SdlTransport{
 
 	}
 	
-	public void requestExtraSession(){
+	public void requestNewSession(){
 		if(brokerThread!=null){
-			brokerThread.requestExtraSession();
+			brokerThread.requestNewSession();
 		}
 	}
 	
@@ -108,9 +108,9 @@ public class MultiplexTransport extends SdlTransport{
 			broker.sendPacketToRouterService(msgBytes,offset,length);
 		}
 
-		public void requestExtraSession(){
+		public void requestNewSession(){
 			if(broker!=null){
-				broker.requestExtraSession();
+				broker.requestNewSession();
 			}
 		}
 

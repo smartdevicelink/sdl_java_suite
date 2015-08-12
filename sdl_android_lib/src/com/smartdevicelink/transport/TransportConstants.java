@@ -130,12 +130,12 @@ public class TransportConstants {
 	 * This provides the app with an ability to request another session within the router service.
 	 * A replyTo must be provided or else there won't be a response
 	 */
-	public static final int ROUTER_REQUEST_EXTRA_SESSION 									= 0x12;
-	public static final int ROUTER_REQUEST_EXTRA_SESSION_RESPONSE							= 0x13;
+	public static final int ROUTER_REQUEST_NEW_SESSION 									= 0x12;
+	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE							= 0x13;
 	//Response arguments
-	public static final int ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_SUCESS 					= 0x00;
-	public static final int ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_NOT_FOUND 		= 0x01;
-	public static final int ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL	= 0x02;
+	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_SUCESS 					= 0x00;
+	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_NOT_FOUND 	= 0x01;
+	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL	= 0x02;
 
 
 

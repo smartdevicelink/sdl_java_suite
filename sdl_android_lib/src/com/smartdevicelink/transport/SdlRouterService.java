@@ -314,24 +314,24 @@ public abstract class SdlRouterService extends Service{
 	                	Log.d(TAG, "Received packet to send");
 	    				writeBytesToTransport(receivedBundle);
 	                    break;
-	                case TransportConstants.ROUTER_REQUEST_EXTRA_SESSION:
+	                case TransportConstants.ROUTER_REQUEST_NEW_SESSION:
 	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	Message extraSessionResponse = Message.obtain();
-	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE;
+	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE;
 	                	if(appIdRequesting>0){
 							synchronized(SESSION_LOCK){
 								if(registeredApps!=null){
 									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
 									if(appRequesting!=null){
 										appRequesting.getSessionIds().add((long)-1); //Adding an extra session
-										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_SUCESS;
+										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE_SUCESS;
 									}else{
-										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
+										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
 									}
 								}
 							}		
 						}else{
-							extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_EXTRA_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL;
+							extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL;
 						}
 	                	try {
 	                		msg.replyTo.send(extraSessionResponse); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
@@ -1099,7 +1099,7 @@ public abstract class SdlRouterService extends Service{
 		Vector<Long> sessionIds;
 	
 		/**
-		 * This is a simple class to hold onto a reference of a registered app. This is an immutable class. Deal with it.
+		 * This is a simple class to hold onto a reference of a registered app.
 		 * @param appId
 		 * @param messenger
 		 */
@@ -1107,7 +1107,6 @@ public abstract class SdlRouterService extends Service{
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
-			this.sessionIds.add((long) -1);
 		}
 		public long getAppId() {
 			return appId;
