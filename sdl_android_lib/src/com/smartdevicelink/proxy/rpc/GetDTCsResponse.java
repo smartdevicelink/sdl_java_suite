@@ -17,7 +17,7 @@ public class GetDTCsResponse extends RPCResponse{
     public static final String KEY_DTC = "dtc";
 
     public GetDTCsResponse(){
-        super(FunctionID.GET_DTCS);
+        super(FunctionID.GET_DTCS.toString());
     }
 
     public GetDTCsResponse(Hashtable<String, Object> hash){

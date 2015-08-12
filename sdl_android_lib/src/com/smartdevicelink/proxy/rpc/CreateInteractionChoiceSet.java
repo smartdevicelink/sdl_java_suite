@@ -14,7 +14,60 @@ import com.smartdevicelink.proxy.RPCRequest;
  * Function Group: Base 
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
+ * <p>
+ * AudioStreamingState : ANY<br>
+ * <p>
+ * SystemContext: MAIN, MENU, VR<br>
  * </p>
+ * <p><b>Parameter List</b><br>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>interactionChoiceSetID</td>
+ * 			<td>Int32</td>
+ * 			<td>A unique ID that identifies the Choice Set</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value: 2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>choiceSet</td>
+ * 			<td>Choice[]</td>
+ * 			<td>Array of one or more elements.</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 1<br>Max Value: 100</td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ *  </table>
+ *  <p>
+ *   
+ *  <b>Note:</b><br>Second Utterance issue with CreateInteractionChoiceSet RPC. <br> Before a perform interaction
+ * is sent you MUST wait for the success from the CreateInteractionChoiceSet RPC.<br>
+ * If you do not wait the system may not recognize the first utterance from the user.
+ * </p>
+ * <b>Response</b><br>
+ *<p>
+ * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the Choice Set was created. 
+ * <p>
+ * <b>Non-default Result Codes:</b><br>
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br> 
+ *  INVALID_ID<br>
+ *  DUPLICATE_NAME<br>
+ *  UNSUPPORTED_RESOURCE <br>    
+ *  <p>
  * 
  * @since SmartDeviceLink 1.0
  * @see DeleteInteractionChoiceSet
@@ -28,7 +81,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * Constructs a new CreateInteractionChoiceSet object
 	 */    
 	public CreateInteractionChoiceSet() {
-        super(FunctionID.CREATE_INTERACTION_CHOICE_SET);
+        super(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
 	 * Constructs a new CreateInteractionChoiceSet object indicated by the

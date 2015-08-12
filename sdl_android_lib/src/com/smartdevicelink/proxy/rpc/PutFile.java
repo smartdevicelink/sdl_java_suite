@@ -8,9 +8,102 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
- * icons and album art
+ * icons and album art.
  * <p>
- * 
+  * <b> Parameter List</b>
+ * <p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>FileName</td>
+ * 			<td>String</td>
+ * 			<td>File reference name.</td>
+ *                 <td>Y</td>
+ * 			<td>Maxlength=500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Selected file type.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>persistentFile</td>
+ * 			<td>Boolean</td>
+ * 			<td>Indicates if the file is meant to persist between sessions / ignition cycles.<br> If set to TRUE,then the system will aim to persist this file through session / cycles.<br>While files with this designation will have priority over others,<br> they are subject to deletion by the system at any time.<br> In the event of automatic deletion by the system,<br> the app will receive a rejection and have to resend the file.<br> If omitted, the value will be set to false.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>systemFile</td>
+ * 			<td>Boolean</td>
+ * 			<td>Indicates if the file is meant to be passed thru core to elsewhere on the system. If set to TRUE, then the system will instead pass the data thru as it arrives to a predetermined area outside of core. If omitted, the value will be set to false.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>offset</td>
+ * 			<td>Float</td>
+ * 			<td>Optional offset in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ * 			<td>Minvalue=0 <br>Maxvalue=100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>length</td>
+ * 			<td>Float</td>
+ * 			<td>Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is the total length of the file to be downloaded</td>
+ *                 <td>N</td>
+ * 			<td>Minvalue=0<br> Maxvalue=100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ *  </table>
+ *  <b>Note: </b><br>
+ *  When using PutFiles you may want to check for memory<br>
+ *  <p>
+ * <b>Response</b> <br>
+ * Response is sent, when the file data was copied (success case). Or when an error occurred. Not supported on First generation SDL modules.
+ * <p>
+ * <b>	Non-default Result Codes:</b><br>
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br>
+ *<p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>spaceAvailable</td>
+ * 			<td>Integer</td>
+ * 			<td>Provides the total local space available on SDL for the registered app.</td>
+ *                 <td></td>
+ * 			<td>Minvalue=0 <br>Maxvalue=2000000000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *  </table>
  * @since SmartDeviceLink 2.0
  * @see DeleteFile
  * @see ListFiles
@@ -28,7 +121,7 @@ public class PutFile extends RPCRequest {
 	 * Constructs a new PutFile object
 	 */
     public PutFile() {
-        super(FunctionID.PUT_FILE);
+        super(FunctionID.PUT_FILE.toString());
     }
 
 	/**
@@ -134,7 +227,19 @@ public class PutFile extends RPCRequest {
         return getBulkData();
     }
     
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
     public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+    
+    public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
         } else {
@@ -142,16 +247,34 @@ public class PutFile extends RPCRequest {
         }
     }
 
-    public Integer getOffset() {
+    public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
-        if (o instanceof Integer) {
-            return (Integer) o;
+        if (o == null){
+        	return null;
         }
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
+        }
+
 
         return null;
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
     public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
+    }
+    
+    public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
         } else {
@@ -159,10 +282,15 @@ public class PutFile extends RPCRequest {
         }
     }
 
-    public Integer getLength() {
+    public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
+        if (o == null){
+        	return null;
+        }
         if (o instanceof Integer) {
-            return (Integer) o;
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
 
         return null;

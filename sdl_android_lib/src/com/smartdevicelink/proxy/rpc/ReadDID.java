@@ -15,6 +15,55 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * <p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ecuName</td>
+ * 			<td>Integer</td>
+ * 			<td>Name of ECU.</td>
+ *                 <td>Y</td>
+ * 			<td>Minvalue: 0<br>Maxvalue: 65535</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>didLocation</td>
+ * 			<td>Integer</td>
+ * 			<td>Get raw data from vehicle data DID location(s).</td>
+ *                 <td>Y</td>
+ * 			<td>Minvalue: 0<br>Maxvalue: 65535</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 			<td>appID</td>
+ * 			<td>Integer</td>
+ * 			<td>ID of the application that requested this RPC.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
+ *  <p>
+ *  <b>Response</b>
+ *  <p> 
+ *  <b>Non-default Result Codes:</b><br>
+ *  SUCCESS<br>
+ *  INVALID_DATA<br>
+ *  OUT_OF_MEMORY<br>
+ *  TOO_MANY_PENDING_REQUESTS<br>
+ *  APPLICATION_NOT_REGISTERED<br>
+ *  GENERIC_ERROR<br>
+ *  REJECTED<br>
+ *  DISALLOWED<br>
+ *  USER_DISALLOWED <br>
+ *  TRUNCATED_DATA<br>
  * 
  * @since SmartDeviceLink 2.0
  */
@@ -26,7 +75,7 @@ public class ReadDID extends RPCRequest {
 	 * Constructs a new ReadDID object
 	 */
     public ReadDID() {
-        super(FunctionID.READ_DID);
+        super(FunctionID.READ_DID.toString());
     }
 
 	/**

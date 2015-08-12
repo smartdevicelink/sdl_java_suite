@@ -17,7 +17,7 @@ public class SliderResponse extends RPCResponse {
 	 * Constructs a new SliderResponse object
 	 */
     public SliderResponse() {
-        super(FunctionID.SLIDER);
+        super(FunctionID.SLIDER.toString());
     }
 
 	/**

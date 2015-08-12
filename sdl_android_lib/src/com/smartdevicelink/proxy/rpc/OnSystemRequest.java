@@ -14,7 +14,70 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-
+/**
+ * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud<br>Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
+ * <p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestType</td>
+ * 			<td>RequestType</td>
+ * 			<td>The type of system request.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>url</td>
+ * 			<td>Array of Strings</td>
+ * 			<td>Optional URL for HTTP requests.<br>If blank, the binary data shall be forwarded to the app.<br>If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 1000 <br>minsize:1<br> maxsize: 100</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeout</td>
+ * 			<td>Integer</td>
+ * 			<td>Optional timeout for HTTP requests<br>Required if a URL is provided</td>
+ *                 <td>N</td>
+ *                 <td>minvalue:0<br> maxvalue: 2000000000</td>
+ * 			<td>SmartDeviceLink </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Optional file type (meant for HTTP file requests).</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>offset</td>
+ * 			<td>Float</td>
+ * 			<td>Optional offset in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ *                 <td>minvalue:0<br> maxvalue:100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>length</td>
+ * 			<td>Float</td>
+ * 			<td>Optional length in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ *                 <td>minvalue: 0<br> maxvalue:100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ *  </table>	      	
+ * @since SmartDeviceLink 2.3.2
+ */
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
@@ -31,8 +94,14 @@ public class OnSystemRequest extends RPCNotification {
 	private String body;
 	private Headers headers;
 	
+	Hashtable<String, Object> httpreqparams = null;
+	JSONObject myJSONObj = null;
+	/** Constructs a new OnSystemsRequest object
+	 * 	
+	 */
+
     public OnSystemRequest() {
-        super(FunctionID.ON_SYSTEM_REQUEST);
+        super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
 
     public OnSystemRequest(Hashtable<String, Object> hash) {
@@ -207,18 +276,34 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
-    public Integer getOffset() {
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
+    public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+    
+    public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
         
-        if (o == null) return null;
+        if (o == null){
+        	return null;
+        }
         
         if (o instanceof Integer) {
-            return (Integer) o;
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
         return null;
     }
 
-    public void setOffset(Integer offset) {
+    public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
         } else {
@@ -247,18 +332,34 @@ public class OnSystemRequest extends RPCNotification {
             parameters.remove(KEY_TIMEOUT);
         }
     }    
-
-    public Integer getLength() {
+    
+    public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
-        if (o == null) return null;
+        if (o == null){
+        	return null;
+        }
         		
         if (o instanceof Integer) {
-            return (Integer) o;
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
         return null;
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
     public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
+    }
+    
+    public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
         } else {

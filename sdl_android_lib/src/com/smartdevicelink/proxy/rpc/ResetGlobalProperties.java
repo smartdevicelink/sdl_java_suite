@@ -20,6 +20,40 @@ import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * </p>
  * 
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>properties</td>
+ * 			<td>GlobalProperty</td>
+ * 			<td>An array of one or more GlobalProperty enumeration elements indicating which global properties to reset to their default value.</td>
+ *                 <td>Y</td>
+ * 			<td>Array must have at least one element.<br>minsize:1<br> maxsize:100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *
+ *  </table>
+ *  <b>Response</b><br>
+ *  
+ * Indicates whether the Global Properties were successfully set to their default values.<br>
+ * <p>
+ * <b>Non-default Result Codes:</b><br>
+ * 
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ *  	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR <br>       
+ * 	REJECTED <br>
+ * 	DISALLOWED    <br> 
  * @since SmartDeviceLink 1.0
  * @see SetGlobalProperties
  */
@@ -29,7 +63,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES);
+        super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable

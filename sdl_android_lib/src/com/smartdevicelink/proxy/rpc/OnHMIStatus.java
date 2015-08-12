@@ -72,7 +72,7 @@ public class OnHMIStatus extends RPCNotification {
 	*Constructs a newly allocated OnHMIStatus object
 	*/ 	
     public OnHMIStatus() {
-        super(FunctionID.ON_HMI_STATUS);
+        super(FunctionID.ON_HMI_STATUS.toString());
     }
     /**
     *<p>Constructs a newly allocated OnHMIStatus object indicated by the Hashtable parameter</p>

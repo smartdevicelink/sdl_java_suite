@@ -20,7 +20,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	 * Constructs a new PerformInteractionResponse object
 	 */
     public PerformInteractionResponse() {
-        super(FunctionID.PERFORM_INTERACTION);
+        super(FunctionID.PERFORM_INTERACTION.toString());
     }
 
 	/**

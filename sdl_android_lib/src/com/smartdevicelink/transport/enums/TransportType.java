@@ -1,4 +1,4 @@
-package com.smartdevicelink.transport;
+package com.smartdevicelink.transport.enums;
 
 /**
  * Defines available types of the transports.

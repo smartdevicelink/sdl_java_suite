@@ -16,6 +16,222 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
  * </p>
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>SmartDeviceLink Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>gps</td>
+ * 			<td>Boolean</td>
+ * 			<td>GPS data. See {@linkplain  GPSData}for details</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>speed</td>
+ * 			<td>Boolean</td>
+ * 			<td>The vehicle speed in kilometers per hour</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rpm</td>
+ * 			<td>Boolean</td>
+ * 			<td>The number of revolutions per minute of the engine</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level in the tank (percentage)</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fuelLevel_State</td>
+ * 			<td>Boolean</td>
+ * 			<td>The fuel level state</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>instantFuelConsumption</td>
+ * 			<td>Boolean</td>
+ * 			<td>The instantaneous fuel consumption in microlitres</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>externalTemperature</td>
+ * 			<td>Boolean</td>
+ * 			<td>The external temperature in degrees celsius</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>prndl</td>
+ * 			<td>Boolean</td>
+ * 			<td>Currently selected gear.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>tirePressure</td>
+ * 			<td>Boolean</td>
+ * 			<td>Tire pressure status</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>odometer</td>
+ * 			<td>Boolean</td>
+ * 			<td>Odometer in km</td>
+ *                 <td>N</td>
+ *                 <td>Max Length: 500</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>beltStatus</td>
+ * 			<td>Boolean</td>
+ * 			<td>The status of the seat belts</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>bodyInformation</td>
+ * 			<td>Boolean</td>
+ * 			<td>The body information including ignition status and internal temp</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>deviceStatus</td>
+ * 			<td>Boolean</td>
+ * 			<td>The device status including signal and battery strength</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>driverBraking</td>
+ * 			<td>Boolean</td>
+ * 			<td>The status of the brake pedal</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>wiperStatus</td>
+ * 			<td>Boolean</td>
+ * 			<td>The status of the wipers</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>headLampStatus</td>
+ * 			<td>Boolean</td>
+ * 			<td>Status of the head lamps</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>engineTorque</td>
+ * 			<td>Boolean</td>
+ * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>accPedalPosition</td>
+ * 			<td>Boolean</td>
+ * 			<td>Accelerator pedal position (percentage depressed)</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>steeringWheelAngle</td>
+ * 			<td>Boolean</td>
+ * 			<td>Current angle of the steering wheel (in deg)</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>eCallInfo</td>
+ * 			<td>Boolean</td>
+ * 			<td>Emergency Call notification and confirmation data.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>airbagStatus</td>
+ * 			<td>Boolean</td>
+ * 			<td>The status of the air bags.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>emergencyEvent</td>
+ * 			<td>Boolean</td>
+ * 			<td>Information related to an emergency event (and if it occurred).</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>clusterModeStatus</td>
+ * 			<td>Boolean</td>
+ * 			<td>The status modes of the instrument panel cluster.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>myKey</td>
+ * 			<td>Boolean</td>
+ * 			<td>Information related to the MyKey feature.</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ *  </table>
+ *  <p>
+ *  <b>Response</b><p>
+ *<b>Non-default Result Codes:</b><br>
+ *	- SUCCESS<br>
+ *	- WARNINGS      <br>
+ *	- INVALID_DATA<br>
+ *	- OUT_OF_MEMORY<br>
+ *	- TOO_MANY_PENDING_REQUESTS<br>
+ *	- APPLICATION_NOT_REGISTERED<br>
+ *	- GENERIC_ERROR    <br>
+ *	- IGNORED <br>
+ *	- DISALLOWED<br>
+ *	- USER_DISALLOWED   <br>
  * 
  * @since SmartDeviceLink 2.0
  * @see UnsubscribeVehicleData
@@ -51,7 +267,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * Constructs a new SubscribeVehicleData object
 	 */
     public SubscribeVehicleData() {
-        super(FunctionID.SUBSCRIBE_VEHICLE_DATA);
+        super(FunctionID.SUBSCRIBE_VEHICLE_DATA.toString());
     }
 
 	/**
@@ -171,11 +387,7 @@ public class SubscribeVehicleData extends RPCRequest {
      */
     @Deprecated
     public void setFuelLevel_State(Boolean fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setFuelLevelState(fuelLevel_State);
     }
 
     /**
@@ -187,7 +399,7 @@ public class SubscribeVehicleData extends RPCRequest {
      */
     @Deprecated
     public Boolean getFuelLevel_State() {
-        return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
+        return getFuelLevelState();
     }
 
     /**

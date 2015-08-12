@@ -66,7 +66,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * <tr>
  * <td>customButtonID</td>
  * <td>Integer</td>
- * <td>If ButtonName is ��CUSTOM_BUTTON", this references the integer ID passed
+ * <td>If ButtonName is CUSTOM_BUTTON", this references the integer ID passed
  * by a custom button. (e.g. softButton ID)</td>
  * <td>N</td>
  * <td>Minvalue=0 Maxvalue=65536</td>
@@ -90,7 +90,7 @@ public class OnButtonEvent extends RPCNotification {
 	*Constructs a newly allocated OnButtonEvent object
 	*/
     public OnButtonEvent() {
-        super(FunctionID.ON_BUTTON_EVENT);
+        super(FunctionID.ON_BUTTON_EVENT.toString());
     }
     /**
 	 * <p>

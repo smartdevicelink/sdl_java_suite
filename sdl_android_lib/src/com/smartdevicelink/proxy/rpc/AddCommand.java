@@ -36,7 +36,50 @@ import com.smartdevicelink.util.DebugTool;
 * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b>
 * </p>
-* 
+  * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+* 		<tr>
+ * 			<td>cmdID</td>
+ * 			<td> Integer</td>
+ * 			<td>unique ID of the command to add</td>
+ *                 <td>Y</td>
+ * 			<td> minvalue:0<br>maxvalue:2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>menuParams</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr/>
+ * 		<tr>
+ * 			<td>vrCommands</td>
+ * 			<td>String</td>
+ * 			<td>An array of strings to be used as VR synonyms for this command.<br>    	If this array is provided, it may not be empty.</td>
+ *                 <td>N</td>
+ * 			<td>minsize:1<br> maxsize:100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>cmdIcon</td>
+ * 			<td>Image</td>
+ * 			<td>Image struct determining whether static or dynamic icon.<br>If omitted on supported displays, no (or the default if applicable) icon shall be displayed.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+*  </table>
+*  <b>Response</b><p>Indicates that the corresponding request has failed or succeeded, if the response returns with a SUCCESS result code, this means a command was added to the Command Menu successfully. <br>
+*  <p>
+*  <b>Non-default Result Codes:</b><br> INVALID_ID<br> DUPLICATE_NAME
 * @since SmartDeviceLink 1.0
 * @see DeleteCommand
 * @see AddSubMenu
@@ -53,7 +96,7 @@ public class AddCommand extends RPCRequest {
 	 * Constructs a new AddCommand object
 	 */
 	public AddCommand() {
-        super(FunctionID.ADD_COMMAND);
+        super(FunctionID.ADD_COMMAND.toString());
     }
 	
 	/**

@@ -46,7 +46,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
 	*Constructs a newly allocated OnAppInterfaceUnregistered object
 	*/ 
     public OnAppInterfaceUnregistered() {
-        super(FunctionID.ON_APP_INTERFACE_UNREGISTERED);
+        super(FunctionID.ON_APP_INTERFACE_UNREGISTERED.toString());
     }
     /**
     *<p>Constructs a newly allocated OnAppInterfaceUnregistered object indicated by the Hashtable parameter</p>

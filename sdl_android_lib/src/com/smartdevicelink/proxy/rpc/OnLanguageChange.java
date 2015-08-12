@@ -63,7 +63,7 @@ public class OnLanguageChange extends RPCNotification {
 	*Constructs a newly allocated OnCommand object
 	*/    
     public OnLanguageChange() {
-        super(FunctionID.ON_LANGUAGE_CHANGE);
+        super(FunctionID.ON_LANGUAGE_CHANGE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnLanguageChange object indicated by the Hashtable parameter</p>

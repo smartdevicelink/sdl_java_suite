@@ -6,13 +6,46 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
- * Deletes a submenu from the Command Menu
+ * Deletes a submenu from the Command Menu.
  * <p>
  * <b>Notes: </b>When an app deletes a submenu that has child commands, those
  * child commands are also deleted
  * <p>
  * <b>HMILevel needs to be  FULL, LIMITED or BACKGROUND</b>
  * </p>
+ * 
+ * <p><b>Parameter List</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuID</td>
+ * 			<td>Int32</td>
+ * 			<td>Unique ID that identifies the SubMenu to be delete</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0<br>Max Value: 2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
+ *<p>
+ * <b>Response </b><br>
+ * <p>
+ * <b>Non-default Result Codes:</b><br>
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br> 
+ *  INVALID_ID<br>
+ *  IN_USE   <br>   
  * 
  * @since SmartDeviceLink 1.0
  * @see AddCommand
@@ -25,7 +58,7 @@ public class DeleteSubMenu extends RPCRequest {
 	* Constructs a new DeleteSubMenu object
 	*/
 	public DeleteSubMenu() {
-        super(FunctionID.DELETE_SUB_MENU);
+        super(FunctionID.DELETE_SUB_MENU.toString());
     }
     /**
      * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter<p>    

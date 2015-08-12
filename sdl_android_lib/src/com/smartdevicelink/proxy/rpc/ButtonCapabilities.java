@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 
 /**
  * Provides information about the capabilities of a SDL HMI button.
- * <p><b> Parameter List
+ * <p><b> Parameter List</b>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -24,13 +24,13 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * 		<tr>
  * 			<td>shortPressAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>The button supports a SHORT press. See ButtonPressMode for more information.</td>
+ * 			<td>The button supports a SHORT press. See {@linkplain ButtonPressMode} for more information.</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *     <tr>
  * 			<td>longPressAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>The button supports a LONG press. See ButtonPressMode for more information.</td>
+ * 			<td>The button supports a LONG press. See {@linkplain ButtonPressMode} for more information.</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *     <tr>
@@ -41,7 +41,23 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * </table>
+ * <p>
+ * Upon the request HMI must provide the list of the following information:<br>
+ * 	The names of all existing/supported hardware buttons.<br>
+ * 		The availability of LONG/SHORT press for each existing/supported hardware button correspondingly<br>
+ * 		The availability of UP/DOWN events for each existing/supported hardware button correspondingly.<br>
+ * <p>
  * @since SmartDeviceLink 1.0
+ * <p>
+ * @see ButtonName
+ * @see ButtonEventMode
+ * @see ButtonPressMode 
+ * 
+ * 
+ *
+ * @see OnButtonEvent
+ * @see OnButtonPress
+ * 
  */
 public class ButtonCapabilities extends RPCStruct {
 	public static final String KEY_NAME = "name";

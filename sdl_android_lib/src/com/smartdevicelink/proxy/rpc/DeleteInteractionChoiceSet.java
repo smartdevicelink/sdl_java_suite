@@ -15,7 +15,45 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p>
  * <b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b><br/>
  * </p>
- * 
+  * AudioStreamingState: Any<br>
+ * <p>
+ * SystemContext: MAIN, MENU, VR 
+ * <p>
+ * <p><b>Parameter List</b>
+ * <p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>interactionChoiceSetID</td>
+ * 			<td>Int32</td>
+ * 			<td> A unique ID that identifies the Choice Set (specified in a previous call to CreateInteractionChoiceSet)</td>
+ *                 <td>Y</td>
+ *                 <td>Min Value: 0 <br>Max Value: 2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
+ *<p>
+ * <b>Response </b><br>
+ * <p>
+ * If a resultCode of "SUCCESS" is returned, the requested choice set has been created and can now be referenced by the application using the value of interactionChoiceSetID provided by the application.<br>
+ * <p> 
+ * <b>Non-default Result Codes:</b><br>
+ * 	SUCCESS<br>
+ * 	INVALID_DATA<br>
+ * 	OUT_OF_MEMORY<br>
+ * 	TOO_MANY_PENDING_REQUESTS<br>
+ * 	APPLICATION_NOT_REGISTERED<br>
+ * 	GENERIC_ERROR<br>
+ * 	REJECTED<br> 
+ *   INVALID_ID<br>
+
  * @since SmartDeviceLink 1.0
  * @see CreateInteractionChoiceSet
  * @see PerformInteraction
@@ -27,7 +65,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * Constructs a new DeleteInteractionChoiceSet object
 	 */
     public DeleteInteractionChoiceSet() {
-        super(FunctionID.DELETE_INTERACTION_CHOICE_SET);
+        super(FunctionID.DELETE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
 	 * Constructs a new DeleteInteractionChoiceSet object indicated by the
