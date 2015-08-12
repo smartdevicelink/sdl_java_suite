@@ -67,28 +67,17 @@ public class SystemRequest extends RPCRequest {
         if (parameters.get(KEY_DATA) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_DATA);
         	if (list != null && list.size()>0) {
-        		for( Object obj : list ) {
-        			if (!(obj instanceof String)) {
-        				return null;
-        			}
+        		Object obj = list.get(0);
+        		if (obj instanceof String) {
+        			return (List<String>) list;
         		}
-    			return (List<String>) list;
         	}
         }
     	return null;
     }
  
-    public void setLegacyData( List<String> data ) { 
-    	
-    	boolean valid = true;
-    	
-    	for ( String item : data ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (data != null) && (data.size() > 0) && valid ) {
+    public void setLegacyData( List<String> data ) {
+    	if ( data!= null) {
     		parameters.put(KEY_DATA, data );
     	} else {
             parameters.remove(KEY_DATA);

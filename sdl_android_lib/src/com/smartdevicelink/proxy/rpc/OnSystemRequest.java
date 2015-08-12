@@ -189,12 +189,10 @@ public class OnSystemRequest extends RPCNotification {
     	if (parameters.get(KEY_DATA) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_DATA);
     		if (list != null && list.size()>0) {
-    			for( Object obj : list ) {
-        			if (!(obj instanceof String)) {
-        				return null;
-        			}
+        		Object obj = list.get(0);
+        		if (obj instanceof String) {
+        			return (List<String>)list;
         		}
-    			return (List<String>) list;
     		}
     	}
         return null;
