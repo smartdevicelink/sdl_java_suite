@@ -13,7 +13,7 @@ public class LockScreenManager {
 	
     public interface OnLockScreenIconDownloadedListener{
         public void onLockScreenIconDownloaded(Bitmap icon);
-        public void onLockScreenIconDonwloadError(Exception e);
+        public void onLockScreenIconDownloadError(Exception e);
     }
     
     private Bitmap lockScreenIcon;
@@ -113,7 +113,7 @@ public class LockScreenManager {
                     }
                 }catch(IOException e){
                     if(l != null){
-                        l.onLockScreenIconDonwloadError(e);
+                        l.onLockScreenIconDownloadError(e);
                     }
                 }
             }
