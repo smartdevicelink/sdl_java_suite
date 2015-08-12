@@ -34,6 +34,7 @@ public class TransportConstants {
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
 	public static final String PACKAGE_NAME_STRING							= "package.name";
 	public static final String APP_ID_EXTRA									= "app.id";
+	public static final String SESSION_ID_EXTRA								= "session.id";
 
 	public static final String LOG_BASIC_DEBUG_BOOLEAN_EXTRA				= "basicDebugBool";
 	public static final String LOG_TRACE_BT_DEBUG_BOOLEAN_EXTRA				= "btTraceBool";
@@ -137,8 +138,18 @@ public class TransportConstants {
 	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_NOT_FOUND 	= 0x01;
 	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL	= 0x02;
 
-
-
+	/**
+	 * This provides the app with an ability to request another session within the router service.
+	 * A replyTo must be provided or else there won't be a response
+	 */
+	public static final int ROUTER_REMOVE_SESSION 										= 0x14;
+	public static final int ROUTER_REMOVE_SESSION_RESPONSE								= 0x15;
+	//Response arguments
+	public static final int ROUTER_REMOVE_SESSION_RESPONSE_SUCESS 						= 0x00;
+	public static final int ROUTER_REMOVE_SESSION_RESPONSE_FAILED_APP_NOT_FOUND 		= 0x01;
+	public static final int ROUTER_REMOVE_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL		= 0x02;
+	public static final int ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_NOT_FOUND 	= 0x03;
+	public static final int ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_ID_NOT_INCL	= 0x04;
     /**
      * Command to have router service to send a packet
      */

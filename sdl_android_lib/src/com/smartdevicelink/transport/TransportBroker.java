@@ -488,8 +488,7 @@ public class TransportBroker {
 		****************************************************************************************************************************************/
 		
 		/**
-		 * Use this method to let the router service know that you are requesting an additional session from the head unit. This should not be used for the first service request, 
-		 * as every registered app will automatically have one service request pending.
+		 * Use this method to let the router service know that you are requesting a new session from the head unit. 
 		 */
 		public void requestNewSession(){
 			Message msg = Message.obtain();
@@ -497,6 +496,17 @@ public class TransportBroker {
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
 			bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+			msg.setData(bundle);
+			this.sendMessageToRouterService(msg);
+		}
+		
+		public void removeSession(long sessionId){
+			Message msg = Message.obtain();
+			msg.what = TransportConstants.ROUTER_REMOVE_SESSION;
+			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
+			Bundle bundle = new Bundle();
+			bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+			bundle.putLong(TransportConstants.SESSION_ID_EXTRA, sessionId);
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}

@@ -341,6 +341,41 @@ public abstract class SdlRouterService extends Service{
 	                		Log.e(TAG, "No reply address included, can't send a reply");
 	                	}
 	                	break;
+	                case  TransportConstants.ROUTER_REMOVE_SESSION:
+	                	long appIdWithSession = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	long sessionId = receivedBundle.getLong(TransportConstants.SESSION_ID_EXTRA, -1);
+	                	Message removeSessionResponse = Message.obtain();
+	                	removeSessionResponse.what = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE;
+	                	if(appIdWithSession>0){
+	                		if(sessionId>=0){
+							synchronized(SESSION_LOCK){
+								if(registeredApps!=null){
+									RegisteredApp appRequesting = registeredApps.get(appIdWithSession);
+									if(appRequesting!=null){
+										if(appRequesting.removeSession(sessionId)){
+											removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_SUCESS;
+										}else{
+											removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_NOT_FOUND;
+										}							
+									}else{
+										removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
+									}
+								}
+							}		
+						}else{
+							removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_ID_NOT_INCL;
+							}
+	                	}else{
+							removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_APP_ID_NOT_INCL;
+						}
+	                	try {
+	                		msg.replyTo.send(removeSessionResponse); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
+	                	} catch (RemoteException e) {
+	                		e.printStackTrace();
+	                	}catch(NullPointerException e2){
+	                		Log.e(TAG, "No reply address included, can't send a reply");
+	                	}
+	                	break;
 	                default:
 	                    super.handleMessage(msg);
 	            }
@@ -1128,7 +1163,24 @@ public abstract class SdlRouterService extends Service{
 		public int containsSessionId(long id){
 			return sessionIds.indexOf(id);
 		}
-		
+		/**
+		 * This will remove a session from the session id list
+		 * @param sessionId
+		 * @return
+		 */
+		public boolean removeSession(Long sessionId){
+			int location = sessionIds.indexOf(sessionId);
+			if(location>=0){
+				Long removedSessionId = sessionIds.remove(location);
+				if(removedSessionId!=null){
+					return true;
+				}else{
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}
 		/**
 		 * @param sessionId
 		 */

@@ -345,8 +345,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}	
 	
 	public void unregisterSession(SdlSession registerListener) {
-		listenerList.remove(registerListener);			
+		boolean didRemove = listenerList.remove(registerListener);			
 		closeConnection(listenerList.size() == 0, registerListener.getSessionId());
+		if(didRemove && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){ //If we're connected we can request the extra session now
+			((MultiplexTransport)_transport).removeSession(registerListener.getSessionId());
+		}
 	}
 
 	

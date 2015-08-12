@@ -34,6 +34,12 @@ public class MultiplexTransport extends SdlTransport{
 		}
 	}
 	
+	public void removeSession(long sessionId){
+		if(brokerThread!=null){
+			brokerThread.removeSession(sessionId);
+		}
+	}
+	
 	/**
 	 * Overridden abstract method which returns specific type of this transport.
 	 * 
@@ -113,7 +119,11 @@ public class MultiplexTransport extends SdlTransport{
 				broker.requestNewSession();
 			}
 		}
-
+		public void removeSession(long sessionId){
+			if(broker!=null){
+				broker.removeSession(sessionId);
+			}
+		}
 		@Override
 		public void run() {
 			Looper.prepare();
