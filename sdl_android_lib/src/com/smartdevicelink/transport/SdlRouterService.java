@@ -33,8 +33,19 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.protocol.BinaryFrameHeader;
+import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.MessageType;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.BitConverter;
 
@@ -810,6 +821,18 @@ public abstract class SdlRouterService extends Service{
 			}	
 		}
 		
+		private boolean manuallyWriteBytes(byte[] bytes, int offset, int count){
+			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
+				if(bytes!=null){
+					mSerialService.write(bytes,offset,count);
+					return true;
+				}
+				return false;
+			}else{
+				return false;
+			}
+		}
+		
 		
 		/**
 		 * This Method will send the packets through the alt transport that is connected
@@ -850,7 +873,23 @@ public abstract class SdlRouterService extends Service{
 	    			message.setData(bundle);
 	    			int result = app.sendMessage(message);
 	    			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
-	    				registeredApps.remove(appid); //TODO should we send out info to head unit to let them know?
+	    				Log.d(TAG, "Dead object, removing app and sessions");
+	    				//Get all their sessions and send out unregister info
+	    				//Use the version in this packet as a best guess
+	    				Vector<Long> sessions = app.getSessionIds();
+	    				byte version = (byte)packet.getVersion();
+	    				byte[]  unregister,stopService;
+	    				int size = sessions.size(), sessionId;
+	    				for(int i=0; i<size;i++){
+	    					sessionId = sessions.get(i).intValue();
+	    					unregister = createForceUnregisterApp((byte)sessionId,version);
+	    					manuallyWriteBytes(unregister,0,unregister.length);
+	    					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version)).constructPacket();
+	    					manuallyWriteBytes(stopService,0,stopService.length);
+	    					sessionMap.remove(sessionId);
+	    				}
+	    				registeredApps.remove(appid);
+	    				return false;//We did our best to correct errors
 	    			}
 	    			return true;	//We should have sent our packet, so we can return true now
 	    		}else{	//If we can't find a session for this packet we just drop the packet
@@ -1082,6 +1121,41 @@ public abstract class SdlRouterService extends Service{
 		
 	}
 	
+	/**
+	 * If an app crashes the only way we can handle it being on the head unit is to send an unregister app interface rpc.
+	 * This method should only be called when the router service recognizes the client is no longer valid
+	 * @param sessionId
+	 * @param version
+	 * @return
+	 */
+	private byte[] createForceUnregisterApp(byte sessionId,byte version){
+		UnregisterAppInterface request = new UnregisterAppInterface();
+		request.setCorrelationID(433 + sessionId * version); //Just so we can be "random"
+		byte[] msgBytes = JsonRPCMarshaller.marshall(request, version);
+		ProtocolMessage pm = new ProtocolMessage();
+		pm.setData(msgBytes);
+		pm.setSessionID(sessionId);
+		pm.setMessageType(MessageType.RPC);
+		pm.setSessionType(SessionType.RPC);
+		pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
+		pm.setCorrID(request.getCorrelationID());
+		if (request.getBulkData() != null) 
+			pm.setBulkData(request.getBulkData());
+		byte[] data = null;
+		if (version > 1) {
+			data = new byte[12 + pm.getJsonSize()];
+		} else {
+			data = pm.getData();
+		}
+		BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
+		binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(pm.getRPCType(), pm.getFunctionID(), pm.getCorrID(), pm.getJsonSize());
+		
+		System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
+		System.arraycopy(pm.getData(), 0, data, 12, pm.getJsonSize());
+
+		SdlPacket packet = new SdlPacket(version,false,SdlPacket.FRAME_TYPE_SINGLE,SdlPacket.SERVICE_TYPE_RPC,0,sessionId,data.length,data.length+100,data);
+		return packet.constructPacket();
+	}
     
 
 	
