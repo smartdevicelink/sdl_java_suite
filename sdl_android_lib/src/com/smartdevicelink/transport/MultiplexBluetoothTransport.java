@@ -86,11 +86,6 @@ public class MultiplexBluetoothTransport {
     Handler timeOutHandler;
     Runnable socketRunable;
     private static final long msTillTimeout = 2500;
-    private static final long msPingTimer = 1000;
-    private Handler pingTimeOutHandler = null;
-    private Runnable pingRunable = null;
-    final byte[] ping =new byte[]{0x00,0x00};
-    boolean enablePing = true;
     
     public static String currentlyConnectedDevice = null;
     public static String currentlyConnectedDeviceAddress = null;
@@ -111,12 +106,6 @@ public class MultiplexBluetoothTransport {
        // mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
-		pingTimeOutHandler = new Handler();
-		pingRunable = new Runnable() {           
-            public void run() {
-            	getBluetoothSerialServerInstance().write(ping,0,ping.length);            	
-            }
-        };
           
         //This will keep track of which method worked last night
         mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
@@ -124,13 +113,6 @@ public class MultiplexBluetoothTransport {
         threadLock = object;
 
     }
-    
-
-	public static void setEnablePing(boolean enablePing) {
-		if(serverInstance!=null){
-			serverInstance.enablePing = enablePing;
-		}
-	}
 
 
 
@@ -273,16 +255,8 @@ public class MultiplexBluetoothTransport {
         //we will access it will be when we receive a CONNECT packet from a device
         if(device!=null && device.getName()!=null && device.getName()!=""){
         	currentlyConnectedDevice = device.getName();
-        	if(currentlyConnectedDevice!=null 
-        			&& (currentlyConnectedDevice.equalsIgnoreCase("eagle")
-        					|| currentlyConnectedDevice.toLowerCase(Locale.US).contains("sync"))){
-        		getBluetoothSerialServerInstance().enablePing = false;
-        	}
         }
         
-        if(getBluetoothSerialServerInstance().enablePing){
-        	getBluetoothSerialServerInstance().pingTimer();
-        }
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
@@ -360,7 +334,6 @@ public class MultiplexBluetoothTransport {
     	listening = false;
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_TOAST);
-        getBluetoothSerialServerInstance().pingTimeOutHandler.removeCallbacks(pingRunable);
         Bundle bundle = new Bundle();
         bundle.putString(TOAST, "Device connection was lost");
         msg.setData(bundle);
@@ -757,20 +730,6 @@ public class MultiplexBluetoothTransport {
             	//This would be a good spot to log out all bytes received
             	mmOutStream.write(buffer, offset, count);
             	//Log.w(TAG, "Wrote out to device: bytes = "+ count);
-            	//Set up ping
-            	if(enablePing){//The eagle can't handle the ping bytes, so let's not do them
-            		if(pingTimeOutHandler==null || pingRunable==null){
-            			pingTimer();
-            		}
-            		else{
-                		pingTimeOutHandler.removeCallbacks(pingRunable);
-                		pingTimeOutHandler.postDelayed(pingRunable, msPingTimer); 
-            		}
-            	}
-            	if(buffer==ping){
-            		return;
-            	}
-
             } catch (IOException e) {
                 // Exception during write
             	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
@@ -889,21 +848,14 @@ public class MultiplexBluetoothTransport {
 	{
 		return !(mState == STATE_NONE);
 	}
-/**
- * Ping Timer
- */
-	
-	private void pingTimer(){
 
-		getBluetoothSerialServerInstance().pingTimeOutHandler.postDelayed(pingRunable, msPingTimer); 
-    }
+	
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
 	    Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    int channel = -1;
 	   
 	    BluetoothSocket mySocket = null;
-	    
 	    for (Field field : f) {
 	        if(field.getName().equals("mSocket")){
 	            field.setAccessible(true);
