@@ -235,10 +235,7 @@ public class WiProProtocol extends AbstractProtocol {
 				
 				
 				int iDataSize = _currentHeader.getDataSize();	
-				if (_version < 3 && iDataSize <= V1_V2_MTU_SIZE) {
-					_dataBuf = new byte[iDataSize];
-				}
-				else if (_version > 2 && iDataSize <= V3_V4_MTU_SIZE) {
+				if (iDataSize <= MAX_DATA_SIZE) {
 					_dataBuf = new byte[iDataSize];
 				}
 				else {
