@@ -655,10 +655,6 @@ public class USBTransport extends SdlTransport {
 
     	SdlPsm psm;
     	
-    	public USBTransportReader(){
-    		psm = new SdlPsm();
-    	}
-    	
         /**
          * Checks if the thread has been interrupted.
          *
@@ -676,6 +672,7 @@ public class USBTransport extends SdlTransport {
         @Override
         public void run() {
             logD("USB reader started!");
+            psm = new SdlPsm();
             psm.reset();
             if (connect()) {
                 readFromTransport();
@@ -749,16 +746,16 @@ public class USBTransport extends SdlTransport {
          */
         private void readFromTransport() {
             final int READ_BUFFER_SIZE = 4096;
-            byte[] buffer = new byte[READ_BUFFER_SIZE];
-            int bytes = 0;
-            byte input;
+            byte[] buffer = new byte[READ_BUFFER_SIZE], tempBuffer = new byte[READ_BUFFER_SIZE];
+            int bytes = 0, bytesRead;
+           // byte input;
             boolean stateProgress = false;
 
             // read loop
             while (!isInterrupted()) {
                 try {
-                	input = (byte)mInputStream.read();
-                    if (input == -1) {
+                	bytesRead = mInputStream.read(tempBuffer);
+                    if (bytesRead == -1) {
                         if (isInterrupted()) {
                             logI("EOF reached, and thread is interrupted");
                         } else {
@@ -777,7 +774,7 @@ public class USBTransport extends SdlTransport {
                     return;
                 }
 
-                logD("Read " + input + " bytes");
+                logD("Read " + bytesRead + " bytes");
                //FIXME SdlTrace.logTransportEvent(TAG + ": read bytes", null,
                 //        InterfaceActivityDirection.Receive, buffer, bytesRead,
                 //        SDL_LIB_TRACE_KEY);
@@ -786,14 +783,14 @@ public class USBTransport extends SdlTransport {
                     logI("Read some data, but thread is interrupted");
                     return;
                 }
-
-                synchronized (USBTransport.this) {
-                	
-                	 stateProgress = psm.handleByte(input); 
-                     if(stateProgress){ //We are trying to weed through the bad packet info until we get something
-                     	buffer[bytes]=input;
-                     	bytes++;
-                     }
+                	byte input;
+                	for(int i=0;i<bytesRead; i++){
+                		input=tempBuffer[i];
+                		stateProgress = psm.handleByte(input); 
+                		if(stateProgress){ //We are trying to weed through the bad packet info until we get something
+                			buffer[bytes]=input;
+                			bytes++;
+                		}
                      else if(!stateProgress){
                      	
                      	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
@@ -804,8 +801,10 @@ public class USBTransport extends SdlTransport {
                      
                      if(psm.getState() == SdlPsm.FINISHED_STATE)
                      {
-                     	//Log.d(TAG, "Packet formed, sending off");
-                     	handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                    	 synchronized (USBTransport.this) {
+                    		 //Log.d(TAG, "Packet formed, sending off");
+                    		 handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                    	 }
                      	//We put a trace statement in the message read so we can avoid all the extra bytes
                      	psm.reset();
                      	bytes=0;
