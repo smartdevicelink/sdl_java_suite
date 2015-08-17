@@ -33,7 +33,7 @@ public abstract class AbstractProtocol {
 	public abstract void SendMessage(ProtocolMessage msg);
 
 	
-	public abstract void handledPacketReceived(SdlPacket packet);
+	public abstract void handlePacketReceived(SdlPacket packet);
 	
 	// This method starts a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionStarted() method will be made when the protocol

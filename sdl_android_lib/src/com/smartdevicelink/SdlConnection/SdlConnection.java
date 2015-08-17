@@ -155,7 +155,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		// Send bytes to protocol to be interpreted 
 		synchronized(PROTOCOL_REFERENCE_LOCK) {
 			if (_protocol != null) {
-				_protocol.handledPacketReceived(packet);
+				_protocol.handlePacketReceived(packet);
 			}
 		}
 	}

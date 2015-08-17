@@ -154,7 +154,7 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	public void handledPacketReceived(SdlPacket packet){
+	public void handlePacketReceived(SdlPacket packet){
 		//Check for a version difference
 		if (_version == 1) {
 			setVersion((byte)packet.version);	
