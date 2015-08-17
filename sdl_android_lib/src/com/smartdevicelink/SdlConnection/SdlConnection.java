@@ -59,8 +59,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			if(legacyTransportRequest ==null && //Make sure legacy mode is not enabled
 					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
-			}else if((legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH)
-					|| transportConfig.getTransportType() == TransportType.BLUETOOTH){
+			}else if(legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this);
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());	//FIXME we should chage this over to a special legacy config
