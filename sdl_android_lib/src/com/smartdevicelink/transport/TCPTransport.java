@@ -381,8 +381,7 @@ public class TCPTransport extends SdlTransport {
                     setCurrentState(TCPTransportState.CONNECTED);
                     handleTransportConnected();
                 }
-                int bytes = 0;
-                byte[] buffer = new byte[READ_BUFFER_SIZE];
+
                 byte input;
                 boolean stateProgress = false;
                 while (!isHalted) {
@@ -403,34 +402,25 @@ public class TCPTransport extends SdlTransport {
                     }
 
                     logInfo("TCPTransport.run: Got new data");
-                    	synchronized (TCPTransport.this) {
                         // Send the response of what we received
                         stateProgress = psm.handleByte(input); 
-                        if(stateProgress){ //We are trying to weed through the bad packet info until we get something
-                        	buffer[bytes]=input;
-                        	bytes++;
-                        }
-                        else if(!stateProgress){
+                        if(!stateProgress){//We are trying to weed through the bad packet info until we get something
                         	
                         	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                         	psm.reset();
-                        	bytes=0;
-                            buffer = new byte[READ_BUFFER_SIZE];
                         }
                         
                         if(psm.getState() == SdlPsm.FINISHED_STATE)
                         {
-                        	//Log.d(TAG, "Packet formed, sending off");
-                        	handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                        	synchronized (TCPTransport.this) {
+                        		//Log.d(TAG, "Packet formed, sending off");
+                        		handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                        	}
                         	//We put a trace statement in the message read so we can avoid all the extra bytes
                         	psm.reset();
-                        	bytes=0;
-                            buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
-
                         }
                         //FIXME logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
                         
-                        }            
                 }
             }
 
