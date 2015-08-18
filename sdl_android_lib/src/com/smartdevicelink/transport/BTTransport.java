@@ -316,11 +316,8 @@ public class BTTransport extends SdlTransport {
 	
 	
 	private class TransportReaderThread extends Thread {
-	    final int READ_BUFFER_SIZE = 4096;
-		byte[] buf = new byte[READ_BUFFER_SIZE];
 		private Boolean isHalted = false;
 	    SdlPsm psm;
-        int bytes = 0;
         byte byteRead = -1;
         boolean stateProgress = false;
         
@@ -400,23 +397,15 @@ public class BTTransport extends SdlTransport {
 				
 				if (byteRead != -1) {
                	 	stateProgress = psm.handleByte(byteRead); 
-               	 	if(stateProgress){ //We are trying to weed through the bad packet info until we get something
-               	 		buf[bytes]=byteRead;
-               	 		bytes++;
-               	 	}
-               	 	else if(!stateProgress){
+               	 	if(!stateProgress){//We are trying to weed through the bad packet info until we get something
                  		//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                	 		psm.reset();
-                 		bytes=0;
-                 		buf = new byte[READ_BUFFER_SIZE];
                	 	}
                	 	if(psm.getState() == SdlPsm.FINISHED_STATE){
                	 		//Log.d(TAG, "Packet formed, sending off");
                	 		handleReceivedPacket((SdlPacket)psm.getFormedPacket());
                	 		//We put a trace statement in the message read so we can avoid all the extra bytes
                	 		psm.reset();
-               	 		bytes=0;
-               	 		buf = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
                	 	}
 				} else {
 					// When bytesRead == -1, it indicates end of stream

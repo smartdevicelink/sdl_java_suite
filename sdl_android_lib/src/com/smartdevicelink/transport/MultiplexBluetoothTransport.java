@@ -759,7 +759,6 @@ public class MultiplexBluetoothTransport {
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
-    	byte[] buffer = new byte[2048];
     	SdlPsm psm;
         public ConnectedThread(BluetoothSocket socket) {
         	this.psm = new SdlPsm();
@@ -781,7 +780,6 @@ public class MultiplexBluetoothTransport {
 		@SuppressLint("NewApi")
 		public void run() {
         	Log.d(TAG, "Running the Connected Thread");
-            int bytes = 0;
             byte input = 0;
             MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
             MultiplexBluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
@@ -795,26 +793,16 @@ public class MultiplexBluetoothTransport {
                     input = (byte)mmInStream.read();
                     // Send the response of what we received
                     stateProgress = psm.handleByte(input); 
-                    if(stateProgress){ //We are trying to weed through the bad packet info until we get something
-                    	buffer[bytes]=input;
-                    	bytes++;
-                    }
-                    else if(!stateProgress){
-                    	
+                    if(!stateProgress){//We are trying to weed through the bad packet info until we get something	
                     	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                     	psm.reset();
-                    	bytes=0;
-                        buffer = new byte[2048];	//FIXME Needs to be actually the MTU
+                    	continue;
                     }
                     
-                    if(psm.getState() == SdlPsm.FINISHED_STATE)
-                    {
+                    if(psm.getState() == SdlPsm.FINISHED_STATE){
                     	//Log.d(TAG, "Packet formed, sending off");
-                    	mHandler.obtainMessage(SdlRouterService.MESSAGE_READ, bytes, -1, psm.getFormedPacket()).sendToTarget();
-                    	//We put a trace statement in the message read so we can avoid all the extra bytes
-                    	psm.reset();
-                    	bytes=0;
-                        buffer = new byte[2048]; 
+                    	mHandler.obtainMessage(SdlRouterService.MESSAGE_READ, psm.getFormedPacket()).sendToTarget();
+                    	psm.reset(); 
 
                     }
                 }catch (IOException e){

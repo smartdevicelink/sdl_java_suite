@@ -746,15 +746,15 @@ public class USBTransport extends SdlTransport {
          */
         private void readFromTransport() {
             final int READ_BUFFER_SIZE = 4096;
-            byte[] buffer = new byte[READ_BUFFER_SIZE], tempBuffer = new byte[READ_BUFFER_SIZE];
-            int bytes = 0, bytesRead;
+            byte[] buffer = new byte[READ_BUFFER_SIZE];
+            int bytesRead;
            // byte input;
             boolean stateProgress = false;
 
             // read loop
             while (!isInterrupted()) {
                 try {
-                	bytesRead = mInputStream.read(tempBuffer);
+                	bytesRead = mInputStream.read(buffer);
                     if (bytesRead == -1) {
                         if (isInterrupted()) {
                             logI("EOF reached, and thread is interrupted");
@@ -785,30 +785,22 @@ public class USBTransport extends SdlTransport {
                 }
                 	byte input;
                 	for(int i=0;i<bytesRead; i++){
-                		input=tempBuffer[i];
+                		input=buffer[i];
                 		stateProgress = psm.handleByte(input); 
-                		if(stateProgress){ //We are trying to weed through the bad packet info until we get something
-                			buffer[bytes]=input;
-                			bytes++;
+                		if(!stateProgress){//We are trying to weed through the bad packet info until we get something
+                			//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                			psm.reset();
+                			buffer = new byte[READ_BUFFER_SIZE];
                 		}
-                     else if(!stateProgress){
-                     	
-                     	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
-                     	psm.reset();
-                     	bytes=0;
-                         buffer = new byte[READ_BUFFER_SIZE];
-                     }
                      
-                     if(psm.getState() == SdlPsm.FINISHED_STATE)
-                     {
+                     if(psm.getState() == SdlPsm.FINISHED_STATE){
                     	 synchronized (USBTransport.this) {
                     		 //Log.d(TAG, "Packet formed, sending off");
                     		 handleReceivedPacket((SdlPacket)psm.getFormedPacket());
                     	 }
                      	//We put a trace statement in the message read so we can avoid all the extra bytes
                      	psm.reset();
-                     	bytes=0;
-                         buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
+                        buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
 
                      }
                 }
