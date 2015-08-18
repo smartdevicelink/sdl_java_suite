@@ -19,7 +19,7 @@ public class MultiplexTransport extends SdlTransport{
 	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		super(transportListener);
 		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId);
-		brokerThread.start();
+		//brokerThread.start();
 
 	}
 
@@ -88,21 +88,29 @@ public class MultiplexTransport extends SdlTransport{
 	private class TransportBrokerThread extends Thread{
 		private boolean connected = false; //This helps clear up double on hardware connects
 		TransportBroker broker;
-
+		
+		/**
+		 * Thread will automatically start to prepare its looper.
+		 * @param context
+		 * @param appId
+		 */
 		public TransportBrokerThread(Context context, String appId){
+			this.start();
 			initTransportBroker(context, appId);
 		}
 
 		public void startConnection(){
-			connected = false;
-			broker.start();
+			synchronized(this){
+				connected = false;
+				broker.start();
+			}
 		}
 
 		public void cancel(){
-			broker.stop();
-			broker = null;
-			connected = false;
-			this.interrupt();
+				broker.stop();
+				broker = null;
+				connected = false;
+				this.interrupt();
 
 		}
 
