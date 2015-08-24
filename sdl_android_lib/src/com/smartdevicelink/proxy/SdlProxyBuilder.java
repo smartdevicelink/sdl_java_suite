@@ -67,36 +67,36 @@ public class SdlProxyBuilder
 	        this.isMediaApp		= isMediaApp;
 	    }
 
-	    public Builder service(Service val)
+	    public Builder setService(Service val)
 	    	{ service = val; return this; }
-	    public Builder sdlProxyConfigurationResources(SdlProxyConfigurationResources val)
+	    public Builder setSdlProxyConfigurationResources(SdlProxyConfigurationResources val)
 	    	{ sdlProxyConfigurationResources = val; return this; }
-	    public Builder ttsChunks(Vector<TTSChunk> val)
+	    public Builder setTtsName(Vector<TTSChunk> val)
 	    	{ ttsChunks = val; return this; }
-	    public Builder sNgnAppName(String val)
+	    public Builder setNgnShortAppName(String val)
 	    	{ sNgnAppName = val; return this; }
-	    public Builder vrSynonyms(Vector<String> val)
+	    public Builder setVrSynonyms(Vector<String> val)
 	    	{ vrSynonyms = val; return this; }
-	    public Builder sdlMessageVersion(SdlMsgVersion val)
+	    public Builder setSdlMessageVersion(SdlMsgVersion val)
 	    	{ sdlMessageVersion = val; return this; }
-	    public Builder lang(Language val)
+	    public Builder setLangDesired(Language val)
 	    	{ lang = val; return this; }
-	    public Builder hmiLang(Language val)
+	    public Builder setHMILangDesired(Language val)
 	    	{ hmiLang = val; return this; }
-	    public Builder vrAppHMITypes(Vector<AppHMIType> val)
+	    public Builder setVrAppHMITypes(Vector<AppHMIType> val)
 	    	{ vrAppHMITypes = val; return this; }
-	    public Builder autoActivateID(String val)
+	    public Builder setAutoActivateID(String val)
 	    	{ autoActivateID = val; return this; }
-	    public Builder callbackToUIThread(boolean val)
+	    public Builder setCallbackToUIThread(boolean val)
 	    	{ callbackToUIThread = val; return this; }
-	    public Builder preRegister(boolean val)
+	    public Builder setPreRegister(boolean val)
 	    	{ preRegister = val; return this; }
-	    public Builder sAppResumeHash(String val)
+	    public Builder setAppResumeDataHash(String val)
 	    	{ sAppResumeHash = val; return this; }
-	    public Builder mTransport(BaseTransportConfig val)
+	    public Builder setTransportType(BaseTransportConfig val)
 	    	{ mTransport = val; return this; }
 	        
-        public SdlProxyALM buildProxy() throws SdlException
+        public SdlProxyALM build() throws SdlException
         {
         	SdlProxyBuilder obj = new SdlProxyBuilder(this);
         	return new SdlProxyALM(obj.service,obj.listener,obj.sdlProxyConfigurationResources,obj.appName,obj.ttsChunks,obj.sNgnAppName,obj.vrSynonyms,obj.isMediaApp,obj.sdlMessageVersion,obj.lang,obj.hmiLang,obj.vrAppHMITypes,obj.appId,obj.autoActivateID,obj.callbackToUIThread,obj.preRegister,obj.sAppResumeHash,obj.mTransport);
