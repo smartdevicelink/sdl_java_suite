@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.interfaces;
 
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
+import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
@@ -81,10 +83,15 @@ public interface IProxyListenerBase  {
 	 * @param e - The exception that occurred. 
 	 */
 	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason);
-	
+
+	public void onServiceEnded(OnServiceEnded serviceEnded);
+
+	public void onServiceNACKed(OnServiceNACKed serviceNACKed);
+
 	public void onOnStreamRPC(OnStreamRPC notification);
 	
 	public void onStreamRPCResponse(StreamRPCResponse response);
+
 	/**
 	 * onProxyError() being called indicates that the SDL Proxy experenced an error.
 	 * 

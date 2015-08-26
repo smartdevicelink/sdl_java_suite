@@ -213,7 +213,6 @@ public class USBTransport extends SdlTransport {
         final State state = getState();
         switch (state) {
             case CONNECTED:
-                synchronized (this) {
                     if (mOutputStream != null) {
                         try {
                             mOutputStream.write(msgBytes, offset, length);
@@ -235,7 +234,6 @@ public class USBTransport extends SdlTransport {
                         logW(msg);
                         handleTransportError(msg, null);
                     }
-                }
                 break;
 
             default:
