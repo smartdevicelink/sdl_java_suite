@@ -163,8 +163,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private SdlMsgVersion _sdlMsgVersionRequest = null;
 	private Vector<String> _vrSynonyms = null;
 	private boolean _bAppResumeEnabled = false;
-	
 	private OnSystemRequest lockScreenIconRequest = null;
+	private TelephonyManager telephonyManager = null;
+	private DeviceInfo deviceInfo = null;
 	
 	/**
 	 * Contains current configuration for the transport that was selected during 
@@ -204,7 +205,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
-
 	protected Boolean _bResumeSuccess = false;	
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
@@ -527,7 +527,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_proxyListener = listener;
 		
 		// Get information from sdlProxyConfigurationResources
-		TelephonyManager telephonyManager = null;
 		if (sdlProxyConfigurationResources != null) {
 			telephonyManager = sdlProxyConfigurationResources.getTelephonyManager();
 		} 
@@ -540,6 +539,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (_traceDeviceInterrogator == null) {
 				_traceDeviceInterrogator = new TraceDeviceInfo(sdlProxyConfigurationResources.getTelephonyManager());
 			} // end-if
+			
 		} // end-if
 		
 		// Setup Internal ProxyMessage Dispatcher
@@ -4143,10 +4143,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
 			String appID, String autoActivateID, Integer correlationID) 
 			throws SdlException {
-		
+		String carrierName = null;
+		if(telephonyManager != null){
+			carrierName = telephonyManager.getNetworkOperatorName();
+		}
+		deviceInfo = RPCRequestFactory.BuildDeviceInfo(carrierName);
 		RegisterAppInterface msg = RPCRequestFactory.buildRegisterAppInterface(
 				sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, 
-				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID);
+				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID, deviceInfo);
 		
 		if (_bAppResumeEnabled)
 		{
@@ -5077,7 +5081,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	{
 		return _appID;
 	}
-
+	public DeviceInfo getDeviceInfo()
+	{
+		return deviceInfo;
+	}
 	public long getInstanceDT()
 	{
 		return instanceDateTime;
