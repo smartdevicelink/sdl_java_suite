@@ -23,7 +23,7 @@ public class SdlProxyBuilder
 	private Service service;
 	private SdlProxyConfigurationResources sdlProxyConfigurationResources;
 	private Vector<TTSChunk> ttsChunks;
-	private String sNgnAppName;
+	private String sShortAppName;
 	private Vector<String>vrSynonyms;
 	private SdlMsgVersion sdlMessageVersion;
 	private Language lang;
@@ -47,7 +47,7 @@ public class SdlProxyBuilder
 	    private Service service = null;
 	    private SdlProxyConfigurationResources sdlProxyConfigurationResources = null;
 	    private Vector<TTSChunk> ttsChunks = null;
-	    private String sNgnAppName = null;
+	    private String sShortAppName = null;
 	    private Vector<String>vrSynonyms = null;
 	    private SdlMsgVersion sdlMessageVersion = null;
 	    private Language lang = Language.EN_US;
@@ -73,8 +73,8 @@ public class SdlProxyBuilder
 	    	{ sdlProxyConfigurationResources = val; return this; }
 	    public Builder setTtsName(Vector<TTSChunk> val)
 	    	{ ttsChunks = val; return this; }
-	    public Builder setNgnShortAppName(String val)
-	    	{ sNgnAppName = val; return this; }
+	    public Builder setShortAppName(String val)
+	    	{ sShortAppName = val; return this; }
 	    public Builder setVrSynonyms(Vector<String> val)
 	    	{ vrSynonyms = val; return this; }
 	    public Builder setSdlMessageVersion(SdlMsgVersion val)
@@ -99,7 +99,7 @@ public class SdlProxyBuilder
         public SdlProxyALM build() throws SdlException
         {
         	SdlProxyBuilder obj = new SdlProxyBuilder(this);
-        	return new SdlProxyALM(obj.service,obj.listener,obj.sdlProxyConfigurationResources,obj.appName,obj.ttsChunks,obj.sNgnAppName,obj.vrSynonyms,obj.isMediaApp,obj.sdlMessageVersion,obj.lang,obj.hmiLang,obj.vrAppHMITypes,obj.appId,obj.autoActivateID,obj.callbackToUIThread,obj.preRegister,obj.sAppResumeHash,obj.mTransport);
+        	return new SdlProxyALM(obj.service,obj.listener,obj.sdlProxyConfigurationResources,obj.appName,obj.ttsChunks,obj.sShortAppName,obj.vrSynonyms,obj.isMediaApp,obj.sdlMessageVersion,obj.lang,obj.hmiLang,obj.vrAppHMITypes,obj.appId,obj.autoActivateID,obj.callbackToUIThread,obj.preRegister,obj.sAppResumeHash,obj.mTransport);
         }
 	}
 
@@ -113,7 +113,7 @@ public class SdlProxyBuilder
 		service = builder.service;
 		sdlProxyConfigurationResources = builder.sdlProxyConfigurationResources;
 		ttsChunks = builder.ttsChunks;
-		sNgnAppName = builder.sNgnAppName;
+		sShortAppName = builder.sShortAppName;
 		vrSynonyms = builder.vrSynonyms;
 		sdlMessageVersion = builder.sdlMessageVersion;
 		lang = builder.lang;
