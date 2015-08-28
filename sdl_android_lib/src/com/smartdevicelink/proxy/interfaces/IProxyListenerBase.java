@@ -324,4 +324,6 @@ public interface IProxyListenerBase  {
 	public void onAlertManeuverResponse(AlertManeuverResponse response);
 
 	public void onUpdateTurnListResponse(UpdateTurnListResponse response);
+
+	public void onServiceDataACK();
 }

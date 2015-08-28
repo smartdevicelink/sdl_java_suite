@@ -1,9 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -19,7 +15,15 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Service;
 import android.content.Context;
@@ -30,8 +34,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Surface;
 
-import com.smartdevicelink.proxy.RPCRequestFactory;
-import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
@@ -90,10 +92,6 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledExecutorService;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
@@ -288,16 +286,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
 			sendBroadcastIntent(sendIntent);
 			
-			setWiProVersion(version);
-
-			 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version > 2) )
-			 {
-				 HeartbeatMonitor heartbeatMonitor = new HeartbeatMonitor();
-				 heartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
-	             sdlSession.setHeartbeatMonitor(heartbeatMonitor);
-			 }			
+			setWiProVersion(version);	
 			
-			if (sessionType.eq(SessionType.RPC)) {			
+			if (sessionType.eq(SessionType.RPC)) {	
+
+				 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version > 2))
+				 {
+					 HeartbeatMonitor outgoingHeartbeatMonitor = new HeartbeatMonitor();
+					 outgoingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
+		             sdlSession.setOutgoingHeartbeatMonitor(outgoingHeartbeatMonitor);
+
+					 HeartbeatMonitor incomingHeartbeatMonitor = new HeartbeatMonitor();
+					 incomingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
+		             sdlSession.setIncomingHeartbeatMonitor(incomingHeartbeatMonitor);
+				 }		
+				 
 				startRPCProtocolSession(sessionID, correlationID);
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
@@ -409,6 +412,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				AudioServiceEndedNACK();
 			}
 			
+		}
+		public void onProtocolServiceDataACK(SessionType sessionType,
+				byte sessionID) {
+			if (_callbackToUIThread) {
+				// Run in UI thread
+				_mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						_proxyListener.onServiceDataACK();
+					}
+				});
+			} else {
+				_proxyListener.onServiceDataACK();						
+			}
 		}
 	}
 	

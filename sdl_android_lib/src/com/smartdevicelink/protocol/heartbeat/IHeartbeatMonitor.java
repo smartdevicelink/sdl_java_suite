@@ -51,4 +51,9 @@ public interface IHeartbeatMonitor {
      * Notifies the monitor about a received heartbeat ACK message.
      */
     public void heartbeatACKReceived();
+    
+    /**
+     * Notifies the monitor about a received heartbeat message.
+     */
+    public void heartbeatReceived();
 }

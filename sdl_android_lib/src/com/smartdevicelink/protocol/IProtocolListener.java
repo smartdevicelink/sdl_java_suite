@@ -20,13 +20,19 @@ public interface IProtocolListener {
 	void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
  	
 	void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
+
+	void onProtocolHeartbeat(SessionType sessionType, byte sessionID);
 	
 	/**
      * Called when a protocol heartbeat ACK message has been received from SDL.
      */
     void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID);
+    
+    void onProtocolServiceDataACK(SessionType sessionType, byte sessionID);
 
-    void onResetHeartbeat(SessionType sessionType, byte sessionID);
+    void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID);
+
+    void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID);
 
 	// Called to indicate that a protocol error was detected in received data.
 	void onProtocolError(String info, Exception e);
