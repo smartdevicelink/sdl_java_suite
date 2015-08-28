@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
@@ -50,6 +51,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
+import com.smartdevicelink.proxy.LockScreenManager.OnLockScreenIconDownloadedListener;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
@@ -161,6 +163,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private SdlMsgVersion _sdlMsgVersionRequest = null;
 	private Vector<String> _vrSynonyms = null;
 	private boolean _bAppResumeEnabled = false;
+	
+	private OnSystemRequest lockScreenIconRequest = null;
 	
 	/**
 	 * Contains current configuration for the transport that was selected during 
@@ -2662,6 +2666,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					
 					
+					if(msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
+					        msg.getUrl() != null){
+					    lockScreenIconRequest = msg;
+					}
+					
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -3385,6 +3394,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setAppService(Service mService)
 	{
 		_appService = mService;
+	}
+	
+	public void getLockScreenIcon(final OnLockScreenIconDownloadedListener l){
+	    if(lockScreenIconRequest == null){
+            l.onLockScreenIconDownloadError(new SdlException("This version of SDL core may not support lock screen icons.", 
+                    SdlExceptionCause.LOCK_SCREEN_ICON_NOT_SUPPORTED));
+	        return;
+	    }
+	    
+	    LockScreenManager lockMan = sdlSession.getLockScreenMan();
+	    Bitmap bitmap = lockMan.getLockScreenIcon();
+	    
+	    // read bitmap if it was already downloaded so we don't have to download it every time
+	    if(bitmap != null){
+	        l.onLockScreenIconDownloaded(bitmap);
+	    }
+	    else{
+    	    String url = lockScreenIconRequest.getUrl();
+    	    sdlSession.getLockScreenMan().downloadLockScreenIcon(url, l);
+	    }
 	}
 
 	/******************** Public Helper Methods *************************/
