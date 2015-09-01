@@ -24,13 +24,18 @@ public abstract class OnPutFileUpdateListener extends OnRPCUpdateListener{
 	public final void onFinish(int correlationId, RPCMessage message) {
 		onFinish(correlationId, message, totalSize); //Calling our special abstract method
 	}
-	
+	/**
+	 * Called when the putfile request is responded to.
+	 * @param correlationId
+	 * @param message
+	 * @param totalSize
+	 */
 	public abstract void onFinish(int correlationId, RPCMessage message, long totalSize);
 	
 	/**
-	 * onUpdate is called during a multipart put file request
-	 * @param correlationId
-	 * @param bytesWrote
+	 * onUpdate is called during a putfile stream request
+	 * @param correlationId of the original request
+	 * @param bytesWritten
 	 * @param totalSize
 	 */
 	public void onUpdate(int correlationId, long bytesWritten, long totalSize){
