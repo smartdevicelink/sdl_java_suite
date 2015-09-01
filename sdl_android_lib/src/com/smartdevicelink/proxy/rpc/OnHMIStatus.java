@@ -7,7 +7,6 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
-import com.smartdevicelink.util.DebugTool;
 /**
  * <p>Notifies an application that HMI conditions have changed for the application. This indicates whether the application 
  * can speak phrases, display text, perform interactions, receive button presses and events, stream audio, etc. This 
@@ -73,7 +72,7 @@ public class OnHMIStatus extends RPCNotification {
 	*Constructs a newly allocated OnHMIStatus object
 	*/ 	
     public OnHMIStatus() {
-        super(FunctionID.ON_HMI_STATUS);
+        super(FunctionID.ON_HMI_STATUS.toString());
     }
     /**
     *<p>Constructs a newly allocated OnHMIStatus object indicated by the Hashtable parameter</p>
@@ -91,13 +90,7 @@ public class OnHMIStatus extends RPCNotification {
         if (obj instanceof HMILevel) {
             return (HMILevel) obj;
         } else if (obj instanceof String) {
-            HMILevel theCode = null;
-            try {
-                theCode = HMILevel.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_LEVEL, e);
-            }
-            return theCode;
+            return HMILevel.valueForString((String) obj);
         }
         return null;
     }
@@ -121,13 +114,7 @@ public class OnHMIStatus extends RPCNotification {
         if (obj instanceof AudioStreamingState) {
             return (AudioStreamingState) obj;
         } else if (obj instanceof String) {
-            AudioStreamingState theCode = null;
-            try {
-                theCode = AudioStreamingState.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_STREAMING_STATE, e);
-            }
-            return theCode;
+            return AudioStreamingState.valueForString((String) obj);
         }
         return null;
     }
@@ -151,13 +138,7 @@ public class OnHMIStatus extends RPCNotification {
         if (obj instanceof SystemContext) {
             return (SystemContext) obj;
         } else if (obj instanceof String) {
-            SystemContext theCode = null;
-            try {
-                theCode = SystemContext.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SYSTEM_CONTEXT, e);
-            }
-            return theCode;
+            return SystemContext.valueForString((String) obj);
         }
         return null;
     }

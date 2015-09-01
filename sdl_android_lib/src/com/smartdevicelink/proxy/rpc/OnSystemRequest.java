@@ -14,7 +14,6 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-import com.smartdevicelink.util.DebugTool;
 
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
@@ -33,7 +32,7 @@ public class OnSystemRequest extends RPCNotification {
 	private Headers headers;
 	
     public OnSystemRequest() {
-        super(FunctionID.ON_SYSTEM_REQUEST);
+        super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
 
     public OnSystemRequest(Hashtable<String, Object> hash) {
@@ -152,15 +151,7 @@ public class OnSystemRequest extends RPCNotification {
         if (obj instanceof RequestType) {
             return (RequestType) obj;
         } else if (obj instanceof String) {
-            RequestType theCode = null;
-            try {
-                theCode = RequestType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_REQUEST_TYPE, e);
-            }
-            return theCode;
+            return RequestType.valueForString((String) obj);
         }
         return null;
     }
@@ -203,15 +194,7 @@ public class OnSystemRequest extends RPCNotification {
         if (obj instanceof FileType) {
             return (FileType) obj;
         } else if (obj instanceof String) {
-            FileType theCode = null;
-            try {
-                theCode = FileType.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError(
-                        "Failed to parse " + getClass().getSimpleName() + "." +
-                        		KEY_FILE_TYPE, e);
-            }
-            return theCode;
+            return FileType.valueForString((String) obj);
         }
         return null;
     }
@@ -224,18 +207,34 @@ public class OnSystemRequest extends RPCNotification {
         }
     }
 
-    public Integer getOffset() {
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
+    public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+    
+    public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
         
-        if (o == null) return null;
+        if (o == null){
+        	return null;
+        }
         
         if (o instanceof Integer) {
-            return (Integer) o;
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
         return null;
     }
 
-    public void setOffset(Integer offset) {
+    public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
         } else {
@@ -264,18 +263,34 @@ public class OnSystemRequest extends RPCNotification {
             parameters.remove(KEY_TIMEOUT);
         }
     }    
-
-    public Integer getLength() {
+    
+    public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
-        if (o == null) return null;
+        if (o == null){
+        	return null;
+        }
         		
         if (o instanceof Integer) {
-            return (Integer) o;
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
         return null;
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
     public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
+    }
+    
+    public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
         } else {

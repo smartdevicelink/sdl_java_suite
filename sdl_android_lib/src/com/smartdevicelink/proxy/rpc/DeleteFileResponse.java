@@ -14,7 +14,7 @@ public class DeleteFileResponse extends RPCResponse {
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
     public DeleteFileResponse() {
-        super(FunctionID.DELETE_FILE);
+        super(FunctionID.DELETE_FILE.toString());
     }
     public DeleteFileResponse(Hashtable<String, Object> hash) {
         super(hash);

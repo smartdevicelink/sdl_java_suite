@@ -39,7 +39,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_MY_KEY = "myKey";
 
     public OnVehicleData() {
-        super(FunctionID.ON_VEHICLE_DATA);
+        super(FunctionID.ON_VEHICLE_DATA.toString());
     }
     public OnVehicleData(Hashtable<String, Object> hash) {
         super(hash);
@@ -101,27 +101,11 @@ public class OnVehicleData extends RPCNotification {
     }
     @Deprecated
     public void setFuelLevel_State(ComponentVolumeStatus fuelLevel_State) {
-        if (fuelLevel_State != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevel_State);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setFuelLevelState(fuelLevel_State);
     }
     @Deprecated
     public ComponentVolumeStatus getFuelLevel_State() {
-        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-            ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return getFuelLevelState();
     }
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
         if (fuelLevelState != null) {
@@ -189,13 +173,7 @@ public class OnVehicleData extends RPCNotification {
         if (obj instanceof PRNDL) {
             return (PRNDL) obj;
         } else if (obj instanceof String) {
-        	PRNDL theCode = null;
-            try {
-                theCode = PRNDL.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRNDL, e);
-            }
-            return theCode;
+        	return PRNDL.valueForString((String) obj);
         }
         return null;
     }
@@ -305,13 +283,7 @@ public class OnVehicleData extends RPCNotification {
         if (obj instanceof VehicleDataEventStatus) {
             return (VehicleDataEventStatus) obj;
         } else if (obj instanceof String) {
-        	VehicleDataEventStatus theCode = null;
-            try {
-                theCode = VehicleDataEventStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DRIVER_BRAKING, e);
-            }
-            return theCode;
+        	return VehicleDataEventStatus.valueForString((String) obj);
         }
         return null;
     }
@@ -327,13 +299,7 @@ public class OnVehicleData extends RPCNotification {
         if (obj instanceof WiperStatus) {
             return (WiperStatus) obj;
         } else if (obj instanceof String) {
-        	WiperStatus theCode = null;
-            try {
-                theCode = WiperStatus.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_WIPER_STATUS, e);
-            }
-            return theCode;
+        	return WiperStatus.valueForString((String) obj);
         }
         return null;
     }

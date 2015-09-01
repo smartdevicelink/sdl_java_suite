@@ -19,6 +19,7 @@ public class FrameDataControlFrameType extends ByteEnumer {
 	public final static FrameDataControlFrameType EndSession = new FrameDataControlFrameType((byte)0x04, "EndSession");
 	public final static FrameDataControlFrameType EndSessionACK = new FrameDataControlFrameType((byte)0x05, "EndSessionACK");
 	public final static FrameDataControlFrameType EndSessionNACK = new FrameDataControlFrameType((byte)0x06, "EndSessionNACK");
+	public final static FrameDataControlFrameType ServiceDataACK = new FrameDataControlFrameType((byte)0xFE, "ServiceDataACK");
 	public final static FrameDataControlFrameType HeartbeatACK = new FrameDataControlFrameType((byte)0xFF, "HeartbeatACK");
 
 	static {
@@ -29,14 +30,16 @@ public class FrameDataControlFrameType extends ByteEnumer {
 		theList.addElement(EndSession);	
 		theList.addElement(EndSessionACK);
 		theList.addElement(EndSessionNACK);
+		theList.addElement(ServiceDataACK);
 		theList.addElement(HeartbeatACK);
 	}
 
 	public static FrameDataControlFrameType valueOf(String passedButton) {
 		return (FrameDataControlFrameType) get(theList, passedButton);
-	} // end-method
+	}
 
 	public static FrameDataControlFrameType[] values() {
-		return (FrameDataControlFrameType[]) theList.toArray();
-	} // end-method
-} // end-class
+		return theList.toArray(new FrameDataControlFrameType[theList.size()]);
+	}
+
+}

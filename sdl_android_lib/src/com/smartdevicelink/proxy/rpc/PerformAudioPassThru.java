@@ -9,7 +9,6 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * This will open an audio pass thru session. By doing so the app can receive
@@ -37,7 +36,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Constructs a new PerformAudioPassThru object
 	 */
     public PerformAudioPassThru() {
-        super(FunctionID.PERFORM_AUDIO_PASS_THRU);
+        super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
 	/**
@@ -184,13 +183,7 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (obj instanceof SamplingRate) {
     		return (SamplingRate) obj;
     	} else if (obj instanceof String) {
-    		SamplingRate theCode = null;
-            try {
-                theCode = SamplingRate.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SAMPLING_RATE, e);
-            }
-            return theCode;
+    		return SamplingRate.valueForString((String) obj);
     	}
         return null;
     }
@@ -246,13 +239,7 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (obj instanceof BitsPerSample) {
     		return (BitsPerSample) obj;
     	} else if (obj instanceof String) {
-    		BitsPerSample theCode = null;
-            try {
-                theCode = BitsPerSample.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BITS_PER_SAMPLE, e);
-            }
-            return theCode;
+    		return BitsPerSample.valueForString((String) obj);
     	}
         return null;
     }
@@ -281,13 +268,7 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (obj instanceof AudioType) {
     		return (AudioType) obj;
     	} else if (obj instanceof String) {
-    		AudioType theCode = null;
-            try {
-                theCode = AudioType.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AUDIO_TYPE, e);
-            }
-            return theCode;
+    		return AudioType.valueForString((String) obj);
     	}
         return null;
     }

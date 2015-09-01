@@ -14,9 +14,10 @@ public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 
-	private static final int MTU_SIZE = 1500;
+	private static final int V1_V2_MTU_SIZE = 1500;
+	private static final int V3_V4_MTU_SIZE = 131072;
 	private static int HEADER_SIZE = 8;
-	private static int MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
+	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;
 
 	boolean _haveHeader = false;
 	byte[] _headerBuf = new byte[HEADER_SIZE];
@@ -51,20 +52,33 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 	
 	public void setVersion(byte version) {
-		this._version = version;
-		if (version > 1) {
-			this._version = 2;
-			HEADER_SIZE = 12;
-			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
-			_headerBuf = new byte[HEADER_SIZE];
-		}
-		else if (version == 1){
-			HEADER_SIZE = 8;
-			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
-			_headerBuf = new byte[HEADER_SIZE];			
-		}
-			
-	}
+        if (version > 4) {
+            this._version = 4; //protect for future, proxy only supports v4 or lower
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE; //default to lowest size since capabilities of this version are unknown
+            _headerBuf = new byte[HEADER_SIZE];
+        } else if (version == 4) {
+            this._version = version;
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 4 supports 128k MTU
+            _headerBuf = new byte[HEADER_SIZE];
+        } else if (version == 3) {
+            this._version = version;
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 3 supports 128k MTU
+            _headerBuf = new byte[HEADER_SIZE];
+        } else if (version == 2) {
+            this._version = version;
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE;
+            _headerBuf = new byte[HEADER_SIZE];
+        } else if (version == 1){
+            this._version = version;
+            HEADER_SIZE = 8;
+            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE;
+            _headerBuf = new byte[HEADER_SIZE];
+        }
+    }
 
 	public void StartProtocolSession(SessionType sessionType) {
 		ProtocolFrameHeader header = ProtocolFrameHeaderFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00);
@@ -90,10 +104,10 @@ public class WiProProtocol extends AbstractProtocol {
 		byte sessionID = protocolMsg.getSessionID();
 		
 		byte[] data = null;
-		if (_version > 1 && sessionType != SessionType.NAV) {
+		if (_version > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
 			if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
-				sessionType = SessionType.Bulk_Data;
+				sessionType = SessionType.BULK_DATA;
 			} else data = new byte[12 + protocolMsg.getJsonSize()];
 			BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
 			binFrameHeader = ProtocolFrameHeaderFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
@@ -172,6 +186,15 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 
 	public void HandleReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+
+		byte[] remainingBytes = processReceivedBytes(receivedBytes, receivedBytesLength);
+		while (remainingBytes != null)
+		{
+			remainingBytes = processReceivedBytes(remainingBytes, remainingBytes.length);
+		}
+	}
+
+	private byte[] processReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
 		int receivedBytesReadPos = 0;
 		
 		//Check for a version difference
@@ -200,7 +223,7 @@ public class WiProProtocol extends AbstractProtocol {
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
 						_headerBuf, _headerBufWritePos, receivedBytesLength);
 				_headerBufWritePos += receivedBytesLength;
-				return;
+				return null;
 			} else {
 			// If I got the size, allocate the buffer
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
@@ -212,13 +235,10 @@ public class WiProProtocol extends AbstractProtocol {
 				
 				
 				int iDataSize = _currentHeader.getDataSize();	
-
-				if (iDataSize <= 4000)
-				{
+				if (iDataSize <= MAX_DATA_SIZE) {
 					_dataBuf = new byte[iDataSize];
 				}
-				else
-				{
+				else {
 					//something is wrong with the header
 					Log.e("HandleReceivedBytes", "Corrupt header found, request to allocate a byte array of size: " + iDataSize);	
 					Log.e("HandleReceivedBytes", "_headerBuf: " + _headerBuf.toString());
@@ -229,7 +249,7 @@ public class WiProProtocol extends AbstractProtocol {
 					Log.e("HandleReceivedBytes", "headerBytesNeeded: " + headerBytesNeeded);
 					handleProtocolError("Error handling protocol message from sdl, header invalid.", 
 							new SdlException("Error handling protocol message from sdl, header invalid.", SdlExceptionCause.INVALID_HEADER));
-					return;					
+					return null;
 				}
 				_dataBufWritePos = 0;
 			}
@@ -254,8 +274,10 @@ public class WiProProtocol extends AbstractProtocol {
 
 			handleProtocolError("Error handling protocol message from sdl, header invalid.",
 					new SdlException("Error handling protocol message from sdl, data buffer is null.", SdlExceptionCause.DATA_BUFFER_NULL));
-			return;
+			return null;
 		}
+		
+		onResetIncomingHeartbeat(_currentHeader.getSessionType(), _currentHeader.getSessionID());
 
 		int bytesLeft = receivedBytesLength - receivedBytesReadPos;
 		int bytesNeeded = _dataBuf.length - _dataBufWritePos;
@@ -264,7 +286,7 @@ public class WiProProtocol extends AbstractProtocol {
 			System.arraycopy(receivedBytes, receivedBytesReadPos, _dataBuf,
 					_dataBufWritePos, bytesLeft);
 			_dataBufWritePos += bytesLeft;
-			return;
+			return null;
 		} else {
 		// Fill the buffer and call the handler!
 			System.arraycopy(receivedBytes, receivedBytesReadPos, _dataBuf, _dataBufWritePos, bytesNeeded);
@@ -287,9 +309,10 @@ public class WiProProtocol extends AbstractProtocol {
 				byte[] moreBytes = new byte[moreBytesLeft];
 				System.arraycopy(receivedBytes, receivedBytesReadPos,
 						moreBytes, 0, moreBytesLeft);
-				HandleReceivedBytes(moreBytes, moreBytesLeft);
+				return moreBytes;
 			}
 		}
+		return null;
 	}
 	
 	protected MessageFrameAssembler getFrameAssemblerForFrame(ProtocolFrameHeader header) {
@@ -402,16 +425,22 @@ public class WiProProtocol extends AbstractProtocol {
 			} // end-if
 		} // end-method
 		
+        private void handleProtocolHeartbeat(ProtocolFrameHeader header,
+                byte[] data) {
+        		WiProProtocol.this.handleProtocolHeartbeat(header.getSessionType(),header.getSessionID());
+        } // end-method		
+		
         private void handleProtocolHeartbeatACK(ProtocolFrameHeader header,
                 byte[] data) {
         		WiProProtocol.this.handleProtocolHeartbeatACK(header.getSessionType(),header.getSessionID());
         } // end-method		
 		
 		private void handleControlFrame(ProtocolFrameHeader header, byte[] data) {
-            if (header.getFrameData() == FrameDataControlFrameType.HeartbeatACK.getValue()) {
+			if (header.getFrameData() == FrameDataControlFrameType.Heartbeat.getValue()) {
+                handleProtocolHeartbeat(header, data);
+            } else if (header.getFrameData() == FrameDataControlFrameType.HeartbeatACK.getValue()) {
                 handleProtocolHeartbeatACK(header, data);
-            }
-            else if (header.getFrameData() == FrameDataControlFrameType.StartSession.getValue()) {
+            } else if (header.getFrameData() == FrameDataControlFrameType.StartSession.getValue()) {
 				sendStartProtocolSessionACK(header.getSessionType(), header.getSessionID());
 			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionACK.getValue()) {
 				// Use this sessionID to create a message lock
@@ -424,7 +453,7 @@ public class WiProProtocol extends AbstractProtocol {
 				if (_version > 1) hashID = header.getMessageID();
 				handleProtocolSessionStarted(header.getSessionType(), header.getSessionID(), _version, "");				
 			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionNACK.getValue()) {
-				if (header.getSessionType().eq(SessionType.NAV)) {
+				if (header.getSessionType().eq(SessionType.NAV) || header.getSessionType().eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(header.getSessionType(), header.getSessionID(), _version, "");
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + header.getSessionID(), null);
@@ -437,14 +466,19 @@ public class WiProProtocol extends AbstractProtocol {
 				} else handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionACK.getValue()) {
 				handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
+			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionNACK.getValue()) {
+				handleProtocolSessionEndedNACK(header.getSessionType(), header.getSessionID(), "");
+			} else if (header.getFrameData() == FrameDataControlFrameType.ServiceDataACK.getValue()) {
+				handleProtocolServiceDataACK(header.getSessionType(), header.getSessionID());
 			}
+            
 		} // end-method
 				
 		private void handleSingleFrameMessageFrame(ProtocolFrameHeader header, byte[] data) {
 			ProtocolMessage message = new ProtocolMessage();
 			if (header.getSessionType() == SessionType.RPC) {
 				message.setMessageType(MessageType.RPC);
-			} else if (header.getSessionType() == SessionType.Bulk_Data) {
+			} else if (header.getSessionType() == SessionType.BULK_DATA) {
 				message.setMessageType(MessageType.BULK);
 			} // end-if
 			message.setSessionType(header.getSessionType());
@@ -493,7 +527,13 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void SendHeartBeat(byte sessionID) {
-        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.Heartbeat, sessionID, _version);        
+        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeat(SessionType.CONTROL, sessionID, _version);        
+        sendFrameToTransport(heartbeat);		
+	}
+
+	@Override
+	public void SendHeartBeatACK(byte sessionID) {
+        final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, _version);        
         sendFrameToTransport(heartbeat);		
 	}
 } // end-class

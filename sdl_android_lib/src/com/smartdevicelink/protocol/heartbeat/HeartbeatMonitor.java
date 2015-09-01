@@ -1,67 +1,99 @@
 package com.smartdevicelink.protocol.heartbeat;
 
+
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+
 
 public class HeartbeatMonitor implements IHeartbeatMonitor {
-    private static final String TAG = HeartbeatMonitor.class.getSimpleName();
-    private final Object HeartbeatThreadHandler_Lock = new Object();
-    private final Object Listener_Lock = new Object();
-    //
-    private int interval;
-    private IHeartbeatMonitorListener listener;
-    private boolean ackReceived;
-    private Thread heartbeatThread;
-    private Looper heartbeatThreadLooper;
-    private Handler heartbeatThreadHandler;
-    
+
+	public static final int HEARTBEAT_INTERVAL = 5000;
+    public static final int HEARTBEAT_INTERVAL_MAX = Integer.MAX_VALUE;
+
+    private final Object heartbeatThreadHandlerLock = new Object();
+    private final Object listenerLock = new Object();
+
+    private int mHeartBeatInterval = HEARTBEAT_INTERVAL;
+    private boolean mHeartBeatAck = true;
+
+    private IHeartbeatMonitorListener mListener;
+    private volatile boolean mIsAckReceived;
+    private volatile boolean isHeartbeatReceived;
+    private Thread mHeartbeatThread;
+    private Looper mHeartbeatThreadLooper;
+    private Handler mHeartbeatThreadHandler;
+
+    public HeartbeatMonitor() {
+    }
+
     private Runnable heartbeatTimeoutRunnable = new Runnable() {
+
+        @Override
+        public void run() {            
+        	try{
+	        	synchronized (listenerLock) {
+	                if (isHeartbeatReceived) {
+	                    if (mListener != null) {
+	                        mListener.sendHeartbeat(HeartbeatMonitor.this);
+	                    } else {
+	
+	                    }
+	                    isHeartbeatReceived = false;
+	                } else {
+	                    if (mListener != null) {
+	                        mListener.heartbeatTimedOut(HeartbeatMonitor.this);
+	                    }
+	                }
+	            }
+        	}
+        	catch(Exception ex) 
+        	{ 
+        		stop(); 
+        	}
+        }
+    };
+
+    private Runnable heartbeatAckTimeoutRunnable = new Runnable() {
+
         @Override
         public void run() {
         	
-            synchronized (Listener_Lock) {
-                Log.d(TAG, "run()");
-
-                if (ackReceived) {
-                    Log.d(TAG,
-                            "ACK has been received, sending and scheduling heartbeat");
-                    if (listener != null) {
-                        listener.sendHeartbeat(HeartbeatMonitor.this);
-                    } else {
-                        Log.w(TAG,
-                                "Delegate is not set, scheduling heartbeat anyway");
-                    }
-                    ackReceived = false;
-                } else {
-                    Log.d(TAG, "ACK has not been received");
-                    if (listener != null) {
-                    	stop();
-                        listener.heartbeatTimedOut(HeartbeatMonitor.this);
-                    }
-                    // TODO stop?
-                }
-            }
+        	try
+        	{
+	        	synchronized (listenerLock) {
+	                if (mIsAckReceived) {
+	                    if (mListener != null) {
+	                        mListener.sendHeartbeat(HeartbeatMonitor.this);
+	                    } else {
+	                    }
+	                    mIsAckReceived = false;
+	                } else {
+	                    if (mListener != null) {
+	                        mListener.heartbeatTimedOut(HeartbeatMonitor.this);
+	                    }
+	                    stop();
+	                }
+	            }
+        	
+        	}
+        	catch(Exception ex)	
+        	{
+        		stop();
+        	}
+        	        
             rescheduleHeartbeat();
         }
 
         private void rescheduleHeartbeat() {
-            synchronized (HeartbeatThreadHandler_Lock) {
-                if (heartbeatThreadHandler != null) {
+            synchronized (heartbeatThreadHandlerLock) {
+                if (mHeartbeatThreadHandler != null) {
                     if (!Thread.interrupted()) {
-                        Log.d(TAG, "Rescheduling run()");
-                        if (!heartbeatThreadHandler.postDelayed(this,
-                                interval)) {
-                            Log.e(TAG, "Couldn't reschedule run()");
+                        if (!mHeartbeatThreadHandler.postDelayed(this, mHeartBeatInterval)) {
                         }
                     } else {
-                        Log.i(TAG,
-                                "The thread is interrupted; not scheduling heartbeat");
                     }
                 } else {
-                    Log.e(TAG,
-                            "HeartbeatThread handler is not set; not scheduling heartbeat");
-                    HeartbeatMonitor.this.stop();
+                    stop();
                 }
             }
         }
@@ -69,109 +101,123 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
 
     @Override
     public void start() {
-        synchronized (HeartbeatThreadHandler_Lock) {
-            if (heartbeatThread == null) {
-                heartbeatThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!Thread.interrupted()) {
-                            Looper.prepare();
-                            heartbeatThreadLooper = Looper.myLooper();
 
-                            heartbeatThreadHandler = new Handler();
-                            Log.d(TAG, "scheduling run()");
-                            ackReceived = true;
-                            if (!heartbeatThreadHandler.postDelayed(
-                                    heartbeatTimeoutRunnable, interval)) {
-                                Log.e(TAG, "Couldn't schedule run()");
-                            }
+        synchronized (heartbeatThreadHandlerLock) {
 
-                            Log.d(TAG, "Starting looper");
-                            Looper.loop();
-                            Log.d(TAG, "Looper stopped, exiting thread");
-                        } else {
-                            Log.i(TAG,
-                                    "HeartbeatThread is run, but already interrupted");
-                        }
-                    }
-                }, "HeartbeatThread");
-                heartbeatThread.start();
-            } else {
-                Log.d(TAG, "HeartbeatThread is already started; doing nothing");
+            if (mHeartbeatThread != null) {
+                return;
             }
+
+            mHeartbeatThread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    while (!Thread.interrupted()) {
+                        Looper.prepare();
+                        mHeartbeatThreadLooper = Looper.myLooper();
+
+                        mHeartbeatThreadHandler = new Handler();
+                        mIsAckReceived = true;
+                        isHeartbeatReceived = true;
+
+                        if (!mHeartbeatThreadHandler.postDelayed(
+                                heartbeatAckTimeoutRunnable, mHeartBeatInterval)) {
+                        }
+                        Looper.loop();
+                    }
+                }
+
+            }, "HeartbeatThread");
+            mHeartbeatThread.setPriority(Thread.MAX_PRIORITY);
+            mHeartbeatThread.start();
         }
     }
 
     @Override
     public void stop() {
-        synchronized (HeartbeatThreadHandler_Lock) {
-        	
-            if (heartbeatThread != null) {
-                heartbeatThread.interrupt();
-                heartbeatThread = null;
 
-                if (heartbeatThreadHandler != null) {
-                    heartbeatThreadHandler.removeCallbacks(
-                            heartbeatTimeoutRunnable);
-                    heartbeatThreadHandler = null;
-                } else {
-                    Log.e(TAG, "HeartbeatThread's handler is null");
-                }
 
-                if (heartbeatThreadLooper != null) {
-                    heartbeatThreadLooper.quit();
-                    heartbeatThreadLooper = null;
-                } else {
-                    Log.e(TAG, "HeartbeatThread's looper is null");
-                }
+        synchronized (heartbeatThreadHandlerLock) {
+
+            if (mHeartbeatThread == null) {
+                mHeartbeatThreadHandler = null;
+                mHeartbeatThreadLooper = null;
+                return;
+            }
+
+            mHeartbeatThread.interrupt();
+            mHeartbeatThread = null;
+
+            if (mHeartbeatThreadHandler != null) {
+                mHeartbeatThreadHandler.removeCallbacks(heartbeatAckTimeoutRunnable);
+                mHeartbeatThreadHandler.removeCallbacks(heartbeatTimeoutRunnable);
+                mHeartbeatThreadHandler = null;
             } else {
-                Log.d(TAG, "HeartbeatThread is not started");
-                // just in case
-                heartbeatThreadHandler = null;
-                heartbeatThreadLooper = null;
+            }
+
+            if (mHeartbeatThreadLooper != null) {
+                mHeartbeatThreadLooper.quit();
+                mHeartbeatThreadLooper = null;
+            } else {
             }
         }
     }
 
     @Override
     public int getInterval() {
-        return interval;
+        return mHeartBeatInterval;
     }
 
     @Override
-    public void setInterval(int interval) {
-        this.interval = interval;
+    public void setInterval(int value) {
+        mHeartBeatInterval = value;
     }
 
     @Override
     public IHeartbeatMonitorListener getListener() {
-        return listener;
+        return mListener;
     }
 
     @Override
-    public void setListener(IHeartbeatMonitorListener listener) {
-        this.listener = listener;
+    public void setListener(IHeartbeatMonitorListener value) {
+        mListener = value;
     }
 
     @Override
     public void notifyTransportActivity() {
-        synchronized (HeartbeatThreadHandler_Lock) {
-            if (heartbeatThreadHandler != null) {
-                heartbeatThreadHandler.removeCallbacks(
-                        heartbeatTimeoutRunnable);
-                if (!heartbeatThreadHandler.postDelayed(
-                        heartbeatTimeoutRunnable, interval)) {
-                    Log.e(TAG, "Couldn't reschedule run()");
-                }
+        if (mHeartbeatThreadHandler == null) {
+            return;
+        }
+        synchronized (heartbeatThreadHandlerLock) {
+            if (mHeartbeatThreadHandler == null) {
+                return;
+            }
+            mHeartbeatThreadHandler.removeCallbacks(heartbeatAckTimeoutRunnable);
+            if (!mHeartbeatThreadHandler.postDelayed(heartbeatAckTimeoutRunnable, mHeartBeatInterval)) {
             }
         }
     }
 
+
     @Override
-    public void heartbeatACKReceived() {
-        synchronized (Listener_Lock) {
-            Log.d(TAG, "ACK received");
-            ackReceived = true;
+    public synchronized void heartbeatACKReceived() {
+        synchronized (listenerLock) {
+            mIsAckReceived = true;
+        }
+    }
+
+    @Override
+    public void heartbeatReceived() {
+        if (mHeartbeatThreadHandler == null) {
+            return;
+        }
+        synchronized (listenerLock) {
+            if (mHeartBeatAck) {
+                isHeartbeatReceived = true;
+                if (!mHeartbeatThreadHandler.post(heartbeatTimeoutRunnable)) {
+                }
+            }
         }
     }
 }

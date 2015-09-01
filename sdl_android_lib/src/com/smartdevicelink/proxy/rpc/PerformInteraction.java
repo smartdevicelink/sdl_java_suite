@@ -8,7 +8,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.util.DebugTool;
 /**
  * Performs an application-initiated interaction in which the user can select a
  * {@linkplain Choice} from among the specified Choice Sets. For instance, an
@@ -39,7 +38,7 @@ public class PerformInteraction extends RPCRequest {
 	 * Constructs a new PerformInteraction object
 	 */
     public PerformInteraction() {
-        super(FunctionID.PERFORM_INTERACTION);
+        super(FunctionID.PERFORM_INTERACTION.toString());
     }
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable
@@ -133,13 +132,7 @@ public class PerformInteraction extends RPCRequest {
         if (obj instanceof InteractionMode) {
             return (InteractionMode) obj;
         } else if (obj instanceof String) {
-            InteractionMode theCode = null;
-            try {
-                theCode = InteractionMode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_MODE, e);
-            }
-            return theCode;
+            return InteractionMode.valueForString((String) obj);
         }
         return null;
     }
@@ -379,13 +372,7 @@ public class PerformInteraction extends RPCRequest {
         if (obj instanceof LayoutMode) {
             return (LayoutMode) obj;
         } else if (obj instanceof String) {
-        	LayoutMode theCode = null;
-            try {
-                theCode = LayoutMode.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INTERACTION_LAYOUT, e);
-            }
-            return theCode;
+        	return LayoutMode.valueForString((String) obj);
         }
         return null;
     }

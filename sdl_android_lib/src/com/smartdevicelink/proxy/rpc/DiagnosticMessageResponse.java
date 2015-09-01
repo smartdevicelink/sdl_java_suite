@@ -10,7 +10,7 @@ public class DiagnosticMessageResponse extends RPCResponse {
 	public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
 
     public DiagnosticMessageResponse() {
-        super(FunctionID.DIAGNOSTIC_MESSAGE);
+        super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
     public DiagnosticMessageResponse(Hashtable<String, Object> hash) {
         super(hash);

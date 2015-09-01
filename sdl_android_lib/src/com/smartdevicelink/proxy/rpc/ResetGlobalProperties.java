@@ -7,7 +7,6 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
-import com.smartdevicelink.util.DebugTool;
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -30,7 +29,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 * Constructs a new ResetGlobalProperties object
 	 */
     public ResetGlobalProperties() {
-        super(FunctionID.RESET_GLOBAL_PROPERTIES);
+        super(FunctionID.RESET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
@@ -62,12 +61,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	            	List<GlobalProperty> newList = new ArrayList<GlobalProperty>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    GlobalProperty toAdd = null;
-	                    try {
-	                        toAdd = GlobalProperty.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PROPERTIES, e);
-	                    }
+	                    GlobalProperty toAdd = GlobalProperty.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }

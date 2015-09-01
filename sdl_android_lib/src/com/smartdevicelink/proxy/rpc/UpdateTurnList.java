@@ -27,7 +27,7 @@ public class UpdateTurnList extends RPCRequest{
      * Constructs a new UpdateTurnList object
      */
     public UpdateTurnList() {
-        super(FunctionID.UPDATE_TURN_LIST);
+        super(FunctionID.UPDATE_TURN_LIST.toString());
     }
     
     /**
@@ -67,8 +67,8 @@ public class UpdateTurnList extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<Turn> getTurnList(){
-        if(parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_SOFT_BUTTONS);
+        if(parameters.get(KEY_TURN_LIST) instanceof List<?>){
+            List<?> list = (List<?>) parameters.get(KEY_TURN_LIST);
             if(list != null && list.size() > 0){
                 Object obj = list.get(0);
                 if(obj instanceof Turn){

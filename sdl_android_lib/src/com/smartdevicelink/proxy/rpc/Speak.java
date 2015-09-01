@@ -79,7 +79,7 @@ public class Speak extends RPCRequest {
 	 * Constructs a new Speak object
 	 */    
 	public Speak() {
-        super(FunctionID.SPEAK);
+        super(FunctionID.SPEAK.toString());
     }
 	/**
 	 * Constructs a new Speak object indicated by the Hashtable parameter

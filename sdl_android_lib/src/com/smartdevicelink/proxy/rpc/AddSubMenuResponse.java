@@ -12,7 +12,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 public class AddSubMenuResponse extends RPCResponse {
 
     public AddSubMenuResponse() {
-        super(FunctionID.ADD_SUB_MENU);
+        super(FunctionID.ADD_SUB_MENU.toString());
     }
     public AddSubMenuResponse(Hashtable<String, Object> hash) {
         super(hash);

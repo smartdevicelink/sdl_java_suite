@@ -29,7 +29,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * Constructs a new SetGlobalProperties object
 	 */
     public SetGlobalProperties() {
-        super(FunctionID.SET_GLOBAL_PROPERTIES);
+        super(FunctionID.SET_GLOBAL_PROPERTIES.toString());
     }
 	/**
 	 * Constructs a new SetGlobalProperties object indicated by the Hashtable

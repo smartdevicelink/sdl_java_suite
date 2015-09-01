@@ -12,7 +12,6 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -20,25 +19,30 @@ import com.smartdevicelink.util.DebugTool;
  * @since SmartDeviceLink 1.0
  */
 public class RegisterAppInterfaceResponse extends RPCResponse {
-	public static final String KEY_VEHICLE_TYPE = "vehicleType";
-	public static final String KEY_SPEECH_CAPABILITIES = "speechCapabilities";
-	public static final String KEY_VR_CAPABILITIES = "vrCapabilities";
+	public static final String KEY_VEHICLE_TYPE 				= "vehicleType";
+	public static final String KEY_SPEECH_CAPABILITIES 			= "speechCapabilities";
+	public static final String KEY_VR_CAPABILITIES 				= "vrCapabilities";
 	public static final String KEY_AUDIO_PASS_THRU_CAPABILITIES = "audioPassThruCapabilities";
-	public static final String KEY_HMI_ZONE_CAPABILITIES = "hmiZoneCapabilities";
-    public static final String KEY_PRERECORDED_SPEECH = "prerecordedSpeech";
-    public static final String KEY_SUPPORTED_DIAG_MODES = "supportedDiagModes";
-    public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
-    public static final String KEY_LANGUAGE = "language";
-    public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
-    public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
-    public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
-    public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
-    public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
+	public static final String KEY_HMI_ZONE_CAPABILITIES 		= "hmiZoneCapabilities";
+    public static final String KEY_PRERECORDED_SPEECH 			= "prerecordedSpeech";
+    public static final String KEY_SUPPORTED_DIAG_MODES 		= "supportedDiagModes";
+    public static final String KEY_SDL_MSG_VERSION 				= "syncMsgVersion";
+    public static final String KEY_LANGUAGE 					= "language";
+    public static final String KEY_BUTTON_CAPABILITIES 			= "buttonCapabilities";
+    public static final String KEY_DISPLAY_CAPABILITIES 		= "displayCapabilities";
+    public static final String KEY_HMI_DISPLAY_LANGUAGE 		= "hmiDisplayLanguage";
+    public static final String KEY_SOFT_BUTTON_CAPABILITIES 	= "softButtonCapabilities";
+    public static final String KEY_PRESET_BANK_CAPABILITIES 	= "presetBankCapabilities";
+    public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
+    public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
+    public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
+
+    
 	/**
 	 * Constructs a new RegisterAppInterfaceResponse object
 	 */
     public RegisterAppInterfaceResponse() {
-        super(FunctionID.REGISTER_APP_INTERFACE);
+        super(FunctionID.REGISTER_APP_INTERFACE.toString());
     }
 
 	/**
@@ -108,13 +112,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LANGUAGE, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -150,13 +148,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         if (obj instanceof Language) {
             return (Language) obj;
         } else if (obj instanceof String) {
-            Language theCode = null;
-            try {
-                theCode = Language.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_DISPLAY_LANGUAGE, e);
-            }
-            return theCode;
+            return Language.valueForString((String) obj);
         }
         return null;
     }
@@ -318,12 +310,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<HmiZoneCapabilities> newList = new ArrayList<HmiZoneCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    HmiZoneCapabilities toAdd = null;
-	                    try {
-	                        toAdd = HmiZoneCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_ZONE_CAPABILITIES, e);
-	                    }
+	                    HmiZoneCapabilities toAdd = HmiZoneCapabilities.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -363,12 +350,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<SpeechCapabilities> newList = new ArrayList<SpeechCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    SpeechCapabilities toAdd = null;
-	                    try {
-	                        toAdd = SpeechCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SPEECH_CAPABILITIES, e);
-	                    }
+	                    SpeechCapabilities toAdd = SpeechCapabilities.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -404,12 +386,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<PrerecordedSpeech> newList = new ArrayList<PrerecordedSpeech>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    PrerecordedSpeech toAdd = null;
-	                    try {
-	                        toAdd = PrerecordedSpeech.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PRERECORDED_SPEECH, e);
-	                    }
+	                    PrerecordedSpeech toAdd = PrerecordedSpeech.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -447,12 +424,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	            	List<VrCapabilities> newList = new ArrayList<VrCapabilities>();
 	                for (Object hashObj : list) {
 	                    String strFormat = (String)hashObj;
-	                    VrCapabilities toAdd = null;
-	                    try {
-	                        toAdd = VrCapabilities.valueForString(strFormat);
-	                    } catch (Exception e) {
-	                    	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_VR_CAPABILITIES, e);
-	                    }
+	                    VrCapabilities toAdd = VrCapabilities.valueForString(strFormat);
 	                    if (toAdd != null) {
 	                        newList.add(toAdd);
 	                    }
@@ -566,5 +538,48 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         	}
         }
         return null;
-    }          
+    }
+    
+    public void setHmiCapabilities(HMICapabilities hmiCapabilities) {
+        if (hmiCapabilities != null) {
+        	parameters.put(KEY_HMI_CAPABILITIES, hmiCapabilities);
+        }else{
+        	parameters.remove(KEY_HMI_CAPABILITIES);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public HMICapabilities getHmiCapabilities() {
+    	Object obj = parameters.get(KEY_HMI_CAPABILITIES);
+        if (obj instanceof HMICapabilities) {
+        	return (HMICapabilities)obj;
+        } else if (obj instanceof Hashtable) {
+        	return new HMICapabilities((Hashtable<String, Object>)obj);
+        }
+        return null;
+    }  
+    
+    public void setSdlVersion(String sdlVersion) {
+        if (sdlVersion != null) {
+        	parameters.put(KEY_SDL_VERSION, sdlVersion);
+        }else{
+        	parameters.remove(KEY_SDL_VERSION);
+        }
+    }
+
+    public String getSdlVersion() {    
+    	 return (String) parameters.get(KEY_SDL_VERSION);
+    } 
+    
+    public void setSystemSoftwareVersion(String systemSoftwareVersion) {
+        if (systemSoftwareVersion != null) {
+        	parameters.put(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
+        }else{
+        	parameters.remove(KEY_SYSTEM_SOFTWARE_VERSION);
+        }
+    }
+
+    public String getSystemSoftwareVersion() {    
+    	 return (String) parameters.get(KEY_SYSTEM_SOFTWARE_VERSION);
+    } 
 }

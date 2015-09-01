@@ -1,5 +1,7 @@
 package com.smartdevicelink.transport;
 
+import com.smartdevicelink.transport.enums.TransportType;
+
 import android.content.Context;
 import android.hardware.usb.UsbAccessory;
 

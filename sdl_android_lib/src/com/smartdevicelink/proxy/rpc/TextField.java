@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-import com.smartdevicelink.util.DebugTool;
 
 /**
  * Struct defining the characteristics of a displayed field on the HMI.
@@ -79,13 +78,7 @@ public class TextField extends RPCStruct {
         if (obj instanceof TextFieldName) {
             return (TextFieldName) obj;
         } else if (obj instanceof String) {
-            TextFieldName theCode = null;
-            try {
-                theCode = TextFieldName.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_NAME, e);
-            }
-            return theCode;
+            return TextFieldName.valueForString((String) obj);
         }
         return null;
     }
@@ -109,13 +102,7 @@ public class TextField extends RPCStruct {
         if (obj instanceof CharacterSet) {
             return (CharacterSet) obj;
         } else if (obj instanceof String) {
-            CharacterSet theCode = null;
-            try {
-                theCode = CharacterSet.valueForString((String) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CHARACTER_SET, e);
-            }
-            return theCode;
+            return CharacterSet.valueForString((String) obj);
         }
         return null;
     }

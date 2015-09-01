@@ -2,9 +2,7 @@ package com.smartdevicelink.proxy;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +15,11 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,17 +28,15 @@ import org.json.JSONObject;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Surface;
 
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
-import com.smartdevicelink.Dispatcher.IncomingProtocolMessageComparitor;
-import com.smartdevicelink.Dispatcher.InternalProxyMessageComparitor;
-import com.smartdevicelink.Dispatcher.OutgoingProtocolMessageComparitor;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
@@ -48,105 +49,16 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
+import com.smartdevicelink.proxy.LockScreenManager.OnLockScreenIconDownloadedListener;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
+import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
-import com.smartdevicelink.proxy.rpc.AddCommand;
-import com.smartdevicelink.proxy.rpc.AddCommandResponse;
-import com.smartdevicelink.proxy.rpc.AddSubMenu;
-import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
-import com.smartdevicelink.proxy.rpc.Alert;
-import com.smartdevicelink.proxy.rpc.AlertResponse;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.ChangeRegistration;
-import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
-import com.smartdevicelink.proxy.rpc.DeleteCommand;
-import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
-import com.smartdevicelink.proxy.rpc.DeleteFile;
-import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
-import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
-import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
-import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
-import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
-import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
-import com.smartdevicelink.proxy.rpc.GenericResponse;
-import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
-import com.smartdevicelink.proxy.rpc.GetVehicleData;
-import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
-import com.smartdevicelink.proxy.rpc.Headers;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ListFiles;
-import com.smartdevicelink.proxy.rpc.ListFilesResponse;
-import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
-import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
-import com.smartdevicelink.proxy.rpc.OnButtonEvent;
-import com.smartdevicelink.proxy.rpc.OnButtonPress;
-import com.smartdevicelink.proxy.rpc.OnCommand;
-import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
-import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.OnHashChange;
-import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
-import com.smartdevicelink.proxy.rpc.OnLanguageChange;
-import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
-import com.smartdevicelink.proxy.rpc.OnSystemRequest;
-import com.smartdevicelink.proxy.rpc.OnTBTClientState;
-import com.smartdevicelink.proxy.rpc.OnTouchEvent;
-import com.smartdevicelink.proxy.rpc.OnVehicleData;
-import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
-import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
-import com.smartdevicelink.proxy.rpc.PerformInteraction;
-import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.PutFile;
-import com.smartdevicelink.proxy.rpc.PutFileResponse;
-import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.ResetGlobalProperties;
-import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
-import com.smartdevicelink.proxy.rpc.ScrollableMessage;
-import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SetAppIcon;
-import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
-import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
-import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
-import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
-import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
-import com.smartdevicelink.proxy.rpc.Show;
-import com.smartdevicelink.proxy.rpc.ShowResponse;
-import com.smartdevicelink.proxy.rpc.Slider;
-import com.smartdevicelink.proxy.rpc.SliderResponse;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.Speak;
-import com.smartdevicelink.proxy.rpc.SpeakResponse;
-import com.smartdevicelink.proxy.rpc.SubscribeButton;
-import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
-import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
-import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
-import com.smartdevicelink.proxy.rpc.SystemRequest;
-import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
-import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
-import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
-import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
-import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
-import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -174,12 +86,13 @@ import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCUpdateListener;
+import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
-import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
@@ -210,12 +123,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 	private int iFileCount = 0;
 
-	private boolean navServiceResponseReceived = false;
-	private boolean navServiceResponse = false;
-	@SuppressWarnings("unused")
-    private boolean pcmServiceResponseReceived = false;
-	@SuppressWarnings("unused")
-    private boolean pcmServiceResponse = false;
+	private boolean navServiceStartResponseReceived = false;
+	private boolean navServiceStartResponse = false;
+	private boolean pcmServiceStartResponseReceived = false;
+	private boolean pcmServiceStartResponse = false;
+	private boolean navServiceEndResponseReceived = false;
+	private boolean navServiceEndResponse = false;
+	private boolean pcmServiceEndResponseReceived = false;
+	private boolean pcmServiceEndResponse = false;
 	
 	// Device Info for logging
 	private TraceDeviceInfo _traceDeviceInterrogator = null;
@@ -249,6 +164,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private SdlMsgVersion _sdlMsgVersionRequest = null;
 	private Vector<String> _vrSynonyms = null;
 	private boolean _bAppResumeEnabled = false;
+	private OnSystemRequest lockScreenIconRequest = null;
+	private TelephonyManager telephonyManager = null;
+	private DeviceInfo deviceInfo = null;
 	
 	/**
 	 * Contains current configuration for the transport that was selected during 
@@ -288,14 +206,40 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
-	protected Boolean _bResumeSuccess = false;
+	protected Boolean _bResumeSuccess = false;	
 	
+	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
+
 	protected byte _wiproVersion = 1;
 	
 	protected SparseArray<OnRPCUpdateListener> rpcUpdateListeners = null;
 	
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
+	
+	private void notifyPutFileStreamError(Exception e, String info)
+	{
+		for (IPutFileResponseListener _putFileListener : _putFileListenerList) {
+			_putFileListener.onPutFileStreamError(e, info);
+		}		
+	}
+	
+	private void notifyPutFileStreamResponse(PutFileResponse msg)
+	{
+		for (IPutFileResponseListener _putFileListener : _putFileListenerList) {
+			_putFileListener.onPutFileResponse(msg);
+		}		
+	}
+	
+	public void addPutFileResponseListener(IPutFileResponseListener _putFileListener)
+	{
+		_putFileListenerList.addIfAbsent(_putFileListener);
+	}
+
+	public void remPutFileResponseListener(IPutFileResponseListener _putFileListener)
+	{
+		_putFileListenerList.remove(_putFileListener);
+	}
 	
 	// Private Class to Interface with SdlConnection
 	private class SdlInterfaceBroker implements ISdlConnectionListener {
@@ -304,6 +248,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onTransportDisconnected(String info) {
 			// proxyOnTransportDisconnect is called to alert the proxy that a requested
 			// disconnect has completed
+			notifyPutFileStreamError(null, info);
 			
 			if (_advancedLifecycleManagementEnabled) {
 				// If ALM, nothing is required to be done here
@@ -316,6 +261,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onTransportError(String info, Exception e) {
 			DebugTool.logError("Transport failure: " + info, e);
+			
+			notifyPutFileStreamError(e, info);
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
@@ -343,23 +290,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-			updateBroadcastIntent(sendIntent, "COMMENT2", " SessionType: " + sessionType.getName());
-			sendBroadcastIntent(sendIntent);	
+			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
+			sendBroadcastIntent(sendIntent);
 			
-			setWiProVersion(version);
+			setWiProVersion(version);	
+			
+			if (sessionType.eq(SessionType.RPC)) {	
 
-			 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version > 2) )
-			 {
-				 HeartbeatMonitor heartbeatMonitor = new HeartbeatMonitor();
-				 heartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
-	             sdlSession.setHeartbeatMonitor(heartbeatMonitor);
-			 }			
-			
-			if (sessionType.eq(SessionType.RPC)) {			
+				 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version > 2))
+				 {
+					 HeartbeatMonitor outgoingHeartbeatMonitor = new HeartbeatMonitor();
+					 outgoingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
+		             sdlSession.setOutgoingHeartbeatMonitor(outgoingHeartbeatMonitor);
+
+					 HeartbeatMonitor incomingHeartbeatMonitor = new HeartbeatMonitor();
+					 incomingHeartbeatMonitor.setInterval(_transportConfig.getHeartBeatTimeout());
+		             sdlSession.setIncomingHeartbeatMonitor(incomingHeartbeatMonitor);
+				 }		
+				 
 				startRPCProtocolSession(sessionID, correlationID);
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
-			} else if (_wiproVersion > 1) {
+			} else if (sessionType.eq(SessionType.PCM)) {
+				AudioServiceStarted();
+			} 
+			else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
 				startRPCProtocolSession(sessionID, correlationID);
 			}  else {
@@ -368,22 +323,62 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onProtocolSessionNACKed(SessionType sessionType,
+		public void onProtocolSessionStartedNACKed(SessionType sessionType,
 				byte sessionID, byte version, String correlationID) {
+			OnServiceNACKed message = new OnServiceNACKed(sessionType);
+			queueInternalMessage(message);
+			
 			if (sessionType.eq(SessionType.NAV)) {
-				NavServiceEnded();
+				
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStartedNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				NavServiceStartedNACK();
+			}
+			else if (sessionType.eq(SessionType.PCM)) {
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStartedNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				AudioServiceStartedNACK();
 			}
 		}
 
 		@Override
 		public void onProtocolSessionEnded(SessionType sessionType,
 				byte sessionID, String correlationID) {
-			// How to handle protocol session ended?
-				// How should protocol session management occur? 
+			OnServiceEnded message = new OnServiceEnded(sessionType);
+			queueInternalMessage(message);
+
+			if (sessionType.eq(SessionType.NAV)) {
+				
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEnded");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				NavServiceEnded();
+			}
+			else if (sessionType.eq(SessionType.PCM)) {
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEnded");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				AudioServiceEnded();
+			}
 		}
 
 		@Override
 		public void onProtocolError(String info, Exception e) {
+			notifyPutFileStreamError(e, info);
 			passErrorToProxyListener(info, e);
 		}
 
@@ -400,8 +395,47 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             notifyProxyClosed(msg, new SdlException(msg, SdlExceptionCause.HEARTBEAT_PAST_DUE), SdlDisconnectedReason.HB_TIMEOUT);
 			
 		}
-	}
 
+		@Override
+		public void onProtocolSessionEndedNACKed(SessionType sessionType,
+				byte sessionID, String correlationID) {
+			if (sessionType.eq(SessionType.NAV)) {
+				
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEndedNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				NavServiceEndedNACK();
+			}
+			else if (sessionType.eq(SessionType.PCM)) {
+				Intent sendIntent = createBroadcastIntent();
+				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEndedNACKed");
+				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + sessionType.getName());
+				sendBroadcastIntent(sendIntent);
+				
+				AudioServiceEndedNACK();
+			}
+			
+		}
+		public void onProtocolServiceDataACK(SessionType sessionType,
+				byte sessionID) {
+			if (_callbackToUIThread) {
+				// Run in UI thread
+				_mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						_proxyListener.onServiceDataACK();
+					}
+				});
+			} else {
+				_proxyListener.onServiceDataACK();						
+			}
+		}
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -496,7 +530,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_proxyListener = listener;
 		
 		// Get information from sdlProxyConfigurationResources
-		TelephonyManager telephonyManager = null;
 		if (sdlProxyConfigurationResources != null) {
 			telephonyManager = sdlProxyConfigurationResources.getTelephonyManager();
 		} 
@@ -509,6 +542,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (_traceDeviceInterrogator == null) {
 				_traceDeviceInterrogator = new TraceDeviceInfo(sdlProxyConfigurationResources.getTelephonyManager());
 			} // end-if
+			
 		} // end-if
 		
 		// Setup Internal ProxyMessage Dispatcher
@@ -519,9 +553,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_internalProxyMessageDispatcher = null;
 			}
 			
-			_internalProxyMessageDispatcher = new ProxyMessageDispatcher<InternalProxyMessage>("INTERNAL_MESSAGE_DISPATCHER",
-					new InternalProxyMessageComparitor(),
-					new IDispatchingStrategy<InternalProxyMessage>() {
+			_internalProxyMessageDispatcher = new ProxyMessageDispatcher<InternalProxyMessage>("INTERNAL_MESSAGE_DISPATCHER", new IDispatchingStrategy<InternalProxyMessage>() {
 
 						@Override
 						public void dispatch(InternalProxyMessage message) {
@@ -548,9 +580,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_incomingProxyMessageDispatcher = null;
 			}
 			
-			_incomingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",
-					new IncomingProtocolMessageComparitor(),
-					new IDispatchingStrategy<ProtocolMessage>() {
+			_incomingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
 							dispatchIncomingMessage((ProtocolMessage)message);
@@ -576,9 +606,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_outgoingProxyMessageDispatcher = null;
 			}
 			
-			_outgoingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",
-					new OutgoingProtocolMessageComparitor(),
-					new IDispatchingStrategy<ProtocolMessage>() {
+			_outgoingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
 							dispatchOutgoingMessage((ProtocolMessage)message);
@@ -734,47 +762,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			//If the service or context has become unavailable unexpectedly, catch the exception and move on -- no broadcast log will occur. 
 		}
 	}
-
-	private void writeToFile(Object writeME, String fileName) {
-		Intent sendIntent = createBroadcastIntent();
-		try {
-			updateBroadcastIntent(sendIntent,"FUNCTION_NAME", "writeToFile");
-			updateBroadcastIntent(sendIntent, "SHOW_ON_UI", false);
-
-			String sFileName = fileName + "_" + iFileCount + ".txt";
-			String outFile = Environment.getExternalStorageDirectory().getPath() + "/" + sFileName;	
-			File out = new File(outFile);
-			FileWriter writer = new FileWriter(out);
-			writer.flush();
-			writer.write(writeME.toString());
-			writer.close();
-			updateBroadcastIntent(sendIntent, "COMMENT1", outFile);
-		} catch (FileNotFoundException e) {
-			updateBroadcastIntent(sendIntent, "COMMENT2", "writeToFile FileNotFoundException " + e);
-			Log.i("sdlp", "FileNotFoundException: " + e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			updateBroadcastIntent(sendIntent, "COMMENT2", "writeToFile IOException " + e);
-			Log.i("sdlp", "IOException: " + e);
-			e.printStackTrace();
-		}
-		finally
-		{
-			sendBroadcastIntent(sendIntent);
-		}
-	}
-
-	private void LogHeader(String sType, final String myObject, String sFuncName)
-	{
-		Intent sendIntent = createBroadcastIntent();
-
-		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", sFuncName);
-		
-		updateBroadcastIntent(sendIntent, "COMMENT1", sType + "\r\n");
-		updateBroadcastIntent(sendIntent, "DATA", myObject);
-		sendBroadcastIntent(sendIntent);		
-	}
-
 	
 	private HttpURLConnection getURLConnection(Headers myHeader, String sURLString, int Timeout, int iContentLen)
 	{		
@@ -863,8 +850,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (iTimeout == null)
 			iTimeout = 2000;
 		
-		Headers myHeader = msg.getHeader();
-		String sFunctionName = "SYSTEM_REQUEST";			
+		Headers myHeader = msg.getHeader();			
 		
 		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "sendOnSystemRequestToUrl");		
 		updateBroadcastIntent(sendIntent, "COMMENT5", "\r\nCloud URL: " + sURLString);	
@@ -886,7 +872,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				jsonObjectToSendToServer = new JSONObject();
 				jsonObjectToSendToServer.put("data", jsonArrayOfSdlPPackets);
 				bLegacy = true;
-				sFunctionName = "SYSTEM_REQUEST_LEGACY";
 				updateBroadcastIntent(sendIntent, "COMMENT6", "\r\nLegacy SystemRequest: true");
 				valid_json = jsonObjectToSendToServer.toString().replace("\\", "");
 			}
@@ -898,9 +883,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				sendBroadcastIntent(sendIntent3);
  				valid_json = sBodyString.replace("\\", "");
  			}
-												
-			writeToFile(valid_json, "requestToCloud");
-			LogHeader("Cloud Request", valid_json, sFunctionName);
 			
 			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, valid_json.getBytes("UTF-8").length);
 			
@@ -945,11 +927,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		        response.append('\r');
 			}
 		    rd.close();
-		    Log.i(TAG, "response: " + response.toString());			    		    
-		    
-		    writeToFile(response.toString(), "responseFromCloud");
-
-		    LogHeader("Cloud Response", response.toString(), sFunctionName);
 
 			Vector<String> cloudDataReceived = new Vector<String>();			
 				
@@ -1001,7 +978,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				sendRPCRequestPrivate(mySystemRequest);
 				Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
 										
-				updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
+				updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 				updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
 				updateBroadcastIntent(sendIntent2, "CORRID", mySystemRequest.getCorrelationID());
 			}
@@ -1110,6 +1087,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			_appInterfaceRegisterd = true;
 		else
 			_appInterfaceRegisterd = false;
+		
+		_putFileListenerList.clear();
 		
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
 				
@@ -1363,7 +1342,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (functionName != null) {
 							hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
 						} else {
-							DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionID: " + message.getFunctionID());
+							DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
 							return;
 						}
 						if (message.getRPCType() == 0x00) {
@@ -1449,6 +1428,33 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onError(msg.getInfo(), msg.getException());
 				}
+			} else if (message.getFunctionName().equals(InternalProxyMessage.OnServiceEnded)) {
+				final OnServiceEnded msg = (OnServiceEnded)message;
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onServiceEnded(msg);
+						}
+					});
+				} else {
+					_proxyListener.onServiceEnded(msg);
+				}
+			} else if (message.getFunctionName().equals(InternalProxyMessage.OnServiceNACKed)) {
+				final OnServiceNACKed msg = (OnServiceNACKed)message;
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onServiceNACKed(msg);
+						}
+					});
+				} else {
+					_proxyListener.onServiceNACKed(msg);
+				}
+
 			/**************Start Legacy Specific Call-backs************/
 			} else if (message.getFunctionName().equals(InternalProxyMessage.OnProxyOpened)) {
 				if (_callbackToUIThread) {
@@ -1529,7 +1535,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				pm.setSessionID(sdlSession.getSessionId());
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
-			pm.setFunctionID(FunctionID.getFunctionID(request.getFunctionName()));
+			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
 			if (request.getCorrelationID() == null)
 			{
 				//Log error here
@@ -1643,14 +1649,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// The app should not receive a response for a request it did not send
 				if ((new RPCResponse(hash)).getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID 
 						&& _advancedLifecycleManagementEnabled 
-						&& functionName.equals(FunctionID.REGISTER_APP_INTERFACE)) {
+						&& functionName.equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 					final RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse(hash);
 					if (msg.getSuccess()) {
 						_appInterfaceRegisterd = true;
 					}
 					
 					Intent sendIntent = createBroadcastIntent();
-					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE);
+					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE.toString());
 					updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
 					updateBroadcastIntent(sendIntent, "SUCCESS", msg.getSuccess());
 					updateBroadcastIntent(sendIntent, "COMMENT1", msg.getInfo());
@@ -1735,7 +1741,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						onPacketFinish(msg);
 					}
 				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
-						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)) {
+						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA.toString())) {
 						
 					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
 					
@@ -1756,13 +1762,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}					
 				}
 				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
-						&& functionName.equals(FunctionID.ENCODED_SYNC_P_DATA)) {
+						&& functionName.equals(FunctionID.ENCODED_SYNC_P_DATA.toString())) {
 
 					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
 					final SystemRequestResponse msg = new SystemRequestResponse(hash);
 					
 					Intent sendIntent = createBroadcastIntent();
-					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
+					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 					updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
 					updateBroadcastIntent(sendIntent, "SUCCESS", msg.getSuccess());
 					updateBroadcastIntent(sendIntent, "COMMENT1", msg.getInfo());
@@ -1771,11 +1777,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					sendBroadcastIntent(sendIntent);
 				}
 				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
-						&& functionName.equals(FunctionID.SYSTEM_REQUEST)) {
+						&& functionName.equals(FunctionID.SYSTEM_REQUEST.toString())) {
 					final SystemRequestResponse msg = new SystemRequestResponse(hash);
 					
 					Intent sendIntent = createBroadcastIntent();
-					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
+					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 					updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
 					updateBroadcastIntent(sendIntent, "SUCCESS", msg.getSuccess());
 					updateBroadcastIntent(sendIntent, "COMMENT1", msg.getInfo());
@@ -1784,7 +1790,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					updateBroadcastIntent(sendIntent, "DATA", serializeJSON(msg));
 					sendBroadcastIntent(sendIntent);
 				}
-				else if (functionName.equals(FunctionID.UNREGISTER_APP_INTERFACE)) {
+				else if (functionName.equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
 						// UnregisterAppInterface					
 						_appInterfaceRegisterd = false;
 						synchronized(APP_INTERFACE_REGISTERED_LOCK) {
@@ -1792,7 +1798,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						}
 						final UnregisterAppInterfaceResponse msg = new UnregisterAppInterfaceResponse(hash);
 						Intent sendIntent = createBroadcastIntent();
-						updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE);
+						updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
 						updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
 						updateBroadcastIntent(sendIntent, "SUCCESS", msg.getSuccess());
 						updateBroadcastIntent(sendIntent, "COMMENT1", msg.getInfo());
@@ -1804,7 +1810,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				return;
 			}
 			
-			if (functionName.equals(FunctionID.REGISTER_APP_INTERFACE)) {
+			if (functionName.equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 				final RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse(hash);
 				if (msg.getSuccess()) {
 					_appInterfaceRegisterd = true;
@@ -1883,7 +1889,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         onPacketFinish(msg);
 					}
 				}
-			} else if (functionName.equals(FunctionID.SPEAK)) {
+			} else if (functionName.equals(FunctionID.SPEAK.toString())) {
 				// SpeakResponse
 				
 				final SpeakResponse msg = new SpeakResponse(hash);
@@ -1900,7 +1906,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSpeakResponse(msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.ALERT)) {
+			} else if (functionName.equals(FunctionID.ALERT.toString())) {
 				// AlertResponse
 				
 				final AlertResponse msg = new AlertResponse(hash);
@@ -1917,7 +1923,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onAlertResponse(msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.SHOW)) {
+			} else if (functionName.equals(FunctionID.SHOW.toString())) {
 				// ShowResponse
 				
 				final ShowResponse msg = new ShowResponse(hash);
@@ -1934,7 +1940,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onShowResponse((ShowResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.ADD_COMMAND)) {
+			} else if (functionName.equals(FunctionID.ADD_COMMAND.toString())) {
 				// AddCommand
 				
 				final AddCommandResponse msg = new AddCommandResponse(hash);
@@ -1951,7 +1957,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onAddCommandResponse((AddCommandResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.DELETE_COMMAND)) {
+			} else if (functionName.equals(FunctionID.DELETE_COMMAND.toString())) {
 				// DeleteCommandResponse
 				
 				final DeleteCommandResponse msg = new DeleteCommandResponse(hash);
@@ -1968,7 +1974,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onDeleteCommandResponse((DeleteCommandResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.ADD_SUB_MENU)) {
+			} else if (functionName.equals(FunctionID.ADD_SUB_MENU.toString())) {
 				// AddSubMenu
 				
 				final AddSubMenuResponse msg = new AddSubMenuResponse(hash);
@@ -1985,7 +1991,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onAddSubMenuResponse((AddSubMenuResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.DELETE_SUB_MENU)) {
+			} else if (functionName.equals(FunctionID.DELETE_SUB_MENU.toString())) {
 				// DeleteSubMenu
 				
 				final DeleteSubMenuResponse msg = new DeleteSubMenuResponse(hash);
@@ -2002,7 +2008,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onDeleteSubMenuResponse((DeleteSubMenuResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.SUBSCRIBE_BUTTON)) {
+			} else if (functionName.equals(FunctionID.SUBSCRIBE_BUTTON.toString())) {
 				// SubscribeButton
 				
 				final SubscribeButtonResponse msg = new SubscribeButtonResponse(hash);
@@ -2019,7 +2025,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSubscribeButtonResponse((SubscribeButtonResponse)msg);	
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.UNSUBSCRIBE_BUTTON)) {
+			} else if (functionName.equals(FunctionID.UNSUBSCRIBE_BUTTON.toString())) {
 				// UnsubscribeButton
 				
 				final UnsubscribeButtonResponse msg = new UnsubscribeButtonResponse(hash);
@@ -2036,7 +2042,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onUnsubscribeButtonResponse((UnsubscribeButtonResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.SET_MEDIA_CLOCK_TIMER)) {
+			} else if (functionName.equals(FunctionID.SET_MEDIA_CLOCK_TIMER.toString())) {
 				// SetMediaClockTimer
 				
 				final SetMediaClockTimerResponse msg = new SetMediaClockTimerResponse(hash);
@@ -2053,12 +2059,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSetMediaClockTimerResponse((SetMediaClockTimerResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.ENCODED_SYNC_P_DATA)) {
+			} else if (functionName.equals(FunctionID.ENCODED_SYNC_P_DATA.toString())) {
 				
 				final SystemRequestResponse msg = new SystemRequestResponse(hash);
 				
 				Intent sendIntent = createBroadcastIntent();
-				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST);
+				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 				updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
 				updateBroadcastIntent(sendIntent, "SUCCESS", msg.getSuccess());
 				updateBroadcastIntent(sendIntent, "COMMENT1", msg.getInfo());
@@ -2079,7 +2085,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSystemRequestResponse(msg);
 					onPacketFinish(msg);
 				}
-			}  else if (functionName.equals(FunctionID.CREATE_INTERACTION_CHOICE_SET)) {
+			}  else if (functionName.equals(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString())) {
 				// CreateInteractionChoiceSet
 				
 				final CreateInteractionChoiceSetResponse msg = new CreateInteractionChoiceSetResponse(hash);
@@ -2096,7 +2102,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onCreateInteractionChoiceSetResponse((CreateInteractionChoiceSetResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.DELETE_INTERACTION_CHOICE_SET)) {
+			} else if (functionName.equals(FunctionID.DELETE_INTERACTION_CHOICE_SET.toString())) {
 				// DeleteInteractionChoiceSet
 				
 				final DeleteInteractionChoiceSetResponse msg = new DeleteInteractionChoiceSetResponse(hash);
@@ -2113,7 +2119,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onDeleteInteractionChoiceSetResponse((DeleteInteractionChoiceSetResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.PERFORM_INTERACTION)) {
+			} else if (functionName.equals(FunctionID.PERFORM_INTERACTION.toString())) {
 				// PerformInteraction
 				
 				final PerformInteractionResponse msg = new PerformInteractionResponse(hash);
@@ -2130,7 +2136,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onPerformInteractionResponse((PerformInteractionResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.SET_GLOBAL_PROPERTIES)) {
+			} else if (functionName.equals(FunctionID.SET_GLOBAL_PROPERTIES.toString())) {
 				// SetGlobalPropertiesResponse 
 				
 				final SetGlobalPropertiesResponse msg = new SetGlobalPropertiesResponse(hash);
@@ -2147,7 +2153,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_proxyListener.onSetGlobalPropertiesResponse((SetGlobalPropertiesResponse)msg);	
 						onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.RESET_GLOBAL_PROPERTIES)) {
+			} else if (functionName.equals(FunctionID.RESET_GLOBAL_PROPERTIES.toString())) {
 				// ResetGlobalProperties				
 				
 				final ResetGlobalPropertiesResponse msg = new ResetGlobalPropertiesResponse(hash);
@@ -2164,7 +2170,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onResetGlobalPropertiesResponse((ResetGlobalPropertiesResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.UNREGISTER_APP_INTERFACE)) {
+			} else if (functionName.equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
 				// UnregisterAppInterface
 				
 				_appInterfaceRegisterd = false;
@@ -2175,7 +2181,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				final UnregisterAppInterfaceResponse msg = new UnregisterAppInterfaceResponse(hash);
 				
 				Intent sendIntent = createBroadcastIntent();
-				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE);
+				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
 				updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
 				updateBroadcastIntent(sendIntent, "SUCCESS", msg.getSuccess());
 				updateBroadcastIntent(sendIntent, "COMMENT1", msg.getInfo());
@@ -2207,7 +2213,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 				
 				notifyProxyClosed("UnregisterAppInterfaceResponse", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
-			} else if (functionName.equals(FunctionID.GENERIC_RESPONSE)) {
+			} else if (functionName.equals(FunctionID.GENERIC_RESPONSE.toString())) {
 				// GenericResponse (Usually and error)
 				final GenericResponse msg = new GenericResponse(hash);
 				if (_callbackToUIThread) {
@@ -2223,7 +2229,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGenericResponse((GenericResponse)msg);
 					onPacketFinish(msg);
 				}
-			} else if (functionName.equals(FunctionID.SLIDER)) {
+			} else if (functionName.equals(FunctionID.SLIDER.toString())) {
                 // Slider
                 final SliderResponse msg = new SliderResponse(hash);
                 if (_callbackToUIThread) {
@@ -2239,7 +2245,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onSliderResponse((SliderResponse)msg);
                     onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.PUT_FILE)) {
+            } else if (functionName.equals(FunctionID.PUT_FILE.toString())) {
                 // PutFile
                 final PutFileResponse msg = new PutFileResponse(hash);
                 if (_callbackToUIThread) {
@@ -2249,13 +2255,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         public void run() {
                             _proxyListener.onPutFileResponse((PutFileResponse)msg);
                             onPacketFinish(msg);
+                            notifyPutFileStreamResponse(msg);
                         }
                     });
                 } else {
                     _proxyListener.onPutFileResponse((PutFileResponse)msg);
                     onPacketFinish(msg);
+                    notifyPutFileStreamResponse(msg);                    
                 }
-            } else if (functionName.equals(FunctionID.DELETE_FILE)) {
+            } else if (functionName.equals(FunctionID.DELETE_FILE.toString())) {
                 // DeleteFile
                 final DeleteFileResponse msg = new DeleteFileResponse(hash);
                 if (_callbackToUIThread) {
@@ -2271,7 +2279,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onDeleteFileResponse((DeleteFileResponse)msg);
                     onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.LIST_FILES)) {
+            } else if (functionName.equals(FunctionID.LIST_FILES.toString())) {
                 // ListFiles
                 final ListFilesResponse msg = new ListFilesResponse(hash);
                 if (_callbackToUIThread) {
@@ -2287,7 +2295,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onListFilesResponse((ListFilesResponse)msg);
                     onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.SET_APP_ICON)) {
+            } else if (functionName.equals(FunctionID.SET_APP_ICON.toString())) {
                 // SetAppIcon
                 final SetAppIconResponse msg = new SetAppIconResponse(hash);
                 if (_callbackToUIThread) {
@@ -2303,7 +2311,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         _proxyListener.onSetAppIconResponse((SetAppIconResponse)msg);
                         onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.SCROLLABLE_MESSAGE)) {
+            } else if (functionName.equals(FunctionID.SCROLLABLE_MESSAGE.toString())) {
                 // ScrollableMessage
                 final ScrollableMessageResponse msg = new ScrollableMessageResponse(hash);
                 if (_callbackToUIThread) {
@@ -2319,7 +2327,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onScrollableMessageResponse((ScrollableMessageResponse)msg);
                     onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.CHANGE_REGISTRATION)) {
+            } else if (functionName.equals(FunctionID.CHANGE_REGISTRATION.toString())) {
                 // ChangeLanguageRegistration
                 final ChangeRegistrationResponse msg = new ChangeRegistrationResponse(hash);
                 if (_callbackToUIThread) {
@@ -2335,7 +2343,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onChangeRegistrationResponse((ChangeRegistrationResponse)msg);
                     onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT)) {
+            } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT.toString())) {
                 // SetDisplayLayout
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
                 
@@ -2360,7 +2368,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         _proxyListener.onSetDisplayLayoutResponse((SetDisplayLayoutResponse)msg);
                         onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.PERFORM_AUDIO_PASS_THRU)) {
+            } else if (functionName.equals(FunctionID.PERFORM_AUDIO_PASS_THRU.toString())) {
                 // PerformAudioPassThru
                 final PerformAudioPassThruResponse msg = new PerformAudioPassThruResponse(hash);
                 if (_callbackToUIThread) {
@@ -2376,7 +2384,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onPerformAudioPassThruResponse((PerformAudioPassThruResponse)msg);
                     onPacketFinish(msg);       
                 }
-            } else if (functionName.equals(FunctionID.END_AUDIO_PASS_THRU)) {
+            } else if (functionName.equals(FunctionID.END_AUDIO_PASS_THRU.toString())) {
                 // EndAudioPassThru
                 final EndAudioPassThruResponse msg = new EndAudioPassThruResponse(hash);
                 if (_callbackToUIThread) {
@@ -2392,7 +2400,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onEndAudioPassThruResponse((EndAudioPassThruResponse)msg);
                     onPacketFinish(msg);
                 }
-            } else if (functionName.equals(FunctionID.SUBSCRIBE_VEHICLE_DATA)) {
+            } else if (functionName.equals(FunctionID.SUBSCRIBE_VEHICLE_DATA.toString())) {
             	// SubscribeVehicleData
                 final SubscribeVehicleDataResponse msg = new SubscribeVehicleDataResponse(hash);
                 if (_callbackToUIThread) {
@@ -2408,7 +2416,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onSubscribeVehicleDataResponse((SubscribeVehicleDataResponse)msg);
                     onPacketFinish(msg);       
                 }
-            } else if (functionName.equals(FunctionID.UNSUBSCRIBE_VEHICLE_DATA)) {
+            } else if (functionName.equals(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString())) {
             	// UnsubscribeVehicleData
                 final UnsubscribeVehicleDataResponse msg = new UnsubscribeVehicleDataResponse(hash);
                 if (_callbackToUIThread) {
@@ -2424,7 +2432,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onUnsubscribeVehicleDataResponse((UnsubscribeVehicleDataResponse)msg);
                     onPacketFinish(msg);   
                 }
-            } else if (functionName.equals(FunctionID.GET_VEHICLE_DATA)) {
+            } else if (functionName.equals(FunctionID.GET_VEHICLE_DATA.toString())) {
            		// GetVehicleData
                 final GetVehicleDataResponse msg = new GetVehicleDataResponse(hash);
                 if (_callbackToUIThread) {
@@ -2440,7 +2448,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         _proxyListener.onGetVehicleDataResponse((GetVehicleDataResponse)msg);
                         onPacketFinish(msg);   
                     }            	               
-            } else if (functionName.equals(FunctionID.READ_DID)) {
+            } else if (functionName.equals(FunctionID.READ_DID.toString())) {
                 final ReadDIDResponse msg = new ReadDIDResponse(hash);
                 if (_callbackToUIThread) {
                     // Run in UI thread
@@ -2454,7 +2462,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 } else {
                     _proxyListener.onReadDIDResponse((ReadDIDResponse)msg);   
                 }            	            	
-            } else if (functionName.equals(FunctionID.GET_DTCS)) {
+            } else if (functionName.equals(FunctionID.GET_DTCS.toString())) {
                 final GetDTCsResponse msg = new GetDTCsResponse(hash);
                 if (_callbackToUIThread) {
                     // Run in UI thread
@@ -2469,7 +2477,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onGetDTCsResponse((GetDTCsResponse)msg);
                     onPacketFinish(msg);   
                 }
-            } else if (functionName.equals(FunctionID.DIAGNOSTIC_MESSAGE)) {
+            } else if (functionName.equals(FunctionID.DIAGNOSTIC_MESSAGE.toString())) {
                 final DiagnosticMessageResponse msg = new DiagnosticMessageResponse(hash);
                 if (_callbackToUIThread) {
                     // Run in UI thread
@@ -2485,7 +2493,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     onPacketFinish(msg);   
                 }            	
             } 
-            else if (functionName.equals(FunctionID.SYSTEM_REQUEST)) {
+            else if (functionName.equals(FunctionID.SYSTEM_REQUEST.toString())) {
 
    				final SystemRequestResponse msg = new SystemRequestResponse(hash);
    				if (_callbackToUIThread) {
@@ -2502,6 +2510,84 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     onPacketFinish(msg);	
    				}
             }
+            else if (functionName.equals(FunctionID.SEND_LOCATION.toString())) {
+
+   				final SendLocationResponse msg = new SendLocationResponse(hash);
+   				if (_callbackToUIThread) {
+   					// Run in UI thread
+   					_mainUIHandler.post(new Runnable() {
+   						@Override
+   						public void run() {
+   							_proxyListener.onSendLocationResponse(msg);
+   							onPacketFinish(msg);
+   						}
+   					});
+   				} else {
+   					_proxyListener.onSendLocationResponse(msg);
+   					onPacketFinish(msg);
+   				}
+            }
+            else if (functionName.equals(FunctionID.DIAL_NUMBER.toString())) {
+
+   				final DialNumberResponse msg = new DialNumberResponse(hash);
+   				if (_callbackToUIThread) {
+   					// Run in UI thread
+   					_mainUIHandler.post(new Runnable() {
+   						@Override
+   						public void run() {
+   							_proxyListener.onDialNumberResponse(msg);
+   							onPacketFinish(msg);
+   						}
+   					});
+   				} else {
+   					_proxyListener.onDialNumberResponse(msg);
+   					onPacketFinish(msg);
+   				}
+            }
+            else if (functionName.equals(FunctionID.SHOW_CONSTANT_TBT.toString())) {
+				final ShowConstantTbtResponse msg = new ShowConstantTbtResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onShowConstantTbtResponse(msg);
+							onPacketFinish(msg);
+						}
+					});
+				} else {
+					_proxyListener.onShowConstantTbtResponse(msg);
+					onPacketFinish(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ALERT_MANEUVER.toString())) {
+				final AlertManeuverResponse msg = new AlertManeuverResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onAlertManeuverResponse(msg);
+							onPacketFinish(msg);
+						}
+					});
+				} else {
+					_proxyListener.onAlertManeuverResponse(msg);
+					onPacketFinish(msg);
+				}
+			} else if (functionName.equals(FunctionID.UPDATE_TURN_LIST.toString())) {
+				final UpdateTurnListResponse msg = new UpdateTurnListResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onUpdateTurnListResponse(msg);
+							onPacketFinish(msg);
+						}
+					});
+				} else {
+					_proxyListener.onUpdateTurnListResponse(msg);
+					onPacketFinish(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
@@ -2513,7 +2599,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCNotification(rpcMsg), SDL_LIB_TRACE_KEY);
-			if (functionName.equals(FunctionID.ON_HMI_STATUS)) {
+			if (functionName.equals(FunctionID.ON_HMI_STATUS.toString())) {
 				// OnHMIStatus
 				
 				final OnHMIStatus msg = new OnHMIStatus(hash);
@@ -2542,7 +2628,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_proxyListener.onOnLockScreenNotification(sdlSession.getLockScreenMan().getLockObj());
 					}
 				}				
-			} else if (functionName.equals(FunctionID.ON_COMMAND)) {
+			} else if (functionName.equals(FunctionID.ON_COMMAND.toString())) {
 				// OnCommand
 				
 				final OnCommand msg = new OnCommand(hash);
@@ -2557,7 +2643,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnCommand((OnCommand)msg);
 				}
-			} else if (functionName.equals(FunctionID.ON_DRIVER_DISTRACTION)) {
+			} else if (functionName.equals(FunctionID.ON_DRIVER_DISTRACTION.toString())) {
 				// OnDriverDistration
 				
 				final OnDriverDistraction msg = new OnDriverDistraction(hash);
@@ -2587,12 +2673,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnDriverDistraction(msg);
 					_proxyListener.onOnLockScreenNotification(sdlSession.getLockScreenMan().getLockObj());
 				}
-			} else if (functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA)) {
+			} else if (functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA.toString())) {
 				
 				final OnSystemRequest msg = new OnSystemRequest(hash);
 
 				Intent sendIntent = createBroadcastIntent();
-				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_SYSTEM_REQUEST);
+				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_SYSTEM_REQUEST.toString());
 				updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_NOTIFICATION);
 				
 				// If url is null, then send notification to the app, otherwise, send to URL
@@ -2628,7 +2714,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						handleOffboardTransmissionThread.start();
 					}					
 				}
-			} else if (functionName.equals(FunctionID.ON_PERMISSIONS_CHANGE)) {
+			} else if (functionName.equals(FunctionID.ON_PERMISSIONS_CHANGE.toString())) {
 				//OnPermissionsChange
 				
 				final OnPermissionsChange msg = new OnPermissionsChange(hash);
@@ -2643,7 +2729,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnPermissionsChange(msg);
 				}
-			} else if (functionName.equals(FunctionID.ON_TBT_CLIENT_STATE)) {
+			} else if (functionName.equals(FunctionID.ON_TBT_CLIENT_STATE.toString())) {
 				// OnTBTClientState
 				
 				final OnTBTClientState msg = new OnTBTClientState(hash);
@@ -2658,7 +2744,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnTBTClientState(msg);
 				}
-			} else if (functionName.equals(FunctionID.ON_BUTTON_PRESS)) {
+			} else if (functionName.equals(FunctionID.ON_BUTTON_PRESS.toString())) {
 				// OnButtonPress
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
@@ -2673,7 +2759,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnButtonPress((OnButtonPress)msg);
 				}
-			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT)) {
+			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT.toString())) {
 				// OnButtonEvent
 				
 				final OnButtonEvent msg = new OnButtonEvent(hash);
@@ -2688,7 +2774,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnButtonEvent((OnButtonEvent)msg);
 				}
-			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE)) {
+			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE.toString())) {
 				// OnLanguageChange
 				
 				final OnLanguageChange msg = new OnLanguageChange(hash);
@@ -2703,7 +2789,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnLanguageChange((OnLanguageChange)msg);
 				}
-			} else if (functionName.equals(FunctionID.ON_HASH_CHANGE)) {
+			} else if (functionName.equals(FunctionID.ON_HASH_CHANGE.toString())) {
 				// OnLanguageChange
 				
 				final OnHashChange msg = new OnHashChange(hash);
@@ -2726,7 +2812,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_lastHashID = msg.getHashID();
 					}
 				}
-			} else if (functionName.equals(FunctionID.ON_SYSTEM_REQUEST)) {
+			} else if (functionName.equals(FunctionID.ON_SYSTEM_REQUEST.toString())) {
 					// OnSystemRequest
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
@@ -2746,6 +2832,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					
 					
+					if(msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
+					        msg.getUrl() != null){
+					    lockScreenIconRequest = msg;
+					}
+					
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -2757,7 +2848,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} else {
 						_proxyListener.onOnSystemRequest((OnSystemRequest)msg);
 					}
-			} else if (functionName.equals(FunctionID.ON_AUDIO_PASS_THRU)) {
+			} else if (functionName.equals(FunctionID.ON_AUDIO_PASS_THRU.toString())) {
 				// OnAudioPassThru
 				final OnAudioPassThru msg = new OnAudioPassThru(hash);
                 if (_callbackToUIThread) {
@@ -2771,7 +2862,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 } else {
 					_proxyListener.onOnAudioPassThru((OnAudioPassThru)msg);
                 }				
-			} else if (functionName.equals(FunctionID.ON_VEHICLE_DATA)) {
+			} else if (functionName.equals(FunctionID.ON_VEHICLE_DATA.toString())) {
 				// OnVehicleData
                 final OnVehicleData msg = new OnVehicleData(hash);
                 if (_callbackToUIThread) {
@@ -2786,7 +2877,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     _proxyListener.onOnVehicleData((OnVehicleData)msg);
                 } 
 			}
-			else if (functionName.equals(FunctionID.ON_APP_INTERFACE_UNREGISTERED)) {
+			else if (functionName.equals(FunctionID.ON_APP_INTERFACE_UNREGISTERED.toString())) {
 				// OnAppInterfaceUnregistered
 				
 				_appInterfaceRegisterd = false;
@@ -2797,7 +2888,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				final OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered(hash);
 								
 				Intent sendIntent = createBroadcastIntent();
-				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_APP_INTERFACE_UNREGISTERED);
+				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_APP_INTERFACE_UNREGISTERED.toString());
 				updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_NOTIFICATION);
 				updateBroadcastIntent(sendIntent, "DATA",serializeJSON(msg));
 				sendBroadcastIntent(sendIntent);
@@ -2820,7 +2911,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					notifyProxyClosed("OnAppInterfaceUnregistered", null, SdlDisconnectedReason.APP_INTERFACE_UNREG);
 				}
 			} 
-			else if (functionName.equals(FunctionID.ON_KEYBOARD_INPUT)) {
+			else if (functionName.equals(FunctionID.ON_KEYBOARD_INPUT.toString())) {
 				final OnKeyboardInput msg = new OnKeyboardInput(hash);
 				if (_callbackToUIThread) {
 					// Run in UI thread
@@ -2834,7 +2925,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnKeyboardInput((OnKeyboardInput)msg);
 				}
 			}
-			else if (functionName.equals(FunctionID.ON_TOUCH_EVENT)) {
+			else if (functionName.equals(FunctionID.ON_TOUCH_EVENT.toString())) {
 				final OnTouchEvent msg = new OnTouchEvent(hash);
 				if (_callbackToUIThread) {
 					// Run in UI thread
@@ -2897,15 +2988,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		
 		// Throw exception if RPCRequest is sent when SDL is unavailable 
-		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE)) {
+		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 			
 			SdlTrace.logProxyEvent("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.", SDL_LIB_TRACE_KEY);
 			throw new SdlException("SDL is currently unavailable. RPC Requests cannot be sent.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 				
 		if (_advancedLifecycleManagementEnabled) {
-			if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE)
-					|| request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE)) {
+			if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())
+					|| request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
 				
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
@@ -2974,7 +3065,116 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 	}
+		
+	private FileInputStream getFileInputStream(String sLocalFile)
+	{
+		FileInputStream is = null;
+		try 
+		{
+			is = new FileInputStream(sLocalFile);
+		}
+		catch (IOException e1) 
+		{
+			e1.printStackTrace();
+		}
+		return is;
+	}
+
+	private Long getFileInputStreamSize(FileInputStream is)
+	{
+		Long lSize = null;
+		
+		try 
+		{
+			lSize = is.getChannel().size();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return lSize;
+	}
 	
+	private void closeFileInputStream(FileInputStream is)
+	{
+		try
+		{
+			is.close();
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	{		
+		if (sdlSession == null) return null;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return null;
+					
+		FileInputStream is = getFileInputStream(sLocalFile);
+		if (is == null) return null;
+		
+		Integer iSize = Integer.valueOf(getFileInputStreamSize(is).intValue());
+		if (iSize == null)
+		{	
+			closeFileInputStream(is);
+			return null;
+		}
+
+		try {
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, iSize);
+			rpcPacketizer.start();
+			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
+			return streamController;
+		} catch (Exception e) {
+            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            return null;
+        }			
+	}
+
+	@SuppressWarnings("unchecked")
+	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	{		
+		if (sdlSession == null) return null;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return null;
+		Long iSize = request.getLength();
+
+		if (request.getLength() == null)
+		{
+			return null;
+		}		
+		
+		try {
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, iSize);
+			rpcPacketizer.start();
+			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
+			return streamController;
+		} catch (Exception e) {
+            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            return null;
+        }			
+	}
+
+	private RPCStreamController startPutFileStream(String sPath, PutFile msg) {
+		if (sdlSession == null) return null;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return null;
+		return startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);		
+	}
+
+	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
+		if (sdlSession == null) return null;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return null;
+		if (is == null) return null;
+		startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		return null;
+	}
+
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -2992,132 +3192,394 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	public void endRPCStream() {
 		if (sdlSession == null) return;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return;
-		sdlConn.stopStream();
+		sdlConn.stopRPCStream();
 	}
 	
-	
+	private class CallableMethod implements Callable<Void> {
+	private long waitTime;
+
+	public CallableMethod(int timeInMillis){
+		this.waitTime=timeInMillis;
+	}
+	@Override
+	public Void call() {
+		try {
+			Thread.sleep(waitTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	}		
+	public FutureTask<Void> createFutureTask(CallableMethod callMethod){
+			return new FutureTask<Void>(callMethod);
+	}
+	public ScheduledExecutorService createScheduler(){
+		return  Executors.newSingleThreadScheduledExecutor();
+	}	
+
+	/**
+	 *Opens the video service (serviceType 11) and subsequently streams raw H264 video from an InputStream provided by the app
+	 *@return true if service is opened successfully and stream is started, return false otherwise
+	 */
+
 	public boolean startH264(InputStream is) {
 		
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return false;
-				
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
 		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
-		if (navServiceResponse) {
-			sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
-			return true;
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!navServiceStartResponseReceived && !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (navServiceStartResponse) {
+			try {
+				sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
+				return true;
+			} catch (Exception e) {
+				return false;
+			}			
 		} else {
 			return false;
 		}
 	}
 	
+	/**
+	 *Opens the video service (serviceType 11) and subsequently provides an OutputStream to the app to use for a raw H264 video stream
+	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
+	 */	
 	public OutputStream startH264() {
 
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;
 		
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
 		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
-		if (navServiceResponse) {
-			return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!navServiceStartResponseReceived  && !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (navServiceStartResponse) {
+			try {
+				return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
+			} catch (Exception e) {
+				return null;
+			}
 		} else {
 			return null;
 		}
 	}	
 	
-	public void endH264() {
-		if (sdlSession == null) return;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return;
-		sdlConn.endService(SessionType.NAV, sdlSession.getSessionId());
-	}
-	
-	public boolean startPCM(InputStream is) {
+	/**
+	 *Closes the opened video service (serviceType 11)
+	 *@return true if the video service is closed successfully, return false otherwise  
+	 */	
+	public boolean endH264() {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;		
-		
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+		if (sdlConn == null) return false;
 
-		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
-		if (navServiceResponse) {
-			sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
+		navServiceEndResponseReceived = false;
+		navServiceEndResponse = false;
+		sdlConn.stopVideoStream();
+
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!navServiceEndResponseReceived && !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (navServiceEndResponse) {
 			return true;
 		} else {
 			return false;
 		}
 	}
+
+	/**
+	 *Pauses the stream for the opened audio service (serviceType 10)
+	 *@return true if the audio service stream is paused successfully, return false otherwise  
+	 */		
+	public boolean pausePCM()
+	{
+		if (sdlSession == null) return false;
+		SdlConnection sdlConn = sdlSession.getSdlConnection();
+		if (sdlConn == null) return false;
+		return sdlConn.pauseAudioStream();		
+	}
+
+	/**
+	 *Pauses the stream for the opened video service (serviceType 11)
+	 *@return true if the video service stream is paused successfully, return false otherwise  
+	 */	
+	public boolean pauseH264()
+	{
+		if (sdlSession == null) return false;
+		SdlConnection sdlConn = sdlSession.getSdlConnection();
+		if (sdlConn == null) return false;
+		return sdlConn.pauseVideoStream();		
+	}
+
+	/**
+	 *Resumes the stream for the opened audio service (serviceType 10)
+	 *@return true if the audio service stream is resumed successfully, return false otherwise  
+	 */	
+	public boolean resumePCM()
+	{
+		if (sdlSession == null) return false;
+		SdlConnection sdlConn = sdlSession.getSdlConnection();
+		if (sdlConn == null) return false;
+		return sdlConn.resumeAudioStream();		
+	}
+
+	/**
+	 *Resumes the stream for the opened video service (serviceType 11)
+	 *@return true if the video service is resumed successfully, return false otherwise  
+	 */	
+	public boolean resumeH264()
+	{
+		if (sdlSession == null) return false;
+		SdlConnection sdlConn = sdlSession.getSdlConnection();
+		if (sdlConn == null) return false;
+		return sdlConn.resumeVideoStream();	
+	}
+
 	
+	/**
+	 *Opens the audio service (serviceType 10) and subsequently streams raw PCM audio from an InputStream provided by the app
+	 *@return true if service is opened successfully and stream is started, return false otherwise  
+	 */
+
+	public boolean startPCM(InputStream is) {
+		if (sdlSession == null) return false;		
+		SdlConnection sdlConn = sdlSession.getSdlConnection();		
+		if (sdlConn == null) return false;		
+
+		pcmServiceStartResponseReceived = false;
+		pcmServiceStartResponse = false;
+		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
+
+		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!pcmServiceStartResponseReceived  && !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (pcmServiceStartResponse) {
+			try {
+				sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
+				return true;
+			} catch (Exception e) {
+				return false;
+			}			
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 *Opens the audio service (serviceType 10) and subsequently provides an OutputStream to the app
+	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
+	 */		
 	public OutputStream startPCM() {
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;		
 		
-		navServiceResponseReceived = false;
-		navServiceResponse = false;
+		pcmServiceStartResponseReceived = false;
+		pcmServiceStartResponse = false;
 		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
-		int infiniteLoopKiller = 0;
-		while (!navServiceResponseReceived && infiniteLoopKiller<2147483647) {
-			infiniteLoopKiller++;
-		}
-		if (navServiceResponse) {
-			return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!pcmServiceStartResponseReceived && !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (pcmServiceStartResponse) {
+			try {
+				return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
+			} catch (Exception e) {
+				return null;
+			}
 		} else {
 			return null;
 		}
 	}
-	public void endPCM() {
-		if (sdlSession == null) return;		
+	
+	/**
+	 *Closes the opened audio service (serviceType 10)
+	 *@return true if the audio service is closed successfully, return false otherwise  
+	 */		
+	public boolean endPCM() {
+		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return;
+		if (sdlConn == null) return false;
 		
-		sdlConn.endService(SessionType.PCM, sdlSession.getSessionId());
-	}	
+		pcmServiceEndResponseReceived = false;
+		pcmServiceEndResponse = false;
+		sdlConn.stopAudioStream();
+		
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
+
+		while (!pcmServiceEndResponseReceived && !fTask.isDone());
+		scheduler.shutdown();
+		scheduler = null;
+		fTask = null;
+
+		if (pcmServiceEndResponse) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+    
+    public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+                                            int height, int bitrate) {
+        
+        if (sdlSession == null) return null;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return null;
+        
+        navServiceStartResponseReceived = false;
+        navServiceStartResponse = false;
+        sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
+        
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+        
+        while (!navServiceStartResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+        scheduler = null;
+        fTask = null;
+        
+        if (navServiceStartResponse) {
+            return sdlConn.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+                                                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+        } else {
+            return null;
+        }
+    }
+    
+    public void startEncoder () {
+        if (sdlSession == null) return;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return;
+        
+        sdlConn.startEncoder();
+    }
+    
+    public void releaseEncoder() {
+        if (sdlSession == null) return;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return;
+        
+        sdlConn.releaseEncoder();
+    }
+    
+    public void drainEncoder(boolean endOfStream) {
+        if (sdlSession == null) return;		
+        SdlConnection sdlConn = sdlSession.getSdlConnection();		
+        if (sdlConn == null) return;
+        
+        sdlConn.drainEncoder(endOfStream);
+    }
 	
 	private void NavServiceStarted() {
-		navServiceResponseReceived = true;
-		navServiceResponse = true;
+		navServiceStartResponseReceived = true;
+		navServiceStartResponse = true;
 	}
 	
-	private void NavServiceEnded() {
-		navServiceResponseReceived = true;
-		navServiceResponse = false;
+	private void NavServiceStartedNACK() {
+		navServiceStartResponseReceived = true;
+		navServiceStartResponse = false;
 	}
 	
-	@SuppressWarnings("unused")
     private void AudioServiceStarted() {
-		pcmServiceResponseReceived = true;
-		pcmServiceResponse = true;
+		pcmServiceStartResponseReceived = true;
+		pcmServiceStartResponse = true;
 	}
 	
-	@SuppressWarnings("unused")
+    private void AudioServiceStartedNACK() {
+		pcmServiceStartResponseReceived = true;
+		pcmServiceStartResponse = false;
+	}
+
+	private void NavServiceEnded() {
+		navServiceEndResponseReceived = true;
+		navServiceEndResponse = true;
+	}
+	
+	private void NavServiceEndedNACK() {
+		navServiceEndResponseReceived = true;
+		navServiceEndResponse = false;
+	}
+	
     private void AudioServiceEnded() {
-		pcmServiceResponseReceived = true;
-		pcmServiceResponse = false;
+		pcmServiceEndResponseReceived = true;
+		pcmServiceEndResponse = true;
+	}
+	
+    private void AudioServiceEndedNACK() {
+		pcmServiceEndResponseReceived = true;
+		pcmServiceEndResponse = false;
 	}	
 	
 	public void setAppService(Service mService)
 	{
 		_appService = mService;
+	}
+	
+	public void getLockScreenIcon(final OnLockScreenIconDownloadedListener l){
+	    if(lockScreenIconRequest == null){
+            l.onLockScreenIconDownloadError(new SdlException("This version of SDL core may not support lock screen icons.", 
+                    SdlExceptionCause.LOCK_SCREEN_ICON_NOT_SUPPORTED));
+	        return;
+	    }
+	    
+	    LockScreenManager lockMan = sdlSession.getLockScreenMan();
+	    Bitmap bitmap = lockMan.getLockScreenIcon();
+	    
+	    // read bitmap if it was already downloaded so we don't have to download it every time
+	    if(bitmap != null){
+	        l.onLockScreenIconDownloaded(bitmap);
+	    }
+	    else{
+    	    String url = lockScreenIconRequest.getUrl();
+    	    sdlSession.getLockScreenMan().downloadLockScreenIcon(url, l);
+	    }
 	}
 
 	/******************** Public Helper Methods *************************/
@@ -3847,10 +4309,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
 			String appID, String autoActivateID, Integer correlationID) 
 			throws SdlException {
-		
+		String carrierName = null;
+		if(telephonyManager != null){
+			carrierName = telephonyManager.getNetworkOperatorName();
+		}
+		deviceInfo = RPCRequestFactory.BuildDeviceInfo(carrierName);
 		RegisterAppInterface msg = RPCRequestFactory.buildRegisterAppInterface(
 				sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, 
-				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID);
+				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID, deviceInfo);
 		
 		if (_bAppResumeEnabled)
 		{
@@ -3859,7 +4325,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		
 		Intent sendIntent = createBroadcastIntent();
-		updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE);
+		updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE.toString());
 		updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_REQUEST);
 		updateBroadcastIntent(sendIntent, "CORRID", msg.getCorrelationID());
 		updateBroadcastIntent(sendIntent, "DATA",serializeJSON(msg));
@@ -4174,7 +4640,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				RPCRequestFactory.buildUnregisterAppInterface(correlationID);
 		Intent sendIntent = createBroadcastIntent();
 
-		updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE);
+		updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
 		updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_REQUEST);
 		updateBroadcastIntent(sendIntent, "CORRID", msg.getCorrelationID());
 		updateBroadcastIntent(sendIntent, "DATA",serializeJSON(msg));
@@ -4407,17 +4873,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Used to push a binary stream of file data onto the module from a mobile device.
 	 * Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param is - The input stream of byte data that PutFileStream will read from 
+	 * @param is - The input stream of byte data that putFileStream will read from 
 	 * @param sdlFileName - The file reference name used by the putFile RPC.
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of the file.
 	 * A value greater than zero is used for resuming partial data chunks.
 	 * @param iLength - The total length of the file being sent.
 	 * @throws SdlException
+	 * @see {@link#putFileStream(InputStream, String, Long, Long)}
 	*/
-	public void PutFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
+	@Deprecated
+	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		startRPCStream(is, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param inputStream The input stream of byte data that will be read from.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @throws SdlException
+	 */
+	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		startRPCStream(inputStream, msg);
 	}
 	
 	/** 
@@ -4431,38 +4916,81 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
 	 * @throws SdlException
-	*/
-	public OutputStream PutFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
+	 * @see {@link#putFileStream(String, Long, Long)}
+	 */
+	@Deprecated
+	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
 		return startRPCStream(msg);
 	}	
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @throws SdlException
+	 */
+	public OutputStream putFileStream(String fileName, Long offset, Long length) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		return startRPCStream(msg);
+	}
 
 	/**
 	 * Used to push a binary stream of file data onto the module from a mobile device.
 	 * Responses are captured through callback on IProxyListener.
 	 *
 	 * @param is - The input stream of byte data that PutFileStream will read from
-	 * @param syncFileName - The file reference name used by the putFile RPC.
+	 * @param sdlFileName - The file reference name used by the putFile RPC.
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of the file.
 	 * A value greater than zero is used for resuming partial data chunks.
 	 * @param iLength - The total length of the file being sent.
 	 * @param fileType - The selected file type -- see the FileType enumeration for details
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
-	 * @throws SyncException
-	*/
-	public void PutFileStream(InputStream is, String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	 * @throws SdlException
+	 * @see {@link#putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean)}
+	 */
+	@Deprecated
+	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		startRPCStream(is, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param inputStream The input stream of byte data that will be read from.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @throws SdlException
+	 */
+	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		startRPCStream(inputStream, msg);
 	}
 	
 	/**
 	 * Used to push a binary stream of file data onto the module from a mobile device.
 	 * Responses are captured through callback on IProxyListener.
 	 *
-	 * @param syncFileName - The file reference name used by the putFile RPC.
+	 * @param sdlFileName - The file reference name used by the putFile RPC.
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of a file.
 	 * A value greater than zero is used for resuming partial data chunks.
 	 * @param iLength - The total length of the file being sent.
@@ -4470,17 +4998,139 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
-	 * @throws SyncException
-	*/
-	public OutputStream PutFileStream(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	 * @throws SdlException
+	 * @see {@link#putFileStream(String, Long, Long, FileType, Boolean, Boolean)}
+	 */
+	@Deprecated
+	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(syncFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		return startRPCStream(msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @throws SdlException
+	 */
+	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		return startRPCStream(msg);
+	}
+	
+	/**
+	 * Used to push a stream of putfile RPC's containing binary data from a mobile device to the module.
+	 * Responses are captured through callback on IProxyListener.
+	 *
+	 * @param sPath - The physical file path on the mobile device.
+	 * @param sdlFileName - The file reference name used by the putFile RPC.
+	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of a file.
+	 * A value greater than zero is used for resuming partial data chunks.
+	 * @param fileType - The selected file type -- see the FileType enumeration for details
+	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
+	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
+	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
+	 * @throws SdlException
+	 * @see {@link#putFileStream(String, String, Long, FileType, Boolean, Boolean, Integer)}
+	 */	
+	@Deprecated
+	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	{
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		return startPutFileStream(sPath, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param path The physical file path on the mobile device.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @param correlationId A unique id that correlates each RPCRequest and 
+	 * RPCResponse.
+	 * @return RPCStreamController If the putFileStream was not started 
+	 * successfully null is returned, otherwise a valid object reference is 
+	 * returned .
+	 * @throws SdlException
+	 */
+	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, correlationId);
+		return startPutFileStream(path,msg);
+	}
+
+	/**
+	 * Used to push a stream of putfile RPC's containing binary data from a mobile device to the module.
+	 * Responses are captured through callback on IProxyListener.
+	 *
+	 * @param is - The input stream of byte data that putFileStream will read from.
+	 * @param sdlFileName - The file reference name used by the putFile RPC.
+	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of a file.
+	 * A value greater than zero is used for resuming partial data chunks.
+	 * @param fileType - The selected file type -- see the FileType enumeration for details
+	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
+	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
+	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
+	 * @throws SdlException
+	 * @see {@link#putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, Integer)}
+	 */	
+	@Deprecated
+	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	{
+		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		return startPutFileStream(is, msg);
+	}
+	
+	/**
+	 * Used to push a binary stream of file data onto the module from a mobile
+	 * device. Responses are captured through callback on IProxyListener.
+	 * 
+	 * @param inputStream The input stream of byte data that will be read from.
+	 * @param fileName The SDL file reference name used by the RPC.
+	 * @param offset The data offset in bytes. A value of zero is used to
+	 * indicate data starting from the beginning of the file and a value greater
+	 * than zero is used for resuming partial data chunks.
+	 * @param length The total length of the file being sent.
+	 * @param fileType The selected file type. See the {@link FileType} enum for
+	 * details.
+	 * @param isPersistentFile Indicates if the file is meant to persist between
+	 * sessions / ignition cycles.
+	 * @param isSystemFile Indicates if the file is meant to be passed through
+	 * core to elsewhere in the system.
+	 * @param correlationId A unique id that correlates each RPCRequest and 
+	 * RPCResponse.
+	 * @throws SdlException
+	 */
+	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, correlationId);
+		return startPutFileStream(inputStream, msg);
 	}
 
 	/**
 	 *
-	 * Used to end an existing PutFileStream that was previously initiated with any PutFileStream method.
+	 * Used to end an existing putFileStream that was previously initiated with any putFileStream method.
 	 *
 	 */
 	public void endPutFileStream()
@@ -4578,6 +5228,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sdlSession.getCurrentTransportType();
 	}
 	
+	public IProxyListenerBase getProxyListener()
+	{
+		return _proxyListener;
+	}
+	
 	public String getAppName()
 	{
 		return _applicationName;
@@ -4592,7 +5247,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	{
 		return _appID;
 	}
-
+	public DeviceInfo getDeviceInfo()
+	{
+		return deviceInfo;
+	}
 	public long getInstanceDT()
 	{
 		return instanceDateTime;
