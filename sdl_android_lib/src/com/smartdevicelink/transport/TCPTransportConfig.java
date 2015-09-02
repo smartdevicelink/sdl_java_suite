@@ -1,5 +1,7 @@
 package com.smartdevicelink.transport;
 
+import com.smartdevicelink.transport.enums.TransportType;
+
 /**
  * Container of TCP transport specific configuration. 
  */
