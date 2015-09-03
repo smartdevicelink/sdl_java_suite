@@ -1,6 +1,6 @@
 package com.smartdevicelink.exception;
 
-import com.smartdevicelink.old.abstraction.listeners.NotificationListener;
+import com.smartdevicelink.abstraction.listener.NotificationListener;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public class IncorrectListenerException extends RuntimeException {
