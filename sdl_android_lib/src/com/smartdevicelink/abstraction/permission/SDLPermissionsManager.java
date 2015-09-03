@@ -12,8 +12,7 @@ public class SDLPermissionsManager {
 	private boolean mSpeedGpsAvail;
 	private ArrayList<SDLPermissionListener> mListeners;
 
-	SDLPermissionsManager(){
-		instance = this;
+	private SDLPermissionsManager(){
 		mListeners = new ArrayList<SDLPermissionListener>();
 		mDrivingCharAvail = false;
 		mSpeedGpsAvail = false;
@@ -58,6 +57,9 @@ public class SDLPermissionsManager {
 	}
 
 	public static SDLPermissionsManager getInstance() {
+		if(instance == null){
+			instance = new SDLPermissionsManager();
+		}
 		return instance;
 	}
 
