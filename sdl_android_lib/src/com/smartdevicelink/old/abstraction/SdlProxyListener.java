@@ -6,6 +6,7 @@ import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerABS;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
@@ -48,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
@@ -57,6 +59,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
 public class SdlProxyListener implements IProxyListenerABS{
@@ -358,6 +361,30 @@ public class SdlProxyListener implements IProxyListenerABS{
 
 	@Override
 	public void onSendLocationResponse(SendLocationResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onShowConstantTbtResponse(ShowConstantTbtResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onAlertManeuverResponse(AlertManeuverResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUpdateTurnListResponse(UpdateTurnListResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onServiceDataACK() {
 		// TODO Auto-generated method stub
 		
 	}

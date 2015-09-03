@@ -63,12 +63,12 @@ public class USBTransport extends SdlTransport {
      * Manufacturer name of the accessory we want to connect to. Must be the
      * same as in accessory_filter.xml to work properly.
      */
-    private final static String ACCESSORY_MANUFACTURER = "Ford";
+    private final static String ACCESSORY_MANUFACTURER = "SDL";
     /**
      * Model name of the accessory we want to connect to. Must be the same as
      * in accessory_filter.xml to work properly.
      */
-    private final static String ACCESSORY_MODEL = "HMI";
+    private final static String ACCESSORY_MODEL = "Core";
     /**
      * Version of the accessory we want to connect to. Must be the same as in
      * accessory_filter.xml to work properly.

@@ -604,6 +604,41 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
 	}
 
+	/**
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param sdlProxyConfigurationResources Proxy configuration resources.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param appID Identifier of the client application.
+	 * @throws SdlException
+	 */		
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Boolean isMediaApp,String appID) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*ttsName*/null,
+				/*ngnMediaScreenAppName*/null,
+				/*vrSynonyms*/null,
+				isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*languageDesired*/null,
+				/*hmiDisplayLanguageDesired*/null,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				false,
+				false,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"sdlProxyConfigurationResources, appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
+	}
+
 	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID,BaseTransportConfig transportConfig) throws SdlException {
 		super(	listener, 
 				/*sdlProxyConfigurationResources*/null,

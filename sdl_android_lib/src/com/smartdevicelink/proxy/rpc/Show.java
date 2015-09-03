@@ -499,6 +499,7 @@ public class Show extends RPCRequest {
         	parameters.remove(KEY_CUSTOM_PRESETS);
         }
     }
+
 	public void addSoftButton(SoftButton softButton) {
 		if (softButton == null)
 			return;

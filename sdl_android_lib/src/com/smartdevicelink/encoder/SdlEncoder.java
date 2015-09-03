@@ -17,11 +17,11 @@ public class SdlEncoder {
 	// parameters for the encoder
 	private static final String _MIME_TYPE = "video/avc"; // H.264/AVC video
 	// private static final String MIME_TYPE = "video/mp4v-es"; //MPEG4 video
-	private static int _FRAME_RATE = 30;
-	private static int _IFRAME_INTERVAL = 5;
-	private static int _FRAME_WIDTH = 800;
-	private static int _FRAME_HEIGHT = 480;
-	private static int _BITRATE = 6000000;
+	private int frameRate = 30;
+	private int frameInterval = 5;
+	private int frameWidth = 800;
+	private int frameHeight = 480;
+	private int bitrate = 6000000;
 
 	// encoder state
 	private MediaCodec mEncoder;
@@ -30,31 +30,42 @@ public class SdlEncoder {
 	// allocate one of these up front so we don't need to do it every time
 	private MediaCodec.BufferInfo mBufferInfo;
 	
-	public SdlEncoder (int frameRate, int iFrameInterval, int width,
-		int height, int bitrate, PipedOutputStream outputStream) {
-		_FRAME_RATE = frameRate;
-		_IFRAME_INTERVAL = iFrameInterval;
-		_FRAME_WIDTH = width;
-		_FRAME_HEIGHT = height;
-		_BITRATE = bitrate;
-		mOutputStream = outputStream;
+
+	public SdlEncoder () {
 	}
-	
+	public void setFrameRate(int iVal){
+		frameRate = iVal;
+	}
+	public void setFrameInterval(int iVal){
+		frameInterval = iVal;
+	}
+	public void setFrameWidth(int iVal){
+		frameWidth = iVal;	
+	}
+	public void setFrameHeight(int iVal){
+		frameHeight = iVal;
+	}
+	public void setBitrate(int iVal){
+		bitrate = iVal;	
+	}
+	public void setOutputStream(PipedOutputStream mStream){
+		mOutputStream = mStream;
+	}
 	public Surface prepareEncoder () {
 
 		mBufferInfo = new MediaCodec.BufferInfo();
 
-		MediaFormat format = MediaFormat.createVideoFormat(_MIME_TYPE, _FRAME_WIDTH,
-				_FRAME_HEIGHT);
+		MediaFormat format = MediaFormat.createVideoFormat(_MIME_TYPE, frameWidth,
+				frameHeight);
 
 		// Set some properties. Failing to specify some of these can cause the
 		// MediaCodec
 		// configure() call to throw an unhelpful exception.
 		format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
 				MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
-		format.setInteger(MediaFormat.KEY_BIT_RATE, _BITRATE);
-		format.setInteger(MediaFormat.KEY_FRAME_RATE, _FRAME_RATE);
-		format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, _IFRAME_INTERVAL);
+		format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
+		format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
+		format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, frameInterval);
 
 		// Create a MediaCodec encoder, and configure it with our format. Get a
 		// Surface

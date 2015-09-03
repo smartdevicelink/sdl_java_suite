@@ -70,16 +70,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            </ul>
 	 */
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-
-    	boolean valid = true;
-    	
-    	for ( TTSChunk item : initialPrompt ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (initialPrompt != null) && (initialPrompt.size() > 0) && valid) {
+    	if (initialPrompt != null) {
     		parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
     	} else {
     		parameters.remove(KEY_INITIAL_PROMPT);
@@ -99,43 +90,16 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
-
-	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw TTSChunk and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof TTSChunk) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<TTSChunk>) list;
-	        	} else if (flagHash) {
-	        		return ttsChunkList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof TTSChunk) {
+	                return (List<TTSChunk>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	                for (Object hashObj : list) {
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
     	}
         return null;

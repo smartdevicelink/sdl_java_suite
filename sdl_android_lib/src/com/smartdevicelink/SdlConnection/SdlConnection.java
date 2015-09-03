@@ -7,11 +7,13 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
-import android.view.Surface;
-import com.smartdevicelink.encoder.SdlEncoder;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.util.Log;
+import android.view.Surface;
 
+import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
@@ -19,11 +21,18 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.transport.*;
+import com.smartdevicelink.transport.BTTransport;
+import com.smartdevicelink.transport.BTTransportConfig;
+import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.ITransportListener;
+import com.smartdevicelink.transport.SdlTransport;
+import com.smartdevicelink.transport.TCPTransport;
+import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.transport.USBTransport;
+import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlConnection implements IProtocolListener, ITransportListener, IStreamListener  {
@@ -31,7 +40,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
-	AbstractPacketizer mPacketizer = null;
 	
 	StreamRPCPacketizer mRPCPacketizer = null;
 	StreamPacketizer mVideoPacketizer = null;
@@ -43,6 +51,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	Object PROTOCOL_REFERENCE_LOCK = new Object();
 	
 	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
+	
+	private final static int BUFF_READ_SIZE = 1000000;
 	
 	/**
 	 * Constructor.
@@ -254,10 +264,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             }
 	}
 	
-	public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
+	@SuppressLint("NewApi") public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
 			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			
+			InputStream is = null;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+				is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
+			} else {
+				is = new PipedInputStream((PipedOutputStream) os);
+			}
             if (sType.equals(SessionType.NAV))
             {
                 mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
@@ -275,15 +289,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             	os.close();
             	is.close();
             	return null;
-            }            
-						
+            }
 			return os;
 	}
 		
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-            mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
-			mPacketizer.start();
+			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
+			mRPCPacketizer.start();
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
         }
@@ -293,8 +306,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
-			mPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
-			mPacketizer.start();
+			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
+			mRPCPacketizer.start();
 			return os;
 		} catch (Exception e) {
             Log.e("SdlConnection", "Unable to start streaming:" + e.toString());
@@ -304,25 +317,25 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 	public void pauseRPCStream()
 	{
-		if (mPacketizer != null)
+		if (mRPCPacketizer != null)
 		{
-			mPacketizer.pause();
+			mRPCPacketizer.pause();
 		}
 	}
 
 	public void resumeRPCStream()
 	{
-		if (mPacketizer != null)
+		if (mRPCPacketizer != null)
 		{
-			mPacketizer.resume();
+			mRPCPacketizer.resume();
 		}
 	}
 
 	public void stopRPCStream()
 	{
-		if (mPacketizer != null)
+		if (mRPCPacketizer != null)
 		{
-			mPacketizer.stop();
+			mRPCPacketizer.stop();
 		}
 	}
 	
@@ -384,22 +397,24 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			return true;
 		}
 		return false;
-	}
-
+	}	
+	
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 			int height, int bitrate, SessionType sType, byte rpcSessionID) {
 		try {
-			mSdlEncoder = new SdlEncoder(frameRate, iFrameInterval, width,
-					height, bitrate, (PipedOutputStream) startStream(sType, rpcSessionID));
+			PipedOutputStream stream = (PipedOutputStream) startStream(sType, rpcSessionID);
+			if (stream == null) return null;
+			mSdlEncoder = new SdlEncoder();
+			mSdlEncoder.setFrameRate(frameRate);
+			mSdlEncoder.setFrameInterval(iFrameInterval);
+			mSdlEncoder.setFrameWidth(width);
+			mSdlEncoder.setFrameHeight(height);
+			mSdlEncoder.setBitrate(bitrate);
+			mSdlEncoder.setOutputStream(stream);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		}
-		if(mSdlEncoder != null) {
-		   return mSdlEncoder.prepareEncoder();
-		} else {
-		   return null;
-		}
+		return mSdlEncoder.prepareEncoder();
 	}
 	
 	public void startEncoder () {
@@ -407,7 +422,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		   mSdlEncoder.startEncoder();
 		}
 	}
-	
+
 	public void releaseEncoder() {
 		if(mSdlEncoder != null) {
 		   mSdlEncoder.releaseEncoder();
@@ -538,10 +553,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onHeartbeatTimedOut(byte sessionID) {
-			for (SdlSession session : listenerList) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
 				session.onHeartbeatTimedOut(sessionID);
-			}	
-			
+			}
 		}
 
 		@Override
@@ -550,37 +565,78 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			if (session != null) {
 				session.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
 			}			
+			}
 
+		@Override
+		public void onProtocolServiceDataACK(SessionType sessionType,
+				byte sessionID) {
+			// TODO Auto-generated method stub
 			
 		}
-	}
+			
+		}
+
+		@Override
+		public void onProtocolServiceDataACK(SessionType sessionType,
+				byte sessionID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onProtocolServiceDataACK(sessionType, sessionID);
+			}
+		}
 		
 	public int getRegisterCount() {
 		return listenerList.size();
 	}
-
-    @Override
+	
+	@Override
+	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+    	SdlSession mySession = findSessionById(sessionID);
+    	if (mySession == null) return;
+    	
+    	if (mySession._outgoingHeartbeatMonitor != null) {
+    		mySession._outgoingHeartbeatMonitor.heartbeatReceived();
+        }
+    	if (mySession._incomingHeartbeatMonitor != null) {
+    		mySession._incomingHeartbeatMonitor.heartbeatReceived();
+        }		
+	}
+    
+	@Override
     public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-        
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
-    	if (mySession._heartbeatMonitor != null) {
-    		mySession._heartbeatMonitor.heartbeatACKReceived();
+    	if (mySession._outgoingHeartbeatMonitor != null) {
+    		mySession._outgoingHeartbeatMonitor.heartbeatACKReceived();
+        }
+    	if (mySession._incomingHeartbeatMonitor != null) {
+    		mySession._incomingHeartbeatMonitor.heartbeatACKReceived();
         }
     }
 
     @Override
-    public void onResetHeartbeat(SessionType sessionType, byte sessionID){
+    public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID){
     	
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
-    	if (mySession._heartbeatMonitor != null) {
-    		mySession._heartbeatMonitor.notifyTransportActivity();
+    	if (mySession._outgoingHeartbeatMonitor != null) {
+    		mySession._outgoingHeartbeatMonitor.notifyTransportActivity();
         }
     }
 
+    @Override
+    public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID){
+    	
+    	SdlSession mySession = findSessionById(sessionID);
+    	if (mySession == null) return;
+    	
+    	if (mySession._incomingHeartbeatMonitor != null) {
+    		mySession._incomingHeartbeatMonitor.notifyTransportActivity();
+        }
+    }
+    
 	@Override
 	public void onProtocolSessionEndedNACKed(SessionType sessionType,
 			byte sessionID, String correlationID) {

@@ -10,9 +10,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
 	public final static String TAG = "StreamPacketizer";
-
 	private Thread t = null;
-	private final static int BUFF_READ_SIZE = 1000000;
 
 	public SdlConnection sdlConnection = null;
     private Object mPauseLock;
@@ -59,7 +57,8 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
                         catch (InterruptedException e) {}
                     }
                 }
-				length = is.read(buffer, 0, BUFF_READ_SIZE);
+
+				length = is.read(buffer, 0, 1488);
 				
 				if (length >= 0) 
 				{
