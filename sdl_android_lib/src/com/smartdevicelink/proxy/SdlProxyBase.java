@@ -4981,8 +4981,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @throws SdlException
 	 */
-	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile) throws SdlException {
+	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		msg.setOnPutFileUpdateListener(cb);
 		startRPCStream(inputStream, msg);
 	}
 	
@@ -5025,8 +5026,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @throws SdlException
 	 */
-	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile) throws SdlException {
+	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		msg.setOnPutFileUpdateListener(cb);
 		return startRPCStream(msg);
 	}
 	
@@ -5075,8 +5077,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * returned .
 	 * @throws SdlException
 	 */
-	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId) throws SdlException {
+	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId,OnPutFileUpdateListener cb ) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, correlationId);
+		msg.setOnPutFileUpdateListener(cb);
 		return startPutFileStream(path,msg);
 	}
 
