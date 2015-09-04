@@ -222,9 +222,9 @@ public class PutFile extends RPCRequest {
         	return null;
     }
 
-    @Deprecated
+
 	@Override
-	public void setOnRPCUpdateListener(OnRPCUpdateListener listener) {
+	public final void setOnRPCUpdateListener(OnRPCUpdateListener listener) {
 		super.setOnRPCUpdateListener(listener);
 	}
     
@@ -232,4 +232,7 @@ public class PutFile extends RPCRequest {
 		super.setOnRPCUpdateListener(listener); //We can use the same method because it get stored as a parent class
 	}
     
+	public OnPutFileUpdateListener getOnPutFileUpdateListener() {
+		return (OnPutFileUpdateListener)getOnRPCUpdateListener();
+	}
 }
