@@ -1551,7 +1551,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_outgoingProxyMessageDispatcher.queueMessage(pm);
 					//Since the message is queued we can add it's listener to our list
 					OnRPCUpdateListener listener = request.getOnRPCUpdateListener();
-					if(request.getMessageType() ==  RPCMessage.KEY_REQUEST){//We might want to include other message types in the future
+					if(request.getMessageType().equals(RPCMessage.KEY_REQUEST)){//We might want to include other message types in the future
 						addOnUpdateListener(listener, request.getCorrelationID(), msgBytes.length);
 					}
 				}
