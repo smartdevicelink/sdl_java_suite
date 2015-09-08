@@ -2460,7 +2460,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         }
                     });
                 } else {
-                    _proxyListener.onReadDIDResponse((ReadDIDResponse)msg);   
+                    _proxyListener.onReadDIDResponse((ReadDIDResponse)msg);
+                    onPacketFinish(msg);
                 }            	            	
             } else if (functionName.equals(FunctionID.GET_DTCS.toString())) {
                 final GetDTCsResponse msg = new GetDTCsResponse(hash);
