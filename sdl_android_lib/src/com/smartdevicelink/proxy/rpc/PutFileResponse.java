@@ -17,7 +17,7 @@ public class PutFileResponse extends RPCResponse {
 	 * Constructs a new PutFileResponse object
 	 */
     public PutFileResponse() {
-        super(FunctionID.PUT_FILE);
+        super(FunctionID.PUT_FILE.toString());
     }
 
 	/**

@@ -24,7 +24,32 @@ public enum TextFieldName {
     menuName,
     secondaryText,
     tertiaryText,
-    menuTitle;
+    menuTitle,
+    /**
+     * Optional name / title of intended location for SendLocation.
+     * 
+     * @since SmartDeviceLink 4.0
+     */
+    locationName,
+    /**
+     * Optional description of intended location / establishment (if applicable) for SendLocation
+     * 
+     * @since SmartDeviceLink 4.0
+     */
+    locationDescription,
+    /**
+     * Optional location address (if applicable) for SendLocation.
+     * 
+     * @since SmartDeviceLink 4.0
+     */
+    addressLines,
+    /**
+     * Optional hone number of intended location / establishment (if applicable) for SendLocation.
+     * 
+     * @since SmartDeviceLink 4.0
+     */
+    phoneNumber,
+    ;
 
     public static TextFieldName valueForString(String value) {
         try{

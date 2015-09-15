@@ -13,11 +13,11 @@ public class SystemRequest extends RPCRequest {
 	public static final String KEY_DATA = "data";
 	
     public SystemRequest() {
-        super(FunctionID.SYSTEM_REQUEST);
+        super(FunctionID.SYSTEM_REQUEST.toString());
     }
 
 	public SystemRequest(boolean bLegacy) {
-        super(FunctionID.ENCODED_SYNC_P_DATA);
+        super(FunctionID.ENCODED_SYNC_P_DATA.toString());
     }
     
     public SystemRequest(Hashtable<String, Object> hash) {

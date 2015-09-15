@@ -13,7 +13,7 @@ public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_TYPE = "type";
 	
     public OnTouchEvent() {
-        super(FunctionID.ON_TOUCH_EVENT);
+        super(FunctionID.ON_TOUCH_EVENT.toString());
     }
     public OnTouchEvent(Hashtable<String, Object> hash) {
         super(hash);

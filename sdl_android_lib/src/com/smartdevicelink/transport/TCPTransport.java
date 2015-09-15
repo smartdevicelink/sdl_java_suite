@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,7 +115,6 @@ public class TCPTransport extends SdlTransport {
         boolean bResult = false;
 
         if(currentState == TCPTransportState.CONNECTED) {
-            synchronized (this) {
                 if (mOutputStream != null) {
                     logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
                     try {
@@ -129,7 +129,7 @@ public class TCPTransport extends SdlTransport {
                     logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
                 }
             }
-        } else {
+        else {
             logInfo("TCPTransport: sendBytesOverTransport request rejected. Transport is not connected");
             bResult = false;
         }

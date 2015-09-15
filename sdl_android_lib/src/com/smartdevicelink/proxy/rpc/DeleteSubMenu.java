@@ -25,7 +25,7 @@ public class DeleteSubMenu extends RPCRequest {
 	* Constructs a new DeleteSubMenu object
 	*/
 	public DeleteSubMenu() {
-        super(FunctionID.DELETE_SUB_MENU);
+        super(FunctionID.DELETE_SUB_MENU.toString());
     }
     /**
      * Constructs a new DeleteSubMenu object indicated by the Hashtable parameter<p>    

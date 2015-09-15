@@ -28,7 +28,7 @@ public class PutFile extends RPCRequest {
 	 * Constructs a new PutFile object
 	 */
     public PutFile() {
-        super(FunctionID.PUT_FILE);
+        super(FunctionID.PUT_FILE.toString());
     }
 
 	/**
@@ -134,7 +134,19 @@ public class PutFile extends RPCRequest {
         return getBulkData();
     }
     
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param offset
+     */
     public void setOffset(Integer offset) {
+    	if(offset == null){
+    		setOffset((Long)null);
+    	}else{
+    		setOffset(offset.longValue());
+    	}
+    }
+    
+    public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
         } else {
@@ -142,16 +154,34 @@ public class PutFile extends RPCRequest {
         }
     }
 
-    public Integer getOffset() {
+    public Long getOffset() {
         final Object o = parameters.get(KEY_OFFSET);
-        if (o instanceof Integer) {
-            return (Integer) o;
+        if (o == null){
+        	return null;
         }
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
+        }
+
 
         return null;
     }
 
+    /**
+     * @deprecated as of SmartDeviceLink 4.0
+     * @param length
+     */
     public void setLength(Integer length) {
+    	if(length == null){
+    		setLength((Long)null);
+    	}else{
+    		setLength(length.longValue());
+    	}
+    }
+    
+    public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);
         } else {
@@ -159,10 +189,15 @@ public class PutFile extends RPCRequest {
         }
     }
 
-    public Integer getLength() {
+    public Long getLength() {
         final Object o = parameters.get(KEY_LENGTH);
+        if (o == null){
+        	return null;
+        }
         if (o instanceof Integer) {
-            return (Integer) o;
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
         }
 
         return null;

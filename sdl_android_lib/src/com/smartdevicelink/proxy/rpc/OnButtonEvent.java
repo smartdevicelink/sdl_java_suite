@@ -90,7 +90,7 @@ public class OnButtonEvent extends RPCNotification {
 	*Constructs a newly allocated OnButtonEvent object
 	*/
     public OnButtonEvent() {
-        super(FunctionID.ON_BUTTON_EVENT);
+        super(FunctionID.ON_BUTTON_EVENT.toString());
     }
     /**
 	 * <p>

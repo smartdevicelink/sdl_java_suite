@@ -44,7 +44,7 @@ public class OnDriverDistraction  extends RPCNotification {
 	*Constructs a newly allocated OnDriverDistraction object
 	*/ 
 	public OnDriverDistraction() {
-        super(FunctionID.ON_DRIVER_DISTRACTION);
+        super(FunctionID.ON_DRIVER_DISTRACTION.toString());
     }
 	/**
      *<p>Constructs a newly allocated OnDriverDistraction object indicated by the Hashtable parameter</p>

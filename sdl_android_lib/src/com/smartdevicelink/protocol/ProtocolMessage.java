@@ -55,6 +55,10 @@ public class ProtocolMessage {
 		return _bulkData;
 	}
 
+	public void setBulkDataNoCopy(byte[] bulkData) {
+		this._bulkData = bulkData;
+	}
+
 	public void setBulkData(byte[] bulkData) {
 		if (this._bulkData != null)
 			this._bulkData = null;

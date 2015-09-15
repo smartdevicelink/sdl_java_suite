@@ -16,7 +16,7 @@ public class PerformAudioPassThruResponse extends RPCResponse {
 	 * Constructs a new PerformAudioPassThruResponse object
 	 */
     public PerformAudioPassThruResponse() {
-        super(FunctionID.PERFORM_AUDIO_PASS_THRU);
+        super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
 	/**

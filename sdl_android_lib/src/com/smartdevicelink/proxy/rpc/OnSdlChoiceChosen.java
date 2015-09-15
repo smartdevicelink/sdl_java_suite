@@ -138,7 +138,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	
 
 	public OnSdlChoiceChosen() {
-		super(FunctionID.ON_SDL_CHOICE_CHOSEN);
+		super(FunctionID.ON_SDL_CHOICE_CHOSEN.toString());
 	}
 	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
 		super(hash);

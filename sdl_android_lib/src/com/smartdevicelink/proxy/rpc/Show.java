@@ -49,7 +49,7 @@ public class Show extends RPCRequest {
 	 * Constructs a new Show object
 	 */
 	public Show() {
-        super(FunctionID.SHOW);
+        super(FunctionID.SHOW.toString());
     }
 	/**
 	 * Constructs a new Show object indicated by the Hashtable parameter

@@ -12,7 +12,7 @@ public class OnKeyboardInput extends RPCNotification {
 	public static final String KEY_EVENT = "event";
 
     public OnKeyboardInput() {
-        super(FunctionID.ON_KEYBOARD_INPUT);
+        super(FunctionID.ON_KEYBOARD_INPUT.toString());
     }
 
     public OnKeyboardInput(Hashtable<String, Object> hash) {

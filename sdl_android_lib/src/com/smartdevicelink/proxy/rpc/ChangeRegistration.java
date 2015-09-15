@@ -34,7 +34,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * Constructs a new ChangeRegistration object
 	 */
     public ChangeRegistration() {
-        super(FunctionID.CHANGE_REGISTRATION);
+        super(FunctionID.CHANGE_REGISTRATION.toString());
     }
 
 	/**

@@ -38,7 +38,7 @@ public class PerformInteraction extends RPCRequest {
 	 * Constructs a new PerformInteraction object
 	 */
     public PerformInteraction() {
-        super(FunctionID.PERFORM_INTERACTION);
+        super(FunctionID.PERFORM_INTERACTION.toString());
     }
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable

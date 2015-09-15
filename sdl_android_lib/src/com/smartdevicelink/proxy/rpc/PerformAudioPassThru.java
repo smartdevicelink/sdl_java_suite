@@ -36,7 +36,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Constructs a new PerformAudioPassThru object
 	 */
     public PerformAudioPassThru() {
-        super(FunctionID.PERFORM_AUDIO_PASS_THRU);
+        super(FunctionID.PERFORM_AUDIO_PASS_THRU.toString());
     }
 
 	/**

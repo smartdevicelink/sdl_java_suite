@@ -26,7 +26,7 @@ public class UnsubscribeButton extends RPCRequest {
 	 * Constructs a new UnsubscribeButton object
 	 */    
 	public UnsubscribeButton() {
-        super(FunctionID.UNSUBSCRIBE_BUTTON);
+        super(FunctionID.UNSUBSCRIBE_BUTTON.toString());
     }
 	/**
 	 * Constructs a new UnsubscribeButton object indicated by the Hashtable

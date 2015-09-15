@@ -28,7 +28,7 @@ public class AlertManeuver extends RPCRequest{
      * Constructs a new AlertManeuver object
      */
     public AlertManeuver(){
-        super(FunctionID.ALERT_MANEUVER);
+        super(FunctionID.ALERT_MANEUVER.toString());
     }
 
     /**

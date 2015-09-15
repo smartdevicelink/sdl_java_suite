@@ -32,13 +32,10 @@ import com.smartdevicelink.util.NativeLogTool;
 @SuppressLint("DefaultLocale")
 public class SdlTrace {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
-	static boolean canWriteLogs = false;
-		
+			
 	public static final String SYSTEM_LOG_TAG = "SdlTrace";
 	
 	private static long baseTics  = java.lang.System.currentTimeMillis();
-	private final static String KeyStr = SDL_LIB_TRACE_KEY;
 	private static boolean acceptAPITraceAdjustments = true;
 
 	protected static ISTListener m_appTraceListener = null;
@@ -60,12 +57,6 @@ public class SdlTrace {
 	
 	public static void setAppTraceListener(ISTListener listener) {
 		m_appTraceListener = listener;
-	} // end-method
-
-	public static void setTracingEnable(Boolean enable) {
-		if (enable != null) {
-			canWriteLogs = enable;
-		}
 	} // end-method
 
 	public static void setAppTraceLevel(DetailLevel dt) {
@@ -139,37 +130,37 @@ public class SdlTrace {
 		// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: return Base64.encodeToString(data.getBytes(), Base64.DEFAULT);
 	} // end-method
 	
-	public static void logProxyEvent(String eventText, String token) {
-		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(KeyStr)) {
-			return;
-		} // end-if
+	public static boolean logProxyEvent(String eventText, String token) {
+		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
+			return false;
+		}
 
 		String msg = SdlTrace.B64EncodeForXML(eventText);
 		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.proxy, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
-		writeXmlTraceMessage(xml);
-	} // end-method
+		return writeXmlTraceMessage(xml);
+	}
 
-	public static void logAppEvent(String eventText) {
+	public static boolean logAppEvent(String eventText) {
 		if (DiagLevel.getLevel(Mod.app) == DetailLevel.OFF) {
-			return;
-		} // end-if
+			return false;
+		}
 
 		long timestamp = SdlTrace.getBaseTicsDelta();
 		String msg = SdlTrace.B64EncodeForXML(eventText);
 		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.app, InterfaceActivityDirection.None, "<d>" + msg + "</d>");
-		writeXmlTraceMessage(xml);
-	} // end-method
+		return writeXmlTraceMessage(xml);
+	}
 
-	public static void logRPCEvent(InterfaceActivityDirection msgDirection, RPCMessage rpcMsg, String token) {
+	public static boolean logRPCEvent(InterfaceActivityDirection msgDirection, RPCMessage rpcMsg, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.rpc);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
-			return;
-		} // end-if
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
+			return false;
+		}
 
 		long timestamp = SdlTrace.getBaseTicsDelta();
 		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.rpc, msgDirection, rpc2Xml(dl, rpcMsg));
-		writeXmlTraceMessage(xml);
-	} // end-method
+		return writeXmlTraceMessage(xml);
+	}
 
 	private static String rpc2Xml(DetailLevel dl, RPCMessage rpcMsg) {
 		StringBuilder rpcAsXml = new StringBuilder();
@@ -206,11 +197,11 @@ public class SdlTrace {
 		return rpcAsXml.toString();
 	} // end-method
 
-	public static void logMarshallingEvent(InterfaceActivityDirection msgDirection, byte[] marshalledMessage, String token) {
+	public static boolean logMarshallingEvent(InterfaceActivityDirection msgDirection, byte[] marshalledMessage, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.mar);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
-			return;
-		} // end-fif
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
+			return false;
+		}
 
 		long timestamp = SdlTrace.getBaseTicsDelta();
 		StringBuilder msg = new StringBuilder();
@@ -222,16 +213,16 @@ public class SdlTrace {
 			msg.append(Mime.base64Encode(marshalledMessage));
 			// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: msg.append(Base64.encodeToString(marshalledMessage, Base64.DEFAULT));
 			msg.append("</d>");
-		} // end-if
+		}
 		String xml = SdlTrace.encodeTraceMessage(timestamp, Mod.mar, msgDirection, msg.toString());
-		writeXmlTraceMessage(xml);
-	} // end-method
+		return writeXmlTraceMessage(xml);
+	}
 
-	public static void logProtocolEvent(InterfaceActivityDirection frameDirection, ProtocolFrameHeader frameHeader, byte[] frameData, int frameDataOffset, int frameDataLength, String token) {
+	public static boolean logProtocolEvent(InterfaceActivityDirection frameDirection, ProtocolFrameHeader frameHeader, byte[] frameData, int frameDataOffset, int frameDataLength, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.proto);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
-			return;
-		} // end-if
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
+			return false;
+		}
 
 		StringBuffer protoMsg = new StringBuffer();
 		protoMsg.append("<frame>");
@@ -244,12 +235,12 @@ public class SdlTrace {
 				// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: bytesInfo = Base64.encodeToString(frameData, frameDataOffset, frameDataLength, Base64.DEFAULT);
 				protoMsg.append(bytesInfo);
 				protoMsg.append("</d>");
-			} // end-if
-		} // end-if
+			}
+		}
 		protoMsg.append("</frame>");
 		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.proto, frameDirection, protoMsg.toString());
-		writeXmlTraceMessage(xml);
-	} // end-method
+		return writeXmlTraceMessage(xml);
+	}
 
 	private static String getProtocolFrameType(FrameType f) {
 		if (f == FrameType.Control)
@@ -268,7 +259,7 @@ public class SdlTrace {
 		String s;
 		if (serviceType == SessionType.RPC )
 			s = "rpc";
-		else if (serviceType == SessionType.Bulk_Data)
+		else if (serviceType == SessionType.BULK_DATA)
 			s = "bulk";
 		else
 			s = "Unknown";
@@ -337,9 +328,9 @@ public class SdlTrace {
 		return sb.toString();
 	} // end-method
 
-	public static void logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int byteLength, String token) {
-		logTransportEvent(preamble, transportSpecificInfoXml, msgDirection, buf, 0, byteLength, token);
-	} // end-method
+	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int byteLength, String token) {
+		return logTransportEvent(preamble, transportSpecificInfoXml, msgDirection, buf, 0, byteLength, token);
+	} 
 
 	private static void checkB64(String x, byte[] buf, int offset, int byteLength) {
 		if ((x.length() % 4) != 0) {
@@ -347,20 +338,20 @@ public class SdlTrace {
 		} // end-if
 	} // end-method
 
-	public static void logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
-		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(KeyStr)) {
-			return;
-		} // end-if
+	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
+		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
+			return false;
+		}
 
 		StringBuilder msg = new StringBuilder();
 		if (transportSpecificInfoXml != null && transportSpecificInfoXml.length() > 0) {
 			msg.append(transportSpecificInfoXml);
-		} // end-if
+		}
 		if (preamble != null && preamble.length() > 0) {
 			msg.append("<desc>");
 			msg.append(preamble);
 			msg.append("</desc>");
-		} // end-if
+		}
 		if (buf != null) {
 			msg.append("<sz>");
 			msg.append(byteLength);
@@ -373,12 +364,12 @@ public class SdlTrace {
 					checkB64(bytesInfo, buf, offset, byteLength);
 					msg.append(bytesInfo);
 					msg.append("</d>");
-				} // end-if
-			} // end-if
-		} // end-if
+				}
+			}
+		}
 		String xml = SdlTrace.encodeTraceMessage(SdlTrace.getBaseTicsDelta(), Mod.tran, msgDirection, msg.toString());
-		writeXmlTraceMessage(xml);
-	} // end-method
+		return writeXmlTraceMessage(xml);
+	}
 
 	// Package-scoped
 	static long getBaseTicsDelta() {
@@ -394,27 +385,31 @@ public class SdlTrace {
 		return SiphonServer.sendFormattedTraceMessage(info);
 	}
 
-	private static void writeXmlTraceMessage(String msg) {
+	private static boolean writeXmlTraceMessage(String msg) {
 		try {			
 			// Attempt to write formatted message to the Siphon
-			if (false == writeMessageToSiphonServer(msg)) {
+			if (false == writeMessageToSiphonServer(msg)) {				
 				// If writing to the Siphon fails, write to the native log
 				NativeLogTool.logInfo(SdlTrace.SYSTEM_LOG_TAG, msg);
+				return false;
 			}
 			
 			ISTListener localTraceListener = m_appTraceListener;
 
 			if (localTraceListener != null) {
 				try {
-					localTraceListener.logXmlMsg(msg, KeyStr);
+					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 				} catch (Exception ex) {
 					DebugTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
-				} // end-catch
-			} // end-if
+					return false;
+				}
+			}
 		} catch (Exception ex) {
 			NativeLogTool.logError(SdlTrace.SYSTEM_LOG_TAG, "Failure writing XML trace message: " + ex.toString());
+			return false;
 		}
-	} // end-method
+		return true;
+	}
 	
 	// Package-scoped
 	@SuppressWarnings("deprecation")

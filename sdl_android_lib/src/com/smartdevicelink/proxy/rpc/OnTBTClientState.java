@@ -44,7 +44,7 @@ public class OnTBTClientState extends RPCNotification {
 	*Constructs a newly allocated OnTBTClientState object
 	*/ 
     public OnTBTClientState() {
-        super(FunctionID.ON_TBT_CLIENT_STATE);
+        super(FunctionID.ON_TBT_CLIENT_STATE.toString());
     }
     /**
      *<p>Constructs a newly allocated OnTBTClientState object indicated by the Hashtable parameter</p>

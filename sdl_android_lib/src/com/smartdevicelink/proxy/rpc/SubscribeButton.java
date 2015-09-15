@@ -62,7 +62,7 @@ public class SubscribeButton extends RPCRequest {
 	 * Constructs a new SubscribeButton object
 	 */
     public SubscribeButton() {
-        super(FunctionID.SUBSCRIBE_BUTTON);
+        super(FunctionID.SUBSCRIBE_BUTTON.toString());
     }
 	/**
 	 * Constructs a new SubscribeButton object indicated by the Hashtable

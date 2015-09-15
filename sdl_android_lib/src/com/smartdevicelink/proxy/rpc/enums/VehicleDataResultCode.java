@@ -2,6 +2,12 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 public enum VehicleDataResultCode {
 	SUCCESS,
+	/**
+     *DTC / DID request successful, however, not all active DTCs or full contents of DID location available
+     * 
+     * @since SmartDeviceLink 4.0
+     */
+	TRUNCATED_DATA,
 	DISALLOWED,
 	USER_DISALLOWED,
 	INVALID_ID,

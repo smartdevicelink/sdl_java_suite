@@ -28,7 +28,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * Constructs a new CreateInteractionChoiceSet object
 	 */    
 	public CreateInteractionChoiceSet() {
-        super(FunctionID.CREATE_INTERACTION_CHOICE_SET);
+        super(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
 	 * Constructs a new CreateInteractionChoiceSet object indicated by the
