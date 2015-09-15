@@ -34,9 +34,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
     private Object mPauseLock;
     private boolean mPaused;
 
-	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long iLength) throws IOException {
+	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
-		lFileSize = iLength;
+		lFileSize = lLength;
 		iInitialCorrID = request.getCorrelationID();
         mPauseLock = new Object();
         mPaused = false;
@@ -143,6 +143,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			
 			int iCorrID = 0;
 			PutFile msg = (PutFile) _request;
+
 			long iOffsetCounter = msg.getOffset();
 			sFileName = msg.getSdlFileName();
 									

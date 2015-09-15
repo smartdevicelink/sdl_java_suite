@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;

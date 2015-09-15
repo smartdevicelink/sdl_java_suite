@@ -505,7 +505,7 @@ public class RPCRequestFactory {
 		putFile.setBulkData(fileData);
 		return putFile;
 	}
-	
+
 	@Deprecated
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength) {
 		PutFile putFile = new PutFile();
@@ -541,7 +541,7 @@ public class RPCRequestFactory {
 		putFile.setLength(iLength);
 		return putFile;
 	}
-	
+
 	public static PutFile buildPutFile(String syncFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(10000);

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.ISoftButton;
 
 /**
  * Creates a full screen overlay containing a large block of formatted text that
@@ -16,7 +17,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <b>HMILevel needs to be FULL</b>
  * <p>
  */
-public class ScrollableMessage extends RPCRequest {
+public class ScrollableMessage extends RPCRequest implements ISoftButton {
 	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
 	public static final String KEY_TIMEOUT = "timeout";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
@@ -102,6 +103,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
+    @Override
     public void setSoftButtons(List<SoftButton> softButtons) {
         if (softButtons != null) {
             parameters.put(KEY_SOFT_BUTTONS, softButtons);
@@ -114,6 +116,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * Gets App defined soft button
 	 * @return List -List<SoftButton> value
 	 */
+    @Override
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
         if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
@@ -133,4 +136,18 @@ public class ScrollableMessage extends RPCRequest {
         }
         return null;
     }
+    
+	@Override
+	public void addSoftButton(SoftButton softButton) {
+		if (softButton == null)
+			return;
+		
+		List<SoftButton> buttonList = getSoftButtons();
+		
+		if (buttonList == null)
+			buttonList = new ArrayList<SoftButton>();
+		
+		buttonList.add(softButton);
+		setSoftButtons(buttonList);
+	}      
 }

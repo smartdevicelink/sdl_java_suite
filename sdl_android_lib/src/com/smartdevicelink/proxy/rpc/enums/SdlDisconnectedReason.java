@@ -36,7 +36,7 @@ public enum SdlDisconnectedReason {
 	    }
 		
 		SdlDisconnectedReason returnReason = SdlDisconnectedReason.DEFAULT;
-		
+
 		switch(reason) {
 			case USER_EXIT:
 				returnReason = SdlDisconnectedReason.USER_EXIT;

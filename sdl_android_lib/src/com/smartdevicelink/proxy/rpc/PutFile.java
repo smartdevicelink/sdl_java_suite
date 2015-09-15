@@ -133,7 +133,7 @@ public class PutFile extends RPCRequest {
     public byte[] getFileData() {
         return getBulkData();
     }
-    
+
     /**
      * @deprecated as of SmartDeviceLink 4.0
      * @param offset
@@ -145,7 +145,7 @@ public class PutFile extends RPCRequest {
     		setOffset(offset.longValue());
     	}
     }
-    
+
     public void setOffset(Long offset) {
         if (offset != null) {
             parameters.put(KEY_OFFSET, offset);
@@ -180,7 +180,7 @@ public class PutFile extends RPCRequest {
     		setLength(length.longValue());
     	}
     }
-    
+
     public void setLength(Long length) {
         if (length != null) {
             parameters.put(KEY_LENGTH, length);

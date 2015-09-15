@@ -499,4 +499,17 @@ public class Show extends RPCRequest {
         	parameters.remove(KEY_CUSTOM_PRESETS);
         }
     }
+
+	public void addSoftButton(SoftButton softButton) {
+		if (softButton == null)
+			return;
+		
+		List<SoftButton> buttonList = getSoftButtons();
+		
+		if (buttonList == null)
+			buttonList = new ArrayList<SoftButton>();
+		
+		buttonList.add(softButton);
+		setSoftButtons(buttonList);
+	}
 }
