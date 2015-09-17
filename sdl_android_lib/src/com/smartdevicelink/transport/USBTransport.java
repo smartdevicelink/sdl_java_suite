@@ -64,12 +64,12 @@ public class USBTransport extends SdlTransport {
      * Manufacturer name of the accessory we want to connect to. Must be the
      * same as in accessory_filter.xml to work properly.
      */
-    private final static String ACCESSORY_MANUFACTURER = "Ford";
+    private final static String ACCESSORY_MANUFACTURER = "SDL";
     /**
      * Model name of the accessory we want to connect to. Must be the same as
      * in accessory_filter.xml to work properly.
      */
-    private final static String ACCESSORY_MODEL = "HMI";
+    private final static String ACCESSORY_MODEL = "Core";
     /**
      * Version of the accessory we want to connect to. Must be the same as in
      * accessory_filter.xml to work properly.
@@ -214,7 +214,6 @@ public class USBTransport extends SdlTransport {
         final State state = getState();
         switch (state) {
             case CONNECTED:
-                synchronized (this) {
                     if (mOutputStream != null) {
                         try {
                             mOutputStream.write(msgBytes, offset, length);
@@ -236,7 +235,6 @@ public class USBTransport extends SdlTransport {
                         logW(msg);
                         handleTransportError(msg, null);
                     }
-                }
                 break;
 
             default:

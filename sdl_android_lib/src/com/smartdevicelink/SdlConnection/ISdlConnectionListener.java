@@ -11,7 +11,7 @@ public interface ISdlConnectionListener {
 	
 	public void onProtocolMessageReceived(ProtocolMessage msg);
 	
-	public void onProtocolSessionNACKed(SessionType sessionType,
+	public void onProtocolSessionStartedNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID);	
 	
 	public void onProtocolSessionStarted(SessionType sessionType,
@@ -20,8 +20,12 @@ public interface ISdlConnectionListener {
 	public void onProtocolSessionEnded(SessionType sessionType,
 			byte sessionID, String correlationID);
 	
+	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+	byte sessionID, String correlationID);
+	
 	public void onProtocolError(String info, Exception e);
 	
 	public void onHeartbeatTimedOut(byte sessionID);
 	
+	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID);
 }

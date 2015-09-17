@@ -30,7 +30,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	private String sFileName;
 	private SdlProxyBase<IProxyListenerBase> _proxy;
 	private IProxyListenerBase _proxyListener;
-	
+
     private Object mPauseLock;
     private boolean mPaused;
 

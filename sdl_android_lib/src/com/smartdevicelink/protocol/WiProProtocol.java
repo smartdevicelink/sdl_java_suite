@@ -14,9 +14,10 @@ public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 
-	private static final int MTU_SIZE = 1500;
+	private static final int V1_V2_MTU_SIZE = 1500;
+	private static final int V3_V4_MTU_SIZE = 131072;
 	private static int HEADER_SIZE = 8;
-	private static int MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
+	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;
 
 	int hashID = 0;
 	int messageID = 0;
@@ -44,18 +45,28 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 	
 	public void setVersion(byte version) {
-		this._version = version;
-		if (version > 1) {
-			this._version = 2;
-			HEADER_SIZE = 12;
-			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
-		}
-		else if (version == 1){
-			HEADER_SIZE = 8;
-			MAX_DATA_SIZE = MTU_SIZE - HEADER_SIZE;
-		}
-			
-	}
+        if (version > 4) {
+            this._version = 4; //protect for future, proxy only supports v4 or lower
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE; //default to lowest size since capabilities of this version are unknown
+        } else if (version == 4) {
+            this._version = version;
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 4 supports 128k MTU
+        } else if (version == 3) {
+            this._version = version;
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 3 supports 128k MTU
+        } else if (version == 2) {
+            this._version = version;
+            HEADER_SIZE = 12;
+            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE;
+        } else if (version == 1){
+            this._version = version;
+            HEADER_SIZE = 8;
+            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE;
+        }
+    }
 
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00);
@@ -78,7 +89,7 @@ public class WiProProtocol extends AbstractProtocol {
 		byte sessionID = protocolMsg.getSessionID();
 		
 		byte[] data = null;
-		if (_version > 1 && sessionType != SessionType.NAV) {
+		if (_version > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
 			if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
 				sessionType = SessionType.BULK_DATA;
@@ -162,6 +173,9 @@ public class WiProProtocol extends AbstractProtocol {
 		
 		MessageFrameAssembler assembler = getFrameAssemblerForFrame(packet);
 		assembler.handleFrame(packet);
+
+		onResetIncomingHeartbeat(SessionType.valueOf((byte)packet.getServiceType()), (byte)packet.getSessionId());
+
 	}
 
 	
@@ -263,7 +277,10 @@ public class WiProProtocol extends AbstractProtocol {
         private void handleProtocolHeartbeatACK(SdlPacket packet) {
         		WiProProtocol.this.handleProtocolHeartbeatACK(SessionType.valueOf((byte)packet.getServiceType()),(byte)packet.getSessionId());
         } // end-method		
-		
+        private void handleProtocolHeartbeat(SdlPacket packet) {
+        	WiProProtocol.this.handleProtocolHeartbeat(SessionType.valueOf((byte)packet.getServiceType()),(byte)packet.getSessionId());
+        } // end-method		
+	
 		private void handleControlFrame(SdlPacket packet) {
             int frameInfo = packet.getFrameInfo();
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
@@ -285,8 +302,9 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "");				
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
-				if (serviceType.eq(SessionType.NAV)) {
+				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), _version, "");
+
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + packet.getSessionId(), null);
 				}
@@ -301,7 +319,12 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 			} else if (frameInfo == FrameDataControlFrameType.EndSessionACK.getValue()) {
 				handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
+			} else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
+				handleProtocolSessionEndedNACK(serviceType, (byte)packet.getSessionId(), "");
+			} else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {
+				handleProtocolServiceDataACK(serviceType, (byte)packet.getSessionId ());
 			}
+            
 		} // end-method
 				
 		private void handleSingleFrameMessageFrame(SdlPacket packet) {
@@ -365,6 +388,12 @@ public class WiProProtocol extends AbstractProtocol {
 	@Override
 	public void SendHeartBeat(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.CONTROL, sessionID, _version);        
+        handlePacketToSend(heartbeat);		
+	}
+
+	@Override
+	public void SendHeartBeatACK(byte sessionID) {
+        final SdlPacket heartbeat = SdlPacketFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, _version);        
         handlePacketToSend(heartbeat);		
 	}
 } // end-class
