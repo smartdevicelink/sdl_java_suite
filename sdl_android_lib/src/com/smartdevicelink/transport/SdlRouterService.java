@@ -6,10 +6,14 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,7 +103,7 @@ public abstract class SdlRouterService extends Service{
 	private String  connectedDeviceName = "";			//The name of the connected Device
 	private boolean startSequenceComplete = false;	
 	
-	
+	private ExecutorService packetExecuter = null; 
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
@@ -248,7 +252,7 @@ public abstract class SdlRouterService extends Service{
 	    class RouterHandler extends Handler {
 	        @Override
 	        public void handleMessage(Message msg) {
-	        	Bundle receivedBundle = msg.getData();
+	        	final Bundle receivedBundle = msg.getData();
 	        	Bundle returnBundle;
 	        	
 	            switch (msg.what) {
@@ -323,7 +327,21 @@ public abstract class SdlRouterService extends Service{
 	                    break;
 	                case TransportConstants.ROUTER_SEND_PACKET:
 	                	Log.d(TAG, "Received packet to send");
-	    				writeBytesToTransport(receivedBundle);
+	                	if(receivedBundle!=null){
+	                		Runnable packetRun = new Runnable(){
+	        					@Override
+								public void run() {
+	                			writeBytesToTransport(receivedBundle);
+		
+							}
+
+	                	};
+	                	if(packetExecuter!=null){
+	                		packetExecuter.execute(packetRun);
+	                	}
+	                	}
+	                	
+	    				//writeBytesToTransport(receivedBundle);
 	                    break;
 	                case TransportConstants.ROUTER_REQUEST_NEW_SESSION:
 	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
@@ -527,6 +545,7 @@ public abstract class SdlRouterService extends Service{
 		synchronized(SESSION_LOCK){
 			sessionMap = new SparseArray<Long>();
 		}
+		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
 	
 	private void startUpSequence(){
@@ -579,6 +598,8 @@ public abstract class SdlRouterService extends Service{
 		closeBluetoothSerialServer();
 		registeredApps = null;
 		startSequenceComplete=false;
+		packetExecuter.shutdownNow();
+		packetExecuter = null;
 		super.onDestroy();
 		try{
 			android.os.Process.killProcess(android.os.Process.myPid());
@@ -1206,7 +1227,7 @@ public abstract class SdlRouterService extends Service{
 		long appId;
 		Messenger messenger;
 		Vector<Long> sessionIds;
-	
+		ByteArrayOutputStream buffer;
 		/**
 		 * This is a simple class to hold onto a reference of a registered app.
 		 * @param appId
@@ -1279,6 +1300,23 @@ public abstract class SdlRouterService extends Service{
 				}else{
 					return SEND_MESSAGE_ERROR_MESSENGER_GENERIC_EXCEPTION;
 				}
+			}
+		}
+		public void prepBuffer(){Log.d("JOEY", "Init buffer for big packet");
+			buffer = new ByteArrayOutputStream();
+		}
+		public void writeToBuffer(byte[] bytes){
+			try {
+				buffer.write(bytes);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		public byte[] finishBuffer(){Log.d("JOEY", "Finish buffer for big packet");
+			if(buffer!=null){
+				return buffer.toByteArray();
+			}else{
+				return null;
 			}
 		}
 	}

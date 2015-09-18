@@ -19,6 +19,8 @@ public class MultiplexTransport extends SdlTransport{
 	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		super(transportListener);
 		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId);
+		brokerThread.start();
+		//brokerThread.initTransportBroker();
 		//brokerThread.start();
 
 	}
@@ -88,21 +90,30 @@ public class MultiplexTransport extends SdlTransport{
 	private class TransportBrokerThread extends Thread{
 		private boolean connected = false; //This helps clear up double on hardware connects
 		TransportBroker broker;
-		
+		boolean queueStart = false;
+		final Context context;
+		final String appId;
 		/**
 		 * Thread will automatically start to prepare its looper.
 		 * @param context
 		 * @param appId
 		 */
 		public TransportBrokerThread(Context context, String appId){
-			this.start();
-			initTransportBroker(context, appId);
+			//this.start();
+			super();
+			this.context = context;
+			this.appId = appId;
+			//initTransportBroker(context, appId);
 		}
 
 		public void startConnection(){
 			synchronized(this){
 				connected = false;
-				broker.start();
+				if(broker!=null){
+					broker.start();
+				}else{
+					queueStart = true;
+				}
 			}
 		}
 
@@ -110,6 +121,7 @@ public class MultiplexTransport extends SdlTransport{
 				broker.stop();
 				broker = null;
 				connected = false;
+				//Looper.myLooper().quitSafely();
 				this.interrupt();
 
 		}
@@ -135,9 +147,19 @@ public class MultiplexTransport extends SdlTransport{
 		@Override
 		public void run() {
 			Looper.prepare();
+			if(broker==null){Log.d("JOEY", "Starting broker");
+				synchronized(this){
+					initTransportBroker();
+					if(queueStart){
+						broker.start();
+					}
+				}
+			}
 			Looper.loop();
 		}
-
+		public void initTransportBroker(){
+			initTransportBroker(this.context,this.appId);
+		}
 		private void initTransportBroker(final Context context, final String appId){
 
 			broker = new TransportBroker(context, appId){
