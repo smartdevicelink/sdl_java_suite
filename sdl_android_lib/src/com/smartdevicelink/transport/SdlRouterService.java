@@ -331,7 +331,40 @@ public abstract class SdlRouterService extends Service{
 	                		Runnable packetRun = new Runnable(){
 	        					@Override
 								public void run() {
-	                			writeBytesToTransport(receivedBundle);
+	        					  	if(receivedBundle!=null){
+	        	                		int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, 0);
+	        	                		Long buffAppId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA);
+	        	                		RegisteredApp buffApp = null;
+	        	                		if(buffAppId!=null){
+	        	                			buffApp = registeredApps.get(buffAppId);
+	        	                		}
+	        	                		if(buffApp !=null){
+	        	                			byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
+	        	                			switch(flags){
+	        	                			case TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START:
+	        	                				buffApp.prepBuffer();
+	        	                				//Fall through to write the bytes after they buffer was init'ed
+	        	                			case TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT:	
+	        	                				//int offset = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
+	        	                				//int count = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+	        	                				buffApp.writeToBuffer(packet);
+	        	                				break;
+	        	                			case TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_END:
+	        	                				buffApp.writeToBuffer(packet);
+	        	                				byte[] buff = buffApp.finishBuffer();
+	        	                				buffApp.clearBuffer();
+	        	                				manuallyWriteBytes(buff, 0, buff.length);
+	        	                				break;
+	        	                			default: //case 0
+	        	                				writeBytesToTransport(receivedBundle);
+	        	                			}
+	        	                		}else{
+	        	                			writeBytesToTransport(receivedBundle);
+	        	                		}
+
+	        	                	}
+	        	    				//writeBytesToTransport(receivedBundle);
+
 		
 							}
 
@@ -1302,8 +1335,19 @@ public abstract class SdlRouterService extends Service{
 				}
 			}
 		}
-		public void prepBuffer(){Log.d("JOEY", "Init buffer for big packet");
+		public void prepBuffer(){
+			clearBuffer();
 			buffer = new ByteArrayOutputStream();
+		}
+		public void clearBuffer(){
+			if(buffer!=null){
+				try {
+					buffer.close();
+					buffer = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		public void writeToBuffer(byte[] bytes){
 			try {
@@ -1312,7 +1356,7 @@ public abstract class SdlRouterService extends Service{
 				e.printStackTrace();
 			}
 		}
-		public byte[] finishBuffer(){Log.d("JOEY", "Finish buffer for big packet");
+		public byte[] finishBuffer(){
 			if(buffer!=null){
 				return buffer.toByteArray();
 			}else{

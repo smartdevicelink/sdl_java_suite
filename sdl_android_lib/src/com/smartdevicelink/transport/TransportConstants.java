@@ -153,14 +153,15 @@ public class TransportConstants {
     /**
      * Command to have router service to send a packet
      */
-	public  static final int ROUTER_SEND_PACKET 											= 0x20;
+	public static final int ROUTER_SEND_PACKET 											= 0x20;
 	
+
 	
 	//response
 	/**
 	 * Router has received a packet and sent it to the client
 	 */
-	public  static final int ROUTER_RECEIVED_PACKET 										= 0x22;
+	public  static final int ROUTER_RECEIVED_PACKET 									= 0x26;
 	//response
 
 	//BUNDLE EXTRAS
@@ -170,6 +171,12 @@ public class TransportConstants {
 	public static final String BYTES_TO_SEND_EXTRA_NAME 					= "bytes";
 	public static final String BYTES_TO_SEND_EXTRA_OFFSET					= "offset";
 	public static final String BYTES_TO_SEND_EXTRA_COUNT 					= "count";
+	public static final String BYTES_TO_SEND_FLAGS							= "flags";
+	
+	public static final int BYTES_TO_SEND_FLAG_NONE								= 0x00;
+	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_START				= 0x01;
+	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT				= 0x02;
+	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_END					= 0x04;
 	
 	public static final String CONNECTED_DEVICE_STRING_EXTRA_NAME			= "devicestring";
 	

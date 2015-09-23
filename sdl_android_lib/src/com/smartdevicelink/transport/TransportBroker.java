@@ -1,10 +1,10 @@
 package com.smartdevicelink.transport;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import com.smartdevicelink.transport.enums.TransportType;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -24,11 +24,13 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.smartdevicelink.transport.enums.TransportType;
+
 
 public class TransportBroker {
 	
 	private static final String TAG = "SdlTransportBroker";
-
+	private final int MAX_BINDER_SIZE = 1000000/4; //~1MB/4 We do this as a safety measure. IPC only allows 1MB for everything. We should never fill more than 25% of the buffer so here we make sure we stay under that
 	private final String WHERE_TO_REPLY_PREFIX	 = "com.sdl.android.";
 	private static String appId = null,whereToReply = null;
 	private Context currentContext = null;
@@ -52,7 +54,6 @@ public class TransportBroker {
 
 			public void onServiceConnected(ComponentName className, IBinder service) {
 				Log.d(TAG, "Bound to service " + className.toString());
-
 				routerService = new Messenger(service);
 				isBound = true;
 				//So we just established our connection
@@ -70,7 +71,7 @@ public class TransportBroker {
 		};
 	}
 
-    private void sendMessageToRouterService(Message message){
+    private synchronized void sendMessageToRouterService(Message message){
     	if(message == null){
     		Log.w(TAG, "Attempted to send null message");
     		return;
@@ -83,6 +84,13 @@ public class TransportBroker {
 					routerService.send(message);
 				} catch (RemoteException e) {
 					e.printStackTrace();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					sendMessageToRouterService(message);
+					
 				}
     		}else{
     			Log.e(TAG, "Unable to send message to router service. Not registered.");
@@ -354,15 +362,64 @@ public class TransportBroker {
 				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
 				return;
 			}
-			Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
-			message.what = TransportConstants.ROUTER_SEND_PACKET;
-			Bundle bundle = new Bundle();
-			bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes); //Do we just change this to the args and objs
-			bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, offset);
-			bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, count);
-			message.setData(bundle);
+
+			if(bytes.length<MAX_BINDER_SIZE){//Determine if this is under the packet length.
+				Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
+				message.what = TransportConstants.ROUTER_SEND_PACKET;
+				Bundle bundle = new Bundle();
+				bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes); //Do we just change this to the args and objs
+				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, offset);
+				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, count);
+				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+				message.setData(bundle);
+				
+				sendMessageToRouterService(message);
+			}else{ //Message is too big for IPC transaction 
+				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
+				ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+				int bytesRead = 0; 
+				boolean firstPacket = true;
+				while(stream.available()>0){
+					Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
+					message.what = TransportConstants.ROUTER_SEND_PACKET;
+					Bundle bundle = new Bundle();
+					byte[] buffer;
+					
+					if(stream.available()>=MAX_BINDER_SIZE){
+						buffer = new byte[MAX_BINDER_SIZE];
+						bytesRead = stream.read(buffer, 0, MAX_BINDER_SIZE);
+					}else{
+						buffer = new byte[stream.available()];
+						bytesRead = stream.read(buffer, 0, stream.available());
+					}
+					
+					bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, buffer); //Do we just change this to the args and objs
+					bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
+					bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesRead);
+					//Determine which flag should be sent for this division of the packet
+					if(firstPacket){
+						bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START);
+						firstPacket = false;
+					}else if(stream.available()<=0){
+						bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_END);
+					}else{
+						bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT);
+					}
+					
+					bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+					message.setData(bundle);
+					sendMessageToRouterService(message);
+					
+				}
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				
+			}
 			
-			sendMessageToRouterService(message);
 		}
 		
 		/**
