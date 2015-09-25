@@ -77,6 +77,8 @@ public class DeviceInfo extends RPCStruct{
     public static final String KEY_OS_VERSION = "osVersion";
     public static final String KEY_CARRIER = "carrier";
     public static final String KEY_MAX_NUMBER_RFCOMM_PORTS = "maxNumberRFCOMMPorts";
+    public static final String DEVICE_OS = "Android";
+    
 	/** Constructs a new DeviceInfo object indicated by the Hashtable
 	 * parameter
 	 * @param hash
@@ -91,7 +93,7 @@ public class DeviceInfo extends RPCStruct{
 	public DeviceInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
-	
+
    public void setHardware(String hardware) {
         if (hardware != null) {
         	store.put(KEY_HARDWARE, hardware);

@@ -1,11 +1,22 @@
 package com.smartdevicelink.proxy;
 
+import java.io.IOException;
+
+import android.graphics.Bitmap;
+
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.util.HttpUtils;
 
 public class LockScreenManager {
 	
+    public interface OnLockScreenIconDownloadedListener{
+        public void onLockScreenIconDownloaded(Bitmap icon);
+        public void onLockScreenIconDownloadError(Exception e);
+    }
+    
+    private Bitmap lockScreenIcon;
 	private Boolean bUserSelected = false;
 	private Boolean bDriverDistStatus = null;
 	private HMILevel  hmiLevel = null;
@@ -90,4 +101,26 @@ public class LockScreenManager {
 		}
 		return LockScreenStatus.OFF;
 	}
+
+    public void downloadLockScreenIcon(final String url, final OnLockScreenIconDownloadedListener l){
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    lockScreenIcon = HttpUtils.downloadImage(url);
+                    if(l != null){
+                        l.onLockScreenIconDownloaded(lockScreenIcon);
+                    }
+                }catch(IOException e){
+                    if(l != null){
+                        l.onLockScreenIconDownloadError(e);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public Bitmap getLockScreenIcon(){
+        return this.lockScreenIcon;
+    }
 }
