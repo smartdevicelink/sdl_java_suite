@@ -149,7 +149,7 @@ class SdlPermissionSet {
         return copy;
     }
 
-    static SdlPermissionSet symetricDifference(SdlPermissionSet lhs, SdlPermissionSet rhs){
+    static SdlPermissionSet symmetricDifference(SdlPermissionSet lhs, SdlPermissionSet rhs){
 
         SdlPermissionSet differenceLhs = difference(lhs, rhs);
         SdlPermissionSet differenceRhs = difference(rhs, lhs);

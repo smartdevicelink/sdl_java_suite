@@ -1,5 +1,7 @@
 package com.smartdevicelink.permission;
 
+import android.support.annotation.NonNull;
+
 public interface SdlPermissionListener {
 
     /**
@@ -8,6 +10,6 @@ public interface SdlPermissionListener {
      * @param event This {@link SdlPermissionEvent} can only contain permissions that are specified
      *              in the {@link SdlPermissionSet} supplied with the listener.
      */
-    void onPermissionChanged(SdlPermissionEvent event);
+    void onPermissionChanged(@NonNull SdlPermissionEvent event);
 
 }

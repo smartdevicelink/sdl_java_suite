@@ -1,5 +1,7 @@
 package com.smartdevicelink.permission;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 import java.util.EnumSet;
@@ -16,7 +18,8 @@ public class SdlPermissionEvent {
      * @param hmiLevel The {@link HMILevel} of the desired permission set.
      * @return {@link EnumSet} of {@link SdlPermission} items representing available permissions.
      */
-    public EnumSet<SdlPermission> getPermissions(HMILevel hmiLevel){
+    @NonNull
+    public EnumSet<SdlPermission> getPermissions(@NonNull HMILevel hmiLevel){
         return mPermissionSet.permissions.get(hmiLevel.ordinal());
     }
 
@@ -25,6 +28,7 @@ public class SdlPermissionEvent {
      * regardless of the HMI levels that they are available in.
      * @return {@link EnumSet} of {@link SdlPermission} items representing available permissions.
      */
+    @NonNull
     public EnumSet<SdlPermission> getPermissions(){
         EnumSet<SdlPermission> permissions = EnumSet.noneOf(SdlPermission.class);
 

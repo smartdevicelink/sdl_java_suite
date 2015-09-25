@@ -1,6 +1,7 @@
 package com.smartdevicelink.permission;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -25,6 +26,11 @@ public class SdlPermissionManager {
         mListeners = new ArrayList<>();
     }
 
+    /**
+     * Method to get the current manager instance.
+     * @return Shared instance of SdlPermissionManager
+     */
+    @NonNull
     public synchronized static SdlPermissionManager getInstance(){
         if(mInstance == null){
             mInstance = new SdlPermissionManager();
@@ -62,9 +68,46 @@ public class SdlPermissionManager {
         return mSdlPermissionSet.permissions.get(hmi.ordinal()).contains(permission);
     }
 
-    public synchronized SdlPermissionEvent addListener(SdlPermissionListener listener, SdlPermissionSet filter){
+    /**
+     * Method to add a listener that will be called when the conditions specified by the provided
+     * {@link SdlPermissionFilter} and {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode}
+     * @param listener Implementation of {@link SdlPermissionFilter} that will receive callbacks
+     *                 when permissions requested by the filter change according to the supplied
+     *                 ListenerMode.
+     * @param filter SdlPermissionFilter that contains a set of permissions that should be reported
+     *               to the listener. The listener will ONLY receive information on permissions
+     *               included in the filter.
+     * @param mode The {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode} that
+     *             defines when the listener should be called based on changes in the permissions
+     *             specified by the SdlPermissionFilter.
+     * @return Returns an {@link SdlPermissionEvent} containing the current state of the permissions
+     * when the listener is added.
+     */
+    @NonNull
+    public synchronized SdlPermissionEvent addListener(@NonNull SdlPermissionListener listener,
+                                                       @NonNull SdlPermissionFilter filter,
+                                                       @Nullable ListenerMode mode){
         mListeners.add(new ListenerWithFilter(listener, filter, mode));
-        return null;
+        return new SdlPermissionEvent(SdlPermissionSet.copy(mSdlPermissionSet));
+    }
+
+    /**
+     * Convenience method that is equivalent to calling
+     * {@link SdlPermissionManager#addListener(SdlPermissionListener, SdlPermissionFilter, ListenerMode)}
+     * with {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode}.
+     * @param listener Implementation of {@link SdlPermissionFilter} that will receive callbacks
+     *                 when permissions requested by the filter change according to the supplied
+     *                 ListenerMode.
+     * @param filter SdlPermissionFilter that contains a set of permissions that should be reported
+     *               to the listener. The listener will ONLY receive information on permissions
+     *               included in the filter.
+     * @return Returns an {@link SdlPermissionEvent} containing the current state of the permissions
+     * when the listener is added.
+     */
+    @NonNull
+    public synchronized SdlPermissionEvent addListener(@NonNull SdlPermissionListener listener,
+                                                       @NonNull SdlPermissionFilter filter){
+        return addListener(listener, filter, ListenerMode.MATCH_ANY);
     }
 
     public synchronized void onPermissionChange(OnPermissionsChange onPermissionsChange){
@@ -101,7 +144,7 @@ public class SdlPermissionManager {
 
         }
 
-        SdlPermissionSet changed = SdlPermissionSet.symetricDifference(mSdlPermissionSet, newPermissions);
+        SdlPermissionSet changed = SdlPermissionSet.symmetricDifference(mSdlPermissionSet, newPermissions);
 
         mSdlPermissionSet.recycle();
         mSdlPermissionSet = newPermissions;
@@ -109,13 +152,26 @@ public class SdlPermissionManager {
         for(ListenerWithFilter lwf: mListeners){
             switch(lwf.mode){
                 case MATCH_ALL:
-                    if(changed.containsAny(lwf.filter) && mSdlPermissionSet.containsAll(lwf.filter)){
-                        lwf.listener.onPermissionChanged();
+                    if(changed.containsAny(lwf.filter.permissionSet)
+                            && mSdlPermissionSet.containsAll(lwf.filter.permissionSet)){
+                        lwf.listener.onPermissionChanged(new SdlPermissionEvent(
+                            SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
                     }
                     break;
                 case MATCH_EXACT:
+                    if(changed.containsAny(lwf.filter.permissionSet)
+                            && mSdlPermissionSet.containsExactlyAll(lwf.filter.permissionSet)){
+                        lwf.listener.onPermissionChanged(new SdlPermissionEvent(
+                                SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
+                    }
                     break;
                 case MATCH_ANY:
+                    if(changed.containsAny(lwf.filter.permissionSet)) {
+                        lwf.listener.onPermissionChanged(new SdlPermissionEvent(
+                                SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
+                    }
+                    break;
+                default:
                     break;
             }
         }
@@ -136,10 +192,10 @@ public class SdlPermissionManager {
 
     private class ListenerWithFilter{
         final SdlPermissionListener listener;
-        final SdlPermissionSet filter;
+        final SdlPermissionFilter filter;
         final ListenerMode mode;
 
-        ListenerWithFilter(SdlPermissionListener listener, SdlPermissionSet filter, ListenerMode mode){
+        ListenerWithFilter(SdlPermissionListener listener, SdlPermissionFilter filter, ListenerMode mode){
             this.listener = listener;
             this.filter = filter;
             this.mode = mode;
