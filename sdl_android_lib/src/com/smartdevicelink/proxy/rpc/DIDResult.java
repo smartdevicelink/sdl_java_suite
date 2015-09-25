@@ -5,8 +5,8 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 /** Individual requested DID result and data.
- * <p>
-  * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -39,7 +39,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 1.0
- * <p>
+ * 
  * @see VehicleDataResultCode
  * @see ReadDID
  */
@@ -48,8 +48,8 @@ public class DIDResult extends RPCStruct {
 	public static final String KEY_RESULT_CODE = "resultCode";
 	public static final String KEY_DATA = "data";
 	public static final String KEY_DID_LOCATION = "didLocation";
-	/** Constructs a new DIDResult object indicated by the Hashtable<br>
-	 * parameter
+	/** <p>Constructs a new DIDResult object indicated by the Hashtable
+	 * parameter</p>
 	 * @param hash
 	 * The hash table to use
 	 */	

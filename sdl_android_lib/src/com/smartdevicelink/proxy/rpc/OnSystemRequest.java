@@ -15,9 +15,9 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 /**
- * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud<br>Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
- * <p>
- * <p><b>Parameter List</b>
+ * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud. Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -38,17 +38,17 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
  * 		<tr>
  * 			<td>url</td>
  * 			<td>Array of Strings</td>
- * 			<td>Optional URL for HTTP requests.<br>If blank, the binary data shall be forwarded to the app.<br>If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
+ * 			<td>Optional URL for HTTP requests.If blank, the binary data shall be forwarded to the app.If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
  *                 <td>N</td>
- *                 <td>maxlength: 1000 <br>minsize:1<br> maxsize: 100</td>
+ *                 <td>maxlength: 1000; minsize:1;  maxsize: 100</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>timeout</td>
  * 			<td>Integer</td>
- * 			<td>Optional timeout for HTTP requests<br>Required if a URL is provided</td>
+ * 			<td>Optional timeout for HTTP requests;Required if a URL is provided</td>
  *                 <td>N</td>
- *                 <td>minvalue:0<br> maxvalue: 2000000000</td>
+ *                 <td>minvalue:0; maxvalue: 2000000000</td>
  * 			<td>SmartDeviceLink </td>
  * 		</tr>
  * 		<tr>
@@ -64,7 +64,7 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
  * 			<td>Float</td>
  * 			<td>Optional offset in bytes for resuming partial data chunks</td>
  *                 <td>N</td>
- *                 <td>minvalue:0<br> maxvalue:100000000000</td>
+ *                 <td>minvalue:0; maxvalue:100000000000</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
  * 		<tr>
@@ -72,7 +72,7 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
  * 			<td>Float</td>
  * 			<td>Optional length in bytes for resuming partial data chunks</td>
  *                 <td>N</td>
- *                 <td>minvalue: 0<br> maxvalue:100000000000</td>
+ *                 <td>minvalue: 0; maxvalue:100000000000</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
  *  </table>	      	

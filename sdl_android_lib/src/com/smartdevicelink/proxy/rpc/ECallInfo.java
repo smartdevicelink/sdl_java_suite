@@ -6,8 +6,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 /** Emergency Call notification and confirmation data.
- * <p>
- * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -17,7 +17,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
  * 			<th>Notes</th>
  * 			<th>Version Available</th>
  * 		</tr>
-* 		<tr>
+ * 		<tr>
  * 			<td>eCallNotificationStatus</td>
  * 			<td>VehicleDataNotificationStatus</td>
  * 			<td>References signal "eCallNotification_4A".</td>
@@ -25,7 +25,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
  * 			<td></td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
-* 		<tr>
+ * 		<tr>
  * 			<td>auxECallNotificationStatus</td>
  * 			<td>VehicleDataNotificationStatus</td>
  * 			<td>References signal "eCallNotification". This is an alternative signal available on some carlines replacing the eCallNotificationStatus, but showing the same values.</td>
@@ -55,11 +55,11 @@ public class ECallInfo extends RPCStruct {
     public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
     public static final String KEY_AUX_E_CALL_NOTIFICATION_STATUS = "auxECallNotificationStatus";
     public static final String KEY_E_CALL_CONFIRMATION_STATUS = "eCallConfirmationStatus";
-    /** Constructs a new ECallInfo object indicated by the Hashtable<br>
+    /** Constructs a new ECallInfo object indicated by the Hashtable
 	 * parameter
 	 * @param hash
-	 * <p>
-	 * 			The hash table to use
+	 * 
+	 * 			<p>The hash table to use</p>
 	 */
     public ECallInfo() { }
     public ECallInfo(Hashtable<String, Object> hash) {

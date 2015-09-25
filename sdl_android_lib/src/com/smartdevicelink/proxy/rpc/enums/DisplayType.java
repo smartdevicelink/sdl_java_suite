@@ -1,6 +1,6 @@
 package com.smartdevicelink.proxy.rpc.enums;
 /** The type of the display.
- * <p>
+ * 
  * 
  * @since SmartDevcieLink 1.0 
  *
@@ -8,9 +8,9 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 public enum DisplayType {
 	/**
-	* Center Information Display.<br>
+	* Center Information Display.
 	*This display type provides a 2-line x 20 character "dot matrix" display.
-	*<p>
+	*
 	*/
 
     CID("CID"),

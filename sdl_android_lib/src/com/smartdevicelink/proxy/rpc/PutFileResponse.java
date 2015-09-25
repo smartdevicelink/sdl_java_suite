@@ -23,7 +23,7 @@ public class PutFileResponse extends RPCResponse {
 	/**
 	 * Constructs a new PutFileResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

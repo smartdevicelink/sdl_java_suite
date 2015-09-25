@@ -5,11 +5,11 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 /**
  * Various information about connecting device.
- * <p>
- * <p>
  * 
-  * <p><b>Parameter List</b>
-  * <p>
+ * 
+ * 
+ * <p><b>Parameter List</b></p>
+ * 
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -64,7 +64,7 @@ import com.smartdevicelink.proxy.RPCStruct;
  * 			<td>Integer</td>
  * 			<td>Omitted if connected not via BT.</td>
  *                 <td>N</td>
- *                 <td>Min Value: 0<br>Max Value: 100</td>
+ *                 <td>Min Value: 0; Max Value: 100</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
@@ -77,7 +77,7 @@ public class DeviceInfo extends RPCStruct{
     public static final String KEY_OS_VERSION = "osVersion";
     public static final String KEY_CARRIER = "carrier";
     public static final String KEY_MAX_NUMBER_RFCOMM_PORTS = "maxNumberRFCOMMPorts";
-	/** Constructs a new DeviceInfo object indicated by the Hashtable<br>
+	/** Constructs a new DeviceInfo object indicated by the Hashtable
 	 * parameter
 	 * @param hash
 	 * 

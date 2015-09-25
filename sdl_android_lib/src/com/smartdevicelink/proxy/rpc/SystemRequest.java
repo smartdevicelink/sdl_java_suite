@@ -6,9 +6,9 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-/** An asynchronous request from the device; binary data can be included in hybrid part of message for some requests<br> (such as HTTP, Proprietary, or Authentication requests)
- * <p>
- * <p><b>Parameter List</b>
+/** An asynchronous request from the device; binary data can be included in hybrid part of message for some requests (such as HTTP, Proprietary, or Authentication requests)
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -30,14 +30,14 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
  * 		<tr>
  * 			<td>fileName</td>
  * 			<td>String</td>
- * 			<td>Filename of HTTP data to store in predefined system staging area.<br>Mandatory if requestType is HTTP.<br>PROPRIETARY requestType should ignore this parameter. </td>
+ * 			<td>Filename of HTTP data to store in predefined system staging area. Mandatory if requestType is HTTP. PROPRIETARY requestType should ignore this parameter. </td>
  *                 <td>N</td>
- *                 <td>Max Length: 255<br></td>
+ *                 <td>Max Length: 255</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 3.0
- * <p>
+ * 
  * 
  *
  */

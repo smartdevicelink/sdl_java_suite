@@ -10,16 +10,16 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * Creates a Choice Set which can be used in subsequent <i>
  * {@linkplain PerformInteraction}</i> Operations.
- * <p>
- * Function Group: Base 
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * <p>
- * AudioStreamingState : ANY<br>
- * <p>
- * SystemContext: MAIN, MENU, VR<br>
- * </p>
- * <p><b>Parameter List</b><br>
+ * 
+ * <p>Function Group: Base </p>
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
+ * <p>AudioStreamingState : ANY</p>
+ * 
+ * <p>SystemContext: MAIN, MENU, VR</p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -31,10 +31,10 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 		</tr>
  * 		<tr>
  * 			<td>interactionChoiceSetID</td>
- * 			<td>Int32</td>
+ * 			<td>Integer</td>
  * 			<td>A unique ID that identifies the Choice Set</td>
  *                 <td>Y</td>
- *                 <td>Min Value: 0<br>Max Value: 2000000000</td>
+ *                 <td>Min Value: 0; Max Value: 2000000000</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -42,32 +42,32 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Choice[]</td>
  * 			<td>Array of one or more elements.</td>
  *                 <td>Y</td>
- *                 <td>Min Value: 1<br>Max Value: 100</td>
+ *                 <td>Min Value: 1; Max Value: 100</td>
  * 			<td>SmartDeviceLink 1.0 </td>
  * 		</tr>
  *  </table>
- *  <p>
+ *  
  *   
- *  <b>Note:</b><br>Second Utterance issue with CreateInteractionChoiceSet RPC. <br> Before a perform interaction
- * is sent you MUST wait for the success from the CreateInteractionChoiceSet RPC.<br>
+ * <p> <b>Note:</b></p>Second Utterance issue with CreateInteractionChoiceSet RPC.  Before a perform interaction
+ * is sent you MUST wait for the success from the CreateInteractionChoiceSet RPC.
  * If you do not wait the system may not recognize the first utterance from the user.
- * </p>
- * <b>Response</b><br>
- *<p>
+ * 
+ * <p><b>Response</b></p>
+ *
  * Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the Choice Set was created. 
- * <p>
- * <b>Non-default Result Codes:</b><br>
- * 	SUCCESS<br>
- * 	INVALID_DATA<br>
- * 	OUT_OF_MEMORY<br>
- * 	TOO_MANY_PENDING_REQUESTS<br>
- * 	APPLICATION_NOT_REGISTERED<br>
- * 	GENERIC_ERROR<br>
- * 	REJECTED<br> 
- *  INVALID_ID<br>
- *  DUPLICATE_NAME<br>
- *  UNSUPPORTED_RESOURCE <br>    
- *  <p>
+ * 
+ * <p><b>Non-default Result Codes:</b></p>
+ * 	<p>SUCCESS</p>
+ * 	<p>INVALID_DATA</p>
+ * 	<p>OUT_OF_MEMORY</p>
+ * 	<p>TOO_MANY_PENDING_REQUESTS</p>
+ * 	<p>APPLICATION_NOT_REGISTERED</p>
+ * 	<p>GENERIC_ERROR</p>
+ * <p>	REJECTED</p> 
+ * <p> INVALID_ID</p>
+ * <p> DUPLICATE_NAME</p>
+ *  <p>UNSUPPORTED_RESOURCE </p>    
+ *  
  * 
  * @since SmartDeviceLink 1.0
  * @see DeleteInteractionChoiceSet
@@ -84,9 +84,9 @@ public class CreateInteractionChoiceSet extends RPCRequest {
         super(FunctionID.CREATE_INTERACTION_CHOICE_SET.toString());
     }
 	/**
-	 * Constructs a new CreateInteractionChoiceSet object indicated by the
-	 * Hashtable parameter
-	 * <p>
+	 * <p>Constructs a new CreateInteractionChoiceSet object indicated by the
+	 * Hashtable parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -107,7 +107,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * 
 	 * @param interactionChoiceSetID
 	 *            an Integer value representing the Choice Set ID
-	 *            <p>
+	 *            
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
@@ -148,7 +148,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @param choiceSet
 	 *            a List<Choice> representing the array of one or more
 	 *            elements
-	 *            <p>
+	 *            
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
     public void setChoiceSet( List<Choice> choiceSet ) {

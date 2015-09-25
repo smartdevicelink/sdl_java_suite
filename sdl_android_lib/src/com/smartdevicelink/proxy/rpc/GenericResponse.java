@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.RPCResponse;
  * Generic Response is sent, when the name of a received msg cannot be
  * retrieved. Only used in case of an error. Currently, only resultCode
  * INVALID_DATA is used.
-  * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>

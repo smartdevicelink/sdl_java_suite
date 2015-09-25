@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  * Specifies the language to be used for TTS, VR, displayed messages/menus
- * <p>
+ *
  * 
  * @since SmartDeviceLink 1.0
  *

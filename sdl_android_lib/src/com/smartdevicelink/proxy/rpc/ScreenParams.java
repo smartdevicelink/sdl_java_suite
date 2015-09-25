@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.util.DebugTool;
 /** The resolution of the prescribed screen area.
  * 
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>

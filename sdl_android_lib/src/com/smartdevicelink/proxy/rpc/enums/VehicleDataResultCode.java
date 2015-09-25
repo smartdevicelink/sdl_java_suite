@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /** Enumeration that describes possible result codes of a vehicle data entry request.
  * 
  * @since SmartDeviceLink 2.0 
- *<p>
+ *
  *@see DIDResult
  *@see ReadDID
  */
@@ -20,7 +20,7 @@ public enum VehicleDataResultCode {
      */
 	
 	TRUNCATED_DATA,
-	/** This vehicle data item is not allowed for this app .<br>The request is not authorized in local policies.
+	/** This vehicle data item is not allowed for this app .The request is not authorized in local policies.
 	 * 
 	 */
 

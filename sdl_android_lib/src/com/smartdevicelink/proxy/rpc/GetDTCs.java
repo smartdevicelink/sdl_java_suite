@@ -8,12 +8,12 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
  * vehicle module.
- * <p>
- * Function Group: ProprietaryData
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * <p>
-  * <p><b>Parameter List</b>
+ * 
+ *<p> Function Group: ProprietaryData</p>
+ * 
+ *<p> <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -28,7 +28,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Integer</td>
  * 			<td>Name of ECU.</td>
  *                 <td>Y</td>
- *                 <td>Min Value: 0<br>Max Value: 65535</td>
+ *                 <td>Min Value: 0; Max Value: 65535</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
@@ -36,21 +36,22 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Integer</td>
  * 			<td>DTC Mask Byte to be sent in diagnostic request to module.</td>
  *                 <td>N</td>
- *                 <td>Min Value: 0<br>Max Value: 255</td>
+ *                 <td>Min Value: 0; Max Value: 255</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  *  </table>
- * <b>Response</b><br>
- * <p>
- * <b>Non-default Result Codes:</b><br>- 
- * SUCCESS<br>- 
- * INVALID_DATA<br>- OUT_OF_MEMORY<br>- 
- * TOO_MANY_PENDING_REQUESTS<br>
- * - APPLICATION_NOT_REGISTERED<br>
- * - GENERIC_ERROR<br>    
- * - REJECTED<br>  
- * - DISALLOWED  <br> 
- * - USER_DISALLOWED<br>   
+ * <p><b>Response</b></p>
+ * 
+ * <p><b>Non-default Result Codes:</b></p> 
+ *<p> SUCCESS</p>
+ * <p>INVALID_DATA</p>
+ *<p> OUT_OF_MEMORY</p>
+ * <p>TOO_MANY_PENDING_REQUESTS</p>
+ * <p>APPLICATION_NOT_REGISTERED</p>
+ *<p>GENERIC_ERROR</p>  
+ * <p>REJECTED</p>  
+ * <p>DISALLOWED </p> 
+ * <p>USER_DISALLOWED</p>   
  * @since SmartDeviceLink 2.0
  */
 public class GetDTCs extends RPCRequest {
@@ -65,8 +66,8 @@ public class GetDTCs extends RPCRequest {
     }
 
 	/**
-	 * Constructs a new GetDTCs object indicated by the Hashtable parameter
-	 * <p>
+	 * <p>Constructs a new GetDTCs object indicated by the Hashtable parameter
+	 * </p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -82,7 +83,7 @@ public class GetDTCs extends RPCRequest {
 	 *            an Integer value representing a name of the module to receive
 	 *            the DTC form
 	 *            <p>
-	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
+	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
     	if (ecuName != null) {

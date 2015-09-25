@@ -5,10 +5,10 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 /**
  * <p>The x or y coordinate of the touch.</p>
- * <p>
  * 
  * 
- * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -23,7 +23,7 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The x coordinate of the touch.</td>
  *                 <td>Y</td>
- *                 <td>minvalue = 0 <br>maxvalue = 10000</td>
+ *                 <td>minvalue = 0; maxvalue = 10000</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  * 		<tr>
@@ -31,7 +31,7 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The y coordinate of the touch.</td>
  *                 <td>Y</td>
- *                 <td>minvalue = 0 <br>maxvalue = 10000</td>
+ *                 <td>minvalue = 0; maxvalue = 10000</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table>
@@ -47,12 +47,12 @@ public class TouchCoord extends RPCStruct {
     public static final String KEY_Y = "y";
     public TouchCoord() {}
 	 /**
-		 * Constructs a new TouchCoord object indicated by the Hashtable parameter
-		 * <p>
+		 * <p>Constructs a new TouchCoord object indicated by the Hashtable parameter</p>
+		 * 
 		 * 
 		 * @param hash
 		 * <p>
-		 *            The Hashtable to use
+		 *            The Hashtable to use</p>
 		 */ 
 
     public TouchCoord(Hashtable<String, Object> hash) {

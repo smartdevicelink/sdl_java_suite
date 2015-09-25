@@ -8,8 +8,8 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 /** This mode causes the interaction to immediately display a keyboard entry through the HMI.
- * <p>
- * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

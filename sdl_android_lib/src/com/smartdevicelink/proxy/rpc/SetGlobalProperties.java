@@ -9,19 +9,19 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Sets value(s) for the specified global property(ies)
- * <p>
- * Function Group: Base <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * </p>
- * <b>AudioStreamingState:</b><br>
- * Any<br>
- * <p>
- * <b>SystemContext:</b><br>
- * Any<br>
- * <p> 
  * 
- * <p><b>Parameter List</b>
- * <p>
+ * <p>Function Group: Base </p>
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
+ * <p><b>AudioStreamingState:</b></p>
+ * Any
+ * 
+ * <p><b>SystemContext:</b></p>
+ * Any
+ * 
+ * 
+ * <p><b>Parameter List</b></p>
+ * 
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -36,7 +36,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>TTSChunk</td>
  * 			<td>The help prompt. An array of text chunks of type TTSChunk. See {@linkplain TTSChunk}.The array must have at least one item.</td>
  *                 <td>N</td>
- * 			<td>Array must have at least one element.<br>Only optional it timeoutPrompt has been specified.<br>minsize:1<br> maxsize: 100</td>
+ * 			<td>Array must have at least one element.<p>Only optional it timeoutPrompt has been specified.</p>minsize:1; maxsize: 100</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -44,7 +44,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>TTSChunk</td>
  * 			<td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
  *                 <td>N</td>
- * 			<td>Array must have at least one element<br>Only optional it helpPrompt has been specified<br> minsize: 1<br> maxsize: 100</td>
+ * 			<td>Array must have at least one element. Only optional it helpPrompt has been specified <p>minsize: 1; maxsize: 100</p></td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -52,7 +52,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>string</td>
  * 			<td>Text, which is shown as title of the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
- * 			<td>If omitted on supported displays, the default SDL help title will be used. <br> If omitted and one or more vrHelp items are provided, the request will be rejected. <br>maxlength: 500</td>
+ * 			<td>If omitted on supported displays, the default SDL help title will be used. <p>If omitted and one or more vrHelp items are provided, the request will be rejected.</p>maxlength: 500</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -60,7 +60,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>VrHelep</td>
  * 			<td>Items listed in the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
- * 			<td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<br>If the list of VR Help Items contains nonsequential positions (e.g. [1,2,4]), the RPC will be rejected.<br>If omitted and a vrHelpTitle is provided, the request will be rejected.<br>minsize:1<br> maxsize: 100 </td>
+ * 			<td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<p>If the list of VR Help Items contains nonsequential positions (e.g. [1,2,4]), the RPC will be rejected.</p><p>If omitted and a vrHelpTitle is provided, the request will be rejected.</p>minsize:1; maxsize: 100 </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -89,22 +89,20 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  *
  *  </table>
- *  <p>
- * <b>Note: </b>Your application shall send a SetGlobalProperties to establish an advanced help prompt before sending any voice commands.
- * <p>
- *  <b>Response</b><p>
-Indicates whether the requested Global Properties were successfully set. <br>
-<b>Non-default Result Codes:</b><P>
-
-	- SUCCESS<br>
-	- INVALID_DATA<br>
-	- OUT_OF_MEMORY<br>
-	- TOO_MANY_PENDING_REQUESTS<br>
-	- APPLICATION_NOT_REGISTERED<br>
-	- GENERIC_ERROR    <br>
-	- REJECTED  <br>
-	- DISALLOWED   <br>
-
+ *  
+ * <p><b>Note: </b>Your application shall send a SetGlobalProperties to establish an advanced help prompt before sending any voice commands.</p>
+ * 
+ *  <p><b>Response</b></p>
+ *  Indicates whether the requested Global Properties were successfully set. 
+ *  <p><b>Non-default Result Codes:</b></p>
+ *  <p>SUCCESS</p>
+ *  <p>INVALID_DATA</p>
+ *  </p>OUT_OF_MEMORY</p>
+ *  <p>TOO_MANY_PENDING_REQUESTS</p>
+ *  <p>APPLICATION_NOT_REGISTERED</p>
+ *  <p>GENERIC_ERROR</p>
+ *  <p>REJECTED</p>
+ *  <p>DISALLOWED</p>
  * @since SmartDeviceLink 1.0
  * @see ResetGlobalProperties
  */
@@ -125,7 +123,7 @@ public class SetGlobalProperties extends RPCRequest {
 	/**
 	 * Constructs a new SetGlobalProperties object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -167,7 +165,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 * @param helpPrompt
 	 *            a List<TTSChunk> of one or more TTSChunk elements
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Array must have at least one element</li>
@@ -238,8 +236,8 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 * @param vrHelpTitle
 	 *            a String value representing a voice recognition Help Title
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <p></p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If omitted on supported displays, the default SDL help
 	 *            title will be used</li>
@@ -292,8 +290,8 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @param vrHelp
 	 *            a List value representing items listed in the VR help screen
 	 *            used in an interaction started by PTT
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <p></p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If omitted on supported displays, the default SmartDeviceLink VR
 	 *            help / What Can I Say? screen will be used</li>

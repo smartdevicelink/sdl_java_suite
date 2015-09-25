@@ -5,8 +5,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 /** The image resolution of this field.
  * 
- * <p><b>Parameter List</b>
- * <p>
+ * <p><b>Parameter List</b></p>
+ * 
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -21,7 +21,7 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The image resolution width.</td>
  *                 <td></td>
- *                 <td>minvalue:1<br> maxvalue: 10000</td>
+ *                 <td>minvalue:1; maxvalue: 10000</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  * 		<tr>
@@ -29,10 +29,10 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The image resolution height.</td>
  *                 <td></td>
- *                 <td>minvalue:1<br> maxvalue: 10000</td>
+ *                 <td>minvalue:1;  maxvalue: 10000</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- * 		</tr>
+ * 		
  *  </table>
  * @since SmartDeviceLink 3.0
  * @see DisplayType

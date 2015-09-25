@@ -32,7 +32,7 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
  * </tr>
  * <tr>
  * <td>cmdID</td>
- * <td>Int32</td>
+ * <td>Integer</td>
  * <td>The cmdID of the command the user selected. This is the cmdID value provided by the application in the AddCommand operation that created the command.</td>
  * <td></td>
  * <td>SmartDeviceLink 1.0</td>
@@ -99,8 +99,8 @@ public class OnCommand extends RPCNotification {
         return null;
     }
     /**
-     * <p>Sets TriggerSource<br/>
-     * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
+     * <p>Sets TriggerSource</p>
+     * <p>Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {

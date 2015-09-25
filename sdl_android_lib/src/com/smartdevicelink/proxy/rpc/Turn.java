@@ -6,8 +6,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Describes a navigation turn including an optional icon
- * <p>
- * <b>Parameter List
+ * 
+ * <p><b>Parameter List</p>
  * <table border="1" rules="all">
  * <tr>
  * <th>Name</th>

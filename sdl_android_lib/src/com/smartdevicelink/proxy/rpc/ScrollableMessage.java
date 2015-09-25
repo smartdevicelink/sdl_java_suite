@@ -10,12 +10,12 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * Creates a full screen overlay containing a large block of formatted text that
  * can be scrolled with up to 8 SoftButtons defined
- * <p>
- * Function Group: ScrollableMessage
- * <p>
- * <b>HMILevel needs to be FULL</b>
- * <p>
-  * <p><b>Parameter List</b>
+ * 
+ * <p>Function Group: ScrollableMessage</p>
+ * 
+ * <p><b>HMILevel needs to be FULL</b></p>
+ *
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -38,7 +38,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Integer</td>
  * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. scrolling message resets timeout).</td>
  *                 <td>N</td>
- *                 <td>minvalue=1000<br> maxvalue=65535<br> defvalue=30000</td>
+ *                 <td>minvalue=1000; maxvalue=65535; defvalue=30000</td>
  * 			<td>SmartDevice Link 1.0 </td>
  * 		</tr>
  * 		<tr>
@@ -46,23 +46,23 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>SoftButton</td>
  * 			<td>App defined SoftButtons. If omitted on supported displays, only the system defined "Close" SoftButton will be displayed.</td>
  *                 <td>N</td>
- *                 <td>minsize=0<br> maxsize=8</td>
+ *                 <td>minsize=0; maxsize=8</td>
  * 			<td>SmartDevice Link 1.0 </td>
  * 		</tr>
  *  </table>
- *   <b>Response</b><br><p>
- *<b>Non-default Result Codes:</b><br>
- *	- SUCCESS<br>
- *	- INVALID_DATA,<br>
- *	- OUT_OF_MEMORY<br>
- *	- CHAR_LIMIT_EXCEEDED<br>
- *	- TOO_MANY_PENDING_REQUESTS<br>
- *	- APPLICATION_NOT_REGISTERED<br>
- *	- GENERIC_ERROR   <br>
- *	- DISALLOWED<br>
- *	- UNSUPPORTED_RESOURCE     <br>           
- *	- REJECTED   <br>
- *	- ABORTED<br>
+ *  <p> <b>Response</b></p>
+ *<b>Non-default Result Codes:</b>
+ *	<p>SUCCESS</p>
+ *	<p>INVALID_DATA </p>
+ *	<p>OUT_OF_MEMORY</p>
+ *	<p>CHAR_LIMIT_EXCEEDED</p>
+ *	<p>TOO_MANY_PENDING_REQUESTS</p>
+ *	<p>APPLICATION_NOT_REGISTERED</p>
+ *	<p>GENERIC_ERROR </p>
+ *	<p>DISALLOWED</p>
+ *	<p>UNSUPPORTED_RESOURCE</p>          
+ *	<p>REJECTED </p>
+ *	<p>ABORTED</p>
  *
  *  @see  scrollableMessageBody 
  *  @see TextFieldName
@@ -82,7 +82,7 @@ public class ScrollableMessage extends RPCRequest {
 	/**
 	 * Constructs a new ScrollableMessage object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -97,7 +97,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @param scrollableMessageBody
 	 *            a String value representing the Body of text that can include
 	 *            newlines and tabs
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setScrollableMessageBody(String scrollableMessageBody) {
@@ -123,7 +123,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * 
 	 * @param timeout
 	 *            an Integer value representing an App defined timeout
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
 	 */
     public void setTimeout(Integer timeout) {
@@ -150,7 +150,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @param softButtons
 	 *            a List<SoftButton> value representing App defined
 	 *            SoftButtons
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {

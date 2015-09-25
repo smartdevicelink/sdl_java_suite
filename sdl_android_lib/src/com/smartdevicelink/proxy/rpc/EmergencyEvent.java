@@ -7,8 +7,8 @@ import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 /** Information related to an emergency event (and if it occurred).
- * <p>
-   * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -47,7 +47,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
  * 			<td>Integer</td>
  * 			<td></td>
  * 			<td>References signal "VedsMaxDeltaV_D_Ltchd".</td>
- * 			<td>minvalue=0<br> maxvalue=255<br> Additional reserved values:<br> 0x00 No event<br> 0xFE Not supported<br>0xFF Fault </td>
+ * 			<td>minvalue=0; maxvalue=255;<p> Additional reserved values:</p> <p>0x00 No event; 0xFE Not supported; 0xFF Fault</p> </td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *
@@ -75,11 +75,11 @@ public class EmergencyEvent extends RPCStruct {
     public static final String KEY_MAXIMUM_CHANGE_VELOCITY = "maximumChangeVelocity";
     public static final String KEY_MULTIPLE_EVENTS = "multipleEvents";
 	
-	/** Constructs a new EmergencyEvent object indicated by the Hashtable<br>
+	/** Constructs a new EmergencyEvent object indicated by the Hashtable
 	 * parameter
 	 * @param hash
-	 * <p>
-	 * The hash table to use
+	 * 
+	 * <p>The hash table to use</p>
 	 */
 
     public EmergencyEvent() { }

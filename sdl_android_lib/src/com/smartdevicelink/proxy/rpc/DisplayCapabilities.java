@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Contains information about the display for the SDL system to which the application is currently connected.
-  * <p><b> Parameter List</b>
+ * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

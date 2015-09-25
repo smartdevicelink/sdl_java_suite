@@ -20,7 +20,7 @@ public class SetAppIconResponse extends RPCResponse {
     /**
 	 * Constructs a new SetAppIconResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

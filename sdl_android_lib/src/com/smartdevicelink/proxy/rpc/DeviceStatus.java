@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 
 /**
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -95,7 +95,7 @@ import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 2.0
- * <p>
+ * 
  * @see DeviceLevelStatus
  * @see GetVehicleData
  * @see OnVehicleData

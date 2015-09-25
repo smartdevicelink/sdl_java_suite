@@ -11,8 +11,8 @@ import com.smartdevicelink.proxy.rpc.enums.TouchType;
 /**
  * 
  * Notifies about touch events on the screen's prescribed area.
- * <p><b>Parameter List</b>
- * <p>
+ * <p><b>Parameter List</b></p>
+ * 
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -35,14 +35,14 @@ import com.smartdevicelink.proxy.rpc.enums.TouchType;
  * 			<td>TouchEvent</td>
  * 			<td>List of all individual touches involved in this event.</td>
  *                 <td>Y</td>
- *                 <td>minsize:1<br> maxsize:10</td>
+ *                 <td>minsize:1; maxsize:10</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  *  </table> 
- *  <p>
-  * <b>Note:</b>
- * SDL needs to be informed about every User`s touching the touch screen.
- * <p>
+ *  
+ * <p><b>Note:</b></p>
+ * <p>SDL needs to be informed about every User`s touching the touch screen.</p>
+ * 
  */
 public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_EVENT = "event";

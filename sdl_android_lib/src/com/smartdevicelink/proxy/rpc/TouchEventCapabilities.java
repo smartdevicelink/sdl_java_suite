@@ -5,8 +5,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 /**
  * Types of screen touch events available in screen area.
- * <p>
-  * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

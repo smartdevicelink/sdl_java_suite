@@ -6,14 +6,14 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.util.DebugTool;
 /** <p>The status and pressure of the tires.</p>
- *   <p><b> Parameter List:</b>
- *   <p>
+ *   <p><b> Parameter List:</b></p>
+ *   
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
  * 			<th>Type</th>
  * 			<th>Description</th>
- *          <th>Version</>
+ *          <th>Version</th>
  * 		</tr>
  * 		<tr>
  * 			<td>PressureTellTale</td>
@@ -58,9 +58,9 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  <p>
+ *  
  *  @since SmartDeviceLink 2.0
- *  <p>
+ *  
  * @see WarningLightStatus
  * @see SingleTireStatus
  * @see GetVehicleData 
@@ -76,12 +76,12 @@ public class TireStatus extends RPCStruct {
 	public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
 	public static final String KEY_RIGHT_REAR = "rightRear";
 	 /**
-		 * Constructs a new TireStatus object indicated by the Hashtable parameter
-		 * <p>
+		 * <p>Constructs a new TireStatus object indicated by the Hashtable parameter</p>
+		 * 
 		 * 
 		 * @param hash
 		 * <p>
-		 *            The Hashtable to use
+		 *            The Hashtable to use</p>
 		 */
 
     public TireStatus() { }

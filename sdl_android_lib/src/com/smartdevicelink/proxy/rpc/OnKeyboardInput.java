@@ -8,8 +8,8 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 
 /**
  * On-screen keyboard event. Can be full string or individual keypresses depending on keyboard mode.
- * <p>
- * <p><b>Parameter List</b>
+ * <p></p>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -30,12 +30,12 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
  * 		<tr>
  * 			<td>data</td>
  * 			<td>String</td>
- * 			<td>On-screen keyboard input data.<br>For dynamic keypress events, this will be the current compounded string of entry text.<br>For entry cancelled and entry aborted events, this data param will be omitted.</td>
+ * 			<td>On-screen keyboard input data.For dynamic keypress events, this will be the current compounded string of entry text.For entry cancelled and entry aborted events, this data param will be omitted.</td>
  *                 <td></td>
  *                 <td>Maxlength: 500</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- * 		</tr>
+ * 		
  *  </table>
  *
  */

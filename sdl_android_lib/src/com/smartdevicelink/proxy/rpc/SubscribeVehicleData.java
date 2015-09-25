@@ -11,12 +11,12 @@ import com.smartdevicelink.proxy.RPCRequest;
  * onVehicleData notification whenever new data is available. The update rate is
  * very much dependent on sensors, vehicle architecture and vehicle type. Be
  * also prepared for the situation that a signal is not available on a vehicle
- * <p>
- * Function Group: Location, VehicleInfo and DrivingChara
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * </p>
- * <p><b>Parameter List</b>
+ * 
+ * <p>Function Group: Location, VehicleInfo and DrivingChara</p>
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -219,19 +219,19 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  *  </table>
- *  <p>
- *  <b>Response</b><p>
- *<b>Non-default Result Codes:</b><br>
- *	- SUCCESS<br>
- *	- WARNINGS      <br>
- *	- INVALID_DATA<br>
- *	- OUT_OF_MEMORY<br>
- *	- TOO_MANY_PENDING_REQUESTS<br>
- *	- APPLICATION_NOT_REGISTERED<br>
- *	- GENERIC_ERROR    <br>
- *	- IGNORED <br>
- *	- DISALLOWED<br>
- *	- USER_DISALLOWED   <br>
+ *  
+ * <p> <b>Response</b></p>
+ *<p><b>Non-default Result Codes:</b></p>
+ *<p>SUCCESS</p>
+ *<p>WARNINGS </p>     
+ *<p>INVALID_DATA</p>
+ *	<p>OUT_OF_MEMORY</p>
+ *	<p>TOO_MANY_PENDING_REQUESTS</p>
+ *	<p>APPLICATION_NOT_REGISTERED</p>
+ *	<p>GENERIC_ERROR</p>
+ *	<p>IGNORED </p>
+ *	<p>DISALLOWED</p>
+ *	<p>USER_DISALLOWED </p>
  * 
  * @since SmartDeviceLink 2.0
  * @see UnsubscribeVehicleData
@@ -271,9 +271,9 @@ public class SubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Constructs a new SubscribeVehicleData object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new SubscribeVehicleData object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

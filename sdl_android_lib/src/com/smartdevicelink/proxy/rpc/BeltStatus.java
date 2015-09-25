@@ -4,10 +4,10 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-/** The status of the seat belts.<br> 
+/** The status of the seat belts. 
  *
- * <p><b>Parameter List</b>
- * <p>
+ * <p><b>Parameter List</b></p>
+ * 
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -129,9 +129,9 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
     public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
-	/** Constructs a new BeltStatus object indicated by the Hashtable<br>
+	/** Constructs a new BeltStatus object indicated by the Hashtable
 	 * parameter
-	 * @Param hash
+	 * @param hash
 	 * The hash table to use
 	 * 
 	 *

@@ -28,7 +28,7 @@ public class DialNumber extends RPCRequest {
 	 * @param number
 	 *             a phone number is a string, which can be up to 40 chars.
 	 *            <p>
-	 *            <b>Notes: </b>Maxlength=40<p>
+	 *            <b>Notes: </b>Maxlength=40</p>
 	 *             All characters shall be stripped from string except digits 0-9 and * # , ; +
 	 */
     public void setNumber(String number) {

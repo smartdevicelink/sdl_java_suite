@@ -47,7 +47,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

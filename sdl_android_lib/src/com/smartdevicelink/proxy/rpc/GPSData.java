@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -115,9 +115,9 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 			<td>altitude</td>
  * 			<td>Integer</td>
  * 			<td>Altitude in meters
- *					<b>Minvalue: -10000
- *					<b>Maxvalue: 10000
- * 			</td>
+ *					<b>Minvalue: -10000</b>
+ *					<b>Maxvalue: 10000</b>
+ * 			<b>Note:</b> SYNC uses Mean Sea Level for calculating GPS. </td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
  * 		<tr>

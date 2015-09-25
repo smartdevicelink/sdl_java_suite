@@ -23,7 +23,7 @@ public enum SpeechCapabilities {
 
     LHPLUS_PHONEMES,
     /**
-     * The SDL platform can play pre-recorded sounds as part of a TTS operation.<br>(e.g. Speak, Alert, PerformInteraction, etc.).<br> 
+     * The SDL platform can play pre-recorded sounds as part of a TTS operation.<p>(e.g. Speak, Alert, PerformInteraction, etc.).</p> 
      */
     PRE_RECORDED,
     /**

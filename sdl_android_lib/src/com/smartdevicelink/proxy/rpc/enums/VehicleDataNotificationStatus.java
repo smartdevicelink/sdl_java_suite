@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * Reflects the status of a vehicle data notification.
  * @since SmartDeviceLink 2.0
- * <p>
+ * 
  * @see SoftButtonCapabilities
  * @see ButtonCapabilities
  * @see OnButtonPress 

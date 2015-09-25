@@ -5,10 +5,10 @@ import java.util.Hashtable;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 /**
- * 	Notification containing an updated hashID which can be used over connection cycles (i.e. loss of connection, ignition cycles, etc.).<br>
+ * 	Notification containing an updated hashID which can be used over connection cycles (i.e. loss of connection, ignition cycles, etc.).
  * Sent after initial registration and subsequently after any change in the calculated hash of all persisted app data.
- * <p>
- *  <p><b>Parameter List</b>
+ * <p></p>
+ *  <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

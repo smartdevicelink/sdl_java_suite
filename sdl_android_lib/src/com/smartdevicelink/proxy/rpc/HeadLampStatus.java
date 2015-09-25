@@ -5,8 +5,8 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 /** Status of the head lamps.
- * <p>
- * <table border="1" rules="all">
+ * 
+ * <p><table border="1" rules="all"></p>
  * 		<tr>
  * 			<th>Param Name</th>
  * 			<th>Type</th>
@@ -44,8 +44,8 @@ public class HeadLampStatus extends RPCStruct {
 	public static final String KEY_AMBIENT_LIGHT_SENSOR_STATUS = "ambientLightSensorStatus";
 	public static final String KEY_HIGH_BEAMS_ON = "highBeamsOn";
     public static final String KEY_LOW_BEAMS_ON = "lowBeamsOn";
-	/** Constructs a new HeadLampStatus object indicated by the Hashtable<br>
-	 * parameter
+	/**<p> Constructs a new HeadLampStatus object indicated by the Hashtable
+	 * parameter</p>
 	 * @param hash
 	 * The hash table to use
 	 */

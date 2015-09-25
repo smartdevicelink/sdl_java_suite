@@ -6,9 +6,9 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
 /**
- * Change in permissions for a given set of RPCs<br>
+ * Change in permissions for a given set of RPCs
  * 
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>

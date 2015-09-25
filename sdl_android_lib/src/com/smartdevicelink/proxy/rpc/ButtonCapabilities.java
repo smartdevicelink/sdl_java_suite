@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 
 /**
  * Provides information about the capabilities of a SDL HMI button.
- * <p><b> Parameter List</b>
+ * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -37,18 +37,18 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * 			<td>upDownAvailable</td>
  * 			<td>Boolean</td>
  * 			<td>The button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
- *                  <p> When the button is released, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONUP.</td>
+ *                  <p> When the button is released, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONUP.</p></td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * </table>
- * <p>
- * Upon the request HMI must provide the list of the following information:<br>
- * 	The names of all existing/supported hardware buttons.<br>
- * 		The availability of LONG/SHORT press for each existing/supported hardware button correspondingly<br>
- * 		The availability of UP/DOWN events for each existing/supported hardware button correspondingly.<br>
- * <p>
+ * 
+ * <p>Upon the request HMI must provide the list of the following information:</p>
+ * 	<p>The names of all existing/supported hardware buttons.</p>
+ * 		<p>The availability of LONG/SHORT press for each existing/supported hardware button correspondingly</p>
+ * 		<p>The availability of UP/DOWN events for each existing/supported hardware button correspondingly.</p>
+ * 
  * @since SmartDeviceLink 1.0
- * <p>
+ * 
  * @see ButtonName
  * @see ButtonEventMode
  * @see ButtonPressMode 

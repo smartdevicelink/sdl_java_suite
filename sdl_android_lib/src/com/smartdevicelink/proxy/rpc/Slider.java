@@ -7,14 +7,14 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
- * Creates a full screen or pop-up overlay (depending on platform) with a single
- * user controlled slider.
- * <p>
- * Function Group: Base
- * <p>
- * <b>HMILevel needs to be FULL</b>
- * <p>
-   * <p><b>Parameter List</b>
+ * <p>Creates a full screen or pop-up overlay (depending on platform) with a single
+ * user controlled slider.</p>
+ *
+ * <p>Function Group: Base</p>
+ * 
+ * <p><b>HMILevel needs to be FULL</b></p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -29,7 +29,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Integer</td>
  * 			<td>Number of selectable items on a horizontal axis.</td>
  *                 <td>Y</td>
- * 			<td>Minvalue=2 <br>Maxvalue=26</td>
+ * 			<td>Minvalue=2; Maxvalue=26</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *
@@ -38,7 +38,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>Integer</td>
  * 			<td>Initial position of slider control (cannot exceed numTicks),</td>
  *                 <td>Y</td>
- * 			<td>Minvalue=1<br>Maxvalue=26</td>
+ * 			<td>Minvalue=1; Maxvalue=26</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
@@ -52,9 +52,9 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 		<tr>
  * 			<td>sliderFooter</td>
  * 			<td>Integer</td>
- * 			<td>Text footer to display (meant to display min/max threshold descriptors).<br> For a static text footer, only one footer string shall be provided in the array. For a dynamic text footer, the number of footer text string in the array must match the numTicks value.For a dynamic text footer, text array string should correlate with potential slider position index.If omitted on supported displays, no footer text shall be displayed.</td>
+ * 			<td><p>Text footer to display (meant to display min/max threshold descriptors).</p>For a static text footer, only one footer string shall be provided in the array. For a dynamic text footer, the number of footer text string in the array must match the numTicks value.For a dynamic text footer, text array string should correlate with potential slider position index.If omitted on supported displays, no footer text shall be displayed.</td>
  *                 <td>N</td>
- * 			<td>Maxlength=500<br>Minvalue=1<br> Maxvalue=26</td>
+ * 			<td>Maxlength=500; Minvalue=1; Maxvalue=26</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *
@@ -63,23 +63,23 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>String</td>
  * 			<td>App defined timeout.  Indicates how long of a timeout from the last action (i.e. sliding control resets timeout). If omitted, the value is set to 10000.</td>
  *                 <td>N</td>
- * 			<td>Minvalue=0<br>Maxvalue=65535<br>Defvalue= 10000</td>
+ * 			<td>Minvalue=0; Maxvalue=65535; Defvalue= 10000</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
-*<b>Response </b><br>
-*<p>
-*<b>Non-default Result Codes:</b> <br>
-*	 SAVED <br>
-*	 INVALID_DATA <br>
-*	OUT_OF_MEMORY <br>
-*	TOO_MANY_PENDING_REQUESTS <br>
-*	APPLICATION_NOT_REGISTERED <br>
-*	GENERIC_ERROR   <br>
-*	DISALLOWED <br>
-*	UNSUPPORTED_RESOURCE           <br>     
-*	 REJECTED   <br>
-*	ABORTED <br>
+*<p><b>Response </b></p>
+*
+*<p><b>Non-default Result Codes:</b></p>
+*	<p> SAVED </p>
+*	<p> INVALID_DATA</p>
+*	<p>OUT_OF_MEMORY</p>
+*	<p>TOO_MANY_PENDING_REQUESTS</p>
+*	<p>APPLICATION_NOT_REGISTERED</p>
+*	<p>GENERIC_ERROR</p>
+*<p>	DISALLOWED</p>
+*<p>	UNSUPPORTED_RESOURCE </p>    
+*<p>	 REJECTED   </p>
+*	<p>ABORTED </p>
 * 
  * @since SmartDeviceLink 2.0
  * 
@@ -100,7 +100,7 @@ public class Slider extends RPCRequest {
 
 	/**
 	 * Constructs a new Slider object indicated by the Hashtable parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -115,7 +115,7 @@ public class Slider extends RPCRequest {
 	 * @param numTicks
 	 *            an Integer value representing a number of selectable items on
 	 *            a horizontal axis
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=2; Maxvalue=26
 	 */
     public void setNumTicks(Integer numTicks) {
@@ -142,7 +142,7 @@ public class Slider extends RPCRequest {
 	 * @param position
 	 *            an Integer value representing an Initial position of slider
 	 *            control
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=1; Maxvalue=26
 	 */
     public void setPosition(Integer position) {
@@ -168,7 +168,7 @@ public class Slider extends RPCRequest {
 	 * 
 	 * @param sliderHeader
 	 *            a String value
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSliderHeader(String sliderHeader) {
@@ -193,7 +193,7 @@ public class Slider extends RPCRequest {
 	 * 
 	 * @param sliderFooter
 	 *            a List<String> value representing a text footer to display
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500; Minvalue=1; Maxvalue=26
 	 */
     public void setSliderFooter(List<String> sliderFooter) {
@@ -228,7 +228,7 @@ public class Slider extends RPCRequest {
 	 * 
 	 * @param timeout
 	 *            an Integer value representing an App defined timeout
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=0; Maxvalue=65535; Defvalue=10000
 	 */
     public void setTimeout(Integer timeout) {

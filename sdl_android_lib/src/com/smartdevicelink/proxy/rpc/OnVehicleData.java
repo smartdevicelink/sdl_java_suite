@@ -13,17 +13,17 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
 /**
  *Individual requested DID result and data.
  *
- * <p> 
- * Callback for the periodic and non periodic vehicle data read function.<br>
- * <p>
- *  <b>Note:</b> <br>
- * <p>
- * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes.<br> OnVehicleData is expected to bring such updated values to SDL
+ *  
+ * <p>Callback for the periodic and non periodic vehicle data read function.</p>
+ * 
+ * <p> <b>Note:</b></p>
+ * 
+ * Initially SDL sends SubscribeVehicleData for getting the periodic updates from HMI whenever each of subscribed data types changes. OnVehicleData is expected to bring such updated values to SDL
  * 
  *
  * 
  * 
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -215,7 +215,7 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 			<td>Float</td>
  * 			<td>Torque value for engine (in Nm) on non-diesel variants</td>
  *                 <td>N</td>
- * 			<td>minvalue:-1000<br>maxvalue:2000</td>
+ * 			<td>minvalue:-1000; maxvalue:2000</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
@@ -223,7 +223,7 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 			<td>Float</td>
  * 			<td>Accelerator pedal position (percentage depressed)</td>
  *                 <td>N</td>
- * 			<td>minvalue: 0<br> maxvalue:100</td>
+ * 			<td>minvalue: 0; maxvalue:100</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
@@ -231,18 +231,16 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 			<td>Float</td>
  * 			<td>Current angle of the steering wheel (in deg)</td>
  *                 <td>N</td>
- * 			<td> minvalue: -2000<br>maxvalue:2000</td>
+ * 			<td> minvalue: -2000; maxvalue:2000</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0
- * <p>
+ * 
  * @see SubscribeVehicleData
  * @see UnsubscribeVehicleData
  *
->>>>>>> theirs
-
  *
  */
 public class OnVehicleData extends RPCNotification {

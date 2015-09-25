@@ -6,10 +6,10 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 /** The body information including power modes. 
- * <p>
- * <b>Note:</b> The structure defines the information about the park brake and ignition.
  * 
- * <p><b>Parameter List</b>
+ * <p><b>Note:</b> The structure defines the information about the park brake and ignition.</p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -91,7 +91,7 @@ public class BodyInformation extends RPCStruct {
     public static final String KEY_PASSENGER_DOOR_AJAR = "passengerDoorAjar";
     public static final String KEY_REAR_LEFT_DOOR_AJAR = "rearLeftDoorAjar";
     public static final String KEY_REAR_RIGHT_DOOR_AJAR = "rearRightDoorAjar";
-	/** Constructs a new BodyInformation object indicated by the Hashtable<br>
+	/** Constructs a new BodyInformation object indicated by the Hashtable
 	 * parameter
 	 * @param hash
 	 * The hash table to use

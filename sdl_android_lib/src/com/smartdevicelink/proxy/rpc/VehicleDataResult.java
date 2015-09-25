@@ -8,8 +8,8 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 /**
  * 
  * Individual published data request result.
- * <p>
- * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -48,8 +48,8 @@ public class VehicleDataResult extends RPCStruct {
 		* </p>
 		* 
 		* @param hash
-		* <p>
-		*            The Hashtable to use
+		* 
+		*            <p>The Hashtable to use</p>
 		*/
 
     public VehicleDataResult() { }

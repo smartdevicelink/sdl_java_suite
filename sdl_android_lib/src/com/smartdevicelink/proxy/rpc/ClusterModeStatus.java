@@ -6,10 +6,10 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
-/** The status modes of the instrument panel cluster.
- * <p>
+/** <p>The status modes of the instrument panel cluster.</p>
  * 
-  * <p><b>Parameter List</b>
+ * 
+  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -43,9 +43,8 @@ import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
  * 		</tr>
  * 
  *  </table>
-
  * @since SmartDeviceLink 1.0
- * <p>
+ * 
  * @see SubscribeVehicleData
  * @see SubscribeVehicleData 
  * @see Image
@@ -57,9 +56,9 @@ public class ClusterModeStatus extends RPCStruct {
     public static final String KEY_POWER_MODE_QUALIFICATION_STATUS = "powerModeQualificationStatus";
     public static final String KEY_CAR_MODE_STATUS = "carModeStatus";
     public static final String KEY_POWER_MODE_STATUS = "powerModeStatus";
-	/** Constructs a new ClusterModeStatus object indicated by the Hashtable<br>
-	 * parameter
-	 * @Param hash
+	/** <p>Constructs a new ClusterModeStatus object indicated by the Hashtable
+	 * parameter</p>
+	 * @param hash
 	 * The hash table to use
 	 * 
 	 */

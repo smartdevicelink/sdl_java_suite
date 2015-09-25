@@ -6,10 +6,10 @@ import java.util.List;
 
 import com.smartdevicelink.proxy.RPCStruct;
 /**
- * For touchscreen interactions, the mode of how the choices are presented.<br>
+ * <p>For touchscreen interactions, the mode of how the choices are presented.</p>
  *
- * <p><b>Parameter List</b>
- * <p>
+ * <p><b>Parameter List</b></p>
+ * 
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -24,15 +24,15 @@ import com.smartdevicelink.proxy.RPCStruct;
  * 			<td>Integer</td>
  * 			<td> A touch's unique identifier.  The application can track the current touch events by id. If a touch event has type begin, the id should be added to the set of touches. If a touch event has type end, the id should be removed from the set of touches.</td>
  *                 <td>N</td>
- *                 <td>Min Value: 0 <br>Max Value: 9</td>
+ *                 <td>Min Value: 0; Max Value: 9</td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>ts</td>
  * 			<td>Float</td>
- * 			<td>The time that the touch was recorded.  This number can the time since the beginning of the session or something else as long as the units are in milliseconds.<br>
- * The timestamp is used to determined the rate of change of position of a touch.<br>The application also uses the time to verify whether two touches,<br> with different ids, are part of a single action by the user.<br>
- * 			If there is only a single timestamp in this array,<br> it is the same for every coordinate in the coordinates array.</td>
+ * 			<td>The time that the touch was recorded. <p> This number can the time since the beginning of the session or something else as long as the units are in milliseconds.</p>
+ * <p>The timestamp is used to determined the rate of change of position of a touch.</p><p>The application also uses the time to verify whether two touches,with different ids, are part of a single action by the user.</p>
+ * 			<p>If there is only a single timestamp in this array,</p> it is the same for every coordinate in the coordinates array.</td>
  *                 <td>Y</td>
  *                 <td>minvalue="0" maxvalue="5000000000" minsize="1" maxsize="1000"</td>
  * 			<td>SmartDeviceLink 3.0 </td>
@@ -46,9 +46,9 @@ import com.smartdevicelink.proxy.RPCStruct;
  * 			<td>SmartDeviceLink 3.0</td>
  * 		</tr>
  *  </table>
- *  <p>
+ *  
  *   @since SmartDeviceLink 3.0 
- *   <p>
+ *   
  *   @see SoftButtonCapabilities
  *   @see ButtonCapabilities
  *   @see OnButtonPress
@@ -61,12 +61,12 @@ public class TouchEvent extends RPCStruct {
     
     public TouchEvent() { }
     /**
-	 * Constructs a new TouchEvent object indicated by the Hashtable parameter
-	 * <p>
+	 * <p>Constructs a new TouchEvent object indicated by the Hashtable parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 * <p>
-	 *            The Hashtable to use
+	 *            The Hashtable to use</p>
 	 */
     public TouchEvent(Hashtable<String, Object> hash) {
         super(hash);

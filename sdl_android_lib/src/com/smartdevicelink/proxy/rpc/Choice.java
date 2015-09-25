@@ -7,9 +7,9 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
 
 /**
- * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.<br>
+ * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
  *  For example, the application may request for the user`s choice among several suggested ones: Yes, No, Skip.
- * <p><b> Parameter List</b>
+ * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -19,10 +19,10 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  * 		<tr>
  * 			<td>choiceID</td>
- * 			<td>Int16</td>
+ * 			<td>Integer</td>
  * 			<td>Application-scoped identifier that uniquely identifies this choice.
- *             <br/>Min: 0
- *				<br/>Max: 65535
+ *             Min: 0;
+ *				Max: 65535
  *			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -30,8 +30,8 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>menuName</td>
  * 			<td>String</td>
  * 			<td>Text which appears in menu, representing this choice.
- *				<br/>Min: 1
- *				<br/>Max: 100
+ *				Min: 1;
+ *				Max: 100
  * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -50,7 +50,7 @@ import com.smartdevicelink.util.DebugTool;
  * </table>
  * 
   * @since SmartDeviceLink 1.0
-  * <p>
+  * 
   * @see AddCommand
   * @see PerformInteraction
   * @see Image
@@ -76,7 +76,7 @@ public class Choice extends RPCStruct {
     }
     /**
      * Get the application-scoped identifier that uniquely identifies this choice.
-     * @return choiceID Min: 0  Max: 65535
+     * @return choiceID Min: 0;  Max: 65535
      */    
     public Integer getChoiceID() {
         return (Integer) store.get(KEY_CHOICE_ID);
@@ -94,8 +94,8 @@ public class Choice extends RPCStruct {
     }
     /**
      * Text which appears in menu, representing this choice.
-     *				<br/>Min: 1
-     *				<br/>Max: 100
+     *				Min: 1;
+     *				Max: 100
      * @return menuName the menu name
      */    
     public String getMenuName() {
@@ -103,8 +103,8 @@ public class Choice extends RPCStruct {
     }
     /**
      * Text which appears in menu, representing this choice.
-     *				<br/>Min: 1
-     *				<br/>Max: 100
+     *				Min: 1;
+     *				Max: 100
      * @param menuName the menu name
      */    
     public void setMenuName(String menuName) {

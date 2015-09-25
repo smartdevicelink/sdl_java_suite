@@ -7,9 +7,9 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.util.DebugTool;
 /**
- *  A simulated button or keyboard key that is displayed on a touch screen.
- *<p>
- * <p><b>Parameter List</b>
+ * <p> A simulated button or keyboard key that is displayed on a touch screen.</p>
+ *
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -32,7 +32,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>String</td>
  * 			<td>Optional text to display (if defined as TEXT or BOTH)</td>
  *                 <td>N</td>
- *                 <td>Min: 0 <br>Maxlength: 500</td>
+ *                 <td>Min: 0; Maxlength: 500</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
@@ -46,7 +46,7 @@ import com.smartdevicelink.util.DebugTool;
  * 		<tr>
  * 			<td>isHighlighted</td>
  * 			<td>Boolean</td>
- * 			<td>True, if highlighted <br>False, if not highlighted</td>
+ * 			<td>True, if highlighted False, if not highlighted</td>
  *                 <td>N</td>
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.0</td>
@@ -56,7 +56,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>Integer</td>
  * 			<td>Value which is returned via OnButtonPress / OnButtonEvent</td>
  *                 <td></td>
- *                 <td>Min: 0 <br> Max: 65535</td>
+ *                 <td>Min: 0; Max: 65535</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
@@ -80,10 +80,10 @@ public class SoftButton extends RPCStruct {
 	public static final String KEY_TYPE = "type";
 	public static final String KEY_IMAGE = "image";
 	/**
-	* <p>
-	* Constructs a new SoftButton object indicated by the Hashtable
-	* parameter
-	* </p>
+	* 
+	* <p>Constructs a new SoftButton object indicated by the Hashtable
+	* parameter</p>
+	* 
 	* 
 	* @param hash
 	* 

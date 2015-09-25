@@ -8,8 +8,8 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * Used to delete a file resident on the SDL module in the app's local cache.
  * Not supported on first generation SDL vehicles
- * <p>
- * <p><b>Parameter List</b>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -28,17 +28,17 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  <p>
- * <b>Response </b><br>
- * <p>
- * <b>Non-default Result Codes:</b><br>
- * 	SUCCESS<br>
- * 	INVALID_DATA<br>
- * 	OUT_OF_MEMORY<br>
- * 	TOO_MANY_PENDING_REQUESTS<br>
- * 	APPLICATION_NOT_REGISTERED<br>
- * 	GENERIC_ERROR<br>
- * 	REJECTED<br> 
+ *  
+ * <p><b>Response </b></p>
+ * 
+ * <p><b>Non-default Result Codes:</b></p>
+ * <p>	SUCCESS</p>
+ * <p>	INVALID_DATA</p>
+ * <p>	OUT_OF_MEMORY</p>
+ * <p>	TOO_MANY_PENDING_REQUESTS</p>
+ * <p>	APPLICATION_NOT_REGISTERED</p>
+ * 	<p>GENERIC_ERROR</p>
+ * 	<p>REJECTED</p> 
  * @since SmartDeviceLink 2.0
  * @see PutFile
  * @see ListFiles
@@ -54,8 +54,8 @@ public class DeleteFile extends RPCRequest {
     }
 
 	/**
-	 * Constructs a new DeleteFile object indicated by the Hashtable parameter
-	 * <p>
+	 * <p>Constructs a new DeleteFile object indicated by the Hashtable parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

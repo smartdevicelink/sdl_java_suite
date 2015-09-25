@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 /** Information related to the MyKey feature.
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -22,7 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
  *  </table>
  *				
  *@since SmartDeviceLink 2.0	
- *<p>				
+ *				
  *@see GetVehicleData				
  *@see OnVehicleData 			
  *@see VehicleDataStatus

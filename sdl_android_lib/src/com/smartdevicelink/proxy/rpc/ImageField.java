@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.util.DebugTool;
 /** <p>The name that identifies the field.For example AppIcon,SoftButton, LocationImage, etc.</p>
  * 
- * <p><b>Parameter List</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

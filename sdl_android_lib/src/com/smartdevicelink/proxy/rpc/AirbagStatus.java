@@ -5,11 +5,11 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 /**
- * The status of the air bags.
- *<p>
+ * <p>The status of the air bags.</p>
  *
  *
- * <p><b>Parameter List</b>
+ *
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -67,18 +67,18 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
  * 		</tr>
  *
  *  </table>
- *  <p>
- *  <b>Response:</b><br>
+ *  
+ *  <p><b>Response:</b></p>
  *  If a resultCode of "SUCCESS" is returned, the request was accepted by SDL. By the time the corresponding response is received, the Alert will have completed. 
- *  <p>
- *  <b> Non-default Result Codes:</b><br>
- *  -	REJECTED<br>-	ABORTED
+ *  
+ *  <p><b> Non-default Result Codes:</b></p>
+ *  <p>REJECTED</p><p>	ABORTED</P>
  *  
  *  
- *  @since SmartDeviceLink 1.0
- *  <p>
- *  @see TextFieldName
- *  @see Image
+ * @since SmartDeviceLink 1.0
+ *  
+ * @see TextFieldName
+ * @see Image
  * @see SubscribeVehicleData
  */
 public class AirbagStatus extends RPCStruct {
@@ -90,9 +90,9 @@ public class AirbagStatus extends RPCStruct {
     public static final String KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED = "passengerSideAirbagDeployed";
     public static final String KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED = "passengerCurtainAirbagDeployed";
     public static final String KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED = "passengerKneeAirbagDeployed";
-	/** Constructs a new AirbagStatus object indicated by the Hashtable<br>
+	/** Constructs a new AirbagStatus object indicated by the Hashtable
 	 * parameter
-	 * @Param hash
+	 * @param hash
 	 * The hash table to use
 	 * 
 	 *

@@ -10,14 +10,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  * dispose of all resources associated with the application's interface
  * registration (e.g. Command Menu items, Choice Sets, button subscriptions,
  * etc.)
- * <p>
- * After the UnregisterAppInterface operation is performed, no other operations
+ * 
+ * <p>After the UnregisterAppInterface operation is performed, no other operations
  * can be performed until a new app interface registration is established by
- * calling <i>{@linkplain RegisterAppInterface}</i>
- * <p>
- * <b>HMILevel can be FULL, LIMITED, BACKGROUND or NONE</b>
- * </p>
- * <p><b>Parameter List</b>
+ * calling <i>{@linkplain RegisterAppInterface}</i></p>
+ * 
+ * <p><b>HMILevel can be FULL, LIMITED, BACKGROUND or NONE</b></p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -231,9 +231,9 @@ public class UnregisterAppInterface extends RPCRequest {
         super(FunctionID.UNREGISTER_APP_INTERFACE.toString());
     }
 	/**
-	 * Constructs a new UnregisterAppInterface object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new UnregisterAppInterface object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

@@ -7,8 +7,8 @@ import com.smartdevicelink.util.DebugTool;
 /**
  * 
  * VR help items  i.e. the text strings to be displayed, and when pronounced by the user the recognition of any of which must trigger the corresponding VR command.
- *<p>
- * <p><b>Parameter List</b>
+ *
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Param Name</th>
@@ -39,7 +39,7 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>Integer</td>
  * 			<td>Position to display item in VR Help list</td>
  *                 <td>N</td>
- * 			<td> minvalue=1<br>maxvalue=100</td>
+ * 			<td> minvalue=1; maxvalue=100</td>
  * 			<td>SmartDeviceLink 2.3.2</td>
  * 		</tr>
  *  </table>
