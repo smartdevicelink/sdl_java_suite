@@ -1562,14 +1562,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
-	private void onPacketStart(int correlationId){ //May not need this
-		synchronized(ON_UPDATE_LISTENER_LOCK){
-			if(rpcUpdateListeners !=null 
-					&& rpcUpdateListeners.indexOfKey(correlationId)>=0){
-				rpcUpdateListeners.get(correlationId).onStart(correlationId);
-			}
-		}
-	}
 	/**
 	 * Only call this method for a PutFile response. It will cause a class cast exception if not.
 	 * @param correlationId
