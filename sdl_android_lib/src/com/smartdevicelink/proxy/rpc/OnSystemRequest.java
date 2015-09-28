@@ -92,10 +92,8 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_LENGTH = "length";
 	
 	private String body;
-	private Headers headers;
+	private Headers headers;	
 	
-	Hashtable<String, Object> httpreqparams = null;
-	JSONObject myJSONObj = null;
 	/** Constructs a new OnSystemsRequest object
 	 * 	
 	 */
