@@ -3170,8 +3170,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, ServiceType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
 					
 		FileInputStream is = getFileInputStream(sLocalFile);
 		if (is == null) return null;
@@ -3184,7 +3182,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		try {
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, iSize);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, iSize, sdlSession);
 			rpcPacketizer.start();
 			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 			return streamController;
@@ -3198,17 +3196,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private RPCStreamController startRPCStream(InputStream is, PutFile request, ServiceType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
-		Long iSize = request.getLength();
+		Long lSize = request.getLength();
 
-		if (request.getLength() == null)
+		if (lSize == null)
 		{
 			return null;
 		}		
 		
 		try {
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlConn, is, request, sType, rpcSessionID, wiproVersion, iSize);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
 			rpcPacketizer.start();
 			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 			return streamController;
@@ -3220,15 +3216,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private RPCStreamController startPutFileStream(String sPath, PutFile msg) {
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
 		return startRPCStream(sPath, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);		
 	}
 
 	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
 		if (is == null) return null;
 		startRPCStream(is, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);
 		return null;
@@ -3236,24 +3228,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
 		if (sdlSession == null) return false;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
-		sdlConn.startRPCStream(is, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		sdlSession.startRPCStream(is, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);
 		return true;
 	}
 	
 	public OutputStream startRPCStream(RPCRequest msg) {
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
-		return sdlConn.startRPCStream(msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);				
+		return sdlSession.startRPCStream(msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);				
 	}
 	
 	public void endRPCStream() {
 		if (sdlSession == null) return;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();
 		if (sdlConn == null) return;
-		sdlConn.stopRPCStream();
+		sdlSession.stopRPCStream();
 	}
 	
 	private class CallableMethod implements Callable<Void> {
@@ -3287,12 +3275,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public boolean startH264(InputStream is) {
 		
 		if (sdlSession == null) return false;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
 
 		navServiceStartResponseReceived = false;
 		navServiceStartResponse = false;
-		sdlConn.startService(ServiceType.NAV, sdlSession.getSessionId());
+		sdlSession.startService(ServiceType.NAV, sdlSession.getSessionId());
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
@@ -3305,7 +3291,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (navServiceStartResponse) {
 			try {
-				sdlConn.startStream(is, ServiceType.NAV, sdlSession.getSessionId());
+				sdlSession.startStream(is, ServiceType.NAV, sdlSession.getSessionId());
 				return true;
 			} catch (Exception e) {
 				return false;
@@ -3322,12 +3308,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public OutputStream startH264() {
 
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
 		
 		navServiceStartResponseReceived = false;
 		navServiceStartResponse = false;
-		sdlConn.startService(ServiceType.NAV, sdlSession.getSessionId());
+		sdlSession.startService(ServiceType.NAV, sdlSession.getSessionId());
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
@@ -3340,7 +3324,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (navServiceStartResponse) {
 			try {
-				return sdlConn.startStream(ServiceType.NAV, sdlSession.getSessionId());
+				return sdlSession.startStream(ServiceType.NAV, sdlSession.getSessionId());
 			} catch (Exception e) {
 				return null;
 			}
@@ -3355,12 +3339,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */	
 	public boolean endH264() {
 		if (sdlSession == null) return false;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
 
 		navServiceEndResponseReceived = false;
 		navServiceEndResponse = false;
-		sdlConn.stopVideoStream();
+		sdlSession.stopVideoStream();
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
@@ -3385,9 +3367,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public boolean pausePCM()
 	{
 		if (sdlSession == null) return false;
-		SdlConnection sdlConn = sdlSession.getSdlConnection();
-		if (sdlConn == null) return false;
-		return sdlConn.pauseAudioStream();		
+		return sdlSession.pauseAudioStream();		
 	}
 
 	/**
@@ -3397,9 +3377,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public boolean pauseH264()
 	{
 		if (sdlSession == null) return false;
-		SdlConnection sdlConn = sdlSession.getSdlConnection();
-		if (sdlConn == null) return false;
-		return sdlConn.pauseVideoStream();		
+		return sdlSession.pauseVideoStream();		
 	}
 
 	/**
@@ -3409,9 +3387,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public boolean resumePCM()
 	{
 		if (sdlSession == null) return false;
-		SdlConnection sdlConn = sdlSession.getSdlConnection();
-		if (sdlConn == null) return false;
-		return sdlConn.resumeAudioStream();		
+		return sdlSession.resumeAudioStream();		
 	}
 
 	/**
@@ -3421,9 +3397,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public boolean resumeH264()
 	{
 		if (sdlSession == null) return false;
-		SdlConnection sdlConn = sdlSession.getSdlConnection();
-		if (sdlConn == null) return false;
-		return sdlConn.resumeVideoStream();	
+		return sdlSession.resumeVideoStream();	
 	}
 
 	
@@ -3434,14 +3408,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	public boolean startPCM(InputStream is) {
 		if (sdlSession == null) return false;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;		
 
 		pcmServiceStartResponseReceived = false;
 		pcmServiceStartResponse = false;
-		sdlConn.startService(ServiceType.PCM, sdlSession.getSessionId());
+		sdlSession.startService(ServiceType.PCM, sdlSession.getSessionId());
 
-		sdlConn.startService(ServiceType.PCM, sdlSession.getSessionId());
+		sdlSession.startService(ServiceType.PCM, sdlSession.getSessionId());
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -3453,7 +3425,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (pcmServiceStartResponse) {
 			try {
-				sdlConn.startStream(is, ServiceType.PCM, sdlSession.getSessionId());
+				sdlSession.startStream(is, ServiceType.PCM, sdlSession.getSessionId());
 				return true;
 			} catch (Exception e) {
 				return false;
@@ -3469,12 +3441,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */		
 	public OutputStream startPCM() {
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;		
 		
 		pcmServiceStartResponseReceived = false;
 		pcmServiceStartResponse = false;
-		sdlConn.startService(ServiceType.PCM, sdlSession.getSessionId());
+		sdlSession.startService(ServiceType.PCM, sdlSession.getSessionId());
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -3486,7 +3456,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (pcmServiceStartResponse) {
 			try {
-				return sdlConn.startStream(ServiceType.PCM, sdlSession.getSessionId());
+				return sdlSession.startStream(ServiceType.PCM, sdlSession.getSessionId());
 			} catch (Exception e) {
 				return null;
 			}
@@ -3506,7 +3476,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		pcmServiceEndResponseReceived = false;
 		pcmServiceEndResponse = false;
-		sdlConn.stopAudioStream();
+		sdlSession.stopAudioStream();
 		
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
@@ -3528,12 +3498,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                                             int height, int bitrate) {
         
         if (sdlSession == null) return null;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return null;
         
         navServiceStartResponseReceived = false;
         navServiceStartResponse = false;
-        sdlConn.startService(ServiceType.NAV, sdlSession.getSessionId());
+        sdlSession.startService(ServiceType.NAV, sdlSession.getSessionId());
         
         FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
         ScheduledExecutorService scheduler = createScheduler();
@@ -3545,7 +3513,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         fTask = null;
         
         if (navServiceStartResponse) {
-            return sdlConn.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+            return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
                                                     height, bitrate, ServiceType.NAV, sdlSession.getSessionId());
         } else {
             return null;
@@ -3554,26 +3522,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     
     public void startEncoder () {
         if (sdlSession == null) return;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return;
         
-        sdlConn.startEncoder();
+        sdlSession.startEncoder();
     }
     
     public void releaseEncoder() {
         if (sdlSession == null) return;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return;
         
-        sdlConn.releaseEncoder();
+        sdlSession.releaseEncoder();
     }
     
     public void drainEncoder(boolean endOfStream) {
         if (sdlSession == null) return;		
-        SdlConnection sdlConn = sdlSession.getSdlConnection();		
-        if (sdlConn == null) return;
         
-        sdlConn.drainEncoder(endOfStream);
+        sdlSession.drainEncoder(endOfStream);
     }
 	
 	private void NavServiceStarted() {
