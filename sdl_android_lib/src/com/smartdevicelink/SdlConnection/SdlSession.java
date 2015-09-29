@@ -20,6 +20,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.TLSManager;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
@@ -29,10 +30,10 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener {
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
+	private CopyOnWriteArrayList<ServiceType> encryptedServices = new CopyOnWriteArrayList<ServiceType>();
 	
 	SdlConnection _sdlConnection = null;
 	private byte sessionId;
-    @SuppressWarnings("unused")
 	private byte wiproProcolVer;
 	private ISdlConnectionListener sessionListener;
 	private BaseTransportConfig transportConfig;
@@ -40,6 +41,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     IHeartbeatMonitor _incomingHeartbeatMonitor = null;
     private static final String TAG = "SdlSession";
     private LockScreenManager lockScreenMan  = new LockScreenManager();
+    private byte[] caCert = null;
+    private byte[] privKey = null;
 
 	AbstractPacketizer mPacketizer = null;
     
@@ -48,15 +51,14 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;    
     
+    private TLSManager tlsMan = null;
 	private final static int BUFF_READ_SIZE = 1024;
 	
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
-		
 		SdlSession session =  new SdlSession();
 		session.wiproProcolVer = wiproVersion;
 		session.sessionListener = listener;
 		session.transportConfig = btConfig;
-					
 		return session;
 	}
 	
@@ -64,6 +66,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return this.transportConfig;
 	}
 	
+	public TLSManager getTLSManager() {
+		return tlsMan;
+	}
+
 	public LockScreenManager getLockScreenMan() {
 		return lockScreenMan;
 	}
@@ -106,7 +112,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			if (_sdlConnection.getRegisterCount() == 0) {
 				shareConnections.remove(_sdlConnection);
 			}
-
+			if (tlsMan!= null)
+				tlsMan.closeOpenSSLSession();
 			_sdlConnection = null;
 		}
 	}
@@ -125,11 +132,62 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return "";
 	}
 	
-	public void startService (ServiceType serviceType, byte sessionID) {
+	private void processControlService(ProtocolMessage msg) {
+		if (tlsMan == null)
+			return;
+		int ilen = msg.getData().length - 12;
+		byte[] data = new byte[ilen];
+		System.arraycopy(msg.getData(), 12, data, 0, ilen);
+		byte[] dataToRead = new byte[4096];			 
+		 
+		byte[] returnBytes = null;
+
+		Integer iReturn = tlsMan.BIOWriteData(data);
+		if (iReturn == null || iReturn <= 0)
+			return;
+		 
+		boolean isHandShakeDone = tlsMan.completeHanshake();
+		 
+		Integer iNumBytes = tlsMan.BIOReadData(dataToRead);
+		if (iReturn == null || iNumBytes <= 0)
+			return;
+		 	
+		returnBytes = new byte[iNumBytes];
+		System.arraycopy(dataToRead, 0, returnBytes, 0, iNumBytes);
+		ProtocolMessage protocolMessage = new ProtocolMessage();
+		protocolMessage.setServiceType(ServiceType.CONTROL);				 
+		protocolMessage.setData(returnBytes);
+		protocolMessage.setFunctionID(0x01);
+		protocolMessage.setVersion(wiproProcolVer);		 
+		protocolMessage.setSessionID(getSessionId());
+			 
+		sendMessage(protocolMessage);
+			 
+		isHandShakeDone = tlsMan.completeHanshake();			 
+
+		if (isHandShakeDone)
+			tlsMan.onHandShakeComplete();
+	}
+		
+	public void startService (ServiceType serviceType, byte sessionID, boolean isEncrypted) {
 		if (_sdlConnection == null) 
 			return;
 		
-		_sdlConnection.startService(serviceType, sessionID);			
+		if (isEncrypted)
+		{
+			if (tlsMan == null)
+			{
+				tlsMan = new TLSManager();
+				tlsMan.iSessionId = sessionID;
+				
+				if((caCert != null) && (privKey != null)) 
+				{					
+					if (tlsMan.initializeOpenSSL(caCert, privKey))
+						tlsMan.onInitSuccess();
+				}			
+			}			
+		}
+		_sdlConnection.startService(serviceType, sessionID, isEncrypted);			
 	}
 	
 	public void endService (ServiceType serviceType, byte sessionID) {
@@ -155,6 +213,25 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		connection.registerSession(this); //Handshake will start when register.
 	}
 	
+	public void startSession(byte[] caCert, byte[] privKey) throws SdlException {
+		SdlConnection connection = null;
+		if (this.transportConfig.shareConnection()) {
+			 connection = findTheProperConnection(this.transportConfig);
+			
+			if (connection == null) {
+				connection = new SdlConnection(this.transportConfig);
+				shareConnections.add(connection);
+			}
+		} else {
+			connection = new SdlConnection(this.transportConfig);
+		}
+		this._sdlConnection = connection;
+		this.caCert = caCert;
+		this.privKey = privKey;
+		
+		connection.registerSession(this); //Handshake will start when register.
+	}
+
     private void initialiseSession() {
         if (_outgoingHeartbeatMonitor != null) {
         	_outgoingHeartbeatMonitor.start();
@@ -180,6 +257,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		if (_sdlConnection == null) 
 			return false;
 		return _sdlConnection != null && _sdlConnection.getIsConnected();
+	}
+	
+	public boolean isServiceProtected(ServiceType sType) {
+		return encryptedServices.contains(sType);
 	}
 	
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
@@ -375,9 +456,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			return true;
 		}
 		return false;
-	}	
-		
-		
+	}			
 
 	@Override
 	public void onTransportDisconnected(String info) {
@@ -391,6 +470,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolMessageReceived(ProtocolMessage msg) {
+		if (msg.getServiceType().equals(ServiceType.CONTROL)) {
+			processControlService(msg);		
+			return;
+		} 		
+		
 		this.sessionListener.onProtocolMessageReceived(msg);
 	}
 	
@@ -403,17 +487,18 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionStarted(ServiceType serviceType,
-			byte sessionID, byte version, String correlationID) {
+			byte sessionID, byte version, String correlationID, boolean isEncrypted) {
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
-		this.sessionListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
-		//if (version == 3)
+		if (isEncrypted)
+			encryptedServices.addIfAbsent(serviceType);
+		this.sessionListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID, isEncrypted);
 			initialiseSession();
 	}
 
 	@Override
-	public void onProtocolSessionEnded(ServiceType serviceType, byte sessionID,
-			String correlationID) {
+	public void onProtocolSessionEnded(ServiceType serviceType, byte sessionID, String correlationID) {
+		encryptedServices.remove(serviceType);
 		this.sessionListener.onProtocolSessionEnded(serviceType, sessionID, correlationID);
 	}
 
@@ -462,11 +547,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolSessionEndedNACKed(ServiceType serviceType,
 			byte sessionID, String correlationID) {
 		this.sessionListener.onProtocolSessionEndedNACKed(serviceType, sessionID, correlationID);
-		
 	}
 
 	@Override
-	public void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
-		this.sessionListener.onProtocolServiceDataACK(serviceType, sessionID);
+	public void onProtocolServiceDataACK(ServiceType serviceType, int dataSize, byte sessionID) {
+		this.sessionListener.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 	}
 }

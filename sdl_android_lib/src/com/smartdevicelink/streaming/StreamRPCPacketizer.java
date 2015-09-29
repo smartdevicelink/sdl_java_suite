@@ -36,7 +36,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
     private Object mPauseLock;
     private boolean mPaused;
-    
+    private boolean isRPCProtected = false;
     private OnPutFileUpdateListener callBack; 
 	
 	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, ServiceType sType, byte rpcSessionID, byte wiproVersion, long lLength, SdlSession session) throws IOException {
@@ -45,6 +45,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		iInitialCorrID = request.getCorrelationID();
         mPauseLock = new Object();
         mPaused = false;
+        isRPCProtected = request.getPayloadProtected();
 		if (proxy != null)
 		{
 			_proxy = proxy;
@@ -144,6 +145,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		byte[] msgBytes;
 		ProtocolMessage pm;
 		OnStreamRPC notification;
+		
 		// Moves the current Thread into the background
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
@@ -213,7 +215,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 						pm.setBulkDataNoCopy(buffer);
 
 					pm.setCorrID(msg.getCorrelationID());
-						
+					pm.setPayloadProtected(isRPCProtected);
 					notification = new OnStreamRPC();
 					notification.setFileName(msg.getSdlFileName());
 					notification.setFileSize(iFileLength);										

@@ -1072,7 +1072,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				preRegister,
 				/*sHashID*/sHashID,
 				true,
-				transportConfig);
+				transportConfig, null, null);
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using new constructor with specified transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
@@ -1082,7 +1082,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, 
 			String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID,
-			BaseTransportConfig transportConfig) throws SdlException {
+			BaseTransportConfig transportConfig,  byte[] certData, byte[] privKeyData) throws SdlException {
 		super(	listener,
 				sdlProxyConfigurationResources,
 				/*enable advanced lifecycle management*/true,
@@ -1101,7 +1101,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				preRegister,
 				/*sHashID*/sHashID,
 				/*bEnableResume*/true,
-				transportConfig);
+				transportConfig, certData, privKeyData);
 
 				this.setAppService(appService);
 				this.sendTransportBroadcast();

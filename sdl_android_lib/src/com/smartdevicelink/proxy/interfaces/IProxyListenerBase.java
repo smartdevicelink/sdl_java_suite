@@ -325,5 +325,5 @@ public interface IProxyListenerBase  {
 
 	public void onUpdateTurnListResponse(UpdateTurnListResponse response);
 
-	public void onServiceDataACK();
+	public void onServiceDataACK(int dataSize);
 }

@@ -59,8 +59,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 			if (_protocol != null) {
 				_protocol = null;
 			}
-			
-			_protocol = new WiProProtocol(this);
+			_protocol = new WiProProtocol(this, this);
 		}
 	}
 	
@@ -185,8 +184,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 
 	@Override
 	public void onProtocolSessionStarted(ServiceType serviceType,
-			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
+			byte sessionID, byte version, String correlationID, boolean isEncrypted) {
+		_connectionListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID, isEncrypted);
 	}
 
 	@Override
@@ -217,10 +216,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 		return _transport.getTransportType();
 	}
 	
-	public void startService (ServiceType serviceType, byte sessionID) {
+	public void startService (ServiceType serviceType, byte sessionID, boolean isEncrypted) {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
-				_protocol.StartProtocolService(serviceType, sessionID);
+				_protocol.StartProtocolService(serviceType, sessionID, isEncrypted);
 			}
 		}
 	}
@@ -228,7 +227,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 	public void endService (ServiceType serviceType, byte sessionID) {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
-				_protocol.EndProtocolSession(serviceType, sessionID);
+				_protocol.EndProtocolService(serviceType, sessionID);
 			}
 		}
 	}
@@ -288,17 +287,18 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 
 		@Override
 		public void onProtocolSessionStarted(ServiceType serviceType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID, boolean isEncrypted) {
 			for (SdlSession session : listenerList) {
 				if (session.getSessionId() == 0) {
-					session.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
+					session.onProtocolSessionStarted(serviceType, sessionID, version, correlationID, isEncrypted);
 					break;
 				}
 			}
-			if (serviceType.equals(ServiceType.NAV) || serviceType.equals(ServiceType.PCM)){
+			
+			if (serviceType.equals(ServiceType.NAV) || serviceType.equals(ServiceType.PCM) || isEncrypted){
 				SdlSession session = findSessionById(sessionID);
 				if (session != null) {
-					session.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
+					session.onProtocolSessionStarted(serviceType, sessionID, version, correlationID, isEncrypted);
 				}
 			}
 		}
@@ -345,10 +345,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 			}
 
 		@Override
-		public void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
+		public void onProtocolServiceDataACK(ServiceType serviceType, int dataSize, byte sessionID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolServiceDataACK(serviceType, sessionID);
+				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 			}
 		}		
 	}
@@ -413,8 +413,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener  {
 	}
 
 	@Override
-	public void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
-		_connectionListener.onProtocolServiceDataACK(serviceType, sessionID);
-		
+	public void onProtocolServiceDataACK(ServiceType serviceType, int dataSize, byte sessionID) {
+		_connectionListener.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 	}
 }

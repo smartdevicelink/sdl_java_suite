@@ -41,7 +41,7 @@ public abstract class AbstractProtocol {
 	// session has been established.
 	public abstract void StartProtocolSession(ServiceType serviceType);
 	
-	public abstract void StartProtocolService(ServiceType serviceType, byte sessionID);
+	public abstract void StartProtocolService(ServiceType serviceType, byte sessionID, boolean isEncrypted);
 
 	public abstract void EndProtocolService(ServiceType serviceType, byte sessionID);
 	// This method ends a protocol session.  A corresponding call to the protocol
@@ -125,8 +125,8 @@ public abstract class AbstractProtocol {
 	// This method handles the startup of a protocol session. A callback is sent
 	// to the protocol listener.
 	protected void handleProtocolSessionStarted(ServiceType serviceType,
-			byte sessionID, byte version, String correlationID) {
-		_protocolListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
+			byte sessionID, byte version, String correlationID, boolean isEncrypted) {
+		_protocolListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID, isEncrypted);
 	}
 
 	protected void handleProtocolSessionNACKed(ServiceType serviceType,
@@ -146,8 +146,8 @@ public abstract class AbstractProtocol {
     protected void handleProtocolHeartbeatACK(ServiceType serviceType, byte sessionID) {
         _protocolListener.onProtocolHeartbeatACK(serviceType, sessionID);
     }
-    protected void handleProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
-        _protocolListener.onProtocolServiceDataACK(serviceType, sessionID);
+    protected void handleProtocolServiceDataACK(ServiceType serviceType, int dataSize, byte sessionID) {
+        _protocolListener.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
     }
     protected void onResetIncomingHeartbeat(ServiceType serviceType, byte sessionID) {
 		resetIncomingHeartbeat(serviceType, sessionID);

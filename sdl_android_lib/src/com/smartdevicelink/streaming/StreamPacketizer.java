@@ -16,11 +16,13 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 	public SdlConnection sdlConnection = null;
     private Object mPauseLock;
     private boolean mPaused;
+    private boolean isServiceProtected = false;
 
 	public StreamPacketizer(IStreamListener streamListener, InputStream is, ServiceType sType, byte rpcSessionID, SdlSession session) throws IOException {
 		super(streamListener, is, sType, rpcSessionID, session);
         mPauseLock = new Object();
         mPaused = false;
+        isServiceProtected = _session.isServiceProtected(_serviceType);
 	}
 
 	public void start() throws IOException {
@@ -69,6 +71,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 					pm.setFunctionID(0);
 					pm.setCorrID(0);
 					pm.setData(buffer, length);
+					pm.setPayloadProtected(isServiceProtected);
 										
 					if (t != null && !t.isInterrupted())
 						_streamListener.sendStreamPacket(pm);

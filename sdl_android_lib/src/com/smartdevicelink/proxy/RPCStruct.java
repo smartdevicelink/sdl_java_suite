@@ -10,8 +10,10 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 
 public class RPCStruct {
     public static final String KEY_BULK_DATA = "bulkData";
+    public static final String KEY_PROTECTED = "protected";
 
 	private byte[] _bulkData = null;
+	private Boolean protectedPayload = false;
 
 	protected Hashtable<String, Object> store = null;
 	
@@ -68,6 +70,14 @@ public class RPCStruct {
 		}
 	}
 	
+	public void setPayloadProtected(Boolean bVal) {
+		protectedPayload = bVal;
+	}
+	
+	public Boolean getPayloadProtected() {
+		return protectedPayload;
+	}
+
 	protected String getMessageTypeName(Set<String> keys) {
 	      for (String key : keys) {
 	          if (key == null) {

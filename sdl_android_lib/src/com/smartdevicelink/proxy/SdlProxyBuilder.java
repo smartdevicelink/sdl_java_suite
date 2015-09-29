@@ -34,6 +34,8 @@ public class SdlProxyBuilder
 	private boolean preRegister;
 	private String sAppResumeHash;
 	private BaseTransportConfig mTransport;
+	private byte[] certData = null;
+	private byte[] privKeyData = null;
 
 	public static class Builder
 	{
@@ -58,6 +60,8 @@ public class SdlProxyBuilder
 	    private boolean preRegister = false;
 	    private String sAppResumeHash = null;
 	    private BaseTransportConfig mTransport = new BTTransportConfig();
+		private byte[] certData = null;
+		private byte[] privKeyData = null;
 
 	    public Builder(IProxyListenerALM listener, String appId, String appName, Boolean isMediaApp)
 	    {
@@ -95,11 +99,15 @@ public class SdlProxyBuilder
 	    	{ sAppResumeHash = val; return this; }
 	    public Builder setTransportType(BaseTransportConfig val)
 	    	{ mTransport = val; return this; }
+	    public Builder setCert(byte[] val)
+    	{ certData = val; return this; }
+	    public Builder setKey(byte[] val)
+    	{ privKeyData = val; return this; }
 	        
         public SdlProxyALM build() throws SdlException
         {
         	SdlProxyBuilder obj = new SdlProxyBuilder(this);
-        	return new SdlProxyALM(obj.service,obj.listener,obj.sdlProxyConfigurationResources,obj.appName,obj.ttsChunks,obj.sShortAppName,obj.vrSynonyms,obj.isMediaApp,obj.sdlMessageVersion,obj.lang,obj.hmiLang,obj.vrAppHMITypes,obj.appId,obj.autoActivateID,obj.callbackToUIThread,obj.preRegister,obj.sAppResumeHash,obj.mTransport);
+        	return new SdlProxyALM(obj.service,obj.listener,obj.sdlProxyConfigurationResources,obj.appName,obj.ttsChunks,obj.sShortAppName,obj.vrSynonyms,obj.isMediaApp,obj.sdlMessageVersion,obj.lang,obj.hmiLang,obj.vrAppHMITypes,obj.appId,obj.autoActivateID,obj.callbackToUIThread,obj.preRegister,obj.sAppResumeHash,obj.mTransport,certData,privKeyData);
         }
 	}
 
@@ -124,6 +132,9 @@ public class SdlProxyBuilder
 		preRegister = builder.preRegister;
 		sAppResumeHash = builder.sAppResumeHash;
 		mTransport = builder.mTransport;
+		certData = builder.certData;
+		privKeyData = builder.privKeyData;
+		
 	}
 }
 

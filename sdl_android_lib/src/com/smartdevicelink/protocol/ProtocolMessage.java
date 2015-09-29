@@ -12,6 +12,7 @@ public class ProtocolMessage {
 	private int _functionID;
 	private int _correlationID;
 	private int _jsonSize;
+	private boolean payloadProtected = false;
 	
 	private byte[] _data = null;
 	private byte[] _bulkData = null;
@@ -74,6 +75,14 @@ public class ProtocolMessage {
 		System.arraycopy(bulkData, 0, this._bulkData, 0, length);
 		//this._bulkData = bulkData;
 	}
+	
+	public void setPayloadProtected(boolean bVal) {
+		payloadProtected = bVal;
+	}
+	
+	public boolean getPayloadProtected() {
+		return payloadProtected;
+	}	
 	
 public ServiceType getServiceType() {
 		return _serviceType;

@@ -12,7 +12,7 @@ public interface IProtocolListener {
 	void onProtocolMessageReceived(ProtocolMessage msg);
 
 	// Called to indicate that a protocol session has been started (from either side)
-	void onProtocolSessionStarted(ServiceType serviceType, byte sessionID, byte version, String correlationID);
+	void onProtocolSessionStarted(ServiceType serviceType, byte sessionID, byte version, String correlationID, boolean isEncrypted);
 	
 	void onProtocolSessionNACKed(ServiceType serviceType, byte sessionID, byte version, String correlationID);	
 
@@ -28,7 +28,7 @@ public interface IProtocolListener {
      */
     void onProtocolHeartbeatACK(ServiceType serviceType, byte sessionID);
     
-    void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID);
+    void onProtocolServiceDataACK(ServiceType serviceType, int dataSize, byte sessionID);
 
     void onResetOutgoingHeartbeat(ServiceType serviceType, byte sessionID);
 
