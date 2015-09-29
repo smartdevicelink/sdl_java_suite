@@ -19,7 +19,7 @@ import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.WiProProtocol;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
@@ -101,7 +101,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			if (_protocol != null) {
 				// If transport is still connected, sent EndProtocolSessionMessage
 				if (_transport != null && _transport.getIsConnected()) {
-					_protocol.EndProtocolSession(SessionType.RPC, rpcSessionID);
+					_protocol.EndProtocolSession(ServiceType.RPC, rpcSessionID);
 				}
 				if (willRecycle) {
 				_protocol = null;
@@ -151,7 +151,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	void startHandShake() {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
-				_protocol.StartProtocolSession(SessionType.RPC);
+				_protocol.StartProtocolSession(ServiceType.RPC);
 			}
 		}
 	}	
@@ -209,21 +209,21 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 
 	@Override
-	public void onProtocolSessionStarted(SessionType sessionType,
+	public void onProtocolSessionStarted(ServiceType serviceType,
 			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+		_connectionListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
 	}
 
 	@Override
-	public void onProtocolSessionNACKed(SessionType sessionType,
+	public void onProtocolSessionNACKed(ServiceType serviceType,
 			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+		_connectionListener.onProtocolSessionStartedNACKed(serviceType, sessionID, version, correlationID);
 	}
 
 	@Override
-	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
+	public void onProtocolSessionEnded(ServiceType serviceType, byte sessionID,
 			String correlationID) {
-		_connectionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+		_connectionListener.onProtocolSessionEnded(serviceType, sessionID, correlationID);
 	}
 
 	@Override
@@ -241,14 +241,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public TransportType getCurrentTransportType() {
 		return _transport.getTransportType();
 	}
-	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
-            if (sType.equals(SessionType.NAV))
+	public void startStream(InputStream is, ServiceType sType, byte rpcSessionID) throws IOException {
+            if (sType.equals(ServiceType.NAV))
             {
             	mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
             	mVideoPacketizer.sdlConnection = this;
             	mVideoPacketizer.start();
             }
-            else if (sType.equals(SessionType.PCM))
+            else if (sType.equals(ServiceType.PCM))
             {
             	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
             	mAudioPacketizer.sdlConnection = this;
@@ -256,7 +256,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
             }
 	}
 	
-	@SuppressLint("NewApi") public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
+	@SuppressLint("NewApi") public OutputStream startStream(ServiceType sType, byte rpcSessionID) throws IOException {
 			OutputStream os = new PipedOutputStream();
 			InputStream is = null;
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
@@ -264,13 +264,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			} else {
 				is = new PipedInputStream((PipedOutputStream) os);
 			}
-            if (sType.equals(SessionType.NAV))
+            if (sType.equals(ServiceType.NAV))
             {
                 mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
                 mVideoPacketizer.sdlConnection = this;
                 mVideoPacketizer.start();
             }       
-            else if (sType.equals(SessionType.PCM))
+            else if (sType.equals(ServiceType.PCM))
             {
             	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID);
             	mAudioPacketizer.sdlConnection = this;
@@ -285,7 +285,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			return os;
 	}
 		
-	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
+	public void startRPCStream(InputStream is, RPCRequest request, ServiceType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
 			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0);
 			mRPCPacketizer.start();
@@ -294,7 +294,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
         }
 	}
 	
-	public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
+	public OutputStream startRPCStream(RPCRequest request, ServiceType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
 			OutputStream os = new PipedOutputStream();
 	        InputStream is = new PipedInputStream((PipedOutputStream) os);
@@ -392,7 +392,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}	
 	
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
-			int height, int bitrate, SessionType sType, byte rpcSessionID) {
+			int height, int bitrate, ServiceType sType, byte rpcSessionID) {
 		try {
 			PipedOutputStream stream = (PipedOutputStream) startStream(sType, rpcSessionID);
 			if (stream == null) return null;
@@ -432,18 +432,18 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		sendMessage(pm);
 	}
 	
-	public void startService (SessionType sessionType, byte sessionID) {
+	public void startService (ServiceType serviceType, byte sessionID) {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
-				_protocol.StartProtocolService(sessionType, sessionID);
+				_protocol.StartProtocolService(serviceType, sessionID);
 			}
 		}
 	}
 	
-	public void endService (SessionType sessionType, byte sessionID) {
+	public void endService (ServiceType serviceType, byte sessionID) {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
-				_protocol.EndProtocolSession(sessionType, sessionID);
+				_protocol.EndProtocolSession(serviceType, sessionID);
 			}
 		}
 	}
@@ -502,28 +502,28 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 
 		@Override
-		public void onProtocolSessionStarted(SessionType sessionType,
+		public void onProtocolSessionStarted(ServiceType serviceType,
 				byte sessionID, byte version, String correlationID) {
 			for (SdlSession session : listenerList) {
 				if (session.getSessionId() == 0) {
-					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+					session.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
 					break;
 				}
 			}
-			if (sessionType.equals(SessionType.NAV) || sessionType.equals(SessionType.PCM)){
+			if (serviceType.equals(ServiceType.NAV) || serviceType.equals(ServiceType.PCM)){
 				SdlSession session = findSessionById(sessionID);
 				if (session != null) {
-					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+					session.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
 				}
 			}
 		}
 
 		@Override
-		public void onProtocolSessionEnded(SessionType sessionType,
+		public void onProtocolSessionEnded(ServiceType serviceType,
 				byte sessionID, String correlationID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+				session.onProtocolSessionEnded(serviceType, sessionID, correlationID);
 			}
 		}
 
@@ -535,11 +535,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 
 		@Override
-		public void onProtocolSessionStartedNACKed(SessionType sessionType,
+		public void onProtocolSessionStartedNACKed(ServiceType serviceType,
 				byte sessionID, byte version, String correlationID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+				session.onProtocolSessionStartedNACKed(serviceType, sessionID, version, correlationID);
 			}			
 		}
 
@@ -552,37 +552,28 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		}
 
 		@Override
-		public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
+		public void onProtocolSessionEndedNACKed(ServiceType serviceType, byte sessionID, String correlationID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+				session.onProtocolSessionEndedNACKed(serviceType, sessionID, correlationID);
 			}			
 			}
 
 		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType,
-				byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-			
-		}
-
-		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType,
-				byte sessionID) {
+		public void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolServiceDataACK(sessionType, sessionID);
+				session.onProtocolServiceDataACK(serviceType, sessionID);
 			}
-		}
+		}		
+	}
 		
 	public int getRegisterCount() {
 		return listenerList.size();
 	}
 	
 	@Override
-	public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+	public void onProtocolHeartbeat(ServiceType serviceType, byte sessionID) {
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
@@ -595,7 +586,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
     
 	@Override
-    public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
+    public void onProtocolHeartbeatACK(ServiceType serviceType, byte sessionID) {
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
     	
@@ -608,7 +599,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     }
 
     @Override
-    public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID){
+    public void onResetOutgoingHeartbeat(ServiceType serviceType, byte sessionID){
     	
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
@@ -619,7 +610,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     }
 
     @Override
-    public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID){
+    public void onResetIncomingHeartbeat(ServiceType serviceType, byte sessionID){
     	
     	SdlSession mySession = findSessionById(sessionID);
     	if (mySession == null) return;
@@ -630,9 +621,15 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     }
     
 	@Override
-	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+	public void onProtocolSessionEndedNACKed(ServiceType serviceType,
 			byte sessionID, String correlationID) {
-		_connectionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+		_connectionListener.onProtocolSessionEndedNACKed(serviceType, sessionID, correlationID);
+		
+	}
+
+	@Override
+	public void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
+		_connectionListener.onProtocolServiceDataACK(serviceType, sessionID);
 		
 	}
 }

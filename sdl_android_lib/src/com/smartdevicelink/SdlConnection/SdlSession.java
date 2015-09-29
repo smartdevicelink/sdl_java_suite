@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
@@ -172,19 +172,19 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		
 
 	@Override
-	public void onProtocolSessionStarted(SessionType sessionType,
+	public void onProtocolSessionStarted(ServiceType serviceType,
 			byte sessionID, byte version, String correlationID) {
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
-		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+		this.sessionListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
 		//if (version == 3)
 			initialiseSession();
 	}
 
 	@Override
-	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
+	public void onProtocolSessionEnded(ServiceType serviceType, byte sessionID,
 			String correlationID) {
-		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+		this.sessionListener.onProtocolSessionEnded(serviceType, sessionID, correlationID);
 	}
 
 	@Override
@@ -223,20 +223,20 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
-	public void onProtocolSessionStartedNACKed(SessionType sessionType,
+	public void onProtocolSessionStartedNACKed(ServiceType serviceType,
 			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);		
+		this.sessionListener.onProtocolSessionStartedNACKed(serviceType, sessionID, version, correlationID);		
 	}
 
 	@Override
-	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+	public void onProtocolSessionEndedNACKed(ServiceType serviceType,
 			byte sessionID, String correlationID) {
-		this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+		this.sessionListener.onProtocolSessionEndedNACKed(serviceType, sessionID, correlationID);
 		
 	}
 
 	@Override
-	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
-		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	public void onProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
+		this.sessionListener.onProtocolServiceDataACK(serviceType, sessionID);
 	}
 }

@@ -9,7 +9,7 @@ import android.os.Process;
 import com.smartdevicelink.protocol.ProtocolFrameHeader;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -255,11 +255,11 @@ public class SdlTrace {
 		return "Unknown";
 	} // end-method
 
-	private static String getProtocolSessionType(SessionType serviceType) {
+	private static String getProtocolServiceType(ServiceType serviceType) {
 		String s;
-		if (serviceType == SessionType.RPC )
+		if (serviceType == ServiceType.RPC )
 			s = "rpc";
-		else if (serviceType == SessionType.BULK_DATA)
+		else if (serviceType == ServiceType.BULK_DATA)
 			s = "bulk";
 		else
 			s = "Unknown";
@@ -276,7 +276,7 @@ public class SdlTrace {
 		sb.append("</cmp><ft>");
 		sb.append(getProtocolFrameType(hdr.getFrameType()));
 		sb.append("</ft><st>");
-		sb.append(getProtocolSessionType(hdr.getSessionType()));
+		sb.append(getProtocolServiceType(hdr.getServiceType()));
 		sb.append("</st><sid>");
 		sb.append(hdr.getSessionID());
 		sb.append("</sid><sz>");

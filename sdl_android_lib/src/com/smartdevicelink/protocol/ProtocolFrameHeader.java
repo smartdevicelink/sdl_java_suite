@@ -1,14 +1,14 @@
 package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.enums.FrameType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.util.BitConverter;
 
 public class ProtocolFrameHeader {
 	private byte version = 1;
 	private boolean compressed = false;
 	private FrameType frameType = FrameType.Control;
-	private SessionType sessionType = SessionType.RPC;
+	private ServiceType sessionType = ServiceType.RPC;
 	private byte frameData = 0;
 	private byte sessionID;
 	private int dataSize;
@@ -33,7 +33,7 @@ public class ProtocolFrameHeader {
 		msg.setFrameType(FrameType.valueOf(frameType));
 		
 		byte serviceType = header[1];
-		msg.setSessionType(SessionType.valueOf(serviceType));
+		msg.setServiceType(ServiceType.valueOf(serviceType));
 		
 		byte frameData = header[2];
 		msg.setFrameData(frameData);
@@ -149,11 +149,11 @@ public class ProtocolFrameHeader {
 		this.frameType = frameType;
 	}
 
-	public SessionType getSessionType() {
+	public ServiceType getServiceType() {
 		return sessionType;
 	}
 
-	public void setSessionType(SessionType sessionType) {
+	public void setServiceType(ServiceType sessionType) {
 		this.sessionType = sessionType;
 	}
 }

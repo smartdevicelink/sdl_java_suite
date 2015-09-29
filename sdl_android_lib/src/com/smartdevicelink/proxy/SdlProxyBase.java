@@ -47,7 +47,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.proxy.LockScreenManager.OnLockScreenIconDownloadedListener;
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
@@ -287,18 +287,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onProtocolSessionStarted(SessionType sessionType,
+		public void onProtocolSessionStarted(ServiceType serviceType,
 				byte sessionID, byte version, String correlationID) {
 			
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
+			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + serviceType.getName());
 			sendBroadcastIntent(sendIntent);
 			
 			setWiProVersion(version);	
 			
-			if (sessionType.eq(SessionType.RPC)) {	
+			if (serviceType.eq(ServiceType.RPC)) {	
 
 				 if ( (_transportConfig.getHeartBeatTimeout() != Integer.MAX_VALUE) && (version > 2))
 				 {
@@ -312,9 +312,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				 }		
 				 
 				startRPCProtocolSession(sessionID, correlationID);
-			} else if (sessionType.eq(SessionType.NAV)) {
+			} else if (serviceType.eq(ServiceType.NAV)) {
 				NavServiceStarted();
-			} else if (sessionType.eq(SessionType.PCM)) {
+			} else if (serviceType.eq(ServiceType.PCM)) {
 				AudioServiceStarted();
 			} 
 			else if (_wiproVersion > 1) {
@@ -326,26 +326,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onProtocolSessionStartedNACKed(SessionType sessionType,
+		public void onProtocolSessionStartedNACKed(ServiceType serviceType,
 				byte sessionID, byte version, String correlationID) {
-			OnServiceNACKed message = new OnServiceNACKed(sessionType);
+			OnServiceNACKed message = new OnServiceNACKed(serviceType);
 			queueInternalMessage(message);
 			
-			if (sessionType.eq(SessionType.NAV)) {
+			if (serviceType.eq(ServiceType.NAV)) {
 				
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStartedNACKed");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
+				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + serviceType.getName());
 				sendBroadcastIntent(sendIntent);
 				
 				NavServiceStartedNACK();
 			}
-			else if (sessionType.eq(SessionType.PCM)) {
+			else if (serviceType.eq(ServiceType.PCM)) {
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStartedNACKed");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
+				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + serviceType.getName());
 				sendBroadcastIntent(sendIntent);
 				
 				AudioServiceStartedNACK();
@@ -353,12 +353,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onProtocolSessionEnded(SessionType sessionType,
+		public void onProtocolSessionEnded(ServiceType sessionType,
 				byte sessionID, String correlationID) {
 			OnServiceEnded message = new OnServiceEnded(sessionType);
 			queueInternalMessage(message);
 
-			if (sessionType.eq(SessionType.NAV)) {
+			if (sessionType.eq(ServiceType.NAV)) {
 				
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEnded");
@@ -368,7 +368,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				NavServiceEnded();
 			}
-			else if (sessionType.eq(SessionType.PCM)) {
+			else if (sessionType.eq(ServiceType.PCM)) {
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEnded");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
@@ -400,30 +400,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onProtocolSessionEndedNACKed(SessionType sessionType,
+		public void onProtocolSessionEndedNACKed(ServiceType serviceType,
 				byte sessionID, String correlationID) {
-			if (sessionType.eq(SessionType.NAV)) {
+			if (serviceType.eq(ServiceType.NAV)) {
 				
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEndedNACKed");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + sessionType.getName());
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + serviceType.getName());
 				sendBroadcastIntent(sendIntent);
 				
 				NavServiceEndedNACK();
 			}
-			else if (sessionType.eq(SessionType.PCM)) {
+			else if (serviceType.eq(ServiceType.PCM)) {
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionEndedNACKed");
 				updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
-				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + sessionType.getName());
+				updateBroadcastIntent(sendIntent, "COMMENT2", " End NACK ServiceType: " + serviceType.getName());
 				sendBroadcastIntent(sendIntent);
 				
 				AudioServiceEndedNACK();
 			}
 			
 		}
-		public void onProtocolServiceDataACK(SessionType sessionType,
+		public void onProtocolServiceDataACK(ServiceType serviceType,
 				byte sessionID) {
 			if (_callbackToUIThread) {
 				// Run in UI thread
@@ -1327,7 +1327,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void dispatchIncomingMessage(ProtocolMessage message) {
 		try{
 			// Dispatching logic
-			if (message.getSessionType().equals(SessionType.RPC)) {
+			if (message.getServiceType().equals(ServiceType.RPC)) {
 				try {
 					if (_wiproVersion == 1) {
 						if (message.getVersion() > 1) setWiProVersion(message.getVersion());
@@ -1539,7 +1539,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (sdlSession != null)
 				pm.setSessionID(sdlSession.getSessionId());
 			pm.setMessageType(MessageType.RPC);
-			pm.setSessionType(SessionType.RPC);
+			pm.setServiceType(ServiceType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
 			if (request.getCorrelationID() == null)
 			{
@@ -3167,7 +3167,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings("unchecked")
-	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, ServiceType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -3195,7 +3195,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings("unchecked")
-	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	private RPCStreamController startRPCStream(InputStream is, PutFile request, ServiceType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -3222,7 +3222,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;
-		return startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);		
+		return startRPCStream(sPath, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);		
 	}
 
 	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
@@ -3230,7 +3230,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;
 		if (is == null) return null;
-		startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		startRPCStream(is, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);
 		return null;
 	}
 
@@ -3238,7 +3238,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return false;
-		sdlConn.startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		sdlConn.startRPCStream(is, msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);
 		return true;
 	}
 	
@@ -3246,7 +3246,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlSession == null) return null;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
 		if (sdlConn == null) return null;
-		return sdlConn.startRPCStream(msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);				
+		return sdlConn.startRPCStream(msg, ServiceType.RPC, sdlSession.getSessionId(), _wiproVersion);				
 	}
 	
 	public void endRPCStream() {
@@ -3292,7 +3292,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		navServiceStartResponseReceived = false;
 		navServiceStartResponse = false;
-		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
+		sdlConn.startService(ServiceType.NAV, sdlSession.getSessionId());
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
@@ -3305,7 +3305,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (navServiceStartResponse) {
 			try {
-				sdlConn.startStream(is, SessionType.NAV, sdlSession.getSessionId());
+				sdlConn.startStream(is, ServiceType.NAV, sdlSession.getSessionId());
 				return true;
 			} catch (Exception e) {
 				return false;
@@ -3327,7 +3327,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		navServiceStartResponseReceived = false;
 		navServiceStartResponse = false;
-		sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
+		sdlConn.startService(ServiceType.NAV, sdlSession.getSessionId());
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
@@ -3340,7 +3340,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (navServiceStartResponse) {
 			try {
-				return sdlConn.startStream(SessionType.NAV, sdlSession.getSessionId());
+				return sdlConn.startStream(ServiceType.NAV, sdlSession.getSessionId());
 			} catch (Exception e) {
 				return null;
 			}
@@ -3439,9 +3439,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		pcmServiceStartResponseReceived = false;
 		pcmServiceStartResponse = false;
-		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
+		sdlConn.startService(ServiceType.PCM, sdlSession.getSessionId());
 
-		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
+		sdlConn.startService(ServiceType.PCM, sdlSession.getSessionId());
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -3453,7 +3453,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (pcmServiceStartResponse) {
 			try {
-				sdlConn.startStream(is, SessionType.PCM, sdlSession.getSessionId());
+				sdlConn.startStream(is, ServiceType.PCM, sdlSession.getSessionId());
 				return true;
 			} catch (Exception e) {
 				return false;
@@ -3474,7 +3474,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		pcmServiceStartResponseReceived = false;
 		pcmServiceStartResponse = false;
-		sdlConn.startService(SessionType.PCM, sdlSession.getSessionId());
+		sdlConn.startService(ServiceType.PCM, sdlSession.getSessionId());
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -3486,7 +3486,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (pcmServiceStartResponse) {
 			try {
-				return sdlConn.startStream(SessionType.PCM, sdlSession.getSessionId());
+				return sdlConn.startStream(ServiceType.PCM, sdlSession.getSessionId());
 			} catch (Exception e) {
 				return null;
 			}
@@ -3533,7 +3533,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         
         navServiceStartResponseReceived = false;
         navServiceStartResponse = false;
-        sdlConn.startService(SessionType.NAV, sdlSession.getSessionId());
+        sdlConn.startService(ServiceType.NAV, sdlSession.getSessionId());
         
         FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
         ScheduledExecutorService scheduler = createScheduler();
@@ -3546,7 +3546,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         
         if (navServiceStartResponse) {
             return sdlConn.createOpenGLInputSurface(frameRate, iFrameInterval, width,
-                                                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+                                                    height, bitrate, ServiceType.NAV, sdlSession.getSessionId());
         } else {
             return null;
         }

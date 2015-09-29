@@ -1,7 +1,7 @@
 package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 
@@ -39,14 +39,15 @@ public abstract class AbstractProtocol {
 	// This method starts a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionStarted() method will be made when the protocol
 	// session has been established.
-	public abstract void StartProtocolSession(SessionType sessionType);
+	public abstract void StartProtocolSession(ServiceType serviceType);
 	
-	public abstract void StartProtocolService(SessionType sessionType, byte sessionID);
+	public abstract void StartProtocolService(ServiceType serviceType, byte sessionID);
 
+	public abstract void EndProtocolService(ServiceType serviceType, byte sessionID);
 	// This method ends a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionEnded() method will be made when the protocol
 	// session has ended.
-	public abstract void EndProtocolSession(SessionType sessionType, byte sessionID);
+	public abstract void EndProtocolSession(ServiceType serviceType, byte sessionID);
     // TODO REMOVE
     // This method sets the interval at which heartbeat protocol messages will be
     // sent to SDL.
@@ -68,15 +69,15 @@ public abstract class AbstractProtocol {
 		assembler.handleFrame(header, data);
 	}
 	
-    private synchronized void resetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {
+    private synchronized void resetOutgoingHeartbeat(ServiceType serviceType, byte sessionID) {
         if (_protocolListener != null) {
-            _protocolListener.onResetOutgoingHeartbeat(sessionType,sessionID);
+            _protocolListener.onResetOutgoingHeartbeat(serviceType,sessionID);
         }
     }
 	
-    private synchronized void resetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
+    private synchronized void resetIncomingHeartbeat(ServiceType serviceType, byte sessionID) {
         if (_protocolListener != null) {
-            _protocolListener.onResetIncomingHeartbeat(sessionType,sessionID);
+            _protocolListener.onResetIncomingHeartbeat(serviceType,sessionID);
         }
     }
 
@@ -84,7 +85,7 @@ public abstract class AbstractProtocol {
 	protected void handleProtocolFrameToSend(ProtocolFrameHeader header, byte[] data, int offset, int length) {
 		SdlTrace.logProtocolEvent(InterfaceActivityDirection.Transmit, header, data, 
 				offset, length, SDL_LIB_TRACE_KEY);
-		resetOutgoingHeartbeat(header.getSessionType(), header.getSessionID());
+		resetOutgoingHeartbeat(header.getServiceType(), header.getSessionID());
 		synchronized(_frameLock) {
 			byte[] frameHeader = header.assembleHeaderBytes();
 			handleProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
@@ -109,28 +110,28 @@ public abstract class AbstractProtocol {
 	
 	// This method handles the end of a protocol session. A callback is 
 	// sent to the protocol listener.
-	protected void handleProtocolSessionEndedNACK(SessionType sessionType,
+	protected void handleProtocolSessionEndedNACK(ServiceType serviceType,
 			byte sessionID, String correlationID) {
-		_protocolListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+		_protocolListener.onProtocolSessionEndedNACKed(serviceType, sessionID, correlationID);
 	}	
 	
 	// This method handles the end of a protocol session. A callback is 
 	// sent to the protocol listener.
-	protected void handleProtocolSessionEnded(SessionType sessionType,
+	protected void handleProtocolSessionEnded(ServiceType serviceType,
 			byte sessionID, String correlationID) {
-		_protocolListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+		_protocolListener.onProtocolSessionEnded(serviceType, sessionID, correlationID);
 	}
 	
 	// This method handles the startup of a protocol session. A callback is sent
 	// to the protocol listener.
-	protected void handleProtocolSessionStarted(SessionType sessionType,
+	protected void handleProtocolSessionStarted(ServiceType serviceType,
 			byte sessionID, byte version, String correlationID) {
-		_protocolListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+		_protocolListener.onProtocolSessionStarted(serviceType, sessionID, version, correlationID);
 	}
 
-	protected void handleProtocolSessionNACKed(SessionType sessionType,
+	protected void handleProtocolSessionNACKed(ServiceType serviceType,
 			byte sessionID, byte version, String correlationID) {
-		_protocolListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+		_protocolListener.onProtocolSessionNACKed(serviceType, sessionID, version, correlationID);
 	}
 	
 	// This method handles protocol errors. A callback is sent to the protocol
@@ -138,17 +139,17 @@ public abstract class AbstractProtocol {
 	protected void handleProtocolError(String string, Exception ex) {
 		_protocolListener.onProtocolError(string, ex);
 	}
-    protected void handleProtocolHeartbeat(SessionType sessionType, byte sessionID) {
+    protected void handleProtocolHeartbeat(ServiceType serviceType, byte sessionID) {
     	SendHeartBeatACK(sessionID);
-    	_protocolListener.onProtocolHeartbeat(sessionType, sessionID);
+    	_protocolListener.onProtocolHeartbeat(serviceType, sessionID);
     }
-    protected void handleProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-        _protocolListener.onProtocolHeartbeatACK(sessionType, sessionID);
+    protected void handleProtocolHeartbeatACK(ServiceType serviceType, byte sessionID) {
+        _protocolListener.onProtocolHeartbeatACK(serviceType, sessionID);
     }
-    protected void handleProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
-        _protocolListener.onProtocolServiceDataACK(sessionType, sessionID);
+    protected void handleProtocolServiceDataACK(ServiceType serviceType, byte sessionID) {
+        _protocolListener.onProtocolServiceDataACK(serviceType, sessionID);
     }
-    protected void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
-		resetIncomingHeartbeat(sessionType, sessionID);
+    protected void onResetIncomingHeartbeat(ServiceType serviceType, byte sessionID) {
+		resetIncomingHeartbeat(serviceType, sessionID);
     }
 } // end-class

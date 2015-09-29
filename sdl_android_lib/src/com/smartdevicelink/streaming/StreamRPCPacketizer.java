@@ -8,7 +8,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
@@ -37,7 +37,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
     
     private OnPutFileUpdateListener callBack; 
 	
-    public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long iLength) throws IOException {
+    public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, ServiceType sType, byte rpcSessionID, byte wiproVersion, long iLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
 		lFileSize = iLength;
 		iInitialCorrID = request.getCorrelationID();
@@ -202,7 +202,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
 					pm.setSessionID(_rpcSessionID);
 					pm.setMessageType(MessageType.RPC);
-					pm.setSessionType(_session);
+					pm.setServiceType(_session);
 					pm.setFunctionID(FunctionID.getFunctionId(msg.getFunctionName()));
 					
 					if (buffer.length != length)

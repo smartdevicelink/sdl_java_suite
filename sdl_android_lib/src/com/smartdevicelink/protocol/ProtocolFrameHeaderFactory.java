@@ -4,11 +4,11 @@ import com.smartdevicelink.protocol.enums.*;
 
 public class ProtocolFrameHeaderFactory {
 
-	public static ProtocolFrameHeader createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID) {
+	public static ProtocolFrameHeader createStartSession(ServiceType serviceType, int messageID, byte version, byte sessionID) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Control);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setFrameData(FrameDataControlFrameType.StartSession.value());
 		msg.setMessageID(messageID);
 		msg.setSessionID(sessionID);
@@ -16,34 +16,34 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-    public static ProtocolFrameHeader createHeartbeat(SessionType serviceType, byte sessionID, 
+    public static ProtocolFrameHeader createHeartbeat(ServiceType serviceType, byte sessionID, 
             byte version) {
 		return createControlFrame(serviceType, sessionID, version,
 		FrameDataControlFrameType.Heartbeat);
     }
 
 	public static ProtocolFrameHeader createHeartbeatACK(
-			SessionType serviceType, byte sessionID, byte version) {
+			ServiceType serviceType, byte sessionID, byte version) {
 		return createControlFrame(serviceType, sessionID, version,
 		FrameDataControlFrameType.HeartbeatACK);
 	}
 
-	private static ProtocolFrameHeader createControlFrame(SessionType serviceType, byte sessionID, byte version,
+	private static ProtocolFrameHeader createControlFrame(ServiceType serviceType, byte sessionID, byte version,
 	            												FrameDataControlFrameType frameData) {
 	        ProtocolFrameHeader msg = new ProtocolFrameHeader();
 	        msg.setVersion(version);
 	        msg.setFrameType(FrameType.Control);
-	        msg.setSessionType(serviceType);
+	        msg.setServiceType(serviceType);
 	        msg.setSessionID(sessionID);
 	        msg.setFrameData(frameData.value());
 	        return msg;
 	}	
 	
-	public static ProtocolFrameHeader createStartSessionACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
+	public static ProtocolFrameHeader createStartSessionACK(ServiceType serviceType, byte sessionID, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Control);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setSessionID(sessionID);
 		msg.setFrameData(FrameDataControlFrameType.StartSessionACK.value());
 		msg.setMessageID(messageID);
@@ -51,11 +51,11 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-	public static ProtocolFrameHeader createStartSessionNACK(SessionType serviceType, byte sessionID, int messageID, byte version) {
+	public static ProtocolFrameHeader createStartSessionNACK(ServiceType serviceType, byte sessionID, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Control);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setSessionID(sessionID);
 		msg.setFrameData(FrameDataControlFrameType.StartSessionNACK.value());
 		msg.setMessageID(messageID);
@@ -63,11 +63,11 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-	public static ProtocolFrameHeader createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version) {
+	public static ProtocolFrameHeader createEndSession(ServiceType serviceType, byte sessionID, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Control);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setSessionID(sessionID);
 		msg.setFrameData(FrameDataControlFrameType.EndSession.value());
 		msg.setMessageID(messageID);
@@ -75,12 +75,12 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-	public static ProtocolFrameHeader createSingleSendData(SessionType serviceType, byte sessionID,
+	public static ProtocolFrameHeader createSingleSendData(ServiceType serviceType, byte sessionID,
 			int dataLength, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Single);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setFrameData(ProtocolFrameHeader.FrameDataSingleFrame);
 		msg.setSessionID(sessionID);
 		msg.setDataSize(dataLength);
@@ -89,12 +89,12 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-	public static ProtocolFrameHeader createMultiSendDataFirst(SessionType serviceType, byte sessionID, 
+	public static ProtocolFrameHeader createMultiSendDataFirst(ServiceType serviceType, byte sessionID, 
 			int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.First);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setFrameData(ProtocolFrameHeader.FrameDataFirstFrame);
 		msg.setSessionID(sessionID);
 		msg.setDataSize(8);
@@ -103,12 +103,12 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-	public static ProtocolFrameHeader createMultiSendDataRest(SessionType serviceType, byte sessionID,
+	public static ProtocolFrameHeader createMultiSendDataRest(ServiceType serviceType, byte sessionID,
 			int dataLength, byte frameSequenceNumber, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Consecutive);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setFrameData(frameSequenceNumber/*FrameData.ConsecutiveFrame.value()*/);
 		msg.setSessionID(sessionID);
 		msg.setDataSize(dataLength);
@@ -117,12 +117,12 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 	
-	public static ProtocolFrameHeader createMultiSendDataRest(SessionType serviceType, byte sessionID,
+	public static ProtocolFrameHeader createMultiSendDataRest(ServiceType serviceType, byte sessionID,
 			int dataLength, int messageID, byte version) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Consecutive);
-		msg.setSessionType(serviceType);
+		msg.setServiceType(serviceType);
 		msg.setFrameData(FrameData.ConsecutiveFrame.value());
 		msg.setSessionID(sessionID);
 		msg.setDataSize(dataLength);

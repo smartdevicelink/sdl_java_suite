@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 
 public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
@@ -16,7 +16,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
     private Object mPauseLock;
     private boolean mPaused;
 
-	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
+	public StreamPacketizer(IStreamListener streamListener, InputStream is, ServiceType sType, byte rpcSessionID) throws IOException {
 		super(streamListener, is, sType, rpcSessionID);
         mPauseLock = new Object();
         mPaused = false;
@@ -64,7 +64,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 				{
 					ProtocolMessage pm = new ProtocolMessage();
 					pm.setSessionID(_rpcSessionID);
-					pm.setSessionType(_session);
+					pm.setServiceType(_session);
 					pm.setFunctionID(0);
 					pm.setCorrID(0);
 					pm.setData(buffer, length);

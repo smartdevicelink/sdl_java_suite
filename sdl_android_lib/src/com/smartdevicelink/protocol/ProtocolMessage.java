@@ -1,11 +1,11 @@
 package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.enums.MessageType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 
 public class ProtocolMessage {
 	private byte version = 1;
-	private SessionType _sessionType = SessionType.RPC;
+	private ServiceType _serviceType = ServiceType.RPC;
 	private MessageType _messageType = MessageType.UNDEFINED;
 	private byte _sessionID = 0;
 	private byte _rpcType;
@@ -74,13 +74,13 @@ public class ProtocolMessage {
 		System.arraycopy(bulkData, 0, this._bulkData, 0, length);
 		//this._bulkData = bulkData;
 	}
-
-	public SessionType getSessionType() {
-		return _sessionType;
+	
+public ServiceType getServiceType() {
+		return _serviceType;
 	}
 
-	public void setSessionType(SessionType sessionType) {
-		this._sessionType = sessionType;
+	public void setServiceType(ServiceType serviceType) {
+		this._serviceType = serviceType;
 	}
 
 	public MessageType getMessageType() {
