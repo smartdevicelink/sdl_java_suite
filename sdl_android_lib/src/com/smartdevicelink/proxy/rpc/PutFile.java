@@ -6,7 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -224,15 +224,15 @@ public class PutFile extends RPCRequest {
 
 
 	@Override
-	public final void setOnRPCUpdateListener(OnRPCUpdateListener listener) {
-		super.setOnRPCUpdateListener(listener);
+	public final void setOnRPCResponseListener(OnRPCResponseListener listener) {
+		super.setOnRPCResponseListener(listener);
 	}
     
 	public void setOnPutFileUpdateListener(OnPutFileUpdateListener listener) {
-		super.setOnRPCUpdateListener(listener); //We can use the same method because it get stored as a parent class
+		super.setOnRPCResponseListener(listener); //We can use the same method because it get stored as a parent class
 	}
     
 	public OnPutFileUpdateListener getOnPutFileUpdateListener() {
-		return (OnPutFileUpdateListener)getOnRPCUpdateListener();
+		return (OnPutFileUpdateListener)getOnRPCResponseListener();
 	}
 }

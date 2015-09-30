@@ -260,7 +260,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
 		{
 			if(callBack!=null){
-				callBack.onFinish(iInitialCorrID, response, streamNote.getBytesComplete());
+				callBack.onResponse(iInitialCorrID, response, streamNote.getBytesComplete());
 			}
 			handleStreamSuccess(response, streamNote.getBytesComplete());
 			

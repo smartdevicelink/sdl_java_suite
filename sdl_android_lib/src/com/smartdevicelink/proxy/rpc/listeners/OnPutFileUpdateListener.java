@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc.listeners;
 
-import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCResponse;
 
-public abstract class OnPutFileUpdateListener extends OnRPCUpdateListener{
+public abstract class OnPutFileUpdateListener extends OnRPCResponseListener{
 
 	long totalSize = 0;
 
@@ -21,8 +21,8 @@ public abstract class OnPutFileUpdateListener extends OnRPCUpdateListener{
 	}
 	
 	@Override
-	public final void onFinish(int correlationId, RPCMessage message) {
-		onFinish(correlationId, message, totalSize); //Calling our special abstract method
+	public final void onResponse(int correlationId, RPCResponse response) {
+		onResponse(correlationId, response, totalSize); //Calling our special abstract method
 	}
 	/**
 	 * Called when the putfile request is responded to.
@@ -30,7 +30,7 @@ public abstract class OnPutFileUpdateListener extends OnRPCUpdateListener{
 	 * @param message
 	 * @param totalSize
 	 */
-	public abstract void onFinish(int correlationId, RPCMessage message, long totalSize);
+	public abstract void onResponse(int correlationId, RPCResponse response, long totalSize);
 	
 	/**
 	 * onUpdate is called during a putfile stream request

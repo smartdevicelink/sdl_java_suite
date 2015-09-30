@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc.listeners;
 
-import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 
-public abstract class OnRPCUpdateListener {
+public abstract class OnRPCResponseListener {
 	/**
 	 * Generic listener type that will work for most RPCs
 	 */
@@ -21,7 +21,7 @@ public abstract class OnRPCUpdateListener {
 	/**
 	 * This is the base listener for all RPCs.
 	 */
-	public OnRPCUpdateListener(){
+	public OnRPCResponseListener(){
 		setListenerType(UPDATE_LISTENER_TYPE_BASE_RPC);
 	}
 	
@@ -53,10 +53,10 @@ public abstract class OnRPCUpdateListener {
 	 * This is the only method that must be extended. Other methods that are able to be extended are 
 	 * onStart and onError.
 	 * @param correlationId
-	 * @param message This will be the response message received from the core side. It should be cast into a corresponding RPC Response type. ie, if setting this
+	 * @param response This will be the response message received from the core side. It should be cast into a corresponding RPC Response type. ie, if setting this
 	 * for a PutFile request, the message parameter should be cast to a PutFileResponse class.
 	 */
-	public abstract void onFinish(int correlationId, final RPCMessage message);
+	public abstract void onResponse(int correlationId, final RPCResponse response);
 	
 	/**
 	 * Called when there was some sort of error during the original request.
