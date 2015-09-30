@@ -38,14 +38,6 @@ class SdlPermissionSet {
         permissions = newPermissionCollection();
     }
 
-    void addPermissions(Collection<SdlPermission> permissions){
-
-        for(HMILevel hmiLevel: HMILevel.values()){
-            addPermissions(permissions, hmiLevel);
-        }
-
-    }
-
     boolean containsAny(SdlPermissionSet sdlPermissionSet){
 
         SdlPermissionSet copy = SdlPermissionSet.copy(this);
@@ -98,6 +90,14 @@ class SdlPermissionSet {
         for(HMILevel level: HMILevel.values()){
             addPermission(permission, level);
         }
+    }
+
+    void addPermissions(Collection<SdlPermission> permissions){
+
+        for(HMILevel hmiLevel: HMILevel.values()){
+            addPermissions(permissions, hmiLevel);
+        }
+
     }
 
     void addPermission(SdlPermission permission, HMILevel hmiLevel){
