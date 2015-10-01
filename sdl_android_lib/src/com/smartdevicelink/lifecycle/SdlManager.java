@@ -1,5 +1,7 @@
 package com.smartdevicelink.lifecycle;
 
+import android.content.Context;
+import android.os.PowerManager.WakeLock;
 import android.util.SparseArray;
 
 import com.smartdevicelink.exception.SdlException;
@@ -73,6 +75,10 @@ public class SdlManager implements IProxyListenerALM{
     private static SdlProxyALM mProxyALM;
     private static SdlLifecycleListener mLifecycleListener;
 
+    // Connection maintenance objects
+    private boolean isConnected;
+    private WakeLock mWakeLock;
+
     private static SparseArray<OnRPCResponseListener> mNotificationListeners = new SparseArray<>();
 
     public static synchronized SdlManager getInstance() {
@@ -82,14 +88,17 @@ public class SdlManager implements IProxyListenerALM{
     private SdlManager() {
     }
 
-    void startSdlProxy(){
+    void startSdlProxy(Context context){
 
     }
+
+
 
     void stopSdlProxy(){
         if(mProxyALM != null){
             try {
                 mProxyALM.dispose();
+                mProxyALM = null;
             } catch (SdlException e) {
                 e.printStackTrace();
             }
@@ -111,6 +120,13 @@ public class SdlManager implements IProxyListenerALM{
             } catch (SdlException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onOnHMIStatus(OnHMIStatus notification) {
+        if(!isConnected){
+
         }
     }
 
@@ -143,11 +159,6 @@ public class SdlManager implements IProxyListenerALM{
     // Everything below here is covered by OnRPCNotificationListener
     @Override
     public void onOnStreamRPC(OnStreamRPC notification) {
-
-    }
-
-    @Override
-    public void onOnHMIStatus(OnHMIStatus notification) {
 
     }
 
