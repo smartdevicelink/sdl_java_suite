@@ -8,7 +8,7 @@ public class ProtocolFrameHeader {
 	private byte version = 1;
 	private boolean compressed = false;
 	private FrameType frameType = FrameType.Control;
-	private ServiceType sessionType = ServiceType.RPC;
+	private ServiceType serviceType = ServiceType.RPC;
 	private byte frameData = 0;
 	private byte sessionID;
 	private int dataSize;
@@ -60,7 +60,7 @@ public class ProtocolFrameHeader {
 		header <<= 3;
 		header |= (frameType.value() & 0x07);
 		header <<= 8;
-		header |= (sessionType.value() & 0xFF);
+		header |= (serviceType.value() & 0xFF);
 		header <<= 8;
 		header |= (frameData & 0xFF);
 		header <<= 8;
@@ -85,7 +85,7 @@ public class ProtocolFrameHeader {
 	public String toString() {
 		String ret = "";
 		ret += "version " + version + ", " + (compressed ? "compressed" : "uncompressed") + "\n";
-		ret += "frameType " + frameType + ", serviceType " + sessionType;
+		ret += "frameType " + frameType + ", serviceType " + serviceType;
 		ret += "\nframeData " + frameData;
 		ret += ", sessionID " + sessionID;
 		ret += ", dataSize " + dataSize;
@@ -150,10 +150,10 @@ public class ProtocolFrameHeader {
 	}
 
 	public ServiceType getServiceType() {
-		return sessionType;
+		return serviceType;
 	}
 
-	public void setServiceType(ServiceType sessionType) {
-		this.sessionType = sessionType;
+	public void setServiceType(ServiceType serviceType) {
+		this.serviceType = serviceType;
 	}
 }
