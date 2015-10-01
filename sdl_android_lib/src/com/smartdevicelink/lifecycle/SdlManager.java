@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
+import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
@@ -69,11 +69,12 @@ import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
-public class SdlManager implements IProxyListenerALM{
+public class SdlManager implements IProxyListenerBase {
 
     private static SdlManager mInstance = new SdlManager();
-    private static SdlProxyALM mProxyALM;
+    private static SdlConnectionConfig mConnectionConfig;
     private static SdlLifecycleListener mLifecycleListener;
+    private static SdlProxyALM mProxyALM;
 
     // Connection maintenance objects
     private boolean isConnected;
@@ -88,13 +89,15 @@ public class SdlManager implements IProxyListenerALM{
     private SdlManager() {
     }
 
-    void startSdlProxy(Context context){
+    void connect(Context context){
 
     }
 
+    public static void setSdlConfig(SdlConnectionConfig config){
+        mConnectionConfig = config;
+    }
 
-
-    void stopSdlProxy(){
+    void disconnect(){
         if(mProxyALM != null){
             try {
                 mProxyALM.dispose();
