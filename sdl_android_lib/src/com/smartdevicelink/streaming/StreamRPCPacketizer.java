@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
@@ -33,8 +34,10 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
     private Object mPauseLock;
     private boolean mPaused;
-
-	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long iLength) throws IOException {
+    
+    private OnPutFileUpdateListener callBack; 
+	
+    public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long iLength) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
 		lFileSize = iLength;
 		iInitialCorrID = request.getCorrelationID();
@@ -45,6 +48,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			_proxy = proxy;
 			_proxyListener = _proxy.getProxyListener();
 			_proxy.addPutFileResponseListener(this);
+		}
+		if(_request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.toString())){
+			callBack = ((PutFile)_request).getOnPutFileUpdateListener();
 		}
 	}
 
@@ -163,7 +169,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			{
 				handleStreamException(null,null," Error, PutFile offset invalid for file: " + sFileName);
 			}
-
+			if(callBack!=null){
+				callBack.onStart(_request.getCorrelationID(), lFileSize);
+			}
 			while (!Thread.interrupted()) {				
 			
 				synchronized (mPauseLock)
@@ -226,22 +234,36 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	@Override
 	public void onPutFileResponse(PutFileResponse response) 
 	{	
+		
 		OnStreamRPC streamNote = notificationList.get(response.getCorrelationID());
 		if (streamNote == null) return;
-
+		
 		if (response.getSuccess())
 		{
-			if (_proxyListener != null)
+			if(callBack!=null){
+				callBack.onUpdate(response.getCorrelationID(), streamNote.getBytesComplete(), lFileSize);
+			}
+			if (_proxyListener != null){
 				_proxyListener.onOnStreamRPC(streamNote);
+			}
+			
 		}		
 		else
 		{
+			if(callBack!=null){
+				callBack.onError(response.getCorrelationID(), response.getResultCode(), response.getInfo());
+			}
 			handleStreamException(response, null, "");
+			
 		}		
 		
 		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
 		{
+			if(callBack!=null){
+				callBack.onResponse(iInitialCorrID, response, streamNote.getBytesComplete());
+			}
 			handleStreamSuccess(response, streamNote.getBytesComplete());
+			
 		}
 	}
 
@@ -250,5 +272,6 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 	{
 		if (thread != null)
 			handleStreamException(null, e, info);
+		
 	}
 }
