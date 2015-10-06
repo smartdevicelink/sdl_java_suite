@@ -1,23 +1,30 @@
 package com.smartdevicelink.ui;
 
+import java.util.HashMap;
 import java.util.List;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public class ViewManager implements IViewManager{
 
+	private static final String TAG = "SDL View Manager";
+	
+	
 	/**
 	 * Private static instance of this class.
 	 */
@@ -80,15 +87,19 @@ public class ViewManager implements IViewManager{
 	
 	/**
 	 * Add a view to the manager to use at a latter time. All views are referenced from their view id.
-	 * @param id This id MUST be generated from the SldViewHelper.generateId() method.
-	 * @param view the view that is to be added to the manager
+	 * @param view the view that is to be added to the manager, it should already have a view id assigned to it. If not, one will be created and returned.
+	 * @return the id of the view added. If one was not set in the view, this will be the id created during the add process.
 	 */
-	public void addView(int id, SdlView view){
-		views.put(id, view);
+	public int addView(SdlView view){
+		if(view.id<=0){
+			view.id = SdlViewHelper.generateViewId();
+		}
+		views.put(view.id, view);
+		return view.id;
 	}
 	
 	/**
-	 * 
+	 * This will set the current view that is being displayed on the connected hardware. 
 	 * @param viewId
 	 * @return true if the view was found and being processed to be set. False if not found
 	 */
@@ -97,6 +108,17 @@ public class ViewManager implements IViewManager{
 		if(views.indexOfKey(viewId)>=0){
 			SdlView view = views.get(viewId);
 			if(view!=null){
+				//Subscribe buttons
+				HashMap<ButtonName,SdlButton> subscribedButtons = view.getSubscribedButtons();
+				if(subscribedButtons!=null){
+					SubscribeButton msg;
+					for(ButtonName buttonName:subscribedButtons.keySet()){
+						msg = RPCRequestFactory.buildSubscribeButton(buttonName, correlationID);
+						sendRpc(msg);
+					}
+				}
+				
+				
 				Show show = new Show();
 				
 				//TODO add all the text views, images, etc
@@ -116,16 +138,14 @@ public class ViewManager implements IViewManager{
 	}
 	
 	private SdlButton parseButton(ButtonName name, int id){
-		if(name!=null){
-			if(name.equals(ButtonName.CUSTOM_BUTTON)){
-			
-		
-				SdlView view = views.get(currentView);
-				if(view !=null){
+		SdlView view = views.get(currentView);
+		if(view!=null){
+			if(name!=null){
+				if(name.equals(ButtonName.CUSTOM_BUTTON)){
 					return view.getButtonForId(id);
+				}else{ //We have a predefined button, let's notify the listeners
+					return view.getSubscribedButton(name);
 				}
-			}else{ //We have a predefined button, let's notify the listeners
-				//TODO
 			}
 		}
 		return null;
@@ -139,6 +159,9 @@ public class ViewManager implements IViewManager{
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
+		}else{
+			//Throw exception?
+			Log.e(TAG, "Unable to send RPC, proxy reference is null");
 		}
 		
 	}
