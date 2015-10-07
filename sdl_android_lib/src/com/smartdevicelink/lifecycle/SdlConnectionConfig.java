@@ -35,6 +35,8 @@ public class SdlConnectionConfig {
     Boolean bEnableResume;
     BaseTransportConfig transportConfig;
 
+    Class<? extends SdlLifecycleService> serviceClass;
+
     public SdlConnectionConfig(IProxyListenerBase listener, String appID, String appName){
         this.listener = listener;
         this.appID = appID;
@@ -44,6 +46,7 @@ public class SdlConnectionConfig {
 
         this.enableAdvancedLifecycleManagement = false;
         this.transportConfig = new BTTransportConfig();
+        this.serviceClass = SdlLifecycleService.class;
     }
 
     public void setIsMediaApp(boolean isMediaApp) {
@@ -80,6 +83,10 @@ public class SdlConnectionConfig {
 
     public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
         this.hmiDisplayLanguageDesired = hmiDisplayLanguageDesired;
+    }
+
+    public void setServiceClass(Class<? extends SdlLifecycleService> serviceClass) {
+        this.serviceClass = serviceClass;
     }
 
     public void setAppType(Vector<AppHMIType> appType) {
