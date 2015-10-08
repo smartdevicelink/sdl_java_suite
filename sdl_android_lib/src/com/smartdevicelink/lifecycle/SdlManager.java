@@ -3,20 +3,24 @@ package com.smartdevicelink.lifecycle;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
+import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
@@ -54,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
@@ -77,17 +82,22 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.ArrayList;
 
-public final class SdlManager implements IProxyListenerBase {
+public final class SdlManager implements IProxyListenerALM {
+
+    private static final String TAG = "SdlManager";
 
     private static final String WAKELOCK_TAG = "SdlStartWakeLock";
 
-    private static final int CONNECTION_TIMEOUT = 10 * 1000;
+    private static final int CONNECTION_TIMEOUT = 60 * 1000;
 
-    private static SdlManager mInstance = new SdlManager();
+    private static int autoIncCorId = 10;
+
+    private static SdlManager mInstance;
     private static SdlConnectionConfig mConnectionConfig;
     private static ArrayList<SdlLifecycleListener> mLifecycleListeners;
     private static Context mContext;
-    private static SdlProxyLCM mProxy;
+    // private static SdlProxyLCM mProxy;
+    private static SdlProxyALM mProxy;
     private static Class<? extends SdlLifecycleService> serviceClass;
     private static ISdlLifecycleService mService;
 
@@ -98,16 +108,19 @@ public final class SdlManager implements IProxyListenerBase {
     // Connection maintenance objects
     private boolean isConnected;
     private WakeLock mWakeLock;
+    private boolean isTryingToConnect;
 
     private static SparseArray<OnRPCNotificationListener> mNotificationListeners = new SparseArray<>();
 
     private static final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "Service Bound");
             mService = ((SdlLifecycleBinder) service).getSdlPersistentService();
             if(mInstance.isConnected){
                 mService.onSdlConnected();
             }
+            RegisterAppInterface inter = null;
         }
 
         @Override
@@ -124,44 +137,90 @@ public final class SdlManager implements IProxyListenerBase {
         }
     }
 
+    public boolean isConnected() {
+        return isConnected;
+    }
+
     private SdlManager() {
+        mLifecycleListeners = new ArrayList<>();
     }
 
     public static synchronized void initialize(Context context, SdlConnectionConfig config){
         if(mInstance == null) {
+            Log.d(TAG, "initialize()");
             mInstance = new SdlManager();
             mConnectionConfig = config;
-            mContext = context;
             serviceClass = config.serviceClass;
 
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
             if(adapter.isEnabled() && !adapter.getBondedDevices().isEmpty()){
-                mInstance.connect();
+                mInstance.connect(context);
             }
         }
     }
 
-    synchronized void connect(){
-        if(mWakeLock == null) {
-            PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-            mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG);
-        }
-        mWakeLock.acquire();
+    synchronized void connect(Context context){
+        if(!isTryingToConnect) {
+            isTryingToConnect = true;
+            Log.d(TAG, "connect()");
 
-        if(mProxy == null) {
-            try {
-                mProxy = new SdlProxyLCM(mConnectionConfig);
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
-        }
+            mContext = context;
 
-        mHandler.removeCallbacks(CHECK_CONNECTION_RUNNABLE);
-        mHandler.postDelayed(CHECK_CONNECTION_RUNNABLE, CONNECTION_TIMEOUT);
+            Intent serviceIntent = new Intent(mContext, serviceClass);
+            mContext.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+
+            AsyncTask task = new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object[] params) {
+
+                    if (mWakeLock == null) {
+                        PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG);
+                    }
+                    mWakeLock.acquire();
+
+                    if (mProxy == null) {
+                        try {
+                            Log.d(TAG, "Makin a proxy!");
+                            // mProxy = new SdlProxyLCM(SdlManager.getInstance(), mConnectionConfig);
+                            mProxy = new SdlProxyALM(SdlManager.getInstance(),
+                                    mConnectionConfig.sdlProxyConfigurationResources,
+                                    mConnectionConfig.appName,
+                                    mConnectionConfig.ttsName,
+                                    mConnectionConfig.ngnMediaScreenAppName,
+                                    mConnectionConfig.vrSynonyms,
+                                    mConnectionConfig.isMediaApp,
+                                    mConnectionConfig.sdlMsgVersion,
+                                    mConnectionConfig.languageDesired,
+                                    mConnectionConfig.hmiDisplayLanguageDesired,
+                                    mConnectionConfig.appType,
+                                    mConnectionConfig.appID,
+                                    mConnectionConfig.autoActivateID,
+                                    mConnectionConfig.callbackToUIThread,
+                                    mConnectionConfig.preRegister,
+                                    mConnectionConfig.sHashID,
+                                    mConnectionConfig.transportConfig);
+                        } catch (SdlException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mHandler.removeCallbacks(CHECK_CONNECTION_RUNNABLE);
+                    mHandler.postDelayed(CHECK_CONNECTION_RUNNABLE, CONNECTION_TIMEOUT);
+                    return null;
+                }
+            };
+
+            task.execute();
+        } else {
+            mHandler.removeCallbacks(CHECK_CONNECTION_RUNNABLE);
+            mHandler.postDelayed(CHECK_CONNECTION_RUNNABLE, CONNECTION_TIMEOUT);
+        }
 
     }
 
     synchronized void disconnect(){
+        Log.d(TAG, "disconnect()");
         if(mProxy != null){
             try {
                 mProxy.dispose();
@@ -197,6 +256,7 @@ public final class SdlManager implements IProxyListenerBase {
     public void sendRpc(RPCRequest request){
         if(mProxy != null && isConnected){
             try {
+                request.setCorrelationID(autoIncCorId++);
                 mProxy.sendRPCRequest(request);
             } catch (SdlException e) {
                 e.printStackTrace();
@@ -208,6 +268,7 @@ public final class SdlManager implements IProxyListenerBase {
         @Override
         public void run() {
             if(!isConnected) {
+                Log.d(TAG, "Connection Runnable");
                 disconnect();
                 if(mWakeLock.isHeld()){
                     mWakeLock.release();
@@ -248,17 +309,19 @@ public final class SdlManager implements IProxyListenerBase {
             mContext.unbindService(mServiceConnection);
         }
         mInstance.isConnected = false;
+        mInstance.isTryingToConnect = false;
     }
 
     @Override
     public void onError(String info, Exception e) {
-
+        Log.w(TAG, "onError()");
+        Log.w(TAG, info);
     }
 
     @Override
     public void onOnLockScreenNotification(OnLockScreenStatus notification) {
         for(SdlLifecycleListener listener: mLifecycleListeners){
-            listener.onLockScreenStatus(notification.getShowLockScreen());
+            listener.onLockScreenStatusChanged(notification.getShowLockScreen());
         }
     }
 

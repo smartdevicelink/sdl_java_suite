@@ -9,7 +9,7 @@ public final class SDLBluetoothReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().compareTo(BluetoothDevice.ACTION_ACL_CONNECTED) == 0){
-            SdlManager.getInstance().connect();
+            SdlManager.getInstance().connect(context);
         }
     }
 }

@@ -9,7 +9,7 @@ public interface SdlLifecycleListener {
 
     void onHmiStatusChanged(HMILevel level);
 
-    void onLockScreenStatus(LockScreenStatus lockScreenStatus);
+    void onLockScreenStatusChanged(LockScreenStatus lockScreenStatus);
 
     void onSdlDisconnected();
 

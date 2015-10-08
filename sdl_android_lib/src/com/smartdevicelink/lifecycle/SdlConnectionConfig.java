@@ -1,7 +1,6 @@
 package com.smartdevicelink.lifecycle;
 
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -13,7 +12,6 @@ import java.util.Vector;
 
 public class SdlConnectionConfig {
     // Required handled by constructor
-    IProxyListenerBase listener;
     String appName;
     String appID;
 
@@ -37,8 +35,7 @@ public class SdlConnectionConfig {
 
     Class<? extends SdlLifecycleService> serviceClass;
 
-    public SdlConnectionConfig(IProxyListenerBase listener, String appID, String appName){
-        this.listener = listener;
+    public SdlConnectionConfig(String appID, String appName){
         this.appID = appID;
         this.appName = appName;
         this.isMediaApp = false;
