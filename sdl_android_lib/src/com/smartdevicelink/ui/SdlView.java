@@ -4,11 +4,14 @@ import java.util.HashMap;
 
 import android.util.SparseArray;
 
+import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.ui.SdlButton.SdlButtonListner;
 
 public class SdlView {
+	
 	SparseArray<SdlButton> buttons;
+	SdlMenu menu;
 	HashMap<ButtonName,SdlButton> subscribedButtons;
 	int id = -1;
 	IViewManager iViewManager = null;
@@ -64,6 +67,16 @@ public class SdlView {
 		SdlButton button = new SdlButton();
 		button.setSdlButtonListerner(listener);
 		subscribedButtons.put(name, button);
+	}
+	
+	/**
+	 * This sets a custom menu for this view. When this view is set at the current view, the SDL view manager will recognize
+	 * there is a custom menu attached to this view object and take the necessary steps to populate the hardware with this custom menu.
+	 * The menu object must be fully formed before getting to this point.
+	 * @param menu The custom menu for this view. The menu object must be fully formed before getting to this point.
+	 */
+	public void setMenu(SdlMenu menu ){
+		this.menu = menu;
 	}
 	
 	
