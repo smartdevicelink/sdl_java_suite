@@ -12,7 +12,6 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -58,7 +57,6 @@ import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
@@ -77,12 +75,34 @@ import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
+import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map;
 
 public final class SdlManager implements IProxyListenerALM {
+
+    // IDs for SDLFeatures
+    /**
+     * Flag for use with {@link SdlManager#getSdlFeature(int)} to request the instance of
+     * SdlPermissionManager.
+     */
+    public static final int FEATURE_PERMISSION_MANAGER = 1;
+    /**
+     * Flag for use with {@link SdlManager#getSdlFeature(int)} to request the instance of
+     * ViewManager.
+     */
+    public static final int FEATURE_VIEW_MANAGER = 2;
+
+    // TODO: Make members more organized and pretty.
+
+
+    // TODO: Uncomment when feature/permission_manager is merged
+    //private static SdlPermissionManager mSdlPermissionManager;
 
     private static final String TAG = "SdlManager";
 
@@ -110,7 +130,12 @@ public final class SdlManager implements IProxyListenerALM {
     private WakeLock mWakeLock;
     private boolean isTryingToConnect;
 
-    private static SparseArray<OnRPCNotificationListener> mNotificationListeners = new SparseArray<>();
+    // Lockscreen status to help prevent spamming onLocScreenStatusChanged to listeners
+    private LockScreenStatus mLastLockScreenStatus = null;
+
+    // private static SparseArray<OnRPCNotificationListener> mNotificationListeners = new SparseArray<>();
+    private static EnumMap<FunctionID, OnRPCNotificationListener>
+            mNotificationListeners = new EnumMap<>(FunctionID.class);
 
     private static final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -120,7 +145,6 @@ public final class SdlManager implements IProxyListenerALM {
             if(mInstance.isConnected){
                 mService.onSdlConnected();
             }
-            RegisterAppInterface inter = null;
         }
 
         @Override
@@ -129,6 +153,10 @@ public final class SdlManager implements IProxyListenerALM {
         }
     };
 
+    /**
+     * Method to get the current instance of the {@link SdlManager} in use.
+     * @return A reference so the SdlManager.
+     */
     public static synchronized SdlManager getInstance() {
         if(mInstance != null) {
             return mInstance;
@@ -137,34 +165,128 @@ public final class SdlManager implements IProxyListenerALM {
         }
     }
 
+    /**
+     * Method to check if SDL is currently connected.
+     * @return boolean representing connection status.
+     */
     public boolean isConnected() {
-        return isConnected;
+        synchronized (CONNECTION_LOCK) {
+            return isConnected;
+        }
     }
 
     private SdlManager() {
         mLifecycleListeners = new ArrayList<>();
     }
 
+    /**
+     * Initializes the SDLManager with necessary configuration info for the connection to SDL on
+     * the vehicle. Is only necessary to do once before the first connection to the vehicle.
+     * @param context Must be your Application's context. Necessary for launching SDL services.
+     * @param config {@link SdlConnectionConfig} specifying the desired options for opening the SDL
+     *                                          connection.
+     */
     public static synchronized void initialize(Context context, SdlConnectionConfig config){
         if(mInstance == null) {
             Log.d(TAG, "initialize()");
             mInstance = new SdlManager();
+
+            // Link submanager listeners
+            // TODO: Uncomment when feature/permission_manager is merged
+            /*mSdlPermissionManager = new SdlPermissionManager();
+            mInstance.addNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE,
+                    mSdlPermissionManager.getPermissionChangeListener());*/
+
             mConnectionConfig = config;
             serviceClass = config.serviceClass;
 
+            mContext = context;
+
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
             if(adapter.isEnabled() && !adapter.getBondedDevices().isEmpty()){
-                mInstance.connect(context);
+                mInstance.connect();
             }
         }
     }
 
-    synchronized void connect(Context context){
+    /**
+     * This method returns the feature manager specified by the provided flag.
+     * @param flag Flag specifying the desired feature
+     * @return The feature manager requested. Must be cast to the correct type.
+     */
+    public static Object getSdlFeature(int flag){
+        // TODO: Uncomment when feature/permission_manager is merged
+        /*if(flag == FEATURE_PERMISSION_MANAGER){
+            return mSdlPermissionManager;
+        } else{
+            return null;
+        }*/
+        return null;
+    }
+
+    /**
+     * Method for adding a listener for a specified notification type RPC. Only one listener is
+     * is allowed per notification type. Subsequent calls will replace the current listener with
+     * the newest one provided.
+     * @param id {@link FunctionID} specifying the desired notification.
+     * @param listener Listener to be called when the specified notification is received.
+     */
+    public void addNotificationListener(FunctionID id, OnRPCNotificationListener listener){
+        mNotificationListeners.put(id, listener);
+        if(mProxy != null){
+            mProxy.addOnRPCNotificationListener(id, listener);
+        }
+    }
+
+    /**
+     * Method to remove the listener that is set for a given notification type RPC.
+     * @param id {@link FunctionID} specifying the notification type to remove the listener from.
+     */
+    public void removeNotificationListener(FunctionID id){
+        mNotificationListeners.remove(id);
+        if(mProxy != null){
+            mProxy.removeOnRPCNotificationListener(id);
+        }
+    }
+
+    /**
+     * Method to add an {@link SdlLifecycleListener} to the SdlManager to receive callbacks on
+     * lifecycle events. Can set multiple simultaneous listeners.
+     * @param listener Listener to be called on lifecycle events.
+     */
+    public void addLifeCycleListener(SdlLifecycleListener listener){
+        Log.d(TAG, "SdlLifecycleListener added");
+        mLifecycleListeners.add(listener);
+    }
+
+    /**
+     * Method to unregister a given {@link SdlLifecycleListener} from the SdlManager.
+     * @param listener Listener to be removed.
+     */
+    public void removeLifeCycleListener(SdlLifecycleListener listener){
+        mLifecycleListeners.remove(listener);
+    }
+
+    /**
+     * Method to send individual RPC requests.
+     * @param request {@link RPCRequest} object with {@link com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener}
+     *    set via {@link RPCRequest#setOnRPCResponseListener(OnRPCResponseListener)}
+     */
+    public void sendRpc(RPCRequest request){
+        if(mProxy != null && isConnected){
+            try {
+                request.setCorrelationID(autoIncCorId++);
+                mProxy.sendRPCRequest(request);
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    synchronized void connect(){
         if(!isTryingToConnect) {
             isTryingToConnect = true;
             Log.d(TAG, "connect()");
-
-            mContext = context;
 
             Intent serviceIntent = new Intent(mContext, serviceClass);
             mContext.bindService(serviceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
@@ -207,6 +329,12 @@ public final class SdlManager implements IProxyListenerALM {
 
                     mHandler.removeCallbacks(CHECK_CONNECTION_RUNNABLE);
                     mHandler.postDelayed(CHECK_CONNECTION_RUNNABLE, CONNECTION_TIMEOUT);
+
+                    if(mNotificationListeners.size() > 0){
+                        for(Map.Entry<FunctionID, OnRPCNotificationListener> e: mNotificationListeners.entrySet()){
+                            mProxy.addOnRPCNotificationListener(e.getKey(), e.getValue());
+                        }
+                    }
                     return null;
                 }
             };
@@ -231,39 +359,6 @@ public final class SdlManager implements IProxyListenerALM {
         }
     }
 
-    public void addNotificationListener(FunctionID id, OnRPCNotificationListener listener){
-        mNotificationListeners.append(id.getId(), listener);
-        if(mProxy != null){
-            mProxy.addOnRPCNotificationListener(id, listener);
-        }
-    }
-
-    public void removeNotificationListener(FunctionID id, OnRPCNotificationListener listener){
-        mNotificationListeners.remove(id.getId());
-        if(mProxy != null){
-            mProxy.removeOnRPCNotificationListener(id);
-        }
-    }
-
-    public void addLifeCycleListener(SdlLifecycleListener listener){
-        mLifecycleListeners.add(listener);
-    }
-
-    public void removeLifeCycleListener(FunctionID id, SdlLifecycleListener listener){
-        mLifecycleListeners.remove(listener);
-    }
-
-    public void sendRpc(RPCRequest request){
-        if(mProxy != null && isConnected){
-            try {
-                request.setCorrelationID(autoIncCorId++);
-                mProxy.sendRPCRequest(request);
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private final Runnable CHECK_CONNECTION_RUNNABLE = new Runnable() {
         @Override
         public void run() {
@@ -280,6 +375,7 @@ public final class SdlManager implements IProxyListenerALM {
     @Override
     synchronized public void onOnHMIStatus(OnHMIStatus notification) {
         if(!isConnected) {
+            Log.d(TAG, "First HMI Status Received");
             isConnected = true;
             mHandler.removeCallbacks(CHECK_CONNECTION_RUNNABLE);
 
@@ -289,6 +385,10 @@ public final class SdlManager implements IProxyListenerALM {
 
             if(mWakeLock.isHeld()){
                 mWakeLock.release();
+            }
+
+            for(SdlLifecycleListener listener: mLifecycleListeners){
+                listener.onSdlConnected();
             }
 
             // TODO: Send AppIcon
@@ -320,8 +420,11 @@ public final class SdlManager implements IProxyListenerALM {
 
     @Override
     public void onOnLockScreenNotification(OnLockScreenStatus notification) {
-        for(SdlLifecycleListener listener: mLifecycleListeners){
-            listener.onLockScreenStatusChanged(notification.getShowLockScreen());
+        if(notification.getShowLockScreen() != mLastLockScreenStatus) {
+            for (SdlLifecycleListener listener : mLifecycleListeners) {
+                listener.onLockScreenStatusChanged(notification.getShowLockScreen());
+            }
+            mLastLockScreenStatus = notification.getShowLockScreen();
         }
     }
 
