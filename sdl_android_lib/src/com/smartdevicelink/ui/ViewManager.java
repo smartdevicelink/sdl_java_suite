@@ -1,7 +1,9 @@
 package com.smartdevicelink.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import android.util.Log;
 import android.util.SparseArray;
@@ -78,12 +80,18 @@ public class ViewManager implements IViewManager{
 			@Override
 			public void onNotified(RPCNotification notification) {
 				OnCommand onCommand = (OnCommand)notification;
+				int id = onCommand.getCmdID().intValue();
+				SdlMenuItemListener listener = null;
 				SdlView view =views.get(currentView);
+				
 				if(view!=null && view.menu!=null){
-					SdlMenuItemListener listener = view.menu.parseMenuItems(onCommand.getCmdID().intValue());
-					if(listener!=null){
-						listener.onItemSelected();
-					}
+					 listener = view.menu.parseMenuItems(id);
+				}else if(defaultMenu!=null){
+					listener = defaultMenu.parseMenuItems(id);
+				}
+				
+				if(listener!=null){
+					listener.onItemSelected();
 				}
 				
 				
@@ -147,15 +155,6 @@ public class ViewManager implements IViewManager{
 					}
 				}
 				/* ******* Show *****/	
-				//TODO move this into the view class
-				Show show = new Show();
-				//Grab the buttons
-				List<SdlButton> subButtons = SdlViewHelper.asList(view.buttons); //Kind of hack-y, but it should work
-				List<? extends SoftButton> castedButtons = subButtons;
-				show.setSoftButtons((List<SoftButton>) castedButtons);
-				show.setCorrelationID(CorrelationIdGenerator.generateId());
-				//Finally send the show
-				this.sendRpc(show);
 				view.invalidate();
 				
 				SdlView oldView = views.get(currentView);

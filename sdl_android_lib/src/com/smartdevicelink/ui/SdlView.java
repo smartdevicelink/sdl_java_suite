@@ -1,6 +1,7 @@
 package com.smartdevicelink.ui;
 
 import java.util.HashMap;
+import java.util.Vector;
 
 import android.util.Log;
 import android.util.SparseArray;
@@ -8,6 +9,7 @@ import android.util.SparseArray;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -43,6 +45,7 @@ public class SdlView {
 	}
 	
 	private void init(){
+		buttons = new SparseArray<SdlButton>();
 		defaultTextAlignment = TextAlignment.CENTERED;
 		//TODO actually build this out according to the type of view we have
 		textViews = new HashMap<TextFieldName, SdlTextView>();
@@ -133,7 +136,6 @@ public class SdlView {
 	
 	/**
 	 * Triggers a redraw of the screen on the head unit.
-	 * <p>** <b>NOTE</b> ** Will not update softbuttons at this time. Softbuttons will only be updated during a "set current view" from the ViewManager
 	 */
 	public void invalidate(){
 		if(iViewManager!=null){
@@ -150,14 +152,19 @@ public class SdlView {
 			show.setMediaTrack(textViews.get(TextFieldName.mediaTrack).text);
 			show.setMediaClock(null);
 			show.setCustomPresets(null);
-			show.setSoftButtons(null);
 			show.setStatusBar(null);
-			
-			//Image Views
-			SdlImageView imageView = imageViews.get(ImageFieldName.graphic);
-			if(imageView!=null && imageView.image!=null && imageView.image.getValue()!=null){
-				show.setGraphic(imageViews.get(ImageFieldName.graphic).image);
+			if(buttons!=null){
+				Vector<SoftButton> softButtons = new Vector<SoftButton>(buttons.size());
+				for(int i=0; i< buttons.size(); i++){
+					softButtons.add(buttons.valueAt(i));
+				}
+				show.setSoftButtons(softButtons);
 			}
+			//Image Views
+			//SdlImageView imageView = imageViews.get(ImageFieldName.graphic);
+			//if(imageView!=null && imageView.image!=null && imageView.image.getValue()!=null){
+				//show.setGraphic(imageViews.get(ImageFieldName.graphic).image);
+			//}
 			//show.setSecondaryGraphic(imageViews.get(ImageFieldName.secondarygraphic).image);
 		
 			iViewManager.sendRpc(show);

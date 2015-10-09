@@ -12,13 +12,13 @@ public class SdlButton extends SoftButton{
 		super();
 		//TODO create constructor to take in basic things
 		id = SdlViewHelper.generateViewId();
+		this.setSoftButtonID(Integer.valueOf(id));
 	}
 	
 	public SdlButton(String text, Image image){
 		super();
-
 		id = SdlViewHelper.generateViewId();
-		
+		this.setSoftButtonID(Integer.valueOf(id));
 		this.setText(text);
 		this.setImage(image);
 	}
