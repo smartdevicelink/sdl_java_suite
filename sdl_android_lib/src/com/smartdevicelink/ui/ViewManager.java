@@ -121,6 +121,7 @@ public class ViewManager implements IViewManager{
 		if(view.id<=0){
 			view.id = SdlViewHelper.generateViewId();
 		}
+		view.setIViewManager(this);
 		views.put(view.id, view);
 		return view.id;
 	}
@@ -152,7 +153,7 @@ public class ViewManager implements IViewManager{
 				List<SdlButton> subButtons = SdlViewHelper.asList(view.buttons); //Kind of hack-y, but it should work
 				List<? extends SoftButton> castedButtons = subButtons;
 				show.setSoftButtons((List<SoftButton>) castedButtons);
-
+				show.setCorrelationID(CorrelationIdGenerator.generateId());
 				//Finally send the show
 				this.sendRpc(show);
 				view.invalidate();
@@ -177,6 +178,8 @@ public class ViewManager implements IViewManager{
 					//The old view had it's own menu so we need to delete those
 					deleteMenu(oldView.menu);
 					//Now the menus are cleared so it's time to send the default ones
+					sendMenu(this.defaultMenu);
+				}else{ //should be firstRun
 					sendMenu(this.defaultMenu);
 				}
 				

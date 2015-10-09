@@ -2,14 +2,17 @@ package com.smartdevicelink.ui;
 
 import java.util.HashMap;
 
+import android.util.Log;
 import android.util.SparseArray;
 
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.ui.SdlButton.SdlButtonListner;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 
@@ -136,20 +139,26 @@ public class SdlView {
 		if(iViewManager!=null){
 			//First delete what was there
 			Show show = new Show();
+			show.setCorrelationID(CorrelationIdGenerator.generateId());
+			show.setAlignment(defaultTextAlignment); //Can this be per text field?
+			
 			//TextViews
 			show.setMainField1(textViews.get(TextFieldName.mainField1).text);
 			show.setMainField2(textViews.get(TextFieldName.mainField2).text);
 			show.setMainField3(textViews.get(TextFieldName.mainField3).text);
 			show.setMainField4(textViews.get(TextFieldName.mainField4).text);
 			show.setMediaTrack(textViews.get(TextFieldName.mediaTrack).text);
-			
-			show.setAlignment(defaultTextAlignment); //Can this be per text field?
+			show.setMediaClock(null);
+			show.setCustomPresets(null);
+			show.setSoftButtons(null);
+			show.setStatusBar(null);
 			
 			//Image Views
-			show.setGraphic(imageViews.get(ImageFieldName.graphic).image);
+			SdlImageView imageView = imageViews.get(ImageFieldName.graphic);
+			if(imageView!=null && imageView.image!=null && imageView.image.getValue()!=null){
+				show.setGraphic(imageViews.get(ImageFieldName.graphic).image);
+			}
 			//show.setSecondaryGraphic(imageViews.get(ImageFieldName.secondarygraphic).image);
-			
-			show.setCorrelationID(CorrelationIdGenerator.generateId());
 		
 			iViewManager.sendRpc(show);
 		}
