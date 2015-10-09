@@ -163,7 +163,7 @@ class SdlPermissionSet {
         ArrayList<EnumSet<SdlPermission>> permissions = new ArrayList<>(numHmiLevels);
 
         for(int i = 0; i < numHmiLevels; i++){
-            permissions.set(i, EnumSet.noneOf(SdlPermission.class));
+            permissions.add(EnumSet.noneOf(SdlPermission.class));
         }
 
         return permissions;

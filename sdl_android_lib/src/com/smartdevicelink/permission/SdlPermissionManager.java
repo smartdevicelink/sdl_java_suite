@@ -2,40 +2,34 @@ package com.smartdevicelink.permission;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 public class SdlPermissionManager {
 
-    private static SdlPermissionManager mInstance;
+    private static final String TAG = SdlPermissionManager.class.getSimpleName();
 
     private SdlPermissionSet mSdlPermissionSet;
 
     private ArrayList<ListenerWithFilter> mListeners;
 
-    private SdlPermissionManager(){
+    private final Object PERMISSION_LOCK = new Object();
+
+    public SdlPermissionManager(){
 
         mSdlPermissionSet = SdlPermissionSet.obtain();
 
         mListeners = new ArrayList<>();
-    }
-
-    /**
-     * Method to get the current manager instance.
-     * @return Shared instance of SdlPermissionManager
-     */
-    @NonNull
-    public synchronized static SdlPermissionManager getInstance(){
-        if(mInstance == null){
-            mInstance = new SdlPermissionManager();
-        }
-        return mInstance;
     }
 
     /**
@@ -44,18 +38,23 @@ public class SdlPermissionManager {
      * @param permission The {@link SdlPermission} to check.
      * @return boolean indicating if the given SdlPermission is available.
      */
-    public synchronized boolean isPermissionAvailable(@NonNull SdlPermission permission){
+    public boolean isPermissionAvailable(@NonNull SdlPermission permission){
+        synchronized (PERMISSION_LOCK) {
+            HMILevel[] hmiLevels = HMILevel.values();
 
-        HMILevel[] hmiLevels = HMILevel.values();
-
-        for(int i = 0; i < hmiLevels.length; i++){
-            if(isPermissionAvailable(permission, hmiLevels[i])){
-                return true;
+            for (int i = 0; i < hmiLevels.length; i++) {
+                if (isPermissionAvailable(permission, hmiLevels[i])) {
+                    return true;
+                }
             }
+
+            return false;
         }
 
-        return false;
+    }
 
+    public OnRPCNotificationListener getPermissionChangeListener(){
+        return permissionChangeListener;
     }
 
     /**
@@ -64,8 +63,10 @@ public class SdlPermissionManager {
      * @param hmi {@link HMILevel} to check.
      * @return boolean indication if the given SdlPermission is available at the given HMILevel
      */
-    public synchronized boolean isPermissionAvailable(@NonNull SdlPermission permission, @NonNull HMILevel hmi){
-        return mSdlPermissionSet.permissions.get(hmi.ordinal()).contains(permission);
+    public boolean isPermissionAvailable(@NonNull SdlPermission permission, @NonNull HMILevel hmi){
+        synchronized (PERMISSION_LOCK) {
+            return mSdlPermissionSet.permissions.get(hmi.ordinal()).contains(permission);
+        }
     }
 
     /**
@@ -84,11 +85,13 @@ public class SdlPermissionManager {
      * when the listener is added.
      */
     @NonNull
-    public synchronized SdlPermissionEvent addListener(@NonNull SdlPermissionListener listener,
+    public SdlPermissionEvent addListener(@NonNull SdlPermissionListener listener,
                                                        @NonNull SdlPermissionFilter filter,
                                                        @Nullable ListenerMode mode){
-        mListeners.add(new ListenerWithFilter(listener, filter, mode));
-        return new SdlPermissionEvent(SdlPermissionSet.copy(mSdlPermissionSet));
+        synchronized (PERMISSION_LOCK) {
+            mListeners.add(new ListenerWithFilter(listener, filter, mode));
+            return new SdlPermissionEvent(SdlPermissionSet.copy(mSdlPermissionSet));
+        }
     }
 
     /**
@@ -105,78 +108,91 @@ public class SdlPermissionManager {
      * when the listener is added.
      */
     @NonNull
-    public synchronized SdlPermissionEvent addListener(@NonNull SdlPermissionListener listener,
+    public SdlPermissionEvent addListener(@NonNull SdlPermissionListener listener,
                                                        @NonNull SdlPermissionFilter filter){
-        return addListener(listener, filter, ListenerMode.MATCH_ANY);
+        synchronized (PERMISSION_LOCK) {
+            return addListener(listener, filter, ListenerMode.MATCH_ANY);
+        }
     }
 
-    public synchronized void onPermissionChange(OnPermissionsChange onPermissionsChange){
-        List<PermissionItem> permissionItems = onPermissionsChange.getPermissionItem();
+    private OnRPCNotificationListener permissionChangeListener = new OnRPCNotificationListener() {
+        @Override
+        public void onNotified(RPCNotification notification) {
+            synchronized (PERMISSION_LOCK) {
+                Log.d(TAG, "onPermissionChange");
+                OnPermissionsChange onPermissionsChange = (OnPermissionsChange) notification;
 
-        SdlPermissionSet newPermissions = SdlPermissionSet.obtain();
+                List<PermissionItem> permissionItems = onPermissionsChange.getPermissionItem();
 
-        for(PermissionItem pi: permissionItems){
-            String rpcName = pi.getRpcName();
-            SdlPermission permission = SdlPermission.valueOf(rpcName);
-            List<HMILevel> hmiLevels = pi.getHMIPermissions().getAllowed();
-
-            for(HMILevel level: hmiLevels){
-                newPermissions.permissions.get(level.ordinal()).add(permission);
-
-                switch(permission){
-                    case GetVehicleData:
-                        addVdataRpcPermission("Get", pi, level, newPermissions);
-                        break;
-                    case SubscribeVehicleData:
-                        addVdataRpcPermission("Subscribe", pi, level, newPermissions);
-                        break;
-                    case OnVehicleData:
-                        addVdataRpcPermission("On", pi, level, newPermissions);
-                        break;
-                    case UnsubscribeVehicleData:
-                        addVdataRpcPermission("Unsubscribe", pi, level, newPermissions);
-                        break;
-                    default:
-                        break;
+                if(permissionItems == null){
+                    return;
                 }
 
+                SdlPermissionSet newPermissions = SdlPermissionSet.obtain();
+
+                for (PermissionItem pi : permissionItems) {
+                    String rpcName = pi.getRpcName();
+                    SdlPermission permission = SdlPermission.valueOf(rpcName);
+                    List<HMILevel> hmiLevels = pi.getHMIPermissions().getAllowed();
+
+                    if(hmiLevels != null) {
+                        for (HMILevel level : hmiLevels) {
+                            newPermissions.permissions.get(level.ordinal()).add(permission);
+
+                            switch (permission) {
+                                case GetVehicleData:
+                                    addVdataRpcPermission("Get", pi, level, newPermissions);
+                                    break;
+                                case SubscribeVehicleData:
+                                    addVdataRpcPermission("Subscribe", pi, level, newPermissions);
+                                    break;
+                                case OnVehicleData:
+                                    addVdataRpcPermission("On", pi, level, newPermissions);
+                                    break;
+                                case UnsubscribeVehicleData:
+                                    addVdataRpcPermission("Unsubscribe", pi, level, newPermissions);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                SdlPermissionSet changed = SdlPermissionSet.symmetricDifference(mSdlPermissionSet, newPermissions);
+
+                mSdlPermissionSet.recycle();
+                mSdlPermissionSet = newPermissions;
+
+                for (ListenerWithFilter lwf : mListeners) {
+                    switch (lwf.mode) {
+                        case MATCH_ALL:
+                            if (changed.containsAny(lwf.filter.permissionSet)
+                                    && mSdlPermissionSet.containsAll(lwf.filter.permissionSet)) {
+                                lwf.listener.onPermissionChanged(new SdlPermissionEvent(
+                                        SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
+                            }
+                            break;
+                        case MATCH_EXACT:
+                            if (changed.containsAny(lwf.filter.permissionSet)
+                                    && mSdlPermissionSet.containsExactlyAll(lwf.filter.permissionSet)) {
+                                lwf.listener.onPermissionChanged(new SdlPermissionEvent(
+                                        SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
+                            }
+                            break;
+                        case MATCH_ANY:
+                            if (changed.containsAny(lwf.filter.permissionSet)) {
+                                lwf.listener.onPermissionChanged(new SdlPermissionEvent(
+                                        SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
-
         }
-
-        SdlPermissionSet changed = SdlPermissionSet.symmetricDifference(mSdlPermissionSet, newPermissions);
-
-        mSdlPermissionSet.recycle();
-        mSdlPermissionSet = newPermissions;
-
-        for(ListenerWithFilter lwf: mListeners){
-            switch(lwf.mode){
-                case MATCH_ALL:
-                    if(changed.containsAny(lwf.filter.permissionSet)
-                            && mSdlPermissionSet.containsAll(lwf.filter.permissionSet)){
-                        lwf.listener.onPermissionChanged(new SdlPermissionEvent(
-                            SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
-                    }
-                    break;
-                case MATCH_EXACT:
-                    if(changed.containsAny(lwf.filter.permissionSet)
-                            && mSdlPermissionSet.containsExactlyAll(lwf.filter.permissionSet)){
-                        lwf.listener.onPermissionChanged(new SdlPermissionEvent(
-                                SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
-                    }
-                    break;
-                case MATCH_ANY:
-                    if(changed.containsAny(lwf.filter.permissionSet)) {
-                        lwf.listener.onPermissionChanged(new SdlPermissionEvent(
-                                SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet)));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    }
+    };
 
     private void addVdataRpcPermission(String prefix, PermissionItem pi,
                                        HMILevel hmi, SdlPermissionSet permissionSet){
@@ -202,6 +218,13 @@ public class SdlPermissionManager {
         }
     }
 
+    /**
+     * EnumSet containing all permissions related to vehicle data monitoring. Not recommended if
+     * only a hand full of permissions are needed.
+     */
+    public static final EnumSet<SdlPermission> PERMISSION_SET_VEHICLE_DATA =
+            EnumSet.range(SdlPermission.GetDTCs, SdlPermission.UnsubscribeWiperStatus);
+
     public enum ListenerMode{
         /**
          * This mode is for use with an {@link SdlPermissionFilter} that has been populated with
@@ -226,6 +249,6 @@ public class SdlPermissionManager {
          * by the provided {@link SdlPermissionFilter} change.
          */
         MATCH_ANY
-    };
+    }
 
 }
