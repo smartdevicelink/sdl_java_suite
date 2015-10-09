@@ -27,7 +27,7 @@ public class SdlView {
 	
 	public SdlView(){
 		id = SdlViewHelper.generateViewId();
-		
+		init();
 	}
 	
 	/**
@@ -36,6 +36,10 @@ public class SdlView {
 	 */
 	public SdlView(int id){
 		this.id =id;
+		init();
+	}
+	
+	private void init(){
 		defaultTextAlignment = TextAlignment.CENTERED;
 		//TODO actually build this out according to the type of view we have
 		textViews = new HashMap<TextFieldName, SdlTextView>();
