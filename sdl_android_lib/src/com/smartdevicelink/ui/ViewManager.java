@@ -145,11 +145,9 @@ public class ViewManager implements IViewManager{
 						sendRpc(msg);
 					}
 				}
-				/* ******* Show *****/		
+				/* ******* Show *****/	
+				//TODO move this into the view class
 				Show show = new Show();
-				
-				//TODO add all the text views, images, etc
-				
 				//Grab the buttons
 				List<SdlButton> subButtons = SdlViewHelper.asList(view.buttons); //Kind of hack-y, but it should work
 				List<? extends SoftButton> castedButtons = subButtons;
@@ -157,6 +155,7 @@ public class ViewManager implements IViewManager{
 
 				//Finally send the show
 				this.sendRpc(show);
+				view.invalidate();
 				
 				SdlView oldView = views.get(currentView);
 				/* ******* Menus *****/
