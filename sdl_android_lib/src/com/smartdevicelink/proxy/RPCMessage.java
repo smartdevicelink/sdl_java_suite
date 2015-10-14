@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 
 public class RPCMessage extends RPCStruct  {
@@ -53,7 +53,6 @@ public class RPCMessage extends RPCStruct  {
 	protected String messageType;
 	protected Hashtable<String, Object> parameters;
 	protected Hashtable<String, Object> function;
-    protected OnRPCUpdateListener onUpdateListener;
 
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
@@ -83,11 +82,5 @@ public class RPCMessage extends RPCStruct  {
 	public Object getParameters(String functionName) {
 		return parameters.get(functionName);
 	}
-    public void setOnRPCUpdateListener(OnRPCUpdateListener listener){
-    	onUpdateListener = listener;
-    }
-    
-    public OnRPCUpdateListener getOnRPCUpdateListener(){
-    	return this.onUpdateListener;
-    }
+
 }

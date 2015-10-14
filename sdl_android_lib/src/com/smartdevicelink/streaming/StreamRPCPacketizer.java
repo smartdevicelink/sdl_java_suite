@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
-import android.util.Log;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -262,7 +260,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		if (response.getSuccess() && streamNote.getBytesComplete().equals(streamNote.getFileSize()) )
 		{
 			if(callBack!=null){
-				callBack.onFinish(iInitialCorrID, response, streamNote.getBytesComplete());
+				callBack.onResponse(iInitialCorrID, response, streamNote.getBytesComplete());
 			}
 			handleStreamSuccess(response, streamNote.getBytesComplete());
 			
