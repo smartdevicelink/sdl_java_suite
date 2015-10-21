@@ -58,7 +58,6 @@ public class SdlLifecycleService extends Service implements ISdlLifecycleService
         SdlActivity currentActivity = mSdlActivityStack.peek();
 
         if(currentActivity != null){
-            currentActivity
         }
 
         activityInstance.onCreate();
