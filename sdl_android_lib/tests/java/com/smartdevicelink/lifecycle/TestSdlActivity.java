@@ -2,12 +2,12 @@ package com.smartdevicelink.lifecycle;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class TestSdlActivity{
@@ -27,7 +27,7 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity) aut).lifecycleHistory);
     }
@@ -49,9 +49,9 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity) aut).lifecycleHistory);
     }
@@ -78,11 +78,11 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -108,11 +108,11 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -138,13 +138,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -169,13 +169,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -203,13 +203,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -236,11 +236,11 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -268,13 +268,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -302,13 +302,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -335,13 +335,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -369,11 +369,11 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -404,13 +404,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -438,13 +438,13 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -490,23 +490,23 @@ public class TestSdlActivity{
         boolean stateChanged;
 
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
@@ -555,136 +555,134 @@ public class TestSdlActivity{
 
         // State change POSTCREATE
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Double state call -- should not call on create twice
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Back navigation -- Should not leave
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.PRECREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
 
         // State change ACTIVE
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Double state call -- should not call any methods
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Back navigation -- Sould not leave
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.PRECREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.RESTARTING);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STARTED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.FOREGROUND);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
 
         // State change OBSCURED
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Double state call -- should not call any methods
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Back navigation -- Sould not leave
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.PRECREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.RESTARTING);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STARTED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.FOREGROUND);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
 
 
         // State change ACTIVE -- already tested
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         // State change BACKGROUND
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Double state call -- should not call any methods
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Back navigation -- Sould not leave
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.PRECREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.RESTARTING);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STARTED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
 
         // State change ACTIVE -- already tested
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         // State change STOPPED
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Double state call -- should not call any methods
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Back navigation -- Sould not leave
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.PRECREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
 
         // State change ACTIVE -- already tested
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
 
         // State change EXITED
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // Double state call -- should not call any methods
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.EXITED);
-        Assert.assertTrue(stateChanged);
+        assertTrue(stateChanged);
         // All states should be trapped
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.PRECREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.POSTCREATE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.RESTARTING);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STARTED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.FOREGROUND);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.ACTIVE);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.OBSCURED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.BACKGROUND);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
         stateChanged = aut.notifyStateChange(SdlActivity.LifecycleState.STOPPED);
-        Assert.assertFalse(stateChanged);
+        assertFalse(stateChanged);
 
         testStateHistory(targetHistory, ((TestActivity)aut).lifecycleHistory);
     }
 
     private void testStateHistory(LifecycleMethod[] target, ArrayList<LifecycleMethod> actual){
 
-        for(int i = 0; i < target.length; i++){
-            Assert.assertEquals(target[i], actual.get(i));
-            if(target[i] != actual.get(i)){
-                break;
-            }
-        }
+        LifecycleMethod[] actualArray = new LifecycleMethod[actual.size()];
+        actualArray = actual.toArray(actualArray);
 
-        Assert.assertEquals(target.length, actual.size());
+        assertArrayEquals(target, actualArray);
+
+        assertEquals(target.length, actual.size());
     }
 
 
