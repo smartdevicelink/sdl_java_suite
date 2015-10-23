@@ -1,5 +1,6 @@
 com.smartdevicelink.Dispatcher
 com.smartdevicelink.SdlConnection
+com.smartdevicelink.encoder
 com.smartdevicelink.exception
 com.smartdevicelink.marshal
 com.smartdevicelink.protocol
@@ -11,6 +12,7 @@ com.smartdevicelink.proxy.constants
 com.smartdevicelink.proxy.interfaces
 com.smartdevicelink.proxy.rpc
 com.smartdevicelink.proxy.rpc.enums
+com.smartdevicelink.proxy.rpc.listeners
 com.smartdevicelink.streaming
 com.smartdevicelink.trace
 com.smartdevicelink.trace.enums
