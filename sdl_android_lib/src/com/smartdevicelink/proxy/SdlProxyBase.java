@@ -3524,6 +3524,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
     
+	/**
+	 * Opens the video service (serviceType 11) and creates a Surface (used for streaming video) with input parameters provided by the app
+	 * @param frameRate - specified rate of frames to utilize for creation of Surface 
+	 * @param iFrameInterval - specified interval to utilize for creation of Surface
+	 * @param width - specified width to utilize for creation of Surface
+	 * @param height - specified height to utilize for creation of Surface
+	 * @param bitrate - specified bitrate to utilize for creation of Surface
+	 *@return Surface if service is opened successfully and stream is started, return null otherwise
+	 */
     public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
                                             int height, int bitrate) {
         
@@ -3552,6 +3561,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         }
     }
     
+	/**
+	 *Starts the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 */
     public void startEncoder () {
         if (sdlSession == null) return;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
@@ -3560,6 +3572,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         sdlConn.startEncoder();
     }
     
+	/**
+	 *Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 */
     public void releaseEncoder() {
         if (sdlSession == null) return;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
@@ -3568,6 +3583,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         sdlConn.releaseEncoder();
     }
     
+	/**
+	 *Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 */
     public void drainEncoder(boolean endOfStream) {
         if (sdlSession == null) return;		
         SdlConnection sdlConn = sdlSession.getSdlConnection();		
