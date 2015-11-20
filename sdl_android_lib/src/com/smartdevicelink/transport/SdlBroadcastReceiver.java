@@ -35,9 +35,17 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		//Log.i(TAG, "Sdl Receiver Activated");
+		String action = intent.getAction();
 
+		if(action.equalsIgnoreCase(Intent.ACTION_PACKAGE_ADDED)
+				|| action.equalsIgnoreCase(Intent.ACTION_PACKAGE_REPLACED)){
+			//The package manager has sent out a new broadcast. 
+			RouterServiceValidator.invalidateList(context);
+			return;
+		}
+	
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
-		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
+		if(action.contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
 			if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
 					onSdlEnabled(context);
@@ -54,13 +62,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	      
 	    	int state = intent.getExtras().getInt("android.bluetooth.adapter.extra.STATE");
 	    		if (state == BluetoothAdapter.STATE_OFF || 
-	    			state == BluetoothAdapter.STATE_TURNING_OFF )
-	    		{
-	    		//onProtocolDisabled(context);
-	    		//Let's let the service that is running manage what to do for this
-	    		//If we were to do it here, for every instance of this BR it would send
-	    		//an intent to stop service, where it's only one that is needed.
-	    		return;
+	    			state == BluetoothAdapter.STATE_TURNING_OFF ){
+	    			//onProtocolDisabled(context);
+	    			//Let's let the service that is running manage what to do for this
+	    			//If we were to do it here, for every instance of this BR it would send
+	    			//an intent to stop service, where it's only one that is needed.
+	    			return;
+	    		}else if(state == BluetoothAdapter.STATE_TURNING_ON){
+	    			//We started bluetooth, we should check for a new valid router list
+	    			Log.d(TAG, "Attempting to get list of approved router services");
+	    			RouterServiceValidator.createTrustedListRequest(context,true);
 	    		}
 	    }
 	    

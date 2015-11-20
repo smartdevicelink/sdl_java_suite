@@ -2,12 +2,15 @@ package com.smartdevicelink.transport;
 
 import com.smartdevicelink.transport.enums.TransportType;
 
+import android.content.ComponentName;
 import android.content.Context;
 
 public class MultiplexTransportConfig extends BaseTransportConfig{
 
 	Context context;
 	String appId;
+	ComponentName service;
+
 	
 
 	
@@ -15,7 +18,6 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.context = context;
 		this.appId = appId;
 	}
-
 
 
 	/**
@@ -28,6 +30,21 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	public TransportType getTransportType() {
 		return TransportType.MULTIPLEX;
 	}
+	
+	public Context getContext(){
+		return this.context;
+	}
+
+
+	public ComponentName getService() {
+		return service;
+	}
+
+
+	public void setService(ComponentName service) {
+		this.service = service;
+	}
+	
 	
 	
 

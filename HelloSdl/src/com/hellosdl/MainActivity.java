@@ -15,11 +15,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if(SdlReceiver.isTransportConnected(getBaseContext())){
+		//if(SdlReceiver.isTransportConnected(getBaseContext())){
 			Intent startIntent = new Intent(getBaseContext(), SdlService.class);
 			startIntent.putExtra(SdlReceiver.FORCE_TRANSPORT_CONNECTED, true);
 			startService(startIntent);
-		}
+		//}
 	}
 
 	@Override

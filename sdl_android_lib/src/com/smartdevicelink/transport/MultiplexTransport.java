@@ -1,5 +1,6 @@
 package com.smartdevicelink.transport;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.Looper;
 import android.os.Parcelable;
@@ -15,25 +16,31 @@ public class MultiplexTransport extends SdlTransport{
 	private String sComment = "I'm_a_little_teapot";
 	
 	TransportBrokerThread brokerThread;
-	
+	protected boolean isDisconnecting = false;
 	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		super(transportListener);
-		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId);
+		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId, transportConfig.service);
 		brokerThread.start();
 		//brokerThread.initTransportBroker();
 		//brokerThread.start();
 
 	}
 
-	public void forceHardwareConnectEvent(TransportType type){
-		brokerThread.onHardwareConnected(type);
+	public boolean forceHardwareConnectEvent(TransportType type){
+		if(brokerThread!=null){
+			brokerThread.onHardwareConnected(type);
+			return true;
+		}
+		return false;
 
 	}
 	
-	public void requestNewSession(){
+	public boolean requestNewSession(){
 		if(brokerThread!=null){
 			brokerThread.requestNewSession();
+			return true;
 		}
+		return false;
 	}
 	
 	public void removeSession(long sessionId){
@@ -74,35 +81,54 @@ public class MultiplexTransport extends SdlTransport{
 
 	@Override
 	public void disconnect() {
-		Log.d(TAG, "Close connection");
-		brokerThread.cancel();
-		brokerThread = null;
-		handleTransportDisconnected(TransportType.MULTIPLEX.name());
+		if(isDisconnecting){
+			return;
+		}
+			Log.d(TAG, "Close connection");
+			this.isDisconnecting= true;
+			brokerThread.cancel();
+			brokerThread = null;
+			handleTransportDisconnected(TransportType.MULTIPLEX.name());
+			isDisconnecting = false;
 		
 	}
 	
 	
 
+	@Override
+	protected void handleTransportError(String message, Exception ex) {
+		if(brokerThread!=null){
+			brokerThread.interrupt();
+			brokerThread = null;
+		}
+		super.handleTransportError(message, ex);
+	}
+
+
+
+
 	/**
 	 * This thread will handle the broker transaction with the router service.
 	 *
 	 */
-	private class TransportBrokerThread extends Thread{
-		private boolean connected = false; //This helps clear up double on hardware connects
+	protected class TransportBrokerThread extends Thread{
+		boolean connected = false; //This helps clear up double on hardware connects
 		TransportBroker broker;
 		boolean queueStart = false;
 		final Context context;
 		final String appId;
+		final ComponentName service;
 		/**
 		 * Thread will automatically start to prepare its looper.
 		 * @param context
 		 * @param appId
 		 */
-		public TransportBrokerThread(Context context, String appId){
+		public TransportBrokerThread(Context context, String appId, ComponentName service){
 			//this.start();
 			super();
 			this.context = context;
 			this.appId = appId;
+			this.service = service;
 			//initTransportBroker(context, appId);
 		}
 
@@ -118,16 +144,22 @@ public class MultiplexTransport extends SdlTransport{
 		}
 
 		public void cancel(){
-				broker.stop();
-				broker = null;
+				if(broker!=null){
+					broker.stop();
+					broker = null;
+				}
 				connected = false;
 				//Looper.myLooper().quitSafely();
-				this.interrupt();
+				//this.interrupt();
 
 		}
 
 		public void onHardwareConnected(TransportType type){
-			broker.onHardwareConnected(type);
+			if(broker!=null){
+				broker.onHardwareConnected(type);
+			}else{
+				queueStart = true;
+			}
 		}
 
 		public void sendPacket(byte[] msgBytes,int offset,int length){
@@ -153,16 +185,17 @@ public class MultiplexTransport extends SdlTransport{
 					if(queueStart){
 						broker.start();
 					}
+					this.notify();
 				}
 			}
-			Looper.loop();
-		}
-		public void initTransportBroker(){
-			initTransportBroker(this.context,this.appId);
-		}
-		private void initTransportBroker(final Context context, final String appId){
 
-			broker = new TransportBroker(context, appId){
+			Looper.loop();
+			
+		}
+		
+		public void initTransportBroker(){
+
+			broker = new TransportBroker(context, appId, service){
 
 				@Override
 				public boolean onHardwareConnected(TransportType type) {

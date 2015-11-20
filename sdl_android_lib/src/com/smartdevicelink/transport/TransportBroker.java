@@ -39,12 +39,12 @@ public class TransportBroker {
 	
 	private TransportType queuedOnTransportConnect = null;
 	
-	Messenger routerService = null;
+	Messenger routerServiceMessenger = null;
 	final Messenger clientMessenger = new Messenger(new ClientHandler());
 
 	boolean isBound = false, registeredWithRouterService = false;
 	private String routerPackage = null, routerClassName = null;
-	
+	private ComponentName routerService = null;
 	
 	
 	private ServiceConnection routerConnection;
@@ -54,7 +54,7 @@ public class TransportBroker {
 
 			public void onServiceConnected(ComponentName className, IBinder service) {
 				Log.d(TAG, "Bound to service " + className.toString());
-				routerService = new Messenger(service);
+				routerServiceMessenger = new Messenger(service);
 				isBound = true;
 				//So we just established our connection
 				//Register with router service
@@ -63,7 +63,7 @@ public class TransportBroker {
 
 			public void onServiceDisconnected(ComponentName className) {
 				Log.d(TAG, "UN-Bound to service");
-				routerService = null;
+				routerServiceMessenger = null;
 				registeredWithRouterService = false;
 				isBound = false;
 				onHardwareDisconnected(null);
@@ -71,17 +71,18 @@ public class TransportBroker {
 		};
 	}
 
-    private synchronized void sendMessageToRouterService(Message message){
+    private synchronized boolean sendMessageToRouterService(Message message){
     	if(message == null){
     		Log.w(TAG, "Attempted to send null message");
-    		return;
+    		return false;
     	}
     	Log.i(TAG, "Attempting to send message type - " + message.what);
-    	if(isBound && routerService !=null){
+    	if(isBound && routerServiceMessenger !=null){
     		if(registeredWithRouterService 
     				|| message.what == TransportConstants.ROUTER_REGISTER_CLIENT){ //We can send a message if we are registered or are attempting to register
     			try {
-					routerService.send(message);
+					routerServiceMessenger.send(message);
+					return true;
 				} catch (RemoteException e) {
 					e.printStackTrace();
 					try {
@@ -89,14 +90,16 @@ public class TransportBroker {
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
-					sendMessageToRouterService(message);
+					return sendMessageToRouterService(message);
 					
 				}
     		}else{
     			Log.e(TAG, "Unable to send message to router service. Not registered.");
+    			return false;
     		}
     	}else{
     		Log.e(TAG, "Unable to send message to router service. Not bound.");
+    		return false;
     	}
     }
     
@@ -217,7 +220,7 @@ public class TransportBroker {
 			
 		
 		@SuppressLint("SimpleDateFormat")
-		public TransportBroker(Context context, String appId){
+		public TransportBroker(Context context, String appId, ComponentName service){
 			synchronized(INIT_LOCK){
 				initRouterConnection();
 				//So the user should have set the AppId, lets define where the intents need to be sent
@@ -235,13 +238,14 @@ public class TransportBroker {
 				currentContext = context;
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
 				currentContext.registerReceiver(routerDiscoveryReceiver, new IntentFilter(whereToReply)); //TODO this could all move since we don't always need it
+				this.routerService = service;
 			}
 		}
 
 		/**
 		 * This beings the initial connection with the router service.
 		 */
-		public void start(){
+		public boolean start(){
 			Log.d(TAG, "Starting up transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				if(currentContext==null){
@@ -251,7 +255,7 @@ public class TransportBroker {
 					initRouterConnection();
 				}
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
-				registerWithRouterService();
+				return registerWithRouterService();
 			}
 		}
 		
@@ -259,7 +263,7 @@ public class TransportBroker {
 			Log.d(TAG, "RESETING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
-				routerService = null; //TODO make sure theres nothing else we need
+				routerServiceMessenger = null; //TODO make sure theres nothing else we need
 				queuedOnTransportConnect = null;
 				unBindFromRouterService();
 			}
@@ -272,7 +276,7 @@ public class TransportBroker {
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
 				unBindFromRouterService();
-				routerService = null;
+				routerServiceMessenger = null;
 				queuedOnTransportConnect = null;
 				try{
 					if(currentContext!=null){
@@ -288,7 +292,7 @@ public class TransportBroker {
 		
 		private void unBindFromRouterService(){
 			try{
-				if(getContext()!=null){
+				if(getContext()!=null && routerConnection!=null){
 					getContext().unbindService(routerConnection);
 				}else{
 					Log.w(TAG, "Unable to unbind from router service, context was null");
@@ -310,7 +314,7 @@ public class TransportBroker {
 		public void onHardwareDisconnected(TransportType type){
 			synchronized(INIT_LOCK){
 				unBindFromRouterService();
-				routerService = null;
+				routerServiceMessenger = null;
 				routerConnection = null;
 				queuedOnTransportConnect = null;
 			}
@@ -318,7 +322,7 @@ public class TransportBroker {
 		
 		public boolean onHardwareConnected(TransportType type){
 			synchronized(INIT_LOCK){
-				if(routerService==null){
+				if(routerServiceMessenger==null){
 					queuedOnTransportConnect = type;
 					return false;
 				}
@@ -355,14 +359,20 @@ public class TransportBroker {
 		}
 		
 		
-		public void sendPacketToRouterService(byte[] bytes, int offset, int count){ //We use ints because that is all that is supported by the outputstream class
+		public boolean sendPacketToRouterService(byte[] bytes, int offset, int count){ //We use ints because that is all that is supported by the outputstream class
 			Log.d(TAG,whereToReply + "Sending packet to router service");
 			
-			if(routerService==null){
+			if(routerServiceMessenger==null){
 				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
-				return;
+				return false;
 			}
-
+			if(bytes == null 
+					|| offset<0 
+					|| count<0 
+					|| count>(bytes.length-offset)){
+				Log.w(TAG,whereToReply + "incorrect params supplied");
+				return false;
+			}
 			if(bytes.length<MAX_BINDER_SIZE){//Determine if this is under the packet length.
 				Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
 				message.what = TransportConstants.ROUTER_SEND_PACKET;
@@ -374,6 +384,7 @@ public class TransportBroker {
 				message.setData(bundle);
 				
 				sendMessageToRouterService(message);
+				return true;
 			}else{ //Message is too big for IPC transaction 
 				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
 				ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
@@ -410,14 +421,15 @@ public class TransportBroker {
 					message.setData(bundle);
 					sendMessageToRouterService(message);
 					
+					
 				}
 				try {
 					stream.close();
+					return true;
 				} catch (IOException e) {
 					e.printStackTrace();
+					return false;
 				}
-				
-				
 			}
 			
 		}
@@ -425,15 +437,15 @@ public class TransportBroker {
 		/**
 		 * This registers this service with the router service
 		 */
-		private void registerWithRouterService(){ 
+		private boolean registerWithRouterService(){ 
 			if(getContext()==null){
 				Log.e(TAG, "Context set to null, failing out");
-				return;
+				return false;
 			}
 			 
-			if(routerService!=null){
+			if(routerServiceMessenger!=null){
 				Log.w(TAG, "Already registered with router service");
-				return;
+				return false;
 			}
 			
 			Intent intent = null;
@@ -441,7 +453,9 @@ public class TransportBroker {
 				//Attempt to bind
 				if(!sendBindingIntent()){
 					Log.e(TAG, "Something went wrong while trying to bind with the router service.");
+					return false;
 				}
+				return true;
 				
 			}
 			else{ //There's no router service running, let's start one
@@ -456,6 +470,7 @@ public class TransportBroker {
 				intent.putExtra(TransportConstants.PACKAGE_NAME_STRING, getContext().getPackageName());
 				intent.putExtra(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
 				currentContext.sendBroadcast(intent);
+				return true;
 			}		
 		}
 		
@@ -483,7 +498,7 @@ public class TransportBroker {
 		
 		private void unregisterWithRouterService(){
 			Log.i(TAG, "Attempting to unregister with Sdl Router Service");
-			if(isBound && routerService!=null){
+			if(isBound && routerServiceMessenger!=null){
 				Message msg = Message.obtain();
 				msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;
 				msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
@@ -495,7 +510,7 @@ public class TransportBroker {
 				Log.w(TAG, "Unable to unregister, not bound to router service");
 			}
 			
-			routerService = null;
+			routerServiceMessenger = null;
 		}
 		
 

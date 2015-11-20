@@ -30,6 +30,8 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlConnection implements IProtocolListener, ITransportListener, IStreamListener  {
 
+	private static final String TAG = "SdlConnection";
+	
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
@@ -56,6 +58,20 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	 * @param transportConfig Transport configuration for this connection.
 	 */
 	public SdlConnection(BaseTransportConfig transportConfig) {
+		RouterServiceValidator vlad = null;
+		//Let's check if we can even do multiplexing
+		if(transportConfig.getTransportType() == TransportType.MULTIPLEX){
+			vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
+			vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
+		}
+		constructor(transportConfig,vlad);
+	}
+	//For unit tests
+	protected SdlConnection(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
+		constructor(transportConfig,rsvp);
+	}
+	
+	private void constructor(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
 		_connectionListener = new InternalMsgDispatcher();
 		
 		// Initialize the transport
@@ -67,11 +83,27 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				}
 				_transport = null;
 			}
+			
+			//Let's check if we can even do multiplexing
+			if(rsvp!= null && transportConfig.getTransportType() == TransportType.MULTIPLEX){
+				//rsvp = new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
+				//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
+				if(rsvp.validate()){
+					Log.w(TAG, "SDL Router service is valid; attempting to connect");
+					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
+				}else{
+					Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");	
+					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
+					Log.d(TAG, "Legacy transport : " + legacyTransportRequest);
+				}
+			}
+			
 			if(legacyTransportRequest ==null && //Make sure legacy mode is not enabled
 					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if(legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH){
-				_transport = new BTTransport(this);
+				Log.d(TAG, "Creating legacy bluetooth connection");
+				_transport = new BTTransport(this, true); //TODO make sure blindly sending true is ok
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());	//FIXME we should chage this over to a special legacy config
 			}

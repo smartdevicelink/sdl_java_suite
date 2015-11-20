@@ -37,8 +37,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -48,7 +46,6 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.BitConverter;
@@ -370,7 +367,7 @@ public abstract class SdlRouterService extends Service{
 
 	                	};
 	                	if(packetExecuter!=null){
-	                		packetExecuter.execute(packetRun);
+	                		packetExecuter.execute(packetRun); 
 	                	}
 	                	}
 	                	

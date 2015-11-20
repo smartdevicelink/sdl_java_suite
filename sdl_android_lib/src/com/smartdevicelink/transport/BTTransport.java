@@ -135,7 +135,7 @@ public class BTTransport extends SdlTransport {
     }*/
 	
 	
-	public void openConnection () throws SdlException {    	
+	public void openConnection () throws SdlException {
 		if (_serverSocket != null) {
 			return;
 		}		
@@ -146,15 +146,18 @@ public class BTTransport extends SdlTransport {
 			
 		// Test if Adapter exists
 		if (_adapter == null) {
+			SdlConnection.enableLegacyMode(false, null);
 			throw new SdlException("No Bluetooth adapter found. Bluetooth adapter must exist to communicate with SDL.", SdlExceptionCause.BLUETOOTH_ADAPTER_NULL);
 		}
 		
 		// Test if Bluetooth is enabled
 		try {
 			if (!_adapter.isEnabled()) {
+				SdlConnection.enableLegacyMode(false, null);
 				throw new SdlException("Bluetooth adapter must be enabled to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED);
 			}
 		} catch (SecurityException e) {
+			SdlConnection.enableLegacyMode(false, null);
 			throw new SdlException("Insufficient permissions to interact with the Bluetooth Adapter.", SdlExceptionCause.PERMISSION_DENIED);
 		}
 		
@@ -167,32 +170,36 @@ public class BTTransport extends SdlTransport {
 			int iSocket = getChannel(mySock);
 
 			sComment = "Accepting Connections on SDP Server Port Number: " + iSocket + "\r\n";
-			sComment += "Keep Server Socket Open: " + bKeepSocketActive; 
+			sComment += "Keep Server Socket Open: " + bKeepSocketActive;
 			if (iSocket < 0)
 			{
+				SdlConnection.enableLegacyMode(false, null);
 				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 			}			
 		} catch (IOException e) {
-
+			SdlConnection.enableLegacyMode(false, null);
 			throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 
 		} catch (Exception ex) {
 			
 			// Test to determine if the bluetooth has been disabled since last check			
 			if (!_adapter.isEnabled()) {
+				SdlConnection.enableLegacyMode(false, null);
 				throw new SdlException("Bluetooth adapter must be on to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED);
 			}
 
 			if(((SdlException) ex).getSdlExceptionCause() == SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE) {
-
+				SdlConnection.enableLegacyMode(false, null);
 				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 
 			}
+			SdlConnection.enableLegacyMode(false, null);
 			throw new SdlException("Could not open connection to SDL.", ex, SdlExceptionCause.SDL_CONNECTION_FAILED);
 		} 
 		
 		// Test to ensure serverSocket is not null
 		if (_serverSocket == null) {
+			SdlConnection.enableLegacyMode(false, null);
 			throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.SDL_CONNECTION_FAILED);
 		}
 		
@@ -394,36 +401,35 @@ public class BTTransport extends SdlTransport {
 					}
 					return;
 				} // end-catch
-				
-				if (byteRead != -1) {
-               	 	stateProgress = psm.handleByte(byteRead); 
-               	 	if(!stateProgress){//We are trying to weed through the bad packet info until we get something
-                 		//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
-               	 		psm.reset();
-               	 	}
-               	 	if(psm.getState() == SdlPsm.FINISHED_STATE){
-               	 		//Log.d(TAG, "Packet formed, sending off");
-               	 		handleReceivedPacket((SdlPacket)psm.getFormedPacket());
-               	 		//We put a trace statement in the message read so we can avoid all the extra bytes
-               	 		psm.reset();
-               	 	}
-				} else {
-					// When bytesRead == -1, it indicates end of stream
-					if (!isHalted) {
-						// Only call disconnect if the thread has not been halted
-						DebugTool.logError("End of stream reached!");
-						disconnect("End of stream reached.", null);
+
+				stateProgress = psm.handleByte(byteRead); 
+				if(!stateProgress){//We are trying to weed through the bad packet info until we get something
+					//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+					psm.reset();
+					if(byteRead == -1){ //If we read a -1 and the psm didn't move forward, then there is a problem
+						if (!isHalted) {
+							// Only call disconnect if the thread has not been halted
+							DebugTool.logError("End of stream reached!");
+							disconnect("End of stream reached.", null);
+						}
 					}
 				}
-			} catch (Exception excp) {
-				if (!isHalted) {
-					// Only call disconnect if the thread has not been halted
-					clearInputStream();
-					String errString = "Failure in BTTransport reader thread: " + excp.toString();
-					DebugTool.logError(errString, excp);
-					disconnect(errString, excp);
+				if(psm.getState() == SdlPsm.FINISHED_STATE){
+					//Log.d(TAG, "Packet formed, sending off");
+					handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+					//We put a trace statement in the message read so we can avoid all the extra bytes
+					psm.reset();
 				}
-				return;
+
+			} catch (Exception excp) {
+			if (!isHalted) {
+				// Only call disconnect if the thread has not been halted
+				clearInputStream();
+				String errString = "Failure in BTTransport reader thread: " + excp.toString();
+				DebugTool.logError(errString, excp);
+				disconnect(errString, excp);
+			}
+			return;
 			} // end-catch
 		} // end-method
 		

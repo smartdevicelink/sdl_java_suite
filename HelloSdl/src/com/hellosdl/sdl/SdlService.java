@@ -9,9 +9,12 @@ import com.hellosdl.MainActivity;
 import com.hellosdl.R;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.SdlProxyALM;
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
+import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
@@ -54,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
@@ -63,6 +67,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -114,7 +119,9 @@ public class SdlService extends Service implements IProxyListenerALM{
         if (intent != null) {
         	startProxy();
     		if(intent.hasExtra(SdlBroadcastReceiver.FORCE_TRANSPORT_CONNECTED)){
-    			proxy.forceOnConnected();
+    			if(proxy!=null){
+    				proxy.forceOnConnected();
+    			}
 			}
 		}
 			
@@ -628,6 +635,48 @@ public class SdlService extends Service implements IProxyListenerALM{
 
 	@Override
 	public void onSendLocationResponse(SendLocationResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onServiceEnded(OnServiceEnded serviceEnded) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onServiceNACKed(OnServiceNACKed serviceNACKed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onShowConstantTbtResponse(ShowConstantTbtResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onAlertManeuverResponse(AlertManeuverResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onUpdateTurnListResponse(UpdateTurnListResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onServiceDataACK() {
 		// TODO Auto-generated method stub
 		
 	}
