@@ -114,9 +114,6 @@ public class MultiplexTransport extends SdlTransport{
 		super.handleTransportError(message, ex);
 	}
 
-
-
-
 	/**
 	 * This thread will handle the broker transaction with the router service.
 	 *
@@ -128,6 +125,7 @@ public class MultiplexTransport extends SdlTransport{
 		final Context context;
 		final String appId;
 		final ComponentName service;
+		Looper threadLooper = null;
 		/**
 		 * Thread will automatically start to prepare its looper.
 		 * @param context
@@ -160,12 +158,13 @@ public class MultiplexTransport extends SdlTransport{
 					broker = null;
 				}
 				connected = false;
-				if(Looper.myLooper() !=null){
+				if(threadLooper !=null){
 					if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR2){
-						Looper.myLooper().quitSafely();
+						threadLooper.quitSafely();
 					}else{
-						Looper.myLooper().quit();
+						threadLooper.quit();
 					}
+					threadLooper = null;
 				}	
 				//this.interrupt();
 
@@ -196,6 +195,7 @@ public class MultiplexTransport extends SdlTransport{
 		@Override
 		public void run() {
 			Looper.prepare();
+			
 			if(broker==null){Log.d("JOEY", "Starting broker");
 				synchronized(this){
 					initTransportBroker();
@@ -205,7 +205,7 @@ public class MultiplexTransport extends SdlTransport{
 					this.notify();
 				}
 			}
-
+			threadLooper = Looper.myLooper();
 			Looper.loop();
 			Log.i(TAG, "Looper has finished. Thread should be sutting down");
 			
