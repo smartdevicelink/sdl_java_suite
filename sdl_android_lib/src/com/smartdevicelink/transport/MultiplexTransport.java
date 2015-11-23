@@ -3,9 +3,11 @@ package com.smartdevicelink.transport;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
+
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
@@ -159,7 +161,11 @@ public class MultiplexTransport extends SdlTransport{
 				}
 				connected = false;
 				if(Looper.myLooper() !=null){
-					Looper.myLooper().quitSafely(); //FIXME add check
+					if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR2){
+						Looper.myLooper().quitSafely();
+					}else{
+						Looper.myLooper().quit();
+					}
 				}	
 				//this.interrupt();
 
