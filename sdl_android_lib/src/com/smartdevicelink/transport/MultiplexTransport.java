@@ -67,15 +67,19 @@ public class MultiplexTransport extends SdlTransport{
 	@Override
 	protected boolean sendBytesOverTransport(byte[] msgBytes, int offset,
 			int length) {
-		
-		brokerThread.sendPacket(msgBytes,offset,length);
-		return true; //Sure why not.
+		if(brokerThread!=null){
+			brokerThread.sendPacket(msgBytes,offset,length);
+			return true;
+		}
+		return false; //Sure why not.
 	}
 
 	@Override
 	public void openConnection() throws SdlException {
 		Log.d(TAG, "Open connection");
-		brokerThread.startConnection();
+		if(brokerThread!=null){
+			brokerThread.startConnection();
+		}//else should log out
 		
 	}
 
@@ -196,7 +200,7 @@ public class MultiplexTransport extends SdlTransport{
 		public void initTransportBroker(){
 
 			broker = new TransportBroker(context, appId, service){
-
+				
 				@Override
 				public boolean onHardwareConnected(TransportType type) {
 					if(super.onHardwareConnected(type)){
