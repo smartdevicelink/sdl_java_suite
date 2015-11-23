@@ -1,11 +1,11 @@
 package com.smartdevicelink.transport;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
-
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
@@ -31,6 +31,7 @@ public class MultiplexTransport extends SdlTransport{
 			brokerThread.onHardwareConnected(type);
 			return true;
 		}
+		Log.w(TAG, "Transport broker thread was null, nothing to force connect.");
 		return false;
 
 	}
@@ -90,8 +91,10 @@ public class MultiplexTransport extends SdlTransport{
 		}
 			Log.d(TAG, "Close connection");
 			this.isDisconnecting= true;
-			brokerThread.cancel();
-			brokerThread = null;
+			if(brokerThread!= null){
+				brokerThread.cancel();
+				brokerThread = null;
+			}
 			handleTransportDisconnected(TransportType.MULTIPLEX.name());
 			isDisconnecting = false;
 		
@@ -102,7 +105,8 @@ public class MultiplexTransport extends SdlTransport{
 	@Override
 	protected void handleTransportError(String message, Exception ex) {
 		if(brokerThread!=null){
-			brokerThread.interrupt();
+			brokerThread.cancel();
+			//brokerThread.interrupt();
 			brokerThread = null;
 		}
 		super.handleTransportError(message, ex);
@@ -147,13 +151,16 @@ public class MultiplexTransport extends SdlTransport{
 			}
 		}
 
+		@SuppressLint("NewApi")
 		public void cancel(){
 				if(broker!=null){
 					broker.stop();
 					broker = null;
 				}
 				connected = false;
-				//Looper.myLooper().quitSafely();
+				if(Looper.myLooper() !=null){
+					Looper.myLooper().quitSafely(); //FIXME add check
+				}	
 				//this.interrupt();
 
 		}
@@ -194,6 +201,7 @@ public class MultiplexTransport extends SdlTransport{
 			}
 
 			Looper.loop();
+			Log.i(TAG, "Looper has finished. Thread should be sutting down");
 			
 		}
 		
