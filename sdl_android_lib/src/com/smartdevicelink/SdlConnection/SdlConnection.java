@@ -62,7 +62,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		//Let's check if we can even do multiplexing
 		if(transportConfig.getTransportType() == TransportType.MULTIPLEX){
 			vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
-			vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
+			//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
 		}
 		constructor(transportConfig,vlad);
 	}
