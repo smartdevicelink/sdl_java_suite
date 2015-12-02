@@ -48,6 +48,7 @@ import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.util.BitConverter;
 
 /**
@@ -326,52 +327,34 @@ public abstract class SdlRouterService extends Service{
 	                	Log.d(TAG, "Received packet to send");
 	                	if(receivedBundle!=null){
 	                		Runnable packetRun = new Runnable(){
-	        					@Override
-								public void run() {
-	        					  	if(receivedBundle!=null){
-	        	                		int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, 0);
-	        	                		Long buffAppId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA);
-	        	                		RegisteredApp buffApp = null;
-	        	                		if(buffAppId!=null){
-	        	                			buffApp = registeredApps.get(buffAppId);
-	        	                		}
-	        	                		if(buffApp !=null){
-	        	                			byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
-	        	                			switch(flags){
-	        	                			case TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START:
-	        	                				buffApp.prepBuffer();
-	        	                				//Fall through to write the bytes after they buffer was init'ed
-	        	                			case TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT:	
-	        	                				//int offset = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
-	        	                				//int count = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-	        	                				buffApp.writeToBuffer(packet);
-	        	                				break;
-	        	                			case TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_END:
-	        	                				buffApp.writeToBuffer(packet);
-	        	                				byte[] buff = buffApp.finishBuffer();
-	        	                				buffApp.clearBuffer();
-	        	                				manuallyWriteBytes(buff, 0, buff.length);
-	        	                				break;
-	        	                			default: //case 0
-	        	                				writeBytesToTransport(receivedBundle);
-	        	                			}
-	        	                		}else{
-	        	                			writeBytesToTransport(receivedBundle);
-	        	                		}
+	                			@Override
+	                			public void run() {
+	                				if(receivedBundle!=null){
 
-	        	                	}
-	        	    				//writeBytesToTransport(receivedBundle);
-
-		
-							}
-
-	                	};
-	                	if(packetExecuter!=null){
-	                		packetExecuter.execute(packetRun); 
+	                					Long buffAppId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA);
+	                					RegisteredApp buffApp = null;
+	                					if(buffAppId!=null){
+	                						buffApp = registeredApps.get(buffAppId);
+	                					}
+	                					if(buffApp !=null){
+	                						int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+	                						Log.d(TAG, "Flags received: " + flags);
+	                						if(flags!=TransportConstants.BYTES_TO_SEND_FLAG_NONE){
+	                							byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
+	                							buffApp.handleMessage(flags, packet);
+	                						}else{
+	                							writeBytesToTransport(receivedBundle);
+	                						}
+	                					}else{
+	                						writeBytesToTransport(receivedBundle);
+	                					}
+	                				}
+	                			}
+	                		};
+	                		if(packetExecuter!=null){
+	                			packetExecuter.execute(packetRun); 
+	                		}
 	                	}
-	                	}
-	                	
-	    				//writeBytesToTransport(receivedBundle);
 	                    break;
 	                case TransportConstants.ROUTER_REQUEST_NEW_SESSION:
 	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
@@ -1257,7 +1240,7 @@ public abstract class SdlRouterService extends Service{
 		long appId;
 		Messenger messenger;
 		Vector<Long> sessionIds;
-		ByteArrayOutputStream buffer;
+		ByteAraryMessageAssembler buffer;
 		/**
 		 * This is a simple class to hold onto a reference of a registered app.
 		 * @param appId
@@ -1332,32 +1315,32 @@ public abstract class SdlRouterService extends Service{
 				}
 			}
 		}
-		public void prepBuffer(){
-			clearBuffer();
-			buffer = new ByteArrayOutputStream();
-		}
-		public void clearBuffer(){
-			if(buffer!=null){
-				try {
-					buffer.close();
-					buffer = null;
-				} catch (IOException e) {
-					e.printStackTrace();
+		
+		public void handleMessage(int flags, byte[] packet){
+			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
+				clearBuffer();
+				buffer = new ByteAraryMessageAssembler();
+				buffer.init();
+			}
+			if(buffer == null){
+				Log.e(TAG, "Unable to assemble message as buffer was null/not started");
+			}
+			if(!buffer.handleMessage(flags, packet)){ //If this returns false
+				Log.e(TAG, "Error handling bytes");
+			}
+			if(buffer.isFinished()){ //We are finished building the buffer so we should write the bytes out
+				byte[] bytes = buffer.getBytes();
+				if(!SdlRouterService.this.manuallyWriteBytes(bytes, 0, bytes.length)){
+					Log.e(TAG, "Error sending bytes");
 				}
+				buffer.close();
 			}
 		}
-		public void writeToBuffer(byte[] bytes){
-			try {
-				buffer.write(bytes);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		public byte[] finishBuffer(){
+		
+		protected void clearBuffer(){
 			if(buffer!=null){
-				return buffer.toByteArray();
-			}else{
-				return null;
+				buffer.close();
+				buffer = null;
 			}
 		}
 	}
