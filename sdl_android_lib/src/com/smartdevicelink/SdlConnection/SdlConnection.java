@@ -693,7 +693,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 	public void forceHardwareConnectEvent(TransportType type){
 		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
-			((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
+			MultiplexTransport multi = ((MultiplexTransport)_transport);
+			boolean forced = multi.forceHardwareConnectEvent(TransportType.BLUETOOTH);
+			if(!forced && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
+				MultiplexTransportConfig config = multi.getConfig();
+				_transport = new MultiplexTransport(config,this);
+			}
 		}
 	}
 	

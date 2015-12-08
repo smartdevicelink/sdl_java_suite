@@ -19,10 +19,13 @@ public class MultiplexTransport extends SdlTransport{
 	
 	TransportBrokerThread brokerThread;
 	protected boolean isDisconnecting = false;
+	MultiplexTransportConfig transportConfig;
 	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		super(transportListener);
+		this.transportConfig = transportConfig;
 		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId, transportConfig.service);
 		brokerThread.start();
+		isDisconnecting = false;
 		//brokerThread.initTransportBroker();
 		//brokerThread.start();
 
@@ -33,9 +36,20 @@ public class MultiplexTransport extends SdlTransport{
 			brokerThread.onHardwareConnected(type);
 			return true;
 		}
-		Log.w(TAG, "Transport broker thread was null, nothing to force connect.");
+		Log.w(TAG, "Transport broker thread was null, nothing to force connect. Are we disconnecting? " + isDisconnecting);
 		return false;
 
+	}
+	
+	public boolean isDisconnecting(){
+		return this.isDisconnecting;
+	}
+	/**
+	 * Returns the config that was used to create this transport
+	 * @return
+	 */
+	public MultiplexTransportConfig getConfig(){
+		return this.transportConfig;
 	}
 	
 	public boolean requestNewSession(){
@@ -241,9 +255,11 @@ public class MultiplexTransport extends SdlTransport{
 						if(isLegacyModeEnabled()){
 							Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
 							this.stop();
+							isDisconnecting = true;
 							handleTransportDisconnected("");
 						}else{
 							Log.d(TAG, "Handle transport Error");
+							isDisconnecting = true;
 							handleTransportError("",null); //This seems wrong, but it works
 						}
 					}
