@@ -12,7 +12,8 @@ import android.util.Log;
 public class ByteArrayMessageSpliter {
 	private static final String TAG = "ByteArrayMessageSpliter";
 	
-	public static final int MAX_BINDER_SIZE = 500;//1000000/4; //~1MB/4 We do this as a safety measure. IPC only allows 1MB for everything. We should never fill more than 25% of the buffer so here we make sure we stay under that
+	//To test set this value to something very small (eg, 50)
+	public static final int MAX_BINDER_SIZE = 1000000/4; //~1MB/4 We do this as a safety measure. IPC only allows 1MB for everything. We should never fill more than 25% of the buffer so here we make sure we stay under that
 
 	boolean firstPacket;
 	ByteArrayInputStream stream;
@@ -24,6 +25,15 @@ public class ByteArrayMessageSpliter {
 	
 	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes){
 		this.appId = Long.valueOf(appId);
+		this.what = what;
+		stream = new ByteArrayInputStream(bytes);
+		orginalSize  = stream.available();
+		bytesRead = 0; 
+		firstPacket = true;
+	}
+	
+	public ByteArrayMessageSpliter(Long appId,int what, byte[] bytes){
+		this.appId = appId;
 		this.what = what;
 		stream = new ByteArrayInputStream(bytes);
 		orginalSize  = stream.available();
