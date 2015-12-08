@@ -188,7 +188,9 @@ public class SdlPacket implements Parcelable{
 				serviceType, frameInfo, sessionId,
 				dataSize, messageId, payload);
 	}
-	
+	public void setPayload(byte[] bytes){
+		this.payload = bytes;
+	}
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
 	 * @param version
@@ -311,7 +313,9 @@ public class SdlPacket implements Parcelable{
 		dest.writeInt(dataSize);
 		dest.writeInt(messageId);
 		dest.writeInt(payload!=null? 1 : 0);
-		dest.writeByteArray(payload);
+		if(payload!=null){
+			dest.writeByteArray(payload);
+		}
 
 	}
 	
