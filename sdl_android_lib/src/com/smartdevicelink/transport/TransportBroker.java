@@ -1,7 +1,5 @@
 package com.smartdevicelink.transport;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -24,7 +22,9 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 
 
@@ -46,6 +46,9 @@ public class TransportBroker {
 	private String routerPackage = null, routerClassName = null;
 	private ComponentName routerService = null;
 	
+	
+	private SdlPacket bufferedPacket = null;
+	private ByteAraryMessageAssembler bufferedPayloadAssembler = null;
 	
 	private ServiceConnection routerConnection;
 	
@@ -132,11 +135,11 @@ public class TransportBroker {
         public void handleMessage(Message msg) {
         	
         	Bundle bundle = msg.getData();
+
         	if(bundle!=null){
         		bundle.setClassLoader(loader);
         	}
-        	
-        	Log.d(TAG, "Bundle: "  + bundle.toString());
+        	//Log.d(TAG, "Bundle: "  + bundle.toString());
             /* DO NOT MOVE
              * This needs to be first to make sure we already know if we are attempting to enter legacy mode or not
              */
@@ -170,7 +173,7 @@ public class TransportBroker {
             		break;
             	case TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE:
             		if(msg.arg1==TransportConstants.UNREGISTRATION_RESPONSE_SUCESS){
-            			//TODO We've been unregistered. Now what?
+            			// We've been unregistered. Now what?
             			
             			
             		}else{ //We were denied our unregister request to the router service, let's see why
@@ -180,14 +183,49 @@ public class TransportBroker {
             	
             		break;
             	case TransportConstants.ROUTER_RECEIVED_PACKET:
-					//So the intent has a packet with it. PEFRECT! Let's send it through the library
-            		if(bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
+            		//So the intent has a packet with it. PEFRECT! Let's send it through the library
+        			int flags = bundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+
+        			if(bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
             			Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
-    					if(packet!=null){
-    						onPacketReceived(packet);
-    					}else{
-    						Log.w(TAG, "Received null packet from router service, not passing along");
-    					}
+
+            			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE){
+            				if(packet!=null){
+            					onPacketReceived(packet);
+            				}else{
+            					Log.w(TAG, "Received null packet from router service, not passing along");
+            				}
+            			}else if(flags == TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED){
+            				Log.i(TAG, "Starting a buffered split packet");
+            				bufferedPacket = (SdlPacket) packet;
+            				if(bufferedPayloadAssembler !=null){
+            					bufferedPayloadAssembler.close();
+            					bufferedPayloadAssembler = null;            					
+            				}
+            				
+            				bufferedPayloadAssembler = new ByteAraryMessageAssembler();
+            				bufferedPayloadAssembler.init();
+            			}
+            		}else if(bundle.containsKey(TransportConstants.BYTES_TO_SEND_EXTRA_NAME)){
+            				//This should contain the payload
+            				if(bufferedPayloadAssembler!=null){
+            					byte[] chunk = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
+            					if(!bufferedPayloadAssembler.handleMessage(flags, chunk)){
+            						//If there was a problem
+            						Log.e(TAG, "Error handling bytes for split packet");
+            					}
+            					if(bufferedPayloadAssembler.isFinished()){
+            						bufferedPacket.setPayload(bufferedPayloadAssembler.getBytes());
+            						
+            						bufferedPayloadAssembler.close();
+            						bufferedPayloadAssembler = null;
+            						Log.i(TAG, "Split packet finished from router service = " + bufferedPacket.toString());
+            						onPacketReceived(bufferedPacket);
+            						bufferedPacket = null;
+            					}
+            				}
+            			//}
+            		//}
             		}else{
             			Log.w(TAG, "Flase positive packet reception");
             		}

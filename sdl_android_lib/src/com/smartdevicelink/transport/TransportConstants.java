@@ -174,9 +174,10 @@ public class TransportConstants {
 	public static final String BYTES_TO_SEND_FLAGS							= "flags";
 	
 	public static final int BYTES_TO_SEND_FLAG_NONE								= 0x00;
-	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_START				= 0x01;
-	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT				= 0x02;
-	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_END					= 0x04;
+	public static final int BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED				= 0x01;
+	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_START				= 0x02;
+	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT				= 0x04;
+	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_END					= 0x08;
 	
 	public static final String CONNECTED_DEVICE_STRING_EXTRA_NAME			= "devicestring";
 	

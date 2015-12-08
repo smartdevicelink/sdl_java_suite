@@ -49,6 +49,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
+import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.BitConverter;
 
 /**
@@ -899,40 +900,80 @@ public abstract class SdlRouterService extends Service{
 	    			if(app==null){Log.e(TAG, "No app found for app id");
 	    				return false;
 	    			}
+	    			
+	    			byte version = (byte)packet.getVersion();
+	    			int packetSize = (int) (packet.getDataSize() + SdlPacket.HEADER_SIZE);
+	    			//Log.i(TAG, "Checking packet size: " + packetSize);
 	    			Message message = Message.obtain();
-	    			//TODO put arg1 and 2
-	    			message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
 	    			Bundle bundle = new Bundle();
-	    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
-	    			message.setData(bundle);
-	    			int result = app.sendMessage(message);
-	    			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
-	    				Log.d(TAG, "Dead object, removing app and sessions");
-	    				//Get all their sessions and send out unregister info
-	    				//Use the version in this packet as a best guess
-	    				Vector<Long> sessions = app.getSessionIds();
-	    				byte version = (byte)packet.getVersion();
-	    				byte[]  unregister,stopService;
-	    				int size = sessions.size(), sessionId;
-	    				for(int i=0; i<size;i++){
-	    					sessionId = sessions.get(i).intValue();
-	    					unregister = createForceUnregisterApp((byte)sessionId,version);
-	    					manuallyWriteBytes(unregister,0,unregister.length);
-	    					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version)).constructPacket();
-	    					manuallyWriteBytes(stopService,0,stopService.length);
-	    					sessionMap.remove(sessionId);
+	    			
+	    			if(packetSize < ByteArrayMessageSpliter.MAX_BINDER_SIZE){ //This is a small enough packet just send on through
+	    				//Log.w(TAG, " Packet size is just right " + packetSize  + " is smaller than " + ByteArrayMessageSpliter.MAX_BINDER_SIZE + " = " + (packetSize<ByteArrayMessageSpliter.MAX_BINDER_SIZE));
+	    				
+		    			//TODO put arg1 and 2
+		    			message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
+		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
+	    				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+		    			message.setData(bundle);
+		    			return sendPacketMessageToClient(app,message, version);
+	    			}else{
+	    				//Log.w(TAG, "Packet too big for IPC buffer. Breaking apart and then sending to client.");
+	    				//We need to churn through the packet payload and send it in chunks
+	    				byte[] bytes = packet.getPayload();
+	    				SdlPacket copyPacket = new SdlPacket(packet.getVersion(),packet.isCompression(),
+	    										(int)packet.getFrameType().getValue(),
+	    													packet.getServiceType(),packet.getFrameInfo(), packet.getSessionId(),
+	    													(int)packet.getDataSize(),packet.getMessageId(),null);
+	    				message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
+		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, copyPacket);
+		    			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED);
+		    			message.setData(bundle);
+		    			Log.d(TAG, "First packet before sending: " + message.getData().toString());
+		    			if(!sendPacketMessageToClient(app, message, version)){
+		    				Log.w(TAG, "Error sending first message of split packet to client " + app.appId);
+		    				return false;
+		    			}
+	    				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  packet.getDataSize());
+	    				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appid,TransportConstants.ROUTER_RECEIVED_PACKET,bytes);				
+	    				while(splitter.isActive()){
+	    					if(!sendPacketMessageToClient(app,splitter.nextMessage(),version)){
+	    						Log.w(TAG, "Error sending first message of split packet to client " + app.appId);
+	    						splitter.close();
+	    						return false;
+	    					}
 	    				}
-	    				registeredApps.remove(appid);
-	    				return false;//We did our best to correct errors
-	    			}
-	    			return true;	//We should have sent our packet, so we can return true now
-	    		}else{	//If we can't find a session for this packet we just drop the packet
+	    				Log.i(TAG, "Large packet finished being sent");
+	    			} 
+	    			
+    		}else{	//If we can't find a session for this packet we just drop the packet
 	    			Log.e(TAG, "App Id was NULL!");
 	    		}
 	    	}
 	    	return false;
 		}
 	    
+	    private boolean sendPacketMessageToClient(RegisteredApp app, Message message, byte version){
+			int result = app.sendMessage(message);
+			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+				Log.d(TAG, "Dead object, removing app and sessions");
+				//Get all their sessions and send out unregister info
+				//Use the version in this packet as a best guess
+				Vector<Long> sessions = app.getSessionIds();
+				byte[]  unregister,stopService;
+				int size = sessions.size(), sessionId;
+				for(int i=0; i<size;i++){
+					sessionId = sessions.get(i).intValue();
+					unregister = createForceUnregisterApp((byte)sessionId,version);
+					manuallyWriteBytes(unregister,0,unregister.length);
+					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version)).constructPacket();
+					manuallyWriteBytes(stopService,0,stopService.length);
+					sessionMap.remove(sessionId);
+				} 
+				registeredApps.remove(app.appId);
+				return false;//We did our best to correct errors
+			}
+			return true;//We should have sent our packet, so we can return true now
+	    }
 	    
 		private synchronized void closeBluetoothSerialServer(){ //FIXME change to ITransport
 			if(mSerialService != null){
