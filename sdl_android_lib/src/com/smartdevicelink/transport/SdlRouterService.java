@@ -616,7 +616,7 @@ public abstract class SdlRouterService extends Service{
 		packetExecuter = null;
 		super.onDestroy();
 		try{
-			android.os.Process.killProcess(android.os.Process.myPid());
+			//android.os.Process.killProcess(android.os.Process.myPid());
 		}catch(Exception e){}
 	}
 	
