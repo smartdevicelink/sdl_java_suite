@@ -23,13 +23,6 @@ public class SdlReceiver extends com.smartdevicelink.transport.SdlBroadcastRecei
 		context.startService(startIntent);
 	}
 
-	@Override
-	public void onSdlDisabled(Context context) {
-		Intent startIntent = new Intent(context, SdlService.class);
-		//context.stopService(startIntent); //TODO maybe startservice with a flag instead?
-		
-	}
-	
 
 
 }

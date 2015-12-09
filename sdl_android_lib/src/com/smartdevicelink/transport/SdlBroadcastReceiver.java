@@ -199,7 +199,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 */
 	public abstract void onSdlEnabled(Context context);
 	
-	public abstract void onSdlDisabled(Context context);
+	//public abstract void onSdlDisabled(Context context); //Removing for now until we're able to abstract from developer
 
 
 }
