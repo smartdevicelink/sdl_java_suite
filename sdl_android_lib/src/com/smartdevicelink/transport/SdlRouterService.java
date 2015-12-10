@@ -94,8 +94,8 @@ public abstract class SdlRouterService extends Service{
 	
     private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
-	SparseArray<Long> sessionMap;
-	private Object SESSION_LOCK;
+	private SparseArray<Long> sessionMap;
+	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object();
 	
 	private static Messenger altTransportMessager = null; //THERE CAN BE ONLY ONE!!!
 
@@ -285,7 +285,7 @@ public abstract class SdlRouterService extends Service{
 	                	}
 	                	
 	                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
-	                	registeredApps.put(app.getAppId(), app);
+	                	registeredApps.put(app.getAppId(), app); //FIXME null pointer
 	            		onAppRegistered(app);
 	            		
 	            		//TODO reply to this messanger.
@@ -362,7 +362,7 @@ public abstract class SdlRouterService extends Service{
 	                	Message extraSessionResponse = Message.obtain();
 	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE;
 	                	if(appIdRequesting>0){
-							synchronized(SESSION_LOCK){
+							synchronized(REGISTERED_APPS_LOCK){
 								if(registeredApps!=null){
 									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
 									if(appRequesting!=null){
@@ -391,7 +391,7 @@ public abstract class SdlRouterService extends Service{
 	                	removeSessionResponse.what = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE;
 	                	if(appIdWithSession>0){
 	                		if(sessionId>=0){
-							synchronized(SESSION_LOCK){
+							synchronized(REGISTERED_APPS_LOCK){
 								if(registeredApps!=null){
 									RegisteredApp appRequesting = registeredApps.get(appIdWithSession);
 									if(appRequesting!=null){
@@ -552,12 +552,11 @@ public abstract class SdlRouterService extends Service{
 		currentContext = getBaseContext();
 		registerReceiver(registerAnInstanceOfSerialServer, new IntentFilter(REGISTER_NEWER_SERVER_INSTANCE_ACTION));
 		
-		Log.i(TAG, "Livio Bluetooth Service has been created");
+		Log.i(TAG, "SDL Rourter Service has been created");
 		newestServiceCheck(currentContext);
 		
-		SESSION_LOCK = new Object();
 		synchronized(SESSION_LOCK){
-			sessionMap = new SparseArray<Long>();
+			this.sessionMap = new SparseArray<Long>();
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
@@ -604,13 +603,25 @@ public abstract class SdlRouterService extends Service{
 	@Override
 	public void onDestroy(){
 		if(versionCheckTimeOutHandler!=null){versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);}
-		Log.v(TAG, "Sdl Router Service Destroyed");
+		Log.w(TAG, "Sdl Router Service Destroyed");
 	    closing = true;
 		currentContext = null;
 		//No need for this Broadcast Receiver anymore
 		unregisterAllReceivers();
 		closeBluetoothSerialServer();
-		registeredApps = null;
+		if(registeredApps!=null){
+			registeredApps.clear();
+			registeredApps = null;
+		}
+		synchronized(SESSION_LOCK){
+			if(this.sessionMap!=null){ 
+				this.sessionMap.clear();
+				this.sessionMap = null;
+			}
+		}
+		
+		//SESSION_LOCK = null;
+		
 		startSequenceComplete=false;
 		packetExecuter.shutdownNow();
 		packetExecuter = null;
@@ -743,18 +754,21 @@ public abstract class SdlRouterService extends Service{
 			unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
 			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX);
 			sendBroadcast(unregisterIntent);
-			return;
+			//return;
+		}else{
+			Message message = Message.obtain();
+			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
+			Bundle bundle = new Bundle();
+			bundle.putString(HARDWARE_DISCONNECTED, type.name());
+			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
+			message.setData(bundle);		//TODO should we add a transport event what message type?
+			notifyClients(message);
 		}
-		Message message = Message.obtain();
-		message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
-		Bundle bundle = new Bundle();
-		bundle.putString(HARDWARE_DISCONNECTED, type.name());
-		bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-		message.setData(bundle);		//TODO should we add a transport event what message type?
-		notifyClients(message);
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
-			sessionMap.clear();
+			this.sessionMap.clear();
+		}
+		synchronized(REGISTERED_APPS_LOCK){
 			if(registeredApps==null){
 				return;
 			}
@@ -897,7 +911,7 @@ public abstract class SdlRouterService extends Service{
 	    		Long appid = getAppIDForSession(packet.getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
 	    			RegisteredApp app = registeredApps.get(appid);
-	    			if(app==null){Log.e(TAG, "No app found for app id");
+	    			if(app==null){Log.e(TAG, "No app found for app id " + appid);
 	    				return false;
 	    			}
 	    			
@@ -967,7 +981,7 @@ public abstract class SdlRouterService extends Service{
 					manuallyWriteBytes(unregister,0,unregister.length);
 					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version)).constructPacket();
 					manuallyWriteBytes(stopService,0,stopService.length);
-					sessionMap.remove(sessionId);
+					this.sessionMap.remove(sessionId);
 				} 
 				registeredApps.remove(app.appId);
 				return false;//We did our best to correct errors
@@ -1122,11 +1136,14 @@ public abstract class SdlRouterService extends Service{
 	private Intent getLastReceivedStartIntent(){	
 		return lastReceivedStartIntent;
 	}
-	
+
 	private Long getAppIDForSession(int sessionId){
 		synchronized(SESSION_LOCK){
 		Log.d(TAG, "Looking for session: " + sessionId);
-		Long appId = sessionMap.get(sessionId);
+		if(sessionMap == null){
+			sessionMap = new SparseArray<Long>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
+		}
+		Long appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
 		if(appId==null){
 			int pos;
 			for (RegisteredApp app : registeredApps.values()) {
