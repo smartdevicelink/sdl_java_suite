@@ -29,6 +29,9 @@ public class TransportConstants {
 	public static final String 	ALT_TRANSPORT_ADDRESS_EXTRA					= "altTransportAddress";
 	
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_EXTRA		= "sdl_enabled";
+	public static final String START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE = "package_name";
+	public static final String START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME    = "component_name";
+
 	
 	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
