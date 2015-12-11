@@ -33,6 +33,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
@@ -60,7 +62,7 @@ import com.smartdevicelink.util.BitConverter;
  * @author Joey Grover
  *
  */
-public abstract class SdlRouterService extends Service{
+public class SdlRouterService extends Service{
 	
 	private static final String TAG = "Sdl Router Service";
 	/**
@@ -104,6 +106,8 @@ public abstract class SdlRouterService extends Service{
 	private boolean startSequenceComplete = false;	
 	
 	private ExecutorService packetExecuter = null; 
+	
+	private static LocalRouterService selfRouterService;
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
@@ -163,28 +167,36 @@ public abstract class SdlRouterService extends Service{
 	 /**
 	  * this is to make sure the AceeptThread is still running
 	  */
-		BroadcastReceiver registerAnInstanceOfSerialServer = new BroadcastReceiver() 
-				{
+		BroadcastReceiver registerAnInstanceOfSerialServer = new BroadcastReceiver() {
+			final Object COMPARE_LOCK = new Object();
 					@Override
 					public void onReceive(Context context, Intent intent) 
 					{
-						//Let's make sure we are on the same version.
-						if(intent.hasExtra(SdlBroadcastReceiver.LOCAL_BT_SERVER_VERSION_NUMBER_EXTRA) 
-								&& intent.getIntExtra(SdlBroadcastReceiver.LOCAL_BT_SERVER_VERSION_NUMBER_EXTRA, 0)> ROUTER_SERVICE_VERSION_NUMBER
-								&& intent.hasExtra(SdlBroadcastReceiver.INTENT_FOR_OTHER_BT_SERVER_INSTANCE_EXTRA)){
-							//So the version requesting to be started is actually newer than this version, so we need to 
-							//close our bluetooth connections, launch the other service, and close ourself
-							int versionOfIntent = intent.getIntExtra(SdlBroadcastReceiver.LOCAL_BT_SERVER_VERSION_NUMBER_EXTRA, 0);
-							
-							if(localCompareTo == null || (versionOfIntent>localCompareTo.version)){
-								Intent savedIntent = (Intent)intent.getParcelableExtra(SdlBroadcastReceiver.INTENT_FOR_OTHER_BT_SERVER_INSTANCE_EXTRA);
-								localCompareTo = new LocalRouterService(savedIntent,versionOfIntent);
+						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
+						synchronized(COMPARE_LOCK){
+							//Let's make sure we are on the same version.
+							if(tempService != null && (localCompareTo == null || localCompareTo.isNewer(tempService))){
+								LocalRouterService self = getLocalRouterService();
+								if(!self.isEqual(tempService)){ //We want to ignore self
+									Log.i(TAG, "Newer service received than previously stored service - " + tempService.launchIntent.getAction());
+									localCompareTo = tempService;
+								}
 							}
-							return;
-							
 						}
+						if(intent!=null && intent.getBooleanExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, false)){
+							Log.w(TAG, "Another serivce has been started, let's resend our version info to make sure they know about us too");
+							notifyStartedService(context);
+						}
+
+					}
+					private void notifyStartedService(Context context){
+						Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
+				    	restart.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA, getLocalRouterService());
+				    	context.sendBroadcast(restart);
 					}
 			};
+			
+			
 	
 	/**
 	 * If the user disconnects the bluetooth device we will want to stop SDL and our current
@@ -508,6 +520,10 @@ public abstract class SdlRouterService extends Service{
 	public IBinder onBind(Intent intent) {
 		//Check intent to send back the correct binder (client binding vs alt transport)
 		if(intent!=null){
+			if(closing){
+				Log.w(TAG, "Denying bind request due to service shutting down.");
+				return null;
+			}
 			int requestType = intent.getIntExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
 			switch(requestType){
 				case TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT:
@@ -593,8 +609,10 @@ public abstract class SdlRouterService extends Service{
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
-				Log.i(TAG, "Received ping, making sure we are listening to bluetooth rfcomm");
-				initBluetoothSerialService();
+				if(startSequenceComplete){ //We only check if we are sure we are already through the start up process
+					Log.i(TAG, "Received ping, making sure we are listening to bluetooth rfcomm");
+					initBluetoothSerialService();
+				}
 			}
 		}
 		shouldServiceKeepRunning(intent);
@@ -667,7 +685,7 @@ public abstract class SdlRouterService extends Service{
 	 */
 	private boolean bluetoothAvailable(){
 		boolean retVal = (!(BluetoothAdapter.getDefaultAdapter()==null) && BluetoothAdapter.getDefaultAdapter().isEnabled());
-		Log.d(TAG, "Bluetooth Available? - " + retVal);
+		//Log.d(TAG, "Bluetooth Available? - " + retVal);
 		return retVal;
 	}
 
@@ -679,7 +697,7 @@ public abstract class SdlRouterService extends Service{
 	 * 4. Anything else					
 	 */
 	public boolean shouldServiceKeepRunning(Intent intent){
-		Log.d(TAG, "Determining if this service should remain open");
+		//Log.d(TAG, "Determining if this service should remain open");
 		
 		if(altTransportMessager!=null 
 				|| (intent!=null && intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA))){ //FIXME how to handle 'service starts'
@@ -1102,25 +1120,44 @@ public abstract class SdlRouterService extends Service{
 		return this.localCompareTo;
 	}
 	
+	protected static LocalRouterService getLocalRouterService(Intent launchIntent){
+		if(SdlRouterService.selfRouterService == null){
+			if(launchIntent == null){
+				Log.e(TAG, "Unable to create local router service instance. Supplied intent was null");
+				return null;
+			}
+			selfRouterService = new LocalRouterService(launchIntent,ROUTER_SERVICE_VERSION_NUMBER, System.currentTimeMillis());
+		}
+		return selfRouterService;
+	}
+	
+	private  LocalRouterService getLocalRouterService(){
+		return getLocalRouterService(new Intent(getBaseContext(),SdlRouterService.class));
+	}
 	/**
 	 * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
 	 * @param context
 	 */
 	private void newestServiceCheck(final Context context){
+		getLocalRouterService(); //Make sure our timestamp is set
 		versionCheckTimeOutHandler = new Handler(); 
 		versionCheckRunable = new Runnable() {           
             public void run() {
             	Log.i(TAG, "Starting up Version Checking ");
-            	LocalRouterService local = getLocalBluetoothServiceComapre();
-            	if(local!=null && ROUTER_SERVICE_VERSION_NUMBER < local.version){
+            	
+            	LocalRouterService newestServiceReceived = getLocalBluetoothServiceComapre();
+            	LocalRouterService self = getLocalRouterService(); //We can send in null here, because it should have already been created
+            	Log.v(TAG, "Self service info " + self);
+            	Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
+            	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
             		Log.d(TAG, "There is a newer version of the Router Service, starting it up");
                 	closing = true;
 					closeBluetoothSerialServer();
-					Intent serviceIntent = local.launchIntent;
+					Intent serviceIntent = newestServiceReceived.launchIntent;
 					if(getLastReceivedStartIntent()!=null){
 						serviceIntent.putExtras(getLastReceivedStartIntent());
 					}
-					context.startService(local.launchIntent);
+					context.startService(newestServiceReceived.launchIntent);
 					notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
 					if(getBaseContext()!=null){
 						stopSelf();
@@ -1129,7 +1166,7 @@ public abstract class SdlRouterService extends Service{
 					}
             	}
             	else{			//Let's start up like normal
-            		Log.d(TAG, "Starting up bluetooth transport");
+            		Log.d(TAG, "No newer services found. Starting up bluetooth transport");
                 	startUpSequence();
             	}
             }
@@ -1143,8 +1180,9 @@ public abstract class SdlRouterService extends Service{
 
 	private Long getAppIDForSession(int sessionId){
 		synchronized(SESSION_LOCK){
-		Log.d(TAG, "Looking for session: " + sessionId);
-		if(sessionMap == null){
+		//Log.d(TAG, "Looking for session: " + sessionId);
+		if(sessionMap == null){ 
+			Log.w(TAG, "Session map was null during look up. Creating one on the fly");
 			sessionMap = new SparseArray<Long>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
 		}
 		Long appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
@@ -1160,7 +1198,7 @@ public abstract class SdlRouterService extends Service{
 				}
 			}
 		}
-			Log.d(TAG, "Returning App Id: " + appId);
+			//Log.d(TAG, "Returning App Id: " + appId);
 			return appId;
 		}
 	}
@@ -1266,13 +1304,15 @@ public abstract class SdlRouterService extends Service{
 	 * @author Joey Grover
 	 *
 	 */
-	class LocalRouterService{
+	static class LocalRouterService implements Parcelable{
 		Intent launchIntent = null;
 		int version = 0;
+		long timestamp;
 		
-		private LocalRouterService(Intent intent, int version){
+		private LocalRouterService(Intent intent, int version, long timeStamp){
 			this.launchIntent = intent;
 			this.version = version;
+			this.timestamp = timeStamp;
 		}
 		/**
 		 * Check if input is newer than this version
@@ -1280,8 +1320,65 @@ public abstract class SdlRouterService extends Service{
 		 * @return
 		 */
 		public boolean isNewer(LocalRouterService service){
-			return (service.version>this.version);
+			if(service.version>this.version){
+				return true;
+			}else if(service.version == this.version){ //If we have the same version, we will use a timestamp
+				return service.timestamp<this.timestamp;
+			}
+			return false;
 		}
+		
+		
+		public boolean isEqual(LocalRouterService service) {
+			if(service != null && service.launchIntent!= null && service.launchIntent.getComponent()!= null
+					&& this.launchIntent !=null && this.launchIntent.getComponent()!=null){
+				return (this.launchIntent.getComponent().getClassName().equals(service.launchIntent.getComponent().getClassName()));
+			}
+			return false;
+		}
+		@Override
+		public String toString() {
+			StringBuilder build = new StringBuilder();
+			build.append("Intent action: ");
+			if(launchIntent!=null){
+				build.append(launchIntent.getComponent().getClassName());
+			}
+			build.append(" Version: ");
+			build.append(version);
+			build.append(" Timestamp: ");
+			build.append(timestamp);
+			
+			return build.toString();
+		}
+		public LocalRouterService(Parcel p) {
+			this.version = p.readInt();
+			this.timestamp = p.readLong();
+			this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
+		}
+		
+		@Override
+		public int describeContents() {
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+			dest.writeInt(version);
+			dest.writeLong(timestamp);
+			dest.writeParcelable(launchIntent, 0);
+		}
+		
+		public static final Parcelable.Creator<LocalRouterService> CREATOR = new Parcelable.Creator<LocalRouterService>() {
+	        public LocalRouterService createFromParcel(Parcel in) {
+	     	   return new LocalRouterService(in); 
+	        }
+
+			@Override
+			public LocalRouterService[] newArray(int size) {
+				return new LocalRouterService[size];
+			}
+
+	    };
 		
 	}
 	

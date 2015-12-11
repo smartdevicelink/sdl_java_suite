@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +18,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
-	public static final String INTENT_FOR_OTHER_BT_SERVER_INSTANCE_EXTRA	= "otherinstanceintent";
-	public static final String LOCAL_BT_SERVER_VERSION_NUMBER_EXTRA 		= "versionextra";
+	
+	public static final String LOCAL_ROUTER_SERVICE_EXTRA					= "router_service";
+	public static final String LOCAL_ROUTER_SERVICE_DID_START_OWN			= "did_start";
+	
 	public static final String TRANSPORT_GLOBAL_PREFS 						= "SdlTransportPrefs"; 
 	public static final String IS_TRANSPORT_CONNECTED						= "isTransportConnected"; 
 		
@@ -43,11 +46,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			RouterServiceValidator.invalidateList(context);
 			return;
 		}
-	
+
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(action.contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
-			if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
+				if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
+					String packageName = intent.getStringExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE);
+					ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
+					if(componentName!=null){
+						Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
+					}
 					onSdlEnabled(context);
 				}else{
 					//This was previously not hooked up, so let's leave it commented out
@@ -55,7 +63,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				}
 				return;
 			}
-			
+
 		}
 
 	    if (intent.getAction().contains("android.bluetooth.adapter.action.STATE_CHANGED")){
@@ -74,39 +82,41 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    			RouterServiceValidator.createTrustedListRequest(context,true);
 	    		}
 	    }
-	    
-		//Basically if the service is already running somewhere, let it know what version this app is running
-		if(isRouterServiceRunning(context, true)){
-			//So we know an instance is running, but we need to make sure it is the most upto date
-			//We will send it an intent with the version number of the local instance and an intent to start this instance
-			Log.i(TAG, "An instance of the Router Service is already running");
-			localRouterClass = defineLocalSdlRouterClass();
-			Intent serviceIntent =  new Intent(context, localRouterClass);
-			Intent restart = new Intent(getNewServiceCheckString());
-			restart.putExtra(INTENT_FOR_OTHER_BT_SERVER_INSTANCE_EXTRA, serviceIntent);
-			restart.putExtra(LOCAL_BT_SERVER_VERSION_NUMBER_EXTRA, getRouterServiceVersion());
-			context.sendBroadcast(restart);
-			return;
-		}
-	    
-	    
-		Log.i(TAG, "Attempting to start an instance of the Router Service");
-	    //The under class should have implemented this....
+	    boolean didStart = false;
 	    localRouterClass = defineLocalSdlRouterClass();
-		//So let's start up our service since no copy is running
-		Intent serviceIntent = new Intent(context, localRouterClass);
-		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){ //TODO make sure this works
-			//Log.i(TAG, "Adding reply address to starting intent of Router Service: "+intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
-			//serviceIntent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
-			if(serviceIntent!=null 
-					&& intent!=null 
-					&& intent.getExtras()!=null){
-				serviceIntent.putExtras(intent.getExtras());//Add all the extras
-			}
-		}
-		context.startService(serviceIntent);
-		
+	    if(localRouterClass!=null){ //If there is a supplied router service lets run some logic regarding starting one
+	    	
+	    	if(!isRouterServiceRunning(context, true)){
+	    		//If there isn't a service running we should try to start one
+	    		Log.i(TAG, "Attempting to start an instance of the Router Service");
+	    		//The under class should have implemented this....
+	    		
+	    		//So let's start up our service since no copy is running
+	    		Intent serviceIntent = new Intent(context, localRouterClass);
+	    		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){ //TODO make sure this works
+	    			//Log.i(TAG, "Adding reply address to starting intent of Router Service: "+intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
+	    			if(serviceIntent!=null 
+	    					&& intent!=null 
+	    					&& intent.getExtras()!=null){
+	    				serviceIntent.putExtras(intent.getExtras());//Add all the extras
+	    			}
+	    		}
+	    		context.startService(serviceIntent);
+	    		didStart = true;
+	    	}else{
+	    		Log.i(TAG, "An instance of the Router Service is already running");	    	
+	    	}
 
+	    	//So even though we started our own version, on some older phones we find that two services are started up so we want to make sure we send our version that we are working with
+	    	//We will send it an intent with the version number of the local instance and an intent to start this instance
+	    	
+	    	Intent serviceIntent =  new Intent(context, localRouterClass);
+	    	SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent);
+	    	Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
+	    	restart.putExtra(LOCAL_ROUTER_SERVICE_EXTRA, self);
+	    	restart.putExtra(LOCAL_ROUTER_SERVICE_DID_START_OWN, didStart);
+	    	context.sendBroadcast(restart);
+	    }
 	}
 	
 	/**
@@ -170,12 +180,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}
 
 		return false;
-	}
-
-	
-	
-	public String getNewServiceCheckString() {
-		return SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION;
 	}
 
 	/**
