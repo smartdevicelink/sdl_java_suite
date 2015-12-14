@@ -60,12 +60,12 @@ public class WiProProtocol extends AbstractProtocol {
         } else if (version == 4) {
             this._version = version;
             HEADER_SIZE = 12;
-            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 4 supports 128k MTU
+            MAX_DATA_SIZE = V3_V4_MTU_SIZE - HEADER_SIZE; //versions 4 supports 128k MTU
             _headerBuf = new byte[HEADER_SIZE];
         } else if (version == 3) {
             this._version = version;
             HEADER_SIZE = 12;
-            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 3 supports 128k MTU
+            MAX_DATA_SIZE = V3_V4_MTU_SIZE - HEADER_SIZE; //versions 3 supports 128k MTU
             _headerBuf = new byte[HEADER_SIZE];
         } else if (version == 2) {
             this._version = version;
