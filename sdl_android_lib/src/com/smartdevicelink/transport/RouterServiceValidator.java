@@ -87,6 +87,11 @@ public class RouterServiceValidator {
 		inDebugMode = inDebugMode();
 	}
 	
+	public RouterServiceValidator(Context context, ComponentName service){
+		this.context = context;
+		inDebugMode = inDebugMode();
+		this.service = service;
+	}
 	/**
 	 * Main function to call to ensure we are connecting to a validated router service
 	 * @return whether or not the currently running router service can be trusted.
@@ -94,7 +99,14 @@ public class RouterServiceValidator {
 	public boolean validate(){
 		PackageManager pm = context.getPackageManager();
 		//Grab the package for the currently running router service. We need this call regardless of if we are in debug mode or not.
-		String packageName = packageForServiceRunning(pm); //Change this to an array if multiple services are started?
+		String packageName = null;
+		
+		if(this.service == null){
+			this.service= componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
+		}
+		Log.d(TAG, "Checking app package: " + service.getClassName());
+		packageName = this.appPackageForComponentName(service, pm);
+		
 
 		if(packageName!=null){//Make sure there is a service running
 			if(wasInstalledByAppStore(packageName)){ //Was this package installed from a trusted app store
@@ -153,7 +165,7 @@ public class RouterServiceValidator {
 	 * @param context
 	 * @return
 	 */
-	public String packageForServiceRunning(PackageManager pm){
+	public ComponentName componentNameForServiceRunning(PackageManager pm){
 		if(context==null){
 			return null;
 		}
@@ -165,18 +177,32 @@ public class RouterServiceValidator {
 			//Log.d(TAG, service.service.getClassName());
 			//We will check to see if it contains this name, should be pretty specific
 			if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)){ 
-				ServiceInfo info;
-				try {
-					info = pm.getServiceInfo(service.service, 0);
-					this.service = service.service; //This is great
-					return info.applicationInfo.packageName;
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
-				}
+				//this.service = service.service; //This is great
+				return service.service; //appPackageForComponenetName(service.service,pm);
 			}
 		}			
 
 		return null;
+	}
+	
+	/**
+	 * Returns the package name for the component name
+	 * @param cn
+	 * @param pm
+	 * @return
+	 */
+	private String appPackageForComponentName(ComponentName cn,PackageManager pm ){
+		if(cn!=null && pm!=null){
+			ServiceInfo info;
+			try {
+				info = pm.getServiceInfo(cn, 0);
+				return info.applicationInfo.packageName;
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+		
 	}
 	
 	/**

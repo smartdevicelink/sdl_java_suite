@@ -55,8 +55,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
 					if(componentName!=null){
 						Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
+						RouterServiceValidator vlad = new RouterServiceValidator(context);
+						if(vlad.validate()){
+							Log.d(TAG, "Router service trusted!");
+							onSdlEnabled(context, componentName);
+						}
+						Log.e(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
 					}
-					onSdlEnabled(context);
+					
+					
 				}else{
 					//This was previously not hooked up, so let's leave it commented out
 					//onSdlDisabled(context);
@@ -201,7 +208,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param context this is the context that was passed to this receiver when it was called.
 	 * {@inheritDoc}
 	 */
-	public abstract void onSdlEnabled(Context context);
+	public abstract void onSdlEnabled(Context context, ComponentName componentName);
 	
 	//public abstract void onSdlDisabled(Context context); //Removing for now until we're able to abstract from developer
 
