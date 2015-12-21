@@ -103,7 +103,11 @@ public class RouterServiceValidator {
 		
 		if(this.service == null){
 			this.service= componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
+			if(this.service == null){ //if this is still null we know there is no service running so we can return false
+				return false;
+			}
 		}
+		
 		Log.d(TAG, "Checking app package: " + service.getClassName());
 		packageName = this.appPackageForComponentName(service, pm);
 		

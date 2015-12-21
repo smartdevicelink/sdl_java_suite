@@ -9,6 +9,7 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
@@ -61,7 +62,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		RouterServiceValidator vlad = null;
 		//Let's check if we can even do multiplexing
 		if(transportConfig.getTransportType() == TransportType.MULTIPLEX){
-			vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
+			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+			if(tempCompName!=null){
+				vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext(),tempCompName);
+			}else{
+				vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
+			}
 			//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
 		}
 		constructor(transportConfig,vlad);
@@ -694,11 +700,30 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	public void forceHardwareConnectEvent(TransportType type){
 		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
 			MultiplexTransport multi = ((MultiplexTransport)_transport);
-			boolean forced = multi.forceHardwareConnectEvent(TransportType.BLUETOOTH);
-			if(!forced && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
-				MultiplexTransportConfig config = multi.getConfig();
+			MultiplexTransportConfig config = multi.getConfig();
+			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+			//Log.d(TAG, "Consumed component name: " +tempCompName );
+			//TODO check to see what component name connected and comapre it to what we are connected to
+			if(config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
+				boolean forced = multi.forceHardwareConnectEvent(TransportType.BLUETOOTH);
+				
+				if(!forced && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
+					//Log.d(TAG, "Recreating our multiplexing transport");
+					_transport = new MultiplexTransport(config,this);
+					((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
+				}//else{Log.w(TAG, "Guess we're just calling it a day");}
+			}else if(tempCompName!=null){
+				//We have a conflicting service request
+				Log.w(TAG, "Conflicting services. Disconnecting from current and connecting to new");
+				Log.w(TAG, "Old service " + config.getService().toShortString());
+				Log.w(TAG, "New Serivce " + tempCompName.toString());
+				multi.disconnect();
+				config.setService(tempCompName);
 				_transport = new MultiplexTransport(config,this);
+				((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
+				
 			}
+			
 		}
 	}
 	

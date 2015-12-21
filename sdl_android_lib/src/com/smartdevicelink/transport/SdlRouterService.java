@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -70,6 +72,8 @@ public class SdlRouterService extends Service{
 	 */
 	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 1;	
 	
+	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
+	
 	public static final String START_ROUTER_SERVICE_ACTION 					= "sdl.router"+ TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX;
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
@@ -94,6 +98,7 @@ public class SdlRouterService extends Service{
     private LocalRouterService localCompareTo = null;
     private final static int VERSION_TIMEOUT_RUNNABLE = 750; 
 	
+    private boolean wrongProcess = false;
 	
     private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
@@ -180,12 +185,14 @@ public class SdlRouterService extends Service{
 								if(!self.isEqual(tempService)){ //We want to ignore self
 									Log.i(TAG, "Newer service received than previously stored service - " + tempService.launchIntent.getAction());
 									localCompareTo = tempService;
+								}else{
+									Log.i(TAG, "Ignoring self local router service");
 								}
 							}
 						}
 						if(intent!=null && intent.getBooleanExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, false)){
 							Log.w(TAG, "Another serivce has been started, let's resend our version info to make sure they know about us too");
-							notifyStartedService(context);
+							//notifyStartedService(context);
 						}
 
 					}
@@ -560,10 +567,38 @@ public class SdlRouterService extends Service{
 		}
 	
 	}
+	
+	/**
+	 * We want to make sure we are in the right process here. If there is somesort of developer error 
+	 * we want to just close out right away.
+	 * @return
+	 */
+	private boolean processCheck(){
+		int myPid = android.os.Process.myPid();
+		ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
+		for (RunningAppProcessInfo processInfo : am.getRunningAppProcesses())
+		{
+			if (processInfo.pid == myPid)
+			{
+				return ROUTER_SERVICE_PROCESS.equals(processInfo.processName);
+			}
+		}
+		return false;
 
+	}
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		
+		if(!processCheck()){
+			Log.e(TAG, "Not using correct process. Shutting down");
+			wrongProcess = true;
+			stopSelf();
+			return;
+		}
+		else{Log.d(TAG, "We are in the correct process");}
 		registeredApps = new HashMap<Long,RegisteredApp>();
 		closing = false;
 		currentContext = getBaseContext();
@@ -646,9 +681,11 @@ public class SdlRouterService extends Service{
 		packetExecuter = null;
 		super.onDestroy();
 		System.gc(); //Lower end phones need this hint
-		try{
-			//android.os.Process.killProcess(android.os.Process.myPid());
-		}catch(Exception e){}
+		if(!wrongProcess){
+			try{
+				android.os.Process.killProcess(android.os.Process.myPid());
+			}catch(Exception e){}
+		}
 	}
 	
 	private void unregisterAllReceivers(){
@@ -1120,19 +1157,30 @@ public class SdlRouterService extends Service{
 		return this.localCompareTo;
 	}
 	
-	protected static LocalRouterService getLocalRouterService(Intent launchIntent){
+	protected static LocalRouterService getLocalRouterService(Intent launchIntent, ComponentName name){
 		if(SdlRouterService.selfRouterService == null){
 			if(launchIntent == null){
-				Log.e(TAG, "Unable to create local router service instance. Supplied intent was null");
+				Log.w(TAG, "Supplied intent was null, local router service will not contain intent");
+				//Log.e(TAG, "Unable to create local router service instance. Supplied intent was null");
+				//return null;
+			}
+			if(name == null){
+				Log.e(TAG, "Unable to create local router service object because component name was null");
 				return null;
 			}
-			selfRouterService = new LocalRouterService(launchIntent,ROUTER_SERVICE_VERSION_NUMBER, System.currentTimeMillis());
+			selfRouterService = new LocalRouterService(launchIntent,ROUTER_SERVICE_VERSION_NUMBER, System.currentTimeMillis(), name);
+		}
+		if(launchIntent!=null){
+			//Assume we want to set this in our service
+			//Log.d(TAG, "Setting new intent on our local router service object");
+			selfRouterService.launchIntent = launchIntent;
 		}
 		return selfRouterService;
 	}
 	
 	private  LocalRouterService getLocalRouterService(){
-		return getLocalRouterService(new Intent(getBaseContext(),SdlRouterService.class));
+		//return getLocalRouterService(new Intent(getBaseContext(),SdlRouterService.class));
+		return getLocalRouterService(null, new ComponentName(this, this.getClass()));
 	}
 	/**
 	 * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
@@ -1156,6 +1204,9 @@ public class SdlRouterService extends Service{
 					Intent serviceIntent = newestServiceReceived.launchIntent;
 					if(getLastReceivedStartIntent()!=null){
 						serviceIntent.putExtras(getLastReceivedStartIntent());
+					}
+					if(newestServiceReceived.launchIntent == null){
+						Log.e(TAG, "Service didn't include launch intent");
 					}
 					context.startService(newestServiceReceived.launchIntent);
 					notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
@@ -1308,11 +1359,13 @@ public class SdlRouterService extends Service{
 		Intent launchIntent = null;
 		int version = 0;
 		long timestamp;
+		ComponentName name;
 		
-		private LocalRouterService(Intent intent, int version, long timeStamp){
-			this.launchIntent = intent;
+		private LocalRouterService(Intent intent, int version, long timeStamp,ComponentName name ){
+			this.launchIntent = intent; //TODO we can create an intent object based on component name instead
 			this.version = version;
 			this.timestamp = timeStamp;
+			this.name = name;
 		}
 		/**
 		 * Check if input is newer than this version
@@ -1330,9 +1383,9 @@ public class SdlRouterService extends Service{
 		
 		
 		public boolean isEqual(LocalRouterService service) {
-			if(service != null && service.launchIntent!= null && service.launchIntent.getComponent()!= null
-					&& this.launchIntent !=null && this.launchIntent.getComponent()!=null){
-				return (this.launchIntent.getComponent().getClassName().equals(service.launchIntent.getComponent().getClassName()));
+			if(service != null && service.name!= null 
+					&& this.name !=null){
+				return (this.name.equals(service.name));
 			}
 			return false;
 		}
@@ -1342,7 +1395,10 @@ public class SdlRouterService extends Service{
 			build.append("Intent action: ");
 			if(launchIntent!=null){
 				build.append(launchIntent.getComponent().getClassName());
+			}else if(name!=null){
+				build.append(name.getClassName());
 			}
+			
 			build.append(" Version: ");
 			build.append(version);
 			build.append(" Timestamp: ");
@@ -1354,6 +1410,7 @@ public class SdlRouterService extends Service{
 			this.version = p.readInt();
 			this.timestamp = p.readLong();
 			this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
+			this.name = p.readParcelable(ComponentName.class.getClassLoader());
 		}
 		
 		@Override
@@ -1366,6 +1423,8 @@ public class SdlRouterService extends Service{
 			dest.writeInt(version);
 			dest.writeLong(timestamp);
 			dest.writeParcelable(launchIntent, 0);
+			dest.writeParcelable(name, 0);
+
 		}
 		
 		public static final Parcelable.Creator<LocalRouterService> CREATOR = new Parcelable.Creator<LocalRouterService>() {

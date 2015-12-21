@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
@@ -15,6 +16,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	
 	private static final String TAG = "Sdl Broadcast Receiver";
 
+	private static final String BOOT_COMPLETE = "android.intent.action.BOOT_COMPLETED";
+	private static final String ACL_CONNECTED = "android.bluetooth.device.action.ACL_CONNECTED";
+	private static final String STATE_CHANGED = "android.bluetooth.adapter.action.STATE_CHANGED" ;
+	private static final String START_SERVICE = "sdl.router.startservice";
+	
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
@@ -30,6 +36,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
     @SuppressWarnings("rawtypes")
 	private static Class localRouterClass;
 
+    private static final Object QUEUED_SERVICE_LOCK = new Object();
+    private static ComponentName queuedService = null;
 	
 	public int getRouterServiceVersion(){
 		return SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER;	
@@ -39,14 +47,22 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	public void onReceive(Context context, Intent intent) {
 		//Log.i(TAG, "Sdl Receiver Activated");
 		String action = intent.getAction();
-
+		
 		if(action.equalsIgnoreCase(Intent.ACTION_PACKAGE_ADDED)
 				|| action.equalsIgnoreCase(Intent.ACTION_PACKAGE_REPLACED)){
 			//The package manager has sent out a new broadcast. 
 			RouterServiceValidator.invalidateList(context);
 			return;
 		}
-
+		
+        if(!(action.equalsIgnoreCase(BOOT_COMPLETE)
+        		|| action.equalsIgnoreCase(ACL_CONNECTED)
+        		|| action.equalsIgnoreCase(STATE_CHANGED)
+        		|| action.equalsIgnoreCase(START_SERVICE))){
+        	//We don't want anything else here if the child class called super and has different intent filters
+        	//Log.i(TAG, "Unwanted intent from child class");
+        	return;
+        }
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(action.contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
@@ -55,12 +71,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
 					if(componentName!=null){
 						Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
-						RouterServiceValidator vlad = new RouterServiceValidator(context);
+						RouterServiceValidator vlad = new RouterServiceValidator(context,componentName);
 						if(vlad.validate()){
 							Log.d(TAG, "Router service trusted!");
-							onSdlEnabled(context, componentName);
+							queuedService = componentName;
+							onSdlEnabled(context);
+						}else{
+							Log.e(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
 						}
-						Log.e(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
+						
 					}
 					
 					
@@ -118,7 +137,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    	//We will send it an intent with the version number of the local instance and an intent to start this instance
 	    	
 	    	Intent serviceIntent =  new Intent(context, localRouterClass);
-	    	SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent);
+	    	SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
 	    	Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
 	    	restart.putExtra(LOCAL_ROUTER_SERVICE_EXTRA, self);
 	    	restart.putExtra(LOCAL_ROUTER_SERVICE_DID_START_OWN, didStart);
@@ -189,6 +208,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		return false;
 	}
 
+	
+	public static ComponentName consumeQueuedRouterService(){
+		synchronized(QUEUED_SERVICE_LOCK){
+			ComponentName retVal = queuedService;
+			queuedService = null;
+			return retVal;
+		}
+	}
+	
 	/**
 	 * We need to define this for local copy of the Sdl Bluetooth Service class.
 	 * It will be the main point of connection for Sdl Connected apps
@@ -208,7 +236,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param context this is the context that was passed to this receiver when it was called.
 	 * {@inheritDoc}
 	 */
-	public abstract void onSdlEnabled(Context context, ComponentName componentName);
+	public abstract void onSdlEnabled(Context context);
 	
 	//public abstract void onSdlDisabled(Context context); //Removing for now until we're able to abstract from developer
 
