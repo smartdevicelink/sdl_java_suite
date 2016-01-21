@@ -1,5 +1,4 @@
-##### Note: Please use the [develop](https://github.com/smartdevicelink/sdl_android/tree/develop) branch of sdl_android for the most stable versions.
-
+[![Slack Status](http://sdlslack.herokuapp.com/badge.svg)](http://slack.smartdevicelink.org)
 # SmartDeviceLink (SDL)
 
 SmartDeviceLink (SDL) is a standard set of protocols and messages that connect applications on a smartphone to a vehicle head unit. This messaging enables a consumer to interact with their application using common in-vehicle interfaces such as a touch screen display, embedded voice recognition, steering wheel controls and various vehicle knobs and buttons. There are three main components that make up the SDL ecosystem.
