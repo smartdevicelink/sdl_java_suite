@@ -284,6 +284,10 @@ public class WiProProtocol extends AbstractProtocol {
 		private void handleControlFrame(SdlPacket packet) {
             int frameInfo = packet.getFrameInfo();
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
+
+            if (frameInfo == FrameDataControlFrameType.Heartbeat.getValue()) {
+                handleProtocolHeartbeat(packet);
+            }
 			if (frameInfo == FrameDataControlFrameType.HeartbeatACK.getValue()) {
                 handleProtocolHeartbeatACK(packet);
             }
