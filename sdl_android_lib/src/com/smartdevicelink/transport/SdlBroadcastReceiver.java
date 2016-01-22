@@ -63,6 +63,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
         	//Log.i(TAG, "Unwanted intent from child class");
         	return;
         }
+        
+	    boolean didStart = false;
+	    localRouterClass = defineLocalSdlRouterClass();
+        
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(action.contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
@@ -88,6 +92,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					//onSdlDisabled(context);
 				}
 				return;
+			}else if(intent.getBooleanExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, false)){
+				//We were told to wake up our router services
+				Log.d(TAG, "Starting router service off ping");
+				didStart = wakeUpRouterService(context, false);
+				
 			}
 
 		}
@@ -108,29 +117,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    			RouterServiceValidator.createTrustedListRequest(context,true);
 	    		}
 	    }
-	    boolean didStart = false;
-	    localRouterClass = defineLocalSdlRouterClass();
+
 	    if(localRouterClass!=null){ //If there is a supplied router service lets run some logic regarding starting one
 	    	
-	    	if(!isRouterServiceRunning(context, true)){
-	    		//If there isn't a service running we should try to start one
-	    		Log.i(TAG, "Attempting to start an instance of the Router Service");
-	    		//The under class should have implemented this....
-	    		
-	    		//So let's start up our service since no copy is running
-	    		Intent serviceIntent = new Intent(context, localRouterClass);
-	    		if(intent.getAction().contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){ //TODO make sure this works
-	    			//Log.i(TAG, "Adding reply address to starting intent of Router Service: "+intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME));
-	    			if(serviceIntent!=null 
-	    					&& intent!=null 
-	    					&& intent.getExtras()!=null){
-	    				serviceIntent.putExtras(intent.getExtras());//Add all the extras
-	    			}
-	    		}
-	    		context.startService(serviceIntent);
-	    		didStart = true;
-	    	}else{
-	    		Log.i(TAG, "An instance of the Router Service is already running");	    	
+	    	if(!didStart){
+	    		Log.d(TAG, "Waking up router service");
+	    		didStart = wakeUpRouterService(context, true);
 	    	}
 
 	    	//So even though we started our own version, on some older phones we find that two services are started up so we want to make sure we send our version that we are working with
@@ -145,11 +137,28 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    }
 	}
 	
+	private boolean wakeUpRouterService(Context context, boolean ping){
+		Log.d(TAG, "Waking up router service");
+    	if(!isRouterServiceRunning(context, ping)){
+    		//If there isn't a service running we should try to start one
+    		Log.i(TAG, "Attempting to start an instance of the Router Service");
+    		//The under class should have implemented this....
+    		
+    		//So let's start up our service since no copy is running
+    		Intent serviceIntent = new Intent(context, localRouterClass);
+    		context.startService(serviceIntent);
+    		return true;
+    	}else{
+    		Log.i(TAG, "An instance of the Router Service is already running");	
+    		return false;
+    	}
+	}
+	
 	/**
 	 * Determines if an instance of the Router Service is currently running on the device. 
 	 * @param context A context to access Android system services through.
 	 * @param pingService Set this to true if you want to make sure the service is up and listening to bluetooth
-	 * @return True if a Livio Bluetooth Service is currently running, false otherwise.
+	 * @return True if a SDL Router Service is currently running, false otherwise.
 	 */
 	private static boolean isRouterServiceRunning(Context context, boolean pingService){
 		if(context == null){
@@ -183,6 +192,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return True if a transport connection is established, false otherwise.
 	 */
 	public static boolean isTransportConnected(Context context){
+		Log.d(TAG, "Checking to see if router service is transport connected");
 		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {

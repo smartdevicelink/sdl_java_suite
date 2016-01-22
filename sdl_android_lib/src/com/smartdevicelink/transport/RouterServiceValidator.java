@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -104,6 +105,7 @@ public class RouterServiceValidator {
 		if(this.service == null){
 			this.service= componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
 			if(this.service == null){ //if this is still null we know there is no service running so we can return false
+				wakeUpRouterServices();
 				return false;
 			}
 		}
@@ -128,10 +130,20 @@ public class RouterServiceValidator {
 			//TODO Have to fix logic when router service stops. What is the correcty flow?
 			try{context.stopService(intent);}catch(Exception e){}
 		}
+		wakeUpRouterServices();
 		return false;
 	}
 
-	
+	/**
+	 * This will ensure that all router services are aware that there are no valid router services running and should start up 
+	 */
+	private void wakeUpRouterServices(){
+		if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
+			Intent intent = new Intent(SdlRouterService.START_ROUTER_SERVICE_ACTION);
+			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
+			context.sendBroadcast(intent);
+		}
+	}
 	public ComponentName getService(){
 		return this.service;
 	}
