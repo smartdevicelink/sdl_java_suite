@@ -638,10 +638,6 @@ public class SdlRouterService extends Service{
 			registeredApps = new HashMap<Long,RegisteredApp>();
 		}
 		if(intent != null ){
-			if(intent.hasExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)){
-				Log.i(TAG, "Received an intent with request to register service: "); //Reply as usual
-				sendBroadcast(prepareRegistrationIntent(intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME)));
-			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
 				if(startSequenceComplete){ //We only check if we are sure we are already through the start up process
