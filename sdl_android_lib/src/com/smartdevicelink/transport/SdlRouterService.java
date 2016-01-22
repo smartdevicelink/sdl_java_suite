@@ -1036,7 +1036,9 @@ public class SdlRouterService extends Service{
 					manuallyWriteBytes(unregister,0,unregister.length);
 					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version)).constructPacket();
 					manuallyWriteBytes(stopService,0,stopService.length);
-					this.sessionMap.remove(sessionId);
+					synchronized(SESSION_LOCK){
+						this.sessionMap.remove(sessionId);
+					}
 				} 
 				registeredApps.remove(app.appId);
 				return false;//We did our best to correct errors
