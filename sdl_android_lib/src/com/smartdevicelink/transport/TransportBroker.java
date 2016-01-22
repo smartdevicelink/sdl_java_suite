@@ -106,25 +106,6 @@ public class TransportBroker {
     	}
     }
     
-    BroadcastReceiver routerDiscoveryReceiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if(intent!=null){
-				if(intent.hasExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA)
-						&& intent.hasExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA)){
-					//We now know the location of the router service that is currently up and running
-					routerPackage = intent.getStringExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA);
-					routerClassName = intent.getStringExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA);
-					if(routerConnection==null){
-						initRouterConnection();
-					}
-					sendBindingIntent(); //TODO check if we actually binded
-				}	
-			}			
-		}
-    	
-    };
     
     /**
      * Handler of incoming messages from service.
@@ -275,7 +256,6 @@ public class TransportBroker {
 				queuedOnTransportConnect = null;
 				currentContext = context;
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
-				currentContext.registerReceiver(routerDiscoveryReceiver, new IntentFilter(whereToReply)); //TODO this could all move since we don't always need it
 				this.routerService = service;
 			}
 		}
@@ -316,13 +296,6 @@ public class TransportBroker {
 				unBindFromRouterService();
 				routerServiceMessenger = null;
 				queuedOnTransportConnect = null;
-				try{
-					if(currentContext!=null){
-						currentContext.unregisterReceiver(routerDiscoveryReceiver); //Where we get packets from the Bluetooth Service	
-					}
-				}catch(IllegalArgumentException e){
-					Log.w(TAG, "Receiver was never registered. Not a big deal.");
-				}
 				currentContext = null;
 				
 			}
@@ -442,36 +415,29 @@ public class TransportBroker {
 				Log.e(TAG, "Context set to null, failing out");
 				return false;
 			}
-			 
+
 			if(routerServiceMessenger!=null){
 				Log.w(TAG, "Already registered with router service");
 				return false;
 			}
-			
-			Intent intent = null;
-			if(isRouterServiceRunning(getContext()) ){
-				//Attempt to bind
-				if(!sendBindingIntent()){
-					Log.e(TAG, "Something went wrong while trying to bind with the router service.");
+			//Make sure we know where to bind to
+			if(this.routerService==null){ 
+				if(!isRouterServiceRunning(getContext())){//We should be able to ignore this case because of the validation now
+					Log.d(TAG,whereToReply + " found no router service. Shutting down.");
+					this.onHardwareDisconnected(null);
 					return false;
 				}
-				return true;
-				
+			}else{//We were already told where to bind. This should be the case.
+				this.routerClassName = this.routerService.getClassName();
+				this.routerPackage = this.routerService.getPackageName();
 			}
-			else{ //There's no router service running, let's start one
-				
-				//Log.d(TAG,whereToReply + " registering with  router Service");
-				intent = new Intent(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
-				Log.w(TAG, "No instance of the Sdl router service to register with");
-				//Log.d(TAG,whereToReply + " starting up and registering with  router Service");
-				intent = new Intent(SdlRouterService.START_ROUTER_SERVICE_ACTION);
-				//Add a reply to get back what
-				intent.putExtra(TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, whereToReply);
-				intent.putExtra(TransportConstants.PACKAGE_NAME_STRING, getContext().getPackageName());
-				intent.putExtra(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
-				currentContext.sendBroadcast(intent);
-				return true;
-			}		
+			
+			if(!sendBindingIntent()){
+				Log.e(TAG, "Something went wrong while trying to bind with the router service.");
+				return false;
+			}
+			return true;
+
 		}
 		
 		private boolean sendBindingIntent(){
