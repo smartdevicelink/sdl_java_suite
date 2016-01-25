@@ -673,8 +673,10 @@ public class SdlRouterService extends Service{
 		//SESSION_LOCK = null;
 		
 		startSequenceComplete=false;
-		packetExecuter.shutdownNow();
-		packetExecuter = null;
+		if(packetExecuter!=null){
+			packetExecuter.shutdownNow();
+			packetExecuter = null;
+		}
 		super.onDestroy();
 		System.gc(); //Lower end phones need this hint
 		if(!wrongProcess){
