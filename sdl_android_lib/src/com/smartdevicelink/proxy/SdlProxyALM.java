@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -1376,7 +1377,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	* Gets AudioPassThruCapabilities set when application interface is registered.
 	*
 	* @return AudioPassThruCapabilities
-	* @throws SyncException
+	* @throws SdlException
 	*/
 	public List<AudioPassThruCapabilities> getAudioPassThruCapabilities() throws SdlException {
 		// Test if proxy has been disposed
@@ -1384,9 +1385,9 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
 
-		// Test SYNC availability
+		// Test SDL availability
 		if (!_appInterfaceRegisterd) {
-			throw new SdlException("SYNC is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
+			throw new SdlException("SDL is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 		return _audioPassThruCapabilities;
 	}
@@ -1402,6 +1403,33 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("SDL is not connected. Unable to get SupportedDiagModes.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 		return _diagModes;
+	}	
+	
+	public HMICapabilities getHmiCapabilities() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to get the HMICapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _hmiCapabilities;
+	}	
+	
+	
+	public String getSystemSoftwareVersion() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to get the SystemSoftwareVersion.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _systemSoftwareVersion;
 	}	
 	
 	public boolean isAppResumeSuccess() throws SdlException {
