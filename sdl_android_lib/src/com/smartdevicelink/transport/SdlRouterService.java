@@ -6,8 +6,6 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
@@ -20,6 +18,7 @@ import org.json.JSONObject;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.Notification;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -29,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
@@ -42,6 +43,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -73,6 +75,8 @@ public class SdlRouterService extends Service{
 	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 1;	
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
+	
+	private static final int FOREGROUND_SERVICE_ID = 849;
 	
 	public static final String START_ROUTER_SERVICE_ACTION 					= "sdl.router"+ TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX;
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
@@ -113,6 +117,12 @@ public class SdlRouterService extends Service{
 	private ExecutorService packetExecuter = null; 
 	
 	private static LocalRouterService selfRouterService;
+	
+	/**
+	 * This flag is to keep track of if we are currently acting as a foreground service
+	 */
+	private boolean isForeground = false;
+
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
@@ -677,6 +687,7 @@ public class SdlRouterService extends Service{
 			packetExecuter.shutdownNow();
 			packetExecuter = null;
 		}
+		exitForeground();
 		super.onDestroy();
 		System.gc(); //Lower end phones need this hint
 		if(!wrongProcess){
@@ -706,6 +717,58 @@ public class SdlRouterService extends Service{
 			}
 		}
 	}
+	
+	@SuppressWarnings("deprecation")
+	private void enterForeground() {
+		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
+			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
+			isForeground = false;
+			return;
+		}
+
+ 
+		Bitmap icon;
+		int resourcesIncluded = getResources().getIdentifier("sdl_128", "drawable", getPackageName());
+
+		if ( resourcesIncluded != 0 ) {  //No additional pylons required
+			icon = BitmapFactory.decodeResource(getResources(), R.drawable.sdl_128);
+		}
+		else {  
+			icon = BitmapFactory.decodeResource(getResources(), android.R.drawable.stat_sys_data_bluetooth);
+		}
+       // Bitmap icon = BitmapFactory.decodeByteArray(SdlLogo.SDL_LOGO_STRING, 0, SdlLogo.SDL_LOGO_STRING.length);
+
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("SmartDeviceLink");
+        builder.setTicker("SmartDeviceLink Connected");
+        builder.setContentText("Connected to " + this.getConnectedDeviceName());
+       //TODO use icon from library resources if available
+        builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
+        builder.setLargeIcon(icon);
+        builder.setOngoing(true);
+        
+        Notification notification;
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN){
+        	notification = builder.getNotification();
+        	
+        }else{
+        	notification = builder.build();
+        }
+        if(notification == null){
+        	Log.e(TAG, "Notification was null");
+        }
+        startForeground(FOREGROUND_SERVICE_ID, notification);
+        isForeground = true;
+ 
+    }
+	
+	private void exitForeground(){
+		if(isForeground){
+			this.stopForeground(true);
+		}
+	}
+	
+	
 	/* **************************************************************************************************************************************
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
@@ -788,7 +851,7 @@ public class SdlRouterService extends Service{
 	public void onTransportConnected(final TransportType type){
 		//TODO remove
 		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport Connected", Toast.LENGTH_SHORT).show();
-
+		enterForeground();
 		Intent startService = new Intent();  
 		startService.setAction(START_SERVICE_ACTION);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
@@ -803,7 +866,9 @@ public class SdlRouterService extends Service{
 			return;
 		}
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
-
+		
+		exitForeground();//Leave our foreground state as we don't have a connection anymore
+		
 		if(registeredApps== null || registeredApps.isEmpty()){
 			Log.w(TAG, "No clients to notify. Sending global notification.");
 			Intent unregisterIntent = new Intent();
