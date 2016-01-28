@@ -49,8 +49,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	private Object SESSION_LOCK = new Object();
 	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
 	private static TransportType legacyTransportRequest = null;
-	
 	private final static int BUFF_READ_SIZE = 1000000;
+	private MultiplexTransportConfig cachedMultiConfig = null;
 	
 	/**
 	 * Constructor.
@@ -99,6 +99,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
 				}else{
 					Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");	
+					cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
+					cachedMultiConfig.setService(null);
 					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
 					Log.d(TAG, "Legacy transport : " + legacyTransportRequest);
 				}
@@ -210,13 +212,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 
 	@Override
-	public void onTransportConnected() {
+	public void onTransportConnected() {Log.d(TAG, "onTransportConnected 1");
 		synchronized(PROTOCOL_REFERENCE_LOCK){
-			if(_protocol != null){
+			if(_protocol != null){Log.d(TAG, "onTransportConnected 2");
 				boolean shouldRequestSession = _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX;
 					for (SdlSession s : listenerList) {
 						if (s.getSessionId() == 0) {
-							if(shouldRequestSession){
+							if(shouldRequestSession){Log.d(TAG, "onTransportConnected 3");
 								((MultiplexTransport)_transport).requestNewSession();
 							}
 							startHandShake();
@@ -551,6 +553,25 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 					e.printStackTrace();
 				}
 			}
+			}else if(cachedMultiConfig!=null && cachedMultiConfig.getService()!=null){
+				Log.i(TAG, "Disconnecting with cahced multiplex config. Starting up new transport");
+				synchronized(TRANSPORT_REFERENCE_LOCK) {
+					// Ensure transport is null
+					if (_transport != null) {
+						if (_transport.getIsConnected()) {
+							_transport.disconnect();
+						}
+						_transport = null;
+					}
+				_transport = new MultiplexTransport(cachedMultiConfig, SdlConnection.this);
+				cachedMultiConfig = null; //It should now be consumed
+				try {
+					startTransport();
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+				((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
+			}
 			}
 		}
 
@@ -698,7 +719,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
     }
 
 	public void forceHardwareConnectEvent(TransportType type){
-		if(_transport!=null && _transport.getTransportType()==TransportType.MULTIPLEX){ //This is only valid for the multiplex connection
+		if(_transport == null){
+			Log.w(TAG, "Unable to force connect, transport was null!");
+			return;
+		}
+		if(_transport!=null && (_transport.getTransportType()==TransportType.MULTIPLEX)){ //This is only valid for the multiplex connection
 			MultiplexTransport multi = ((MultiplexTransport)_transport);
 			MultiplexTransportConfig config = multi.getConfig();
 			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
@@ -720,10 +745,24 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				multi.disconnect();
 				config.setService(tempCompName);
 				_transport = new MultiplexTransport(config,this);
+				try {
+					startTransport();
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
 				((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				
 			}
-			
+		}else if(_transport.getTransportType()==TransportType.BLUETOOTH 
+				&& !_transport.getIsConnected() && cachedMultiConfig!=null){
+				//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
+				ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+				cachedMultiConfig.setService(tempCompName);
+				//We are not connected yet so we should be able to close down
+				_transport.disconnect(); //This will force us into the 
+			Log.w(TAG, "Currently in legacy mode connected to own bluetooth service. Nothing will take place on trnasport cycle");		
+		}else{
+			Log.w(TAG, "Can't force start multiplexing connection as connection type is " + _transport.getTransportType().name());
 		}
 	}
 	
