@@ -232,12 +232,6 @@ public class SdlRouterService extends Service{
 							|| (BluetoothAdapter.getDefaultAdapter().getState() == BluetoothAdapter.STATE_ON))){
 						return;
 					}
-					if(action!=null
-							&& (intent.getAction().equalsIgnoreCase("android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED") 
-									||intent.getAction().equalsIgnoreCase("android.bluetooth.headset.profile.action.AUDIO_STATE_CHANGED") ) ){
-						//Log.d(TAG, "None of our business");
-						return;
-					}
 
 					//TODO make sure it's ok to comment out closeBluetoothSerialServer();
 					connectAsClient=false;
