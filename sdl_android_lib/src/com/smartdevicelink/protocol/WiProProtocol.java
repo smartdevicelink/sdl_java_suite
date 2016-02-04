@@ -26,7 +26,6 @@ public class WiProProtocol extends AbstractProtocol {
 	byte[] _dataBuf = null;
 	int _dataBufWritePos = 0;
 	
-	int hashID = 0;
 	int messageID = 0;
 
     @SuppressWarnings("unused")
@@ -90,12 +89,18 @@ public class WiProProtocol extends AbstractProtocol {
 		sendFrameToTransport(header);
 	} // end-method
 	
-	public void EndProtocolSession(SessionType sessionType, byte sessionID) {
-		ProtocolFrameHeader header = ProtocolFrameHeaderFactory.createEndSession(sessionType, sessionID, hashID, _version);
-		//byte[] data = new byte[4];
-		//data = BitConverter.intToByteArray(hashID);
-		//handleProtocolFrameToSend(header, data, 0, data.length);
-		sendFrameToTransport(header);
+ 	@Override
+ 	public void EndProtocolService(SessionType serviceType, byte sessionID) {
+		ProtocolFrameHeader header = ProtocolFrameHeaderFactory.createEndSession(serviceType, sessionID, 0x00, _version, 0x00);
+ 		sendFrameToTransport(header);
+ 	}
+ 	
+ 	@Override
+	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
+		byte[] data = new byte[4];
+		data = BitConverter.intToByteArray(hashId);
+		ProtocolFrameHeader header = ProtocolFrameHeaderFactory.createEndSession(sessionType, sessionID, 0x00, _version, data.length);
+		handleProtocolFrameToSend(header, data, 0, data.length);
 	} // end-method
 
 	public void SendMessage(ProtocolMessage protocolMsg) {	
@@ -449,9 +454,13 @@ public class WiProProtocol extends AbstractProtocol {
 					messageLock = new Object();
 					_messageLocks.put(header.getSessionID(), messageLock);
 				}
-				//hashID = BitConverter.intFromByteArray(data, 0);
-				if (_version > 1) hashID = header.getMessageID();
-				handleProtocolSessionStarted(header.getSessionType(), header.getSessionID(), _version, "");				
+				int hashID = 0;
+				if (_version > 1){
+					if (data != null && data.length == 4){ //hashid will be 4 bytes in length
+						hashID = BitConverter.intFromByteArray(data, 0);
+					}
+				}				
+				handleProtocolSessionStarted(header.getSessionType(), header.getSessionID(), _version, "", hashID);			
 			} else if (header.getFrameData() == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				if (header.getSessionType().eq(SessionType.NAV) || header.getSessionType().eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(header.getSessionType(), header.getSessionID(), _version, "");
@@ -459,10 +468,8 @@ public class WiProProtocol extends AbstractProtocol {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + header.getSessionID(), null);
 				}
 			} else if (header.getFrameData() == FrameDataControlFrameType.EndSession.getValue()) {
-				//if (hashID == BitConverter.intFromByteArray(data, 0)) 
 				if (_version > 1) {
-					if (hashID == header.getMessageID())
-						handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
+					handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 				} else handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");
 			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionACK.getValue()) {
 				handleProtocolSessionEnded(header.getSessionType(), header.getSessionID(), "");

@@ -63,12 +63,13 @@ public class ProtocolFrameHeaderFactory {
 		return msg;
 	}
 
-	public static ProtocolFrameHeader createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version) {
+	public static ProtocolFrameHeader createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, int dataSize) {
 		ProtocolFrameHeader msg = new ProtocolFrameHeader();
 		msg.setVersion(version);
 		msg.setFrameType(FrameType.Control);
 		msg.setSessionType(serviceType);
 		msg.setSessionID(sessionID);
+		msg.setDataSize(dataSize);
 		msg.setFrameData(FrameDataControlFrameType.EndSession.value());
 		msg.setMessageID(messageID);
 
