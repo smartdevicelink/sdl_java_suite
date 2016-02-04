@@ -26,6 +26,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     IHeartbeatMonitor _incomingHeartbeatMonitor = null;
     private static final String TAG = "SdlSession";
     private LockScreenManager lockScreenMan  = new LockScreenManager();
+    private int sessionHashId = 0;
 
     
 	
@@ -69,7 +70,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         _incomingHeartbeatMonitor.setListener(this);
     }	
 	
-	
+    public int getSessionHashId() {
+    	return this.sessionHashId;
+    }
+    
 	public byte getSessionId() {
 		return this.sessionId;
 	}
@@ -173,12 +177,14 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
+			byte sessionID, byte version, String correlationID, int hashID) {
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
-		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID);
 		//if (version == 3)
 			initialiseSession();
+		if (sessionType.eq(SessionType.RPC) )
+			sessionHashId = hashID;
 	}
 
 	@Override
