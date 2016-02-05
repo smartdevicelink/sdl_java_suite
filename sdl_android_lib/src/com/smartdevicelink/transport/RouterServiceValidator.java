@@ -102,6 +102,14 @@ public class RouterServiceValidator {
 		//Grab the package for the currently running router service. We need this call regardless of if we are in debug mode or not.
 		String packageName = null;
 		
+		if(this.service != null){
+			Log.d(TAG, "Supplied service name of " + this.service.getClassName());
+			if(!isServiceRunning(context,this.service)){
+				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
+				service = null;
+				Log.w(TAG, "Supplied service is not actually running.");
+			}
+		}
 		if(this.service == null){
 			this.service= componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
 			if(this.service == null){ //if this is still null we know there is no service running so we can return false
@@ -194,7 +202,9 @@ public class RouterServiceValidator {
 			//We will check to see if it contains this name, should be pretty specific
 			if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)){ 
 				//this.service = service.service; //This is great
-				return service.service; //appPackageForComponenetName(service.service,pm);
+				if(service.started && service.restarting==0){ //If this service has been started and is not crashed
+					return service.service; //appPackageForComponenetName(service.service,pm);
+				}
 			}
 		}			
 
@@ -414,7 +424,21 @@ public class RouterServiceValidator {
 		return true;
 	}
 	
-	
+	/**
+	 * This method will determine if our supplied component name is really running. 
+	 * @param context
+	 * @param service
+	 * @return
+	 */
+	protected boolean isServiceRunning(Context context, ComponentName service){
+		 ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		    for (RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
+		        if (serviceInfo.service.equals(service)) {
+		            return true;
+		        }
+		    }
+		return false;
+	}
 	
 	
 	/**

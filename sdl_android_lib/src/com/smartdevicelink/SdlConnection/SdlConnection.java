@@ -212,13 +212,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 
 	@Override
-	public void onTransportConnected() {Log.d(TAG, "onTransportConnected 1");
+	public void onTransportConnected() {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
-			if(_protocol != null){Log.d(TAG, "onTransportConnected 2");
+			if(_protocol != null){
 				boolean shouldRequestSession = _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX;
 					for (SdlSession s : listenerList) {
 						if (s.getSessionId() == 0) {
-							if(shouldRequestSession){Log.d(TAG, "onTransportConnected 3");
+							if(shouldRequestSession){
 								((MultiplexTransport)_transport).requestNewSession();
 							}
 							startHandShake();
@@ -258,7 +258,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
+			byte sessionID, byte version, String correlationID) {Log.d(TAG, "onProtocolSessionStarted");
 		_connectionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 	}
 
@@ -580,6 +580,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			for (SdlSession session : listenerList) {
 				session.onTransportError(info, e);
 			}
+			//If there's an error with the transport we want to make sure we clear out any reference to it held by the static list in sessions
+			SdlSession.removeConnection(SdlConnection.this);
 		}
 
 		@Override
@@ -592,9 +594,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID) {Log.d(TAG, "onPrSesStar");
 			for (SdlSession session : listenerList) {
-				if (session.getSessionId() == 0) {
+				if (session.getSessionId() == 0) {Log.d(TAG, "foundSession for service started");
 					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 					break;
 				}

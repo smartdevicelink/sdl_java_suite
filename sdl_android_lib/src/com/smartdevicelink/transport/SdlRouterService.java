@@ -606,9 +606,10 @@ public class SdlRouterService extends Service{
 		registeredApps = new HashMap<Long,RegisteredApp>();
 		closing = false;
 		currentContext = getBaseContext();
+		storeConnectedStatus(false);
 		registerReceiver(registerAnInstanceOfSerialServer, new IntentFilter(REGISTER_NEWER_SERVER_INSTANCE_ACTION));
 		
-		Log.i(TAG, "SDL Rourter Service has been created");
+		Log.i(TAG, "SDL Router Service has been created");
 		newestServiceCheck(currentContext);
 		
 		synchronized(SESSION_LOCK){
@@ -973,7 +974,7 @@ public class SdlRouterService extends Service{
 				int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
 				int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
 				if(packet!=null){
-					mSerialService.write(packet,offset,count);
+					mSerialService.write(packet,offset,count); Log.i(TAG, "Wrote out bytes");
 					return true;
 				}
 				return false;
@@ -989,7 +990,7 @@ public class SdlRouterService extends Service{
 		private boolean manuallyWriteBytes(byte[] bytes, int offset, int count){
 			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
 				if(bytes!=null){
-					mSerialService.write(bytes,offset,count);
+					mSerialService.write(bytes,offset,count);Log.i(TAG, "Wrote out bytes manually");
 					return true;
 				}
 				return false;
@@ -1027,8 +1028,12 @@ public class SdlRouterService extends Service{
 	    		Long appid = getAppIDForSession(packet.getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
 	    			RegisteredApp app = registeredApps.get(appid);
-	    			if(app==null){Log.e(TAG, "No app found for app id " + appid);
-	    				return false;
+	    			if(app==null){Log.e(TAG, "No app found for app id " + appid + "Removing session maping and sending unregisterAI to head unit.");
+	    			//We have no app to match the app id tied to this session
+	    			int session = packet.getSessionId();
+	    			removeSessionFromMap(session);
+	    			createForceUnregisterApp((byte)session, (byte)packet.getVersion());
+	    			return false;
 	    			}
 	    			
 	    			byte version = (byte)packet.getVersion();
@@ -1288,6 +1293,23 @@ public class SdlRouterService extends Service{
 		return lastReceivedStartIntent;
 	}
 
+	/**
+	 * Removes session from map if the key is found.
+	 * @param sessionId
+	 * @return if the key was found
+	 */
+	private boolean removeSessionFromMap(int sessionId){
+		synchronized(SESSION_LOCK){
+			if(sessionMap!=null){
+				if(sessionMap.indexOfKey(sessionId)>=0){
+					sessionMap.remove(sessionId);
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
 	private Long getAppIDForSession(int sessionId){
 		synchronized(SESSION_LOCK){
 		//Log.d(TAG, "Looking for session: " + sessionId);
@@ -1308,7 +1330,7 @@ public class SdlRouterService extends Service{
 				}
 			}
 		}
-			//Log.d(TAG, "Returning App Id: " + appId);
+			Log.d(TAG, sessionId + " session returning App Id: " + appId);
 			return appId;
 		}
 	}

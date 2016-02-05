@@ -176,9 +176,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			byte sessionID, byte version, String correlationID) {
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
-		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);Log.d(TAG, "session - on pro start");
 		//if (version == 3)
-			initialiseSession();
+			initialiseSession();Log.d(TAG, "inited");
 	}
 
 	@Override
@@ -238,5 +238,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
 		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	}
+	
+	public static boolean removeConnection(SdlConnection connection){
+		return shareConnections.remove(connection);
 	}
 }

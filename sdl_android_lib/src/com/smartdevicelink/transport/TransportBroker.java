@@ -20,6 +20,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.os.TransactionTooLargeException;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
@@ -65,7 +66,7 @@ public class TransportBroker {
 			}
 
 			public void onServiceDisconnected(ComponentName className) {
-				Log.d(TAG, "UN-Bound to service");
+				Log.d(TAG, "UN-Bound from service " + className.getClassName());
 				routerServiceMessenger = null;
 				registeredWithRouterService = false;
 				isBound = false;
@@ -87,13 +88,23 @@ public class TransportBroker {
 					routerServiceMessenger.send(message);
 					return true;
 				} catch (RemoteException e) {
-					e.printStackTrace();
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
+					if(e instanceof TransactionTooLargeException){
+						e.printStackTrace();
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+						return sendMessageToRouterService(message);
+					}else{
+						//DeadObject, time to kill our connection
+						Log.d(TAG, "Dead object while attempting to send packet");
+						routerServiceMessenger = null;
+						registeredWithRouterService = false;
+						isBound = false;
+						onHardwareDisconnected(null);
+						return false;
 					}
-					return sendMessageToRouterService(message);
 					
 				}
     		}else{
@@ -171,7 +182,7 @@ public class TransportBroker {
             			Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
 
             			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE){
-            				if(packet!=null){
+            				if(packet!=null){ Log.i(TAG, "received packet to process "+  packet.toString());
             					onPacketReceived(packet);
             				}else{
             					Log.w(TAG, "Received null packet from router service, not passing along");
@@ -445,6 +456,8 @@ public class TransportBroker {
 				Log.d(TAG, "Sending bind request to " + this.routerPackage + " - " + this.routerClassName);
 				Intent bindingIntent = new Intent();
 				bindingIntent.setClassName(this.routerPackage, this.routerClassName);//This sets an explicit intent
+				//Quickly make sure it's just up and running
+				getContext().startService(bindingIntent);
 				bindingIntent.putExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
 				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_ABOVE_CLIENT);
 			}else{
