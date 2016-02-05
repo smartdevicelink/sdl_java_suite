@@ -607,10 +607,10 @@ public class SdlRouterService extends Service{
 		closing = false;
 		currentContext = getBaseContext();
 		storeConnectedStatus(false);
-		registerReceiver(registerAnInstanceOfSerialServer, new IntentFilter(REGISTER_NEWER_SERVER_INSTANCE_ACTION));
 		
+		startVersionCheck();
 		Log.i(TAG, "SDL Router Service has been created");
-		newestServiceCheck(currentContext);
+		
 		
 		synchronized(SESSION_LOCK){
 			this.sessionMap = new SparseArray<Long>();
@@ -618,7 +618,12 @@ public class SdlRouterService extends Service{
 		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
 	
-	private void startUpSequence(){
+	public void startVersionCheck(){
+		registerReceiver(registerAnInstanceOfSerialServer, new IntentFilter(REGISTER_NEWER_SERVER_INSTANCE_ACTION));
+		newestServiceCheck(currentContext);
+	}
+	
+	public void startUpSequence(){
 		IntentFilter stateChangeFilter = new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED");
 		stateChangeFilter.addAction("android.bluetooth.device.action.CLASS_CHANGED");
 		IntentFilter disconnectFilter1 = new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECTED");
