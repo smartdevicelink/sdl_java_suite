@@ -309,7 +309,9 @@ public class SdlRouterService extends Service{
 	                	}
 	                	
 	                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
-	                	registeredApps.put(app.getAppId(), app); //FIXME null pointer
+	                	synchronized(REGISTERED_APPS_LOCK){
+	                		registeredApps.put(app.getAppId(), app); 
+	                	}
 	            		onAppRegistered(app);
 	            		
 	            		//TODO reply to this messanger.
@@ -359,7 +361,9 @@ public class SdlRouterService extends Service{
 	                					Long buffAppId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA);
 	                					RegisteredApp buffApp = null;
 	                					if(buffAppId!=null){
-	                						buffApp = registeredApps.get(buffAppId);
+	                						synchronized(REGISTERED_APPS_LOCK){
+	                							buffApp = registeredApps.get(buffAppId);
+	                						}
 	                					}
 	                					if(buffApp !=null){
 	                						int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
@@ -563,10 +567,12 @@ public class SdlRouterService extends Service{
 		}
 		Log.d(TAG, "Notifying "+ registeredApps.size()+ " clients");
 		int result;
-		for (RegisteredApp app : registeredApps.values()) {
-			result = app.sendMessage(message);
-			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
-				registeredApps.remove(app.getAppId());
+		synchronized(REGISTERED_APPS_LOCK){
+			for (RegisteredApp app : registeredApps.values()) {
+				result = app.sendMessage(message);
+				if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+					registeredApps.remove(app.getAppId());
+				}
 			}
 		}
 	
@@ -603,7 +609,9 @@ public class SdlRouterService extends Service{
 			return;
 		}
 		else{Log.d(TAG, "We are in the correct process");}
-		registeredApps = new HashMap<Long,RegisteredApp>();
+		synchronized(REGISTERED_APPS_LOCK){
+			registeredApps = new HashMap<Long,RegisteredApp>();
+		}
 		closing = false;
 		currentContext = getBaseContext();
 		storeConnectedStatus(false);
@@ -645,7 +653,9 @@ public class SdlRouterService extends Service{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if(registeredApps == null){
-			registeredApps = new HashMap<Long,RegisteredApp>();
+			synchronized(REGISTERED_APPS_LOCK){
+				registeredApps = new HashMap<Long,RegisteredApp>();
+			}
 		}
 		if(intent != null ){
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
@@ -670,8 +680,10 @@ public class SdlRouterService extends Service{
 		unregisterAllReceivers();
 		closeBluetoothSerialServer();
 		if(registeredApps!=null){
-			registeredApps.clear();
-			registeredApps = null;
+			synchronized(REGISTERED_APPS_LOCK){
+				registeredApps.clear();
+				registeredApps = null;
+			}
 		}
 		synchronized(SESSION_LOCK){
 			if(this.sessionMap!=null){ 
@@ -1032,7 +1044,10 @@ public class SdlRouterService extends Service{
 			if(registeredApps!=null && (registeredApps.size()>0)){
 	    		Long appid = getAppIDForSession(packet.getSessionId()); //Find where this packet should go
 	    		if(appid!=null){
-	    			RegisteredApp app = registeredApps.get(appid);
+	    			RegisteredApp app = null;
+	    			synchronized(REGISTERED_APPS_LOCK){
+	    				 app = registeredApps.get(appid);
+	    			}
 	    			if(app==null){Log.e(TAG, "No app found for app id " + appid + "Removing session maping and sending unregisterAI to head unit.");
 	    			//We have no app to match the app id tied to this session
 	    			int session = packet.getSessionId();
@@ -1110,8 +1125,10 @@ public class SdlRouterService extends Service{
 					synchronized(SESSION_LOCK){
 						this.sessionMap.remove(sessionId);
 					}
-				} 
-				registeredApps.remove(app.appId);
+				}
+				synchronized(REGISTERED_APPS_LOCK){
+					registeredApps.remove(app.appId);
+				}
 				return false;//We did our best to correct errors
 			}
 			return true;//We should have sent our packet, so we can return true now
@@ -1317,24 +1334,26 @@ public class SdlRouterService extends Service{
 	
 	private Long getAppIDForSession(int sessionId){
 		synchronized(SESSION_LOCK){
-		//Log.d(TAG, "Looking for session: " + sessionId);
-		if(sessionMap == null){ 
-			Log.w(TAG, "Session map was null during look up. Creating one on the fly");
-			sessionMap = new SparseArray<Long>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
-		}
-		Long appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
-		if(appId==null){
-			int pos;
-			for (RegisteredApp app : registeredApps.values()) {
-				pos = app.containsSessionId(-1); 
-				if(pos != -1){
-					app.setSessionId(pos,sessionId);
-					appId = app.getAppId();
-					sessionMap.put(sessionId, appId);
-					break;
+			//Log.d(TAG, "Looking for session: " + sessionId);
+			if(sessionMap == null){ 
+				Log.w(TAG, "Session map was null during look up. Creating one on the fly");
+				sessionMap = new SparseArray<Long>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
+			}
+			Long appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
+			if(appId==null){
+				int pos;
+				synchronized(REGISTERED_APPS_LOCK){
+					for (RegisteredApp app : registeredApps.values()) {
+						pos = app.containsSessionId(-1); 
+						if(pos != -1){
+							app.setSessionId(pos,sessionId);
+							appId = app.getAppId();
+							sessionMap.put(sessionId, appId);
+							break;
+						}
+					}
 				}
 			}
-		}
 			Log.d(TAG, sessionId + " session returning App Id: " + appId);
 			return appId;
 		}
