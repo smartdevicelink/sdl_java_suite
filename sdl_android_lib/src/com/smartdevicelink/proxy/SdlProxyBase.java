@@ -260,7 +260,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
-				cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				if(SdlConnection.isLegacyModeEnabled()){
+					cycleProxy(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
+
+				}else{
+					cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				}
 			} else {
 				notifyProxyClosed(info, e, SdlDisconnectedReason.TRANSPORT_ERROR);
 			}

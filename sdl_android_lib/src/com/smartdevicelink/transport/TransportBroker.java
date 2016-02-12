@@ -145,8 +145,9 @@ public class TransportBroker {
         	//Find out what message we have and what to do with it
             switch (msg.what) {//FIXME
             	case TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE:
-            		if(msg.arg1==TransportConstants.REGISTRATION_RESPONSE_SUCESS){
-            			//TODO yay! we have been registered. Now what?
+            		switch(msg.arg1){
+            		case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
+            			// yay! we have been registered. Now what?
             			registeredWithRouterService = true;
             			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
         					//Keep track if we actually get this
@@ -157,10 +158,21 @@ public class TransportBroker {
         				}else if(SdlBroadcastReceiver.isTransportConnected(getContext())){
         					onHardwareConnected(null); //FIXME to include type
         				}
-            		}else{ //We were denied registration to the router service, let's see why
+            			break;
+            		case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
+            			Log.d(TAG, "Denied registration because router is in legacy mode" );
+            			registeredWithRouterService = false; 
+        				enableLegacyMode(true);
+        				//We call this so we can start the process of legacy connection
+        				//onHardwareDisconnected(TransportType.BLUETOOTH);
+        				onFailedRouterRegistration(msg.arg1);
+        				break;
+            		default:
             			registeredWithRouterService = false; 
             			Log.w(TAG, "Registration denied from router service. Reason - " + msg.arg1);
-            		}
+            			break;
+            		};
+            		
             	
             		break;
             	case TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE:
@@ -354,6 +366,10 @@ public class TransportBroker {
 		}
 		
 		public void onPacketReceived(Parcelable packet){
+			
+		}
+		
+		public void onFailedRouterRegistration(int reason){
 			
 		}
 		

@@ -546,14 +546,15 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 						}
 						_transport = null;
 					}
-				_transport = new BTTransport(SdlConnection.this);
-				try {
-					startTransport();
-				} catch (SdlException e) {
-					e.printStackTrace();
+					_transport = new BTTransport(SdlConnection.this);
+					try {
+						startTransport();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			}else if(cachedMultiConfig!=null && cachedMultiConfig.getService()!=null){
+			if(cachedMultiConfig!=null && cachedMultiConfig.getService()!=null){
 				Log.i(TAG, "Disconnecting with cahced multiplex config. Starting up new transport");
 				synchronized(TRANSPORT_REFERENCE_LOCK) {
 					// Ensure transport is null
@@ -563,25 +564,28 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 						}
 						_transport = null;
 					}
-				_transport = new MultiplexTransport(cachedMultiConfig, SdlConnection.this);
-				cachedMultiConfig = null; //It should now be consumed
-				try {
-					startTransport();
-				} catch (SdlException e) {
-					e.printStackTrace();
+					_transport = new MultiplexTransport(cachedMultiConfig, SdlConnection.this);
+					cachedMultiConfig = null; //It should now be consumed
+					try {
+						startTransport();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+					((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				}
-				((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
-			}
 			}
 		}
 
 		@Override
 		public void onTransportError(String info, Exception e) {
-			for (SdlSession session : listenerList) {
-				session.onTransportError(info, e);
-			}
 			//If there's an error with the transport we want to make sure we clear out any reference to it held by the static list in sessions
 			SdlSession.removeConnection(SdlConnection.this);
+			
+			for (SdlSession session : listenerList) {
+				session.clearConnection();
+				session.onTransportError(info, e);
+			}
+
 		}
 
 		@Override

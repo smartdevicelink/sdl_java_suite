@@ -240,6 +240,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
 	}
 	
+	public void clearConnection(){
+		_sdlConnection = null;
+	}
 	public static boolean removeConnection(SdlConnection connection){
 		return shareConnections.remove(connection);
 	}

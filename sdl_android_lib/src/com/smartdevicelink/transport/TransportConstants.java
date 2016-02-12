@@ -106,6 +106,7 @@ public class TransportConstants {
 	public static final int REGISTRATION_RESPONSE_DENIED_AUTHENTICATION_FAILED 				= 0x01;
 	public static final int REGISTRATION_RESPONSE_DENIED_NO_CONNECTION 						= 0x02;
 	public static final int REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED				= 0x03;
+	public static final int REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED				= 0x04;
 	public static final int REGISTRATION_RESPONSE_DENIED_UNKNOWN 							= 0xFF;
    
 	/**

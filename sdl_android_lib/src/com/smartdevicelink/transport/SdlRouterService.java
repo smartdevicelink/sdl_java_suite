@@ -298,7 +298,19 @@ public class SdlRouterService extends Service{
 	                	if(appId<0 || msg.replyTo == null){
 	                		Log.w(TAG, "Unable to requster app as no id or messenger was included");
 	                		if(msg.replyTo!=null){
-	                			msg.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
+	                			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
+	                			try {
+									msg.replyTo.send(message);
+								} catch (RemoteException e) {
+									e.printStackTrace();
+								}
+	                		}
+	                		break;
+	                	}
+	                	if(SdlRouterService.this.legacyModeEnabled){
+	                		Log.w(TAG, "Unable to register app as legacy mode is enabled");
+	                		if(msg.replyTo!=null){
+	                			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED;
 	                			try {
 									msg.replyTo.send(message);
 								} catch (RemoteException e) {
