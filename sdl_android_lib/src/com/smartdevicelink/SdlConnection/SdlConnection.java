@@ -91,7 +91,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			}
 			
 			//Let's check if we can even do multiplexing
-			if(rsvp!= null && transportConfig.getTransportType() == TransportType.MULTIPLEX){
+			if(!isLegacyModeEnabled() &&
+					rsvp!= null && 
+					transportConfig.getTransportType() == TransportType.MULTIPLEX){
 				//rsvp = new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
 				//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
 				if(rsvp.validate()){
@@ -106,10 +108,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				}
 			}
 			
-			if(legacyTransportRequest ==null && //Make sure legacy mode is not enabled
+			if(!isLegacyModeEnabled() && //Make sure legacy mode is not enabled
 					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
-			}else if(legacyTransportRequest!= null && legacyTransportRequest == TransportType.BLUETOOTH){
+			}else if(isLegacyModeEnabled() && legacyTransportRequest == TransportType.BLUETOOTH){
 				Log.d(TAG, "Creating legacy bluetooth connection");
 				_transport = new BTTransport(this, true); //TODO make sure blindly sending true is ok
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
@@ -537,23 +539,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			for (SdlSession session : listenerList) {
 				session.onTransportDisconnected(info);
 			}
-			if(isLegacyModeEnabled()){
-				synchronized(TRANSPORT_REFERENCE_LOCK) {
-					// Ensure transport is null
-					if (_transport != null) {
-						if (_transport.getIsConnected()) {
-							_transport.disconnect();
-						}
-						_transport = null;
-					}
-					_transport = new BTTransport(SdlConnection.this);
-					try {
-						startTransport();
-					} catch (SdlException e) {
-						e.printStackTrace();
-					}
-				}
-			}
 			if(cachedMultiConfig!=null && cachedMultiConfig.getService()!=null){
 				Log.i(TAG, "Disconnecting with cahced multiplex config. Starting up new transport");
 				synchronized(TRANSPORT_REFERENCE_LOCK) {
@@ -582,7 +567,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			SdlSession.removeConnection(SdlConnection.this);
 			
 			for (SdlSession session : listenerList) {
-				session.clearConnection();
 				session.onTransportError(info, e);
 			}
 
@@ -728,6 +712,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		if(_transport == null){
 			Log.w(TAG, "Unable to force connect, transport was null!");
 			return;
+		}
+		if(isLegacyModeEnabled()){//We know we should no longer be in legacy mode for future connections, so lets clear out that flag
+			enableLegacyMode(false,null);	
 		}
 		if(_transport!=null && (_transport.getTransportType()==TransportType.MULTIPLEX)){ //This is only valid for the multiplex connection
 			MultiplexTransport multi = ((MultiplexTransport)_transport);
