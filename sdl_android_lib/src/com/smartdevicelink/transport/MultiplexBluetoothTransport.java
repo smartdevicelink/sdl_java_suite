@@ -392,8 +392,8 @@ public class MultiplexBluetoothTransport {
             		interrupt();
             	}
             	mmServerSocket = tmp;
-            	BluetoothSocket mySock = getBTSocket(mmServerSocket);			
-    			//FIXME should only log on debug
+    			//Should only log on debug
+            	//BluetoothSocket mySock = getBTSocket(mmServerSocket);
             	//Log.d(TAG, "Accepting Connections on SDP Server Port Number: " + getChannel(mySock) + "\r\n");
             }
         }
@@ -839,7 +839,10 @@ public class MultiplexBluetoothTransport {
 
 	
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
-	    Field[] f = bsSocket.getClass().getDeclaredFields();
+	    if(bsSocket == null){
+	    	return null;
+	    }
+		Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    int channel = -1;
 	   
@@ -867,7 +870,9 @@ public class MultiplexBluetoothTransport {
 	public int getChannel(BluetoothSocket bsSocket){
 
 		int channel = -1;
-		if (bsSocket == null) return channel;
+		if (bsSocket == null){
+			return channel;
+		}
 	    
 		Field[] f = bsSocket.getClass().getDeclaredFields();
 	    
