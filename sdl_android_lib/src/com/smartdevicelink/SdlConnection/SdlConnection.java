@@ -50,7 +50,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
 	private static TransportType legacyTransportRequest = null;
 	private final static int BUFF_READ_SIZE = 1000000;
-	private MultiplexTransportConfig cachedMultiConfig = null;
+	private static MultiplexTransportConfig cachedMultiConfig = null;
 	
 	/**
 	 * Constructor.
@@ -565,7 +565,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 		public void onTransportError(String info, Exception e) {
 			//If there's an error with the transport we want to make sure we clear out any reference to it held by the static list in sessions
 			SdlSession.removeConnection(SdlConnection.this);
-			
+			//If we are erroring out to go into legacy mode, lets cache our multiplexing
+			if(isLegacyModeEnabled() && TransportType.MULTIPLEX.equals(_transport.getTransportType())){
+				MultiplexTransport multi = ((MultiplexTransport)_transport);
+				cachedMultiConfig = multi.getConfig();
+			}
 			for (SdlSession session : listenerList) {
 				session.onTransportError(info, e);
 			}
