@@ -6,7 +6,9 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
@@ -54,6 +56,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.transport.SdlRouterService.RegisteredApp;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
@@ -580,12 +583,18 @@ public class SdlRouterService extends Service{
 		Log.d(TAG, "Notifying "+ registeredApps.size()+ " clients");
 		int result;
 		synchronized(REGISTERED_APPS_LOCK){
-			for (RegisteredApp app : registeredApps.values()) {
+			Collection<RegisteredApp> apps = registeredApps.values();
+			Iterator<RegisteredApp> it = apps.iterator();
+			while(it.hasNext()){
+				RegisteredApp app = it.next();
 				result = app.sendMessage(message);
 				if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
-					registeredApps.remove(app.getAppId());
+					it.remove();
+					
 				}
+				
 			}
+
 		}
 	
 	}
