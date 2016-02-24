@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
+import com.smartdevicelink.SdlConnection.SdlSession;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
@@ -34,15 +36,16 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
     private Object mPauseLock;
     private boolean mPaused;
-    
+    private boolean isRPCProtected = false;
     private OnPutFileUpdateListener callBack; 
 	
-    public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long iLength) throws IOException {
-		super(streamListener, is, request, sType, rpcSessionID, wiproVersion);
-		lFileSize = iLength;
+	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, ServiceType sType, byte rpcSessionID, byte wiproVersion, long lLength, SdlSession session) throws IOException {
+		super(streamListener, is, request, sType, rpcSessionID, wiproVersion, session);
+		lFileSize = lLength;
 		iInitialCorrID = request.getCorrelationID();
         mPauseLock = new Object();
         mPaused = false;
+        isRPCProtected = request.getPayloadProtected();
 		if (proxy != null)
 		{
 			_proxy = proxy;
@@ -142,6 +145,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		byte[] msgBytes;
 		ProtocolMessage pm;
 		OnStreamRPC notification;
+		
 		// Moves the current Thread into the background
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
@@ -202,7 +206,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 
 					pm.setSessionID(_rpcSessionID);
 					pm.setMessageType(MessageType.RPC);
-					pm.setSessionType(_session);
+					pm.setServiceType(_serviceType);
 					pm.setFunctionID(FunctionID.getFunctionId(msg.getFunctionName()));
 					
 					if (buffer.length != length)
@@ -211,7 +215,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 						pm.setBulkDataNoCopy(buffer);
 
 					pm.setCorrID(msg.getCorrelationID());
-						
+					pm.setPayloadProtected(isRPCProtected);
 					notification = new OnStreamRPC();
 					notification.setFileName(msg.getSdlFileName());
 					notification.setFileSize(iFileLength);										

@@ -1,21 +1,21 @@
 package com.smartdevicelink.proxy.callbacks;
 
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 
 public class OnServiceEnded extends InternalProxyMessage {
-	private SessionType sessionType;
+	private ServiceType serviceType;
 
 	public OnServiceEnded() {
 		super(InternalProxyMessage.OnServiceEnded);
 	}
 
-	public OnServiceEnded(SessionType sessionType) {
+	public OnServiceEnded(ServiceType serviceType) {
 		super(InternalProxyMessage.OnServiceEnded);
-		this.sessionType = sessionType;
+		this.serviceType = serviceType;
 	}
 
-	public SessionType getSessionType() {
-		return this.sessionType;
+	public ServiceType getSessionType() {
+		return this.serviceType;
 	}
 
 }

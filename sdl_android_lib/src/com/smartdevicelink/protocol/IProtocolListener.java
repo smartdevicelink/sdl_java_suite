@@ -12,27 +12,27 @@ public interface IProtocolListener {
 	void onProtocolMessageReceived(ProtocolMessage msg);
 
 	// Called to indicate that a protocol session has been started (from either side)
-	void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID);
+	void onProtocolSessionStarted(ServiceType serviceType, byte sessionID, byte version, String correlationID, boolean isEncrypted);
 	
-	void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID);	
+	void onProtocolSessionNACKed(ServiceType serviceType, byte sessionID, byte version, String correlationID);	
 
 	// Called to indicate that a protocol session has ended (from either side)
-	void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
+	void onProtocolSessionEnded(ServiceType serviceType, byte sessionID, String correlationID /*, String info, Exception ex*/);
  	
-	void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
+	void onProtocolSessionEndedNACKed(ServiceType serviceType, byte sessionID, String correlationID /*, String info, Exception ex*/);
 
-	void onProtocolHeartbeat(SessionType sessionType, byte sessionID);
+	void onProtocolHeartbeat(ServiceType serviceType, byte sessionID);
 	
 	/**
      * Called when a protocol heartbeat ACK message has been received from SDL.
      */
-    void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID);
+    void onProtocolHeartbeatACK(ServiceType serviceType, byte sessionID);
     
-    void onProtocolServiceDataACK(SessionType sessionType, byte sessionID);
+    void onProtocolServiceDataACK(ServiceType serviceType, int dataSize, byte sessionID);
 
-    void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID);
+    void onResetOutgoingHeartbeat(ServiceType serviceType, byte sessionID);
 
-    void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID);
+    void onResetIncomingHeartbeat(ServiceType serviceType, byte sessionID);
 
 	// Called to indicate that a protocol error was detected in received data.
 	void onProtocolError(String info, Exception e);

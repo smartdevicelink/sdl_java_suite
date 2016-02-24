@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
+import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 
 public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
@@ -15,11 +16,13 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 	public SdlConnection sdlConnection = null;
     private Object mPauseLock;
     private boolean mPaused;
+    private boolean isServiceProtected = false;
 
-	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
-		super(streamListener, is, sType, rpcSessionID);
+	public StreamPacketizer(IStreamListener streamListener, InputStream is, ServiceType sType, byte rpcSessionID, SdlSession session) throws IOException {
+		super(streamListener, is, sType, rpcSessionID, session);
         mPauseLock = new Object();
         mPaused = false;
+        isServiceProtected = _session.isServiceProtected(_serviceType);
 	}
 
 	public void start() throws IOException {
@@ -64,10 +67,11 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 				{
 					ProtocolMessage pm = new ProtocolMessage();
 					pm.setSessionID(_rpcSessionID);
-					pm.setSessionType(_session);
+					pm.setServiceType(_serviceType);
 					pm.setFunctionID(0);
 					pm.setCorrID(0);
 					pm.setData(buffer, length);
+					pm.setPayloadProtected(isServiceProtected);
 										
 					if (t != null && !t.isInterrupted())
 						_streamListener.sendStreamPacket(pm);
@@ -81,7 +85,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 		{
 			 if (sdlConnection != null)
 			 {
-				 sdlConnection.endService(_session, _rpcSessionID);
+				 sdlConnection.endService(_serviceType, _rpcSessionID);
 			 }
 
 		}

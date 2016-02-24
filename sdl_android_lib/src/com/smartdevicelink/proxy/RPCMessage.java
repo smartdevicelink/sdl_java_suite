@@ -48,6 +48,9 @@ public class RPCMessage extends RPCStruct  {
         if (hasKey(hash.keySet(), RPCStruct.KEY_BULK_DATA)) {
             setBulkData((byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
         }
+        if (hasKey(hash.keySet(), RPCStruct.KEY_PROTECTED)) {
+        	setPayloadProtected((Boolean) hash.get(RPCStruct.KEY_PROTECTED));
+        }
 	}
 
 	protected String messageType;

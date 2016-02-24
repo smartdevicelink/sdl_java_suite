@@ -1,14 +1,14 @@
 package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.enums.FrameType;
-import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.protocol.enums.ServiceType;
 import com.smartdevicelink.util.BitConverter;
 
 public class ProtocolFrameHeader {
 	private byte version = 1;
-	private boolean compressed = false;
+	private boolean encrypted = false;
 	private FrameType frameType = FrameType.Control;
-	private SessionType sessionType = SessionType.RPC;
+	private ServiceType serviceType = ServiceType.RPC;
 	private byte frameData = 0;
 	private byte sessionID;
 	private int dataSize;
@@ -26,14 +26,14 @@ public class ProtocolFrameHeader {
 		byte version = (byte) (header[0] >>> 4);
 		msg.setVersion(version);
 		
-		boolean compressed = 1 == ((header[0] & 0x08) >>> 3);
-		msg.setCompressed(compressed);
+		boolean encrypted = 1 == ((header[0] & 0x08) >>> 3);
+		msg.setEncrypted(encrypted);
 		
 		byte frameType = (byte) (header[0] & 0x07);
 		msg.setFrameType(FrameType.valueOf(frameType));
 		
 		byte serviceType = header[1];
-		msg.setSessionType(SessionType.valueOf(serviceType));
+		msg.setServiceType(ServiceType.valueOf(serviceType));
 		
 		byte frameData = header[2];
 		msg.setFrameData(frameData);
@@ -56,11 +56,11 @@ public class ProtocolFrameHeader {
 		int header = 0;
 		header |= (version & 0x0F);
 		header <<= 1;
-		header |= (compressed ? 1 : 0);
+		header |= (encrypted ? 1 : 0);
 		header <<= 3;
 		header |= (frameType.value() & 0x07);
 		header <<= 8;
-		header |= (sessionType.value() & 0xFF);
+		header |= (serviceType.value() & 0xFF);
 		header <<= 8;
 		header |= (frameData & 0xFF);
 		header <<= 8;
@@ -84,8 +84,8 @@ public class ProtocolFrameHeader {
 	
 	public String toString() {
 		String ret = "";
-		ret += "version " + version + ", " + (compressed ? "compressed" : "uncompressed") + "\n";
-		ret += "frameType " + frameType + ", serviceType " + sessionType;
+		ret += "version " + version + ", " + (encrypted ? "encrypted" : "unencrypted") + "\n";
+		ret += "frameType " + frameType + ", serviceType " + serviceType;
 		ret += "\nframeData " + frameData;
 		ret += ", sessionID " + sessionID;
 		ret += ", dataSize " + dataSize;
@@ -101,12 +101,12 @@ public class ProtocolFrameHeader {
 		this.version = version;
 	}
 
-	public boolean isCompressed() {
-		return compressed;
+	public boolean isEncrypted() {
+		return encrypted;
 	}
 
-	public void setCompressed(boolean compressed) {
-		this.compressed = compressed;
+	public void setEncrypted(boolean encrypted) {
+		this.encrypted = encrypted;
 	}
 
 	public byte getFrameData() {
@@ -149,11 +149,11 @@ public class ProtocolFrameHeader {
 		this.frameType = frameType;
 	}
 
-	public SessionType getSessionType() {
-		return sessionType;
+	public ServiceType getServiceType() {
+		return serviceType;
 	}
 
-	public void setSessionType(SessionType sessionType) {
-		this.sessionType = sessionType;
+	public void setServiceType(ServiceType serviceType) {
+		this.serviceType = serviceType;
 	}
 }
