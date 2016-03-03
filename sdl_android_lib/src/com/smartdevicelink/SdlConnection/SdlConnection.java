@@ -101,8 +101,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
 				}else{
 					Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");	
-					cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
-					cachedMultiConfig.setService(null);
+					if(cachedMultiConfig == null){
+						cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
+						cachedMultiConfig.setService(null);
+					}
 					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
 					Log.d(TAG, "Legacy transport : " + legacyTransportRequest);
 				}
@@ -515,11 +517,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}	
 	
 	public void unregisterSession(SdlSession registerListener) {
-		boolean didRemove = listenerList.remove(registerListener);			
-		closeConnection(listenerList.size() == 0, registerListener.getSessionId());
+		boolean didRemove = listenerList.remove(registerListener);
 		if(didRemove && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){ //If we're connected we can request the extra session now
 			((MultiplexTransport)_transport).removeSession(registerListener.getSessionId());
 		}
+		closeConnection(listenerList.size() == 0, registerListener.getSessionId());
 	}
 
 	
@@ -539,8 +541,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			for (SdlSession session : listenerList) {
 				session.onTransportDisconnected(info);
 			}
-			if(cachedMultiConfig!=null && cachedMultiConfig.getService()!=null){
-				Log.i(TAG, "Disconnecting with cahced multiplex config. Starting up new transport");
+			if(cachedMultiConfig!=null ){
+				if(cachedMultiConfig.getService()!=null){
 				synchronized(TRANSPORT_REFERENCE_LOCK) {
 					// Ensure transport is null
 					if (_transport != null) {
@@ -550,7 +552,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 						_transport = null;
 					}
 					_transport = new MultiplexTransport(cachedMultiConfig, SdlConnection.this);
-					cachedMultiConfig = null; //It should now be consumed
 					try {
 						startTransport();
 					} catch (SdlException e) {
@@ -558,6 +559,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 					}
 					((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				}
+			}else{ //The service must be null or already consumed. Let's see if we can find the connection that consumed it
+				for (SdlSession session : listenerList) {
+					session.checkForOpenMultiplexConnection(SdlConnection.this);;
+				}
+				
+			}
 			}
 		}
 
@@ -569,6 +576,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			if(isLegacyModeEnabled() && TransportType.MULTIPLEX.equals(_transport.getTransportType())){
 				MultiplexTransport multi = ((MultiplexTransport)_transport);
 				cachedMultiConfig = multi.getConfig();
+				cachedMultiConfig.setService(null); //Make sure we're clearning this out
+			}else{
+				cachedMultiConfig = null; //It should now be consumed
 			}
 			for (SdlSession session : listenerList) {
 				session.onTransportError(info, e);
@@ -586,9 +596,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {Log.d(TAG, "onPrSesStar");
+				byte sessionID, byte version, String correlationID) {
 			for (SdlSession session : listenerList) {
-				if (session.getSessionId() == 0) {Log.d(TAG, "foundSession for service started");
+				if (session.getSessionId() == 0) {
 					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 					break;
 				}
@@ -757,9 +767,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				cachedMultiConfig.setService(tempCompName);
 				//We are not connected yet so we should be able to close down
 				_transport.disconnect(); //This will force us into the 
-			Log.w(TAG, "Currently in legacy mode connected to own bluetooth service. Nothing will take place on trnasport cycle");		
+			Log.w(TAG, "Using own transport, but not connected. Attempting to join multiplexing");		
 		}else{
-			Log.w(TAG, "Can't force start multiplexing connection as connection type is " + _transport.getTransportType().name());
+			Log.w(TAG, "Currently in legacy mode connected to own transport service. Nothing will take place on trnasport cycle");	
 		}
 	}
 	

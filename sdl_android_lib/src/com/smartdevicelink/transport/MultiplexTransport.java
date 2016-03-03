@@ -131,6 +131,13 @@ public class MultiplexTransport extends SdlTransport{
 		super.handleTransportError(message, ex);
 	}
 
+	
+	public boolean isPendingConnected(){
+		if(brokerThread!=null){
+			return brokerThread.queueStart;
+		}
+		return false;
+	}
 	/**
 	 * This thread will handle the broker transaction with the router service.
 	 *
