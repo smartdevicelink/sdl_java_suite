@@ -93,6 +93,7 @@ public class SdlRouterService extends Service{
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
 	
+    private final int UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
     
 	private static MultiplexBluetoothTransport mSerialService = null;
 
@@ -1441,7 +1442,7 @@ public class SdlRouterService extends Service{
 	 */
 	private byte[] createForceUnregisterApp(byte sessionId,byte version){
 		UnregisterAppInterface request = new UnregisterAppInterface();
-		request.setCorrelationID(433 + sessionId * version); //Just so we can be "random"
+		request.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
 		byte[] msgBytes = JsonRPCMarshaller.marshall(request, version);
 		ProtocolMessage pm = new ProtocolMessage();
 		pm.setData(msgBytes);
