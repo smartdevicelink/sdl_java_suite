@@ -33,7 +33,7 @@ public class TransportBroker {
 	
 	private static final String TAG = "SdlTransportBroker";
 	private final String WHERE_TO_REPLY_PREFIX	 = "com.sdl.android.";
-	private static String appId = null,whereToReply = null;
+	private String appId = null,whereToReply = null;
 	private Context currentContext = null;
 	
 	private Object INIT_LOCK = new Object();
@@ -266,7 +266,7 @@ public class TransportBroker {
 			synchronized(INIT_LOCK){
 				initRouterConnection();
 				//So the user should have set the AppId, lets define where the intents need to be sent
-				SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss"); //So we have a time stamp of the event
+				SimpleDateFormat s = new SimpleDateFormat("hhmmssss"); //So we have a time stamp of the event
 				String timeStamp = s.format(new Date(System.currentTimeMillis()));
 				if(whereToReply==null){
 					if(appId==null){ //FIXME this should really just throw an error
@@ -275,7 +275,7 @@ public class TransportBroker {
 						whereToReply = WHERE_TO_REPLY_PREFIX + appId +"."+ timeStamp; 
 					}
 				}
-				TransportBroker.appId = appId;
+				this.appId = appId.concat(timeStamp);
 				queuedOnTransportConnect = null;
 				currentContext = context;
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
