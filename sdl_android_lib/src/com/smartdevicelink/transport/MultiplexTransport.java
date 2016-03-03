@@ -22,6 +22,9 @@ public class MultiplexTransport extends SdlTransport{
 	MultiplexTransportConfig transportConfig;
 	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		super(transportListener);
+		if(transportConfig == null){
+			this.handleTransportError("Transport config was null", null);
+		}
 		this.transportConfig = transportConfig;
 		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId, transportConfig.service);
 		brokerThread.start();
@@ -158,7 +161,11 @@ public class MultiplexTransport extends SdlTransport{
 			synchronized(this){
 				connected = false;
 				if(broker!=null){
-					broker.start();
+					try{
+						broker.start();
+					}catch(Exception e){
+						handleTransportError("Error starting transport", e);
+					}
 				}else{
 					queueStart = true;
 				}
@@ -214,7 +221,11 @@ public class MultiplexTransport extends SdlTransport{
 				synchronized(this){
 					initTransportBroker();
 					if(queueStart){
-						broker.start();
+						try{
+							broker.start();
+						}catch(Exception e){
+							handleTransportError("Error starting transport", e);
+						}
 					}
 					this.notify();
 				}
