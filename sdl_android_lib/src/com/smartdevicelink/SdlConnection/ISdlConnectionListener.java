@@ -15,7 +15,7 @@ public interface ISdlConnectionListener {
 			byte sessionID, byte version, String correlationID);	
 	
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID);
+			byte sessionID, byte version, String correlationID, boolean isEncrypted);
 	
 	public void onProtocolSessionEnded(SessionType sessionType,
 			byte sessionID, String correlationID);

@@ -12,6 +12,7 @@ public class ProtocolMessage {
 	private int _functionID;
 	private int _correlationID;
 	private int _jsonSize;
+	private boolean payloadProtected = false;
 	
 	private byte[] _data = null;
 	private byte[] _bulkData = null;
@@ -122,4 +123,13 @@ public class ProtocolMessage {
 	public void setJsonSize(int _jsonSize) {
 		this._jsonSize = _jsonSize;
 	}
+	
+	public void setPayloadProtected(boolean bVal) {
+		payloadProtected = bVal;
+	}
+	
+	public boolean getPayloadProtected() {
+		return payloadProtected;
+	}	
+	
 } // end-class

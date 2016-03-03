@@ -41,7 +41,7 @@ public abstract class AbstractProtocol {
 	// session has been established.
 	public abstract void StartProtocolSession(SessionType sessionType);
 	
-	public abstract void StartProtocolService(SessionType sessionType, byte sessionID);
+	public abstract void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted);
 
 	// This method ends a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionEnded() method will be made when the protocol
@@ -124,8 +124,8 @@ public abstract class AbstractProtocol {
 	// This method handles the startup of a protocol session. A callback is sent
 	// to the protocol listener.
 	protected void handleProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		_protocolListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+			byte sessionID, byte version, String correlationID, boolean isEncrypted) {
+		_protocolListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, isEncrypted);
 	}
 
 	protected void handleProtocolSessionNACKed(SessionType sessionType,
