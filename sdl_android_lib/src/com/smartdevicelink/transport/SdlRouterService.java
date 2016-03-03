@@ -127,6 +127,7 @@ public class SdlRouterService extends Service{
 	 */
 	private boolean isForeground = false;
 
+	private int cachedModuleVersion = -1;
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
@@ -326,11 +327,14 @@ public class SdlRouterService extends Service{
 	                	
 	                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
 	                	synchronized(REGISTERED_APPS_LOCK){
-	                		registeredApps.put(app.getAppId(), app); 
+	                		RegisteredApp old = registeredApps.put(app.getAppId(), app); 
+	                		if(old!=null){
+	                			Log.w(TAG, "Replacing already existing app with this app id");
+	                			removeAllSessionsForApp(old, true);
+	                		}
 	                	}
 	            		onAppRegistered(app);
 	            		
-	            		//TODO reply to this messanger.
 	            		returnBundle = new Bundle();
 	            		
 	            		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
@@ -341,21 +345,29 @@ public class SdlRouterService extends Service{
 	            		}
 	            		int result = app.sendMessage(message);
 	            		if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
-	            			registeredApps.remove(appId);
+	            			synchronized(REGISTERED_APPS_LOCK){
+	            				registeredApps.remove(appId);
+	            			}
 	            		}
 
 	                    break;
 	                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
 	                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
-	                	
-	                	RegisteredApp unregisteredApp = registeredApps.remove(appIdToUnregister);//TODO check if this works
+	                	Log.i(TAG, "Unregistering client: " + appIdToUnregister);
+	                	RegisteredApp unregisteredApp = null;
+	                	synchronized(REGISTERED_APPS_LOCK){
+	                		unregisteredApp = registeredApps.remove(appIdToUnregister);//TODO check if this works
+	                	}
 	                	Message response = Message.obtain();
 	                	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
 	                	if(unregisteredApp == null){
 	                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
+	                		removeAllSessionsWithAppId(appIdToUnregister);
 	                	}else{
 	                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
+	                		removeAllSessionsForApp(unregisteredApp,false);
 	                	}
+	                	Log.i(TAG, "Unregistering client response: " + response.arg1 );
 	                	try {
 	                		msg.replyTo.send(response); //We do this because we aren't guaranteed to find the correct registeredApp to send the message through
 	                	} catch (RemoteException e) {
@@ -402,7 +414,7 @@ public class SdlRouterService extends Service{
 	                	}
 	                    break;
 	                case TransportConstants.ROUTER_REQUEST_NEW_SESSION:
-	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1); Log.i(TAG, "App requesting new session: " + appIdRequesting);
 	                	Message extraSessionResponse = Message.obtain();
 	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE;
 	                	if(appIdRequesting>0){
@@ -431,25 +443,26 @@ public class SdlRouterService extends Service{
 	                case  TransportConstants.ROUTER_REMOVE_SESSION:
 	                	long appIdWithSession = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	long sessionId = receivedBundle.getLong(TransportConstants.SESSION_ID_EXTRA, -1);
+	                	removeSessionFromMap((int)sessionId);
 	                	Message removeSessionResponse = Message.obtain();
 	                	removeSessionResponse.what = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE;
 	                	if(appIdWithSession>0){
 	                		if(sessionId>=0){
-							synchronized(REGISTERED_APPS_LOCK){
-								if(registeredApps!=null){
-									RegisteredApp appRequesting = registeredApps.get(appIdWithSession);
-									if(appRequesting!=null){
-										if(appRequesting.removeSession(sessionId)){
-											removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_SUCESS;
-										}else{
-											removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_NOT_FOUND;
-										}							
-									}else{
-										removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
-									}
-								}
-							}		
-						}else{
+	                			synchronized(REGISTERED_APPS_LOCK){
+	                				if(registeredApps!=null){
+	                					RegisteredApp appRequesting = registeredApps.get(appIdWithSession);
+	                					if(appRequesting!=null){
+	                						if(appRequesting.removeSession(sessionId)){
+	                							removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_SUCESS;
+	                						}else{
+	                							removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_NOT_FOUND;
+	                						}							
+	                					}else{
+	                						removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
+	                					}
+	                				}
+	                			}		
+	                		}else{
 							removeSessionResponse.arg1 = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE_FAILED_SESSION_ID_NOT_INCL;
 							}
 	                	}else{
@@ -902,7 +915,7 @@ public class SdlRouterService extends Service{
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
 		
 		exitForeground();//Leave our foreground state as we don't have a connection anymore
-		
+		cachedModuleVersion = -1; //Reset our cached version
 		if(registeredApps== null || registeredApps.isEmpty()){
 			Log.w(TAG, "No clients to notify. Sending global notification.");
 			Intent unregisterIntent = new Intent();
@@ -941,14 +954,15 @@ public class SdlRouterService extends Service{
 	public void onPacketRead(SdlPacket packet){
         try {
     		//Log.i(TAG, "******** Read packet with header: " +(packet).toString());
-    		if(packet.getVersion()== 1 
-    				&& packet.getFrameType() == FrameType.Control
-    				&& packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){
-    			//We received a v1 packet from the head unit, this means we can't use the router service.
-    			//Enable legacy mode
-    			enableLegacyMode(true);
-    			return;
-    			
+    		if(packet.getVersion() == 1){
+    				if( packet.getFrameType() == FrameType.Control && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){
+    					//We received a v1 packet from the head unit, this means we can't use the router service.
+    					//Enable legacy mode
+    					enableLegacyMode(true);
+    				return;
+    				}
+    		}else if(cachedModuleVersion == -1){
+    			cachedModuleVersion = packet.getVersion();
     		}
         	//Send the received packet to the registered app
         	sendPacketToRegisteredApp(packet);
@@ -1064,20 +1078,24 @@ public class SdlRouterService extends Service{
 		 */
 		public boolean sendPacketToRegisteredApp(SdlPacket packet) {
 			if(registeredApps!=null && (registeredApps.size()>0)){
-	    		Long appid = getAppIDForSession(packet.getSessionId()); //Find where this packet should go
+				int session = packet.getSessionId();
+				boolean shouldAssertNewSession = packet.getFrameType() == FrameType.Control && (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_NAK);
+	    		Long appid = getAppIDForSession(session, shouldAssertNewSession); //Find where this packet should go
 	    		if(appid!=null){
 	    			RegisteredApp app = null;
 	    			synchronized(REGISTERED_APPS_LOCK){
 	    				 app = registeredApps.get(appid);
 	    			}
-	    			if(app==null){Log.e(TAG, "No app found for app id " + appid + "Removing session maping and sending unregisterAI to head unit.");
-	    			//We have no app to match the app id tied to this session
-	    			int session = packet.getSessionId();
-	    			removeSessionFromMap(session);
-	    			createForceUnregisterApp((byte)session, (byte)packet.getVersion());
-	    			return false;
+	    			if(app==null){Log.e(TAG, "No app found for app id " + appid + " Removing session maping and sending unregisterAI to head unit.");
+	    				//We have no app to match the app id tied to this session
+	    				removeSessionFromMap(session);
+	    				byte[] uai = createForceUnregisterApp((byte)session, (byte)packet.getVersion());
+	    				manuallyWriteBytes(uai,0,uai.length);
+	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion())).constructPacket();
+						manuallyWriteBytes(stopService,0,stopService.length);
+	    				return false;
 	    			}
-	    			
+
 	    			byte version = (byte)packet.getVersion();
 	    			int packetSize = (int) (packet.getDataSize() + SdlPacket.HEADER_SIZE);
 	    			//Log.i(TAG, "Checking packet size: " + packetSize);
@@ -1099,7 +1117,7 @@ public class SdlRouterService extends Service{
 	    				byte[] bytes = packet.getPayload();
 	    				SdlPacket copyPacket = new SdlPacket(packet.getVersion(),packet.isCompression(),
 	    										(int)packet.getFrameType().getValue(),
-	    													packet.getServiceType(),packet.getFrameInfo(), packet.getSessionId(),
+	    													packet.getServiceType(),packet.getFrameInfo(), session,
 	    													(int)packet.getDataSize(),packet.getMessageId(),null);
 	    				message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
 		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, copyPacket);
@@ -1123,12 +1141,46 @@ public class SdlRouterService extends Service{
 	    			} 
 	    			
     		}else{	//If we can't find a session for this packet we just drop the packet
-	    			Log.e(TAG, "App Id was NULL!");
+	    			Log.e(TAG, "App Id was NULL for session!");
+	    			if(removeSessionFromMap(session)){ //If we found the session id still tied to an app in our map we need to remove it and send the proper shutdown sequence.
+	    				Log.i(TAG, "Removed session from map.  Sending unregister request to module.");
+	    				attemptToCleanUpModule(session, packet.getVersion());
+	    			}else{ //There was no mapping so let's try to resolve this
+	    				
+	    				if(packet.getFrameType() == FrameType.Single && packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC){
+	    					BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.getPayload());
+    		    			if(binFrameHeader!=null && FunctionID.UNREGISTER_APP_INTERFACE.getId() == binFrameHeader.getFunctionID()){
+    		    				Log.d(TAG, "Received an unregister app interface with no where to send it, dropping the packet.");
+    		    			}else{
+    		    				attemptToCleanUpModule(session, packet.getVersion());
+    		    			}
+    					}else if((packet.getFrameType() == FrameType.Control 
+	    						&& (packet.getFrameInfo() == SdlPacket.FRAME_INFO_END_SERVICE_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_END_SERVICE_NAK))){
+    						//We want to ignore this
+    						Log.d(TAG, "Received a stop service ack/nak with no where to send it, dropping the packet.");
+    					}else{
+    						attemptToCleanUpModule(session, packet.getVersion());
+    					}
+	    			}
 	    		}
 	    	}
 	    	return false;
 		}
 	    
+		/**
+		 * This method is an all else fails situation. If the head unit is out of synch with the apps on the phone
+		 * this method will clear out an unwanted or out of date session.
+		 * @param session
+		 * @param version
+		 */
+		private void attemptToCleanUpModule(int session, int version){
+			Log.i(TAG, "Attempting to stop session " + session);
+			byte[] uai = createForceUnregisterApp((byte)session, (byte)version);
+			manuallyWriteBytes(uai,0,uai.length);
+			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version)).constructPacket();
+			manuallyWriteBytes(stopService,0,stopService.length);
+		}
+		
 	    private boolean sendPacketMessageToClient(RegisteredApp app, Message message, byte version){
 			int result = app.sendMessage(message);
 			if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
@@ -1155,7 +1207,7 @@ public class SdlRouterService extends Service{
 			}
 			return true;//We should have sent our packet, so we can return true now
 	    }
-	    
+
 		private synchronized void closeBluetoothSerialServer(){ //FIXME change to ITransport
 			if(mSerialService != null){
 				mSerialService.stop();
@@ -1354,7 +1406,42 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
-	private Long getAppIDForSession(int sessionId){
+	private boolean removeAllSessionsWithAppId(long appId){
+		synchronized(SESSION_LOCK){
+			if(sessionMap!=null){
+				SparseArray<Long> iter = sessionMap.clone();
+				int size = iter.size();
+				for(int i = 0; i<size; i++){
+					Log.d(TAG, "Investigating session " +iter.keyAt(i));
+					Log.d(TAG, "App id is: " + iter.valueAt(i));
+					if(((Long)iter.valueAt(i)).compareTo(appId) == 0){
+						sessionMap.removeAt(i);
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Removes all sessions from the sessions map for this given app id
+	 * @param app
+	 */
+    private void removeAllSessionsForApp(RegisteredApp app, boolean cleanModule){
+    	Vector<Long> sessions = app.getSessionIds();
+		int size = sessions.size(), sessionId;
+		for(int i=0; i<size;i++){
+			Log.d(TAG, "Investigating session " +sessions.get(i).intValue());
+			Log.d(TAG, "App id is: " + sessionMap.get(sessions.get(i).intValue()));
+			sessionId = sessions.get(i).intValue();
+			removeSessionFromMap(sessionId); //TODO instead of removing, put a null there
+			if(cleanModule){
+				attemptToCleanUpModule(sessionId, cachedModuleVersion);
+			}
+		}
+    }
+	
+	private Long getAppIDForSession(int sessionId, boolean shouldAssertNewSession){
 		synchronized(SESSION_LOCK){
 			//Log.d(TAG, "Looking for session: " + sessionId);
 			if(sessionMap == null){ 
@@ -1362,7 +1449,7 @@ public class SdlRouterService extends Service{
 				sessionMap = new SparseArray<Long>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
 			}
 			Long appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
-			if(appId==null){
+			if(appId==null && shouldAssertNewSession){
 				int pos;
 				synchronized(REGISTERED_APPS_LOCK){
 					for (RegisteredApp app : registeredApps.values()) {
