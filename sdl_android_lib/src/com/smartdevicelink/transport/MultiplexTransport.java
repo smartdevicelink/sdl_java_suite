@@ -258,7 +258,11 @@ public class MultiplexTransport extends SdlTransport{
 						}else{Log.d(TAG, "Already connected");}
 						return true;
 					}else{
-						this.start();
+						try{
+							this.start();
+						}catch(Exception e){
+							handleTransportError("Error starting transport", e);
+						}
 					}
 					return false;
 				}
