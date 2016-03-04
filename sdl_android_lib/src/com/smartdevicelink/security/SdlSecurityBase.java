@@ -4,24 +4,35 @@ public abstract class SdlSecurityBase {
 	
 	private Byte sessionId = null;
 	private String appId = null;
+	private String model = null;
 	
     public SdlSecurityBase() {
 	}
     
-    public void setSessionId(Byte val) {
-    	sessionId = val;
-    }
-
-    public void setAppId(String val) {
-    	appId = val;
-    }
 
     public Byte getSessionId() {
     	return sessionId;
     }
 
+    public void setSessionId(Byte val) {
+    	sessionId = val;
+    }
+
+    
     public String getAppId() {
     	return appId;
+    }
+    
+    public void setAppId(String val) {
+    	appId = val;
+    }
+
+    public String getModel() {
+    	return model;
+    }
+    
+    public void setModel(String val) {
+    	model = val;
     }
 
 	public abstract Boolean initialize();

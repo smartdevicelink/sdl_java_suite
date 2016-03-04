@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.smartdevicelink.exception.SdlException;
@@ -35,7 +36,7 @@ public class SdlProxyBuilder
 	private boolean preRegister;
 	private String sAppResumeHash;
 	private BaseTransportConfig mTransport;
-	private SdlSecurityBase sdlSecurity;
+	private List<SdlSecurityBase> sdlSecList;
 
 	public static class Builder
 	{
@@ -60,7 +61,7 @@ public class SdlProxyBuilder
 	    private boolean preRegister = false;
 	    private String sAppResumeHash = null;
 	    private BaseTransportConfig mTransport = new BTTransportConfig();
-	    private SdlSecurityBase sdlSecurity = null;
+	    private List<SdlSecurityBase> sdlSecList = null;
 
 	    public Builder(IProxyListenerALM listener, String appId, String appName, Boolean isMediaApp)
 	    {
@@ -98,14 +99,14 @@ public class SdlProxyBuilder
 	    	{ sAppResumeHash = val; return this; }
 	    public Builder setTransportType(BaseTransportConfig val)
 	    	{ mTransport = val; return this; }
-	    public Builder setSdlSecurity(SdlSecurityBase val)
-    	{ sdlSecurity = val; return this; }
+	    public Builder setSdlSecurity(List<SdlSecurityBase> val)
+    	{ sdlSecList = val; return this; }
 	        
         public SdlProxyALM build() throws SdlException
         {
         	SdlProxyBuilder obj = new SdlProxyBuilder(this);
         	SdlProxyALM proxy = new SdlProxyALM(obj.service,obj.listener,obj.sdlProxyConfigurationResources,obj.appName,obj.ttsChunks,obj.sShortAppName,obj.vrSynonyms,obj.isMediaApp,obj.sdlMessageVersion,obj.lang,obj.hmiLang,obj.vrAppHMITypes,obj.appId,obj.autoActivateID,obj.callbackToUIThread,obj.preRegister,obj.sAppResumeHash,obj.mTransport);
-        	proxy.setSdlSecurity(obj.sdlSecurity);
+        	proxy.setSdlSecurityList(obj.sdlSecList);
         	return proxy;
         }
 	}
@@ -131,7 +132,7 @@ public class SdlProxyBuilder
 		preRegister = builder.preRegister;
 		sAppResumeHash = builder.sAppResumeHash;
 		mTransport = builder.mTransport;
-		sdlSecurity= builder.sdlSecurity;
+		sdlSecList = builder.sdlSecList;
 	}
 }
 

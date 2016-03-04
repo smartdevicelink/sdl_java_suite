@@ -214,6 +214,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;	
+	protected List<SdlSecurityBase> _secList = null;
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -1676,6 +1677,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
+	private void processRaiResponse(RegisterAppInterfaceResponse rai)
+	{
+		if (rai == null) return;
+		
+		VehicleType vt = rai.getVehicleType();
+		if (vt == null) return;
+		
+		String model = vt.getModel();
+		if (model == null) return;
+		
+		if (_secList == null) return;
+		
+		for (SdlSecurityBase sec : _secList)
+		{
+			if (sec.getModel() != null)
+			{
+				if (sec.getModel().equals(model))
+				{
+					setSdlSecurity(sec);
+					return;
+				}				
+			}
+		}	
+	}
+	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
 		RPCMessage rpcMsg = new RPCMessage(hash);
 		String functionName = rpcMsg.getFunctionName();
@@ -1695,6 +1721,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					if (msg.getSuccess()) {
 						_appInterfaceRegisterd = true;
 					}
+					processRaiResponse(msg);
 					
 					Intent sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE.toString());
@@ -1723,7 +1750,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
 					_hmiCapabilities = msg.getHmiCapabilities();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
-					_proxyVersionInfo = msg.getProxyVersionInfo();																			
+					_proxyVersionInfo = msg.getProxyVersionInfo();
+					
+
 
 					if (_bAppResumeEnabled)
 					{
@@ -1858,7 +1887,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (msg.getSuccess()) {
 					_appInterfaceRegisterd = true;
 				}
-
+				processRaiResponse(msg);
+				
 				//_autoActivateIdReturned = msg.getAutoActivateID();
 				/*Place holder for legacy support*/ _autoActivateIdReturned = "8675309";
 				_buttonCapabilities = msg.getButtonCapabilities();
@@ -5291,6 +5321,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 		return sdlSession.getCurrentTransportType();
 	}
+	
+	public void setSdlSecurityList(List<SdlSecurityBase> list) {
+		_secList = list;
+	}	
 	
 	public void setSdlSecurity(SdlSecurityBase sec) {
 		if (sdlSession != null)
