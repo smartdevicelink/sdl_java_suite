@@ -299,7 +299,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void sendStreamPacket(ProtocolMessage pm) {
 		sendMessage(pm);
 	}
-		
+
+	public void setSdlSecurity(SdlSecurityBase sec) {
+		sdlSecurity = sec;
+	}
+	
 	public SdlSecurityBase getSdlSecurity() {
 		return sdlSecurity;
 	}

@@ -5292,6 +5292,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sdlSession.getCurrentTransportType();
 	}
 	
+	public void setSdlSecurity(SdlSecurityBase sec) {
+		if (sdlSession != null)
+		{
+			sdlSession.setSdlSecurity(sec);
+		}
+	}
+	
+	
 	public boolean isServiceTypeProtected(SessionType sType)
 	{
 		if (sdlSession == null)
