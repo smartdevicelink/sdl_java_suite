@@ -33,7 +33,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	
 	SdlConnection _sdlConnection = null;
 	private byte sessionId;
-	@SuppressWarnings("unused")
     private byte wiproProcolVer;
 	private ISdlConnectionListener sessionListener;
 	private BaseTransportConfig transportConfig;
@@ -506,7 +505,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
-	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
-		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
+		this.sessionListener.onProtocolServiceDataACK(sessionType, dataSize, sessionID);
 	}
 }

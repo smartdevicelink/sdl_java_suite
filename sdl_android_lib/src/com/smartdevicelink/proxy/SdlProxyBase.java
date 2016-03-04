@@ -299,6 +299,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);
 			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
+			updateBroadcastIntent(sendIntent, "COMMENT3", " Encrypted: " + isEncrypted);
 			sendBroadcastIntent(sendIntent);
 			
 			setWiProVersion(version);	
@@ -435,18 +436,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			
 		}
-		public void onProtocolServiceDataACK(SessionType sessionType,
+		public void onProtocolServiceDataACK(SessionType sessionType, final int dataSize,
 				byte sessionID) {
 			if (_callbackToUIThread) {
 				// Run in UI thread
 				_mainUIHandler.post(new Runnable() {
 					@Override
 					public void run() {
-						_proxyListener.onServiceDataACK();
+						_proxyListener.onServiceDataACK(dataSize);
 					}
 				});
 			} else {
-				_proxyListener.onServiceDataACK();						
+				_proxyListener.onServiceDataACK(dataSize);						
 			}
 		}
 	}
@@ -1370,6 +1371,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							hash.put(RPCMessage.KEY_NOTIFICATION, hashTemp);
 						}
 						if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
+						if (message.getPayloadProtected()) hash.put(RPCStruct.KEY_PROTECTED, true);
 					} else {
 						final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
 						hash = mhash;
@@ -3191,15 +3193,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		FileInputStream is = getFileInputStream(sLocalFile);
 		if (is == null) return null;
 		
-		Integer iSize = Integer.valueOf(getFileInputStreamSize(is).intValue());
-		if (iSize == null)
+		Long lSize = getFileInputStreamSize(is);
+		if (lSize == null)
 		{	
 			closeFileInputStream(is);
 			return null;
 		}
 
 		try {
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, iSize, sdlSession);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
 			rpcPacketizer.start();
 			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 			return streamController;
@@ -3213,15 +3215,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return null;
-		Long iSize = request.getLength();
+		Long lSize = request.getLength();
 
-		if (request.getLength() == null)
+		if (lSize == null)
 		{
 			return null;
 		}		
 		
 		try {
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, iSize, sdlSession);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
 			rpcPacketizer.start();
 			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 			return streamController;
@@ -3233,15 +3235,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private RPCStreamController startPutFileStream(String sPath, PutFile msg) {
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
 		return startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);		
 	}
 
 	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
 		if (sdlSession == null) return null;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return null;
 		if (is == null) return null;
 		startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
 		return null;
@@ -3520,7 +3518,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponse = false;
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 		
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000000));
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 		
@@ -5140,8 +5138,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * returned .
 	 * @throws SdlException
 	 */
-	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId,OnPutFileUpdateListener cb ) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, correlationId);
+	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
 		msg.setOnPutFileUpdateListener(cb);
 		return startPutFileStream(path,msg);
 	}
@@ -5189,8 +5187,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * RPCResponse.
 	 * @throws SdlException
 	 */
-	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Integer correlationId) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, correlationId);
+	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
+		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
 		return startPutFileStream(inputStream, msg);
 	}
 
@@ -5292,6 +5290,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 			
 		return sdlSession.getCurrentTransportType();
+	}
+	
+	public boolean isServiceTypeProtected(SessionType sType)
+	{
+		if (sdlSession == null)
+			return false;
+		
+		return sdlSession.isServiceProtected(sType);		
 	}
 	
 	public IProxyListenerBase getProxyListener()

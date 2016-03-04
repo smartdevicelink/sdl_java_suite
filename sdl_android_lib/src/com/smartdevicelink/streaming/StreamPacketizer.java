@@ -14,7 +14,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
 	private Thread t = null;
 
-	private final static int BUFF_READ_SIZE = 1000000;
+	private final static int BUFF_READ_SIZE = 1024;
 
 	public SdlConnection sdlConnection = null;
     private Object mPauseLock;

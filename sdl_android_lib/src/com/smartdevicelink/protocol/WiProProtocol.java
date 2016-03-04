@@ -457,6 +457,27 @@ public class WiProProtocol extends AbstractProtocol {
 		} // end-method
 		
 		protected void handleFrame(ProtocolFrameHeader header, byte[] data) {
+			
+			if (data != null && data.length > 0 && header.isEncrypted()  )
+			{
+				if (sdlconn != null)
+				{
+					SdlSession session = sdlconn.findSessionById(header.getSessionID());
+					
+					if (session == null)
+						return;
+
+					SdlSecurityBase sdlSec = session.getSdlSecurity();
+					byte[] dataToRead = new byte[4096];	
+					
+					int iNumBytes = sdlSec.decryptData(data, dataToRead);
+										 
+					byte[] decryptedData = new byte[iNumBytes];
+					System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
+					data = decryptedData;
+				}
+			}
+			
 			if (header.getFrameType().equals(FrameType.Control)) {
 				handleControlFrame(header, data);
 			} else {
@@ -515,7 +536,11 @@ public class WiProProtocol extends AbstractProtocol {
 			} else if (header.getFrameData() == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 				handleProtocolSessionEndedNACK(header.getSessionType(), header.getSessionID(), "");
 			} else if (header.getFrameData() == FrameDataControlFrameType.ServiceDataACK.getValue()) {
-				handleProtocolServiceDataACK(header.getSessionType(), header.getSessionID());
+				if (data != null && data.length == 4) //service data ack will be 4 bytes in length
+				{
+					int serviceDataAckSize = BitConverter.intFromByteArray(data, 0);
+					handleProtocolServiceDataACK(header.getSessionType(), serviceDataAckSize, header.getSessionID());
+				}
 			}
             
 		} // end-method
@@ -588,5 +613,11 @@ public class WiProProtocol extends AbstractProtocol {
 	public void SendHeartBeatACK(byte sessionID) {
         final ProtocolFrameHeader heartbeat = ProtocolFrameHeaderFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, _version);        
         sendFrameToTransport(heartbeat);		
+	}
+	
+	@Override
+	public void EndProtocolService(SessionType serviceType, byte sessionID) {
+		ProtocolFrameHeader header = ProtocolFrameHeaderFactory.createEndSession(serviceType, sessionID, hashID, _version);
+		sendFrameToTransport(header);
 	}
 } // end-class

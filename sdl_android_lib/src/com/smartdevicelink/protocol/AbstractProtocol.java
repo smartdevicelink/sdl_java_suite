@@ -43,6 +43,7 @@ public abstract class AbstractProtocol {
 	
 	public abstract void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted);
 
+	public abstract void EndProtocolService(SessionType serviceType, byte sessionID);
 	// This method ends a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionEnded() method will be made when the protocol
 	// session has ended.
@@ -145,8 +146,8 @@ public abstract class AbstractProtocol {
     protected void handleProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
         _protocolListener.onProtocolHeartbeatACK(sessionType, sessionID);
     }
-    protected void handleProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
-        _protocolListener.onProtocolServiceDataACK(sessionType, sessionID);
+    protected void handleProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
+        _protocolListener.onProtocolServiceDataACK(sessionType, dataSize, sessionID);
     }
     protected void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
 		resetIncomingHeartbeat(sessionType, sessionID);

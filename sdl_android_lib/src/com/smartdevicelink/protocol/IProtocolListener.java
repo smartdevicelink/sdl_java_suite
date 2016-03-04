@@ -28,7 +28,7 @@ public interface IProtocolListener {
      */
     void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID);
     
-    void onProtocolServiceDataACK(SessionType sessionType, byte sessionID);
+    void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID);
 
     void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID);
 

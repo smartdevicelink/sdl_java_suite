@@ -222,7 +222,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	public TransportType getCurrentTransportType() {
 		return _transport.getTransportType();
 	}
-
 	
 	public void startService (SessionType sessionType, byte sessionID, boolean isEncrypted) {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
@@ -302,7 +301,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					break;
 				}
 			}
-			if (sessionType.equals(SessionType.NAV) || sessionType.equals(SessionType.PCM)){
+			
+			if (sessionType.equals(SessionType.NAV) || sessionType.equals(SessionType.PCM) || isEncrypted){
 				SdlSession session = findSessionById(sessionID);
 				if (session != null) {
 					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, isEncrypted);
@@ -352,22 +352,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			}
 
 		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType,
-				byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-			
-		}
-
-		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType,
-				byte sessionID) {
+		public void onProtocolServiceDataACK(SessionType serviceType, int dataSize, byte sessionID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolServiceDataACK(sessionType, sessionID);
+				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 			}
-		}
+		}			
+	}
 		
 	public int getRegisterCount() {
 		return listenerList.size();
@@ -426,5 +417,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			byte sessionID, String correlationID) {
 		_connectionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
 		
+	}
+
+	@Override
+	public void onProtocolServiceDataACK(SessionType serviceType, int dataSize, byte sessionID) {
+		_connectionListener.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 	}
 }
