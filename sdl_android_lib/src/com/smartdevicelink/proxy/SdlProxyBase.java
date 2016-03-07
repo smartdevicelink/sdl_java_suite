@@ -325,12 +325,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				else
 				{
 					RPCProtectedServiceStarted();
-					SdlSecurityBase sec = sdlSession.getSdlSecurity();
-					if (sec != null)
-					{
-						sec.setAppId(_appID);
-						sec.setSessionId(sessionID);
-					}
 				}
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
@@ -1684,18 +1678,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		VehicleType vt = rai.getVehicleType();
 		if (vt == null) return;
 		
-		String model = vt.getModel();
-		if (model == null) return;
+		String make = vt.getMake();
+		if (make == null) return;
 		
 		if (_secList == null) return;
 		
 		for (SdlSecurityBase sec : _secList)
 		{
-			if (sec.getModel() != null)
+			if (sec.getMake() != null)
 			{
-				if (sec.getModel().equals(model))
+		//		if (sec.getMake().equalsIgnoreCase(make))
 				{
 					setSdlSecurity(sec);
+					if (sec != null)
+					{
+						sec.setAppId(_appID);
+						if (sdlSession != null)
+							sec.setSessionId(sdlSession.getSessionId());
+					}
 					return;
 				}				
 			}
@@ -5326,7 +5326,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_secList = list;
 	}	
 	
-	public void setSdlSecurity(SdlSecurityBase sec) {
+	private void setSdlSecurity(SdlSecurityBase sec) {
 		if (sdlSession != null)
 		{
 			sdlSession.setSdlSecurity(sec);

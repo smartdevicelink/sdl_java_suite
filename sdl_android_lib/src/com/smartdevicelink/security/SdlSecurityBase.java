@@ -4,12 +4,20 @@ public abstract class SdlSecurityBase {
 	
 	private Byte sessionId = null;
 	private String appId = null;
-	private String model = null;
+	private String make = null;
+	private boolean isInitSuccess = false;
 	
     public SdlSecurityBase() {
 	}
-    
-
+	
+    public void setInitSuccess(boolean val) {
+    	isInitSuccess = val;
+    }
+	
+    public boolean getInitSuccess() {
+    	return isInitSuccess;
+    }
+	    
     public Byte getSessionId() {
     	return sessionId;
     }
@@ -17,7 +25,6 @@ public abstract class SdlSecurityBase {
     public void setSessionId(Byte val) {
     	sessionId = val;
     }
-
     
     public String getAppId() {
     	return appId;
@@ -27,25 +34,21 @@ public abstract class SdlSecurityBase {
     	appId = val;
     }
 
-    public String getModel() {
-    	return model;
+    public String getMake() {
+    	return make;
     }
     
-    public void setModel(String val) {
-    	model = val;
+    public void setMake(String val) {
+    	make = val;
     }
 
-	public abstract Boolean initialize();
-    
-	public abstract Boolean initializeWithPfx(byte[] pfx);
-    
-    public abstract Boolean initializeWithPem(byte[] cert, byte[] key);
-	
+	public abstract void initialize();
+    	
     public abstract Integer runHandshake(byte[] inputData,byte[] outputData);
     
 	public abstract Integer encryptData(byte[] inputData,byte[] outputData);
 	
     public abstract Integer decryptData(byte[] inputData,byte[] outputData);
     
-    public abstract void closeSession();
+    public abstract void shutDown();
 }
