@@ -1,17 +1,24 @@
 package com.smartdevicelink.security;
 
+import java.util.HashMap;
+
+import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.protocol.enums.SessionType;
 public abstract class SdlSecurityBase {
 	
-	private Byte sessionId = null;
+	private SdlSession session = null;
 	private String appId = null;
 	private String make = null;
 	private boolean isInitSuccess = false;
+	public HashMap<SessionType, Boolean> serviceTypeList = new HashMap<SessionType, Boolean>();
+	
 	
     public SdlSecurityBase() {
 	}
 	
     public void setInitSuccess(boolean val) {
     	isInitSuccess = val;
+    	session.onSecurityInitialized();
     }
 	
     public boolean getInitSuccess() {
@@ -19,11 +26,14 @@ public abstract class SdlSecurityBase {
     }
 	    
     public Byte getSessionId() {
-    	return sessionId;
+    	if (session != null)
+    		return session.getSessionId();
+    	
+    	return null;
     }
 
-    public void setSessionId(Byte val) {
-    	sessionId = val;
+    public void setSdlSession(SdlSession val) {
+    	session = val;
     }
     
     public String getAppId() {
@@ -43,6 +53,8 @@ public abstract class SdlSecurityBase {
     }
 
 	public abstract void initialize();
+	
+	public abstract void hs();
     	
     public abstract Integer runHandshake(byte[] inputData,byte[] outputData);
     

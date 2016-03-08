@@ -20,6 +20,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
@@ -27,7 +28,7 @@ import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
-public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener {
+public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener, ISecurityInitializedListener {
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
 	private CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
 	
@@ -45,7 +46,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	StreamPacketizer mVideoPacketizer = null;
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;
-	private final static int BUFF_READ_SIZE = 1024;
+	private final static int BUFF_READ_SIZE = 1488;
 	
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
@@ -315,9 +316,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		if (isEncrypted)
 		{
 			if (sdlSecurity != null)
-				sdlSecurity.initialize();											
-			else
-				return;			
+			{
+				sdlSecurity.initialize();
+				sdlSecurity.serviceTypeList.put(serviceType, false);
+			}			
+			return;
 		}
 		_sdlConnection.startService(serviceType, sessionID, isEncrypted);			
 	}
@@ -338,7 +341,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		byte[] dataToRead = new byte[4096];
 		 	
 		Integer iNumBytes = sdlSecurity.runHandshake(data, dataToRead);
-				
+			
+		if (iNumBytes == null || iNumBytes <= 0)
+			return;
+		
 		byte[] returnBytes = new byte[iNumBytes];
 		System.arraycopy(dataToRead, 0, returnBytes, 0, iNumBytes);
 		ProtocolMessage protocolMessage = new ProtocolMessage();
@@ -347,7 +353,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		protocolMessage.setFunctionID(0x01);
 		protocolMessage.setVersion(wiproProcolVer);		 
 		protocolMessage.setSessionID(getSessionId());
-			 
+			
+		//sdlSecurity.hs();
+		
 		sendMessage(protocolMessage);
 	}
 	
@@ -511,5 +519,13 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
 		this.sessionListener.onProtocolServiceDataACK(sessionType, dataSize, sessionID);
+	}
+
+	@Override
+	public void onSecurityInitialized() {
+		
+		if (_sdlConnection != null)
+			_sdlConnection.startService(SessionType.RPC, getSessionId(), true);
+		
 	}
 }
