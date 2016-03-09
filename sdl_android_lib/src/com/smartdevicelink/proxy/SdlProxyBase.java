@@ -1694,7 +1694,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					{
 						sec.setAppId(_appID);
 						if (sdlSession != null)
-							sec.setSdlSession(sdlSession);
+							sec.handleSdlSession(sdlSession);
 					}
 					return;
 				}				
@@ -5332,8 +5332,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			sdlSession.setSdlSecurity(sec);
 		}
 	}
-	
-	
+
 	public boolean isServiceTypeProtected(SessionType sType)
 	{
 		if (sdlSession == null)

@@ -104,7 +104,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void close() {
 		if (sdlSecurity != null)
 		{
-			sdlSecurity.resetParams();			
+			sdlSecurity.resetParams();
+			sdlSecurity.shutDown();
 		}
 
 		if (_sdlConnection != null) { //sessionId == 0 means session is not started.

@@ -7,10 +7,11 @@ import com.smartdevicelink.protocol.enums.SessionType;
 
 public abstract class SdlSecurityBase {
 	
-	private SdlSession session = null;
+	private SdlSession session = null;	
 	private String appId = null;
 	private String make = null;
 	private boolean isInitSuccess = false;
+	private byte sessionId = 0;
 	private List<SessionType> startServiceList = new ArrayList<SessionType>();	
 	
     public SdlSecurityBase() {
@@ -41,6 +42,13 @@ public abstract class SdlSecurityBase {
     	setInitSuccess(val);
     	session.onSecurityInitialized();
     }
+    
+    public void handleSdlSession(SdlSession val) {
+    	if (val == null) return;
+    	
+    	setSessionId(val.getSessionId());
+    	setSdlSession(val);
+    }
 	
     private void setInitSuccess(boolean val) {
     	isInitSuccess = val;
@@ -49,15 +57,16 @@ public abstract class SdlSecurityBase {
     public boolean getInitSuccess() {
     	return isInitSuccess;
     }
-	    
-    public Byte getSessionId() {
-    	if (session != null)
-    		return session.getSessionId();
-    	
-    	return null;
+    
+    private void setSessionId(byte val) {
+    	sessionId = val;
+    }
+    
+    public byte getSessionId() {
+    	return sessionId;
     }
 
-    public void setSdlSession(SdlSession val) {
+    private void setSdlSession(SdlSession val) {
     	session = val;
     }
     
