@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.annotation.SuppressLint;
@@ -98,6 +102,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
 	public void close() {
+		if (sdlSecurity != null)
+		{
+			sdlSecurity.resetParams();			
+		}
+
 		if (_sdlConnection != null) { //sessionId == 0 means session is not started.
 			_sdlConnection.unregisterSession(this);
 			
@@ -318,11 +327,13 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			if (sdlSecurity != null)
 			{
 				sdlSecurity.initialize();
-				sdlSecurity.serviceTypeList.put(serviceType, false);
+				List<SessionType> serviceList = sdlSecurity.getServiceList(); 
+				if (!serviceList.contains(serviceType))
+					serviceList.add(serviceType);
 			}			
 			return;
 		}
-		_sdlConnection.startService(serviceType, sessionID, isEncrypted);			
+		_sdlConnection.startService(serviceType, sessionID, isEncrypted);		
 	}
 	
 	public void endService (SessionType serviceType, byte sessionID) {
@@ -524,8 +535,21 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onSecurityInitialized() {
 		
-		if (_sdlConnection != null)
-			_sdlConnection.startService(SessionType.RPC, getSessionId(), true);
-		
+		if (_sdlConnection != null && sdlSecurity != null)
+		{
+			List<SessionType> list = sdlSecurity.getServiceList();
+			
+			SessionType service;			
+			ListIterator<SessionType> iter = list.listIterator();
+			
+			while (iter.hasNext()) {
+				service = iter.next();
+				
+				if (service != null)
+					_sdlConnection.startService(service, getSessionId(), true);
+				
+				iter.remove();				
+			}
+		}					
 	}
 }
