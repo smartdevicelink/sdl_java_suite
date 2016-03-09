@@ -869,17 +869,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			String sBodyString = msg.getBody();			
 			
 			JSONObject jsonObjectToSendToServer;
-			String valid_json;
-			
+			String valid_json = "";
+			int length;
 			if (sBodyString == null)
-			{				
-				List<String> legacyData = msg.getLegacyData();
-				JSONArray jsonArrayOfSdlPPackets = new JSONArray(legacyData);
-				jsonObjectToSendToServer = new JSONObject();
-				jsonObjectToSendToServer.put("data", jsonArrayOfSdlPPackets);
-				bLegacy = true;
-				updateBroadcastIntent(sendIntent, "COMMENT6", "\r\nLegacy SystemRequest: true");
-				valid_json = jsonObjectToSendToServer.toString().replace("\\", "");
+			{		
+				if(RequestType.HTTP.equals(msg.getRequestType())){
+					length = msg.getBulkData().length;
+					Intent sendIntent3 = createBroadcastIntent();
+					updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
+					updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + length);				
+					sendBroadcastIntent(sendIntent3);
+					
+				}else{
+					List<String> legacyData = msg.getLegacyData();
+					JSONArray jsonArrayOfSdlPPackets = new JSONArray(legacyData);
+					jsonObjectToSendToServer = new JSONObject();
+					jsonObjectToSendToServer.put("data", jsonArrayOfSdlPPackets);
+					bLegacy = true;
+					updateBroadcastIntent(sendIntent, "COMMENT6", "\r\nLegacy SystemRequest: true");
+					valid_json = jsonObjectToSendToServer.toString().replace("\\", "");
+					length = valid_json.getBytes("UTF-8").length;
+				}
 			}
  			else
  			{		
@@ -887,14 +897,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
 				updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + sBodyString.getBytes("UTF-8").length);				
 				sendBroadcastIntent(sendIntent3);
-				if(RequestType.PROPRIETARY.equals(msg.getRequestType())){
-					valid_json = sBodyString.replace("\\", "");
-				}else{
-					valid_json = sBodyString;
-				}
+				valid_json = sBodyString.replace("\\", "");
+				length = valid_json.getBytes("UTF-8").length;
  			}
 			
-			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, valid_json.getBytes("UTF-8").length);
+			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 			
 			if (urlConnection == null)
 			{
@@ -904,7 +911,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 			DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-			wr.writeBytes(valid_json);
+			if(RequestType.HTTP.equals(msg.getRequestType())){
+				wr.write(msg.getBulkData());
+			}else{
+				wr.writeBytes(valid_json);
+			}
+			
 			wr.flush();
 			wr.close();
 			

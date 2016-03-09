@@ -68,7 +68,7 @@ public class OnSystemRequest extends RPCNotification {
         	}
         }else if(RequestType.HTTP.equals(this.getRequestType())){
         	//Builds the body from the policy snapshot
-        	tempBody = new String(bulkData);
+        	//tempBody = new String(bulkData);
         	
         	tempHeaders = new Headers();
         	tempHeaders.setContentType("application/json");
@@ -80,7 +80,7 @@ public class OnSystemRequest extends RPCNotification {
         	tempHeaders.setReadTimeout(7);
         	tempHeaders.setInstanceFollowRedirects(false);
         	tempHeaders.setCharset("utf-8");
-        	tempHeaders.setContentLength(tempBody.length()); //TODO check if right
+        	tempHeaders.setContentLength(bulkData.length); //TODO check if right
         }
         
         this.body = tempBody;
