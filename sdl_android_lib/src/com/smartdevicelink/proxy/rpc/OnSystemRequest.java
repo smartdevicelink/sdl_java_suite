@@ -68,12 +68,7 @@ public class OnSystemRequest extends RPCNotification {
         	}
         }else if(RequestType.HTTP.equals(this.getRequestType())){
         	//Builds the body from the policy snapshot
-        	StringBuilder bodyBuilder = new StringBuilder();
-        	bodyBuilder.append("{\"data\":");
-        	//Not sure if this is right
-        	bodyBuilder.append(new String(bulkData));
-        	bodyBuilder.append("\"]}");
-        	tempBody = bodyBuilder.toString();
+        	tempBody = new String(bulkData);
         	
         	tempHeaders = new Headers();
         	tempHeaders.setContentType("application/json");
