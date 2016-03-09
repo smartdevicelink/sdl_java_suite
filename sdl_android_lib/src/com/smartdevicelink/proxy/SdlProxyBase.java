@@ -2871,10 +2871,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					
-					if ( (msg.getUrl() != null) &&
-						 (msg.getRequestType() == RequestType.PROPRIETARY) &&
-						 (msg.getFileType() == FileType.JSON) )
-					{
+					if ((msg.getUrl() != null) &&
+							(((msg.getRequestType() == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON)) 
+									|| ((msg.getRequestType() == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY)))){
 						Thread handleOffboardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
