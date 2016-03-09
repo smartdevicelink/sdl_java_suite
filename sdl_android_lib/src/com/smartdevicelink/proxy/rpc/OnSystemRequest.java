@@ -85,7 +85,7 @@ public class OnSystemRequest extends RPCNotification {
         	tempHeaders.setReadTimeout(7);
         	tempHeaders.setInstanceFollowRedirects(false);
         	tempHeaders.setCharset("utf-8");
-        	tempHeaders.setContentLength(body.length()); //TODO check if right
+        	tempHeaders.setContentLength(tempBody.length()); //TODO check if right
         }
         
         this.body = tempBody;
