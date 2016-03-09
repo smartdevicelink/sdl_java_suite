@@ -887,7 +887,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
 				updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + sBodyString.getBytes("UTF-8").length);				
 				sendBroadcastIntent(sendIntent3);
- 				valid_json = sBodyString.replace("\\", "");
+				if(RequestType.PROPRIETARY.equals(msg.getRequestType())){
+					valid_json = sBodyString.replace("\\", "");
+				}else{
+					valid_json = sBodyString;
+				}
  			}
 			
 			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, valid_json.getBytes("UTF-8").length);
