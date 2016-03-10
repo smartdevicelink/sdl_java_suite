@@ -573,7 +573,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			//If there's an error with the transport we want to make sure we clear out any reference to it held by the static list in sessions
 			SdlSession.removeConnection(SdlConnection.this);
 			//If we are erroring out to go into legacy mode, lets cache our multiplexing
-			if(isLegacyModeEnabled() && TransportType.MULTIPLEX.equals(_transport.getTransportType())){
+			if(isLegacyModeEnabled() && _transport!=null && TransportType.MULTIPLEX.equals(_transport.getTransportType())){
 				MultiplexTransport multi = ((MultiplexTransport)_transport);
 				cachedMultiConfig = multi.getConfig();
 				cachedMultiConfig.setService(null); //Make sure we're clearning this out
