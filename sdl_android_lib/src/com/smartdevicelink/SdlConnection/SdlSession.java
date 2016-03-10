@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -50,7 +48,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	StreamPacketizer mVideoPacketizer = null;
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;
-	private final static int BUFF_READ_SIZE = 1488;
+	private final static int BUFF_READ_SIZE = 1024;
 	
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
@@ -327,10 +325,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		{
 			if (sdlSecurity != null)
 			{
-				sdlSecurity.initialize();
 				List<SessionType> serviceList = sdlSecurity.getServiceList(); 
 				if (!serviceList.contains(serviceType))
 					serviceList.add(serviceType);
+				
+				sdlSecurity.initialize();
 			}			
 			return;
 		}

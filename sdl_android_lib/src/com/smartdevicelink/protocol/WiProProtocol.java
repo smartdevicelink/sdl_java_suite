@@ -158,6 +158,8 @@ public class WiProProtocol extends AbstractProtocol {
 					return;
 				 
 				int iNumBytes = sdlSec.encryptData(data, dataToRead);
+				if (iNumBytes <= 0)
+					return;
 				
 		        byte[] encryptedData = new byte[iNumBytes];
 		        System.arraycopy(dataToRead, 0, encryptedData, 0, iNumBytes);
