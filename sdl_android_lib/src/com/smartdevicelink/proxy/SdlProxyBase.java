@@ -942,68 +942,89 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			InputStream is = urlConnection.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 		    String line;
-		    StringBuffer response = new StringBuffer(); 
+		    StringBuilder response = new StringBuilder(); 
 		    while((line = rd.readLine()) != null) 
 		    {
 		        response.append(line);
 		        response.append('\r');
 			}
 		    rd.close();
+		    //We've read the body
+		    if(RequestType.HTTP.equals(msg.getRequestType())){
+		    	// Create the SystemRequest RPC to send to module.
+		    	PutFile putFile = new PutFile();
+		    	putFile.setFileType(FileType.JSON);
+		    	putFile.setCorrelationID(POLICIES_CORRELATION_ID);
+		    	putFile.setSdlFileName("response_data");
+		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
+		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
+		    	
+		    	sendRPCRequestPrivate(putFile);
+		    	Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
 
-			Vector<String> cloudDataReceived = new Vector<String>();			
-				
-			// Convert the response to JSON
-			JSONObject jsonResponse = new JSONObject(response.toString());				
-			if (jsonResponse.get("data") instanceof JSONArray) 
-			{
-				JSONArray jsonArray = jsonResponse.getJSONArray("data");
-				for (int i=0; i<jsonArray.length(); i++) 
-				{
-					if (jsonArray.get(i) instanceof String) 
-					{
-						cloudDataReceived.add(jsonArray.getString(i));
-						//Log.i("sendOnSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
-					}
-				}
-			} 
-			else if (jsonResponse.get("data") instanceof String) 
-			{
-				cloudDataReceived.add(jsonResponse.getString("data"));
-				//Log.i("sendOnSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
-			} 
-			else 
-			{
-				DebugTool.logError("sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-				//Log.i("sendOnSystemRequestToUrl", "sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-				return;
-			}
-				
-			String sResponse = cloudDataReceived.toString();
-				
-			if (sResponse.length() > 512)
-			{
-				sResponse = sResponse.substring(0, 511);
-			}
-								
-			updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + sResponse);
-				
-			// Send new SystemRequest to SDL
-			SystemRequest mySystemRequest;
-			
-			if (bLegacy)
-				mySystemRequest = RPCRequestFactory.buildSystemRequestLegacy(cloudDataReceived, getPoliciesReservedCorrelationID());
-			else
-				mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
-			   
-			if (getIsConnected()) 
-			{			    	
-				sendRPCRequestPrivate(mySystemRequest);
-				Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
-										
-				updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
-				updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
-				updateBroadcastIntent(sendIntent2, "CORRID", mySystemRequest.getCorrelationID());
-			}
+	    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.PUT_FILE.toString());
+	    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
+	    		updateBroadcastIntent(sendIntent2, "CORRID", putFile.getCorrelationID());
+		    	
+		    }else{
+		    	Vector<String> cloudDataReceived = new Vector<String>();			
+		    	final String dataKey = "data";
+		    	// Convert the response to JSON
+		    	JSONObject jsonResponse = new JSONObject(response.toString());				
+		    	if(jsonResponse.has(dataKey)){
+		    		if (jsonResponse.get(dataKey) instanceof JSONArray) 
+		    		{
+		    			JSONArray jsonArray = jsonResponse.getJSONArray(dataKey);
+		    			for (int i=0; i<jsonArray.length(); i++) 
+		    			{
+		    				if (jsonArray.get(i) instanceof String) 
+		    				{
+		    					cloudDataReceived.add(jsonArray.getString(i));
+		    					//Log.i("sendOnSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+		    				}
+		    			}
+		    		} 
+		    		else if (jsonResponse.get(dataKey) instanceof String) 
+		    		{
+		    			cloudDataReceived.add(jsonResponse.getString(dataKey));
+		    			//Log.i("sendOnSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+		    		} 
+		    	}
+		    	else 
+		    	{
+		    		DebugTool.logError("sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+		    		//Log.i("sendOnSystemRequestToUrl", "sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+		    		return;
+		    	}
+
+		    	String sResponse = cloudDataReceived.toString();
+
+		    	if (sResponse.length() > 512)
+		    	{
+		    		sResponse = sResponse.substring(0, 511);
+		    	}
+
+		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + sResponse);
+
+		    	// Send new SystemRequest to SDL
+		    	SystemRequest mySystemRequest;
+
+		    	if (bLegacy){
+		    		mySystemRequest = RPCRequestFactory.buildSystemRequestLegacy(cloudDataReceived, getPoliciesReservedCorrelationID());
+		    	}else{
+		    		mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
+		    	}
+
+		    	if (getIsConnected()) 
+		    	{			    	
+		    		sendRPCRequestPrivate(mySystemRequest);
+		    		Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
+
+		    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
+		    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
+		    		updateBroadcastIntent(sendIntent2, "CORRID", mySystemRequest.getCorrelationID());
+		    	}
+		    }
 		}
 		catch (SdlException e) 
 		{
