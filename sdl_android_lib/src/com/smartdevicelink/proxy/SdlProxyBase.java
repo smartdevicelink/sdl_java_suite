@@ -214,7 +214,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;	
-	protected List<SdlSecurityBase> _secList = null;
+	protected List<Class<? extends SdlSecurityBase>> _secList = null;
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -1682,12 +1682,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (make == null) return;
 		
 		if (_secList == null) return;
+
+		SdlSecurityBase sec = null;
 		
-		for (SdlSecurityBase sec : _secList)
+		for (Class<? extends SdlSecurityBase> cls : _secList)
 		{
-			if (sec.getMake() != null)
+			try
 			{
-		//		if (sec.getMake().equalsIgnoreCase(make))
+				sec = cls.newInstance();
+			}
+			catch (Exception e)
+			{
+				continue;
+			}
+			
+			if ( (sec != null) && (sec.getMake() != null) )
+			{
+				if (sec.getMake().equalsIgnoreCase(make))
 				{
 					setSdlSecurity(sec);
 					if (sec != null)
@@ -3327,7 +3338,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -3360,7 +3371,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponse = false;
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -3391,7 +3402,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceEndResponse = false;
 		sdlSession.stopVideoStream();
 
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -3458,7 +3469,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceStartResponse = false;
 		sdlSession.startService(SessionType.PCM, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -3490,7 +3501,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceStartResponse = false;
 		sdlSession.startService(SessionType.PCM, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -3523,7 +3534,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceEndResponse = false;
 		sdlSession.stopAudioStream();
 		
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -3548,7 +3559,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponse = false;
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 		
-        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 		
@@ -3637,7 +3648,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		rpcProtectedStartResponse = false;
 		sdlSession.startService(SessionType.RPC, sdlSession.getSessionId(), true);
 
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
@@ -5322,7 +5333,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sdlSession.getCurrentTransportType();
 	}
 	
-	public void setSdlSecurityList(List<SdlSecurityBase> list) {
+	public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
 		_secList = list;
 	}	
 	
