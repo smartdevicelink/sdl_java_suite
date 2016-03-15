@@ -36,7 +36,7 @@ public class TransportBroker {
 	private String appId = null,whereToReply = null;
 	private Context currentContext = null;
 	
-	private Object INIT_LOCK = new Object();
+	private final Object INIT_LOCK = new Object();
 	
 	private TransportType queuedOnTransportConnect = null;
 	
@@ -474,7 +474,7 @@ public class TransportBroker {
 				bindingIntent.setClassName(this.routerPackage, this.routerClassName);//This sets an explicit intent
 				//Quickly make sure it's just up and running
 				getContext().startService(bindingIntent);
-				bindingIntent.putExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+				bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_CLIENT);
 				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_ABOVE_CLIENT);
 			}else{
 				return false;
@@ -500,7 +500,7 @@ public class TransportBroker {
 				Bundle bundle = new Bundle();
 				bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
 				msg.setData(bundle);
-				this.sendMessageToRouterService(msg);
+				sendMessageToRouterService(msg);
 			}else{
 				Log.w(TAG, "Unable to unregister, not bound to router service");
 			}

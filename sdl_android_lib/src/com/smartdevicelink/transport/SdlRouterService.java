@@ -5,7 +5,6 @@ import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXT
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,10 +13,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Notification;
@@ -44,7 +42,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
@@ -113,8 +110,8 @@ public class SdlRouterService extends Service{
 	private SparseArray<Long> sessionMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object();
 	
-	private static Messenger altTransportMessager = null; //THERE CAN BE ONLY ONE!!!
-
+	private static Messenger altTransportService = null;
+	
 	private String  connectedDeviceName = "";			//The name of the connected Device
 	private boolean startSequenceComplete = false;	
 	
@@ -500,25 +497,23 @@ public class SdlRouterService extends Service{
 	        	case TransportConstants.HARDWARE_CONNECTION_EVENT:
         			if(receivedBundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
         				//We should shut down, so call 
-        				if(altTransportMessager != null 
-        						&& altTransportMessager.equals(msg.replyTo)){
+        				if(altTransportService != null 
+        						&& altTransportService.equals(msg.replyTo)){
         					//The same transport that was connected to the router service is now telling us it's disconnected. Let's inform clients and clear our saved messenger
-        					altTransportMessager = null;
+        					altTransportService = null;
         					storeConnectedStatus(false);
         					onTransportDisconnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
         					shouldServiceKeepRunning(null); //this will close the service if bluetooth is not available
         				}
-        			}
-        			
-        			if(receivedBundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+        			}else if(receivedBundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
     					Message retMsg =  Message.obtain();
     					retMsg.what = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE;
-        				if(altTransportMessager == null){ //Ok no other transport is connected, this is good
+        				if(altTransportService == null){ //Ok no other transport is connected, this is good
         					Log.d(TAG, "Alt transport connected.");
         					if(msg.replyTo == null){
         						break;
         					}
-        					altTransportMessager = msg.replyTo;
+        					altTransportService = msg.replyTo;
         					storeConnectedStatus(true);
         					//Let the alt transport know they are good to go
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS;
@@ -528,7 +523,7 @@ public class SdlRouterService extends Service{
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_ALREADY_CONNECTED;
         				}
         				if(msg.replyTo!=null){
-        					try {retMsg.replyTo.send(retMsg);} catch (RemoteException e) {e.printStackTrace();}
+        					try {msg.replyTo.send(retMsg);} catch (RemoteException e) {e.printStackTrace();}
         				}
         			}
             		break;
@@ -568,13 +563,15 @@ public class SdlRouterService extends Service{
 				Log.w(TAG, "Denying bind request due to service shutting down.");
 				return null;
 			}
-			int requestType = intent.getIntExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-			switch(requestType){
-				case TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT:
-					return this.altTransportMessenger.getBinder();
-				case TransportConstants.BIND_REQUEST_TYPE_CLIENT:
-					return this.routerMessenger.getBinder();
+			String requestType = intent.getAction();//intent.getIntExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+			if(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT.equals(requestType)){
+				return this.altTransportMessenger.getBinder();
+			}else if(TransportConstants.BIND_REQUEST_TYPE_CLIENT.equals(requestType)){
+				return this.routerMessenger.getBinder();
+			}else{
+				Log.w(TAG, "Uknown bind request type");
 			}
+			
 		}
 		return null;
 	}
@@ -753,18 +750,19 @@ public class SdlRouterService extends Service{
 	}
 	
 	private void notifyAltTransportOfClose(int reason){
-		if(this.altTransportMessenger!=null){
+		if(altTransportService!=null){
 			Message msg = Message.obtain();
 			msg.what = TransportConstants.ROUTER_SHUTTING_DOWN_NOTIFICATION;
 			msg.arg1 = reason;
 			try {
-				altTransportMessenger.send(msg);
+				altTransportService.send(msg);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void enterForeground() {
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
@@ -844,7 +842,7 @@ public class SdlRouterService extends Service{
 	public boolean shouldServiceKeepRunning(Intent intent){
 		//Log.d(TAG, "Determining if this service should remain open");
 		
-		if(altTransportMessager!=null 
+		if(altTransportService!=null 
 				|| (intent!=null && intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA))){ //FIXME how to handle 'service starts'
 			//We have been started by an alt transport, we must remain open. "My life for Auir...."
 			Log.d(TAG, "Alt Transport connected, remaining open");
@@ -909,7 +907,7 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void onTransportDisconnected(TransportType type){
-		if(altTransportMessager!=null){  //If we still have an alt transport open, then we don't need to tell the clients to close
+		if(altTransportService!=null){  //If we still have an alt transport open, then we don't need to tell the clients to close
 			return;
 		}
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
@@ -1060,13 +1058,21 @@ public class SdlRouterService extends Service{
 		 * <p><b>NOTE: This is not guaranteed. It is a best attempt at sending the packet, it may fail.</b>
 		 */
 		private boolean sendThroughAltTransport(Bundle bundle){
-			if(altTransportMessager!=null){
+			if(altTransportService!=null){
 				Log.d(TAG, "Sending packet through alt transport");
 				Message msg = Message.obtain();
 				msg.what = TransportConstants.ROUTER_SEND_PACKET;
 				msg.setData(bundle);
+				try {
+					altTransportService.send(msg);
+				} catch (RemoteException e) {
+					Log.e(TAG, "Unable to send through alt transport!");
+					e.printStackTrace();
+				}
 				return true;
-			}		
+			}else{
+				Log.w(TAG, "Unable to send packet through alt transport, it was null");
+			}
 			return false;		
 		}
 		
@@ -1406,6 +1412,7 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	private boolean removeAllSessionsWithAppId(long appId){
 		synchronized(SESSION_LOCK){
 			if(sessionMap!=null){
