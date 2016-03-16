@@ -31,7 +31,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	public static final String TRANSPORT_GLOBAL_PREFS 						= "SdlTransportPrefs"; 
 	public static final String IS_TRANSPORT_CONNECTED						= "isTransportConnected"; 
 		
-	public static String runningBluetoothServicePackage = null;
+	public static ComponentName runningBluetoothServicePackage = null;
 
     @SuppressWarnings("rawtypes")
 	private static Class localRouterClass;
@@ -95,7 +95,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			}else if(intent.getBooleanExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, false)){
 				//We were told to wake up our router services
 				Log.d(TAG, "Starting router service off ping");
-				didStart = wakeUpRouterService(context, false);
+				boolean altServiceWake = intent.getBooleanExtra(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT, false);
+				didStart = wakeUpRouterService(context, false,altServiceWake );
 				
 			}
 
@@ -122,7 +123,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    	
 	    	if(!didStart){
 	    		Log.d(TAG, "Waking up router service");
-	    		didStart = wakeUpRouterService(context, true);
+	    		didStart = wakeUpRouterService(context, true,false);
 	    	}
 
 	    	//So even though we started our own version, on some older phones we find that two services are started up so we want to make sure we send our version that we are working with
@@ -137,19 +138,29 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    }
 	}
 	
-	private boolean wakeUpRouterService(Context context, boolean ping){
+	private boolean wakeUpRouterService(Context context, boolean ping, boolean altTransportWake){
 		Log.d(TAG, "Waking up router service");
-    	if(!isRouterServiceRunning(context, ping)){
+    	if(!isRouterServiceRunning(context, ping)){  
     		//If there isn't a service running we should try to start one
     		Log.i(TAG, "Attempting to start an instance of the Router Service");
     		//The under class should have implemented this....
     		
     		//So let's start up our service since no copy is running
     		Intent serviceIntent = new Intent(context, localRouterClass);
+    		if(altTransportWake){
+    			serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+    		}
     		context.startService(serviceIntent);
     		return true;
     	}else{
     		Log.i(TAG, "An instance of the Router Service is already running");	
+    		if(altTransportWake){
+    			Intent serviceIntent = new Intent();
+    			serviceIntent.setComponent(runningBluetoothServicePackage);
+        		serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+        		context.startService(serviceIntent);
+        		return true;
+    		}
     		return false;
     	}
 	}
@@ -171,7 +182,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    	//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
 	    	if ((service.service.getClassName()).toLowerCase().contains(SDL_ROUTER_SERVICE_CLASS_NAME)) {
-	    		runningBluetoothServicePackage = service.service.getPackageName();	//Store which instance is running
+	    		runningBluetoothServicePackage = service.service;	//Store which instance is running
 	            if(pingService){
 	            	Intent intent = new Intent();
 	            	intent.setClassName(service.service.getPackageName(), service.service.getClassName());
@@ -196,7 +207,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {
-				con = context.createPackageContext(runningBluetoothServicePackage, 0);
+				con = context.createPackageContext(runningBluetoothServicePackage.getPackageName(), 0);
 	            if(con==null ){
 	            	Log.w(TAG, "Unable to check for service connection. Returning false. "+runningBluetoothServicePackage);
 	            	return false; // =( well that sucks.

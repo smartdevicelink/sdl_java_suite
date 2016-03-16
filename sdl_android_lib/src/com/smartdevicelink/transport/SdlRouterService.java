@@ -98,10 +98,11 @@ public class SdlRouterService extends Service{
 	private static boolean closing = false;
 	private static Context currentContext = null;
     
-    private Handler versionCheckTimeOutHandler;
-    private Runnable versionCheckRunable;
+    private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
+    private Runnable versionCheckRunable, altTransportTimerRunnable;
     private LocalRouterService localCompareTo = null;
-    private final static int VERSION_TIMEOUT_RUNNABLE = 750; 
+    private final static int VERSION_TIMEOUT_RUNNABLE = 750;
+    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
 	
     private boolean wrongProcess = false;
 	
@@ -157,24 +158,26 @@ public class SdlRouterService extends Service{
 		//Log.enableBluetoothTraceLogging(receivedIntent.getBooleanExtra(LOG_TRACE_BT_DEBUG_BOOLEAN_EXTRA, false));
 		//Ok this is where we should do some authenticating...maybe. 
 		//Should we ask for all relevant data in this packet?
+		if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
+			
+			if(startSequenceComplete &&
+					!connectAsClient && (mSerialService ==null 
+					|| mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE)){
+				Log.e(TAG, "Serial service not initliazed while registering app");
+				//Maybe we should try to do a connect here instead
+				Log.d(TAG, "Serial service being restarted");
+				if(mSerialService ==null){
+					Log.e(TAG, "Local copy of BT Server is null");
+					mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
+					if(mSerialService==null){
+						Log.e(TAG, "Local copy of BT Server is still null and so is global");
+						mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 
-		if(startSequenceComplete &&
-				!connectAsClient && (mSerialService ==null 
-									|| mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE)){
-			Log.e(TAG, "Serial service not initliazed while registering app");
-			//Maybe we should try to do a connect here instead
-			Log.d(TAG, "Serial service being restarted");
-			if(mSerialService ==null){
-				Log.e(TAG, "Local copy of BT Server is null");
-				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
-				if(mSerialService==null){
-					Log.e(TAG, "Local copy of BT Server is still null and so is global");
-					mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
-
+					}
 				}
-			}
-			mSerialService.start();
+				mSerialService.start();
 
+			}
 		}
 
 		Log.i(TAG, app.appId + " has just been registered with SDL Router Service");
@@ -244,7 +247,7 @@ public class SdlRouterService extends Service{
 							Log.d(TAG, "Bluetooth is shutting off, SDL Router Service is closing.");
 							//Since BT is shutting off...there's no reason for us to be on now. 
 							//Let's take a break...I'm sleepy
-							shouldServiceKeepRunning(intent);
+							shouldServiceRemainOpen(intent);
 						}
 					else{//So we just got d/c'ed from the bluetooth...alright...Let the client know
 						if(legacyModeEnabled){
@@ -503,7 +506,7 @@ public class SdlRouterService extends Service{
         					altTransportService = null;
         					storeConnectedStatus(false);
         					onTransportDisconnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
-        					shouldServiceKeepRunning(null); //this will close the service if bluetooth is not available
+        					shouldServiceRemainOpen(null); //this will close the service if bluetooth is not available
         				}
         			}else if(receivedBundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
     					Message retMsg =  Message.obtain();
@@ -514,6 +517,13 @@ public class SdlRouterService extends Service{
         						break;
         					}
         					altTransportService = msg.replyTo;
+        					//Clear out the timer to make sure the service knows we're good to go
+        					if(altTransportTimerHandler!=null && altTransportTimerRunnable!=null){
+        						altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
+        					}
+        					altTransportTimerHandler = null;
+        					altTransportTimerRunnable = null;
+        					
         					storeConnectedStatus(true);
         					//Let the alt transport know they are good to go
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS;
@@ -676,8 +686,19 @@ public class SdlRouterService extends Service{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(REGISTER_WITH_ROUTER_ACTION);
 		registerReceiver(mainServiceReceiver,filter);
-				
-		if(!connectAsClient){initBluetoothSerialService();}
+		
+		if(!connectAsClient){
+			if(bluetoothAvailable()){
+				initBluetoothSerialService();
+			}
+		}
+		
+		if(altTransportTimerHandler!=null){
+			//There's an alt transport waiting for this service to be started
+			Intent intent =  new Intent(TransportConstants.ALT_TRANSPORT_RECEIVER);
+			sendBroadcast(intent);
+		}
+		
 		startSequenceComplete= true;
 	}
 
@@ -698,13 +719,18 @@ public class SdlRouterService extends Service{
 				}
 			}
 		}
-		shouldServiceKeepRunning(intent);
+		shouldServiceRemainOpen(intent);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
 	@Override
 	public void onDestroy(){
 		if(versionCheckTimeOutHandler!=null){versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);}
+		if(altTransportTimerHandler!=null){
+			altTransportTimerHandler.removeCallbacks(versionCheckRunable);
+			altTransportTimerHandler = null;
+			versionCheckRunable = null;
+		}
 		Log.w(TAG, "Sdl Router Service Destroyed");
 	    closing = true;
 		currentContext = null;
@@ -839,17 +865,19 @@ public class SdlRouterService extends Service{
 	 * 3. If Bluetooth is off/NA	 												shut down
 	 * 4. Anything else					
 	 */
-	public boolean shouldServiceKeepRunning(Intent intent){
+	public boolean shouldServiceRemainOpen(Intent intent){
 		//Log.d(TAG, "Determining if this service should remain open");
 		
-		if(altTransportService!=null 
-				|| (intent!=null && intent.hasExtra(TransportConstants.ALT_TRANSPORT_ADDRESS_EXTRA))){ //FIXME how to handle 'service starts'
+		if(altTransportService!=null || altTransportTimerHandler !=null){
 			//We have been started by an alt transport, we must remain open. "My life for Auir...."
 			Log.d(TAG, "Alt Transport connected, remaining open");
 			return true;
 			
-		}
-		else if(!bluetoothAvailable()){//If bluetooth isn't on...there's nothing to see here
+		}else if(intent!=null && TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT.equals(intent.getAction())){
+			Log.i(TAG, "Received start intent with alt transprt request.");
+			startAltTransportTimer();
+			return true;
+		}else if(!bluetoothAvailable()){//If bluetooth isn't on...there's nothing to see here
 			//Bluetooth is off, we should shut down
 			Log.d(TAG, "Bluetooth not available, shutting down service");
 			closeSelf();
@@ -1389,6 +1417,22 @@ public class SdlRouterService extends Service{
             }
         };
         versionCheckTimeOutHandler.postDelayed(versionCheckRunable, VERSION_TIMEOUT_RUNNABLE); 
+	}
+	
+	/**
+	 * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
+	 * @param context
+	 */
+	private void startAltTransportTimer(){
+		altTransportTimerHandler = new Handler(); 
+		altTransportTimerRunnable = new Runnable() {           
+            public void run() {
+            	altTransportTimerHandler = null;
+            	altTransportTimerRunnable = null;
+            	shouldServiceRemainOpen(null);
+            }
+        };
+        altTransportTimerHandler.postDelayed(altTransportTimerRunnable, ALT_TRANSPORT_TIMEOUT_RUNNABLE); 
 	}
 	
 	private Intent getLastReceivedStartIntent(){	
