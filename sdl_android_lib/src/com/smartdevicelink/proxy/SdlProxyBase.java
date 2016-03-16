@@ -1696,9 +1696,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				continue;
 			}
 			
-			if ( (sec != null) && (sec.getMake() != null) )
+			if ( (sec != null) && (sec.getMakeList() != null) )
 			{
-				if (sec.getMake().equalsIgnoreCase(make))
+				if (sec.getMakeList().contains(make))
 				{
 					setSdlSecurity(sec);
 					if (sec != null)

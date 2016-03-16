@@ -9,7 +9,7 @@ public abstract class SdlSecurityBase {
 	
 	private SdlSession session = null;	
 	private String appId = null;
-	private String make = null;
+	private List<String> makeList = null;
 	private boolean isInitSuccess = false;
 	private byte sessionId = 0;
 	private List<SessionType> startServiceList = new ArrayList<SessionType>();	
@@ -78,11 +78,11 @@ public abstract class SdlSecurityBase {
     	appId = val;
     }
 
-    public String getMake() {
-    	return make;
+    public List<String> getMakeList() {
+    	return makeList;
     }
     
-    public void setMake(String val) {
-    	make = val;
+    public void setMakeList(List<String> val) {
+    	makeList = val;
     }
 }
