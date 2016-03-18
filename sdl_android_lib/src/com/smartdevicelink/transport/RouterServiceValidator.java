@@ -41,9 +41,9 @@ public class RouterServiceValidator {
 	private static final String TAG = "PackageCheckUtl";
 	public static final String ROUTER_SERVICE_PACKAGE = "com.sdl.router";
 
-	private static final String REQUEST_PREFIX = "https://woprjrdev.smartdevicelink.org/api/1/applications/queryTrustedRouters"; //FIXME go to trusted server
+	private static final String REQUEST_PREFIX = "https://woprjr.smartdevicelink.org/api/1/applications/queryTrustedRouters"; 
 
-	private static final String DEFAULT_APP_LIST = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.ford.sdl\":{ \"versionBlacklist\": [] },\"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
+	private static final String DEFAULT_APP_LIST = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
 	
 	
 	private static final String JSON_RESPONSE_OBJECT_TAG = "response";
