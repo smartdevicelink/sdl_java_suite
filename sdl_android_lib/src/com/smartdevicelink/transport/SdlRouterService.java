@@ -4,7 +4,7 @@ import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_
 import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.WAKE_UP_BLUETOOTH_SERVICE_INTENT;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,8 +13,10 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -42,6 +44,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
+
 import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
@@ -78,7 +81,6 @@ public class SdlRouterService extends Service{
 	
 	private static final int FOREGROUND_SERVICE_ID = 849;
 	
-	public static final String START_ROUTER_SERVICE_ACTION 					= "sdl.router"+ TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX;
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
 	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
@@ -947,7 +949,7 @@ public class SdlRouterService extends Service{
 			Intent unregisterIntent = new Intent();
 			unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
 			unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX);
+			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 			sendBroadcast(unregisterIntent);
 			//return;
 		}else{
@@ -1294,13 +1296,6 @@ public class SdlRouterService extends Service{
 			return false;
 		}
 
-		/**
-		 * This method will make sure a copy of the Router Service is up and running so 
-		 * the SDL enabled apps will be ready for a connection.
-		 */
-		public static void wakeUpBluetoothService(Context context){
-			context.sendOrderedBroadcast(new Intent(WAKE_UP_BLUETOOTH_SERVICE_INTENT),null);
-		}
 		
 		//**************************************************************************************************************************************
 		//********************************************************* PREFERENCES ****************************************************************

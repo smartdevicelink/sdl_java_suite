@@ -9,13 +9,11 @@ package com.smartdevicelink.transport;
  *
  */
 public class TransportConstants {
-	public static final String WAKE_UP_BLUETOOTH_SERVICE_INTENT				="sdl.bluetooth.startservice";
-	//protected static final String REQUEST_BT_CLIENT_CONNECT 				= "com.sdl.android.requestBtClientConnect";
+	public static final String START_ROUTER_SERVICE_ACTION					="sdl.router.startservice";
 
 	public static final String UNREGISTER_WITH_ROUTER_ACTION 				= "com.sdl.android.unregister"; 
 	public static final String SEND_PACKET_ACTION 							= "com.sdl.android.sendpacket";
 	public static final String SEND__GLOBAL_PACKET_ACTION 					= "com.sdl.android.sendglobalpacket";
-	public static final String START_ROUTER_SERVICE_ACTION_SUFFIX			= ".startservice";
 
 	public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
 	public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";

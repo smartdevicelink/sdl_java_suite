@@ -19,7 +19,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	private static final String BOOT_COMPLETE = "android.intent.action.BOOT_COMPLETED";
 	private static final String ACL_CONNECTED = "android.bluetooth.device.action.ACL_CONNECTED";
 	private static final String STATE_CHANGED = "android.bluetooth.adapter.action.STATE_CHANGED" ;
-	private static final String START_SERVICE = "sdl.router.startservice";
 	
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 
@@ -58,7 +57,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
         if(!(action.equalsIgnoreCase(BOOT_COMPLETE)
         		|| action.equalsIgnoreCase(ACL_CONNECTED)
         		|| action.equalsIgnoreCase(STATE_CHANGED)
-        		|| action.equalsIgnoreCase(START_SERVICE))){
+        		|| action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION))){
         	//We don't want anything else here if the child class called super and has different intent filters
         	//Log.i(TAG, "Unwanted intent from child class");
         	return;
@@ -68,7 +67,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    localRouterClass = defineLocalSdlRouterClass();
         
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
-		if(action.contains(TransportConstants.START_ROUTER_SERVICE_ACTION_SUFFIX)){  //TODO make sure this works with only the suffix
+		if(action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION)){ 
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
 				if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
 					String packageName = intent.getStringExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE);
@@ -224,6 +223,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 		}else{
 			Log.w(TAG, "Router service isn't running, returning false.");
+			if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
+				Intent serviceIntent = new Intent();
+				serviceIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
+				serviceIntent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
+	    		context.sendBroadcast(serviceIntent);
+			}
 		}
 
 		return false;

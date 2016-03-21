@@ -147,7 +147,7 @@ public class RouterServiceValidator {
 	 */
 	private void wakeUpRouterServices(){
 		if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
-			Intent intent = new Intent(SdlRouterService.START_ROUTER_SERVICE_ACTION);
+			Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
 			context.sendBroadcast(intent);
 		}
