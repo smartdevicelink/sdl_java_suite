@@ -299,6 +299,7 @@ public class SdlRouterService extends Service{
 	        			}
 	            	//**************** We don't break here so we can let the app register as well
 	                case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
+	                	pingClients();
 	                	Message message = Message.obtain();
 	                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
 	                	long appId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
@@ -612,6 +613,33 @@ public class SdlRouterService extends Service{
 				RegisteredApp app = it.next();
 				result = app.sendMessage(message);
 				if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+					it.remove();
+					
+				}
+				
+			}
+
+		}
+	
+	}
+	
+	private void pingClients(){
+		Message message = Message.obtain();
+		Log.d(TAG, "Pinging "+ registeredApps.size()+ " clients");
+		int result;
+		synchronized(REGISTERED_APPS_LOCK){
+			Collection<RegisteredApp> apps = registeredApps.values();
+			Iterator<RegisteredApp> it = apps.iterator();
+			while(it.hasNext()){
+				RegisteredApp app = it.next();
+				result = app.sendMessage(message);
+				if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+					Vector<Long> sessions = app.getSessionIds();
+					for(Long session:sessions){
+						if(session !=null && session != -1){
+							attemptToCleanUpModule(session.intValue(), cachedModuleVersion);
+						}
+					}
 					it.remove();
 					
 				}
