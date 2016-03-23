@@ -296,7 +296,11 @@ public class TransportBroker {
 					initRouterConnection();
 				}
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
-				return registerWithRouterService();
+				if(!isBound){
+					return registerWithRouterService();
+				}else{
+					return false;
+				}
 			}
 		}
 		
