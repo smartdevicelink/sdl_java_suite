@@ -50,7 +50,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	private CopyOnWriteArrayList<SdlSession> listenerList = new CopyOnWriteArrayList<SdlSession>();
 	private static TransportType legacyTransportRequest = null;
 	private final static int BUFF_READ_SIZE = 1000000;
-	private static MultiplexTransportConfig cachedMultiConfig = null;
+	protected static MultiplexTransportConfig cachedMultiConfig = null;
 	
 	/**
 	 * Constructor.
@@ -761,12 +761,17 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				
 			}
 		}else if(_transport.getTransportType()==TransportType.BLUETOOTH 
-				&& !_transport.getIsConnected() && cachedMultiConfig!=null){
-				//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
-				ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
-				cachedMultiConfig.setService(tempCompName);
-				//We are not connected yet so we should be able to close down
-				_transport.disconnect(); //This will force us into the 
+				&& !_transport.getIsConnected()){
+					if(cachedMultiConfig!=null){
+					//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
+					ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+					cachedMultiConfig.setService(tempCompName);
+					//We are not connected yet so we should be able to close down
+					_transport.disconnect(); //This will force us into the 
+				}else{
+					Log.i(TAG, "No cached multiplexing config, transport error being called");
+					_transport.disconnect();
+				}
 			Log.w(TAG, "Using own transport, but not connected. Attempting to join multiplexing");		
 		}else{
 			Log.w(TAG, "Currently in legacy mode connected to own transport service. Nothing will take place on trnasport cycle");	

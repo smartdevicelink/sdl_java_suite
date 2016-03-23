@@ -936,6 +936,10 @@ public class SdlRouterService extends Service{
 		}
 	}
 	private synchronized void initBluetoothSerialService(){
+		if(legacyModeEnabled){
+			Log.d(TAG, "Not starting own bluetooth during legacy mode");
+			return;
+		}
 		Log.i(TAG, "Iniitializing Bluetooth Serial Class");
 		//init serial service
 		if(mSerialService ==null){

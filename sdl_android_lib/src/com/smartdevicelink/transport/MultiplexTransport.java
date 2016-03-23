@@ -287,19 +287,18 @@ public class MultiplexTransport extends SdlTransport{
 						}
 					}
 				}
-				
+
 				@Override
-				public void onFailedRouterRegistration(int reason) {
-					super.onFailedRouterRegistration(reason);
+				public void onLegacyModeEnabled() {
+					super.onLegacyModeEnabled();
 					SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
 					if(isLegacyModeEnabled()){
-						Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
+						Log.d(TAG, "Handle on legacy mode enabled");
 						this.stop();
 						isDisconnecting = true;
 						//handleTransportDisconnected("");
 						handleTransportError("",null); //This seems wrong, but it works
 					}
-					
 				}
 
 				@Override

@@ -165,7 +165,7 @@ public class TransportBroker {
         				enableLegacyMode(true);
         				//We call this so we can start the process of legacy connection
         				//onHardwareDisconnected(TransportType.BLUETOOTH);
-        				onFailedRouterRegistration(msg.arg1);
+        				onLegacyModeEnabled();
         				break;
             		default:
             			registeredWithRouterService = false; 
@@ -238,7 +238,11 @@ public class TransportBroker {
         			if(bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
         				//We should shut down, so call 
         				Log.d(TAG, "Hardware disconnected");
-        				onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        				if(isLegacyModeEnabled()){
+        					onLegacyModeEnabled();
+        				}else{
+        					onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        				}
         				break;
         			}
         			
@@ -350,7 +354,7 @@ public class TransportBroker {
 		}
 		
 		public void onHardwareDisconnected(TransportType type){
-			synchronized(INIT_LOCK){
+			synchronized(INIT_LOCK){Log.d(TAG, "onHardwareDisconnect");
 				unBindFromRouterService();
 				routerServiceMessenger = null;
 				routerConnection = null;
@@ -372,8 +376,8 @@ public class TransportBroker {
 		public void onPacketReceived(Parcelable packet){
 			
 		}
-		
-		public void onFailedRouterRegistration(int reason){
+
+		public void onLegacyModeEnabled(){
 			
 		}
 		
