@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.IBinder.DeathRecipient;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcel;
@@ -334,6 +335,7 @@ public class SdlRouterService extends Service{
 	                		if(old!=null){
 	                			Log.w(TAG, "Replacing already existing app with this app id");
 	                			removeAllSessionsForApp(old, true);
+	                			old.clearDeathNote();
 	                		}
 	                	}
 	            		onAppRegistered(app);
@@ -613,7 +615,9 @@ public class SdlRouterService extends Service{
 				RegisteredApp app = it.next();
 				result = app.sendMessage(message);
 				if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+					app.clearDeathNote();
 					it.remove();
+					
 					
 				}
 				
@@ -634,6 +638,7 @@ public class SdlRouterService extends Service{
 				RegisteredApp app = it.next();
 				result = app.sendMessage(message);
 				if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
+					app.clearDeathNote();
 					Vector<Long> sessions = app.getSessionIds();
 					for(Long session:sessions){
 						if(session !=null && session != -1){
@@ -1251,6 +1256,7 @@ public class SdlRouterService extends Service{
 				Log.d(TAG, "Dead object, removing app and sessions");
 				//Get all their sessions and send out unregister info
 				//Use the version in this packet as a best guess
+				app.clearDeathNote();
 				Vector<Long> sessions = app.getSessionIds();
 				byte[]  unregister,stopService;
 				int size = sessions.size(), sessionId;
@@ -1514,6 +1520,17 @@ public class SdlRouterService extends Service{
 			}
 		}
     }
+    
+    private boolean removeAppFromMap(RegisteredApp app){
+    	synchronized(REGISTERED_APPS_LOCK){
+    		RegisteredApp old = registeredApps.remove(app); 
+    		if(old!=null){
+    			old.clearDeathNote();
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 	
 	private Long getAppIDForSession(int sessionId, boolean shouldAssertNewSession){
 		synchronized(SESSION_LOCK){
@@ -1747,6 +1764,7 @@ public class SdlRouterService extends Service{
 		Messenger messenger;
 		Vector<Long> sessionIds;
 		ByteAraryMessageAssembler buffer;
+		DeathRecipient deathNote = null;
 		/**
 		 * This is a simple class to hold onto a reference of a registered app.
 		 * @param appId
@@ -1756,6 +1774,7 @@ public class SdlRouterService extends Service{
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
+			setDeathNote();
 		}
 		public long getAppId() {
 			return appId;
@@ -1848,6 +1867,37 @@ public class SdlRouterService extends Service{
 				buffer.close();
 				buffer = null;
 			}
+		}
+		
+		protected boolean setDeathNote(){
+			if(messenger!=null){
+				if(deathNote == null){
+					deathNote = new DeathRecipient(){
+						@Override
+						public void binderDied() {
+							Log.w(TAG, "Binder died");
+							removeAllSessionsForApp(RegisteredApp.this,true);
+							removeAppFromMap(RegisteredApp.this);
+						}
+						
+					};
+				}
+				try {
+					messenger.getBinder().linkToDeath(deathNote, 0);
+					return true;
+				} catch (RemoteException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			return false;
+		}
+		
+		protected boolean clearDeathNote(){
+			if(messenger!=null && messenger.getBinder()!=null && deathNote!=null){
+				return messenger.getBinder().unlinkToDeath(deathNote, 0);
+			}
+			return false;
 		}
 	}
 	
