@@ -1,61 +1,20 @@
-##############################
-# Project Specific
-##############################
+/.settings/
+/bin/
+/gen/
+/libs/
+/project.properties
+/.classpath
+/.project
+/lint.xml
+/proguard-project.txt
 
-
-##############################
-# OS generated files 
-##############################
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-##############################
-# built application files
-##############################
-*.apk
-*.ap_
-
-##############################
-# files for the dex VM
-##############################
-*.dex
-
-##############################
-# Java class files
-##############################
-*.class
-
-##############################
-# Generated files
-##############################
-bin/
-gen/
-
-##############################
-# Local configuration file
-##############################
+# Android Studio
+*.gradle
+.idea/
+*.iml
+build/
+gradle*
 local.properties
 
-##############################
-# Eclipse project files
-##############################
-.classpath
-.project
-
-##############################
-# Proguard folder (Eclipse)
-##############################
-proguard/
-
-##############################
-# Intellij project files
-##############################
-*.iml
-*.ipr
-*.iws
-.idea/
+# OSX garbage
+.DS_Store

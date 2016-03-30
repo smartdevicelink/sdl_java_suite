@@ -2,5 +2,6 @@
 	<uses-sdk android:minSdkVersion="8"/>
    	<!-- Required to use the USB Accessory mode -->
     <uses-feature android:name="android.hardware.usb.accessory"/>
-    <application android:debuggable="true"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <application/>
 </manifest>
