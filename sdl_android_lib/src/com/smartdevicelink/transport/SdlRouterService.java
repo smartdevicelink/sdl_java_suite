@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -57,7 +58,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
-import com.smartdevicelink.transport.SdlRouterService.RegisteredApp;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
@@ -845,9 +845,15 @@ public class SdlRouterService extends Service{
        // Bitmap icon = BitmapFactory.decodeByteArray(SdlLogo.SDL_LOGO_STRING, 0, SdlLogo.SDL_LOGO_STRING.length);
 
         Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("SmartDeviceLink");
+        if(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)){ //If we are in debug mode, include what app has the router service open
+        	ComponentName name = new ComponentName(this, this.getClass());
+        	builder.setContentTitle("SDL: " + name.getPackageName());
+        }else{
+        	builder.setContentTitle("SmartDeviceLink");
+        }
         builder.setTicker("SmartDeviceLink Connected");
         builder.setContentText("Connected to " + this.getConnectedDeviceName());
+       
        //TODO use icon from library resources if available
         builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
         builder.setLargeIcon(icon);
