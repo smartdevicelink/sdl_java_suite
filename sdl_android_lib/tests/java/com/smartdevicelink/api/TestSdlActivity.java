@@ -1,4 +1,4 @@
-package com.smartdevicelink.api.lifecycle;
+package com.smartdevicelink.api;
 
 import android.support.test.runner.AndroidJUnit4;
 
