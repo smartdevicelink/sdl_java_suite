@@ -19,42 +19,46 @@ import java.util.Vector;
 public class SdlApplicationConfig {
 
     // Required parameters
-    private String appId;
-    private String appName;
+    private String mAppId;
+    private String mAppName;
     private Boolean isMediaApp;
 
     // Optional parameters - initialized to default values
-    private SdlProxyConfigurationResources sdlProxyConfigurationResources = null;
-    private Vector<TTSChunk> ttsChunks = null;
-    private String sShortAppName = null;
-    private Vector<String>vrSynonyms = null;
-    private Language lang = Language.EN_US;
-    private Language hmiLang = Language.EN_US;
-    private Vector<AppHMIType> vrAppHMITypes = null;
-    private String autoActivateID = null;
+    private SdlProxyConfigurationResources mSdlProxyConfigurationResources = null;
+    private Vector<TTSChunk> mTTSChunks = null;
+    private String mShortAppName = null;
+    private Vector<String> mVrSynonyms = null;
+    private Language mLang = Language.EN_US;
+    private Language mHmiLang = Language.EN_US;
+    private Vector<AppHMIType> mVrAppHMITypes = null;
+    private String mAutoActivateID = null;
     private BaseTransportConfig mTransport = new BTTransportConfig();
 
     // Handled internally
-    private IProxyListenerALM listener;
-    private Service service = null;
-    private String sAppResumeHash = null;
-    private boolean callbackToUIThread = false;
-    private boolean preRegister = false;
-    private SdlMsgVersion sdlMessageVersion = null;
+    private IProxyListenerALM mProxyListenerALM;
+    private Service mService = null;
+    private String mAppResumeHash = null;
+    private boolean isCallbackToUIThread = false;
+    private boolean isPreRegister = false;
+    private SdlMsgVersion mSdlMsgVersion = null;
 
 
     private SdlApplicationConfig(){
 
     }
 
+    String getAppId(){
+        return mAppId;
+    }
+
     SdlProxyALM buildProxy(SdlApplication sdlApplication, String resumeHash, IProxyListenerALM listener){
-        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(listener, appId, appName, isMediaApp);
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(listener, mAppId, mAppName, isMediaApp);
         builder.setService(sdlApplication)
-                .setTtsName(ttsChunks)
+                .setTtsName(mTTSChunks)
                 .setAppResumeDataHash(resumeHash)
-                .setLangDesired(lang)
-                .setHMILangDesired(hmiLang)
-                .setVrAppHMITypes(vrAppHMITypes)
+                .setLangDesired(mLang)
+                .setHMILangDesired(mHmiLang)
+                .setVrAppHMITypes(mVrAppHMITypes)
                 .setTransportType(mTransport);
         try {
             return builder.build();
