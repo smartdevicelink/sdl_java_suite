@@ -1,6 +1,6 @@
 package com.smartdevicelink.api;
 
-import android.app.Notification;
+import android.app.Service;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.SdlProxyALM;
@@ -25,7 +25,6 @@ public class SdlApplicationConfig {
     private Class<? extends SdlActivity> mMainSdlActivity;
 
     // Optional parameters - initialized to default values
-    private Notification mPersistentNotification;
     private SdlProxyConfigurationResources mSdlProxyConfigurationResources;
     private Vector<TTSChunk> mTTSChunks;
     private String mShortAppName;
@@ -34,7 +33,9 @@ public class SdlApplicationConfig {
     private Language mHmiLang;
     private Vector<AppHMIType> mVrAppHMITypes;
     private String mAutoActivateID;
-    private BaseTransportConfig mTransport ;
+    private BaseTransportConfig mTransport;
+
+    private Integer appIconResId;
 
     // Handled internally
     private boolean isCallbackToUIThread = false;
@@ -48,7 +49,6 @@ public class SdlApplicationConfig {
         this.isMediaApp = builder.isMediaApp;
         this.mMainSdlActivity = builder.mainSdlActivity;
 
-        this.mPersistentNotification = builder.persistentNotification;
         this.mSdlProxyConfigurationResources = builder.sdlProxyConfigurationResources;
         this.mTTSChunks = builder.ttsChunks;
         this.mShortAppName = builder.shortAppName;
@@ -59,6 +59,7 @@ public class SdlApplicationConfig {
         this.mAutoActivateID = builder.autoActivateID;
         this.mTransport = builder.transport;
 
+        this.appIconResId = builder.appIconResId;
     }
 
     /**
@@ -80,14 +81,14 @@ public class SdlApplicationConfig {
 
     /**
      * Builds the SdlProxy to be used by the SdlApplication described by this config.
-     * @param sdlApplication {@link SdlApplication} that the proxy is constructed for.
+     * @param service {@link SdlApplication} that the proxy is constructed for.
      * @param resumeHash Hash for resuming the app as a String.
      * @param listener Implementation of {@link IProxyListenerALM} to receive proxy callbacks on.
      * @return {@link SdlProxyALM} to be used by the SdlApplication to connect to the head unit.
      */
-    SdlProxyALM buildProxy(SdlApplication sdlApplication, String resumeHash, IProxyListenerALM listener){
+    SdlProxyALM buildProxy(Service service, String resumeHash, IProxyListenerALM listener){
         SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(listener, mAppId, mAppName, isMediaApp);
-        builder.setService(sdlApplication)
+        builder.setService(service)
                 .setAppResumeDataHash(resumeHash)
                 .setTransportType(mTransport)
                 .setAutoActivateID(mAutoActivateID)
@@ -140,7 +141,7 @@ public class SdlApplicationConfig {
      * {@link SdlApplication} to use with {@link SdlManager#registerSdlApplication(SdlApplicationConfig)}
      * to setup a connection with an SDL enabled head unit.
      */
-    public class Builder{
+    public static class Builder{
         // Required parameters
         private String appId;
         private String appName;
@@ -148,7 +149,6 @@ public class SdlApplicationConfig {
         private Class<? extends SdlActivity> mainSdlActivity;
 
         // Optional parameters - initialized to default values
-        private Notification persistentNotification = null;
         private SdlProxyConfigurationResources sdlProxyConfigurationResources = null;
         private Vector<TTSChunk> ttsChunks = null;
         private String shortAppName = null;
@@ -158,6 +158,8 @@ public class SdlApplicationConfig {
         private Vector<AppHMIType> vrAppHMITypes = null;
         private String autoActivateID = null;
         private BaseTransportConfig transport = new BTTransportConfig();
+
+        private Integer appIconResId;
 
         public Builder(String appId, String appName, boolean isMedia,
                        Class<? extends SdlActivity> mainSdlActivity){
@@ -171,7 +173,7 @@ public class SdlApplicationConfig {
          * Builds an instance of {@link SdlApplicationConfig} to be registered with {@link SdlManager#registerSdlApplication(SdlApplicationConfig)}.
          * @return {@link SdlApplicationConfig} describing the desired {@link SdlApplication}.
          */
-        SdlApplicationConfig build(){
+        public SdlApplicationConfig build(){
             return new SdlApplicationConfig(this);
         }
 
@@ -249,13 +251,12 @@ public class SdlApplicationConfig {
         }
 
         /**
-         * Setter for the persistent Notification to be displayed in the notification shade. The
-         * SdlApplication will be started as a service connected to this notification to prevent it
-         * from being killed.
-         * @param notification
+         * Sets the resource ID from R.drawable to use for the app icon displayed on the HMI.
+         * This will automatically be sent and set.
+         * @param appIconResId
          */
-        public void setPersistentNotification(Notification notification){
-            this.persistentNotification = notification;
+        public void setAppIconResId(Integer appIconResId) {
+            this.appIconResId = appIconResId;
         }
     }
 }
