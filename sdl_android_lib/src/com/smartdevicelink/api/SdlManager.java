@@ -40,7 +40,7 @@ public class SdlManager {
     }
 
     void onBluetoothConnected(){
-        
+
     }
 
 }

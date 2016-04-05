@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-public class SdlApplication extends Service{
+public class SdlApplication extends Service implements SdlContext{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
