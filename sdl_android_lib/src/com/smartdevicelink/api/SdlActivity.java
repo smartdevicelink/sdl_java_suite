@@ -60,17 +60,17 @@ public abstract class SdlActivity implements SdlContext {
      ****************************/
 
     @Override
-    public void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         mSdlApplicationContext.startSdlActivity(activity, flags);
     }
 
     @Override
-    public SdlContext getSdlApplicationContext() {
+    public final SdlContext getSdlApplicationContext() {
         return mSdlApplicationContext;
     }
 
     @Override
-    public Context getAndroidApplicationContext() {
+    public final Context getAndroidApplicationContext() {
         return mSdlApplicationContext.getAndroidApplicationContext();
     }
 
