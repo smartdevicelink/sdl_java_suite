@@ -72,7 +72,7 @@ public class SdlActivityManager implements SdlLifecycleListener {
      * @param activity Description of the derived SdlActivity class to be instantiated
      * @param flags Indication from the caller on how the backstack should behave
      */
-    public void startSdlActivity(Class<? extends SdlActivity> activity, int flags){
+    public void startSdlActivity(SdlApplication sdlApplicationContext, Class<? extends SdlActivity> activity, int flags){
 
     }
 

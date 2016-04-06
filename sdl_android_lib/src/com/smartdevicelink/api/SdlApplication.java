@@ -73,9 +73,12 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
         DISCONNECTED
     }
 
-    private SdlProxyALM mSdlProxyALM;
-    private SdlAppStatusListener mApplicationStatusListener;
     private SdlApplicationConfig mApplicationConfig;
+
+    private SdlActivityManager mSdlActivityManager;
+    private SdlProxyALM mSdlProxyALM;
+
+    private SdlAppStatusListener mApplicationStatusListener;
     private Status mConnectionStatus;
     private Context mAndroidContext;
 
@@ -118,6 +121,25 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
             }
             mSdlProxyALM = null;
         }
+    }
+
+    /****************************
+     SdlContext interface methods
+     ****************************/
+
+    @Override
+    public void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+        mSdlActivityManager.startSdlActivity(this, activity, flags);
+    }
+
+    @Override
+    public SdlContext getSdlApplicationContext() {
+        return null;
+    }
+
+    @Override
+    public Context getAndroidApplicationContext() {
+        return null;
     }
 
     /***********************************

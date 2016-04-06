@@ -1,8 +1,9 @@
 package com.smartdevicelink.api;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
 
-public class SdlActivity implements SdlContext {
+public abstract class SdlActivity implements SdlContext {
 
     enum SdlActivityState{
         created,
@@ -13,8 +14,14 @@ public class SdlActivity implements SdlContext {
         restarted,
         destroyed
     }
+
+    private final SdlContext mSdlApplicationContext;
+
     SdlActivityState mActivityState;
 
+    SdlActivity(SdlApplication sdlApplicationContext){
+        mSdlApplicationContext = sdlApplicationContext;
+    }
 
     @CallSuper
     public void onCreate(){
@@ -42,13 +49,29 @@ public class SdlActivity implements SdlContext {
     }
 
     @CallSuper
-    public void onStop(){
-
-    }
+    public abstract void onStop();
 
     @CallSuper
-    public void onDestroy(){
+    public abstract void onDestroy();
 
+
+    /****************************
+     SdlContext interface methods
+     ****************************/
+
+    @Override
+    public void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+        mSdlApplicationContext.startSdlActivity(activity, flags);
+    }
+
+    @Override
+    public SdlContext getSdlApplicationContext() {
+        return mSdlApplicationContext;
+    }
+
+    @Override
+    public Context getAndroidApplicationContext() {
+        return mSdlApplicationContext.getAndroidApplicationContext();
     }
 
 }
