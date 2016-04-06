@@ -33,7 +33,8 @@ public class TransportBroker {
 	
 	private static final String TAG = "SdlTransportBroker";
 	private final String WHERE_TO_REPLY_PREFIX	 = "com.sdl.android.";
-	private String appId = null,whereToReply = null;
+	private Long appId = null;
+	private String whereToReply = null;
 	private Context currentContext = null;
 	
 	private final Object INIT_LOCK = new Object();
@@ -88,6 +89,7 @@ public class TransportBroker {
 					routerServiceMessenger.send(message);
 					return true;
 				} catch (RemoteException e) {
+					e.printStackTrace();
 					if(e instanceof TransactionTooLargeException){
 						e.printStackTrace();
 						try {
@@ -279,7 +281,7 @@ public class TransportBroker {
 						whereToReply = WHERE_TO_REPLY_PREFIX + appId +"."+ timeStamp; 
 					}
 				}
-				this.appId = appId.concat(timeStamp);
+				this.appId = Long.valueOf(appId.concat(timeStamp));
 				queuedOnTransportConnect = null;
 				currentContext = context;
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
@@ -423,6 +425,7 @@ public class TransportBroker {
 				Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
 				message.what = TransportConstants.ROUTER_SEND_PACKET;
 				Bundle bundle = new Bundle();
+				bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
 				bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes); //Do we just change this to the args and objs
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, offset);
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, count);
@@ -494,7 +497,7 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REGISTER_CLIENT;
 			msg.replyTo = this.clientMessenger;
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+			bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
 			msg.setData(bundle);
 			sendMessageToRouterService(msg);
 		}
@@ -506,7 +509,7 @@ public class TransportBroker {
 				msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;
 				msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 				Bundle bundle = new Bundle();
-				bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+				bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
 				msg.setData(bundle);
 				sendMessageToRouterService(msg);
 			}else{
@@ -570,7 +573,7 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+			bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}
@@ -580,7 +583,7 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REMOVE_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, Long.valueOf(appId));
+			bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
 			bundle.putLong(TransportConstants.SESSION_ID_EXTRA, sessionId);
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
