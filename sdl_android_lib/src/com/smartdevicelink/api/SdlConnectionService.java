@@ -32,7 +32,7 @@ public class SdlConnectionService extends Service {
         synchronized (MAP_LOCK) {
             if (mRunningApplications.get(config.getAppId()) == null) {
                 mRunningApplications.put(config.getAppId(),
-                        new SdlApplication(this, config, mSdlAppStatusListener));
+                        new SdlApplication(this, config, mConnectionStatusListener));
                 startTimer();
             }
         }
@@ -43,7 +43,7 @@ public class SdlConnectionService extends Service {
             for (Map.Entry<String, SdlApplicationConfig> entry : configRegistry.entrySet()) {
                 if (mRunningApplications.get(entry.getKey()) == null) {
                     mRunningApplications.put(entry.getKey(),
-                            new SdlApplication(this, entry.getValue(), mSdlAppStatusListener));
+                            new SdlApplication(this, entry.getValue(), mConnectionStatusListener));
                 }
             }
         }
@@ -63,7 +63,7 @@ public class SdlConnectionService extends Service {
             public void run() {
                 synchronized (MAP_LOCK) {
                     for (Map.Entry<String, SdlApplication> entry : mRunningApplications.entrySet()) {
-                        entry.getValue().closeApplication(false);
+                        entry.getValue().closeConnection(false);
                     }
                     mRunningApplications.clear();
                     mConnectedApplications.clear();
@@ -84,7 +84,7 @@ public class SdlConnectionService extends Service {
         return new SdlConnectionBinder();
     }
 
-    private SdlAppStatusListener mSdlAppStatusListener = new SdlAppStatusListener() {
+    private SdlApplication.ConnectionStatusListener mConnectionStatusListener = new SdlApplication.ConnectionStatusListener() {
         @Override
         public void onStatusChange(String appId, SdlApplication.Status status) {
             Log.i(TAG, "AppID: " + appId + " is " + status.name());

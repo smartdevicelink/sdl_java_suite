@@ -1,9 +1,10 @@
 package com.smartdevicelink.api;
 
-import android.content.Context;
 import android.support.annotation.CallSuper;
 
-public abstract class SdlActivity implements SdlContext {
+import com.smartdevicelink.api.interfaces.SdlContext;
+
+public abstract class SdlActivity extends SdlContextAbsImpl {
 
     enum SdlActivityState{
         created,
@@ -15,12 +16,10 @@ public abstract class SdlActivity implements SdlContext {
         destroyed
     }
 
-    private final SdlContext mSdlApplicationContext;
-
     SdlActivityState mActivityState;
 
     SdlActivity(SdlContext sdlApplicationContext){
-        mSdlApplicationContext = sdlApplicationContext;
+        super(sdlApplicationContext);
     }
 
     @CallSuper
@@ -53,25 +52,5 @@ public abstract class SdlActivity implements SdlContext {
 
     @CallSuper
     public abstract void onDestroy();
-
-
-    /****************************
-     SdlContext interface methods
-     ****************************/
-
-    @Override
-    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
-        mSdlApplicationContext.startSdlActivity(activity, flags);
-    }
-
-    @Override
-    public final SdlContext getSdlApplicationContext() {
-        return mSdlApplicationContext;
-    }
-
-    @Override
-    public final Context getAndroidApplicationContext() {
-        return mSdlApplicationContext.getAndroidApplicationContext();
-    }
 
 }

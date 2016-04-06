@@ -2,9 +2,11 @@ package com.smartdevicelink.api;
 
 import android.os.Bundle;
 
+import com.smartdevicelink.api.interfaces.SdlContext;
+
 import java.util.Stack;
 
-public class SdlActivityManager implements SdlLifecycleListener {
+public class SdlActivityManager implements SdlApplication.LifecycleListener {
 
     private SdlContext mSdlApplicationContext;
 
@@ -12,7 +14,7 @@ public class SdlActivityManager implements SdlLifecycleListener {
     Stack<SdlActivity> mBackStack = new Stack<>();
 
     public SdlActivityManager(SdlContext sdlApplicationcontext){
-
+        mSdlApplicationContext = sdlApplicationcontext;
     }
 
     /**

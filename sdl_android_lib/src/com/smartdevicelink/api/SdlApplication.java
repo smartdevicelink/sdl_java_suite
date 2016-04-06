@@ -1,6 +1,6 @@
 package com.smartdevicelink.api;
 
-import android.content.Context;
+import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -63,9 +63,14 @@ import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
-public class SdlApplication implements SdlContext, IProxyListenerALM{
+import java.util.ArrayList;
+
+public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerALM{
+
+    private static final String TAG = SdlApplication.class.getSimpleName();
 
     public enum Status {
         CONNECTING,
@@ -78,16 +83,20 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
     private SdlActivityManager mSdlActivityManager;
     private SdlProxyALM mSdlProxyALM;
 
-    private SdlAppStatusListener mApplicationStatusListener;
-    private Status mConnectionStatus;
-    private Context mAndroidContext;
+    private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
 
-    private boolean firstHmiReceived = false;
+    private ConnectionStatusListener mApplicationStatusListener;
+    private Status mConnectionStatus;
+
+    private boolean isFirstHmiReceived = false;
+    private boolean isFirstHmiNotNoneReceived = false;
     
-    SdlApplication(SdlConnectionService service, SdlApplicationConfig config, SdlAppStatusListener listener){
+    SdlApplication(SdlConnectionService service, SdlApplicationConfig config, ConnectionStatusListener listener){
+        super(service.getApplicationContext());
         mApplicationConfig = config;
         mApplicationStatusListener = listener;
-        mAndroidContext = service.getApplicationContext();
+        mSdlActivityManager = new SdlActivityManager(this);
+        mLifecycleListeners.add(mSdlActivityManager);
         mSdlProxyALM = mApplicationConfig.buildProxy(service, null, this);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
@@ -95,7 +104,7 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
         }
     }
 
-    boolean sendRpc(RPCRequest request){
+    final public boolean sendRpc(RPCRequest request){
         if(mSdlProxyALM != null){
             try {
                 mSdlProxyALM.sendRPCRequest(request);
@@ -109,8 +118,11 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
         }
     }
 
-    void closeApplication(boolean notifyStatusListener) {
+    final void closeConnection(boolean notifyStatusListener) {
         if(mConnectionStatus != Status.DISCONNECTED) {
+            for(LifecycleListener listener: mLifecycleListeners){
+                listener.onSdlDisconnect();
+            }
             mConnectionStatus = Status.DISCONNECTED;
             if(notifyStatusListener)
                 mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
@@ -123,6 +135,12 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
         }
     }
 
+    @Override
+    public String toString(){
+        return String.format("SdlApplication: %s-%s",
+                mApplicationConfig.getAppName(), mApplicationConfig.getAppId());
+    }
+
     /****************************
      SdlContext interface methods
      ****************************/
@@ -132,32 +150,65 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
         mSdlActivityManager.startSdlActivity(this, activity, flags);
     }
 
-    @Override
-    public final SdlContext getSdlApplicationContext() {
-        return null;
-    }
-
-    @Override
-    public final Context getAndroidApplicationContext() {
-        return null;
-    }
-
     /***********************************
      IProxyListenerALM interface methods
      ***********************************/
 
     @Override
     public final void onOnHMIStatus(OnHMIStatus notification) {
-        if(!firstHmiReceived){
-            firstHmiReceived = true;
+
+        if(notification == null || notification.getHmiLevel() == null){
+            Log.w(TAG, "INVALID OnHMIStatus Notification Received!");
+            return;
+        }
+
+        HMILevel hmiLevel = notification.getHmiLevel();
+
+        Log.i(TAG, toString() + " Received HMILevel: " + hmiLevel.name());
+
+        if(!isFirstHmiReceived){
+            isFirstHmiReceived = true;
             mConnectionStatus = Status.CONNECTED;
             mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTED);
+
+            for(LifecycleListener listener: mLifecycleListeners){
+                listener.onSdlConnect();
+            }
         }
+
+        if(!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE){
+            mSdlActivityManager.onSdlAppLaunch(mApplicationConfig.getMainSdlActivity());
+        }
+
+        switch (hmiLevel){
+
+            case HMI_FULL:
+                for(LifecycleListener listener: mLifecycleListeners){
+                    listener.onForeground();
+                }
+                break;
+            case HMI_LIMITED:
+            case HMI_BACKGROUND:
+                for(LifecycleListener listener: mLifecycleListeners){
+                    listener.onBackground();
+                }
+                break;
+            case HMI_NONE:
+                if(isFirstHmiNotNoneReceived) {
+                    isFirstHmiNotNoneReceived = false;
+                    isFirstHmiReceived = false;
+                    for(LifecycleListener listener: mLifecycleListeners){
+                        listener.onExit();
+                    }
+                }
+                break;
+        }
+
     }
 
     @Override
     public final void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason) {
-        closeApplication(true);
+        closeConnection(true);
     }
 
     @Override
@@ -182,7 +233,7 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
 
     @Override
     public final void onError(String info, Exception e) {
-        closeApplication(true);
+        closeConnection(true);
     }
 
     @Override
@@ -449,4 +500,21 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
     public final void onServiceDataACK() {
 
     }
+
+    interface ConnectionStatusListener {
+
+        void onStatusChange(String appId, SdlApplication.Status status);
+
+    }
+
+    interface LifecycleListener {
+
+        void onSdlConnect();
+        void onBackground();
+        void onForeground();
+        void onExit();
+        void onSdlDisconnect();
+
+    }
+
 }

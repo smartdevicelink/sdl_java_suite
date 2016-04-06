@@ -71,6 +71,14 @@ public class SdlApplicationConfig {
     }
 
     /**
+     * Getter for the AppName of the SdlApplication defined by this config.
+     * @return The AppName as a {@link String}
+     */
+    String getAppName(){
+        return mAppName;
+    }
+
+    /**
      * Getter for the main SdlActivity that should be launched when the SdlApplication is started
      * by a first HMIFull from the module without a resume state saved.
      * @return {@link SdlActivity} that should be created as the entry point to the app.
