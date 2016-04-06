@@ -79,5 +79,4 @@ public class SdlActivityManager implements SdlApplication.LifecycleListener {
 
     }
 
-
 }
