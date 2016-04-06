@@ -128,17 +128,17 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
      ****************************/
 
     @Override
-    public void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         mSdlActivityManager.startSdlActivity(this, activity, flags);
     }
 
     @Override
-    public SdlContext getSdlApplicationContext() {
+    public final SdlContext getSdlApplicationContext() {
         return null;
     }
 
     @Override
-    public Context getAndroidApplicationContext() {
+    public final Context getAndroidApplicationContext() {
         return null;
     }
 

@@ -19,7 +19,7 @@ public abstract class SdlActivity implements SdlContext {
 
     SdlActivityState mActivityState;
 
-    SdlActivity(SdlApplication sdlApplicationContext){
+    SdlActivity(SdlContext sdlApplicationContext){
         mSdlApplicationContext = sdlApplicationContext;
     }
 

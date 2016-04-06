@@ -6,11 +6,12 @@ import java.util.Stack;
 
 public class SdlActivityManager implements SdlLifecycleListener {
 
+    private SdlContext mSdlApplicationContext;
+
     SdlActivity mCurrentActivity;
     Stack<SdlActivity> mBackStack = new Stack<>();
 
-
-    public SdlActivityManager(){
+    public SdlActivityManager(SdlContext sdlApplicationcontext){
 
     }
 
