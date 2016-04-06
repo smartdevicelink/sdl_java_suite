@@ -106,10 +106,11 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
         }
     }
 
-    void closeApplication() {
+    void closeApplication(boolean notifyStatusListener) {
         if(mConnectionStatus != Status.DISCONNECTED) {
             mConnectionStatus = Status.DISCONNECTED;
-            mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
+            if(notifyStatusListener)
+                mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
             try {
                 mSdlProxyALM.dispose();
             } catch (SdlException e) {
@@ -134,7 +135,7 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
 
     @Override
     public final void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason) {
-        closeApplication();
+        closeApplication(true);
     }
 
     @Override
@@ -159,7 +160,7 @@ public class SdlApplication implements SdlContext, IProxyListenerALM{
 
     @Override
     public final void onError(String info, Exception e) {
-        closeApplication();
+        closeApplication(true);
     }
 
     @Override

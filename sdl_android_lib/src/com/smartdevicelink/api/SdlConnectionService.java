@@ -63,9 +63,11 @@ public class SdlConnectionService extends Service {
             public void run() {
                 synchronized (MAP_LOCK) {
                     for (Map.Entry<String, SdlApplication> entry : mRunningApplications.entrySet()) {
-                        entry.getValue().closeApplication();
-                        mRunningApplications.remove(entry.getKey());
+                        entry.getValue().closeApplication(false);
                     }
+                    mRunningApplications.clear();
+                    mConnectedApplications.clear();
+                    mSdlManager.sdlDisconnected();
                     Log.w(TAG, "SDL connection attempts timed out.");
                 }
             }
