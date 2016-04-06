@@ -2,6 +2,8 @@ package com.smartdevicelink.api;
 
 import android.os.Bundle;
 
+import com.smartdevicelink.api.interfaces.SdlContext;
+
 abstract class ActivityStateTransition {
 
     ActivityStateTransition(){
@@ -16,11 +18,12 @@ abstract class ActivityStateTransition {
         return this;
     }
 
-    ActivityStateTransition launchApp(SdlActivityManager sam, Class<? extends SdlActivity> main){
+    ActivityStateTransition launchApp(SdlActivityManager sam, SdlContext sdlContext,
+                                      Class<? extends SdlActivity> main){
         return this;
     }
 
-    ActivityStateTransition resumeApp(SdlActivityManager sam, Bundle resumeState){
+    ActivityStateTransition resumeApp(SdlActivityManager sam, SdlContext sdlContext, Bundle resumeState){
         return this;
     }
 
@@ -40,7 +43,7 @@ abstract class ActivityStateTransition {
         return this;
     }
 
-    ActivityStateTransition startActivity(SdlActivityManager sam,
+    ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext,
                                           Class<? extends SdlActivity> activity, int flags){
         return this;
     }

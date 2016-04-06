@@ -8,8 +8,8 @@ class ActivityStateTransitionRegistry {
 
     private static final String TAG = ActivityStateTransitionRegistry.class.getSimpleName();
 
-    private HashMap<String, ActivityStateTransition> mTransitionMap = new HashMap<>();
-    private ActivityStateTransitionRegistry mInstance;
+    static private HashMap<String, ActivityStateTransition> mTransitionMap = new HashMap<>();
+    static private ActivityStateTransitionRegistry mInstance;
 
     private ActivityStateTransitionRegistry(){
     }
@@ -20,7 +20,7 @@ class ActivityStateTransitionRegistry {
      * @param transition Implementation of {@link ActivityStateTransition} requested.
      * @return Instance of the desired state transition object.
      */
-    ActivityStateTransition getStateTransition(Class<? extends ActivityStateTransition> transition){
+    static ActivityStateTransition getStateTransition(Class<? extends ActivityStateTransition> transition){
         String name = transition.getSimpleName();
         if(mInstance == null){
             mInstance = new ActivityStateTransitionRegistry();

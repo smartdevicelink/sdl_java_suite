@@ -1,5 +1,7 @@
 package com.smartdevicelink.api;
 
+import com.smartdevicelink.api.interfaces.SdlContext;
+
 class ForegroundStateTransition extends ActivityStateTransition {
 
     @Override
@@ -23,7 +25,7 @@ class ForegroundStateTransition extends ActivityStateTransition {
     }
 
     @Override
-    ActivityStateTransition startActivity(SdlActivityManager sam, Class<? extends SdlActivity> activity, int flags) {
-        return super.startActivity(sam, activity, flags);
+    ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext, Class<? extends SdlActivity> activity, int flags) {
+        return super.startActivity(sam, SdlContext, activity, flags);
     }
 }
