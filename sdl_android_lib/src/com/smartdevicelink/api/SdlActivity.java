@@ -53,4 +53,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @CallSuper
     public abstract void onDestroy();
 
+    @Override
+    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+        getSdlApplicationContext().startSdlActivity(activity, flags);
+    }
 }
