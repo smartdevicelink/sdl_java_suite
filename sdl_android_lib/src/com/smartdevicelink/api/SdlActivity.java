@@ -48,10 +48,42 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @CallSuper
-    public abstract void onStop();
+    public void onStop(){
+
+    }
 
     @CallSuper
-    public abstract void onDestroy();
+    public void onDestroy(){
+
+    }
+
+    final void performCreate(){
+
+    }
+
+    final  void performRestart(){
+
+    }
+
+    final void performStart(){
+
+    }
+
+    final void performForeground(){
+
+    }
+
+    final void performBackground(){
+
+    }
+
+    final void performStop(){
+
+    }
+
+    final void performDestroy(){
+
+    }
 
     @Override
     public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
