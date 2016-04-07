@@ -10,7 +10,7 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
 
     private ActivityStateTransition mStateTransition;
 
-    Stack<SdlActivity> mBackStack = new Stack<>();
+    private Stack<SdlActivity> mBackStack = new Stack<>();
 
     SdlActivityManager(){
         mStateTransition = ActivityStateTransitionRegistry.getStateTransition(DisconnectedStateTransition.class);
@@ -21,7 +21,11 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
     }
 
     public SdlActivity getTopActivity(){
-        return mBackStack.peek();
+        if(mBackStack.empty()){
+            return null;
+        } else {
+            return mBackStack.peek();
+        }
     }
 
     /**

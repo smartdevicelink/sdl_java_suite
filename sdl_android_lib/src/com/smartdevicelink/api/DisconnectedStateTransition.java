@@ -4,6 +4,7 @@ class DisconnectedStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition connect(SdlActivityManager sam) {
-        return super.connect(sam);
+        return transitionToState(sam, ConnectedStateTransition.class);
     }
+
 }
