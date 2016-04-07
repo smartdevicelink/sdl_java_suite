@@ -1,8 +1,13 @@
 package com.smartdevicelink.api;
 
 import android.support.annotation.CallSuper;
+import android.util.Log;
+
+import com.smartdevicelink.api.interfaces.SdlContext;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
+
+    private static final String TAG = SdlActivity.class.getSimpleName();
 
     enum SdlActivityState{
         PRE_CREATE,
@@ -14,8 +19,21 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     private SdlActivityState mActivityState = SdlActivityState.PRE_CREATE;
+    private SdlActivityManager mSdlActivityManager;
 
     private boolean superCalled;
+
+    final void initialize(SdlContext sdlContext, SdlActivityManager sam){
+        if(!isInitialized()) {
+            mSdlActivityManager = sam;
+            setSdlApplicationContext(sdlContext);
+            setAndroidContext(sdlContext.getAndroidApplicationContext());
+            setInitialized(true);
+        } else {
+            Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
+                    this.getClass().getCanonicalName());
+        }
+    }
 
     @CallSuper
     public void onCreate(){
@@ -54,9 +72,14 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @CallSuper
-    public void onDestroy(){
+    public void onDestroy() {
         superCalled = true;
         mActivityState = SdlActivityState.DESTROYED;
+    }
+
+    // TODO: rename and revist implementation
+    public void onBackPressed(){
+        mSdlActivityManager.back();
     }
 
     final SdlActivityState getActivityState(){

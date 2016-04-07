@@ -1,7 +1,6 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 
@@ -24,24 +23,20 @@ abstract class SdlContextAbsImpl implements SdlContext {
         return mAndroidContext;
     }
 
-    void initialize(SdlContext sdlContext){
-        if(!isInitialized) {
-            mAndroidContext = sdlContext.getAndroidApplicationContext();
-            mSdlApplicationContext = sdlContext;
-        } else {
-            Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
-            this.getClass().getCanonicalName());
-        }
+    final void setSdlApplicationContext(SdlContext sdlContext){
+        mSdlApplicationContext = sdlContext;
     }
 
-    void initialize(Context androidContext){
-        if(!isInitialized) {
-            mAndroidContext = androidContext;
-            mSdlApplicationContext = this;
-        } else {
-            Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
-                    this.getClass().getCanonicalName());
-        }
+    final void setAndroidContext(Context context){
+        mAndroidContext = context;
+    }
+
+    final void setInitialized(boolean isInitialized){
+        this.isInitialized = isInitialized;
+    }
+
+    final boolean isInitialized(){
+        return isInitialized;
     }
 
 }

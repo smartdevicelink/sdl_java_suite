@@ -53,7 +53,7 @@ abstract class ActivityStateTransition {
         return this;
     }
 
-    protected SdlActivity instantiateActivity(Class<? extends SdlActivity> main, SdlContext sdlContext){
+    protected SdlActivity instantiateActivity(SdlActivityManager sam, SdlContext sdlContext, Class<? extends SdlActivity> main){
 
         // TODO: make sure class is not already instantiated in sam
 
@@ -61,7 +61,7 @@ abstract class ActivityStateTransition {
 
         try {
             newActivity = main.newInstance();
-            newActivity.initialize(sdlContext);
+            newActivity.initialize(sdlContext, sam);
         } catch (InstantiationException e) {
             Log.e(TAG, "Unable to instantiate " + main.getSimpleName(), e);
         } catch (IllegalAccessException e) {

@@ -1,5 +1,6 @@
 package com.smartdevicelink.api;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -108,6 +109,17 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
     }
 
+    void initialize(Context androidContext){
+        if(!isInitialized()) {
+            setAndroidContext(androidContext);
+            setSdlApplicationContext(this);
+            setInitialized(true);
+        } else {
+            Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
+                    this.getClass().getCanonicalName());
+        }
+    }
+
     final public boolean sendRpc(RPCRequest request){
         if(mSdlProxyALM != null){
             try {
@@ -151,6 +163,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             }
             mSdlProxyALM = null;
         }
+    }
+
+    final SdlActivityManager getSdlActivityManager(){
+        return mSdlActivityManager;
     }
 
     @Override

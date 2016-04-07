@@ -53,7 +53,7 @@ class BackgroundStateTransition extends ActivityStateTransition {
     @Override
     ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext, Class<? extends SdlActivity> activity, int flags) {
         stopTopActivity(sam);
-        SdlActivity newActivity = instantiateActivity(activity, SdlContext);
+        SdlActivity newActivity = instantiateActivity(sam, SdlContext, activity);
         putNewActivityOnStack(sam, newActivity);
         return this;
     }

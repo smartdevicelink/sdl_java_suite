@@ -17,7 +17,7 @@ class ConnectedStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition launchApp(SdlActivityManager sam, SdlContext sdlContext, Class<? extends SdlActivity> main) {
-        SdlActivity newActivity = instantiateActivity(main, sdlContext);
+        SdlActivity newActivity = instantiateActivity(sam, sdlContext, main);
 
         if(newActivity != null){
             putNewActivityOnStack(sam, newActivity);
