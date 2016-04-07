@@ -50,7 +50,7 @@ class ForegroundStateTransition extends ActivityStateTransition {
     @Override
     ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext, Class<? extends SdlActivity> activity, int flags) {
         stopTopActivity(sam);
-        SdlActivity newActivity = instantiateActivity(SdlContext, activity);
+        SdlActivity newActivity = instantiateActivity(activity, SdlContext);
         putNewActivityOnStack(sam, newActivity);
         newActivity.performForeground();
         return this;

@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 
-import java.util.Stack;
-
 class ConnectedStateTransition extends ActivityStateTransition {
 
     private static final String TAG = ConnectedStateTransition.class.getSimpleName();
@@ -19,11 +17,10 @@ class ConnectedStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition launchApp(SdlActivityManager sam, SdlContext sdlContext, Class<? extends SdlActivity> main) {
-        Stack<SdlActivity> backStack = sam.getBackStack();
-        SdlActivity newActivity = instantiateActivity(sdlContext, main);
+        SdlActivity newActivity = instantiateActivity(main, sdlContext);
 
         if(newActivity != null){
-            putNewActivityOnStack(backStack, newActivity);
+            putNewActivityOnStack(sam, newActivity);
 
             ActivityStateTransition nextState =
                     ActivityStateTransitionRegistry.getStateTransition(BackgroundStateTransition.class);

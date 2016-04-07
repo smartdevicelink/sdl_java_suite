@@ -2,8 +2,6 @@ package com.smartdevicelink.api;
 
 import android.support.annotation.CallSuper;
 
-import com.smartdevicelink.api.interfaces.SdlContext;
-
 public abstract class SdlActivity extends SdlContextAbsImpl {
 
     enum SdlActivityState{
@@ -18,10 +16,6 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     private SdlActivityState mActivityState = SdlActivityState.PRE_CREATE;
 
     private boolean superCalled;
-
-    SdlActivity(SdlContext sdlApplicationContext){
-        super(sdlApplicationContext);
-    }
 
     @CallSuper
     public void onCreate(){

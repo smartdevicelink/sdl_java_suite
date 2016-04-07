@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
 
 abstract class ActivityStateTransition {
@@ -55,27 +53,19 @@ abstract class ActivityStateTransition {
         return this;
     }
 
-    protected SdlActivity instantiateActivity(SdlContext sdlContext, Class<? extends SdlActivity> main){
+    protected SdlActivity instantiateActivity(Class<? extends SdlActivity> main, SdlContext sdlContext){
 
-        Constructor activityConstructor = null;
+        // TODO: make sure class is not already instantiated in sam
+
         SdlActivity newActivity = null;
 
         try {
-            activityConstructor = main.getConstructor(SdlContext.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        if(activityConstructor != null){
-            try {
-                newActivity = (SdlActivity) activityConstructor.newInstance(sdlContext);
-            } catch (InstantiationException e) {
-                Log.e(TAG, "Unable to instantiate " + main.getSimpleName(), e);
-            } catch (IllegalAccessException e) {
-                Log.e(TAG, "Unable to access constructor for " + main.getSimpleName(), e);
-            } catch (InvocationTargetException e) {
-                Log.e(TAG, "Invocation target invalid constructor for " + main.getSimpleName(), e);
-            }
+            newActivity = main.newInstance();
+            newActivity.initialize(sdlContext);
+        } catch (InstantiationException e) {
+            Log.e(TAG, "Unable to instantiate " + main.getSimpleName(), e);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "Unable to access constructor for " + main.getSimpleName(), e);
         }
 
         return newActivity;

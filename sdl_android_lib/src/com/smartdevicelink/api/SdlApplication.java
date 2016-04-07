@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -65,6 +66,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.ArrayList;
 
@@ -77,6 +79,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         CONNECTED,
         DISCONNECTED
     }
+
+    private int coorId = 1001;
 
     private SdlApplicationConfig mApplicationConfig;
 
@@ -92,10 +96,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private boolean isFirstHmiNotNoneReceived = false;
     
     SdlApplication(SdlConnectionService service, SdlApplicationConfig config, ConnectionStatusListener listener){
-        super(service.getApplicationContext());
+        initialize(service.getApplicationContext());
         mApplicationConfig = config;
         mApplicationStatusListener = listener;
-        mSdlActivityManager = new SdlActivityManager(this);
+        mSdlActivityManager = new SdlActivityManager();
         mLifecycleListeners.add(mSdlActivityManager);
         mSdlProxyALM = mApplicationConfig.buildProxy(service, null, this);
         if(mSdlProxyALM != null){
@@ -107,6 +111,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     final public boolean sendRpc(RPCRequest request){
         if(mSdlProxyALM != null){
             try {
+                request.setCorrelationID(coorId++);
+                Log.d(TAG, "Sending RPCRequest type " + request.getFunctionName());
                 mSdlProxyALM.sendRPCRequest(request);
             } catch (SdlException e) {
                 e.printStackTrace();
@@ -116,6 +122,18 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         } else {
             return false;
         }
+    }
+
+    final public void addNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+        mSdlProxyALM.addOnRPCNotificationListener(notificationId, listener);
+    }
+
+    final public void removeNotificationListener(FunctionID notificationId){
+        mSdlProxyALM.removeOnRPCNotificationListener(notificationId);
+    }
+
+    final public String getName(){
+        return mApplicationConfig.getAppName();
     }
 
     final void closeConnection(boolean notifyStatusListener) {
@@ -177,7 +195,9 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
 
         if(!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE){
-            mSdlActivityManager.onSdlAppLaunch(mApplicationConfig.getMainSdlActivity());
+            // TODO: Add check for resume
+            mSdlActivityManager.onSdlAppLaunch(this, mApplicationConfig.getMainSdlActivity());
+            isFirstHmiNotNoneReceived = true;
         }
 
         switch (hmiLevel){
@@ -196,7 +216,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             case HMI_NONE:
                 if(isFirstHmiNotNoneReceived) {
                     isFirstHmiNotNoneReceived = false;
-                    isFirstHmiReceived = false;
                     for(LifecycleListener listener: mLifecycleListeners){
                         listener.onExit();
                     }
