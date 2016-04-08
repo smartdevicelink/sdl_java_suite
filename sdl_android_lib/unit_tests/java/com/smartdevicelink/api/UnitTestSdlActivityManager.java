@@ -1,7 +1,7 @@
 package com.smartdevicelink.api;
 
-import com.smartdevicelink.api.testUtil.TestActivity;
-import com.smartdevicelink.api.testUtil.TestActivity.StateTracking;
+import com.smartdevicelink.api.testUtil.SdlTestActivity;
+import com.smartdevicelink.api.testUtil.SdlTestActivity.StateTracking;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifySdlAppLaunchCreatesSdlActivity()  {
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
-        TestActivity tester= (TestActivity) sdlActivityManager.getTopActivity();
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
+        SdlTestActivity tester= (SdlTestActivity) sdlActivityManager.getTopActivity();
         checkConnectedToBackground(tester);
 
         assertThat(tester.stateTracking.isEmpty(), is(true));
@@ -39,9 +39,9 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifyCompleteForegroundTransition(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
         sdlActivityManager.onForeground();
-        TestActivity tester= (TestActivity) sdlActivityManager.getTopActivity();
+        SdlTestActivity tester= (SdlTestActivity) sdlActivityManager.getTopActivity();
         checkConnectedToBackground(tester);
         checkBackgroundToForeground(tester);
         assertThat(tester.stateTracking.isEmpty(), is(true));
@@ -49,9 +49,9 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifyCompleteLifeCycle(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
         sdlActivityManager.onForeground();
-        TestActivity tester= (TestActivity) sdlActivityManager.getTopActivity();
+        SdlTestActivity tester= (SdlTestActivity) sdlActivityManager.getTopActivity();
         sdlActivityManager.onExit();
         checkConnectedToBackground(tester);
         checkBackgroundToForeground(tester);
@@ -63,8 +63,8 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifySuddenDisconnection(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
-        TestActivity tester= (TestActivity) sdlActivityManager.getTopActivity();
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
+        SdlTestActivity tester= (SdlTestActivity) sdlActivityManager.getTopActivity();
         sdlActivityManager.onSdlDisconnect();
         checkConnectedToBackground(tester);
         checkBackgroundToDisconnected(tester);
@@ -73,13 +73,13 @@ public class UnitTestSdlActivityManager{
     }
 
     @Test
-    public void verifyStartOfNewActivity(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
-        TestActivity pushedBack= (TestActivity) sdlActivityManager.getTopActivity();
+    public void verifyStartOfNewBackgroundActivity(){
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
+        SdlTestActivity pushedBack= (SdlTestActivity) sdlActivityManager.getTopActivity();
         checkConnectedToBackground(pushedBack);
-        pushedBack.startSdlActivity(TestActivity.class, 0);
-        TestActivity topActivity= (TestActivity) sdlActivityManager.getTopActivity();
-        checkBackgroundToNotVisible(pushedBack);
+        pushedBack.startSdlActivity(SdlTestActivity.class, 0);
+        SdlTestActivity topActivity= (SdlTestActivity) sdlActivityManager.getTopActivity();
+        checkBackgroundToStopped(pushedBack);
         checkConnectedToBackground(topActivity);
 
         assertThat(pushedBack.stateTracking.isEmpty(), is(true));
@@ -87,9 +87,27 @@ public class UnitTestSdlActivityManager{
     }
 
     @Test
+    public void verifyStartOfNewForegroundActivity(){
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
+        sdlActivityManager.onForeground();
+        SdlTestActivity pushedBack= (SdlTestActivity) sdlActivityManager.getTopActivity();
+        checkConnectedToBackground(pushedBack);
+        checkBackgroundToForeground(pushedBack);
+        pushedBack.startSdlActivity(SdlTestActivity.class, 0);
+        SdlTestActivity topActivity= (SdlTestActivity) sdlActivityManager.getTopActivity();
+        checkForegroundToBackground(pushedBack);
+        checkBackgroundToStopped(pushedBack);
+        checkConnectedToBackground(topActivity);
+        checkBackgroundToForeground(topActivity);
+
+        assertThat(pushedBack.stateTracking.isEmpty(), is(true));
+        assertThat(topActivity.stateTracking.isEmpty(), is(true));
+    }
+
+    @Test
     public void verifyBackWithOneDoesNotRemoveFromStack(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
-        TestActivity tester= (TestActivity) sdlActivityManager.getTopActivity();
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
+        SdlTestActivity tester= (SdlTestActivity) sdlActivityManager.getTopActivity();
         sdlActivityManager.back();
         checkConnectedToBackground(tester);
         assertThat(tester.stateTracking.isEmpty(), is(true));
@@ -98,17 +116,17 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifyNormalBackFromBackgroundActivity(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
-        TestActivity pushedBack= (TestActivity) sdlActivityManager.getTopActivity();
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
+        SdlTestActivity pushedBack= (SdlTestActivity) sdlActivityManager.getTopActivity();
         checkConnectedToBackground(pushedBack);
-        pushedBack.startSdlActivity(TestActivity.class, 0);
-        TestActivity topActivity= (TestActivity) sdlActivityManager.getTopActivity();
-        checkBackgroundToNotVisible(pushedBack);
+        pushedBack.startSdlActivity(SdlTestActivity.class, 0);
+        SdlTestActivity topActivity= (SdlTestActivity) sdlActivityManager.getTopActivity();
+        checkBackgroundToStopped(pushedBack);
         checkConnectedToBackground(topActivity);
 
         topActivity.onBackPressed();
         checkBackgroundToDisconnected(topActivity);
-        checkNotVisibleToBackground(pushedBack);
+        checkStoppedToBackground(pushedBack);
 
         assertThat(pushedBack.stateTracking.isEmpty(), is(true));
         assertThat(topActivity.stateTracking.isEmpty(), is(true));
@@ -116,22 +134,24 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifyNormalBackFromForegroundActivity(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
         sdlActivityManager.onForeground();
-        TestActivity pushedBack= (TestActivity) sdlActivityManager.getTopActivity();
+        SdlTestActivity pushedBack= (SdlTestActivity) sdlActivityManager.getTopActivity();
         checkConnectedToBackground(pushedBack);
         checkBackgroundToForeground(pushedBack);
-        pushedBack.startSdlActivity(TestActivity.class, 0);
-        TestActivity topActivity= (TestActivity) sdlActivityManager.getTopActivity();
+        pushedBack.startSdlActivity(SdlTestActivity.class, 0);
+        SdlTestActivity topActivity= (SdlTestActivity) sdlActivityManager.getTopActivity();
+
         checkForegroundToBackground(pushedBack);
-        checkBackgroundToNotVisible(pushedBack);
+        checkBackgroundToStopped(pushedBack);
+
         checkConnectedToBackground(topActivity);
         checkBackgroundToForeground(topActivity);
 
         topActivity.onBackPressed();
         checkForegroundToBackground(topActivity);
         checkBackgroundToDisconnected(topActivity);
-        checkNotVisibleToForeground(pushedBack);
+        checkStoppedToForeground(pushedBack);
 
         assertThat(pushedBack.stateTracking.isEmpty(), is(true));
         assertThat(topActivity.stateTracking.isEmpty(), is(true));
@@ -139,16 +159,16 @@ public class UnitTestSdlActivityManager{
 
     @Test
     public void verifyOnExitWithBiggerBackStack(){
-        sdlActivityManager.onSdlAppLaunch(sdlApplication, TestActivity.class);
+        sdlActivityManager.onSdlAppLaunch(sdlApplication, SdlTestActivity.class);
         sdlActivityManager.onForeground();
-        TestActivity pushedBack= (TestActivity) sdlActivityManager.getTopActivity();
+        SdlTestActivity pushedBack= (SdlTestActivity) sdlActivityManager.getTopActivity();
         checkConnectedToBackground(pushedBack);
         checkBackgroundToForeground(pushedBack);
-        pushedBack.startSdlActivity(TestActivity.class, 0);
-        TestActivity topActivity= (TestActivity) sdlActivityManager.getTopActivity();
+        pushedBack.startSdlActivity(SdlTestActivity.class, 0);
+        SdlTestActivity topActivity= (SdlTestActivity) sdlActivityManager.getTopActivity();
 
         checkForegroundToBackground(pushedBack);
-        checkBackgroundToNotVisible(pushedBack);
+        checkBackgroundToStopped(pushedBack);
 
         checkConnectedToBackground(topActivity);
         checkBackgroundToForeground(topActivity);
@@ -156,7 +176,7 @@ public class UnitTestSdlActivityManager{
         topActivity.onBackPressed();
         checkForegroundToBackground(topActivity);
         checkBackgroundToDisconnected(topActivity);
-        checkNotVisibleToForeground(pushedBack);
+        checkStoppedToForeground(pushedBack);
 
         assertThat(pushedBack.stateTracking.isEmpty(), is(true));
         assertThat(topActivity.stateTracking.isEmpty(), is(true));
@@ -166,43 +186,43 @@ public class UnitTestSdlActivityManager{
 
     //Application specific callback checking
 
-    private void checkConnectedToBackground(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onCreate));
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onStart));
+    private void checkConnectedToBackground(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onCreate));
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onStart));
     }
 
-    private void checkBackgroundToForeground(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onForeground));
+    private void checkBackgroundToForeground(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onForeground));
     }
 
-    private void checkForegroundToBackground(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onBackground));
+    private void checkForegroundToBackground(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onBackground));
     }
 
-    private void checkBackgroundToDisconnected(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onStop));
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onDestory));
+    private void checkBackgroundToDisconnected(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onStop));
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onDestory));
     }
 
     //Activity specific callback checking
 
-    private void checkNotVisibleToDestroy(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onDestory));
+    private void checkStoppedToDestroy(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onDestory));
     }
 
-    private void checkBackgroundToNotVisible(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onStop));
+    private void checkBackgroundToStopped(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onStop));
     }
 
-    private void checkNotVisibleToBackground(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onRestart));
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onStart));
+    private void checkStoppedToBackground(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onRestart));
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onStart));
     }
 
-    private void checkNotVisibleToForeground(TestActivity testActivity){
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onRestart));
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onStart));
-        assertThat(testActivity.stateTracking.pop(), is(StateTracking.onForeground));
+    private void checkStoppedToForeground(SdlTestActivity sdlTestActivity){
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onRestart));
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onStart));
+        assertThat(sdlTestActivity.stateTracking.pop(), is(StateTracking.onForeground));
     }
 
 

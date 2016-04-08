@@ -6,13 +6,14 @@ import java.util.LinkedList;
 /**
  * Created by mschwerz on 4/7/16.
  */
-public class TestActivity extends SdlActivity {
+public class SdlTestActivity extends SdlActivity {
 
     public enum StateTracking{
         onCreate,onRestart,onStart,onForeground,onBackground,onStop,onDestory
     }
     public LinkedList<StateTracking> stateTracking = new LinkedList<>();
     public int debugIndex = 0;
+
 
     @Override
     public void onCreate() {
