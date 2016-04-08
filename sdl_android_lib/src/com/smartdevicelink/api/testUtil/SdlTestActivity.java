@@ -9,11 +9,25 @@ import java.util.LinkedList;
 public class SdlTestActivity extends SdlActivity {
 
     public enum StateTracking{
-        onCreate,onRestart,onStart,onForeground,onBackground,onStop,onDestory
+        onCreate,onRestart,onStart,onForeground,onBackground,onStop,onDestroy
     }
     public LinkedList<StateTracking> stateTracking = new LinkedList<>();
-    public int debugIndex = 0;
 
+    public void extraStateVerification() throws UnintendedAdditionalCallsException {
+        if(!stateTracking.isEmpty()){
+            String errorString= "\nStates left:";
+            for (StateTracking state:stateTracking) {
+                errorString+="\n"+state.toString();
+            }
+            throw new UnintendedAdditionalCallsException(getClass().getName()+" has calls that are beyond what should be present"+errorString);
+        }
+    }
+
+    public class UnintendedAdditionalCallsException extends Exception{
+        public UnintendedAdditionalCallsException(String detailMessage) {
+            super(detailMessage);
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -54,7 +68,7 @@ public class SdlTestActivity extends SdlActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stateTracking.add(StateTracking.onDestory);
+        stateTracking.add(StateTracking.onDestroy);
     }
 
     @Override
