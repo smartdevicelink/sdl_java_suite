@@ -1,6 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -85,7 +86,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private SdlApplicationConfig mApplicationConfig;
 
-    private SdlActivityManager mSdlActivityManager;
+    @VisibleForTesting
+    SdlActivityManager mSdlActivityManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
