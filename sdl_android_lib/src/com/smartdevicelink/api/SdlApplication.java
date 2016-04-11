@@ -211,6 +211,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
 
         if(!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE){
+            Log.i(TAG, toString() + " is launching activity: " + mApplicationConfig.getMainSdlActivity().getCanonicalName());
             // TODO: Add check for resume
             mSdlActivityManager.onSdlAppLaunch(this, mApplicationConfig.getMainSdlActivity());
             isFirstHmiNotNoneReceived = true;

@@ -62,7 +62,7 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
 
     @Override
     public void onExit() {
-        mStateTransition.exit(this);
+        mStateTransition = mStateTransition.exit(this);
     }
 
     /**
