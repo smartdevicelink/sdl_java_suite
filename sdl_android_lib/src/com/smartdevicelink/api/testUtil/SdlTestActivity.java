@@ -11,15 +11,14 @@ public class SdlTestActivity extends SdlActivity {
     public enum StateTracking{
         onCreate,onRestart,onStart,onForeground,onBackground,onStop,onDestroy
     }
-    public LinkedList<StateTracking> stateTracking = new LinkedList<>();
+    private LinkedList<StateTracking> stateTracking = new LinkedList<>();
+
+    private int currentDebugCheckPosition= 0;
 
     public void extraStateVerification() throws UnintendedAdditionalCallsException {
-        if(!stateTracking.isEmpty()){
-            String errorString= "\nStates left:";
-            for (StateTracking state:stateTracking) {
-                errorString+="\n"+state.toString();
-            }
-            throw new UnintendedAdditionalCallsException(getClass().getName()+" has calls that are beyond what should be present"+errorString);
+        if(currentDebugCheckPosition!=stateTracking.size()){
+            throw new UnintendedAdditionalCallsException(getClass().getName()+" has calls that are beyond what should be present"+getCurrentPlacementInCallbackHistory());
+            //throw new UnintendedAdditionalCallsException(getCurrentPlacementInCallbackHistory());
         }
     }
 
@@ -27,6 +26,31 @@ public class SdlTestActivity extends SdlActivity {
         public UnintendedAdditionalCallsException(String detailMessage) {
             super(detailMessage);
         }
+    }
+
+
+    public StateTracking getCurrentCallbackCheck(){
+        StateTracking currTrack = null;
+        if(currentDebugCheckPosition<stateTracking.size()){
+            currTrack = stateTracking.get(currentDebugCheckPosition);
+            currentDebugCheckPosition++;
+        }
+        return currTrack;
+    }
+
+    public void moveDebugCheckToEnd(){
+        currentDebugCheckPosition = stateTracking.size();
+    }
+
+    public String getCurrentPlacementInCallbackHistory(){
+        String stringBuild="\nCallback History\n-----------------";
+        for(int i=0; i<stateTracking.size(); i++){
+            if(i==currentDebugCheckPosition){
+                stringBuild+="\n<<<<Current Callback Test is here>>>>";
+            }
+            stringBuild+="\n"+stateTracking.get(i).toString();
+        }
+        return stringBuild;
     }
 
     @Override
