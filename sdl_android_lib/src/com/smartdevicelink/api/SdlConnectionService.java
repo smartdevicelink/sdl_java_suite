@@ -10,6 +10,8 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.smartdevicelink.api.lockscreen.LockScreenActivityManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ public class SdlConnectionService extends Service {
     private HashMap<String, SdlApplication> mConnectedApplications = new HashMap<>();
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private Notification mPersistentNotification;
+    private LockScreenActivityManager mAndroidApplication;
 
     void startSdlApplication(SdlApplicationConfig config){
         synchronized (MAP_LOCK) {

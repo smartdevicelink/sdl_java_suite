@@ -1,12 +1,17 @@
 package com.smartdevicelink.api;
 
+import android.app.Application;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.smartdevicelink.api.lockscreen.LockScreenActivity;
 
 import java.util.HashMap;
 
@@ -20,6 +25,8 @@ public class SdlManager {
     private SdlConnectionService mSdlConnectionService;
     private Context mAndroidContext;
     private Notification mPersistentNotification;
+    private LockScreenActivity mLockScreenActivity;
+    private Application mAndroidApplication;
     private boolean isBound = false;
 
     private HashMap<String, SdlApplicationConfig> mApplicationConfigRegistry;
@@ -47,23 +54,17 @@ public class SdlManager {
         }
     }
 
-    public boolean unregisterSdlApplication(String appId){
-        synchronized (SYNC_LOCK) {
-            SdlApplicationConfig config = mApplicationConfigRegistry.remove(appId);
-            return config == null;
-        }
-    }
-
-    public void prepare(Context context, Notification persistentNotification){
+    public void prepare(@NonNull Application application, @NonNull Class<? extends LockScreenActivity> lockScreen,
+                        @Nullable Notification persistentNotification){
         synchronized (SYNC_LOCK) {
             if (!isPrepared) {
                 mPersistentNotification = persistentNotification;
             }
-            prepare(context);
+            prepare(application);
         }
     }
 
-    public void prepare(Context context){
+    public void prepare(Application context){
         synchronized (SYNC_LOCK) {
             if (!isPrepared) {
                 mAndroidContext = context;
