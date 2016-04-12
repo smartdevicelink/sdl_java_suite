@@ -45,4 +45,11 @@ class ForegroundStateTransition extends ActivityStateTransition {
         return this;
     }
 
+    @Override
+    ActivityStateTransition finish(SdlActivityManager sam) {
+        finishActivity(sam.getBackStack());
+        foregroundTopActivity(sam.getBackStack());
+        return this;
+    }
+
 }

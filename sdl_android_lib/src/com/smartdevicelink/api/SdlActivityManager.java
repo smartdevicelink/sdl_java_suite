@@ -31,8 +31,12 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
     /**
      * Removes the current activity from the backstack
      */
-    public void back(){
+    void back(){
         mStateTransition = mStateTransition.back(this);
+    }
+
+    void finish(){
+        mStateTransition = mStateTransition.finish(this);
     }
 
     @Override
