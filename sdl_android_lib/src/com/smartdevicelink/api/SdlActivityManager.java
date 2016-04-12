@@ -35,11 +35,6 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
         mStateTransition = mStateTransition.back(this);
     }
 
-    public void back(String name){
-
-    }
-
-
     @Override
     public void onSdlConnect() {
         mStateTransition = mStateTransition.connect(this);
@@ -62,7 +57,7 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
 
     @Override
     public void onExit() {
-        mStateTransition.exit(this);
+        mStateTransition = mStateTransition.exit(this);
     }
 
     /**

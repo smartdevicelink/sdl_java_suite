@@ -53,41 +53,155 @@ abstract class ActivityStateTransition {
         return this;
     }
 
-    protected SdlActivity instantiateActivity(SdlActivityManager sam, SdlContext sdlContext, Class<? extends SdlActivity> main){
+    protected boolean instantiateActivity(SdlActivityManager sam, SdlContext sdlContext,
+                                              Class<? extends SdlActivity> main, int flags){
 
-        // TODO: make sure class is not already instantiated in sam
+        Stack<SdlActivity> backStack = sam.getBackStack();
 
-        SdlActivity newActivity = null;
-
-        try {
-            newActivity = main.newInstance();
-            newActivity.initialize(sdlContext, sam);
-        } catch (InstantiationException e) {
-            Log.e(TAG, "Unable to instantiate " + main.getSimpleName(), e);
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "Unable to access constructor for " + main.getSimpleName(), e);
+        switch (flags){
+            case SdlActivity.FLAG_CLEAR_HISTORY:
+                clearHistory(backStack);
+                break;
+            case SdlActivity.FLAG_CLEAR_TOP:
+                SdlActivity newTop = getInstanceFromStack(backStack, main);
+                if(newTop != null){
+                    clearTop(backStack, newTop);
+                }
+                break;
+            case SdlActivity.FLAG_PULL_TO_TOP:
+                SdlActivity instance = getInstanceFromStack(backStack, main);
+                if(instance != null){
+                    if(instance != backStack.peek()) {
+                        stopTopActivity(backStack);
+                        backStack.push(instance);
+                        startTopActivity(backStack);
+                    }
+                    return true;
+                }
+                break;
+            default:
+                break;
         }
 
-        return newActivity;
+        try {
+            SdlActivity newActivity = main.newInstance();
+            newActivity.initialize(sdlContext);
+
+            if(!backStack.empty()) {
+                stopTopActivity(backStack);
+            }
+
+            backStack.push(newActivity);
+            startTopActivity(backStack);
+            return true;
+        } catch (InstantiationException e) {
+            Log.e(TAG, "Unable to instantiate " + main.getSimpleName(), e);
+            return false;
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "Unable to access constructor for " + main.getSimpleName(), e);
+            return false;
+        }
     }
 
-    protected void putNewActivityOnStack(SdlActivityManager sam, SdlActivity newActivity) {
-        Stack<SdlActivity> backStack = sam.getBackStack();
-        backStack.push(newActivity);
-        newActivity.performCreate();
-        newActivity.performStart();
+    protected SdlActivity getInstanceFromStack(Stack<SdlActivity> backStack, Class<? extends SdlActivity> activity){
+        if(!backStack.empty()) {
+            for (SdlActivity act : backStack) {
+                if (act.getClass() == activity) return act;
+            }
+        }
+        return null;
     }
 
-    protected void stopTopActivity(SdlActivityManager sam){
-        Stack<SdlActivity> backStack = sam.getBackStack();
+    protected void clearTop(Stack<SdlActivity> backStack,SdlActivity activity){
+        while(!backStack.empty() && backStack.peek() != activity){
+            destroyTopActivity(backStack);
+        }
+    }
+
+    protected void clearHistory(Stack<SdlActivity> backStack){
+        while(backStack.size() > 1){
+            destroyTopActivity(backStack);
+        }
+    }
+
+    protected void startTopActivity(Stack<SdlActivity> backStack){
+        if(backStack.empty()) return;
+
+        SdlActivity activity = backStack.peek();
+        if(activity != null){
+            SdlActivity.SdlActivityState activityState = activity.getActivityState();
+            if(activityState == SdlActivity.SdlActivityState.PRE_CREATE){
+                activity.performCreate();
+            } else if(activityState == SdlActivity.SdlActivityState.STOPPED){
+                activity.performRestart();
+            }
+
+            activityState = activity.getActivityState();
+            if(activityState == SdlActivity.SdlActivityState.POST_CREATE){
+                activity.performStart();
+            }
+        }
+    }
+
+    protected void foregroundTopActivity(Stack<SdlActivity> backStack){
         if(backStack.empty()) return;
 
         SdlActivity activity = backStack.peek();
 
-        if(activity.getActivityState() == SdlActivity.SdlActivityState.FOREGROUND){
+        if(activity != null && activity.getActivityState() == SdlActivity.SdlActivityState.BACKGROUND) {
+            activity.performForeground();
+        }
+    }
+
+    protected void backgroundTopActivity(Stack<SdlActivity> backStack){
+        if(backStack.empty()) return;
+
+        SdlActivity activity = backStack.peek();
+        if(activity != null && activity.getActivityState() == SdlActivity.SdlActivityState.FOREGROUND) {
             activity.performBackground();
         }
-        activity.performStop();
+    }
+
+    protected void stopTopActivity(Stack<SdlActivity> backStack){
+        if(backStack.empty()) return;
+
+        backgroundTopActivity(backStack);
+
+        SdlActivity activity = backStack.peek();
+        if(activity != null && activity.getActivityState() == SdlActivity.SdlActivityState.BACKGROUND) {
+            activity.performStop();
+        }
+    }
+
+    protected void destroyTopActivity(Stack<SdlActivity> backStack){
+        if(backStack.empty()) return;
+
+        stopTopActivity(backStack);
+
+        SdlActivity activity = backStack.pop();
+        if(activity != null) {
+            activity.performDestroy();
+        }
+
+    }
+
+    protected void clearBackStack(Stack<SdlActivity> backStack){
+        clearHistory(backStack);
+        if(!backStack.empty()) {
+            destroyTopActivity(backStack);
+        }
+    }
+
+    protected void navigateBack(Stack<SdlActivity> backStack){
+        Log.d(TAG, "Navigating back with stack size: " + backStack.size());
+        if(backStack.size() > 1){
+            SdlActivity topActivity = backStack.peek();
+            boolean isBackHandled = topActivity.performBackNavigation();
+            if(!isBackHandled){
+                destroyTopActivity(backStack);
+                startTopActivity(backStack);
+            }
+        }
     }
 
 }

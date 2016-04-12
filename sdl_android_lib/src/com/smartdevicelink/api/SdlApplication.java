@@ -76,6 +76,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private static final String TAG = SdlApplication.class.getSimpleName();
 
+    public static final int BACK_BUTTON_ID = 1010;
+
     public enum Status {
         CONNECTING,
         CONNECTED,
@@ -167,10 +169,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
     }
 
-    final SdlActivityManager getSdlActivityManager(){
-        return mSdlActivityManager;
-    }
-
     @Override
     public String toString(){
         return String.format("SdlApplication: %s-%s",
@@ -213,6 +211,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
 
         if(!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE){
+            Log.i(TAG, toString() + " is launching activity: " + mApplicationConfig.getMainSdlActivity().getCanonicalName());
             // TODO: Add check for resume
             mSdlActivityManager.onSdlAppLaunch(this, mApplicationConfig.getMainSdlActivity());
             isFirstHmiNotNoneReceived = true;
@@ -355,7 +354,9 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnButtonPress(OnButtonPress notification) {
-
+        if(notification.getCustomButtonName() != null && notification.getCustomButtonName() == BACK_BUTTON_ID){
+            mSdlActivityManager.back();
+        }
     }
 
     @Override
