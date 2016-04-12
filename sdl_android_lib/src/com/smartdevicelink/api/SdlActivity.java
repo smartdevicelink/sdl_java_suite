@@ -27,6 +27,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     private int mStackRefCount = 0;
 
+    private boolean isFinishing = false;
+
     private boolean superCalled;
     private boolean isBackHandled;
 
@@ -42,46 +44,50 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @CallSuper
-    public void onCreate(){
+    protected void onCreate(){
         mStackRefCount = 1;
         superCalled = true;
         mActivityState = SdlActivityState.POST_CREATE;
     }
 
     @CallSuper
-    public void onRestart(){
+    protected void onRestart(){
         superCalled = true;
         mActivityState = SdlActivityState.POST_CREATE;
     }
 
     @CallSuper
-    public void onStart(){
+    protected void onStart(){
         superCalled = true;
         mActivityState = SdlActivityState.BACKGROUND;
     }
 
     @CallSuper
-    public void onForeground(){
+    protected void onForeground(){
         superCalled = true;
         mActivityState = SdlActivityState.FOREGROUND;
     }
 
     @CallSuper
-    public void onBackground(){
+    protected void onBackground(){
         superCalled = true;
         mActivityState = SdlActivityState.BACKGROUND;
     }
 
     @CallSuper
-    public void onStop(){
+    protected void onStop(){
         superCalled = true;
         mActivityState = SdlActivityState.STOPPED;
     }
 
     @CallSuper
-    public void onDestroy() {
+    protected void onDestroy() {
         superCalled = true;
         mActivityState = SdlActivityState.DESTROYED;
+    }
+
+    protected final void finish(){
+        ((SdlApplication)getSdlApplicationContext()).getSdlActivityManager().finish();
     }
 
     public void onBackNavigation(){
@@ -94,6 +100,14 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     final void incrementStackReferenceCount(){
         mStackRefCount++;
+    }
+
+    final boolean isFinishing() {
+        return isFinishing;
+    }
+
+    final void setIsFinishing(boolean isFinishing) {
+        this.isFinishing = isFinishing;
     }
 
     final void performCreate(){

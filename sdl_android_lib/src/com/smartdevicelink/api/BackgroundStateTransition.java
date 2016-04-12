@@ -40,4 +40,9 @@ class BackgroundStateTransition extends ActivityStateTransition {
         return this;
     }
 
+    @Override
+    ActivityStateTransition finish(SdlActivityManager sam) {
+        finishTopActivity(sam.getBackStack());
+        return this;
+    }
 }

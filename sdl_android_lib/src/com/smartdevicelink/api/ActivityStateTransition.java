@@ -53,6 +53,10 @@ abstract class ActivityStateTransition {
         return this;
     }
 
+    ActivityStateTransition finish(SdlActivityManager sam){
+        return this;
+    }
+
     protected boolean instantiateActivity(SdlActivityManager sam, SdlContext sdlContext,
                                               Class<? extends SdlActivity> main, int flags){
 
@@ -183,6 +187,8 @@ abstract class ActivityStateTransition {
     protected void destroyTopActivity(Stack<SdlActivity> backStack){
         if(backStack.empty()) return;
 
+        backStack.peek().setIsFinishing(true);
+
         stopTopActivity(backStack);
 
         SdlActivity activity = backStack.pop();
@@ -208,6 +214,18 @@ abstract class ActivityStateTransition {
                 destroyTopActivity(backStack);
                 startTopActivity(backStack);
             }
+        }
+    }
+
+    protected void finishTopActivity(Stack<SdlActivity> backStack){
+        if(backStack.empty()) return;
+
+        SdlActivity topActivity = backStack.peek();
+        if(!topActivity.isFinishing()){
+            navigateBack(backStack);
+        } else {
+            Log.w(TAG, "Finish called on SdlActivity that is already finishing.\n" +
+                    "SdlActivity class: " + topActivity.getClass().getCanonicalName());
         }
     }
 

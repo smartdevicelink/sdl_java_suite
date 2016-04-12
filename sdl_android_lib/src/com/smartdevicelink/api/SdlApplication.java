@@ -150,6 +150,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         return mApplicationConfig.getAppName();
     }
 
+    SdlActivityManager getSdlActivityManager() {
+        return mSdlActivityManager;
+    }
+
     final void closeConnection(boolean notifyStatusListener) {
         if(mConnectionStatus != Status.DISCONNECTED) {
             for(LifecycleListener listener: mLifecycleListeners){
