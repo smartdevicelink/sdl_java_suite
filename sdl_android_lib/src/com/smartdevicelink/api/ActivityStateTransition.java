@@ -61,11 +61,17 @@ abstract class ActivityStateTransition {
         switch (flags){
             case SdlActivity.FLAG_CLEAR_HISTORY:
                 clearHistory(backStack);
+                if(!backStack.empty() && backStack.peek().getClass() == main){
+                    backStack.peek().performStart();
+                    return true;
+                }
                 break;
             case SdlActivity.FLAG_CLEAR_TOP:
                 SdlActivity newTop = getInstanceFromStack(backStack, main);
                 if(newTop != null){
                     clearTop(backStack, newTop);
+                    startTopActivity(backStack);
+                    return true;
                 }
                 break;
             case SdlActivity.FLAG_PULL_TO_TOP:
@@ -74,6 +80,7 @@ abstract class ActivityStateTransition {
                     if(instance != backStack.peek()) {
                         stopTopActivity(backStack);
                         backStack.push(instance);
+                        instance.incrementStackReferenceCount();
                         startTopActivity(backStack);
                     }
                     return true;
@@ -112,7 +119,7 @@ abstract class ActivityStateTransition {
         return null;
     }
 
-    protected void clearTop(Stack<SdlActivity> backStack,SdlActivity activity){
+    protected void clearTop(Stack<SdlActivity> backStack, SdlActivity activity){
         while(!backStack.empty() && backStack.peek() != activity){
             destroyTopActivity(backStack);
         }

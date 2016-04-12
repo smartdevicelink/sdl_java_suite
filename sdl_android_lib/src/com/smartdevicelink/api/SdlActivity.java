@@ -25,6 +25,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     private SdlActivityState mActivityState = SdlActivityState.PRE_CREATE;
 
+    private int mStackRefCount = 0;
+
     private boolean superCalled;
     private boolean isBackHandled;
 
@@ -41,6 +43,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     @CallSuper
     public void onCreate(){
+        mStackRefCount = 1;
         superCalled = true;
         mActivityState = SdlActivityState.POST_CREATE;
     }
@@ -89,6 +92,10 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         return mActivityState;
     }
 
+    final void incrementStackReferenceCount(){
+        mStackRefCount++;
+    }
+
     final void performCreate(){
         superCalled = false;
         this.onCreate();
@@ -132,10 +139,14 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     final void performDestroy(){
-        superCalled = false;
-        this.onDestroy();
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
-                + " did not call through to super() in method onDestroy(). This should NEVER happen.");
+        if(mStackRefCount == 1) {
+            superCalled = false;
+            this.onDestroy();
+            if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+                    + " did not call through to super() in method onDestroy(). This should NEVER happen.");
+        } else {
+            mStackRefCount--;
+        }
     }
 
     final boolean performBackNavigation(){
