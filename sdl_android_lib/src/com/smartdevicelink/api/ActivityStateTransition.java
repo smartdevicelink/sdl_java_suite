@@ -62,7 +62,7 @@ abstract class ActivityStateTransition {
             case SdlActivity.FLAG_CLEAR_HISTORY:
                 clearHistory(backStack);
                 if(!backStack.empty() && backStack.peek().getClass() == main){
-                    backStack.peek().performStart();
+                    startTopActivity(backStack);
                     return true;
                 }
                 break;
