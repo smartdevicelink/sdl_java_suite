@@ -78,18 +78,6 @@ abstract class ActivityStateTransition {
                     return true;
                 }
                 break;
-            case SdlActivity.FLAG_PULL_TO_TOP:
-                SdlActivity instance = getInstanceFromStack(backStack, main);
-                if(instance != null){
-                    if(instance != backStack.peek()) {
-                        stopTopActivity(backStack);
-                        backStack.push(instance);
-                        instance.incrementStackReferenceCount();
-                        startTopActivity(backStack);
-                    }
-                    return true;
-                }
-                break;
             default:
                 break;
         }
@@ -217,12 +205,18 @@ abstract class ActivityStateTransition {
         }
     }
 
-    protected void finishTopActivity(Stack<SdlActivity> backStack){
+    protected void finishActivity(Stack<SdlActivity> backStack){
         if(backStack.empty()) return;
 
         SdlActivity topActivity = backStack.peek();
         if(!topActivity.isFinishing()){
-            navigateBack(backStack);
+            SdlActivity.SdlActivityState state = topActivity.getActivityState();
+            destroyTopActivity(backStack);
+            if(state == SdlActivity.SdlActivityState.FOREGROUND){
+                foregroundTopActivity(backStack);
+            } else if(state == SdlActivity.SdlActivityState.BACKGROUND){
+                startTopActivity(backStack);
+            }
         } else {
             Log.w(TAG, "Finish called on SdlActivity that is already finishing.\n" +
                     "SdlActivity class: " + topActivity.getClass().getCanonicalName());
