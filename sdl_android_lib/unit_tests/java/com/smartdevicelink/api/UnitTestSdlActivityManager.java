@@ -100,7 +100,7 @@ public class UnitTestSdlActivityManager{
     public void verifyStartOfNewBackgroundActivity(){
         SdlTestActivity pushedBack= createInitialTestActivity();
         checkConnectedToBackground(pushedBack);
-        pushedBack.startSdlActivity(SdlTestActivity.class, 0);
+        pushedBack.startSdlActivity(SdlTestActivity.class, SdlActivity.FLAG_DEFAULT);
         SdlTestActivity topActivity= (SdlTestActivity) mSdlActivityManager.getTopActivity();
         mActivitiesCreated.add(topActivity);
         checkBackgroundToStopped(pushedBack);
@@ -114,7 +114,7 @@ public class UnitTestSdlActivityManager{
         checkConnectedToBackground(pushedBack);
         checkBackgroundToForeground(pushedBack);
 
-        SdlTestActivity topActivity = startNextTestActivity(pushedBack,SdlTestActivity.class,0);
+        SdlTestActivity topActivity = startNextTestActivity(pushedBack,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
 
         checkForegroundToBackground(pushedBack);
         checkBackgroundToStopped(pushedBack);
@@ -134,12 +134,12 @@ public class UnitTestSdlActivityManager{
         SdlTestActivity pushedBack= createInitialTestActivity();
 
         checkConnectedToBackground(pushedBack);
-        SdlTestActivity topActivity= startNextTestActivity(pushedBack,SdlTestActivity.class,0);
+        SdlTestActivity topActivity= startNextTestActivity(pushedBack,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
 
         checkBackgroundToStopped(pushedBack);
         checkConnectedToBackground(topActivity);
 
-        topActivity.onBackPressed();
+        mSdlActivityManager.back();
         checkBackgroundToDisconnected(topActivity);
         checkStoppedToBackground(pushedBack);
     }
@@ -150,7 +150,7 @@ public class UnitTestSdlActivityManager{
         mSdlActivityManager.onForeground();
         checkConnectedToBackground(pushedBack);
         checkBackgroundToForeground(pushedBack);
-        SdlTestActivity topActivity= startNextTestActivity(pushedBack, SdlTestActivity.class, 0);
+        SdlTestActivity topActivity= startNextTestActivity(pushedBack, SdlTestActivity.class, SdlActivity.FLAG_DEFAULT);
 
         checkForegroundToBackground(pushedBack);
         checkBackgroundToStopped(pushedBack);
@@ -167,14 +167,11 @@ public class UnitTestSdlActivityManager{
     @Test
     public void verifyOnExitWithBiggerBackStack(){
         SdlTestActivity currActivity = createInitialTestActivity();
-        checkConnectedToBackground(currActivity);
         for(int i=0; i<5; i++){
             //assuming separate instances for now for same class
-            SdlTestActivity previousActivity = currActivity;
             currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
-            checkConnectedToBackground(currActivity);
-            checkBackgroundToStopped(previousActivity);
         }
+        moveCheckCountsToEnd();
         Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
         mSdlActivityManager.onExit();
         SdlTestActivity topWhenExit = (SdlTestActivity) backStackCopy.pop();
@@ -189,7 +186,6 @@ public class UnitTestSdlActivityManager{
         verifyOnExitWithBiggerBackStack();
         SdlTestActivity currActivity = createInitialTestActivity();
         checkConnectedToBackground(currActivity);
-
     }
 
     @Test
@@ -197,17 +193,18 @@ public class UnitTestSdlActivityManager{
         //first activity, should always be there in the end
         SdlTestActivity currActivity = createInitialTestActivity();
         for(int i=0; i<5; i++){
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
         }
         moveCheckCountsToEnd();
         //get a copy of the stack before activities get cleared off
         Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
         //TODO: whatever the flag will be for Clear History
-        currActivity = startNextTestActivity(currActivity,SdlTestActivity1.class,0);
+        currActivity = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_CLEAR_HISTORY);
 
-        //check previous activities except for the first to see they were removed and destroyed
+        //check previous activities except for the main and the created to see they were removed and destroyed
         SdlTestActivity previousActivity = (SdlTestActivity) backStackCopy.pop();
         checkBackgroundToDisconnected(previousActivity);
+        //ensure the other activities in the stack were destroyed
         for(int i=0; i<4;i++){
             SdlTestActivity deadActivity= (SdlTestActivity) backStackCopy.pop();
             checkStoppedToDestroy(deadActivity);
@@ -222,13 +219,14 @@ public class UnitTestSdlActivityManager{
         SdlTestActivity firstActivity = createInitialTestActivity();
         SdlTestActivity currActivity = firstActivity;
         for(int i=0; i<5; i++){
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
         }
+        //don't need to the checks since we have done them in the other tests
         moveCheckCountsToEnd();
         //get a copy of the stack before activities get cleared off
         Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
         //TODO: whatever the flag will be for Clear History
-        currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
+        currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_CLEAR_HISTORY);
 
         //check previous activities except for the first to see they were removed and destroyed
         SdlTestActivity previousActivity = (SdlTestActivity) backStackCopy.pop();
@@ -247,21 +245,21 @@ public class UnitTestSdlActivityManager{
         //first activity to be the root one
         SdlTestActivity firstActivity = createInitialTestActivity();
         //something in between
-        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, 0);
+        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, SdlActivity.FLAG_DEFAULT);
         //our class that is unique
-        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,0);
+        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,SdlActivity.FLAG_DEFAULT);
         //some classes to fill up the backstack
         SdlTestActivity currActivity = shouldBeEqual;
         for(int i=0; i<5; i++){
             //assuming separate instances for now for same class
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
         }
-        //don't need to the checks since we done it in the other tests
+        //don't need to the checks since we have done them in the other tests
         moveCheckCountsToEnd();
-        //copy of the stack before activities get kicked off
+        //copy of the stack before clear top activity get kicked off
         Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
         //TODO: should be flag for clear top here
-        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,0);
+        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_CLEAR_TOP);
 
         SdlTestActivity previousActivity = (SdlTestActivity) backStackCopy.pop();
         checkBackgroundToDisconnected(previousActivity);
@@ -269,7 +267,8 @@ public class UnitTestSdlActivityManager{
             SdlTestActivity deadActivity= (SdlTestActivity) backStackCopy.pop();
             checkStoppedToDestroy(deadActivity);
         }
-        assertThat(mSdlActivityManager.getBackStack().size(), is(3));
+        assertThat(mSdlActivityManager.getBackStack().toString(),mSdlActivityManager.getBackStack().size(),is(3));
+        //assertThat(mSdlActivityManager.getBackStack().size(), is(3));
         assertSame(shouldBeEqual, checkForEqual);
         checkStoppedToBackground(shouldBeEqual);
     }
@@ -280,21 +279,21 @@ public class UnitTestSdlActivityManager{
         SdlTestActivity firstActivity = createInitialTestActivity();
         mSdlActivityManager.onForeground();
         //something in between
-        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, 0);
+        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, SdlActivity.FLAG_DEFAULT);
         //our class that is unique
-        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,0);
+        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,SdlActivity.FLAG_DEFAULT);
         //some classes to fill up the backstack
         SdlTestActivity currActivity = shouldBeEqual;
         for(int i=0; i<5; i++){
             //assuming separate instances for now for same class
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
         }
-        //don't need to the checks since we done it in the other tests
+        //don't need to the checks since we have done them in the other tests
         moveCheckCountsToEnd();
         //copy of the stack before activities get kicked off
         Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
         //TODO: should be flag for clear top here
-        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,0);
+        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_CLEAR_TOP);
 
         SdlTestActivity previousActivity = (SdlTestActivity) backStackCopy.pop();
         checkForegroundToBackground(previousActivity);
@@ -308,31 +307,76 @@ public class UnitTestSdlActivityManager{
         checkStoppedToForeground(shouldBeEqual);
     }
 
+    @Test
+    public void verifyClearTopNoPreviousInstance(){
+        SdlTestActivity currActivity = createInitialTestActivity();
+        for(int i=0; i<5; i++){
+            //assuming separate instances for now for same class
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
+        }
+        moveCheckCountsToEnd();
+        SdlTestActivity clearTop = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_CLEAR_TOP);
+        checkBackgroundToStopped(currActivity);
+        checkConnectedToBackground(clearTop);
+    }
+
 
     @Test
     public void verifyPullToTopBackStack(){
         SdlTestActivity firstActivity = createInitialTestActivity();
-        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, 0);
-        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,0);
-        SdlTestActivity currActivity = startNextTestActivity(shouldBeEqual,SdlTestActivity.class,0);
+        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, SdlActivity.FLAG_DEFAULT);
+        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,SdlActivity.FLAG_DEFAULT);
+        SdlTestActivity currActivity = startNextTestActivity(shouldBeEqual,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
         for(int i=0; i<4; i++){
             //assuming separate instances for now for same class
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,0);
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
         }
         moveCheckCountsToEnd();
         //TODO: should be flag for pull to top
-        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,0);
+        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_PULL_TO_TOP);
         checkBackgroundToStopped(currActivity);
         assertSame(shouldBeEqual, checkForEqual);
         checkStoppedToBackground(shouldBeEqual);
     }
 
     @Test
-    public void verifyNoDestroyForPullToTop(){
+    public void verifyNoDestroyOnBackForPullToTop(){
+        //set up the test with the verifyPullToTopBackStack
         verifyPullToTopBackStack();
         SdlTestActivity shouldBeAliveStill = (SdlTestActivity) mSdlActivityManager.getTopActivity();
+        mSdlActivityManager.back();
         checkBackgroundToStopped(shouldBeAliveStill);
+        checkStoppedToBackground((SdlTestActivity) mSdlActivityManager.getTopActivity());
     }
+
+    @Test
+    public void verifySingleDestroyOnExitForPullToTop(){
+        verifyPullToTopBackStack();
+        Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
+        SdlTestActivity pullToTopRef= (SdlTestActivity) backStackCopy.pop();
+        mSdlActivityManager.onExit();
+        //check that the pull to top ref at least went to stopped
+        //we will check the destroy portion when we check the rest of the backstack
+        checkBackgroundToStopped(pullToTopRef);
+        for(SdlActivity sdlTestActivity: backStackCopy){
+            checkStoppedToDestroy((SdlTestActivity)sdlTestActivity);
+        }
+    }
+
+    @Test
+    public void verifyPullToTopNoPreviousInstance(){
+        SdlTestActivity currActivity = createInitialTestActivity();
+        for(int i=0; i<5; i++){
+            //assuming separate instances for now for same class
+            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
+        }
+        moveCheckCountsToEnd();
+        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_PULL_TO_TOP);
+        checkBackgroundToStopped(currActivity);
+        checkConnectedToBackground(checkForEqual);
+    }
+
+
 
     //Utils for test readability
 
@@ -392,7 +436,7 @@ public class UnitTestSdlActivityManager{
     private void runCheck(SdlTestActivity sdlTestActivity, StateTracking[] statesToCheck){
         assertNotNull("SdlTestActivity provided to check is null", sdlTestActivity);
         for(StateTracking state:statesToCheck){
-            assertThat(sdlTestActivity.getCurrentCallbackCheck(),is(state));
+            assertThat(sdlTestActivity.getCurrentPlacementInCallbackHistory(),sdlTestActivity.getCurrentCallbackCheck(),is(state));
         }
     }
 

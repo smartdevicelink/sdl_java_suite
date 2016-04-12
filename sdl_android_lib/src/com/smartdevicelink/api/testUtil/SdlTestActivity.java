@@ -95,10 +95,6 @@ public class SdlTestActivity extends SdlActivity {
         stateTracking.add(StateTracking.onDestroy);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
 
 }
