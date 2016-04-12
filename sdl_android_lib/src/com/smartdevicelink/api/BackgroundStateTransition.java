@@ -2,14 +2,11 @@ package com.smartdevicelink.api;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 
-import java.util.Stack;
-
 class BackgroundStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition disconnect(SdlActivityManager sam) {
-        destroyBackStack(sam);
-
+        clearBackStack(sam.getBackStack());
         ActivityStateTransition nextState =
                 ActivityStateTransitionRegistry.getStateTransition(DisconnectedStateTransition.class);
         return nextState.disconnect(sam);
@@ -17,11 +14,7 @@ class BackgroundStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition foreground(SdlActivityManager sam) {
-        SdlActivity topActivity = sam.getTopActivity();
-        if(topActivity != null){
-            topActivity.performForeground();
-        }
-
+        foregroundTopActivity(sam.getBackStack());
         ActivityStateTransition nextState =
                 ActivityStateTransitionRegistry.getStateTransition(ForegroundStateTransition.class);
         return nextState.foreground(sam);
@@ -29,7 +22,7 @@ class BackgroundStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition exit(SdlActivityManager sam) {
-        destroyBackStack(sam);
+        clearBackStack(sam.getBackStack());
         ActivityStateTransition nextState =
                 ActivityStateTransitionRegistry.getStateTransition(ConnectedStateTransition.class);
         return nextState.exit(sam);
@@ -37,38 +30,14 @@ class BackgroundStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition back(SdlActivityManager sam) {
-        Stack<SdlActivity> backStack = sam.getBackStack();
-        if(backStack.size() > 1){
-            SdlActivity topActivity = backStack.pop();
-            topActivity.performStop();
-            topActivity.performDestroy();
-
-            topActivity = backStack.peek();
-            topActivity.performRestart();
-            topActivity.performStart();
-        }
+        navigateBack(sam.getBackStack());
         return this;
     }
 
     @Override
-    ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext, Class<? extends SdlActivity> activity, int flags) {
-        stopTopActivity(sam);
-        SdlActivity newActivity = instantiateActivity(sam, SdlContext, activity);
-        putNewActivityOnStack(sam, newActivity);
+    ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext sdlContext, Class<? extends SdlActivity> activity, int flags) {
+        instantiateActivity(sam, sdlContext, activity, flags);
         return this;
-    }
-
-    private void destroyBackStack(SdlActivityManager sam) {
-        SdlActivity topActivity = sam.getTopActivity();
-        if(topActivity != null){
-            topActivity.performStop();
-        }
-
-        Stack<SdlActivity> backStack = sam.getBackStack();
-        while(!backStack.empty()){
-            SdlActivity activity = backStack.pop();
-            activity.performDestroy();
-        }
     }
 
 }

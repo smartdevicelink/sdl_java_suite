@@ -75,6 +75,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private static final String TAG = SdlApplication.class.getSimpleName();
 
+    public static final int BACK_BUTTON_ID = 1010;
+
     public enum Status {
         CONNECTING,
         CONNECTED,
@@ -163,10 +165,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             }
             mSdlProxyALM = null;
         }
-    }
-
-    final SdlActivityManager getSdlActivityManager(){
-        return mSdlActivityManager;
     }
 
     @Override
@@ -354,7 +352,9 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnButtonPress(OnButtonPress notification) {
-
+        if(notification.getCustomButtonName() != null && notification.getCustomButtonName() == BACK_BUTTON_ID){
+            mSdlActivityManager.back();
+        }
     }
 
     @Override

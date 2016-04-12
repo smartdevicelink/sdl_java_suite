@@ -9,6 +9,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     private static final String TAG = SdlActivity.class.getSimpleName();
 
+    public static final int FLAG_DEFAULT = 0;
+    public static final int FLAG_CLEAR_HISTORY = 1;
+    public static final int FLAG_CLEAR_TOP = 2;
+    public static final int FLAG_PULL_TO_TOP = 3;
+
     enum SdlActivityState{
         PRE_CREATE,
         POST_CREATE,
@@ -19,13 +24,12 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     private SdlActivityState mActivityState = SdlActivityState.PRE_CREATE;
-    private SdlActivityManager mSdlActivityManager;
 
     private boolean superCalled;
+    private boolean isBackHandled;
 
-    final void initialize(SdlContext sdlContext, SdlActivityManager sam){
+    final void initialize(SdlContext sdlContext){
         if(!isInitialized()) {
-            mSdlActivityManager = sam;
             setSdlApplicationContext(sdlContext);
             setAndroidContext(sdlContext.getAndroidApplicationContext());
             setInitialized(true);
@@ -77,9 +81,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         mActivityState = SdlActivityState.DESTROYED;
     }
 
-    // TODO: rename and revist implementation
-    public void onBackPressed(){
-        mSdlActivityManager.back();
+    public void onBackNavigation(){
+        isBackHandled = false;
     }
 
     final SdlActivityState getActivityState(){
@@ -133,6 +136,12 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         this.onDestroy();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onDestroy(). This should NEVER happen.");
+    }
+
+    final boolean performBackNavigation(){
+        isBackHandled = true;
+        this.onBackNavigation();
+        return isBackHandled;
     }
 
     @Override
