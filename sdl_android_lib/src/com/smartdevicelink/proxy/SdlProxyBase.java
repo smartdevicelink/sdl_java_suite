@@ -749,6 +749,32 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sendIntent.putExtra(sKey, iValue);		
 	}
 	
+	private Service getService()
+	{
+		Service myService = null;		
+		if (_proxyListener != null && _proxyListener instanceof Service)
+		{
+			myService = (Service) _proxyListener;				
+		}
+		else if (_appService != null)
+		{
+			myService = _appService;
+		}
+		if (myService != null)
+		{
+			try
+			{
+				return myService;
+			}
+			catch(Exception ex)
+			{
+				return null;
+			}
+			
+		}
+		return null;
+	}
+	
 	private void sendBroadcastIntent(Intent sendIntent)
 	{
 		Service myService = null;		
@@ -1684,6 +1710,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (_secList == null) return;
 
 		SdlSecurityBase sec = null;
+		Service svc = getService();
+		SdlSecurityBase.setAppService(svc);
 		
 		for (Class<? extends SdlSecurityBase> cls : _secList)
 		{
