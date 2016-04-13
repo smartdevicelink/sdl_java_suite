@@ -12,7 +12,6 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     public static final int FLAG_DEFAULT = 0;
     public static final int FLAG_CLEAR_HISTORY = 1;
     public static final int FLAG_CLEAR_TOP = 2;
-    public static final int FLAG_PULL_TO_TOP = 3;
 
     enum SdlActivityState{
         PRE_CREATE,
@@ -25,7 +24,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     private SdlActivityState mActivityState = SdlActivityState.PRE_CREATE;
 
-    private int mStackRefCount = 0;
+    private boolean isFinishing = false;
 
     private boolean superCalled;
     private boolean isBackHandled;
@@ -42,46 +41,42 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @CallSuper
-    public void onCreate(){
-        mStackRefCount = 1;
+    protected void onCreate(){
         superCalled = true;
-        mActivityState = SdlActivityState.POST_CREATE;
     }
 
     @CallSuper
-    public void onRestart(){
+    protected void onRestart(){
         superCalled = true;
-        mActivityState = SdlActivityState.POST_CREATE;
     }
 
     @CallSuper
-    public void onStart(){
+    protected void onStart(){
         superCalled = true;
-        mActivityState = SdlActivityState.BACKGROUND;
     }
 
     @CallSuper
-    public void onForeground(){
+    protected void onForeground(){
         superCalled = true;
-        mActivityState = SdlActivityState.FOREGROUND;
     }
 
     @CallSuper
-    public void onBackground(){
+    protected void onBackground(){
         superCalled = true;
-        mActivityState = SdlActivityState.BACKGROUND;
     }
 
     @CallSuper
-    public void onStop(){
+    protected void onStop(){
         superCalled = true;
-        mActivityState = SdlActivityState.STOPPED;
     }
 
     @CallSuper
-    public void onDestroy() {
+    protected void onDestroy() {
         superCalled = true;
-        mActivityState = SdlActivityState.DESTROYED;
+    }
+
+    protected final void finish(){
+        ((SdlApplication)getSdlApplicationContext()).getSdlActivityManager().finish();
     }
 
     public void onBackNavigation(){
@@ -92,12 +87,17 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         return mActivityState;
     }
 
-    final void incrementStackReferenceCount(){
-        mStackRefCount++;
+    final boolean isFinishing() {
+        return isFinishing;
+    }
+
+    final void setIsFinishing(boolean isFinishing) {
+        this.isFinishing = isFinishing;
     }
 
     final void performCreate(){
         superCalled = false;
+        mActivityState = SdlActivityState.POST_CREATE;
         this.onCreate();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onCreate(). This should NEVER happen.");
@@ -105,6 +105,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     final  void performRestart(){
         superCalled = false;
+        mActivityState = SdlActivityState.POST_CREATE;
         this.onRestart();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onRestart(). This should NEVER happen.");
@@ -112,6 +113,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     final void performStart(){
         superCalled = false;
+        mActivityState = SdlActivityState.BACKGROUND;
         this.onStart();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStart(). This should NEVER happen.");
@@ -119,6 +121,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     final void performForeground(){
         superCalled = false;
+        mActivityState = SdlActivityState.FOREGROUND;
         this.onForeground();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onForeground(). This should NEVER happen.");
@@ -126,6 +129,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     final void performBackground(){
         superCalled = false;
+        mActivityState = SdlActivityState.BACKGROUND;
         this.onBackground();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onBackground(). This should NEVER happen.");
@@ -133,20 +137,18 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     final void performStop(){
         superCalled = false;
+        mActivityState = SdlActivityState.STOPPED;
         this.onStop();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStop(). This should NEVER happen.");
     }
 
     final void performDestroy(){
-        if(mStackRefCount == 1) {
-            superCalled = false;
-            this.onDestroy();
-            if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
-                    + " did not call through to super() in method onDestroy(). This should NEVER happen.");
-        } else {
-            mStackRefCount--;
-        }
+        superCalled = false;
+        mActivityState = SdlActivityState.DESTROYED;
+        this.onDestroy();
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+                + " did not call through to super() in method onDestroy(). This should NEVER happen.");
     }
 
     final boolean performBackNavigation(){

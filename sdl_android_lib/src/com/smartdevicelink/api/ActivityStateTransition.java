@@ -53,6 +53,10 @@ abstract class ActivityStateTransition {
         return this;
     }
 
+    ActivityStateTransition finish(SdlActivityManager sam){
+        return this;
+    }
+
     protected boolean instantiateActivity(SdlActivityManager sam, SdlContext sdlContext,
                                               Class<? extends SdlActivity> main, int flags){
 
@@ -71,18 +75,6 @@ abstract class ActivityStateTransition {
                 if(newTop != null){
                     clearTop(backStack, newTop);
                     startTopActivity(backStack);
-                    return true;
-                }
-                break;
-            case SdlActivity.FLAG_PULL_TO_TOP:
-                SdlActivity instance = getInstanceFromStack(backStack, main);
-                if(instance != null){
-                    if(instance != backStack.peek()) {
-                        stopTopActivity(backStack);
-                        backStack.push(instance);
-                        instance.incrementStackReferenceCount();
-                        startTopActivity(backStack);
-                    }
                     return true;
                 }
                 break;
@@ -183,6 +175,8 @@ abstract class ActivityStateTransition {
     protected void destroyTopActivity(Stack<SdlActivity> backStack){
         if(backStack.empty()) return;
 
+        backStack.peek().setIsFinishing(true);
+
         stopTopActivity(backStack);
 
         SdlActivity activity = backStack.pop();
@@ -208,6 +202,27 @@ abstract class ActivityStateTransition {
                 destroyTopActivity(backStack);
                 startTopActivity(backStack);
             }
+        }
+    }
+
+    protected void finishActivity(Stack<SdlActivity> backStack){
+        if(backStack.empty()) return;
+
+        SdlActivity topActivity = backStack.peek();
+        if(!topActivity.isFinishing()){
+            SdlActivity.SdlActivityState state = topActivity.getActivityState();
+            Log.d(TAG, "State was: " + state.name());
+            destroyTopActivity(backStack);
+            if(state == SdlActivity.SdlActivityState.FOREGROUND ||
+                    state == SdlActivity.SdlActivityState.BACKGROUND){
+                startTopActivity(backStack);
+            }
+            if(state == SdlActivity.SdlActivityState.FOREGROUND){
+                foregroundTopActivity(backStack);
+            }
+        } else {
+            Log.w(TAG, "Finish called on SdlActivity that is already finishing.\n" +
+                    "SdlActivity class: " + topActivity.getClass().getCanonicalName());
         }
     }
 
