@@ -18,3 +18,28 @@ local.properties
 
 # OSX garbage
 .DS_Store
+##############################
+# Eclipse project files
+##############################
+.classpath
+.project
+
+##############################
+# Proguard folder (Eclipse)
+##############################
+proguard/
+
+##############################
+# Intellij project files
+##############################
+*.iml
+*.ipr
+*.iws
+.idea/
+
+##############################
+# Gradle build files
+##############################
+*.gradle
+build/
+gradle*
