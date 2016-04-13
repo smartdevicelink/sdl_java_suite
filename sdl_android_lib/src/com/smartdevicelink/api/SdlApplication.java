@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -88,6 +89,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private SdlApplicationConfig mApplicationConfig;
 
     private SdlActivityManager mSdlActivityManager;
+    private SdlFileManager mSdlFileManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -105,6 +107,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
         mLifecycleListeners.add(mSdlActivityManager);
+        mSdlFileManager = new SdlFileManager(this, mApplicationConfig);
+        mLifecycleListeners.add(mSdlFileManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
             listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
@@ -547,7 +551,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     }
 
-    interface LifecycleListener {
+    public interface LifecycleListener {
 
         void onSdlConnect();
         void onBackground();

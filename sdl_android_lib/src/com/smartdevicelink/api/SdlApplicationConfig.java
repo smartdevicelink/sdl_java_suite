@@ -66,7 +66,7 @@ public class SdlApplicationConfig {
      * Getter for the AppId of the SdlApplication defined by this config.
      * @return The AppId as a {@link String}
      */
-    String getAppId(){
+    public String getAppId(){
         return mAppId;
     }
 
@@ -74,8 +74,12 @@ public class SdlApplicationConfig {
      * Getter for the AppName of the SdlApplication defined by this config.
      * @return The AppName as a {@link String}
      */
-    String getAppName(){
+    public String getAppName(){
         return mAppName;
+    }
+
+    public Integer getAppIconResId(){
+        return appIconResId;
     }
 
     /**
@@ -83,7 +87,7 @@ public class SdlApplicationConfig {
      * by a first HMIFull from the module without a resume state saved.
      * @return {@link SdlActivity} that should be created as the entry point to the app.
      */
-    Class<? extends SdlActivity> getMainSdlActivity(){
+    public Class<? extends SdlActivity> getMainSdlActivity(){
         return mMainSdlActivity;
     }
 
