@@ -211,11 +211,14 @@ abstract class ActivityStateTransition {
         SdlActivity topActivity = backStack.peek();
         if(!topActivity.isFinishing()){
             SdlActivity.SdlActivityState state = topActivity.getActivityState();
+            Log.d(TAG, "State was: " + state.name());
             destroyTopActivity(backStack);
+            if(state == SdlActivity.SdlActivityState.FOREGROUND ||
+                    state == SdlActivity.SdlActivityState.BACKGROUND){
+                startTopActivity(backStack);
+            }
             if(state == SdlActivity.SdlActivityState.FOREGROUND){
                 foregroundTopActivity(backStack);
-            } else if(state == SdlActivity.SdlActivityState.BACKGROUND){
-                startTopActivity(backStack);
             }
         } else {
             Log.w(TAG, "Finish called on SdlActivity that is already finishing.\n" +
