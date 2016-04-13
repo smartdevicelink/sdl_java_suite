@@ -101,10 +101,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     SdlApplication(SdlConnectionService service, SdlApplicationConfig config, ConnectionStatusListener listener){
         initialize(service.getApplicationContext());
         mApplicationConfig = config;
+        mSdlProxyALM = mApplicationConfig.buildProxy(service, null, this);
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
         mLifecycleListeners.add(mSdlActivityManager);
-        mSdlProxyALM = mApplicationConfig.buildProxy(service, null, this);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
             listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
