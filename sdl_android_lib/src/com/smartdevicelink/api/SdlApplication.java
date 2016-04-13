@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.smartdevicelink.api.lockscreen.LockScreenStatusListener;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -88,6 +89,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private SdlApplicationConfig mApplicationConfig;
 
     private SdlActivityManager mSdlActivityManager;
+    private LockScreenStatusListener mLockScreenStatusListener;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -98,11 +100,13 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private boolean isFirstHmiReceived = false;
     private boolean isFirstHmiNotNoneReceived = false;
     
-    SdlApplication(SdlConnectionService service, SdlApplicationConfig config, ConnectionStatusListener listener){
+    SdlApplication(SdlConnectionService service, SdlApplicationConfig config,
+                   ConnectionStatusListener listener, LockScreenStatusListener lockScreenActivityManager){
         initialize(service.getApplicationContext());
         mApplicationConfig = config;
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
+        mLockScreenStatusListener = lockScreenActivityManager;
         mLifecycleListeners.add(mSdlActivityManager);
         mSdlProxyALM = mApplicationConfig.buildProxy(service, null, this);
         if(mSdlProxyALM != null){
@@ -111,7 +115,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
     }
 
-    void initialize(Context androidContext){
+    void initialize(Context androidContext) {
         if(!isInitialized()) {
             setAndroidContext(androidContext);
             setSdlApplicationContext(this);
@@ -508,7 +512,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnLockScreenNotification(OnLockScreenStatus notification) {
-
+        Log.i(TAG, "OnLockScreenStatus received.");
+        if(notification != null && notification.getShowLockScreen() != null) {
+            Log.i(TAG, "LockScreenStatus: " + notification.getShowLockScreen().name());
+            mLockScreenStatusListener.onLockScreenStatus(getName(), notification.getShowLockScreen());
+        }
     }
 
     @Override

@@ -29,13 +29,13 @@ public class SdlConnectionService extends Service {
     private HashMap<String, SdlApplication> mConnectedApplications = new HashMap<>();
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private Notification mPersistentNotification;
-    private LockScreenActivityManager mAndroidApplication;
 
     void startSdlApplication(SdlApplicationConfig config){
         synchronized (MAP_LOCK) {
             if (mRunningApplications.get(config.getAppId()) == null) {
                 mRunningApplications.put(config.getAppId(),
-                        new SdlApplication(this, config, mConnectionStatusListener));
+                        new SdlApplication(this, config, mConnectionStatusListener,
+                                LockScreenActivityManager.getInstance()));
                 startTimer();
             }
         }
@@ -46,7 +46,8 @@ public class SdlConnectionService extends Service {
             for (Map.Entry<String, SdlApplicationConfig> entry : configRegistry.entrySet()) {
                 if (mRunningApplications.get(entry.getKey()) == null) {
                     mRunningApplications.put(entry.getKey(),
-                            new SdlApplication(this, entry.getValue(), mConnectionStatusListener));
+                            new SdlApplication(this, entry.getValue(), mConnectionStatusListener,
+                                    LockScreenActivityManager.getInstance()));
                 }
             }
         }

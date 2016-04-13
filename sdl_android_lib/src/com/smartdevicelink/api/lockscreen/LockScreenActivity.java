@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 
-public class LockScreenActivity extends Activity {
+public abstract class LockScreenActivity extends Activity {
 
     @Override
     @CallSuper
-    protected void onDestroy() {
+    protected final void onDestroy() {
         LockScreenActivityManager.setLockScreenInstance(null);
         super.onDestroy();
     }

@@ -11,7 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.smartdevicelink.api.lockscreen.LockScreenActivity;
+import com.smartdevicelink.api.lockscreen.LockScreenActivityManager;
+import com.smartdevicelink.api.lockscreen.LockScreenConfig;
 
 import java.util.HashMap;
 
@@ -25,8 +26,6 @@ public class SdlManager {
     private SdlConnectionService mSdlConnectionService;
     private Context mAndroidContext;
     private Notification mPersistentNotification;
-    private LockScreenActivity mLockScreenActivity;
-    private Application mAndroidApplication;
     private boolean isBound = false;
 
     private HashMap<String, SdlApplicationConfig> mApplicationConfigRegistry;
@@ -54,20 +53,13 @@ public class SdlManager {
         }
     }
 
-    public void prepare(@NonNull Application application, @NonNull Class<? extends LockScreenActivity> lockScreen,
+    public void prepare(@NonNull Application application, @NonNull LockScreenConfig lockScreenConfig,
                         @Nullable Notification persistentNotification){
         synchronized (SYNC_LOCK) {
             if (!isPrepared) {
                 mPersistentNotification = persistentNotification;
-            }
-            prepare(application);
-        }
-    }
-
-    public void prepare(Application context){
-        synchronized (SYNC_LOCK) {
-            if (!isPrepared) {
-                mAndroidContext = context;
+                LockScreenActivityManager.initialize(application, lockScreenConfig);
+                mAndroidContext = application;
                 bindConnectionService();
                 isPrepared = true;
             } else {
