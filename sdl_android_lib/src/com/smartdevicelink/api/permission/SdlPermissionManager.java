@@ -26,7 +26,6 @@ public class SdlPermissionManager {
     private final Object PERMISSION_LOCK = new Object();
 
     public SdlPermissionManager(){
-
         mSdlPermissionSet = SdlPermissionSet.obtain();
 
         mListeners = new ArrayList<>();

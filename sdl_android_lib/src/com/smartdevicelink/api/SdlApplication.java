@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -88,6 +89,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private SdlApplicationConfig mApplicationConfig;
 
     private SdlActivityManager mSdlActivityManager;
+    private SdlPermissionManager mSdlPermissionManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -103,6 +105,9 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         mApplicationConfig = config;
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
+        mSdlPermissionManager = new SdlPermissionManager();
+        mSdlProxyALM.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE,
+                mSdlPermissionManager.getPermissionChangeListener());
         mLifecycleListeners.add(mSdlActivityManager);
         mSdlProxyALM = mApplicationConfig.buildProxy(service, null, this);
         if(mSdlProxyALM != null){
@@ -184,6 +189,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     @Override
     public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         mSdlActivityManager.startSdlActivity(this, activity, flags);
+    }
+
+    @Override
+    public SdlPermissionManager getSdlPermissionManager() {
+        return mSdlPermissionManager;
     }
 
     /***********************************
@@ -373,7 +383,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnPermissionsChange(OnPermissionsChange notification) {
-
     }
 
     @Override
