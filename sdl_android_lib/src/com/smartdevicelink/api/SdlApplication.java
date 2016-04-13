@@ -67,6 +67,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
@@ -154,6 +155,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         return mApplicationConfig.getAppName();
     }
 
+    final public String getId(){
+        return mApplicationConfig.getAppId();
+    }
+
     SdlActivityManager getSdlActivityManager() {
         return mSdlActivityManager;
     }
@@ -165,6 +170,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             }
             mConnectionStatus = Status.DISCONNECTED;
             if(notifyStatusListener)
+                mLockScreenStatusListener.onLockScreenStatus(getId(), LockScreenStatus.OFF);
                 mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
             try {
                 mSdlProxyALM.dispose();
@@ -515,7 +521,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         Log.i(TAG, "OnLockScreenStatus received.");
         if(notification != null && notification.getShowLockScreen() != null) {
             Log.i(TAG, "LockScreenStatus: " + notification.getShowLockScreen().name());
-            mLockScreenStatusListener.onLockScreenStatus(getName(), notification.getShowLockScreen());
+            mLockScreenStatusListener.onLockScreenStatus(getId(), notification.getShowLockScreen());
         }
     }
 
