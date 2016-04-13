@@ -1,4 +1,4 @@
-package com.smartdevicelink.permission;
+package com.smartdevicelink.api.permission;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -71,14 +71,14 @@ public class SdlPermissionManager {
 
     /**
      * Method to add a listener that will be called when the conditions specified by the provided
-     * {@link SdlPermissionFilter} and {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode}
+     * {@link SdlPermissionFilter} and {@link com.smartdevicelink.api.permission.SdlPermissionManager.ListenerMode}
      * @param listener Implementation of {@link SdlPermissionFilter} that will receive callbacks
      *                 when permissions requested by the filter change according to the supplied
      *                 ListenerMode.
      * @param filter SdlPermissionFilter that contains a set of permissions that should be reported
      *               to the listener. The listener will ONLY receive information on permissions
      *               included in the filter.
-     * @param mode The {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode} that
+     * @param mode The {@link com.smartdevicelink.api.permission.SdlPermissionManager.ListenerMode} that
      *             defines when the listener should be called based on changes in the permissions
      *             specified by the SdlPermissionFilter.
      * @return Returns an {@link SdlPermissionEvent} containing the current state of the permissions
@@ -97,7 +97,7 @@ public class SdlPermissionManager {
     /**
      * Convenience method that is equivalent to calling
      * {@link SdlPermissionManager#addListener(SdlPermissionListener, SdlPermissionFilter, ListenerMode)}
-     * with {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode}.
+     * with {@link com.smartdevicelink.api.permission.SdlPermissionManager.ListenerMode}.
      * @param listener Implementation of {@link SdlPermissionFilter} that will receive callbacks
      *                 when permissions requested by the filter change according to the supplied
      *                 ListenerMode.

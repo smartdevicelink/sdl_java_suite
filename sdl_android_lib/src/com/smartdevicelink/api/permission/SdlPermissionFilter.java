@@ -1,4 +1,4 @@
-package com.smartdevicelink.permission;
+package com.smartdevicelink.api.permission;
 
 import android.support.annotation.NonNull;
 
@@ -21,7 +21,7 @@ public class SdlPermissionFilter {
     /**
      * Adds a single permission to the filter. Using this method will add the given SdlPermission
      * to all HMILevels. This should be sufficient for most use cases. When using this method do not
-     * use {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode#MATCH_EXACT} as
+     * use {@link com.smartdevicelink.api.permission.SdlPermissionManager.ListenerMode#MATCH_EXACT} as
      * the listener mode.
      * @param permission {@link SdlPermission} to add to the filter.
      */
@@ -42,7 +42,7 @@ public class SdlPermissionFilter {
     /**
      * Adds a set of permission tos the filter. Using this method will add the given SdlPermission
      * to all HMILevels. This should be sufficient for most use cases. When using this method do not
-     * use {@link com.smartdevicelink.permission.SdlPermissionManager.ListenerMode#MATCH_EXACT} as
+     * use {@link com.smartdevicelink.api.permission.SdlPermissionManager.ListenerMode#MATCH_EXACT} as
      * the listener more.
      * @param permissions Collection of SdlPermissions to be added as a batch. For the best
      *                    performance use an {@link java.util.EnumSet} as the supplied

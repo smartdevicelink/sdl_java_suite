@@ -1,4 +1,4 @@
-package com.smartdevicelink.permission;
+package com.smartdevicelink.api.permission;
 
 import android.support.v4.util.Pools;
 
