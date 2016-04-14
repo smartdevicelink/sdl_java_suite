@@ -80,7 +80,8 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
                 }
             }
 
-            if(!mFileSet.contains(mSdlApplicationConfig.getAppIcon().getSdlName())){
+            if(mSdlApplicationConfig.getAppIcon().isForceReplace() ||
+                    !mFileSet.contains(mSdlApplicationConfig.getAppIcon().getSdlName())){
                 uploadAppIcon();
             } else {
                 setAppIcon();
@@ -117,6 +118,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     }
 
     public void uploadSdlImage(SdlImage sdlImage, OnRPCResponseListener listener){
+        Log.d(TAG, "SdlImage isForceReplace = " + sdlImage.isForceReplace());
         if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())) return;
 
         if(sdlImage.getResId() != null) {
