@@ -25,7 +25,7 @@ import java.util.List;
 
 public class SdlFileManager implements SdlApplication.LifecycleListener{
 
-    public static final String CLEAR_IMAGE = "laq6Z5N1yEOsysUA7qGPkPfRU6ZJQK4J";
+    public static final String CLEAR_IMAGE = "laq6Z5N1yEOsysUA7qGPk";
 
     private static final String TAG = SdlFileManager.class.getSimpleName();
 
