@@ -3,7 +3,7 @@ package com.smartdevicelink.api.file;
 import java.io.File;
 import java.net.URL;
 
-public class SdlImage {
+public class SdlImage implements SdlFile {
 
     private final String mSdlName;
     private final Integer mResId;
@@ -40,26 +40,32 @@ public class SdlImage {
         this.forceReplace = forceReplace;
     }
 
+    @Override
     public String getSdlName() {
         return mSdlName;
     }
 
+    @Override
     public Integer getResId() {
         return mResId;
     }
 
+    @Override
     public URL getURL() {
         return mURL;
     }
 
+    @Override
     public File getPath() {
         return mPath;
     }
 
+    @Override
     public boolean isPersistent() {
         return isPersistent;
     }
 
+    @Override
     public boolean isForceReplace() {
         return forceReplace;
     }

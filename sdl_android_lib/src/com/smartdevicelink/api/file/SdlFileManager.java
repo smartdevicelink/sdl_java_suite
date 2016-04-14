@@ -90,17 +90,15 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     };
 
     private void uploadAppIcon(){
-        uploadSdlImage(mSdlApplicationConfig.getAppIcon(), new OnRPCResponseListener() {
+        uploadSdlImage(mSdlApplicationConfig.getAppIcon(), new FileReadyListener() {
             @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                try {
-                    Log.i(TAG, response.serializeJSON().toString(3));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(response != null && response.getSuccess()){
-                    setAppIcon();
-                }
+            public void onFileReady(SdlFile sdlFile) {
+                setAppIcon();
+            }
+
+            @Override
+            public void onFileError(SdlFile sdlFile) {
+                Log.d(TAG, "Unable to upload App Icon.");
             }
         });
     }
@@ -117,7 +115,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         mSdlApplication.sendRpc(listFiles);
     }
 
-    public void uploadSdlImage(SdlImage sdlImage, OnRPCResponseListener listener){
+    public void uploadSdlImage(final SdlImage sdlImage, final FileReadyListener listener){
         Log.d(TAG, "SdlImage isForceReplace = " + sdlImage.isForceReplace());
         if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())) return;
 
@@ -133,9 +131,26 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
             byte[] data = bas.toByteArray();
             file.setBulkData(data);
 
-            file.setOnRPCResponseListener(listener);
+            file.setOnRPCResponseListener(new OnRPCResponseListener() {
+                @Override
+                public void onResponse(int correlationId, RPCResponse response) {
+                    if(response.getSuccess()){
+                        listener.onFileReady(sdlImage);
+                    } else {
+                        listener.onFileError(sdlImage);
+                    }
+                }
+            });
 
             mSdlApplication.sendRpc(file);
         }
+    }
+
+    public interface FileReadyListener{
+
+        void onFileReady(SdlFile sdlFile);
+
+        void onFileError(SdlFile sdlFile);
+
     }
 }
