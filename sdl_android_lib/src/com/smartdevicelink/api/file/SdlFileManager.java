@@ -22,8 +22,6 @@ import java.util.List;
 
 public class SdlFileManager implements SdlApplication.LifecycleListener{
 
-    private static final String SDL_APP_ICON_NAME = "sdl_app_icon";
-
     private static final String TAG = SdlFileManager.class.getSimpleName();
 
     private final HashSet<String> mFileSet;
@@ -40,7 +38,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     @Override
     public void onSdlConnect() {
         Log.d(TAG, "onSdlConnect");
-        if(mSdlApplicationConfig.getAppIconResId() != null){
+        if(mSdlApplicationConfig.getAppIcon() != null){
             sendListFiles();
         }
     }
@@ -76,11 +74,13 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
             }
             ListFilesResponse lfr = (ListFilesResponse) response;
             List<String> fileNames = lfr.getFilenames();
-            for(String fileName: fileNames){
-                mFileSet.add(fileName);
+            if(fileNames != null) {
+                for (String fileName : fileNames) {
+                    mFileSet.add(fileName);
+                }
             }
 
-            if(!mFileSet.contains(SDL_APP_ICON_NAME)){
+            if(!mFileSet.contains(mSdlApplicationConfig.getAppIcon().getSdlName())){
                 uploadAppIcon();
             } else {
                 setAppIcon();
@@ -89,9 +89,14 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     };
 
     private void uploadAppIcon(){
-        uploadPersistentImageFile(SDL_APP_ICON_NAME, mSdlApplicationConfig.getAppIconResId(), new OnRPCResponseListener() {
+        uploadSdlImage(mSdlApplicationConfig.getAppIcon(), new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
+                try {
+                    Log.i(TAG, response.serializeJSON().toString(3));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 if(response != null && response.getSuccess()){
                     setAppIcon();
                 }
@@ -101,7 +106,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
 
     private void setAppIcon() {
         SetAppIcon sai = new SetAppIcon();
-        sai.setSdlFileName(SDL_APP_ICON_NAME);
+        sai.setSdlFileName(mSdlApplicationConfig.getAppIcon().getSdlName());
         mSdlApplication.sendRpc(sai);
     }
 
@@ -111,22 +116,24 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         mSdlApplication.sendRpc(listFiles);
     }
 
-    public void uploadPersistentImageFile(String sdlFileName, int resId, OnRPCResponseListener listener){
-        if(mFileSet.contains(sdlFileName)) return;
+    public void uploadSdlImage(SdlImage sdlImage, OnRPCResponseListener listener){
+        if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())) return;
 
-        PutFile file = new PutFile();
-        file.setFileType(FileType.GRAPHIC_PNG);
-        file.setSdlFileName(sdlFileName);
-        file.setPersistentFile(true);
+        if(sdlImage.getResId() != null) {
 
-        Bitmap image = BitmapFactory.decodeResource(mSdlApplication.getAndroidApplicationContext().getResources(), resId);
-        ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, bas);
-        byte[] data = bas.toByteArray();
-        file.setBulkData(data);
+            PutFile file = new PutFile();
+            file.setFileType(FileType.GRAPHIC_PNG);
+            file.setSdlFileName(sdlImage.getSdlName());
+            file.setPersistentFile(sdlImage.isPersistent());
+            Bitmap image = BitmapFactory.decodeResource(mSdlApplication.getAndroidApplicationContext().getResources(), sdlImage.getResId());
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, bas);
+            byte[] data = bas.toByteArray();
+            file.setBulkData(data);
 
-        file.setOnRPCResponseListener(listener);
+            file.setOnRPCResponseListener(listener);
 
-        mSdlApplication.sendRpc(file);
+            mSdlApplication.sendRpc(file);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.smartdevicelink.api;
 
 import android.app.Service;
 
+import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
@@ -35,7 +36,7 @@ public class SdlApplicationConfig {
     private String mAutoActivateID;
     private BaseTransportConfig mTransport;
 
-    private Integer appIconResId;
+    private SdlImage mAppIcon;
 
     // Handled internally
     private boolean isCallbackToUIThread = false;
@@ -59,7 +60,7 @@ public class SdlApplicationConfig {
         this.mAutoActivateID = builder.autoActivateID;
         this.mTransport = builder.transport;
 
-        this.appIconResId = builder.appIconResId;
+        this.mAppIcon = builder.appIcon;
     }
 
     /**
@@ -78,8 +79,8 @@ public class SdlApplicationConfig {
         return mAppName;
     }
 
-    public Integer getAppIconResId(){
-        return appIconResId;
+    public SdlImage getAppIcon(){
+        return mAppIcon;
     }
 
     /**
@@ -171,7 +172,7 @@ public class SdlApplicationConfig {
         private String autoActivateID = null;
         private BaseTransportConfig transport = new BTTransportConfig();
 
-        private Integer appIconResId;
+        private SdlImage appIcon;
 
         public Builder(String appId, String appName, boolean isMedia,
                        Class<? extends SdlActivity> mainSdlActivity){
@@ -265,10 +266,10 @@ public class SdlApplicationConfig {
         /**
          * Sets the resource ID from R.drawable to use for the app icon displayed on the HMI.
          * This will automatically be sent and set.
-         * @param appIconResId
+         * @param appIcon
          */
-        public void setAppIconResId(Integer appIconResId) {
-            this.appIconResId = appIconResId;
+        public void setAppIcon(SdlImage appIcon) {
+            this.appIcon = appIcon;
         }
     }
 }
