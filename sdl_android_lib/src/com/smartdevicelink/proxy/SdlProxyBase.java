@@ -2991,7 +2991,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (_advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
-                    cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+                    cycleProxy(msg.getDisconnectedReason());
                 } else {
 					if (_callbackToUIThread) {
 						// Run in UI thread
