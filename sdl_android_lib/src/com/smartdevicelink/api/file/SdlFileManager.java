@@ -2,6 +2,9 @@ package com.smartdevicelink.api.file;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.smartdevicelink.api.SdlApplication;
@@ -22,6 +25,8 @@ import java.util.List;
 
 public class SdlFileManager implements SdlApplication.LifecycleListener{
 
+    public static final String CLEAR_IMAGE = "laq6Z5N1yEOsysUA7qGPkPfRU6ZJQK4J";
+
     private static final String TAG = SdlFileManager.class.getSimpleName();
 
     private final HashSet<String> mFileSet;
@@ -33,6 +38,45 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         mSdlApplication = sdlApplication;
         mSdlApplicationConfig = config;
         mFileSet = new HashSet<>();
+    }
+
+    public boolean uploadSdlImage(@NonNull final SdlImage sdlImage, @Nullable final FileReadyListener listener){
+        Log.d(TAG, "SdlImage isForceReplace = " + sdlImage.isForceReplace());
+        if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())) return true;
+
+        if(sdlImage.getResId() != null) {
+
+            PutFile file = new PutFile();
+            file.setFileType(FileType.GRAPHIC_PNG);
+            file.setSdlFileName(sdlImage.getSdlName());
+            file.setPersistentFile(sdlImage.isPersistent());
+            Bitmap image = BitmapFactory.decodeResource(mSdlApplication.getAndroidApplicationContext().getResources(), sdlImage.getResId());
+            ByteArrayOutputStream bas = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, bas);
+            byte[] data = bas.toByteArray();
+            file.setBulkData(data);
+
+            if(listener != null) {
+                file.setOnRPCResponseListener(new OnRPCResponseListener() {
+                    @Override
+                    public void onResponse(int correlationId, RPCResponse response) {
+                        if (response.getSuccess()) {
+                            mFileSet.add(sdlImage.getSdlName());
+                            listener.onFileReady(sdlImage);
+                        } else {
+                            listener.onFileError(sdlImage);
+                        }
+                    }
+                });
+            }
+
+            mSdlApplication.sendRpc(file);
+        }
+        return false;
+    }
+
+    public boolean isFileOnModule(String sdlFileName){
+        return mFileSet.contains(sdlFileName);
     }
 
     @Override
@@ -63,32 +107,6 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
 
     }
 
-    private OnRPCResponseListener mListFileResponseListener = new OnRPCResponseListener() {
-        @Override
-        public void onResponse(int correlationId, RPCResponse response) {
-            if(response == null) return;
-            try {
-                Log.i(TAG, response.serializeJSON().toString(3));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            ListFilesResponse lfr = (ListFilesResponse) response;
-            List<String> fileNames = lfr.getFilenames();
-            if(fileNames != null) {
-                for (String fileName : fileNames) {
-                    mFileSet.add(fileName);
-                }
-            }
-
-            if(mSdlApplicationConfig.getAppIcon().isForceReplace() ||
-                    !mFileSet.contains(mSdlApplicationConfig.getAppIcon().getSdlName())){
-                uploadAppIcon();
-            } else {
-                setAppIcon();
-            }
-        }
-    };
-
     private void uploadAppIcon(){
         uploadSdlImage(mSdlApplicationConfig.getAppIcon(), new FileReadyListener() {
             @Override
@@ -115,29 +133,30 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         mSdlApplication.sendRpc(listFiles);
     }
 
-    public void uploadSdlImage(final SdlImage sdlImage, final FileReadyListener listener){
-        Log.d(TAG, "SdlImage isForceReplace = " + sdlImage.isForceReplace());
-        if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())) return;
-
-        if(sdlImage.getResId() != null) {
-
+    private void uploadClearScreen(){
+        if(!mFileSet.contains(CLEAR_IMAGE)) {
             PutFile file = new PutFile();
             file.setFileType(FileType.GRAPHIC_PNG);
-            file.setSdlFileName(sdlImage.getSdlName());
-            file.setPersistentFile(sdlImage.isPersistent());
-            Bitmap image = BitmapFactory.decodeResource(mSdlApplication.getAndroidApplicationContext().getResources(), sdlImage.getResId());
+            file.setSdlFileName(CLEAR_IMAGE);
+            file.setPersistentFile(true);
+
+            Bitmap image = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            image.eraseColor(Color.TRANSPARENT);
             ByteArrayOutputStream bas = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, bas);
             byte[] data = bas.toByteArray();
-            file.setBulkData(data);
 
+            file.setBulkData(data);
             file.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
-                    if(response.getSuccess()){
-                        listener.onFileReady(sdlImage);
-                    } else {
-                        listener.onFileError(sdlImage);
+                    try {
+                        Log.i(TAG, response.serializeJSON().toString(3));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (response.getSuccess()) {
+                        mFileSet.add(CLEAR_IMAGE);
                     }
                 }
             });
@@ -145,6 +164,34 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
             mSdlApplication.sendRpc(file);
         }
     }
+
+    private OnRPCResponseListener mListFileResponseListener = new OnRPCResponseListener() {
+        @Override
+        public void onResponse(int correlationId, RPCResponse response) {
+            if(response == null) return;
+            try {
+                Log.i(TAG, response.serializeJSON().toString(3));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ListFilesResponse lfr = (ListFilesResponse) response;
+            List<String> fileNames = lfr.getFilenames();
+            if(fileNames != null) {
+                for (String fileName : fileNames) {
+                    mFileSet.add(fileName);
+                }
+            }
+
+            if(mSdlApplicationConfig.getAppIcon().isForceReplace() ||
+                    !mFileSet.contains(mSdlApplicationConfig.getAppIcon().getSdlName())){
+                uploadAppIcon();
+            } else {
+                setAppIcon();
+            }
+
+            uploadClearScreen();
+        }
+    };
 
     public interface FileReadyListener{
 

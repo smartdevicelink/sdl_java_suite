@@ -190,6 +190,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         mSdlActivityManager.startSdlActivity(this, activity, flags);
     }
 
+    @Override
+    public SdlFileManager getSdlFileManager() {
+        return mSdlFileManager;
+    }
+
     /***********************************
      IProxyListenerALM interface methods
      ***********************************/
