@@ -1,6 +1,7 @@
 package com.smartdevicelink.api.permission;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -114,7 +115,8 @@ public class SdlPermissionManager {
         }
     }
 
-    private OnRPCNotificationListener mPermissionChangeListener = new OnRPCNotificationListener() {
+    @VisibleForTesting
+    OnRPCNotificationListener mPermissionChangeListener = new OnRPCNotificationListener() {
         @Override
         public void onNotified(RPCNotification notification) {
             synchronized (PERMISSION_LOCK) {
@@ -175,7 +177,8 @@ public class SdlPermissionManager {
 
     };
 
-    private OnRPCNotificationListener mHMIStatusListener = new OnRPCNotificationListener() {
+    @VisibleForTesting
+    OnRPCNotificationListener mHMIStatusListener = new OnRPCNotificationListener() {
         @Override
         public void onNotified(RPCNotification notification) {
             OnHMIStatus hmiStatus = (OnHMIStatus) notification;
