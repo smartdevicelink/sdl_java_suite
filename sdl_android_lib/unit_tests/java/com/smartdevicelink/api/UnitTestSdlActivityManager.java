@@ -321,62 +321,6 @@ public class UnitTestSdlActivityManager{
     }
 
 
-    @Test
-    public void verifyPullToTopBackStack(){
-        SdlTestActivity firstActivity = createInitialTestActivity();
-        SdlTestActivity simpleActivity =startNextTestActivity(firstActivity, SdlTestActivity.class, SdlActivity.FLAG_DEFAULT);
-        SdlTestActivity shouldBeEqual = startNextTestActivity(simpleActivity,SdlTestActivity1.class,SdlActivity.FLAG_DEFAULT);
-        SdlTestActivity currActivity = startNextTestActivity(shouldBeEqual,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
-        for(int i=0; i<4; i++){
-            //assuming separate instances for now for same class
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
-        }
-        moveCheckCountsToEnd();
-        //TODO: should be flag for pull to top
-        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_PULL_TO_TOP);
-        checkBackgroundToStopped(currActivity);
-        assertSame(shouldBeEqual, checkForEqual);
-        checkStoppedToBackground(shouldBeEqual);
-    }
-
-    @Test
-    public void verifyNoDestroyOnBackForPullToTop(){
-        //set up the test with the verifyPullToTopBackStack
-        verifyPullToTopBackStack();
-        SdlTestActivity shouldBeAliveStill = (SdlTestActivity) mSdlActivityManager.getTopActivity();
-        mSdlActivityManager.back();
-        checkBackgroundToStopped(shouldBeAliveStill);
-        checkStoppedToBackground((SdlTestActivity) mSdlActivityManager.getTopActivity());
-    }
-
-    @Test
-    public void verifySingleDestroyOnExitForPullToTop(){
-        verifyPullToTopBackStack();
-        Stack<SdlActivity> backStackCopy = (Stack<SdlActivity>) mSdlActivityManager.getBackStack().clone();
-        SdlTestActivity pullToTopRef= (SdlTestActivity) backStackCopy.pop();
-        mSdlActivityManager.onExit();
-        //check that the pull to top ref at least went to stopped
-        //we will check the destroy portion when we check the rest of the backstack
-        checkBackgroundToStopped(pullToTopRef);
-        for(SdlActivity sdlTestActivity: backStackCopy){
-            checkStoppedToDestroy((SdlTestActivity)sdlTestActivity);
-        }
-    }
-
-    @Test
-    public void verifyPullToTopNoPreviousInstance(){
-        SdlTestActivity currActivity = createInitialTestActivity();
-        for(int i=0; i<5; i++){
-            //assuming separate instances for now for same class
-            currActivity = startNextTestActivity(currActivity,SdlTestActivity.class,SdlActivity.FLAG_DEFAULT);
-        }
-        moveCheckCountsToEnd();
-        SdlTestActivity checkForEqual = startNextTestActivity(currActivity,SdlTestActivity1.class,SdlActivity.FLAG_PULL_TO_TOP);
-        checkBackgroundToStopped(currActivity);
-        checkConnectedToBackground(checkForEqual);
-    }
-
-
 
     //Utils for test readability
 
