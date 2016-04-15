@@ -110,9 +110,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
-        mSdlPermissionManager = new SdlPermissionManager();
-        mSdlProxyALM.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE,
-                mSdlPermissionManager.getPermissionChangeListener());
+        mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
         mLifecycleListeners.add(mSdlActivityManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;

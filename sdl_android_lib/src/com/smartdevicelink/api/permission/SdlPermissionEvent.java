@@ -7,36 +7,36 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import java.util.EnumSet;
 
 public class SdlPermissionEvent {
-    final SdlPermissionSet mPermissionSet;
 
-    public SdlPermissionEvent(SdlPermissionSet permission){
-        this.mPermissionSet = permission;
+    final EnumSet<SdlPermission> mPermissions;
+    final PermissionLevel mPermissionLevel;
+
+    public enum PermissionLevel{
+        ALL,
+        SOME,
+        NONE
     }
 
     /**
-     * This method returns the set of permissions allowed in the given HMILevel.
-     * @param hmiLevel The {@link HMILevel} of the desired permission set.
-     * @return {@link EnumSet} of {@link SdlPermission} items representing available permissions.
+     * SdlPermissionEvent constructor
+     * @param permission Current set of permissions available
+     * @param permissionLevel Convenience enum for the
      */
-    @NonNull
-    public EnumSet<SdlPermission> getPermissions(@NonNull HMILevel hmiLevel){
-        return mPermissionSet.permissions.get(hmiLevel.ordinal());
+    SdlPermissionEvent(EnumSet<SdlPermission> permission, PermissionLevel permissionLevel){
+        mPermissionLevel = permissionLevel;
+        mPermissions = permission;
     }
 
-    /**
-     * This method returns the set of permissions representing all permissions that are available
-     * regardless of the HMI levels that they are available in.
-     * @return {@link EnumSet} of {@link SdlPermission} items representing available permissions.
-     */
     @NonNull
-    public EnumSet<SdlPermission> getPermissions(){
-        EnumSet<SdlPermission> permissions = EnumSet.noneOf(SdlPermission.class);
-
-        for(EnumSet<SdlPermission> set: mPermissionSet.permissions){
-            permissions.addAll(set);
-        }
-
-        return permissions;
+    public final EnumSet<SdlPermission> getPermissions(){
+        return mPermissions;
     }
+
+    @NonNull
+    public final PermissionLevel getPermissionLevel(){
+        return  mPermissionLevel;
+    }
+
+
 
 }

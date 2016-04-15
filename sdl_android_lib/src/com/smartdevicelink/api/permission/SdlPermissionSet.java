@@ -82,6 +82,27 @@ class SdlPermissionSet {
         return true;
     }
 
+    boolean containsAllForHMILevel(SdlPermissionSet sdlPermissionSet, HMILevel hmiLevel){
+        return permissions.get(hmiLevel.ordinal()).containsAll(sdlPermissionSet.permissions.get(hmiLevel.ordinal()));
+    }
+
+    boolean containsAnyForHMILevel(SdlPermissionSet sdlPermissionSet, HMILevel hmiLevel){
+        SdlPermissionSet copy = SdlPermissionSet.copy(this);
+        try{
+            copy.permissions.get(hmiLevel.ordinal()).retainAll(sdlPermissionSet.permissions.get(hmiLevel.ordinal()));
+            return !copy.permissions.get(hmiLevel.ordinal()).isEmpty();
+        }finally {
+            copy.recycle();
+        }
+    }
+
+    boolean checkForChangeBetweenHMILevels(HMILevel priorHMILevel, HMILevel afterHMILevel){
+        SdlPermissionSet copy = SdlPermissionSet.copy(this);
+        copy.permissions.get(afterHMILevel.ordinal()).removeAll(copy.permissions.get(priorHMILevel.ordinal()));
+        return copy.permissions.get(afterHMILevel.ordinal()).size()>0;
+
+    }
+
     void addPermissions(Collection<SdlPermission> permissions, HMILevel hmiLevel){
         this.permissions.get(hmiLevel.ordinal()).addAll(permissions);
     }
