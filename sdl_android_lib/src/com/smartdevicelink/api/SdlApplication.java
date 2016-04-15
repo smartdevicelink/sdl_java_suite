@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -90,6 +91,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @VisibleForTesting
     SdlActivityManager mSdlActivityManager;
+    private SdlPermissionManager mSdlPermissionManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -110,6 +112,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
+        mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
         mLifecycleListeners.add(mSdlActivityManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
@@ -190,6 +193,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     @Override
     public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         mSdlActivityManager.startSdlActivity(this, activity, flags);
+    }
+
+    @Override
+    public SdlPermissionManager getSdlPermissionManager() {
+        return mSdlPermissionManager;
     }
 
     /***********************************
@@ -379,7 +387,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnPermissionsChange(OnPermissionsChange notification) {
-
     }
 
     @Override
