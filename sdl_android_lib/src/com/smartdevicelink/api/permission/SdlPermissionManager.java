@@ -38,6 +38,7 @@ public class SdlPermissionManager {
                 mHMIStatusListener);
     }
 
+    //TODO: Remove method since implementation is more specific to a single HMI Level
     /**
      * This method returns true if the given single permission is available at ANY {@link HMILevel}.
      * For specific HMILevels use {@link #isPermissionAvailable(SdlPermission, HMILevel)}.
@@ -59,12 +60,18 @@ public class SdlPermissionManager {
 
     }
 
-
-    void setCurrentHMILevel(HMILevel hmiLevel){
+    /**
+     * Method to change the current HMI level if it has changed and to notify added {@link SdlPermissionListener}
+     * of any changes in {@link SdlPermission} with the {@link HMILevel} transition.
+     * @param hmiLevel The {@link HMILevel} to change to
+     */
+    void setCurrentHMILevel(@NonNull HMILevel hmiLevel){
         synchronized (PERMISSION_LOCK) {
             if(hmiLevel!=mCurrentHMILevel) {
                 for (ListenerWithFilter lwf : mListeners) {
+                    //filter out the permissions that we are not interested in
                     SdlPermissionSet intersection = SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet);
+                    //see if there is any change in the EnumSet between the old HMI Level and the new HMI Level
                     if (intersection.checkForChangeBetweenHMILevels(mCurrentHMILevel, hmiLevel)) {
                         lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
                     }
@@ -91,8 +98,7 @@ public class SdlPermissionManager {
      * Method to add a listener that will be called when the conditions specified by the provided
      * {@link SdlPermissionFilter}
      * @param listener Implementation of {@link SdlPermissionFilter} that will receive callbacks
-     *                 when permissions requested by the filter change according to the supplied
-     *                 ListenerMode.
+     *                 when permissions requested by the filter change.
      * @param filter SdlPermissionFilter that contains a set of permissions that should be reported
      *               to the listener. The listener will ONLY receive information on permissions
      *               included in the filter.
@@ -215,10 +221,13 @@ public class SdlPermissionManager {
     private SdlPermissionEvent generateSdlPermmisionEvent(SdlPermissionSet current, SdlPermissionFilter filter, HMILevel hmiLevel){
         SdlPermissionSet checkPermissions= SdlPermissionSet.intersect(current, filter.permissionSet);
         if(checkPermissions.containsAllForHMILevel(filter.permissionSet, hmiLevel)){
+            //Verified that all of the filtered permissions are present with the current permissions at the current HMI Level
             return new SdlPermissionEvent(checkPermissions.permissions.get(hmiLevel.ordinal()), SdlPermissionEvent.PermissionLevel.ALL);
         }else if(checkPermissions.containsAnyForHMILevel(filter.permissionSet, hmiLevel)){
+            //Verified that at least one of the filtered permissions is present at the current HMI Level
             return new SdlPermissionEvent(checkPermissions.permissions.get(hmiLevel.ordinal()), SdlPermissionEvent.PermissionLevel.SOME);
         }else {
+            //None of the filtered permissions are present at the current HMI Level
             return new SdlPermissionEvent(checkPermissions.permissions.get(hmiLevel.ordinal()), SdlPermissionEvent.PermissionLevel.NONE);
         }
     }

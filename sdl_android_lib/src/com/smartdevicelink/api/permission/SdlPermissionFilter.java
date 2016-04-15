@@ -8,6 +8,7 @@ import java.util.Collection;
 
 public class SdlPermissionFilter {
 
+    //TODO: Refactor to an EnumSet so that the user is not hanging onto SdlPermissionSets when creating listeners?
     SdlPermissionSet permissionSet;
 
     /**
@@ -19,23 +20,21 @@ public class SdlPermissionFilter {
     }
 
     /**
-     * Adds a single permission to the filter. Using this method will add the given SdlPermission
-     * to all HMILevels.
+     * Adds a single permission to the filter.
      * @param permission {@link SdlPermission} to add to the filter.
      */
-    public void addPermission(SdlPermission permission){
+    public void addPermission(@NonNull SdlPermission permission){
         permissionSet.addPermission(permission);
     }
 
 
     /**
-     * Adds a set of permission to the filter. Using this method will add the given SdlPermission
-     * to all HMILevels.
+     * Adds a set of permission to the filter.
      * @param permissions Collection of SdlPermissions to be added as a batch. For the best
      *                    performance use an {@link java.util.EnumSet} as the supplied
      *                    collection.
      */
-    public void addPermissions(Collection<SdlPermission> permissions){
+    public void addPermissions(@NonNull Collection<SdlPermission> permissions){
         permissionSet.addPermissions(permissions);
     }
 
