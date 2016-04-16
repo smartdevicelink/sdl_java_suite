@@ -10,6 +10,4 @@ public interface SdlView {
 
     void clear();
 
-    void addChildView(SdlView view);
-
 }

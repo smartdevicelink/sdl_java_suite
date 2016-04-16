@@ -6,6 +6,8 @@ import java.util.List;
 
 public class SdlButtonView implements SdlView {
 
+    private boolean isTiles;
+
     public void setButtons(List<SdlButton> buttons){
         // TODO: Method stub
     }
@@ -33,6 +35,14 @@ public class SdlButtonView implements SdlView {
         // TODO: Method stub
     }
 
+    public void setIsTiles(boolean isTiles){
+        this.isTiles = isTiles;
+    }
+
+    public boolean isTiles(){
+        return isTiles;
+    }
+
     @Override
     public boolean decorate(Show show) {
         // TODO: Method stub
@@ -49,10 +59,5 @@ public class SdlButtonView implements SdlView {
     public void clear() {
         // TODO: Method stub
 
-    }
-
-    @Override
-    public void addChildView(SdlView view) {
-        // TODO: Method stub
     }
 }
