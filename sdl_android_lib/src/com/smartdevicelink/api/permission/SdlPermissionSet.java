@@ -97,11 +97,21 @@ class SdlPermissionSet {
     }
 
     boolean checkForChangeBetweenHMILevels(HMILevel priorHMILevel, HMILevel afterHMILevel){
-        SdlPermissionSet copy = SdlPermissionSet.copy(this);
-        copy.permissions.get(afterHMILevel.ordinal()).removeAll(copy.permissions.get(priorHMILevel.ordinal()));
-        return copy.permissions.get(afterHMILevel.ordinal()).size()>0;
-
+        EnumSet<SdlPermission> differenceLhs= differenceBetweenHMILevels(priorHMILevel,afterHMILevel);
+        EnumSet<SdlPermission> differenceRhs= differenceBetweenHMILevels(afterHMILevel,priorHMILevel);
+        return !differenceLhs.isEmpty()||!differenceRhs.isEmpty();
     }
+
+    private EnumSet<SdlPermission> differenceBetweenHMILevels(HMILevel lhs, HMILevel rhs){
+        SdlPermissionSet copy = SdlPermissionSet.copy(this);
+        try {
+            copy.permissions.get(lhs.ordinal()).removeAll(copy.permissions.get(rhs.ordinal()));
+            return copy.permissions.get(lhs.ordinal()).clone();
+        } finally {
+            copy.recycle();
+        }
+    }
+
 
     void addPermissions(Collection<SdlPermission> permissions, HMILevel hmiLevel){
         this.permissions.get(hmiLevel.ordinal()).addAll(permissions);

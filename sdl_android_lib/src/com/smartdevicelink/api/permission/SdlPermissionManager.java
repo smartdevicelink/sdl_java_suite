@@ -74,7 +74,7 @@ public class SdlPermissionManager {
                     SdlPermissionSet intersection = SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet);
                     //see if there is any change in the EnumSet between the old HMI Level and the new HMI Level
                     if (intersection.checkForChangeBetweenHMILevels(mCurrentHMILevel, hmiLevel)) {
-                        lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
+                        lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, hmiLevel));
                     }
                 }
                 mCurrentHMILevel = hmiLevel;
