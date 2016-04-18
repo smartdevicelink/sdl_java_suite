@@ -6,6 +6,7 @@ import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
@@ -16,6 +17,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -281,36 +285,26 @@ public class SdlPermissionManagerTest {
 
     private class OnPermissionsChangeBuilder{
         private OnPermissionsChange mBuiltResponse= new OnPermissionsChange();
+        private HashMap<String,PermissionItem> mPermissionItems = new HashMap<>();
 
         public final OnPermissionsChange build(){
+            mBuiltResponse.setPermissionItem(new ArrayList<>(mPermissionItems.values()));
             return mBuiltResponse;
         }
 
         public OnPermissionsChangeBuilder createPermissionItem(String rpcName, HMILevel[] allowedHMI){
-            PermissionItem newPermissionItem = new PermissionItem();
-            newPermissionItem.setRpcName(rpcName);
-            HMIPermissions hmiPermissions= new HMIPermissions();
-            hmiPermissions.setAllowed(new ArrayList<HMILevel>(Arrays.asList(allowedHMI)));
-            newPermissionItem.setHMIPermissions(hmiPermissions);
-            ArrayList<PermissionItem> tempList = (ArrayList) mBuiltResponse.getPermissionItem();
-            if(tempList ==null){
-                tempList= new ArrayList<>();
-            }
-            tempList.add(newPermissionItem);
-            mBuiltResponse.setPermissionItem(tempList);
+            return createPermissionItem(rpcName, allowedHMI, null);
+        }
+
+        public OnPermissionsChangeBuilder createPermissionItemForAllHMI(String rpcName){
+            createPermissionItemForAllHMI(rpcName, null);
             return this;
         }
 
         public  OnPermissionsChangeBuilder createPermissionItems(Collection<String> rpcNames,HMILevel[] allowedHMI){
             for(String rpcName: rpcNames){
-                createPermissionItem(rpcName,allowedHMI);
+                createPermissionItem(rpcName, allowedHMI);
             }
-            return this;
-        }
-
-        public OnPermissionsChangeBuilder createPermissionItemForAllHMI(String rpcName){
-            HMILevel[] hmiArray= new HMILevel[] {HMILevel.HMI_BACKGROUND,HMILevel.HMI_NONE,HMILevel.HMI_LIMITED,HMILevel.HMI_FULL};
-            createPermissionItem(rpcName,hmiArray);
             return this;
         }
 
@@ -318,6 +312,51 @@ public class SdlPermissionManagerTest {
             for(String rpcName: rpcNames){
                 createPermissionItemForAllHMI(rpcName);
             }
+            return this;
+        }
+
+        public OnPermissionsChangeBuilder createPermissionItem(String rpcName, HMILevel[] allowedHMI, String[] permissionNames){
+            if(mPermissionItems.containsKey(rpcName)){
+                fail("Check Test Data, rpcName: "+rpcName+" is being created again in OnPermission item");
+                return this;
+            }
+            PermissionItem newPermissionItem = new PermissionItem();
+            newPermissionItem.setRpcName(rpcName);
+            HMIPermissions hmiPermissions = new HMIPermissions();
+            hmiPermissions.setAllowed(new ArrayList<HMILevel>(Arrays.asList(allowedHMI)));
+            newPermissionItem.setHMIPermissions(hmiPermissions);
+            mPermissionItems.put(rpcName, newPermissionItem);
+            if(permissionNames !=null){
+                for(String permissionParameter: permissionNames){
+                    setParameterPermissions(rpcName,permissionParameter);
+                }
+            }
+            return this;
+        }
+
+        public OnPermissionsChangeBuilder createPermissionItemForAllHMI(String rpcName, String[] permissionNames){
+            HMILevel[] hmiArray= new HMILevel[] {HMILevel.HMI_BACKGROUND,HMILevel.HMI_NONE,HMILevel.HMI_LIMITED,HMILevel.HMI_FULL};
+            createPermissionItem(rpcName, hmiArray, permissionNames);
+            return this;
+        }
+
+        public OnPermissionsChangeBuilder setParameterPermissions(String rpcName, String permissionName){
+            if(!mPermissionItems.containsKey(rpcName)){
+                fail("Check Test Data, trying to set a parameter permission for not set: "+rpcName+" with permissionName");
+                return this;
+            }
+            PermissionItem permissionHolder= mPermissionItems.get(rpcName);
+            ParameterPermissions parameterPermissions = new ParameterPermissions();
+            ArrayList<String> allowedParameters = new ArrayList<>();
+            if(permissionHolder.getParameterPermissions() != null ){
+                parameterPermissions = permissionHolder.getParameterPermissions();
+                if(parameterPermissions.getAllowed()!=null){
+                    allowedParameters= (ArrayList) parameterPermissions.getAllowed();
+                }
+            }
+            allowedParameters.add(permissionName);
+            parameterPermissions.setAllowed(allowedParameters);
+            permissionHolder.setParameterPermissions(parameterPermissions);
             return this;
         }
 
@@ -344,6 +383,7 @@ public class SdlPermissionManagerTest {
                     .createPermissionItemForAllHMI("ListFiles")
                     .createPermissionItemForAllHMI("AddCommand")
                     .createPermissionItemForAllHMI("DeleteCommand")
+                    .createPermissionItemForAllHMI("GetVehicleData", new String[]{"beltStatus"})
                     .build();
 
     private OnPermissionsChange allOnPermissionChange =
@@ -353,6 +393,7 @@ public class SdlPermissionManagerTest {
                     .createPermissionItemForAllHMI("DeleteFile")
                     .createPermissionItemForAllHMI("OnTouchEvent")
                     .createPermissionItemForAllHMI("Slider")
+                    .createPermissionItemForAllHMI("GetVehicleData", new String[]{"beltStatus"})
                     .build();
 
     private OnPermissionsChange differenceBetweenHMIOnPermissionChange =
@@ -360,6 +401,7 @@ public class SdlPermissionManagerTest {
                     .createPermissionItem("Alert", new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_FULL})
                     .createPermissionItem("ListFiles", new HMILevel[]{HMILevel.HMI_BACKGROUND, HMILevel.HMI_FULL})
                     .createPermissionItem("DeleteFile", new HMILevel[]{HMILevel.HMI_BACKGROUND, HMILevel.HMI_FULL})
+                    .createPermissionItem("GetVehicleData", new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_FULL}, new String[]{"beltStatus"})
                     .build();
 
     private SdlPermissionFilter getStandardSdlFilter(){
@@ -367,6 +409,7 @@ public class SdlPermissionManagerTest {
         filter.addPermission(SdlPermission.Alert);
         filter.addPermission(SdlPermission.ListFiles);
         filter.addPermission(SdlPermission.DeleteFile);
+        filter.addPermission(SdlPermission.GetBeltStatus);
         return filter;
     }
 
