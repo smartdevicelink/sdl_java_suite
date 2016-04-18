@@ -280,6 +280,22 @@ public class SdlPermissionManagerTest {
     }
 
 
+    @Test
+    public void testEveryPermissionsFromNoneToAll(){
+        mSdlPermissionManager.addListener(new SdlPermissionListener() {
+            @Override
+            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
+                assertThat(event.getPermissions(), is(everySet));
+                assertThat(event.mPermissionLevel, is(SdlPermissionEvent.PermissionLevel.ALL));
+            }
+        }, getEveryPermissionFilter());
+        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
+        mSdlPermissionManager.addListener(mockListener, getEveryPermissionFilter());
+        mSdlPermissionManager.mPermissionChangeListener.onNotified(everyOnPermissionsChange);
+        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+    }
+
+
 
     //Test Utility helpers
 
@@ -301,14 +317,14 @@ public class SdlPermissionManagerTest {
             return this;
         }
 
-        public  OnPermissionsChangeBuilder createPermissionItems(Collection<String> rpcNames,HMILevel[] allowedHMI){
+        public  OnPermissionsChangeBuilder createPermissionItems(String[] rpcNames,HMILevel[] allowedHMI){
             for(String rpcName: rpcNames){
                 createPermissionItem(rpcName, allowedHMI);
             }
             return this;
         }
 
-        public OnPermissionsChangeBuilder createPermissionItemsForAllHMI(Collection<String> rpcNames){
+        public OnPermissionsChangeBuilder createPermissionItemsForAllHMI(String[] rpcNames){
             for(String rpcName: rpcNames){
                 createPermissionItemForAllHMI(rpcName);
             }
@@ -404,7 +420,7 @@ public class SdlPermissionManagerTest {
                     .build();
 
     private EnumSet<SdlPermission> noneSet= EnumSet.noneOf(SdlPermission.class);
-    private EnumSet<SdlPermission> someSet= EnumSet.of(SdlPermission.DeleteFile, SdlPermission.ListFiles, SdlPermission.GetBeltStatus);
+    private EnumSet<SdlPermission> someSet= EnumSet.of(SdlPermission.DeleteFile, new SdlPermission[]{ SdlPermission.ListFiles, SdlPermission.GetBeltStatus});
     private EnumSet<SdlPermission> allSet= getStandardSdlFilter().permissionSet.permissions.get(0);
 
     private SdlPermissionFilter getStandardSdlFilter(){
@@ -413,6 +429,44 @@ public class SdlPermissionManagerTest {
         filter.addPermission(SdlPermission.ListFiles);
         filter.addPermission(SdlPermission.DeleteFile);
         filter.addPermission(SdlPermission.GetBeltStatus);
+        return filter;
+    }
+
+    private String[] allPermissions= new String[]{"accPedalPosition",
+            "airbagStatus","beltStatus","bodyInformation",
+            "clusterModeStatus","deviceStatus","driverBraking","eCallInfo","emergencyEvent",
+            "engineTorque","externalTemperature","fuelLevel","fuelLevel_State","gps","headLampStatus",
+            "instantFuelConsumption","myKey","odometer","prndl","rpm","steeringWheelAngle", "speed",
+            "tirePressure","vin","wiperStatus"};
+
+    private OnPermissionsChange everyOnPermissionsChange =
+            new OnPermissionsChangeBuilder()
+                    .createPermissionItemsForAllHMI(new String [] {"AddCommand",
+                        "AddSubMenu","Alert","AlertManeuver","ChangeRegistration",
+                        "CreateInteractionChoiceSet","DeleteCommand","DeleteFile",
+                        "DeleteInteractionChoiceSet","DeleteSubMenu","DiagnosticMessage",
+                        "EncodedSyncPData","EndAudioPassThru","GenericResponse","ListFiles",
+                        "OnAppInterfaceUnregistered","OnAudioPassThru","OnButtonEvent","OnButtonPress",
+                        "OnCommand","OnDriverDistraction","OnEncodedSyncPData","OnHMIStatus",
+                        "OnHashChange","OnKeyboardInput","OnLanguageChange","OnPermissionsChange",
+                        "OnSystemRequest","OnTouchEvent","PerformAudioPassThru","PerformInteraction",
+                        "PutFile","RegisterAppInterface","ResetGlobalProperties","ScrollableMessage",
+                        "SetAppIcon","SetDisplayLayout","SetGlobalProperties","SetMediaClockTimer",
+                        "Show","ShowConstantTBT","Slider","Speak","SubscribeButton","SystemRequest",
+                        "UnregisterAppInterface","UnsubscribeButton","ReadDID", "GetDTCs"})
+                    .createPermissionItemForAllHMI("GetVehicleData",allPermissions)
+                    .createPermissionItemForAllHMI("SubscribeVehicleData", allPermissions)
+                    .createPermissionItemForAllHMI("OnVehicleData",allPermissions)
+                    .createPermissionItemForAllHMI("UnsubscribeVehicleData",allPermissions)
+                    .build();
+
+    private EnumSet<SdlPermission> everySet= getEveryPermissionFilter().permissionSet.permissions.get(0);
+
+    private SdlPermissionFilter getEveryPermissionFilter(){
+        SdlPermissionFilter filter = new SdlPermissionFilter();
+        for(SdlPermission permission:SdlPermission.values()){
+            filter.addPermission(permission);
+        }
         return filter;
     }
 
