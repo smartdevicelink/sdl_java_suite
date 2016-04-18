@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -55,7 +54,7 @@ public class SdlPermissionManagerTest {
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
             }
         }, getStandardSdlFilter());
-        assertThat(checkEvent.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.ALL));
+        checkStandardPermissionsEvent(checkEvent, SdlPermissionEvent.PermissionLevel.ALL);
     }
 
     @Test
@@ -67,7 +66,7 @@ public class SdlPermissionManagerTest {
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
             }
         }, getStandardSdlFilter());
-        assertThat(checkEvent.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.SOME));
+        checkStandardPermissionsEvent(checkEvent, SdlPermissionEvent.PermissionLevel.SOME);
     }
 
     @Test
@@ -79,7 +78,8 @@ public class SdlPermissionManagerTest {
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
             }
         }, getStandardSdlFilter());
-        assertThat(checkEvent.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.NONE));
+        checkStandardPermissionsEvent(checkEvent, SdlPermissionEvent.PermissionLevel.NONE);
+
     }
 
 
@@ -89,7 +89,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.ALL));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
             }
         }, getStandardSdlFilter());
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
@@ -104,7 +104,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.SOME));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.SOME);
             }
         }, getStandardSdlFilter());
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
@@ -121,7 +121,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.NONE));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
             }
         }, getStandardSdlFilter());
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
@@ -138,7 +138,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.ALL));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
             }
         }, getStandardSdlFilter());
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
@@ -153,7 +153,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.NONE));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
             }
         }, getStandardSdlFilter());
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
@@ -179,7 +179,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.ALL));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
             }
         }, getStandardSdlFilter());
 
@@ -196,7 +196,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.SOME));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.SOME);
             }
         }, getStandardSdlFilter());
 
@@ -214,7 +214,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.NONE));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
             }
         }, getStandardSdlFilter());
 
@@ -232,7 +232,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.ALL));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
             }
         }, getStandardSdlFilter());
 
@@ -250,7 +250,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.NONE));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
             }
         }, getStandardSdlFilter());
 
@@ -268,7 +268,7 @@ public class SdlPermissionManagerTest {
         mSdlPermissionManager.addListener(new SdlPermissionListener() {
             @Override
             public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissionLevel(), is(SdlPermissionEvent.PermissionLevel.SOME));
+                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.SOME);
             }
         }, getStandardSdlFilter());
 
@@ -379,10 +379,9 @@ public class SdlPermissionManagerTest {
 
     private OnPermissionsChange someOnPermissionChange =
             new OnPermissionsChangeBuilder()
-                    .createPermissionItemForAllHMI("Alert")
                     .createPermissionItemForAllHMI("ListFiles")
                     .createPermissionItemForAllHMI("AddCommand")
-                    .createPermissionItemForAllHMI("DeleteCommand")
+                    .createPermissionItemForAllHMI("DeleteFile")
                     .createPermissionItemForAllHMI("GetVehicleData", new String[]{"beltStatus"})
                     .build();
 
@@ -401,8 +400,12 @@ public class SdlPermissionManagerTest {
                     .createPermissionItem("Alert", new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_FULL})
                     .createPermissionItem("ListFiles", new HMILevel[]{HMILevel.HMI_BACKGROUND, HMILevel.HMI_FULL})
                     .createPermissionItem("DeleteFile", new HMILevel[]{HMILevel.HMI_BACKGROUND, HMILevel.HMI_FULL})
-                    .createPermissionItem("GetVehicleData", new HMILevel[]{HMILevel.HMI_LIMITED, HMILevel.HMI_FULL}, new String[]{"beltStatus"})
+                    .createPermissionItem("GetVehicleData", new HMILevel[]{HMILevel.HMI_BACKGROUND, HMILevel.HMI_FULL}, new String[]{"beltStatus"})
                     .build();
+
+    private EnumSet<SdlPermission> noneSet= EnumSet.noneOf(SdlPermission.class);
+    private EnumSet<SdlPermission> someSet= EnumSet.of(SdlPermission.DeleteFile, SdlPermission.ListFiles, SdlPermission.GetBeltStatus);
+    private EnumSet<SdlPermission> allSet= getStandardSdlFilter().permissionSet.permissions.get(0);
 
     private SdlPermissionFilter getStandardSdlFilter(){
         SdlPermissionFilter filter = new SdlPermissionFilter();
@@ -411,6 +414,22 @@ public class SdlPermissionManagerTest {
         filter.addPermission(SdlPermission.DeleteFile);
         filter.addPermission(SdlPermission.GetBeltStatus);
         return filter;
+    }
+
+    private void checkStandardPermissionsEvent(SdlPermissionEvent event, SdlPermissionEvent.PermissionLevel verifyLevel){
+        assertThat(event.getPermissionLevel(), is(verifyLevel));
+        switch (verifyLevel) {
+            case ALL:
+                assertThat(event.getPermissions(),is(allSet));
+                break;
+            case SOME:
+                assertThat(event.getPermissions(),is(someSet));
+                break;
+            case NONE:
+                assertThat(event.getPermissions(),is(noneSet));
+                break;
+        }
+
     }
 
 
