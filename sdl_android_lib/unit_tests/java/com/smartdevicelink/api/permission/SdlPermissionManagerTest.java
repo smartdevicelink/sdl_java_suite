@@ -10,13 +10,14 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
+import junit.framework.TestListener;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -48,37 +49,26 @@ public class SdlPermissionManagerTest {
     @Test
     public void testAllPermissionsAvailableOnAdd(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(allOnPermissionChange);
-
-        SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-            }
-        }, getStandardSdlFilter());
-        checkStandardPermissionsEvent(checkEvent, SdlPermissionEvent.PermissionLevel.ALL);
+        //utilizing the test listener in this case to double check the output is ok
+        SdlTestListener listener = new SdlTestListener(allEnumSet, SdlPermissionEvent.PermissionLevel.ALL);
+        SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(listener, getStandardSdlFilter());
+        listener.checkPermissionEventAgainstSet(checkEvent);
     }
 
     @Test
     public void testSomePermissionsAvailableOnAdd(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(someOnPermissionChange);
-
-        SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-            }
-        }, getStandardSdlFilter());
-        checkStandardPermissionsEvent(checkEvent, SdlPermissionEvent.PermissionLevel.SOME);
+        SdlTestListener listener = new SdlTestListener(someEnumSet, SdlPermissionEvent.PermissionLevel.NONE);
+        SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(listener, getStandardSdlFilter());
+        listener.checkPermissionEventAgainstSet(checkEvent);
     }
 
     @Test
     public void testNonePermissionsAvailableOnAdd(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(noneOnPermissionChange);
-
-        SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-            }
-        }, getStandardSdlFilter());
-        checkStandardPermissionsEvent(checkEvent, SdlPermissionEvent.PermissionLevel.NONE);
+        SdlTestListener listener = new SdlTestListener(noneEnumSet, SdlPermissionEvent.PermissionLevel.NONE);
+        SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(listener, getStandardSdlFilter());
+        listener.checkPermissionEventAgainstSet(checkEvent);
 
     }
 
@@ -86,31 +76,15 @@ public class SdlPermissionManagerTest {
     @Test
     public void testNoPermissionsPresentToAll(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(noneOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
-            }
-        }, getStandardSdlFilter());
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(allOnPermissionChange);
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(allEnumSet, SdlPermissionEvent.PermissionLevel.ALL), getStandardSdlFilter());
+        startPermissionChangeEvent(mSdlPermissionManager,getStandardSdlFilter(),allOnPermissionChange);
     }
 
     @Test
     public void testNoPermissionsPresentToSome(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(noneOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.SOME);
-            }
-        }, getStandardSdlFilter());
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(someOnPermissionChange);
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(someEnumSet, SdlPermissionEvent.PermissionLevel.SOME), getStandardSdlFilter());
+        startPermissionChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), someOnPermissionChange);
 
 
     }
@@ -118,48 +92,24 @@ public class SdlPermissionManagerTest {
     @Test
     public void testSomePermissionsPresentToNone(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(someOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
-            }
-        }, getStandardSdlFilter());
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(noneOnPermissionChange);
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
-
+        mSdlPermissionManager.addListener(new SdlTestListener(noneEnumSet, SdlPermissionEvent.PermissionLevel.NONE), getStandardSdlFilter());
+        startPermissionChangeEvent(mSdlPermissionManager,getStandardSdlFilter(),noneOnPermissionChange);
 
     }
 
     @Test
     public void testSomePermissionsPresentToAll(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(someOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
-            }
-        }, getStandardSdlFilter());
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(allOnPermissionChange);
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(allEnumSet, SdlPermissionEvent.PermissionLevel.ALL), getStandardSdlFilter());
+        startPermissionChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), allOnPermissionChange);
     }
 
     @Test
     public void testAllPermissionsPresentToNone(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(allOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
-            }
-        }, getStandardSdlFilter());
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(noneOnPermissionChange);
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(noneEnumSet, SdlPermissionEvent.PermissionLevel.NONE), getStandardSdlFilter());
+        startPermissionChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), noneOnPermissionChange);
+
     }
 
     @Test
@@ -176,123 +126,58 @@ public class SdlPermissionManagerTest {
     @Test
     public void testNoPermissionsToAllHMILevelChange(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(differenceBetweenHMIOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
-            }
-        }, getStandardSdlFilter());
-
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_FULL));
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(allEnumSet, SdlPermissionEvent.PermissionLevel.ALL), getStandardSdlFilter());
+        startHMIChangeEvent(mSdlPermissionManager,getStandardSdlFilter(),HMILevel.HMI_FULL);
     }
 
     @Test
     public void testNoPermissionsToSomeHMILevelChange(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(differenceBetweenHMIOnPermissionChange);
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.SOME);
-            }
-        }, getStandardSdlFilter());
+        mSdlPermissionManager.addListener(new SdlTestListener(someEnumSet, SdlPermissionEvent.PermissionLevel.SOME), getStandardSdlFilter());
+        startHMIChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), HMILevel.HMI_BACKGROUND);
 
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_BACKGROUND));
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
     @Test
     public void testSomePermissionsToNoneHMILevelChange(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(differenceBetweenHMIOnPermissionChange);
         mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_BACKGROUND));
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
-            }
-        }, getStandardSdlFilter());
+        mSdlPermissionManager.addListener(new SdlTestListener(noneEnumSet, SdlPermissionEvent.PermissionLevel.NONE), getStandardSdlFilter());
+        startHMIChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), HMILevel.HMI_NONE);
 
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_NONE));
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
     @Test
     public void testSomePermissionsToAllHMILevelChange(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(differenceBetweenHMIOnPermissionChange);
         mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_BACKGROUND));
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.ALL);
-            }
-        }, getStandardSdlFilter());
+        mSdlPermissionManager.addListener(new SdlTestListener(allEnumSet, SdlPermissionEvent.PermissionLevel.ALL), getStandardSdlFilter());
+        startHMIChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), HMILevel.HMI_FULL);
 
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_FULL));
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
     @Test
     public void testAllPermissionsToNoneHMILevelChange(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(differenceBetweenHMIOnPermissionChange);
         mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_FULL));
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.NONE);
-            }
-        }, getStandardSdlFilter());
+        mSdlPermissionManager.addListener(new SdlTestListener(noneEnumSet, SdlPermissionEvent.PermissionLevel.NONE), getStandardSdlFilter());
+        startHMIChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), HMILevel.HMI_NONE);
 
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_NONE));
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
     @Test
     public void testAllPermissionsToSomeHMILevelChange(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(differenceBetweenHMIOnPermissionChange);
         mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_FULL));
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                checkStandardPermissionsEvent(event, SdlPermissionEvent.PermissionLevel.SOME);
-            }
-        }, getStandardSdlFilter());
-
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(HMILevel.HMI_BACKGROUND));
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(someEnumSet, SdlPermissionEvent.PermissionLevel.SOME), getStandardSdlFilter());
+        startHMIChangeEvent(mSdlPermissionManager, getStandardSdlFilter(), HMILevel.HMI_BACKGROUND);
     }
 
 
     @Test
     public void testEveryPermissionsFromNoneToAll(){
-        mSdlPermissionManager.addListener(new SdlPermissionListener() {
-            @Override
-            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
-                assertThat(event.getPermissions(), is(everySet));
-                assertThat(event.mPermissionLevel, is(SdlPermissionEvent.PermissionLevel.ALL));
-            }
-        }, getEveryPermissionFilter());
-        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getEveryPermissionFilter());
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(everyOnPermissionsChange);
-        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+        mSdlPermissionManager.addListener(new SdlTestListener(everySet, SdlPermissionEvent.PermissionLevel.ALL), getEveryPermissionFilter());
+        startPermissionChangeEvent(mSdlPermissionManager, getEveryPermissionFilter(), everyOnPermissionsChange);
     }
 
 
@@ -419,9 +304,9 @@ public class SdlPermissionManagerTest {
                     .createPermissionItem("GetVehicleData", new HMILevel[]{HMILevel.HMI_BACKGROUND, HMILevel.HMI_FULL}, new String[]{"beltStatus"})
                     .build();
 
-    private EnumSet<SdlPermission> noneSet= EnumSet.noneOf(SdlPermission.class);
-    private EnumSet<SdlPermission> someSet= EnumSet.of(SdlPermission.DeleteFile, new SdlPermission[]{ SdlPermission.ListFiles, SdlPermission.GetBeltStatus});
-    private EnumSet<SdlPermission> allSet= getStandardSdlFilter().permissionSet.permissions.get(0);
+    private EnumSet<SdlPermission> noneEnumSet = EnumSet.noneOf(SdlPermission.class);
+    private EnumSet<SdlPermission> someEnumSet = EnumSet.of(SdlPermission.DeleteFile, new SdlPermission[]{SdlPermission.ListFiles, SdlPermission.GetBeltStatus});
+    private EnumSet<SdlPermission> allEnumSet = getStandardSdlFilter().permissionSet.permissions.get(0);
 
     private SdlPermissionFilter getStandardSdlFilter(){
         SdlPermissionFilter filter = new SdlPermissionFilter();
@@ -432,7 +317,7 @@ public class SdlPermissionManagerTest {
         return filter;
     }
 
-    private String[] allPermissions= new String[]{"accPedalPosition",
+    private String[] allParameterPermissions = new String[]{"accPedalPosition",
             "airbagStatus","beltStatus","bodyInformation",
             "clusterModeStatus","deviceStatus","driverBraking","eCallInfo","emergencyEvent",
             "engineTorque","externalTemperature","fuelLevel","fuelLevel_State","gps","headLampStatus",
@@ -454,10 +339,10 @@ public class SdlPermissionManagerTest {
                         "SetAppIcon","SetDisplayLayout","SetGlobalProperties","SetMediaClockTimer",
                         "Show","ShowConstantTBT","Slider","Speak","SubscribeButton","SystemRequest",
                         "UnregisterAppInterface","UnsubscribeButton","ReadDID", "GetDTCs"})
-                    .createPermissionItemForAllHMI("GetVehicleData",allPermissions)
-                    .createPermissionItemForAllHMI("SubscribeVehicleData", allPermissions)
-                    .createPermissionItemForAllHMI("OnVehicleData",allPermissions)
-                    .createPermissionItemForAllHMI("UnsubscribeVehicleData",allPermissions)
+                    .createPermissionItemForAllHMI("GetVehicleData", allParameterPermissions)
+                    .createPermissionItemForAllHMI("SubscribeVehicleData", allParameterPermissions)
+                    .createPermissionItemForAllHMI("OnVehicleData", allParameterPermissions)
+                    .createPermissionItemForAllHMI("UnsubscribeVehicleData", allParameterPermissions)
                     .build();
 
     private EnumSet<SdlPermission> everySet= getEveryPermissionFilter().permissionSet.permissions.get(0);
@@ -470,22 +355,43 @@ public class SdlPermissionManagerTest {
         return filter;
     }
 
-    private void checkStandardPermissionsEvent(SdlPermissionEvent event, SdlPermissionEvent.PermissionLevel verifyLevel){
-        assertThat(event.getPermissionLevel(), is(verifyLevel));
-        switch (verifyLevel) {
-            case ALL:
-                assertThat(event.getPermissions(),is(allSet));
-                break;
-            case SOME:
-                assertThat(event.getPermissions(),is(someSet));
-                break;
-            case NONE:
-                assertThat(event.getPermissions(),is(noneSet));
-                break;
+    //Ensures that the callback event matches what we initialize the listener to check
+    private class SdlTestListener implements SdlPermissionListener{
+
+        final EnumSet<SdlPermission> mPermissionSet;
+        final SdlPermissionEvent.PermissionLevel mPermissionLevel;
+
+
+        public SdlTestListener(EnumSet<SdlPermission> expectedResult, SdlPermissionEvent.PermissionLevel expectedLevel){
+            mPermissionSet= expectedResult;
+            mPermissionLevel= expectedLevel;
         }
 
+        @Override
+        public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
+            checkPermissionEventAgainstSet(event);
+        }
+
+        public void checkPermissionEventAgainstSet(SdlPermissionEvent event){
+            assertThat(event.getPermissions(), is(mPermissionSet));
+            assertThat(event.getPermissionLevel(), is(mPermissionLevel));
+        }
     }
 
+    private void startPermissionChangeEvent(SdlPermissionManager manager, SdlPermissionFilter filter, OnPermissionsChange changeToSend){
+        //mock listener to ensure that we do not accidentally pass a test where the listener callback is not called
+        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
+        mSdlPermissionManager.addListener(mockListener, filter);
+        mSdlPermissionManager.mPermissionChangeListener.onNotified(changeToSend);
+        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+    }
+
+    private void startHMIChangeEvent(SdlPermissionManager manager, SdlPermissionFilter filter, HMILevel changeToSend){
+        SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
+        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
+        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(changeToSend));
+        verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
+    }
 
 
 }
