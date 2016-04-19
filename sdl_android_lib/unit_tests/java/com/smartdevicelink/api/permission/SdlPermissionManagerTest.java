@@ -58,7 +58,7 @@ public class SdlPermissionManagerTest {
     @Test
     public void testSomePermissionsAvailableOnAdd(){
         mSdlPermissionManager.mPermissionChangeListener.onNotified(someOnPermissionChange);
-        SdlTestListener listener = new SdlTestListener(someEnumSet, SdlPermissionEvent.PermissionLevel.NONE);
+        SdlTestListener listener = new SdlTestListener(someEnumSet, SdlPermissionEvent.PermissionLevel.SOME);
         SdlPermissionEvent checkEvent= mSdlPermissionManager.addListener(listener, getStandardSdlFilter());
         listener.checkPermissionEventAgainstSet(checkEvent);
     }
@@ -224,7 +224,7 @@ public class SdlPermissionManagerTest {
             PermissionItem newPermissionItem = new PermissionItem();
             newPermissionItem.setRpcName(rpcName);
             HMIPermissions hmiPermissions = new HMIPermissions();
-            hmiPermissions.setAllowed(new ArrayList<HMILevel>(Arrays.asList(allowedHMI)));
+            hmiPermissions.setAllowed(new ArrayList<>(Arrays.asList(allowedHMI)));
             newPermissionItem.setHMIPermissions(hmiPermissions);
             mPermissionItems.put(rpcName, newPermissionItem);
             if(permissionNames !=null){
@@ -381,15 +381,15 @@ public class SdlPermissionManagerTest {
     private void startPermissionChangeEvent(SdlPermissionManager manager, SdlPermissionFilter filter, OnPermissionsChange changeToSend){
         //mock listener to ensure that we do not accidentally pass a test where the listener callback is not called
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, filter);
-        mSdlPermissionManager.mPermissionChangeListener.onNotified(changeToSend);
+        manager.addListener(mockListener, filter);
+        manager.mPermissionChangeListener.onNotified(changeToSend);
         verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
     private void startHMIChangeEvent(SdlPermissionManager manager, SdlPermissionFilter filter, HMILevel changeToSend){
         SdlPermissionListener mockListener= mock(SdlPermissionListener.class);
-        mSdlPermissionManager.addListener(mockListener, getStandardSdlFilter());
-        mSdlPermissionManager.mHMIStatusListener.onNotified(createOnHMIStatus(changeToSend));
+        manager.addListener(mockListener, filter);
+        manager.mHMIStatusListener.onNotified(createOnHMIStatus(changeToSend));
         verify(mockListener,times(1)).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
