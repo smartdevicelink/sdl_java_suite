@@ -1,53 +1,48 @@
 package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 public class SdlViewManager {
 
-    public enum LayoutTemplate{
-        DEFAULT,
-        GRAPHIC_WITH_TEXT,
-        TEXT_WITH_GRAPHIC,
-        TILES_ONLY,
-        GRAPHIC_WITH_TILES,
-        TILES_WITH_GRAPHIC,
-        GRAPHIC_WITH_TEXT_AND_SOFTBUTTONS,
-        TEXT_AND_SOFTBUTTONS_WITH_GRAPHIC,
-        GRAPHIC_WITH_TEXTBUTTONS,
-        DOUBLE_GRAPHIC_WITH_SOFTBUTTONS,
-        TEXTBUTTONS_WITH_GRAPHIC,
-        TEXTBUTTONS_ONLY,
-        LARGE_GRAPHIC_WITH_SOFTBUTTONS,
-        LARGE_GRAPHIC_ONLY,
-        MEDIA,
-        ONSCREEN_PRESETS
-    }
-
-    private SdlView rootView;
+    private SdlView mRootView;
     private SdlProxyALM mProxyALM;
+    private Show mShow;
 
     SdlViewManager (SdlProxyALM proxy){
         mProxyALM = proxy;
+        mShow = new Show();
+    }
+
+    void setRootView(SdlView view){
+        mRootView = view;
+    }
+
+    void updateView(){
+        mRootView.decorate(mShow);
         try {
-            DisplayCapabilities dc = mProxyALM.getDisplayCapabilities();
+            mProxyALM.sendRPCRequest(mShow);
         } catch (SdlException e) {
+            // TODO: auto generated exception clause
             e.printStackTrace();
         }
     }
 
-    void redraw(){
-        // TODO: Method stub
-    }
+    private OnRPCResponseListener mShowListener = new OnRPCResponseListener() {
+        @Override
+        public void onResponse(int correlationId, RPCResponse response) {
+            // TODO: Method Stub
+        }
 
-    void setLayout(String layoutName){
-        // TODO: Method stub
-    }
-
-    SdlView findView(Class<? extends SdlView> viewClass){
-        // TODO: Method stub
-        return null;
-    }
+        @Override
+        public void onError(int correlationId, Result resultCode, String info) {
+            // TODO: Method Stub
+            super.onError(correlationId, resultCode, info);
+        }
+    };
 
 }

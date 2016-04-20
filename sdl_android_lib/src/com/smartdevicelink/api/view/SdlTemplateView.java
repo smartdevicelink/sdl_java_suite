@@ -1,12 +1,34 @@
 package com.smartdevicelink.api.view;
 
-import android.widget.TextView;
-
+import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.Show;
 
 import java.util.EnumSet;
+import java.util.List;
 
-public class SdlTemplateView implements SdlView {
+public class SdlTemplateView extends SdlView {
+
+    public enum LayoutTemplate{
+        DEFAULT,
+        GRAPHIC_WITH_TEXT,
+        TEXT_WITH_GRAPHIC,
+        TILES_ONLY,
+        GRAPHIC_WITH_TILES,
+        TILES_WITH_GRAPHIC,
+        GRAPHIC_WITH_TEXT_AND_SOFTBUTTONS,
+        TEXT_AND_SOFTBUTTONS_WITH_GRAPHIC,
+        GRAPHIC_WITH_TEXTBUTTONS,
+        DOUBLE_GRAPHIC_WITH_SOFTBUTTONS,
+        TEXTBUTTONS_WITH_GRAPHIC,
+        TEXTBUTTONS_ONLY,
+        LARGE_GRAPHIC_WITH_SOFTBUTTONS,
+        LARGE_GRAPHIC_ONLY,
+        MEDIA,
+        ONSCREEN_PRESETS
+    }
+
+    private static final String TAG = SdlTemplateView.class.getSimpleName();
 
     public enum TemplateStatus{
         VALID,
@@ -16,12 +38,16 @@ public class SdlTemplateView implements SdlView {
         INVALID_NO_MAIN_VIEW
     }
 
-    private SdlViewManager.LayoutTemplate mTemplate;
+    private LayoutTemplate mTemplate;
 
     private SdlView mLeftView;
     private SdlView mRightView;
     private SdlButtonView mSdlButtonView;
-    private EnumSet<SdlViewManager.LayoutTemplate> mAvailableTemplateSet;
+    private EnumSet<LayoutTemplate> mAvailableTemplateSet;
+
+    private SetDisplayLayout mSetDisplayLayout;
+
+    private boolean isLayoutDifferent = true;
 
     public TemplateStatus setViews(SdlView mainView, SdlView secondaryView, SdlButtonView buttonView){
         TemplateStatus status = TemplateStatus.INVALID_TEMPLATE_NOT_SUPPORTED;;
@@ -36,22 +62,22 @@ public class SdlTemplateView implements SdlView {
         } else if(mainView == null) {
             status =  TemplateStatus.INVALID_NO_MAIN_VIEW;
         } else {
-            SdlViewManager.LayoutTemplate template;
+            LayoutTemplate template;
             if(mainView instanceof SdlButtonView || secondaryView instanceof SdlButtonView){
                 status =  TemplateStatus.INVALID_TOO_MANY_BUTTON_VIEWS;
             } else if (mainView.getClass() == secondaryView.getClass()) {
                 if(mainView instanceof SdlGraphicView){
-                    template = SdlViewManager.LayoutTemplate.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS;
+                    template = LayoutTemplate.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS;
                     status =  createTemplate(template, mainView, secondaryView, buttonView);
                 }
                 if (mainView instanceof SdlTextView) {
                     status =  TemplateStatus.INVALID_TOO_MANY_TEXT_VIEWS;
                 }
             } else if(mainView instanceof SdlTextView){
-                template = SdlViewManager.LayoutTemplate.TEXT_AND_SOFTBUTTONS_WITH_GRAPHIC;
+                template = LayoutTemplate.TEXT_AND_SOFTBUTTONS_WITH_GRAPHIC;
                 status =  createTemplate(template, mainView, secondaryView, buttonView);
             } else {
-                template = SdlViewManager.LayoutTemplate.GRAPHIC_WITH_TEXT_AND_SOFTBUTTONS;
+                template = LayoutTemplate.GRAPHIC_WITH_TEXT_AND_SOFTBUTTONS;
                 status =  createTemplate(template, mainView, secondaryView, buttonView);
             }
         }
@@ -65,37 +91,37 @@ public class SdlTemplateView implements SdlView {
         } else if(mainView == null){
             status = TemplateStatus.INVALID_NO_MAIN_VIEW;
         } else {
-            SdlViewManager.LayoutTemplate template;
+            LayoutTemplate template;
             if (mainView instanceof SdlButtonView) {
                 if(secondaryView instanceof SdlGraphicView){
                     if(((SdlButtonView) mainView).isTiles() &&
-                            mAvailableTemplateSet.contains(SdlViewManager.LayoutTemplate.TILES_WITH_GRAPHIC)){
-                        template = SdlViewManager.LayoutTemplate.TILES_WITH_GRAPHIC;
+                            mAvailableTemplateSet.contains(LayoutTemplate.TILES_WITH_GRAPHIC)){
+                        template = LayoutTemplate.TILES_WITH_GRAPHIC;
                     } else {
-                        template = SdlViewManager.LayoutTemplate.TEXTBUTTONS_WITH_GRAPHIC;
+                        template = LayoutTemplate.TEXTBUTTONS_WITH_GRAPHIC;
                     }
                     status = createTemplate(template, mainView, secondaryView, null);
-                } else if(secondaryView instanceof TextView){
+                } else if(secondaryView instanceof SdlTextView){
                     status = TemplateStatus.INVALID_TEMPLATE_NOT_SUPPORTED;
                 }
             } else if (mainView instanceof SdlTextView){
                 if(secondaryView instanceof SdlButtonView){
                     status = TemplateStatus.INVALID_TEMPLATE_NOT_SUPPORTED;
                 } else if(secondaryView instanceof SdlGraphicView){
-                    template = SdlViewManager.LayoutTemplate.TEXT_WITH_GRAPHIC;
+                    template = LayoutTemplate.TEXT_WITH_GRAPHIC;
                     status = createTemplate(template, mainView, secondaryView, null);
                 }
             } else if(mainView instanceof SdlGraphicView){
                 if(secondaryView instanceof SdlButtonView){
                     if(((SdlButtonView) secondaryView).isTiles() &&
-                            mAvailableTemplateSet.contains(SdlViewManager.LayoutTemplate.GRAPHIC_WITH_TILES)){
-                        template = SdlViewManager.LayoutTemplate.GRAPHIC_WITH_TILES;
+                            mAvailableTemplateSet.contains(LayoutTemplate.GRAPHIC_WITH_TILES)){
+                        template = LayoutTemplate.GRAPHIC_WITH_TILES;
                     } else {
-                        template = SdlViewManager.LayoutTemplate.GRAPHIC_WITH_TEXTBUTTONS;
+                        template = LayoutTemplate.GRAPHIC_WITH_TEXTBUTTONS;
                     }
                     status = createTemplate(template, mainView, secondaryView, null);
-                } else if(secondaryView instanceof TextView){
-                    template = SdlViewManager.LayoutTemplate.GRAPHIC_WITH_TEXT;
+                } else if(secondaryView instanceof SdlTextView){
+                    template = LayoutTemplate.GRAPHIC_WITH_TEXT;
                     status = createTemplate(template, mainView, secondaryView, null);
                 }
             }
@@ -110,14 +136,14 @@ public class SdlTemplateView implements SdlView {
         } else if(mainView == null){
             status = TemplateStatus.INVALID_NO_MAIN_VIEW;
         } else {
-            SdlViewManager.LayoutTemplate template;
+            LayoutTemplate template;
             if (mainView instanceof SdlButtonView) {
                 status = TemplateStatus.INVALID_TOO_MANY_BUTTON_VIEWS;
             } else if (mainView instanceof SdlTextView){
-                template = SdlViewManager.LayoutTemplate.DEFAULT;
+                template = LayoutTemplate.DEFAULT;
                 status = createTemplate(template, mainView, null, buttonView);
             } else if(mainView instanceof SdlGraphicView){
-                template = SdlViewManager.LayoutTemplate.LARGE_GRAPHIC_WITH_SOFTBUTTONS;
+                template = LayoutTemplate.LARGE_GRAPHIC_WITH_SOFTBUTTONS;
                 status = createTemplate(template, mainView, null, buttonView);
             }
         }
@@ -125,29 +151,39 @@ public class SdlTemplateView implements SdlView {
     }
 
     public TemplateStatus setViews(SdlView mainView){
-        SdlViewManager.LayoutTemplate template = null;
+        LayoutTemplate template = null;
         if(mainView instanceof SdlTextView){
-            template = SdlViewManager.LayoutTemplate.TEXT_WITH_GRAPHIC;
+            template = LayoutTemplate.TEXT_WITH_GRAPHIC;
         } else if(mainView instanceof SdlButtonView){
             if(((SdlButtonView) mainView).isTiles() &&
-                    mAvailableTemplateSet.contains(SdlViewManager.LayoutTemplate.TILES_ONLY)){
-                template = SdlViewManager.LayoutTemplate.TILES_ONLY;
+                    mAvailableTemplateSet.contains(LayoutTemplate.TILES_ONLY)){
+                template = LayoutTemplate.TILES_ONLY;
             } else {
-                template = SdlViewManager.LayoutTemplate.TEXTBUTTONS_ONLY;
+                template = LayoutTemplate.TEXTBUTTONS_ONLY;
             }
         } else if(mainView instanceof SdlGraphicView){
-            template = SdlViewManager.LayoutTemplate.LARGE_GRAPHIC_ONLY;
+            template = LayoutTemplate.LARGE_GRAPHIC_ONLY;
         }
         return createTemplate(template, mainView, null, null);
     }
 
-    private TemplateStatus createTemplate(SdlViewManager.LayoutTemplate template, SdlView mainView,
+    boolean isLayoutDiferent() {
+        return isLayoutDifferent;
+    }
+
+    SetDisplayLayout getSetDisplayLayout(){
+        mSetDisplayLayout.setDisplayLayout(mTemplate.name());
+        return mSetDisplayLayout;
+    }
+
+    private TemplateStatus createTemplate(LayoutTemplate template, SdlView mainView,
                                           SdlView secondaryView, SdlButtonView buttonView) {
         if(mAvailableTemplateSet.contains(template)) {
             mLeftView = mainView;
             mRightView = secondaryView;
             mSdlButtonView = buttonView;
             mTemplate = template;
+            isLayoutDifferent = true;
         } else {
             return TemplateStatus.INVALID_TEMPLATE_NOT_SUPPORTED;
         }
@@ -155,15 +191,21 @@ public class SdlTemplateView implements SdlView {
     }
 
     @Override
-    public boolean decorate(Show show) {
-        mLeftView.decorate(show);
-
-        return false;
+    public void decorate(Show show) {
+        if(mLeftView != null) {
+            mLeftView.decorate(show);
+        }
+        if(mRightView != null) {
+            mRightView.decorate(show);
+        }
+        if(mSdlButtonView != null) {
+            mSdlButtonView.decorate(show);
+        }
     }
 
     @Override
-    public void redraw() {
-
+    List<SdlImage> getRequiredImages() {
+        return null;
     }
 
     @Override

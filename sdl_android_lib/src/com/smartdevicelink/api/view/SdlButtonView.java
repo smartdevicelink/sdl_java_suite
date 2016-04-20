@@ -1,10 +1,11 @@
 package com.smartdevicelink.api.view;
 
+import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.Show;
 
 import java.util.List;
 
-public class SdlButtonView implements SdlView {
+public class SdlButtonView extends SdlView {
 
     private boolean isTiles;
 
@@ -44,20 +45,19 @@ public class SdlButtonView implements SdlView {
     }
 
     @Override
-    public boolean decorate(Show show) {
+    public void decorate(Show show) {
         // TODO: Method stub
-        return false;
-    }
-
-    @Override
-    public void redraw() {
-        // TODO: Method stub
-
     }
 
     @Override
     public void clear() {
         // TODO: Method stub
 
+    }
+
+    @Override
+    public List<SdlImage> getRequiredImages() {
+        // TODO: Method stub
+        return null;
     }
 }

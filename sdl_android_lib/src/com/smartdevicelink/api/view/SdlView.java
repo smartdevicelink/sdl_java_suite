@@ -1,13 +1,32 @@
 package com.smartdevicelink.api.view;
 
+import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
 
-public interface SdlView {
+import java.util.List;
 
-    boolean decorate(Show show);
+public abstract class SdlView {
 
-    void redraw();
+    protected SdlViewManager mViewManager;
+    protected DisplayCapabilities mDisplayCapabilities;
 
-    void clear();
+    public final void redraw(){
+        mViewManager.updateView();
+    }
+
+    final void setDisplayCapabilities(DisplayCapabilities displayCapabilities){
+        mDisplayCapabilities = displayCapabilities;
+    }
+
+    final void setSdlViewManager(SdlViewManager sdlViewManager){
+        mViewManager = sdlViewManager;
+    }
+
+    public abstract void clear();
+
+    abstract void decorate(Show show);
+
+    abstract List<SdlImage> getRequiredImages();
 
 }
