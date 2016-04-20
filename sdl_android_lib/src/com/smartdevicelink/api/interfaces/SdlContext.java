@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.file.SdlFileManager;
+import com.smartdevicelink.proxy.RPCRequest;
 
 public interface SdlContext {
 
@@ -14,4 +15,11 @@ public interface SdlContext {
     Context getAndroidApplicationContext();
 
     SdlFileManager getSdlFileManager();
+
+    int registerButtonCallback(SdlButtonListener listener);
+
+    void unregisterButtonCallback(int id);
+
+    boolean sendRpc(RPCRequest request);
+
 }
