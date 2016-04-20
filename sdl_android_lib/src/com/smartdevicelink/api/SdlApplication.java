@@ -2,7 +2,9 @@ package com.smartdevicelink.api;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseArray;
 
+import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -75,7 +77,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private static final String TAG = SdlApplication.class.getSimpleName();
 
-    public static final int BACK_BUTTON_ID = 1010;
+    public static final int BACK_BUTTON_ID = 0;
 
     public enum Status {
         CONNECTING,
@@ -83,7 +85,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         DISCONNECTED
     }
 
-    private int coorId = 1001;
+    private int mAutoCoorId = 100;
+    private int mAutoButtonId = BACK_BUTTON_ID + 1;
 
     private SdlApplicationConfig mApplicationConfig;
 
@@ -97,6 +100,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private boolean isFirstHmiReceived = false;
     private boolean isFirstHmiNotNoneReceived = false;
+
+    private SparseArray<SdlButtonListener> mButtonListenerRegistry = new SparseArray<>();
     
     SdlApplication(SdlConnectionService service, SdlApplicationConfig config, ConnectionStatusListener listener){
         initialize(service.getApplicationContext());
@@ -123,22 +128,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         } else {
             Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
                     this.getClass().getCanonicalName());
-        }
-    }
-
-    final public boolean sendRpc(RPCRequest request){
-        if(mSdlProxyALM != null){
-            try {
-                request.setCorrelationID(coorId++);
-                Log.d(TAG, "Sending RPCRequest type " + request.getFunctionName());
-                mSdlProxyALM.sendRPCRequest(request);
-            } catch (SdlException e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -188,6 +177,35 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     @Override
     public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         mSdlActivityManager.startSdlActivity(this, activity, flags);
+    }
+
+    @Override
+    public int registerButtonCallback(SdlButtonListener listener) {
+        int buttonId = mAutoButtonId++;
+        mButtonListenerRegistry.append(buttonId, listener);
+        return buttonId;
+    }
+
+    @Override
+    public void unregisterButtonCallback(int id) {
+        mButtonListenerRegistry.remove(id);
+    }
+
+    @Override
+    final public boolean sendRpc(RPCRequest request){
+        if(mSdlProxyALM != null){
+            try {
+                request.setCorrelationID(mAutoCoorId++);
+                Log.d(TAG, "Sending RPCRequest type " + request.getFunctionName());
+                mSdlProxyALM.sendRPCRequest(request);
+            } catch (SdlException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /***********************************
@@ -360,8 +378,16 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnButtonPress(OnButtonPress notification) {
-        if(notification.getCustomButtonName() != null && notification.getCustomButtonName() == BACK_BUTTON_ID){
-            mSdlActivityManager.back();
+        if(notification != null && notification.getCustomButtonName() != null){
+            int buttonId = notification.getCustomButtonName();
+            if(buttonId == BACK_BUTTON_ID){
+                mSdlActivityManager.back();
+            } else {
+                SdlButtonListener listener = mButtonListenerRegistry.get(buttonId);
+                if(listener != null){
+                    listener.onButtonPress();
+                }
+            }
         }
     }
 
