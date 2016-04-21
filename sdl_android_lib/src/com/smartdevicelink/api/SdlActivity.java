@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.smartdevicelink.api.interaction.SdlAlertDialog;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
@@ -183,6 +184,13 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public SdlPermissionManager getSdlPermissionManager() {
         return getSdlApplicationContext().getSdlPermissionManager();
+    }
+
+    public void startAlertDialog(SdlAlertDialog dialog){
+        if(dialog!=null)
+            dialog.show(this,getActivityState()==SdlActivityState.FOREGROUND);
+        else
+            Log.w(TAG,"The dialog supplied to the SdlActivity to start was null");
     }
 
     public class SuperNotCalledException extends RuntimeException{
