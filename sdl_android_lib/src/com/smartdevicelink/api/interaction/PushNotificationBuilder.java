@@ -6,10 +6,13 @@ import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -76,24 +79,27 @@ public class PushNotificationBuilder {
     //validate the SdlAlert here?
     //verify there are 4 or less softbuttons
     //verify TTSChunk was created properly
-    public SdlAlert build(){
+    public SdlAlert build() throws IllegalStateException{
         SdlAlert builtAlert = new SdlAlert(this);
-        /*
-        if(builtAlert.getButtons().size()>4){
-            throw new IllegalStateException("More buttons were added then possible");
+        if(builtAlert.getButtons() !=null){
+            if( builtAlert.getButtons().size()>4){
+                throw new IllegalStateException("More buttons were added then possible");
+            }
         }
+
         if(builtAlert.getSpeak() !=null){
             //validate tts?
         }
-        */
+
         return new SdlAlert(this);
     }
 
 
     public class SdlAlert{
 
-        //private final Collection<String> mButtons;
-        //private final TTSChunk mTtsChunk;
+        //temporarily putting buttons in as strings until the SDLButton is merged in
+        private final Collection<String> mButtons;
+        private final TTSChunk mTtsChunk;
         private InteractionListener mListener;
         private final SdlContext mContext;
         private Alert newAlert;
@@ -108,14 +114,21 @@ public class PushNotificationBuilder {
            newAlert.setDuration(builder.mDuration);
            newAlert.setProgressIndicator(builder.mIsIndicatorShown);
            newAlert.setPlayTone(builder.mIsToneUsed);
-
-            //mButtons = builder.mButtons;
-            //mButtons = Collections.unmodifiableCollection(builder.mButtons);
-            //mTtsChunk = builder.mTtsChunk;
-            //mListener = builder.mListener;
-            mContext = builder.mContext;
+           newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
+           this.mButtons = builder.mButtons;
+           //mButtons = Collections.unmodifiableCollection(builder.mButtons);
+           this.mTtsChunk = builder.mTtsChunk;
+           mListener = builder.mListener;
+           mContext = builder.mContext;
         }
 
+        Collection<String> getButtons(){
+            return this.mButtons;
+        }
+
+        TTSChunk getSpeak(){
+            return this.mTtsChunk;
+        }
 
         public void show(){
             SdlPermissionManager checkPermissions= mContext.getSdlPermissionManager();
@@ -125,46 +138,55 @@ public class PushNotificationBuilder {
                     @Override
                     public void onError(int correlationId, Result resultCode, String info) {
                         super.onError(correlationId, resultCode, info);
-                        if(mListener==null)
-                            return;
-                        mListener.onInteractionError();
+                        if(mListener!=null)
+                            handleResultResponse(resultCode,info);
                     }
 
                     @Override
                     public void onResponse(int correlationId, RPCResponse response) {
-                        if(mListener==null)
-                            return;
-                        //Do response stuff
-                        Result codedResponse = response.getResultCode();
-                        switch (codedResponse) {
-                            case SUCCESS:
-                                mListener.onInteractionDone();
-                                break;
-                            case ABORTED:
-                                mListener.onInteractionCancelled();
-                                break;
-                            default:
-                                mListener.onInteractionError();
-                                break;
-                        }
+                        if(mListener!=null)
+                            handleResultResponse(response.getResultCode(),response.getInfo());
                     }
                 });
                 //send rpc after
                 mContext.sendRpc(newAlert);
             }else{
                 if (mListener!=null)
-                    mListener.onInteractionCancelled();
+                    mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "App does not support Push Notification fully, please use Alert");
             }
         }
 
-
+        private void handleResultResponse(Result response, String info){
+            switch (response) {
+                case SUCCESS:
+                    mListener.onInteractionDone();
+                    break;
+                case ABORTED:
+                    mListener.onInteractionCancelled();
+                    break;
+                case INVALID_DATA:
+                    mListener.onInteractionError(InteractionListener.ErrorResponses.MALFORMED_INTERACTION,info);
+                    break;
+                case DISALLOWED:
+                    mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR,info);
+                    break;
+                default:
+                    mListener.onInteractionError(InteractionListener.ErrorResponses.GENERIC_ERROR,info);
+                    break;
+            }
+        }
 
     }
 
     public interface InteractionListener{
+        enum ErrorResponses{
+            MALFORMED_INTERACTION,
+            GENERIC_ERROR,
+            PERMISSIONS_ERROR
+        }
         void onInteractionDone();
         void onInteractionCancelled();
-        void onInteractionError();
+        void onInteractionError(ErrorResponses responses, String moreInfo);
     }
 
 
