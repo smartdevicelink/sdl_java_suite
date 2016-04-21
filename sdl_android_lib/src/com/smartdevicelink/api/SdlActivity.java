@@ -3,8 +3,10 @@ package com.smartdevicelink.api;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
+import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
 
@@ -156,6 +158,21 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         isBackHandled = true;
         this.onBackNavigation();
         return isBackHandled;
+    }
+
+    @Override
+    public int registerButtonCallback(SdlButtonListener listener) {
+        return getSdlApplicationContext().registerButtonCallback(listener);
+    }
+
+    @Override
+    public void unregisterButtonCallback(int id) {
+        getSdlApplicationContext().unregisterButtonCallback(id);
+    }
+
+    @Override
+    public boolean sendRpc(RPCRequest request) {
+        return getSdlApplicationContext().sendRpc(request);
     }
 
     @Override
