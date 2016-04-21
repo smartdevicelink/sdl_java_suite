@@ -38,24 +38,14 @@ public class SdlPermissionManager {
                 mHMIStatusListener);
     }
 
-    //TODO: Remove method since implementation is more specific to a single HMI Level
     /**
-     * This method returns true if the given single permission is available at ANY {@link HMILevel}.
-     * For specific HMILevels use {@link #isPermissionAvailable(SdlPermission, HMILevel)}.
+     * This method returns true if the given single permission is available now.
      * @param permission The {@link SdlPermission} to check.
      * @return boolean indicating if the given SdlPermission is available.
      */
     public boolean isPermissionAvailable(@NonNull SdlPermission permission){
         synchronized (PERMISSION_LOCK) {
-            HMILevel[] hmiLevels = HMILevel.values();
-
-            for (int i = 0; i < hmiLevels.length; i++) {
-                if (isPermissionAvailable(permission, hmiLevels[i])) {
-                    return true;
-                }
-            }
-
-            return false;
+            return mSdlPermissionSet.permissions.get(mCurrentHMILevel.ordinal()).contains(permission);
         }
 
     }
@@ -78,18 +68,6 @@ public class SdlPermissionManager {
                 }
                 mCurrentHMILevel = hmiLevel;
             }
-        }
-    }
-
-    /**
-     * This method returns true if the given single permission is available at the given {@link HMILevel}.
-     * @param permission {@link SdlPermission} to check.
-     * @param hmi {@link HMILevel} to check.
-     * @return boolean indication if the given SdlPermission is available at the given HMILevel
-     */
-    public boolean isPermissionAvailable(@NonNull SdlPermission permission, @NonNull HMILevel hmi){
-        synchronized (PERMISSION_LOCK) {
-            return mSdlPermissionSet.permissions.get(hmi.ordinal()).contains(permission);
         }
     }
 
