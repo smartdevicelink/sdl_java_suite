@@ -44,12 +44,18 @@ public class SdlAlertDialog {
     }
 
 
-    public void show(SdlContext context, boolean isInForeground) {
-        SdlPermissionManager checkPermissions = context.getSdlPermissionManager();
-        if(!isInForeground){
-            Log.w(TAG, "AlertDialog was attempted to be sent while the SdlActivity was not in the foreground, please try again");
+    public final void show(SdlActivity callingActivity) {
+        if(callingActivity== null){
+            Log.w(TAG,"A null SdlActivity was provided when trying to show the SdlAlertDialog");
             return;
         }
+
+        if(!callingActivity.isAbleToSendAlertDialog()){
+            Log.w(TAG, "SdlAlertDialog was attempted to be sent while the SdlActivity was not in the foreground, please try again");
+            return;
+        }
+        SdlPermissionManager checkPermissions = callingActivity.getSdlPermissionManager();
+
         if (checkPermissions.isPermissionAvailable(SdlPermission.Alert)) {
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
@@ -65,7 +71,7 @@ public class SdlAlertDialog {
                         handleResultResponse(response.getResultCode(), response.getInfo());
                 }
             });
-            context.sendRpc(newAlert);
+            callingActivity.sendRpc(newAlert);
         } else {
             if (mListener != null)
                 mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "You are unable to send SdlAlertDialogs");

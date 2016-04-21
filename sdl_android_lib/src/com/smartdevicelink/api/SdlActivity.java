@@ -186,11 +186,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         return getSdlApplicationContext().getSdlPermissionManager();
     }
 
-    public void startAlertDialog(SdlAlertDialog dialog){
-        if(dialog!=null)
-            dialog.show(this,getActivityState()==SdlActivityState.FOREGROUND);
-        else
-            Log.w(TAG,"The dialog supplied to the SdlActivity to start was null");
+    public final boolean isAbleToSendAlertDialog(){
+        return getActivityState()==SdlActivityState.FOREGROUND;
     }
 
     public class SuperNotCalledException extends RuntimeException{
