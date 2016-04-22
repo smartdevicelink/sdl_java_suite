@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.interaction;
 
+import android.util.Log;
+
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
@@ -16,12 +18,12 @@ import java.util.Collections;
  * Created by mschwerz on 4/21/16.
  */
 public class SdlPushNotification {
+    private static final String TAG = SdlPushNotification.class.getSimpleName();
 
     //temporarily putting buttons in as strings until the SDLButton is merged in
     private final Collection<String> mButtons;
     private final TTSChunk mTtsChunk;
     private InteractionListener mListener;
-    private final SdlContext mContext;
     private Alert newAlert;
 
     //just build the alert instead of setting variables
@@ -36,15 +38,13 @@ public class SdlPushNotification {
         newAlert.setPlayTone(builder.mIsToneUsed);
         newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
         this.mButtons = builder.mButtons;
-        //mButtons = Collections.unmodifiableCollection(builder.mButtons);
         this.mTtsChunk = builder.mTtsChunk;
         mListener = builder.mListener;
-        mContext = builder.mContext;
     }
 
 
-    public void show() {
-        SdlPermissionManager checkPermissions = mContext.getSdlPermissionManager();
+    public void show(SdlContext context) {
+        SdlPermissionManager checkPermissions = context.getSdlPermissionManager();
         if (checkPermissions.isPermissionAvailable(SdlPermission.Alert)) {
 
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -61,11 +61,11 @@ public class SdlPushNotification {
                         handleResultResponse(response.getResultCode(), response.getInfo());
                 }
             });
-            //send rpc after
-            mContext.sendRpc(newAlert);
+            context.sendRpc(newAlert);
         } else {
             if (mListener != null)
-                mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "App does not support Push Notification fully, please use Alert");
+                mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "App does not have permissions to support SdlPushNotification fully, please use SdlAlertDialog");
+                Log.w(TAG,"App does not have permissions to support SdlPushNotification fully, please use SdlAlertDialog");
         }
     }
 
@@ -100,11 +100,10 @@ public class SdlPushNotification {
         private Collection<String> mButtons;
         private TTSChunk mTtsChunk;
         private InteractionListener mListener;
-        private final SdlContext mContext;
 
 
-        public Builder(SdlContext context){
-            mContext = context;
+        public Builder(){
+
         }
 
         public Builder setTextField1(String textField1){
