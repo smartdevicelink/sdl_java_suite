@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper;
 import android.util.Log;
 
 import com.smartdevicelink.api.interaction.SdlAlertDialog;
+import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
@@ -179,6 +180,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         getSdlApplicationContext().startSdlActivity(activity, flags);
+    }
+
+    @Override
+    public SdlFileManager getSdlFileManager() {
+        return getSdlApplicationContext().getSdlFileManager();
     }
 
     @Override

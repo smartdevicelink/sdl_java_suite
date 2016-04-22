@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.smartdevicelink.api.permission.SdlPermissionManager;
+import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -93,6 +94,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private SdlActivityManager mSdlActivityManager;
     private SdlPermissionManager mSdlPermissionManager;
+    private SdlFileManager mSdlFileManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -117,6 +119,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         mSdlActivityManager = new SdlActivityManager();
         mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
         mLifecycleListeners.add(mSdlActivityManager);
+        mSdlFileManager = new SdlFileManager(this, mApplicationConfig);
+        mLifecycleListeners.add(mSdlFileManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
             listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
@@ -183,6 +187,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
+    public SdlFileManager getSdlFileManager() {
+        return mSdlFileManager;
+    }
+
     public int registerButtonCallback(SdlButtonListener listener) {
         int buttonId = mAutoButtonId++;
         mButtonListenerRegistry.append(buttonId, listener);
@@ -584,7 +592,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     }
 
-    interface LifecycleListener {
+    public interface LifecycleListener {
 
         void onSdlConnect();
         void onBackground();
