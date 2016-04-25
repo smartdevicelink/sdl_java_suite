@@ -8,7 +8,7 @@ import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
-import com.smartdevicelink.api.view.SdlButton;
+//import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -162,7 +162,7 @@ public class SdlAlertDialog {
         private int mDuration;
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
-        private Collection<SdlButton> mButtons;
+        //private Collection<SdlButton> mButtons;
         private TTSChunk mTtsChunk;
         private InteractionListener mListener;
 
