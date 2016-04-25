@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
@@ -53,6 +54,12 @@ public class SdlAlertDialog {
     }
 
 
+    /**
+     * Method to send the built {@link SdlAlertDialog} to the module, while the app is in the foreground. If there is a {@link com.smartdevicelink.api.interaction.SdlAlertDialog.InteractionListener}
+     * set to {@link SdlAlertDialog}, then the listener will be informed if the dialog fails, is cancelled or if
+     * the interaction is able to be completed normally.
+     * @param callingActivity The SdlActivity that the SdlAlertDialog will be sent from
+     */
     public final void show(@NonNull final SdlActivity callingActivity) {
 
         if(!callingActivity.isAbleToSendAlertDialog()){
@@ -170,41 +177,117 @@ public class SdlAlertDialog {
 
         }
 
+        /**
+         * Sets the top line of text for the built {@link SdlAlertDialog}. If you need to leave the line
+         * empty, please don't set the field or set it to null.
+         * @param textField1 The string to be shown with the SdlAlertDialog.
+         *                   Cannot be an empty string or all whitespace.
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setTextField1(String textField1){
             mTextField1 = textField1;
             return this;
         }
+
+        /**
+         * Sets the middle line of text for the built {@link SdlAlertDialog}. The text
+         * cannot be empty or only contain whitespace. If you need to leave the line
+         * empty, please don't set the field or set it to null.
+         * @param textField2 The string to be shown with the SdlAlertDialog.
+         *                   Cannot be an empty string or all whitespace.
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setTextField2(String textField2){
             mTextField2 = textField2;
             return this;
         }
+
+        /**
+         * Sets the bottom line of text for the built {@link SdlAlertDialog}. If you need to leave the line
+         * empty, please don't set the field or set it to null.
+         * @param textField3 The string to be shown with the SdlAlertDialog.
+         *                   Cannot be an empty string or all whitespace.
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setTextField3(String textField3){
             mTextField3 = textField3;
             return this;
         }
+
+        /**
+         * Sets the duration that the {@link SdlAlertDialog} will show up for.
+         * The min value is 3000 and the max value is 10000
+         * @param duration The amount of seconds the SdlAlertDialog should appear
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setDuration(int duration){
             mDuration = duration;
             return this;
         }
+
+        /**
+         * Sets if a tone should sound when the {@link SdlAlertDialog} appears.
+         * @param isToneUsed Set to true if a tone should sound when the SdlAlertDialog appears.
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setToneUsed(boolean isToneUsed){
             mIsToneUsed = isToneUsed;
             return this;
         }
+
+        /**
+         *
+         * @param isIndicatorShown
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setProgressIndicatorShown(boolean isIndicatorShown){
             mIsIndicatorShown = isIndicatorShown;
             return this;
         }
+
+        /**
+         * Sets the push buttons that the user can touch when the {@link SdlAlertDialog}
+         * appears
+         * @param buttons Collection of SdlButtons that describe what the buttons should look like
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         /*
-        public Builder addPushButtons(Collection<SdlButton> buttons){
+        public Builder setPushButtons(Collection<SdlButton> buttons){
             this.mButtons = buttons;
             return this;
         }
         */
-        public Builder setSpeak(TTSChunk chunkUsed){
-            mTtsChunk = chunkUsed;
+
+        /**
+         * Sets the TTS to be spoken when the {@link SdlAlertDialog} appears.
+         * @param ttsChunk The description of the Text To Speech to be read aloud
+         * @return The builder for the {@link SdlAlertDialog}
+         */
+        public Builder setSpeak(TTSChunk ttsChunk){
+            mTtsChunk = ttsChunk;
             return this;
         }
 
+        /**
+         * Convenience method for Text to Speech with the {@link SdlAlertDialog} which
+         * will speak the text provided aloud.
+         * @param textToSpeak Text to be spoken aloud
+         * @return The builder for the {@link SdlAlertDialog}
+         */
+        public Builder setSpeak(String textToSpeak){
+            TTSChunk newChunk= new TTSChunk();
+            newChunk.setText(textToSpeak);
+            newChunk.setType(SpeechCapabilities.TEXT);
+            mTtsChunk= newChunk;
+            return this;
+        }
+
+        /**
+         * Sets the listener for when the {@link SdlAlertDialog} finishes with the interaction,
+         * is interrupted by another interaction, or an error occurred.
+         * @param listener The object to listen for the {@link SdlAlertDialog} callbacks.
+         * @return The builder for the {@link SdlAlertDialog}
+         */
         public Builder setListener(InteractionListener listener){
             this.mListener = listener;
             return this;
@@ -213,6 +296,15 @@ public class SdlAlertDialog {
         //validate the SdlAlertDialog here?
         //verify there are 4 or less softbuttons
         //verify TTSChunk was created properly
+        /**
+         * Creates the {@link SdlAlertDialog} object that will display a Dialog with text, sounds and buttons
+         * as set in the builder. Use {@link SdlPushNotification} if you want to send
+         * the dialog while the app is not visible on the module and have permission to do so.
+         * @return SdlAlertDialog, call {@link #show(SdlActivity)} in order to send the
+         * built {@link SdlAlertDialog}
+         * @throws IllegalAlertDialogCreation Exception will be called if the parameters set when building
+         * are illegal
+         */
         public SdlAlertDialog build() throws IllegalAlertDialogCreation {
             SdlAlertDialog builtAlert = new SdlAlertDialog(this);
             /*
@@ -223,12 +315,16 @@ public class SdlAlertDialog {
             }
             */
             String[] arrayOfTextFields= builtAlert.getAlertTextAsArray();
+            boolean atLeastOneNotNull=false;
             for(int i=0;i<arrayOfTextFields.length;i++){
                 if(arrayOfTextFields[i]!=null){
+                    atLeastOneNotNull=true;
                     if(!checkStringIsValid(arrayOfTextFields[i]))
                         throw new IllegalAlertDialogCreation("Invalid String was provided to TextField"+Integer.toString(i+1));
                 }
             }
+            if(!atLeastOneNotNull)
+                throw new IllegalAlertDialogCreation("All of the TextFields are null, please make sure at least one is set");
 
             List<TTSChunk> chunks= builtAlert.newAlert.getTtsChunks();
             if(chunks !=null){
