@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.interaction;
 
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -7,7 +8,7 @@ import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
-//import com.smartdevicelink.api.view.SdlButton;
+import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -17,22 +18,23 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.IllegalFormatException;
+import java.util.List;
 
 /**
  * Created by mschwerz on 4/21/16.
  */
 public class SdlAlertDialog {
-    private static final String TAG = SdlPushNotification.class.getSimpleName();
+    private static final String TAG = SdlAlertDialog.class.getSimpleName();
 
     //temporarily putting buttons in as strings until the SDLButton is merged in
     //private final Collection<SdlButton> mButtons;
-    private final TTSChunk mTtsChunk;
     private InteractionListener mListener;
     private final Alert newAlert;
-    private Object BUTTON_LOCK;
 
     //just build the alert instead of setting variables
     SdlAlertDialog(Builder builder) {
@@ -47,7 +49,6 @@ public class SdlAlertDialog {
         if(builder.mTtsChunk!=null)
             newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
         //this.mButtons = builder.mButtons;
-        this.mTtsChunk = builder.mTtsChunk;
         mListener = builder.mListener;
     }
 
@@ -88,7 +89,7 @@ public class SdlAlertDialog {
             callingActivity.sendRpc(newAlert);
         } else {
             if (mListener != null)
-                mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "You are unable to send SdlAlertDialogs");
+                mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "You are unable to send SdlAlertDialogs at this time");
         }
     }
 
@@ -105,6 +106,9 @@ public class SdlAlertDialog {
                 break;
             case DISALLOWED:
                 mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, info);
+                break;
+            case REJECTED:
+                mListener.onInteractionError(InteractionListener.ErrorResponses.REJECTED,info);
                 break;
             default:
                 mListener.onInteractionError(InteractionListener.ErrorResponses.GENERIC_ERROR, info);
@@ -146,6 +150,9 @@ public class SdlAlertDialog {
             }
     }
     */
+    private String[] getAlertTextAsArray(){
+        return new String[]{newAlert.getAlertText1(),newAlert.getAlertText2(),newAlert.getAlertText3()};
+    }
 
     public static class Builder {
 
@@ -155,14 +162,13 @@ public class SdlAlertDialog {
         private int mDuration;
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
-        //private Collection<SdlButton> mButtons;
+        private Collection<SdlButton> mButtons;
         private TTSChunk mTtsChunk;
         private InteractionListener mListener;
 
         public Builder(){
 
         }
-
 
         public Builder setTextField1(String textField1){
             mTextField1 = textField1;
@@ -190,7 +196,7 @@ public class SdlAlertDialog {
         }
         /*
         public Builder addPushButtons(Collection<SdlButton> buttons){
-            mButtons = buttons;
+            this.mButtons = buttons;
             return this;
         }
         */
@@ -200,36 +206,56 @@ public class SdlAlertDialog {
         }
 
         public Builder setListener(InteractionListener listener){
-            mListener = listener;
+            this.mListener = listener;
             return this;
         }
 
-        //validate the SdlPushNotification here?
+        //validate the SdlAlertDialog here?
         //verify there are 4 or less softbuttons
         //verify TTSChunk was created properly
-        public SdlAlertDialog build() throws IllegalStateException{
+        public SdlAlertDialog build() throws IllegalAlertDialogCreation {
             SdlAlertDialog builtAlert = new SdlAlertDialog(this);
             /*
             if(builtAlert.mButtons !=null){
                 if(builtAlert.mButtons.size()>4){
-                    throw new IllegalStateException("More buttons were added then possible");
+                    throw new IllegalAlertDialogCreation("More buttons were added then possible the ");
                 }
             }
             */
+            String[] arrayOfTextFields= builtAlert.getAlertTextAsArray();
+            for(int i=0;i<arrayOfTextFields.length;i++){
+                if(arrayOfTextFields[i]!=null){
+                    if(!checkStringIsValid(arrayOfTextFields[i]))
+                        throw new IllegalAlertDialogCreation("Invalid String was provided to TextField"+Integer.toString(i+1));
+                }
+            }
 
-            if(builtAlert.mTtsChunk !=null){
+            List<TTSChunk> chunks= builtAlert.newAlert.getTtsChunks();
+            if(chunks !=null){
+                if(chunks.get(0)!=null){
+
+                }
                 //validate tts?
             }
 
             return builtAlert;
         }
 
+        public class IllegalAlertDialogCreation extends Exception{
+            IllegalAlertDialogCreation(String detailMessage){super(detailMessage);}
+        }
 
     }
+
+    private static boolean checkStringIsValid(String checkString){
+            return checkString.trim().length() > 0;
+    }
+
     public interface InteractionListener{
         enum ErrorResponses{
             MALFORMED_INTERACTION,
             GENERIC_ERROR,
+            REJECTED,
             PERMISSIONS_ERROR,
 
         }

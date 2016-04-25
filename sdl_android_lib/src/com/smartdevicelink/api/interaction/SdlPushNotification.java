@@ -6,7 +6,7 @@ import android.util.Log;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
-//import com.smartdevicelink.api.view.SdlButton;
+import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by mschwerz on 4/21/16.
@@ -27,7 +28,6 @@ public class SdlPushNotification {
     private static final String TAG = SdlPushNotification.class.getSimpleName();
 
     //private final Collection<SdlButton> mButtons;
-    private final TTSChunk mTtsChunk;
     private InteractionListener mListener;
     private Alert newAlert;
 
@@ -44,7 +44,6 @@ public class SdlPushNotification {
         if(builder.mTtsChunk!=null)
             newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
         //this.mButtons = builder.mButtons;
-        this.mTtsChunk = builder.mTtsChunk;
         mListener = builder.mListener;
     }
 
@@ -92,6 +91,9 @@ public class SdlPushNotification {
             case DISALLOWED:
                 mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, info);
                 break;
+            case REJECTED:
+                mListener.onInteractionError(InteractionListener.ErrorResponses.REJECTED, info);
+                break;
             default:
                 mListener.onInteractionError(InteractionListener.ErrorResponses.GENERIC_ERROR, info);
                 break;
@@ -131,6 +133,9 @@ public class SdlPushNotification {
         }
     }
     */
+    private String[] getAlertTextAsArray(){
+        return new String[]{newAlert.getAlertText1(),newAlert.getAlertText2(),newAlert.getAlertText3()};
+    }
 
     public static class Builder {
 
@@ -175,7 +180,7 @@ public class SdlPushNotification {
         }
         /*
         public Builder addPushButtons(Collection<SdlButton> buttons){
-            mButtons = buttons;
+            this.mButtons = buttons;
             return this;
         }
         */
@@ -186,24 +191,36 @@ public class SdlPushNotification {
         }
 
         public Builder setListener(InteractionListener listener){
-            mListener = listener;
+            this.mListener = listener;
             return this;
         }
 
         //validate the SdlPushNotification here?
         //verify there are 4 or less softbuttons
         //verify TTSChunk was created properly
-        public SdlPushNotification build() throws IllegalStateException{
+        public SdlPushNotification build() throws IllegalPushNotificationCreation{
             SdlPushNotification builtAlert = new SdlPushNotification(this);
             /*
             if(builtAlert.mButtons !=null){
                 if( builtAlert.mButtons.size()>4){
-                    throw new IllegalStateException("More buttons were added then possible");
+                    throw new IllegalPushNotificationCreation("More buttons were added then possible the ");
                 }
             }
             */
 
-            if(builtAlert.mTtsChunk !=null){
+            String[] arrayOfTextFields= builtAlert.getAlertTextAsArray();
+            for(int i=0;i<arrayOfTextFields.length;i++){
+                if(arrayOfTextFields[i]!=null){
+                    if(!checkStringIsValid(arrayOfTextFields[i]))
+                        throw new IllegalPushNotificationCreation("Invalid String was provided to TextField"+Integer.toString(i+1));
+                }
+            }
+
+            List<TTSChunk> chunks= builtAlert.newAlert.getTtsChunks();
+            if(chunks !=null){
+                if(chunks.get(0)!=null){
+
+                }
                 //validate tts?
             }
 
@@ -211,11 +228,20 @@ public class SdlPushNotification {
         }
 
 
+        private static boolean checkStringIsValid(String checkString){
+            return checkString.trim().length() > 0;
+        }
+
+        //for enforcing certain parameters are not set incorrectly
+        public class IllegalPushNotificationCreation extends Exception{
+            IllegalPushNotificationCreation(String detailMessage){super(detailMessage);}
+        }
     }
     public interface InteractionListener{
         enum ErrorResponses{
             MALFORMED_INTERACTION,
             GENERIC_ERROR,
+            REJECTED,
             PERMISSIONS_ERROR
         }
         void onInteractionDone();
