@@ -1,16 +1,22 @@
 package com.smartdevicelink.api.interaction;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
+//import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -20,8 +26,7 @@ import java.util.Collections;
 public class SdlPushNotification {
     private static final String TAG = SdlPushNotification.class.getSimpleName();
 
-    //temporarily putting buttons in as strings until the SDLButton is merged in
-    private final Collection<String> mButtons;
+    //private final Collection<SdlButton> mButtons;
     private final TTSChunk mTtsChunk;
     private InteractionListener mListener;
     private Alert newAlert;
@@ -36,29 +41,33 @@ public class SdlPushNotification {
         newAlert.setDuration(builder.mDuration);
         newAlert.setProgressIndicator(builder.mIsIndicatorShown);
         newAlert.setPlayTone(builder.mIsToneUsed);
-        newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
-        this.mButtons = builder.mButtons;
+        if(builder.mTtsChunk!=null)
+            newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
+        //this.mButtons = builder.mButtons;
         this.mTtsChunk = builder.mTtsChunk;
         mListener = builder.mListener;
     }
 
 
-    public void show(SdlContext context) {
+    public void show(@NonNull SdlContext context) {
         SdlPermissionManager checkPermissions = context.getSdlPermissionManager();
         if (checkPermissions.isPermissionAvailable(SdlPermission.Alert)) {
-
+            final SdlContext applicationContext = context.getSdlApplicationContext();
+            //final ArrayList<Integer> unregisterIds= registerAllButtons(newAlert, context);
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onError(int correlationId, Result resultCode, String info) {
                     super.onError(correlationId, resultCode, info);
                     if (mListener != null)
                         handleResultResponse(resultCode, info);
+                    //unregisterAllButtons(unregisterIds,applicationContext);
                 }
 
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
                     if (mListener != null)
                         handleResultResponse(response.getResultCode(), response.getInfo());
+                    //unregisterAllButtons(unregisterIds,applicationContext);
                 }
             });
             context.sendRpc(newAlert);
@@ -88,6 +97,40 @@ public class SdlPushNotification {
                 break;
         }
     }
+/*
+    private ArrayList<Integer> registerAllButtons(Alert alertToHaveButtons, SdlContext context){
+        ArrayList<SoftButton> createdSoftbuttons = new ArrayList<>();
+        ArrayList<Integer> idsToTrack = new ArrayList<>();
+        if (this.mButtons == null) {
+            return null;
+        }
+        for (SdlButton button : this.mButtons) {
+            if (button.getListener() != null) {
+                SoftButton softButtonFromSdlButton = new SoftButton();
+                softButtonFromSdlButton.setText(button.getText());
+                softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
+                softButtonFromSdlButton.setIsHighlighted(false);
+                softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+                //SdlImage to set image?
+                int buttonID = context.registerButtonCallback(button.getListener());
+                idsToTrack.add(buttonID);
+                softButtonFromSdlButton.setSoftButtonID(buttonID);
+                createdSoftbuttons.add(softButtonFromSdlButton);
+            }
+        }
+        alertToHaveButtons.setSoftButtons(createdSoftbuttons);
+        return idsToTrack;
+    }
+
+    private void unregisterAllButtons(ArrayList<Integer> ids, SdlContext context){
+        if (ids == null || context == null) {
+            return;
+        }
+        for (Integer id : ids) {
+            context.unregisterButtonCallback(id);
+        }
+    }
+    */
 
     public static class Builder {
 
@@ -97,7 +140,7 @@ public class SdlPushNotification {
         private int mDuration;
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
-        private Collection<String> mButtons;
+        //private Collection<SdlButton> mButtons;
         private TTSChunk mTtsChunk;
         private InteractionListener mListener;
 
@@ -130,10 +173,12 @@ public class SdlPushNotification {
             mIsIndicatorShown = isIndicatorShown;
             return this;
         }
-        public Builder addPushButtons(Collection<String> buttons){
+        /*
+        public Builder addPushButtons(Collection<SdlButton> buttons){
             mButtons = buttons;
             return this;
         }
+        */
 
         public Builder setSpeak(TTSChunk chunkUsed){
             mTtsChunk = chunkUsed;
@@ -150,11 +195,13 @@ public class SdlPushNotification {
         //verify TTSChunk was created properly
         public SdlPushNotification build() throws IllegalStateException{
             SdlPushNotification builtAlert = new SdlPushNotification(this);
+            /*
             if(builtAlert.mButtons !=null){
                 if( builtAlert.mButtons.size()>4){
                     throw new IllegalStateException("More buttons were added then possible");
                 }
             }
+            */
 
             if(builtAlert.mTtsChunk !=null){
                 //validate tts?

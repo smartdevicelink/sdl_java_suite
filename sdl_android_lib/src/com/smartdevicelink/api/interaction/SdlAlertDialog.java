@@ -1,17 +1,23 @@
 package com.smartdevicelink.api.interaction;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
+//import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -22,10 +28,11 @@ public class SdlAlertDialog {
     private static final String TAG = SdlPushNotification.class.getSimpleName();
 
     //temporarily putting buttons in as strings until the SDLButton is merged in
-    private final Collection<String> mButtons;
+    //private final Collection<SdlButton> mButtons;
     private final TTSChunk mTtsChunk;
     private InteractionListener mListener;
-    private Alert newAlert;
+    private final Alert newAlert;
+    private Object BUTTON_LOCK;
 
     //just build the alert instead of setting variables
     SdlAlertDialog(Builder builder) {
@@ -37,18 +44,15 @@ public class SdlAlertDialog {
         newAlert.setDuration(builder.mDuration);
         newAlert.setProgressIndicator(builder.mIsIndicatorShown);
         newAlert.setPlayTone(builder.mIsToneUsed);
-        newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
-        this.mButtons = builder.mButtons;
+        if(builder.mTtsChunk!=null)
+            newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
+        //this.mButtons = builder.mButtons;
         this.mTtsChunk = builder.mTtsChunk;
         mListener = builder.mListener;
     }
 
 
-    public final void show(SdlActivity callingActivity) {
-        if(callingActivity== null){
-            Log.w(TAG,"A null SdlActivity was provided when trying to show the SdlAlertDialog");
-            return;
-        }
+    public final void show(@NonNull final SdlActivity callingActivity) {
 
         if(!callingActivity.isAbleToSendAlertDialog()){
             Log.w(TAG, "SdlAlertDialog was attempted to be sent while the SdlActivity was not in the foreground, please try again");
@@ -57,18 +61,28 @@ public class SdlAlertDialog {
         SdlPermissionManager checkPermissions = callingActivity.getSdlPermissionManager();
 
         if (checkPermissions.isPermissionAvailable(SdlPermission.Alert)) {
+
+            //grabbing the application context for the anon listener to unregister the SdlButtons
+            final SdlContext applicationContext = callingActivity.getSdlApplicationContext();
+
+            //giving the listener an array of ids so that the buttons can be unregistered once we are done with them
+            //not giving the collection of buttons since two calls to show in a row for the alert would cause the
+            //2nd set of ids created to be unregistered instead of the first
+            //final ArrayList<Integer> unregisterIds= registerAllButtons(newAlert,callingActivity.getSdlApplicationContext());
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onError(int correlationId, Result resultCode, String info) {
                     super.onError(correlationId, resultCode, info);
                     if (mListener != null)
                         handleResultResponse(resultCode, info);
+                    //unregisterAllButtons(unregisterIds,applicationContext);
                 }
 
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
                     if (mListener != null)
                         handleResultResponse(response.getResultCode(), response.getInfo());
+                    //unregisterAllButtons(unregisterIds,applicationContext);
                 }
             });
             callingActivity.sendRpc(newAlert);
@@ -97,6 +111,41 @@ public class SdlAlertDialog {
                 break;
         }
     }
+/*
+    private ArrayList<Integer> registerAllButtons(Alert alertToHaveButtons, SdlContext context){
+            ArrayList<SoftButton> createdSoftbuttons = new ArrayList<>();
+            ArrayList<Integer> idsToTrack = new ArrayList<>();
+            if (this.mButtons == null) {
+                return null;
+            }
+            for (SdlButton button : this.mButtons) {
+                if (button.getListener() != null) {
+                    SoftButton softButtonFromSdlButton = new SoftButton();
+                    softButtonFromSdlButton.setText(button.getText());
+                    softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
+                    softButtonFromSdlButton.setIsHighlighted(false);
+                    softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+                    //SdlImage to set image?
+                    //softButtonFromSdlButton.setSoftButtonID(button.getId());
+                    int buttonID = context.registerButtonCallback(button.getListener());
+                    idsToTrack.add(buttonID);
+                    softButtonFromSdlButton.setSoftButtonID(buttonID);
+                    createdSoftbuttons.add(softButtonFromSdlButton);
+                }
+            }
+            alertToHaveButtons.setSoftButtons(createdSoftbuttons);
+            return idsToTrack;
+    }
+
+    private void unregisterAllButtons(ArrayList<Integer> ids, SdlContext context){
+            if (ids == null || context == null) {
+                return;
+            }
+            for (Integer id : ids) {
+                context.unregisterButtonCallback(id);
+            }
+    }
+    */
 
     public static class Builder {
 
@@ -106,7 +155,7 @@ public class SdlAlertDialog {
         private int mDuration;
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
-        private Collection<String> mButtons;
+        //private Collection<SdlButton> mButtons;
         private TTSChunk mTtsChunk;
         private InteractionListener mListener;
 
@@ -139,11 +188,12 @@ public class SdlAlertDialog {
             mIsIndicatorShown = isIndicatorShown;
             return this;
         }
-        public Builder addPushButtons(Collection<String> buttons){
+        /*
+        public Builder addPushButtons(Collection<SdlButton> buttons){
             mButtons = buttons;
             return this;
         }
-
+        */
         public Builder setSpeak(TTSChunk chunkUsed){
             mTtsChunk = chunkUsed;
             return this;
@@ -159,11 +209,13 @@ public class SdlAlertDialog {
         //verify TTSChunk was created properly
         public SdlAlertDialog build() throws IllegalStateException{
             SdlAlertDialog builtAlert = new SdlAlertDialog(this);
+            /*
             if(builtAlert.mButtons !=null){
                 if(builtAlert.mButtons.size()>4){
                     throw new IllegalStateException("More buttons were added then possible");
                 }
             }
+            */
 
             if(builtAlert.mTtsChunk !=null){
                 //validate tts?
