@@ -55,7 +55,7 @@ public class SdlPermissionManager {
      * of any changes in {@link SdlPermission} with the {@link HMILevel} transition.
      * @param hmiLevel The {@link HMILevel} to change to
      */
-    void setCurrentHMILevel(@NonNull HMILevel hmiLevel){
+    public void setCurrentHMILevel(@NonNull HMILevel hmiLevel){
         synchronized (PERMISSION_LOCK) {
             if(hmiLevel!=mCurrentHMILevel) {
                 for (ListenerWithFilter lwf : mListeners) {
