@@ -229,6 +229,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
 
         HMILevel hmiLevel = notification.getHmiLevel();
+        mSdlPermissionManager.setCurrentHMILevel(hmiLevel);
 
         Log.i(TAG, toString() + " Received HMILevel: " + hmiLevel.name());
 
