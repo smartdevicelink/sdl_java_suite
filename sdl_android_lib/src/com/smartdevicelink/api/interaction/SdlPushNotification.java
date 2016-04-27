@@ -3,7 +3,6 @@ package com.smartdevicelink.api.interaction;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
@@ -29,23 +28,36 @@ import java.util.List;
 public class SdlPushNotification {
     private static final String TAG = SdlPushNotification.class.getSimpleName();
 
+    private String[] mTextFields= new String[3];
+    private int mDuration;
+    boolean mIsToneUsed;
+    boolean mIsIndicatorUsed;
+    private TTSChunk mTtsChunk;
     //private final Collection<SdlButton> mButtons;
+    private boolean mIsPending= false;
+    private boolean mIsButtonPressed= false;
     private InteractionListener mListener;
-    private Alert newAlert;
+    private final Alert newAlert;
 
     //just build the alert instead of setting variables
     SdlPushNotification(Builder builder) {
 
+        this.mTextFields=builder.mTextFields;
+        this.mDuration= builder.mDuration;
+        this.mIsToneUsed= builder.mIsToneUsed;
+        this.mIsIndicatorUsed= builder.mIsIndicatorShown;
+        this.mTtsChunk= builder.mTtsChunk;
+        //this.mButtons= builder.mButtons;
+
         newAlert = new Alert();
-        newAlert.setAlertText1(builder.mTextField1);
-        newAlert.setAlertText2(builder.mTextField2);
-        newAlert.setAlertText3(builder.mTextField3);
-        newAlert.setDuration(builder.mDuration);
-        newAlert.setProgressIndicator(builder.mIsIndicatorShown);
-        newAlert.setPlayTone(builder.mIsToneUsed);
-        if(builder.mTtsChunk!=null)
-            newAlert.setTtsChunks(Collections.singletonList(builder.mTtsChunk));
-        //this.mButtons = builder.mButtons;
+        newAlert.setAlertText1(mTextFields[0]);
+        newAlert.setAlertText2(mTextFields[1]);
+        newAlert.setAlertText3(mTextFields[2]);
+        newAlert.setDuration(mDuration);
+        newAlert.setProgressIndicator(mIsIndicatorUsed);
+        newAlert.setPlayTone(mIsToneUsed);
+        if(mTtsChunk!=null)
+            newAlert.setTtsChunks(Collections.singletonList(mTtsChunk));
         mListener = builder.mListener;
     }
 
@@ -57,65 +69,93 @@ public class SdlPushNotification {
      * {@link SdlAlertDialog} while in the foreground.
      * @param context The SdlContext that the {@link SdlPushNotification} will be sent from
      */
-    public void show(@NonNull SdlContext context) {
+    public boolean show(@NonNull SdlContext context) {
         SdlPermissionManager checkPermissions = context.getSdlPermissionManager();
-        if (checkPermissions.isPermissionAvailable(SdlPermission.Alert)) {
-            final SdlContext applicationContext = context.getSdlApplicationContext();
-            //final ArrayList<Integer> unregisterIds= registerAllButtons(newAlert, context);
+        if (checkPermissions.isPermissionAvailable(SdlPermission.Alert) && !mIsPending) {
+            mIsButtonPressed=false;
+
+            final SdlContext applicationContext= context.getSdlApplicationContext();
+
+            //registerAllButtons(newAlert, applicationContext);
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onError(int correlationId, Result resultCode, String info) {
                     super.onError(correlationId, resultCode, info);
-                    if (mListener != null)
-                        handleResultResponse(resultCode, info);
-                    //unregisterAllButtons(unregisterIds,applicationContext);
+                    handleResultResponse(resultCode, info, applicationContext);
                 }
 
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
-                    if (mListener != null)
-                        handleResultResponse(response.getResultCode(), response.getInfo());
-                    //unregisterAllButtons(unregisterIds,applicationContext);
+                    handleResultResponse(response.getResultCode(), response.getInfo(), applicationContext);
                 }
             });
             context.sendRpc(newAlert);
+            mIsPending=true;
+            return true;
         } else {
-            if (mListener != null)
-                mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, "App does not have permissions to support SdlPushNotification fully, please use SdlAlertDialog");
-                Log.w(TAG,"App does not have permissions to support SdlPushNotification fully, please use SdlAlertDialog");
+            return false;
         }
     }
 
-    private void handleResultResponse(Result response, String info) {
+    private void handleResultResponse(Result response, String info, SdlContext context) {
+        InteractionListener cleanUpListener= getCleanUpListener(context);
         switch (response) {
             case SUCCESS:
-                mListener.onInteractionDone();
+                if(!mIsButtonPressed){
+                    cleanUpListener.onTimeout();
+                }
                 break;
             case ABORTED:
-                mListener.onInteractionCancelled();
+                cleanUpListener.onAborted();
                 break;
             case INVALID_DATA:
-                mListener.onInteractionError(InteractionListener.ErrorResponses.MALFORMED_INTERACTION, info);
+                cleanUpListener.onError(InteractionListener.ErrorResponses.MALFORMED_INTERACTION, info);
                 break;
             case DISALLOWED:
-                mListener.onInteractionError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, info);
+                cleanUpListener.onError(InteractionListener.ErrorResponses.PERMISSIONS_ERROR, info);
                 break;
             case REJECTED:
-                mListener.onInteractionError(InteractionListener.ErrorResponses.REJECTED, info);
+                cleanUpListener.onError(InteractionListener.ErrorResponses.REJECTED, info);
                 break;
             default:
-                mListener.onInteractionError(InteractionListener.ErrorResponses.GENERIC_ERROR, info);
+                cleanUpListener.onError(InteractionListener.ErrorResponses.GENERIC_ERROR, info);
                 break;
         }
+        mIsPending = false;
     }
-/*
-    private ArrayList<Integer> registerAllButtons(Alert alertToHaveButtons, SdlContext context){
+
+    private InteractionListener getCleanUpListener(final SdlContext context){
+        return new InteractionListener() {
+            @Override
+            public void onTimeout() {
+                //unregisterAllButtons(mButtons, context);
+                if(mListener!=null)
+                    mListener.onTimeout();
+            }
+
+            @Override
+            public void onAborted() {
+                //unregisterAllButtons(mButtons, context);
+                if(mListener!=null)
+                    mListener.onAborted();
+            }
+
+            @Override
+            public void onError(ErrorResponses responses, String moreInfo) {
+                //unregisterAllButtons(mButtons, context);
+                if(mListener!=null)
+                    mListener.onError(responses,moreInfo);
+            }
+        };
+    }
+
+    /*
+    private void registerAllButtons(Alert alertToHaveButtons, final SdlContext context){
         ArrayList<SoftButton> createdSoftbuttons = new ArrayList<>();
-        ArrayList<Integer> idsToTrack = new ArrayList<>();
         if (this.mButtons == null) {
-            return null;
+            return;
         }
-        for (SdlButton button : this.mButtons) {
+        for (final SdlButton button : this.mButtons) {
             if (button.getListener() != null) {
                 SoftButton softButtonFromSdlButton = new SoftButton();
                 softButtonFromSdlButton.setText(button.getText());
@@ -123,34 +163,36 @@ public class SdlPushNotification {
                 softButtonFromSdlButton.setIsHighlighted(false);
                 softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
                 //SdlImage to set image?
-                int buttonID = context.registerButtonCallback(button.getListener());
-                idsToTrack.add(buttonID);
+                //softButtonFromSdlButton.setSoftButtonID(button.getId());
+                int buttonID = context.registerButtonCallback(new SdlButton.OnPressListener() {
+                    @Override
+                    public void onButtonPress() {
+                        unregisterAllButtons(mButtons,context);
+                        mIsButtonPressed=true;
+                        button.getListener().onButtonPress();
+                    }
+                });
+                button.setId(buttonID);
                 softButtonFromSdlButton.setSoftButtonID(buttonID);
                 createdSoftbuttons.add(softButtonFromSdlButton);
             }
         }
         alertToHaveButtons.setSoftButtons(createdSoftbuttons);
-        return idsToTrack;
     }
 
-    private void unregisterAllButtons(ArrayList<Integer> ids, SdlContext context){
+    private void unregisterAllButtons(Collection<SdlButton> ids, SdlContext context){
         if (ids == null || context == null) {
             return;
         }
-        for (Integer id : ids) {
-            context.unregisterButtonCallback(id);
+        for (SdlButton button : ids) {
+            context.unregisterButtonCallback(button.getId());
         }
     }
     */
-    private String[] getAlertTextAsArray(){
-        return new String[]{newAlert.getAlertText1(),newAlert.getAlertText2(),newAlert.getAlertText3()};
-    }
 
     public static class Builder {
 
-        private String mTextField1;
-        private String mTextField2;
-        private String mTextField3;
+        private String[] mTextFields= new String[3];
         private int mDuration;
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
@@ -171,7 +213,7 @@ public class SdlPushNotification {
          * @return The builder for the {@link SdlPushNotification}
          */
         public Builder setTextField1(String textField1){
-            mTextField1 = textField1;
+            mTextFields[0] = textField1;
             return this;
         }
 
@@ -184,7 +226,7 @@ public class SdlPushNotification {
          * @return The builder for the {@link SdlPushNotification}
          */
         public Builder setTextField2(String textField2){
-            mTextField2 = textField2;
+            mTextFields[1] = textField2;
             return this;
         }
 
@@ -196,7 +238,23 @@ public class SdlPushNotification {
          * @return The builder for the {@link SdlPushNotification}
          */
         public Builder setTextField3(String textField3){
-            mTextField3 = textField3;
+            mTextFields[2] = textField3;
+            return this;
+        }
+
+        /**
+         * Convenience method to take in a string and set to the appropriate line items
+         * based on the line breaks in the given string
+         * @param textFields A string with optional linebreaks
+         * @return The builder for the {@link SdlAlertDialog}
+         */
+        public Builder setText(String textFields){
+            String [] lines= textFields.split("\\r?\\n");
+            for(int i=0;i<mTextFields.length;i++){
+                if(i<lines.length){
+                    mTextFields[i]=lines[i];
+                }
+            }
             return this;
         }
 
@@ -243,6 +301,7 @@ public class SdlPushNotification {
             return this;
         }
         */
+
 
         /**
          * Sets the TTS to be spoken when the {@link SdlPushNotification} appears.
@@ -299,13 +358,11 @@ public class SdlPushNotification {
                 }
             }
             */
-
-            String[] arrayOfTextFields= builtAlert.getAlertTextAsArray();
             boolean atLeastOneNotNull=false;
-            for(int i=0;i<arrayOfTextFields.length;i++){
-                if(arrayOfTextFields[i]!=null){
+            for(int i=0;i<builtAlert.mTextFields.length;i++){
+                if(builtAlert.mTextFields[i]!=null){
                     atLeastOneNotNull=true;
-                    if(!checkStringIsValid(arrayOfTextFields[i]))
+                    if(!checkStringIsValid(mTextFields[i]))
                         throw new IllegalPushNotificationCreation("Invalid String was provided to TextField"+Integer.toString(i+1));
                 }
             }
@@ -340,8 +397,8 @@ public class SdlPushNotification {
             REJECTED,
             PERMISSIONS_ERROR
         }
-        void onInteractionDone();
-        void onInteractionCancelled();
-        void onInteractionError(ErrorResponses responses, String moreInfo);
+        void onTimeout();
+        void onAborted();
+        void onError(ErrorResponses responses, String moreInfo);
     }
 }
