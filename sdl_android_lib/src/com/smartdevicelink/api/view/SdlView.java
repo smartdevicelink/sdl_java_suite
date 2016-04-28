@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.view;
 
+import android.util.Log;
+
 import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
@@ -15,11 +17,23 @@ public abstract class SdlView {
         mViewManager.updateView();
     }
 
-    final void setDisplayCapabilities(DisplayCapabilities displayCapabilities){
+    public void setDisplayCapabilities(DisplayCapabilities displayCapabilities){
         mDisplayCapabilities = displayCapabilities;
     }
 
-    final void setSdlViewManager(SdlViewManager sdlViewManager){
+    final public boolean isGraphicsSupported() {
+        return mDisplayCapabilities != null &&
+                mDisplayCapabilities.getGraphicSupported() != null &&
+                mDisplayCapabilities.getGraphicSupported();
+    }
+
+    final public int getTextFieldCount(){
+        return mDisplayCapabilities.getTextFields() != null ?
+                mDisplayCapabilities.getTextFields().size(): 0;
+    }
+
+    public void setSdlViewManager(SdlViewManager sdlViewManager){
+        Log.i(this.getClass().getSimpleName(), "Setting SdlViewManager: " + sdlViewManager);
         mViewManager = sdlViewManager;
     }
 
@@ -28,5 +42,9 @@ public abstract class SdlView {
     abstract void decorate(Show show);
 
     abstract List<SdlImage> getRequiredImages();
+
+    public String getTemplateName(){
+        return null;
+    }
 
 }

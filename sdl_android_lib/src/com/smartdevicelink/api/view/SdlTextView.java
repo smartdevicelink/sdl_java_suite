@@ -1,60 +1,74 @@
 package com.smartdevicelink.api.view;
 
+import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.Show;
 
-public class SdlTextView implements SdlView{
+import java.util.Arrays;
+import java.util.List;
+
+public class SdlTextView extends SdlView{
+
+    private String[] mTextFields = new String[5];
+
+    public SdlTextView(){
+        Arrays.fill(mTextFields, "");
+    }
 
     public void setTextField(int index, String text){
-        // TODO: Method stub
+        if(index < mTextFields.length){
+            mTextFields[index] = text;
+        }
     }
 
     public void setText(String text){
-        // TODO: Method stub
-    }
-
-    public int getMaxTextFieldCount(){
-        // TODO: Method stub
-        return -1;
-    }
-
-    public int getTextFieldMaxLength(){
-        // TODO: Method stub
-        return -1;
+        clear();
+        String[] lines = text.split("\\n");
+        System.arraycopy(lines, 0, mTextFields, 0, lines.length);
     }
 
     public String getText(){
-        // TODO: Method stub
-        return null;
+        StringBuilder sb = new StringBuilder();
+        String line;
+        for(int i = 0; i < mTextFields.length; i++){
+            line = mTextFields[i];
+            if(!line.equals("")){
+                sb.append(mTextFields[i]);
+                if(i != mTextFields.length - 1){
+                    sb.append("\n");
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public String[] getTextFields(){
-        // TODO: Method stub
-        return null;
+        return mTextFields;
     }
 
     public String getTextField(int index){
-        // TODO: Method stub
+        if(index < mTextFields.length){
+            return mTextFields[index];
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void decorate(Show show) {
+        show.setMainField1(mTextFields[0]);
+        show.setMainField2(mTextFields[1]);
+        show.setMainField3(mTextFields[2]);
+        show.setMainField4(mTextFields[3]);
+        show.setMediaTrack(mTextFields[4]);
+    }
+
+    @Override
+    List<SdlImage> getRequiredImages() {
         return null;
-    }
-
-    @Override
-    public boolean decorate(Show show) {
-        // TODO: Method stub
-        return false;
-    }
-
-    @Override
-    public void redraw() {
-        // TODO: Method stub
     }
 
     @Override
     public void clear() {
-        // TODO: Method stub
-    }
-
-    @Override
-    public void addChildView(SdlView view) {
-        // TODO: Method stub
+        Arrays.fill(mTextFields, "");
     }
 }

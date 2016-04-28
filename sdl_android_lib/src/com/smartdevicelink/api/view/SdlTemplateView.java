@@ -1,7 +1,9 @@
 package com.smartdevicelink.api.view;
 
+import android.util.Log;
+
 import com.smartdevicelink.api.file.SdlImage;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
 
 import java.util.EnumSet;
@@ -43,9 +45,26 @@ public class SdlTemplateView extends SdlView {
     private SdlView mLeftView;
     private SdlView mRightView;
     private SdlButtonView mSdlButtonView;
-    private EnumSet<LayoutTemplate> mAvailableTemplateSet;
+    private EnumSet<LayoutTemplate> mAvailableTemplateSet = EnumSet.allOf(LayoutTemplate.class);
 
-    private SetDisplayLayout mSetDisplayLayout;
+    @Override
+    public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
+        if(displayCapabilities.getTemplatesAvailable() != null){
+            for(String template: displayCapabilities.getTemplatesAvailable()){
+                mAvailableTemplateSet.add(LayoutTemplate.valueOf(template));
+            }
+        }
+        super.setDisplayCapabilities(displayCapabilities);
+        if(mLeftView != null){
+            mLeftView.setDisplayCapabilities(mDisplayCapabilities);
+        }
+        if(mRightView != null){
+            mRightView.setDisplayCapabilities(mDisplayCapabilities);
+        }
+        if(mSdlButtonView != null){
+            mSdlButtonView.setDisplayCapabilities(mDisplayCapabilities);
+        }
+    }
 
     private boolean isLayoutDifferent = true;
 
@@ -167,27 +186,45 @@ public class SdlTemplateView extends SdlView {
         return createTemplate(template, mainView, null, null);
     }
 
-    boolean isLayoutDiferent() {
-        return isLayoutDifferent;
-    }
-
-    SetDisplayLayout getSetDisplayLayout(){
-        mSetDisplayLayout.setDisplayLayout(mTemplate.name());
-        return mSetDisplayLayout;
-    }
-
     private TemplateStatus createTemplate(LayoutTemplate template, SdlView mainView,
                                           SdlView secondaryView, SdlButtonView buttonView) {
         if(mAvailableTemplateSet.contains(template)) {
             mLeftView = mainView;
+            if(mLeftView != null){
+                mLeftView.setSdlViewManager(mViewManager);
+                mLeftView.setDisplayCapabilities(mDisplayCapabilities);
+            }
             mRightView = secondaryView;
+            if(mRightView != null){
+                mRightView.setSdlViewManager(mViewManager);
+                mRightView.setDisplayCapabilities(mDisplayCapabilities);
+            }
             mSdlButtonView = buttonView;
+            if(mSdlButtonView != null){
+                mSdlButtonView.setSdlViewManager(mViewManager);
+                mSdlButtonView.setDisplayCapabilities(mDisplayCapabilities);
+            }
+            isLayoutDifferent = template != mTemplate;
             mTemplate = template;
-            isLayoutDifferent = true;
+            Log.d(TAG, "My Template is: " + mTemplate.name());
         } else {
             return TemplateStatus.INVALID_TEMPLATE_NOT_SUPPORTED;
         }
         return TemplateStatus.VALID;
+    }
+
+    @Override
+    public void setSdlViewManager(SdlViewManager sdlViewManager) {
+        mViewManager = sdlViewManager;
+        if(mLeftView != null){
+            mLeftView.setSdlViewManager(mViewManager);
+        }
+        if(mRightView != null){
+            mRightView.setSdlViewManager(mViewManager);
+        }
+        if(mSdlButtonView != null){
+            mSdlButtonView.setSdlViewManager(mViewManager);
+        }
     }
 
     @Override
@@ -213,4 +250,8 @@ public class SdlTemplateView extends SdlView {
 
     }
 
+    @Override
+    public String getTemplateName() {
+        return isLayoutDifferent ? mTemplate.name(): null;
+    }
 }

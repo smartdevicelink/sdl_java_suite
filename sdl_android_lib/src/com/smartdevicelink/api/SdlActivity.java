@@ -4,8 +4,10 @@ import android.support.annotation.CallSuper;
 import android.util.Log;
 
 import com.smartdevicelink.api.file.SdlFileManager;
-import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.view.SdlButton;
+import com.smartdevicelink.api.view.SdlView;
+import com.smartdevicelink.api.view.SdlViewManager;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
@@ -32,15 +34,23 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     private boolean superCalled;
     private boolean isBackHandled;
 
+    private SdlViewManager mViewManager;
+
     final void initialize(SdlContext sdlContext){
         if(!isInitialized()) {
             setSdlApplicationContext(sdlContext);
             setAndroidContext(sdlContext.getAndroidApplicationContext());
+            mViewManager = new SdlViewManager(this);
             setInitialized(true);
         } else {
             Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
                     this.getClass().getCanonicalName());
         }
+    }
+
+    public void setContentView(SdlView view){
+        mViewManager.setRootView(view);
+        view.setDisplayCapabilities(((SdlApplication)getSdlApplicationContext()).getDisplayCapabilities());
     }
 
     @CallSuper
@@ -128,6 +138,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         this.onForeground();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onForeground(). This should NEVER happen.");
+        mViewManager.updateView();
     }
 
     final void performBackground(){
@@ -161,7 +172,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public int registerButtonCallback(SdlButtonListener listener) {
+    public int registerButtonCallback(SdlButton.OnPressListener listener) {
         return getSdlApplicationContext().registerButtonCallback(listener);
     }
 

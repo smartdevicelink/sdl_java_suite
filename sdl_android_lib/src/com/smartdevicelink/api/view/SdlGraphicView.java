@@ -3,7 +3,9 @@ package com.smartdevicelink.api.view;
 import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.Show;
 
-public class SdlGraphicView implements SdlView {
+import java.util.List;
+
+public class SdlGraphicView extends SdlView {
 
     public void setGraphic(SdlImage graphic){
         // TODO: Method stub
@@ -19,22 +21,17 @@ public class SdlGraphicView implements SdlView {
     }
 
     @Override
-    public boolean decorate(Show show) {
-        return false;
-    }
-
-    @Override
-    public void redraw() {
-
-    }
-
-    @Override
     public void clear() {
 
     }
 
     @Override
-    public void addChildView(SdlView view) {
+    void decorate(Show show) {
 
+    }
+
+    @Override
+    List<SdlImage> getRequiredImages() {
+        return null;
     }
 }
