@@ -1,7 +1,6 @@
 package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.api.SdlApplication;
-import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -33,9 +32,11 @@ public class SdlButtonView extends SdlView {
     }
 
     public void addButton(SdlButton button){
-        int id = mViewManager.registerButtonCallback(button.getListener());
-        button.setId(id);
         mSdlButtons.add(button);
+        if(mViewManager != null){
+            int id = mViewManager.registerButtonCallback(button.getListener());
+            button.setId(id);
+        }
     }
 
     public void removeButton(SdlButton button){
@@ -58,6 +59,17 @@ public class SdlButtonView extends SdlView {
             mSdlButtons.remove(0);
         }
         containsBackButton = isIncluded;
+    }
+
+    @Override
+    public void setSdlViewManager(SdlViewManager sdlViewManager) {
+        if(mViewManager == null) {
+            super.setSdlViewManager(sdlViewManager);
+            for(SdlButton button: mSdlButtons){
+                int id = mViewManager.registerButtonCallback(button.getListener());
+                button.setId(id);
+            }
+        }
     }
 
     @Override
@@ -95,13 +107,7 @@ public class SdlButtonView extends SdlView {
     }
 
     @Override
-    public List<SdlImage> getRequiredImages() {
-        ArrayList<SdlImage> images = new ArrayList<>();
-        for(SdlButton button: mSdlButtons){
-            if(button.getSdlImage() != null){
-                images.add(button.getSdlImage());
-            }
-        }
-        return images;
+    public void uploadRequiredImages() {
+        // TODO: Make this do something
     }
 }

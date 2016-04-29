@@ -1,37 +1,101 @@
 package com.smartdevicelink.api.view;
 
-import com.smartdevicelink.api.file.SdlImage;
-import com.smartdevicelink.proxy.rpc.Show;
+import android.util.Log;
 
-import java.util.List;
+import com.smartdevicelink.api.file.SdlFile;
+import com.smartdevicelink.api.file.SdlFileManager;
+import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 
 public class SdlGraphicView extends SdlView {
 
+    private static final String TAG = SdlGraphicView.class.getSimpleName();
+
+    private SdlImage mSdlImage;
+    private boolean isImagePresent = false;
+    private boolean isWaitingToUpload = true;
+
+    private boolean isSecondaryGraphic = false;
+
     public void setGraphic(SdlImage graphic){
-        // TODO: Method stub
+        if(graphic != null) {
+            mSdlImage = graphic;
+            if(mSdlContext != null) {
+                checkImagePresence();
+            }
+        }
+    }
+
+    @Override
+    public void setSdlContext(SdlContext sdlContext) {
+        super.setSdlContext(sdlContext);
+        if(mSdlImage != null) {
+            checkImagePresence();
+        }
     }
 
     public SdlImage getGraphic(){
-        // TODO: Method stub
-        return null;
+        return mSdlImage;
     }
 
-    public void setGraphic(String name){
-        // TODO: Method stub
+    private void checkImagePresence() {
+        SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+        isImagePresent = fileManager.isFileOnModule(mSdlImage.getSdlName());
+        if (!isWaitingToUpload && !isImagePresent) {
+            fileManager.uploadSdlImage(mSdlImage, mFileReadyListener);
+        }
+    }
+
+    public void setSecondaryGraphic(boolean secondaryGraphic) {
+        isSecondaryGraphic = secondaryGraphic;
     }
 
     @Override
     public void clear() {
-
+        mSdlImage = null;
+        redraw();
     }
 
     @Override
     void decorate(Show show) {
-
+        if(mSdlImage != null && isImagePresent) {
+            Image image = new Image();
+            image.setImageType(ImageType.DYNAMIC);
+            image.setValue(mSdlImage.getSdlName());
+            if(!isSecondaryGraphic) {
+                show.setGraphic(image);
+            } else {
+                show.setSecondaryGraphic(image);
+            }
+        }
     }
 
     @Override
-    List<SdlImage> getRequiredImages() {
-        return null;
+    void uploadRequiredImages() {
+        if(!isImagePresent){
+            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+            fileManager.uploadSdlImage(mSdlImage, mFileReadyListener);
+            isWaitingToUpload = false;
+        }
     }
+
+    private SdlFileManager.FileReadyListener mFileReadyListener = new SdlFileManager.FileReadyListener() {
+        @Override
+        public void onFileReady(SdlFile sdlFile) {
+            isImagePresent = true;
+            Log.d(TAG, "Graphic ready.");
+            if(isVisible) {
+                redraw();
+            }
+        }
+
+        @Override
+        public void onFileError(SdlFile sdlFile) {
+
+        }
+    };
+
 }

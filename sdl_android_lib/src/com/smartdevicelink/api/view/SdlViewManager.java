@@ -27,6 +27,11 @@ public class SdlViewManager {
     public void setRootView(SdlView view){
         mRootView = view;
         mRootView.setSdlViewManager(this);
+        mRootView.setSdlContext(mSdlContext);
+    }
+
+    public SdlView getRootView(){
+        return mRootView;
     }
 
     public void updateView(){
@@ -38,6 +43,11 @@ public class SdlViewManager {
         }
         mRootView.decorate(mShow);
         mShow.setOnRPCResponseListener(mShowListener);
+        try {
+            Log.d(TAG, "Muh show luk lik dis.\n" + mShow.serializeJSON().toString(3));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         mSdlContext.sendRpc(mShow);
     }
 
@@ -65,6 +75,10 @@ public class SdlViewManager {
 
     void unregisterButtonCallBack(int id){
         mSdlContext.unregisterButtonCallback(id);
+    }
+
+    public void prepareImages(){
+        mRootView.uploadRequiredImages();
     }
 
 }

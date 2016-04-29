@@ -2,12 +2,11 @@ package com.smartdevicelink.api.view;
 
 import android.util.Log;
 
-import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
 
 import java.util.EnumSet;
-import java.util.List;
 
 public class SdlTemplateView extends SdlView {
 
@@ -51,7 +50,11 @@ public class SdlTemplateView extends SdlView {
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
         if(displayCapabilities.getTemplatesAvailable() != null){
             for(String template: displayCapabilities.getTemplatesAvailable()){
-                mAvailableTemplateSet.add(LayoutTemplate.valueOf(template));
+                try {
+                    mAvailableTemplateSet.add(LayoutTemplate.valueOf(template));
+                } catch (IllegalArgumentException e){
+                    Log.w(TAG, "Module reported unsupported Layout: " + template);
+                }
             }
         }
         super.setDisplayCapabilities(displayCapabilities);
@@ -87,13 +90,18 @@ public class SdlTemplateView extends SdlView {
             } else if (mainView.getClass() == secondaryView.getClass()) {
                 if(mainView instanceof SdlGraphicView){
                     template = LayoutTemplate.DOUBLE_GRAPHIC_WITH_SOFTBUTTONS;
+                    ((SdlGraphicView)secondaryView).setSecondaryGraphic(true);
                     status =  createTemplate(template, mainView, secondaryView, buttonView);
                 }
                 if (mainView instanceof SdlTextView) {
                     status =  TemplateStatus.INVALID_TOO_MANY_TEXT_VIEWS;
                 }
             } else if(mainView instanceof SdlTextView){
-                template = LayoutTemplate.TEXT_AND_SOFTBUTTONS_WITH_GRAPHIC;
+                if(buttonView.isTiles()) {
+                    template = LayoutTemplate.TEXT_AND_SOFTBUTTONS_WITH_GRAPHIC;
+                } else {
+                    template = LayoutTemplate.DEFAULT;
+                }
                 status =  createTemplate(template, mainView, secondaryView, buttonView);
             } else {
                 template = LayoutTemplate.GRAPHIC_WITH_TEXT_AND_SOFTBUTTONS;
@@ -188,21 +196,25 @@ public class SdlTemplateView extends SdlView {
 
     private TemplateStatus createTemplate(LayoutTemplate template, SdlView mainView,
                                           SdlView secondaryView, SdlButtonView buttonView) {
+        Log.d(TAG, "Looking for template: " + template.name());
         if(mAvailableTemplateSet.contains(template)) {
             mLeftView = mainView;
             if(mLeftView != null){
                 mLeftView.setSdlViewManager(mViewManager);
                 mLeftView.setDisplayCapabilities(mDisplayCapabilities);
+                mLeftView.setSdlContext(mSdlContext);
             }
             mRightView = secondaryView;
             if(mRightView != null){
                 mRightView.setSdlViewManager(mViewManager);
                 mRightView.setDisplayCapabilities(mDisplayCapabilities);
+                mRightView.setSdlContext(mSdlContext);
             }
             mSdlButtonView = buttonView;
             if(mSdlButtonView != null){
                 mSdlButtonView.setSdlViewManager(mViewManager);
                 mSdlButtonView.setDisplayCapabilities(mDisplayCapabilities);
+                mSdlButtonView.setSdlContext(mSdlContext);
             }
             isLayoutDifferent = template != mTemplate;
             mTemplate = template;
@@ -216,6 +228,25 @@ public class SdlTemplateView extends SdlView {
     @Override
     public void setSdlViewManager(SdlViewManager sdlViewManager) {
         mViewManager = sdlViewManager;
+    }
+
+    @Override
+    public void setIsVisible(boolean isVisible) {
+        super.setIsVisible(isVisible);
+        if(mLeftView != null){
+            mLeftView.setIsVisible(isVisible);
+        }
+        if(mRightView != null){
+            mRightView.setIsVisible(isVisible);
+        }
+        if(mSdlButtonView != null){
+            mSdlButtonView.setIsVisible(isVisible);
+        }
+    }
+
+    @Override
+    public void setSdlContext(SdlContext sdlContext) {
+        mSdlContext = sdlContext;
         if(mLeftView != null){
             mLeftView.setSdlViewManager(mViewManager);
         }
@@ -241,8 +272,16 @@ public class SdlTemplateView extends SdlView {
     }
 
     @Override
-    List<SdlImage> getRequiredImages() {
-        return null;
+    void uploadRequiredImages() {
+        if(mLeftView != null) {
+            mLeftView.uploadRequiredImages();
+        }
+        if(mRightView != null) {
+            mRightView.uploadRequiredImages();
+        }
+        if(mSdlButtonView != null) {
+            mSdlButtonView.uploadRequiredImages();
+        }
     }
 
     @Override

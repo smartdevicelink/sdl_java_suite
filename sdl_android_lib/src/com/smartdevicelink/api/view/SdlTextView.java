@@ -1,10 +1,8 @@
 package com.smartdevicelink.api.view;
 
-import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.Show;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class SdlTextView extends SdlView{
 
@@ -63,8 +61,7 @@ public class SdlTextView extends SdlView{
     }
 
     @Override
-    List<SdlImage> getRequiredImages() {
-        return null;
+    void uploadRequiredImages() {
     }
 
     @Override
