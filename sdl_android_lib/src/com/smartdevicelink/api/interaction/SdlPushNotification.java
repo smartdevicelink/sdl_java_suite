@@ -9,8 +9,10 @@ import com.smartdevicelink.api.permission.SdlPermissionManager;
 //import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
@@ -75,8 +77,10 @@ public class SdlPushNotification {
             mIsButtonPressed=false;
 
             final SdlContext applicationContext= context.getSdlApplicationContext();
-
-            //registerAllButtons(newAlert, applicationContext);
+            /*
+            if(!registerAllButtons(newAlert, applicationContext))
+                return false;
+            */
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onError(int correlationId, Result resultCode, String info) {
@@ -150,20 +154,31 @@ public class SdlPushNotification {
     }
 
     /*
-    private void registerAllButtons(Alert alertToHaveButtons, final SdlContext context){
+    private boolean registerAllButtons(Alert alertToHaveButtons, final SdlContext context){
         ArrayList<SoftButton> createdSoftbuttons = new ArrayList<>();
         if (this.mButtons == null) {
-            return;
+            return true;
         }
         for (final SdlButton button : this.mButtons) {
             if (button.getListener() != null) {
                 SoftButton softButtonFromSdlButton = new SoftButton();
-                softButtonFromSdlButton.setText(button.getText());
-                softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
+                if(button.getText()!=null){
+                    softButtonFromSdlButton.setText(button.getText());
+                    softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
+                }
                 softButtonFromSdlButton.setIsHighlighted(false);
                 softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
-                //SdlImage to set image?
-                //softButtonFromSdlButton.setSoftButtonID(button.getId());
+                if(button.getSdlImage()!=null){
+                    if(context.getSdlFileManager().isFileOnModule(button.getSdlImage().getSdlName())){
+                        Image image = new Image();
+                        image.setValue(button.getSdlImage().getSdlName());
+                        image.setImageType(ImageType.DYNAMIC);
+                        softButtonFromSdlButton.setImage(image);
+                        softButtonFromSdlButton.setType(SoftButtonType.SBT_IMAGE);
+                    }else {
+                        return false;
+                    }
+                }
                 int buttonID = context.registerButtonCallback(new SdlButton.OnPressListener() {
                     @Override
                     public void onButtonPress() {
@@ -178,6 +193,7 @@ public class SdlPushNotification {
             }
         }
         alertToHaveButtons.setSoftButtons(createdSoftbuttons);
+        return true;
     }
 
     private void unregisterAllButtons(Collection<SdlButton> ids, SdlContext context){
@@ -353,8 +369,13 @@ public class SdlPushNotification {
             SdlPushNotification builtAlert = new SdlPushNotification(this);
             /*
             if(builtAlert.mButtons !=null){
-                if( builtAlert.mButtons.size()>4){
-                    throw new IllegalPushNotificationCreation("More buttons were added then possible the ");
+                if(builtAlert.mButtons.size()>4){
+                    throw new IllegalPushNotificationCreation("More buttons were added then possible for the AlertDialog");
+                }
+                for(SdlButton button:mButtons){
+                    if(button==null){
+                        throw new IllegalPushNotificationCreation("One of the buttons provided is null, make sure the SdlButtons added are instantiated");
+                    }
                 }
             }
             */

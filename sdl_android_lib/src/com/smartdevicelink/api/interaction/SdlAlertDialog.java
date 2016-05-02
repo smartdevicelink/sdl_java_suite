@@ -1,30 +1,28 @@
 package com.smartdevicelink.api.interaction;
 
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.smartdevicelink.api.SdlActivity;
-import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 //import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IllegalFormatException;
 import java.util.List;
 
 /**
@@ -87,7 +85,10 @@ public class SdlAlertDialog {
 
             final SdlContext applicationContext= context.getSdlApplicationContext();
 
-            //registerAllButtons(newAlert, applicationContext);
+            /*
+            if(!registerAllButtons(newAlert, applicationContext))
+                return false;
+            */
             newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onError(int correlationId, Result resultCode, String info) {
@@ -161,20 +162,34 @@ public class SdlAlertDialog {
     }
 
     /*
-    private void registerAllButtons(Alert alertToHaveButtons, final SdlContext context){
+    private boolean registerAllButtons(Alert alertToHaveButtons, final SdlContext context){
             ArrayList<SoftButton> createdSoftbuttons = new ArrayList<>();
             if (this.mButtons == null) {
-                return;
+                //should be ok since the user didn't provide buttons for this alert
+                return true;
             }
             for (final SdlButton button : this.mButtons) {
                 if (button.getListener() != null) {
                     SoftButton softButtonFromSdlButton = new SoftButton();
-                    softButtonFromSdlButton.setText(button.getText());
-                    softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
+                    if(button.getText()!=null){
+                        softButtonFromSdlButton.setText(button.getText());
+                        softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
+                    }
                     softButtonFromSdlButton.setIsHighlighted(false);
                     softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
-                    //SdlImage to set image?
-                    //softButtonFromSdlButton.setSoftButtonID(button.getId());
+                    if(button.getSdlImage()!=null){
+                        if(context.getSdlFileManager().isFileOnModule(button.getSdlImage().getSdlName())){
+                            Image image = new Image();
+                            image.setValue(button.getSdlImage().getSdlName());
+                            image.setImageType(ImageType.DYNAMIC);
+                            softButtonFromSdlButton.setImage(image);
+                            softButtonFromSdlButton.setType(SoftButtonType.SBT_IMAGE);
+                        }else{
+                            //The image with the SdlButton was not ready, therefore fail until
+                            //the user provides an uploaded image
+                            return false;
+                        }
+                    }
                     int buttonID = context.registerButtonCallback(new SdlButton.OnPressListener() {
                         @Override
                         public void onButtonPress() {
@@ -189,6 +204,7 @@ public class SdlAlertDialog {
                 }
             }
             alertToHaveButtons.setSoftButtons(createdSoftbuttons);
+            return true;
     }
 
     private void unregisterAllButtons(Collection<SdlButton> ids, SdlContext context){
@@ -200,6 +216,7 @@ public class SdlAlertDialog {
             }
     }
     */
+
 
     public static class Builder {
 
@@ -301,7 +318,9 @@ public class SdlAlertDialog {
 
         /**
          * Sets the push buttons that the user can touch when the {@link SdlAlertDialog}
-         * appears
+         * appears. The buttons provided must contain text to be set, even if the button only needs
+         * to provide an image. In case the image is not available at the time of the showing of
+         * the dialog on the module, the text will be used instead.
          * @param buttons Collection of SdlButtons that describe what the buttons should look like
          * @return The builder for the {@link SdlAlertDialog}
          */
@@ -311,6 +330,7 @@ public class SdlAlertDialog {
             return this;
         }
         */
+
 
 
         /**
@@ -365,7 +385,12 @@ public class SdlAlertDialog {
             /*
             if(builtAlert.mButtons !=null){
                 if(builtAlert.mButtons.size()>4){
-                    throw new IllegalAlertDialogCreation("More buttons were added then possible the ");
+                    throw new IllegalAlertDialogCreation("More buttons were added then possible for the AlertDialog");
+                }
+                for(SdlButton button:mButtons){
+                    if(button==null){
+                        throw new IllegalAlertDialogCreation("One of the buttons provided is null, make sure the SdlButtons added are instantiated");
+                    }
                 }
             }
             */
