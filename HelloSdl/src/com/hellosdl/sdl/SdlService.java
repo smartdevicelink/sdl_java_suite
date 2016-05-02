@@ -116,15 +116,11 @@ public class SdlService extends Service implements IProxyListenerALM{
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
+        if(proxy == null){
         	startProxy();
-    		if(intent.hasExtra(SdlBroadcastReceiver.FORCE_TRANSPORT_CONNECTED)){
-    			if(proxy!=null){
-    				proxy.forceOnConnected();
-    			}
-			}
+        }else if (intent != null && intent.hasExtra(SdlBroadcastReceiver.FORCE_TRANSPORT_CONNECTED)){
+        	proxy.forceOnConnected();
 		}
-			
         return START_STICKY;
 	}
 	
