@@ -1,6 +1,11 @@
 package com.smartdevicelink.api.view;
 
+import android.util.Log;
+
 import com.smartdevicelink.api.SdlApplication;
+import com.smartdevicelink.api.file.SdlFile;
+import com.smartdevicelink.api.file.SdlFileManager;
+import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -9,18 +14,22 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SdlButtonView extends SdlView {
 
+    private static final String TAG = SdlButtonView.class.getSimpleName();
     private boolean isTiles;
     private ArrayList<SdlButton> mSdlButtons = new ArrayList<>();
     private boolean containsBackButton = false;
+    private HashMap<String, SdlButtonImageRecord> mImageStatusRegister;
 
-    private static final SdlButton BACK_BUTTON = new SdlButton();
-    static{
+    private final SdlButton BACK_BUTTON = new SdlButton("Back", null);
+
+    public SdlButtonView(){
         BACK_BUTTON.setId(SdlApplication.BACK_BUTTON_ID);
-        BACK_BUTTON.setText("Back");
+        mImageStatusRegister = new HashMap<>();
     }
 
     public void setButtons(List<SdlButton> buttons){
@@ -33,6 +42,13 @@ public class SdlButtonView extends SdlView {
 
     public void addButton(SdlButton button){
         mSdlButtons.add(button);
+        SdlImage image = button.getSdlImage();
+        SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+        if(image != null){
+            Log.d(TAG, "Adding " + image.getSdlName() + " to ImageStatusRegister");
+            mImageStatusRegister.put(image.getSdlName(),
+                    new SdlButtonImageRecord(image, fileManager.isFileOnModule(image.getSdlName())));
+        }
         if(mViewManager != null){
             int id = mViewManager.registerButtonCallback(button.getListener());
             button.setId(id);
@@ -61,6 +77,19 @@ public class SdlButtonView extends SdlView {
         containsBackButton = isIncluded;
     }
 
+    public void setBackButtonIcon(SdlImage sdlImage){
+        BACK_BUTTON.setSdlImage(sdlImage);
+        if(sdlImage != null){
+            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+            mImageStatusRegister.put(sdlImage.getSdlName(), new SdlButtonImageRecord(sdlImage,
+                    fileManager.isFileOnModule(sdlImage.getSdlName())));
+        }
+    }
+
+    public void setBackButtonGraphicOnly(boolean graphicOnly){
+        BACK_BUTTON.setGraphicOnly(graphicOnly);
+    }
+
     @Override
     public void setSdlViewManager(SdlViewManager sdlViewManager) {
         if(mViewManager == null) {
@@ -79,20 +108,23 @@ public class SdlButtonView extends SdlView {
             SoftButton softButton = new SoftButton();
             softButton.setSoftButtonID(button.getId());
             softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
-            SoftButtonType type = SoftButtonType.SBT_BOTH;
-            if(button.getText() != null){
-                softButton.setText(button.getText());
-            } else {
-                type = SoftButtonType.SBT_IMAGE;
-            }
+            SoftButtonType type = SoftButtonType.SBT_TEXT;
+            softButton.setText(button.getText());
 
-            if(button.getSdlImage() != null){
-                Image image = new Image();
-                image.setImageType(ImageType.DYNAMIC);
-                image.setValue(button.getSdlImage().getSdlName());
-                softButton.setImage(image);
-            } else {
-                type = SoftButtonType.SBT_TEXT;
+            SdlImage sdlImage = button.getSdlImage();
+            if(sdlImage != null) {
+                SdlButtonImageRecord bir = mImageStatusRegister.get(sdlImage.getSdlName());
+                if (bir != null && bir.isReady) {
+                    Image image = new Image();
+                    image.setImageType(ImageType.DYNAMIC);
+                    image.setValue(sdlImage.getSdlName());
+                    softButton.setImage(image);
+                    if(button.isGraphicOnly()){
+                        type = SoftButtonType.SBT_IMAGE;
+                    } else {
+                        type = SoftButtonType.SBT_BOTH;
+                    }
+                }
             }
 
             softButton.setType(type);
@@ -108,6 +140,38 @@ public class SdlButtonView extends SdlView {
 
     @Override
     public void uploadRequiredImages() {
-        // TODO: Make this do something
+        SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+        for(SdlButton button: mSdlButtons){
+            SdlImage image = button.getSdlImage();
+            if(image != null && !mImageStatusRegister.get(image.getSdlName()).isReady){
+                fileManager.uploadSdlImage(image, mFileReadyListener);
+            }
+        }
+    }
+
+    private SdlFileManager.FileReadyListener mFileReadyListener = new SdlFileManager.FileReadyListener() {
+        @Override
+        public void onFileReady(SdlFile sdlFile) {
+            Log.d(TAG, "Graphic " + sdlFile.getSdlName() + " ready.");
+            mImageStatusRegister.get(sdlFile.getSdlName()).isReady = true;
+            if(isVisible) {
+                redraw();
+            }
+        }
+
+        @Override
+        public void onFileError(SdlFile sdlFile) {
+
+        }
+    };
+
+    private class SdlButtonImageRecord{
+        final SdlImage sdlImage;
+        boolean isReady;
+
+        SdlButtonImageRecord(SdlImage image, boolean isReady){
+            this.sdlImage = image;
+            this.isReady = isReady;
+        }
     }
 }

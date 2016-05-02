@@ -4,10 +4,16 @@ import com.smartdevicelink.api.file.SdlImage;
 
 public class SdlButton {
 
-    private SdlImage mSdlImage;
-    private String mText;
-    private OnPressListener mListener;
+    private final String mText;
+    private final OnPressListener mListener;
     private int mId;
+    private SdlImage mSdlImage;
+    private boolean isGraphicOnly;
+
+    public SdlButton(String text, OnPressListener listener){
+        mText = text;
+        mListener = listener;
+    }
 
     public SdlImage getSdlImage() {
         return mSdlImage;
@@ -21,16 +27,8 @@ public class SdlButton {
         return mText;
     }
 
-    public void setText(String text) {
-        mText = text;
-    }
-
     public OnPressListener getListener() {
         return mListener;
-    }
-
-    public void setListener(OnPressListener listener) {
-        mListener = listener;
     }
 
     int getId() {
@@ -45,5 +43,13 @@ public class SdlButton {
 
         void onButtonPress();
 
+    }
+
+    public boolean isGraphicOnly() {
+        return isGraphicOnly;
+    }
+
+    public void setGraphicOnly(boolean graphicOnly) {
+        isGraphicOnly = graphicOnly;
     }
 }
