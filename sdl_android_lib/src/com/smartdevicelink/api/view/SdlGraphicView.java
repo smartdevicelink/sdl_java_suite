@@ -13,6 +13,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 public class SdlGraphicView extends SdlView {
 
     private static final String TAG = SdlGraphicView.class.getSimpleName();
+    private static final String CLEAR_NAME = "";
 
     private SdlImage mSdlImage;
     private boolean isImagePresent = false;
@@ -61,7 +62,16 @@ public class SdlGraphicView extends SdlView {
 
     @Override
     void decorate(Show show) {
-        if(mSdlImage != null && isImagePresent) {
+        if(mSdlImage == null){
+            Image image = new Image();
+            image.setImageType(ImageType.DYNAMIC);
+            image.setValue(CLEAR_NAME);
+            if(!isSecondaryGraphic) {
+                show.setGraphic(image);
+            } else {
+                show.setSecondaryGraphic(image);
+            }
+        } else if(isImagePresent) {
             Image image = new Image();
             image.setImageType(ImageType.DYNAMIC);
             image.setValue(mSdlImage.getSdlName());
@@ -75,7 +85,7 @@ public class SdlGraphicView extends SdlView {
 
     @Override
     void uploadRequiredImages() {
-        if(!isImagePresent){
+        if(!isImagePresent && mSdlImage != null){
             SdlFileManager fileManager = mSdlContext.getSdlFileManager();
             fileManager.uploadSdlImage(mSdlImage, mFileReadyListener);
             isWaitingToUpload = false;

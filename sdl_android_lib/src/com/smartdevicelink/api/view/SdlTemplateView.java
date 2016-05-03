@@ -168,7 +168,7 @@ public class SdlTemplateView extends SdlView {
                 status = TemplateStatus.INVALID_TOO_MANY_BUTTON_VIEWS;
             } else if (mainView instanceof SdlTextView){
                 template = LayoutTemplate.DEFAULT;
-                status = createTemplate(template, mainView, null, buttonView);
+                status = createTemplate(template, mainView, new SdlGraphicView(), buttonView);
             } else if(mainView instanceof SdlGraphicView){
                 template = LayoutTemplate.LARGE_GRAPHIC_WITH_SOFTBUTTONS;
                 status = createTemplate(template, mainView, null, buttonView);
