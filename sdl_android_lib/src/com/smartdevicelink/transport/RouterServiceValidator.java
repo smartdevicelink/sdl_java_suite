@@ -1,12 +1,9 @@
 package com.smartdevicelink.transport;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +22,8 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.util.Log;
 
-import com.smartdevicelink.util.HttpAsyncTask;
-import com.smartdevicelink.util.HttpAsyncTask.HttpAsyncTaskCallback;
+import com.smartdevicelink.util.HttpRequestTask;
+import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
 /**
  * This class will tell us if the currently running router service is valid or not.
@@ -359,7 +356,7 @@ public class RouterServiceValidator {
 		return createTrustedListRequest(context,forceRefresh,null);
 	}
 	
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpAsyncTask.HttpAsyncTaskCallback cb ){
+	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb ){
 		if(context == null){
 			return false;
 		}
@@ -384,10 +381,10 @@ public class RouterServiceValidator {
 		
 		for(SdlApp app: apps){	//Format all the apps into a JSON object and add it to the JSON array
 			try{
-			jsonApp = new JSONObject();
-			jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
-			jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
-			array.put(jsonApp);
+				jsonApp = new JSONObject();
+				jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
+				jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
+				array.put(jsonApp);
 			}catch(JSONException e){
 				e.printStackTrace();
 				continue;
@@ -396,31 +393,30 @@ public class RouterServiceValidator {
 		
 		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
 		
-		HttpPost httpPost = new HttpPost(builder.toString());
-	    StringEntity params = null;
-		try {params = new StringEntity(object.toString());} catch (UnsupportedEncodingException e) {e.printStackTrace(); return false;}
 		Log.d(TAG, "Request of apps: " + object.toString());
-		httpPost.addHeader("content-type", "application/json");
-		httpPost.setEntity(params);
-		if(cb == null){
-			cb = new HttpAsyncTaskCallback(){
 
-			@Override
-			public void httpCallComplete(String response) {
-				//Might want to check if this list is ok
-				Log.d(TAG, "APPS! " + response);
-				setTrustedList(context,response);
-				pendingListRefresh = false;
-			}
-			@Override
-			public void httpFailure(int statusCode) {
-				Log.e(TAG, "Error while requesting trusted app list: " + statusCode);
-				pendingListRefresh = false;
-			}
-		};
+		if (cb == null) {
+			cb = new HttpRequestTaskCallback() {
+
+				@Override
+				public void httpCallComplete(String response) {
+					// Might want to check if this list is ok
+					Log.d(TAG, "APPS! " + response);
+					setTrustedList(context, response);
+					pendingListRefresh = false;
+				}
+
+				@Override
+				public void httpFailure(int statusCode) {
+					Log.e(TAG, "Error while requesting trusted app list: "
+							+ statusCode);
+					pendingListRefresh = false;
+				}
+			};
 		}
+
+		new HttpRequestTask(cb).execute(REQUEST_PREFIX,HttpRequestTask.REQUEST_TYPE_POST,object.toString(),"application/json","application/json");
 		
-		new HttpAsyncTask(cb).execute(httpPost);
 		return true;
 	}
 	
