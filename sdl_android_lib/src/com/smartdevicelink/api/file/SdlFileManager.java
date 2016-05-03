@@ -2,7 +2,6 @@ package com.smartdevicelink.api.file;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -24,8 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public class SdlFileManager implements SdlApplication.LifecycleListener{
-
-    public static final String CLEAR_IMAGE = "laq6Z5N1yEOsysUA7qGPk";
 
     private static final String TAG = SdlFileManager.class.getSimpleName();
 
@@ -133,38 +130,6 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         mSdlApplication.sendRpc(listFiles);
     }
 
-    private void uploadClearScreen(){
-        if(!mFileSet.contains(CLEAR_IMAGE)) {
-            PutFile file = new PutFile();
-            file.setFileType(FileType.GRAPHIC_PNG);
-            file.setSdlFileName(CLEAR_IMAGE);
-            file.setPersistentFile(true);
-
-            Bitmap image = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            image.eraseColor(Color.TRANSPARENT);
-            ByteArrayOutputStream bas = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 100, bas);
-            byte[] data = bas.toByteArray();
-
-            file.setBulkData(data);
-            file.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    try {
-                        Log.i(TAG, response.serializeJSON().toString(3));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (response.getSuccess()) {
-                        mFileSet.add(CLEAR_IMAGE);
-                    }
-                }
-            });
-
-            mSdlApplication.sendRpc(file);
-        }
-    }
-
     private OnRPCResponseListener mListFileResponseListener = new OnRPCResponseListener() {
         @Override
         public void onResponse(int correlationId, RPCResponse response) {
@@ -188,8 +153,6 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
             } else {
                 setAppIcon();
             }
-
-            uploadClearScreen();
         }
     };
 
