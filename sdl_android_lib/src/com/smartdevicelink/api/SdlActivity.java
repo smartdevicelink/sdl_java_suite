@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.api.view.SdlView;
 import com.smartdevicelink.api.view.SdlViewManager;
@@ -210,6 +211,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public SdlFileManager getSdlFileManager() {
         return getSdlApplicationContext().getSdlFileManager();
+    }
+
+    @Override
+    public SdlPermissionManager getSdlPermissionManager() {
+        return getSdlApplicationContext().getSdlPermissionManager();
     }
 
     public class SuperNotCalledException extends RuntimeException{
