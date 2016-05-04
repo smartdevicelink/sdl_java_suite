@@ -22,20 +22,6 @@ public class SdlChoiceSet {
         mChoiceId = choiceId;
     }
 
-    protected CreateInteractionChoiceSet getRequest() {
-        CreateInteractionChoiceSet choiceSet = new CreateInteractionChoiceSet();
-        ArrayList<Choice> proxyChoices= new ArrayList<>();
-        for(int i=0; i<mChoices.size();i++) {
-            SdlChoice currentChoice = mChoices.get(mChoices.keyAt(i));
-            Choice convertToChoice= new Choice();
-            convertToChoice.setMenuName(currentChoice.getMenuText());
-            convertToChoice.setSecondaryText(currentChoice.getSubText());
-            convertToChoice.setTertiaryText(currentChoice.getRightHandText());
-            proxyChoices.add(convertToChoice);
-        }
-        choiceSet.setChoiceSet(proxyChoices);
-        return choiceSet;
-    }
 
     public String getSetName(){return mChoiceSetName;}
 

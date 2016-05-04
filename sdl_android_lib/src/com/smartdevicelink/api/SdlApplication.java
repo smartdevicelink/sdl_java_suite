@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.smartdevicelink.api.choiceset.SdlChoiceSetManager;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
@@ -95,6 +96,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private SdlActivityManager mSdlActivityManager;
     private SdlFileManager mSdlFileManager;
     private SdlPermissionManager mSdlPermissionManager;
+    private SdlChoiceSetManager mSdlChoiceSetManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -120,6 +122,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
         mLifecycleListeners.add(mSdlActivityManager);
         mSdlFileManager = new SdlFileManager(this, mApplicationConfig);
+        mSdlChoiceSetManager = new SdlChoiceSetManager(this);
         mLifecycleListeners.add(mSdlFileManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
@@ -190,6 +193,9 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     public SdlFileManager getSdlFileManager() {
         return mSdlFileManager;
     }
+
+    @Override
+    public SdlChoiceSetManager getSdlChoiceSetManager(){return mSdlChoiceSetManager;}
 
     public int registerButtonCallback(SdlButtonListener listener) {
         int buttonId = mAutoButtonId++;

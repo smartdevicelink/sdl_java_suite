@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.smartdevicelink.api.choiceset.SdlChoiceSetManager;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
@@ -184,6 +185,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public SdlFileManager getSdlFileManager() {
         return getSdlApplicationContext().getSdlFileManager();
+    }
+
+    @Override
+    public SdlChoiceSetManager getSdlChoiceSetManager(){
+        return  getSdlApplicationContext().getSdlChoiceSetManager();
     }
 
     @Override

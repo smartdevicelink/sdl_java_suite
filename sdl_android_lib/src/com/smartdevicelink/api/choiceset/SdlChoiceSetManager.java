@@ -1,25 +1,26 @@
 package com.smartdevicelink.api.choiceset;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
 import com.smartdevicelink.api.SdlApplication;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Created by mschwerz on 5/4/16.
  */
 public class SdlChoiceSetManager {
     private static final String TAG = SdlChoiceSetManager.class.getSimpleName();
-
-
-    //keyed on the choice set name to the choice set id
-    private final ArrayList<Integer> mIdSets;
 
     private final SdlApplication mSdlApplication;
 
@@ -29,27 +30,47 @@ public class SdlChoiceSetManager {
 
     public SdlChoiceSetManager(SdlApplication sdlApplication){
         mSdlApplication = sdlApplication;
-        mIdSets = new ArrayList<>();
     }
 
-    public boolean uploadIdSet(final String choiceSetName, final Collection<SdlChoice> choices, final IdReadyListener listener){
+    public SdlChoiceSet uploadIdSet(@Nullable String choiceSetName, @NonNull Collection<SdlChoice> choices, @Nullable final IdReadyListener listener){
 
         final int choiceSetId=Choice_Set_Count++;
         final SdlChoiceSet newChoiceSet= new SdlChoiceSet(choiceSetName,populateChoicesWithIds(choices),choiceSetId);
-        CreateInteractionChoiceSet newRequest = newChoiceSet.getRequest();
+        CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
+
+        ArrayList<Choice> proxyChoices= new ArrayList<>();
+        for(int i=0; i<newChoiceSet.getChoices().size();i++) {
+            int choiceID= newChoiceSet.getChoices().keyAt(i);
+            SdlChoice currentChoice = newChoiceSet.getChoices().get(choiceID);
+            Choice convertToChoice= new Choice();
+            convertToChoice.setMenuName(currentChoice.getMenuText());
+            convertToChoice.setSecondaryText(currentChoice.getSubText());
+            convertToChoice.setTertiaryText(currentChoice.getRightHandText());
+            convertToChoice.setChoiceID(choiceID);
+            convertToChoice.setVrCommands(currentChoice.getVoiceCommands());
+            proxyChoices.add(convertToChoice);
+        }
+        newRequest.setChoiceSet(proxyChoices);
         newRequest.setInteractionChoiceSetID(choiceSetId);
         newRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 Log.d(TAG,response.getResultCode().toString());
-                mIdSets.add(choiceSetId);
-                listener.onIdAdded(newChoiceSet);
+                if(listener!=null)
+                    listener.onIdAdded(newChoiceSet);
 
                 //On Invalid Id, try to delete old one?
             }
+
+            @Override
+            public void onError(int correlationId, Result resultCode, String info) {
+                super.onError(correlationId, resultCode, info);
+                if(listener!=null)
+                    listener.onIdError(newChoiceSet);
+            }
         });
         mSdlApplication.sendRpc(newRequest);
-        return false;
+        return newChoiceSet;
     }
 
     public boolean deleteChoiceSet(SdlChoiceSet choiceSet){
