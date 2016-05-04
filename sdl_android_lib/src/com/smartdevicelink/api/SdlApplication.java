@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -91,6 +92,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private SdlApplicationConfig mApplicationConfig;
 
     private SdlActivityManager mSdlActivityManager;
+    private SdlPermissionManager mSdlPermissionManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -113,6 +115,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
         mApplicationStatusListener = listener;
         mSdlActivityManager = new SdlActivityManager();
+        mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
         mLifecycleListeners.add(mSdlActivityManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;
@@ -208,6 +211,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
     }
 
+    @Override
+    public SdlPermissionManager getSdlPermissionManager() {
+        return mSdlPermissionManager;
+    }
+
     /***********************************
      IProxyListenerALM interface methods
      ***********************************/
@@ -221,6 +229,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         }
 
         HMILevel hmiLevel = notification.getHmiLevel();
+        mSdlPermissionManager.setCurrentHMILevel(hmiLevel);
 
         Log.i(TAG, toString() + " Received HMILevel: " + hmiLevel.name());
 
@@ -403,7 +412,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnPermissionsChange(OnPermissionsChange notification) {
-
     }
 
     @Override
