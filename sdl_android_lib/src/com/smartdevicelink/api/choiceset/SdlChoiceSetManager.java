@@ -9,12 +9,14 @@ import com.smartdevicelink.api.SdlApplication;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -27,21 +29,24 @@ public class SdlChoiceSetManager {
     private int Choice_Count=0;
     private int Choice_Set_Count=0;
 
+    private HashSet<Integer> mIds = new HashSet<>();
+
 
     public SdlChoiceSetManager(SdlApplication sdlApplication){
         mSdlApplication = sdlApplication;
     }
 
-    public SdlChoiceSet uploadIdSet(@Nullable String choiceSetName, @NonNull Collection<SdlChoice> choices, @Nullable final IdReadyListener listener){
+    public boolean uploadChoiceSet(@NonNull final SdlChoiceSet choiceSet, @Nullable final IdReadyListener listener){
 
-        final int choiceSetId=Choice_Set_Count++;
-        final SdlChoiceSet newChoiceSet= new SdlChoiceSet(choiceSetName,populateChoicesWithIds(choices),choiceSetId);
+        if(mIds.contains(choiceSet.getChoiceId()))
+            return true;
+
         CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
 
         ArrayList<Choice> proxyChoices= new ArrayList<>();
-        for(int i=0; i<newChoiceSet.getChoices().size();i++) {
-            int choiceID= newChoiceSet.getChoices().keyAt(i);
-            SdlChoice currentChoice = newChoiceSet.getChoices().get(choiceID);
+        for(int i=0; i<choiceSet.getChoices().size();i++) {
+            int choiceID= choiceSet.getChoices().keyAt(i);
+            SdlChoice currentChoice = choiceSet.getChoices().get(choiceID);
             Choice convertToChoice= new Choice();
             convertToChoice.setMenuName(currentChoice.getMenuText());
             convertToChoice.setSecondaryText(currentChoice.getSubText());
@@ -51,26 +56,25 @@ public class SdlChoiceSetManager {
             proxyChoices.add(convertToChoice);
         }
         newRequest.setChoiceSet(proxyChoices);
-        newRequest.setInteractionChoiceSetID(choiceSetId);
+        newRequest.setInteractionChoiceSetID(choiceSet.getChoiceId());
         newRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 Log.d(TAG,response.getResultCode().toString());
+                mIds.add(choiceSet.getChoiceId());
                 if(listener!=null)
-                    listener.onIdAdded(newChoiceSet);
-
-                //On Invalid Id, try to delete old one?
+                    listener.onIdAdded(choiceSet);
             }
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
                 if(listener!=null)
-                    listener.onIdError(newChoiceSet);
+                    listener.onIdError(choiceSet);
             }
         });
         mSdlApplication.sendRpc(newRequest);
-        return newChoiceSet;
+        return false;
     }
 
     public boolean deleteChoiceSet(SdlChoiceSet choiceSet){
@@ -78,7 +82,15 @@ public class SdlChoiceSetManager {
     }
 
     private boolean deleteChoiceSet(int setId){
+        mIds.remove(setId);
+        DeleteInteractionChoiceSet deleteRequest = new DeleteInteractionChoiceSet();
+        deleteRequest.setInteractionChoiceSetID(setId);
         return false;
+    }
+
+    public SdlChoiceSet createChoiceSet(@Nullable String choiceSetName, @NonNull Collection<SdlChoice> choices){
+        final int choiceSetId=Choice_Set_Count++;
+        return new SdlChoiceSet(choiceSetName,populateChoicesWithIds(choices),choiceSetId);
     }
 
     private SparseArray<SdlChoice> populateChoicesWithIds(Collection<SdlChoice> sdlChoices){
