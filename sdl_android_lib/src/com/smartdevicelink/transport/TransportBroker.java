@@ -77,6 +77,10 @@ public class TransportBroker {
 	}
 
     protected synchronized boolean sendMessageToRouterService(Message message){
+    	return sendMessageToRouterService(message,0);
+    }
+    
+    protected synchronized boolean sendMessageToRouterService(Message message, int retryCount){
     	if(message == null){
     		Log.w(TAG, "Attempted to send null message");
     		return false;
@@ -86,29 +90,29 @@ public class TransportBroker {
     		if(registeredWithRouterService 
     				|| message.what == TransportConstants.ROUTER_REGISTER_CLIENT){ //We can send a message if we are registered or are attempting to register
     			try {
-					routerServiceMessenger.send(message);
-					return true;
-				} catch (RemoteException e) {
-					e.printStackTrace();
-					if(e instanceof TransactionTooLargeException){
-						e.printStackTrace();
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
-						return sendMessageToRouterService(message);
-					}else{
-						//DeadObject, time to kill our connection
-						Log.d(TAG, "Dead object while attempting to send packet");
-						routerServiceMessenger = null;
-						registeredWithRouterService = false;
-						isBound = false;
-						onHardwareDisconnected(null);
-						return false;
-					}
-					
-				}
+    				routerServiceMessenger.send(message);
+    				return true;
+    			} catch (RemoteException e) {
+    				e.printStackTrace();
+    				//Let's check to see if we should retry
+    				if(e instanceof TransactionTooLargeException 
+    						|| (retryCount<5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder())){ //We probably just failed on a small transaction =\
+    					try {
+    						Thread.sleep(100);
+    					} catch (InterruptedException e1) {
+    						e1.printStackTrace();
+    					}
+    					return sendMessageToRouterService(message, retryCount++);
+    				}else{
+    					//DeadObject, time to kill our connection
+    					Log.d(TAG, "Dead object while attempting to send packet");
+    					routerServiceMessenger = null;
+    					registeredWithRouterService = false;
+    					isBound = false;
+    					onHardwareDisconnected(null);
+    					return false;
+    				}
+    			}
     		}else{
     			Log.e(TAG, "Unable to send message to router service. Not registered.");
     			return false;
