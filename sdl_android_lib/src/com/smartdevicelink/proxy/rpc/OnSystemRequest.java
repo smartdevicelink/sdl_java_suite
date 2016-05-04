@@ -52,18 +52,32 @@ public class OnSystemRequest extends RPCNotification {
         JSONObject httpJson;
         String tempBody = null;
         Headers tempHeaders = null;
-        
-        try{
-            JSONObject bulkJson = new JSONObject(new String(bulkData));
-            httpJson = bulkJson.getJSONObject("HTTPRequest");
-            tempBody = getBody(httpJson);
-            tempHeaders = getHeaders(httpJson);
-        }catch(JSONException e){
-            Log.e("OnSystemRequest", "HTTPRequest in bulk data was malformed.");
-            e.printStackTrace();
-        }catch(NullPointerException e){
-            Log.e("OnSystemRequest", "Invalid HTTPRequest object in bulk data.");
-            e.printStackTrace();
+        if(RequestType.PROPRIETARY.equals(this.getRequestType())){
+        	try{
+            	JSONObject bulkJson = new JSONObject(new String(bulkData));
+           
+            	httpJson = bulkJson.getJSONObject("HTTPRequest");
+            	tempBody = getBody(httpJson);
+            	tempHeaders = getHeaders(httpJson);
+        	}catch(JSONException e){
+            	Log.e("OnSystemRequest", "HTTPRequest in bulk data was malformed.");
+            	e.printStackTrace();
+        	}catch(NullPointerException e){
+            	Log.e("OnSystemRequest", "Invalid HTTPRequest object in bulk data.");
+            	e.printStackTrace();
+        	}
+        }else if(RequestType.HTTP.equals(this.getRequestType())){
+        	tempHeaders = new Headers();
+        	tempHeaders.setContentType("application/json");
+        	tempHeaders.setConnectTimeout(7);
+        	tempHeaders.setDoOutput(true);
+        	tempHeaders.setDoInput(true);
+        	tempHeaders.setUseCaches(false);
+        	tempHeaders.setRequestMethod("POST");
+        	tempHeaders.setReadTimeout(7);
+        	tempHeaders.setInstanceFollowRedirects(false);
+        	tempHeaders.setCharset("utf-8");
+        	tempHeaders.setContentLength(bulkData.length); 
         }
         
         this.body = tempBody;
