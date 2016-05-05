@@ -5,6 +5,7 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,12 +18,20 @@ public class SdlChoice {
     private final OnSelectedListener mListener;
     private ArrayList<Integer> mIds= new ArrayList<>();
     private SdlImage mSdlImage;
-    private ArrayList<String> mVoiceCommands = new ArrayList<>() ;
+    private final Collection<String> mVoiceCommands;
     private boolean isGraphicOnly;
 
-    public SdlChoice(String menuText, OnSelectedListener listener){
+    public SdlChoice(String menuText, Collection<String> manyVoiceCommands, OnSelectedListener listener){
         mMenuText = menuText;
         mListener = listener;
+        mVoiceCommands= manyVoiceCommands;
+    }
+
+    public SdlChoice(String menuText, String singleVoiceCommand, OnSelectedListener listener){
+        mMenuText = menuText;
+        mListener = listener;
+        mVoiceCommands= new ArrayList<>();
+        mVoiceCommands.add(singleVoiceCommand);
     }
 
     public SdlImage getSdlImage() {
@@ -60,8 +69,8 @@ public class SdlChoice {
 
     public interface OnSelectedListener {
 
-        void OnChoiceSelected();
-
+        void onManualSelection();
+        void onVoiceSelection();
     }
 
     public boolean isGraphicOnly() {
@@ -72,11 +81,10 @@ public class SdlChoice {
         isGraphicOnly = graphicOnly;
     }
 
-    public void setVoiceCommands( ArrayList<String> chunks){ mVoiceCommands= chunks; }
     public void addVoiceCommand(String tts){
         mVoiceCommands.add(tts);
     }
 
-    public ArrayList<String> getVoiceCommands(){ return mVoiceCommands; }
+    public Collection<String> getVoiceCommands(){ return mVoiceCommands; }
 
 }

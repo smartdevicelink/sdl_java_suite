@@ -10,6 +10,8 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
@@ -26,11 +28,10 @@ public class SdlChoiceSetManager {
 
     private final SdlApplication mSdlApplication;
 
-    private int Choice_Count=0;
-    private int Choice_Set_Count=0;
+    private Integer Choice_Count=0;
+    private Integer Choice_Set_Count=0;
 
     private HashSet<Integer> mIds = new HashSet<>();
-
 
     public SdlChoiceSetManager(SdlApplication sdlApplication){
         mSdlApplication = sdlApplication;
@@ -38,7 +39,7 @@ public class SdlChoiceSetManager {
 
     public boolean uploadChoiceSet(@NonNull final SdlChoiceSet choiceSet, @Nullable final IdReadyListener listener){
 
-        if(mIds.contains(choiceSet.getChoiceId()))
+        if(containsSet(choiceSet))
             return true;
 
         CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
@@ -51,8 +52,17 @@ public class SdlChoiceSetManager {
             convertToChoice.setMenuName(currentChoice.getMenuText());
             convertToChoice.setSecondaryText(currentChoice.getSubText());
             convertToChoice.setTertiaryText(currentChoice.getRightHandText());
+            if(currentChoice.getSdlImage()!=null)
+            {
+                Image choiceImage= new Image();
+                choiceImage.setImageType(ImageType.DYNAMIC);
+                choiceImage.setValue(currentChoice.getSdlImage().getSdlName());
+                convertToChoice.setImage(choiceImage);
+            }
             convertToChoice.setChoiceID(choiceID);
-            convertToChoice.setVrCommands(currentChoice.getVoiceCommands());
+            ArrayList<String> commands= new ArrayList<>();
+            commands.addAll(currentChoice.getVoiceCommands());
+            convertToChoice.setVrCommands(commands);
             proxyChoices.add(convertToChoice);
         }
         newRequest.setChoiceSet(proxyChoices);
@@ -69,12 +79,17 @@ public class SdlChoiceSetManager {
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
+                Log.e(TAG, resultCode.toString()+" "+info);
                 if(listener!=null)
                     listener.onIdError(choiceSet);
             }
         });
         mSdlApplication.sendRpc(newRequest);
         return false;
+    }
+
+    public boolean containsSet(SdlChoiceSet set){
+        return mIds.contains(set.getChoiceId());
     }
 
     public boolean deleteChoiceSet(SdlChoiceSet choiceSet){
