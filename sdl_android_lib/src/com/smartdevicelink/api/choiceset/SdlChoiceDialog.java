@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.choiceset;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -16,7 +17,6 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -25,23 +25,20 @@ import java.util.Collections;
  */
 public class SdlChoiceDialog {
     private static final String TAG = SdlChoiceDialog.class.getSimpleName();
+    private static final LayoutMode DEFAULT_LAYOUT= LayoutMode.ICON_ONLY;
 
     private int mDuration;
     private String mInitialText;
     private boolean mUseVoiceInteraction;
     private TTSChunk mInitialPrompt;
-    private InteractionType mType;
+    private ManualInteractionType mType;
     private boolean mUseSearch;
     private ResponseListener mListener;
-
-    //hold onto a sparse array of choices to avoid looping over the choiceSets
-    //after a selection
-    //TODO: hang onto just the listener?
-    private SparseArray<SdlChoice.OnSelectedListener> quickChoiceFind = new SparseArray<>();
-    private final PerformInteraction newInteraction;
+    private SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
+    private final PerformInteraction mNewInteraction;
 
     SdlChoiceDialog(Builder builder){
-        newInteraction = new PerformInteraction();
+        mNewInteraction = new PerformInteraction();
 
         mDuration = builder.mDuration;
         mInitialText = builder.mInitialText;
@@ -56,24 +53,24 @@ public class SdlChoiceDialog {
             choiceIds.add(set.getChoiceId());
             SparseArray<SdlChoice.OnSelectedListener> choices = set.getChoices();
             for(int i=0; i<choices.size();i++){
-                quickChoiceFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)));
+                mQuickListenerFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)));
             }
         }
-        newInteraction.setInteractionChoiceSetIDList(choiceIds);
-        newInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
-        newInteraction.setInitialText(mInitialText);
+        mNewInteraction.setInteractionChoiceSetIDList(choiceIds);
+        mNewInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
+        mNewInteraction.setInitialText(mInitialText);
         if(mDuration !=0)
-            newInteraction.setTimeout(mDuration);
-        LayoutMode newMode= discernCorrectInteractionLayout(mType, mUseSearch);
+            mNewInteraction.setTimeout(mDuration);
+        LayoutMode newMode= getCorrectLayoutMode(mType, mUseSearch);
         if(newMode!=null)
-            newInteraction.setInteractionLayout(newMode);
-        newInteraction.setInteractionMode(getCorrectInteractionMode(mType,mUseVoiceInteraction));
+            mNewInteraction.setInteractionLayout(newMode);
+        mNewInteraction.setInteractionMode(getCorrectInteractionMode(mType,mUseVoiceInteraction));
 
     }
 
     public boolean send(SdlContext context){
         if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.Alert)) {
-            newInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+            mNewInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
                     PerformInteractionResponse interactionResponse = (PerformInteractionResponse) response;
@@ -90,7 +87,7 @@ public class SdlChoiceDialog {
                 }
             });
 
-            context.sendRpc(newInteraction);
+            context.sendRpc(mNewInteraction);
             return true;
         }
         return false;
@@ -103,10 +100,10 @@ public class SdlChoiceDialog {
             PerformInteractionResponse piResponse = (PerformInteractionResponse) response;
             switch (piResponse.getTriggerSource()) {
                 case TS_MENU:
-                    quickChoiceFind.get(piResponse.getChoiceID()).onManualSelection();
+                    mQuickListenerFind.get(piResponse.getChoiceID()).onManualSelection();
                     break;
                 case TS_VR:
-                    quickChoiceFind.get(piResponse.getChoiceID()).onVoiceSelection();
+                    mQuickListenerFind.get(piResponse.getChoiceID()).onVoiceSelection();
                     break;
                 case TS_KEYBOARD:
                     mListener.onSearch(piResponse.getManualTextEntry());
@@ -143,10 +140,10 @@ public class SdlChoiceDialog {
         }
     }
 
-    private LayoutMode discernCorrectInteractionLayout(InteractionType type, boolean useSearch){
+    private LayoutMode getCorrectLayoutMode(ManualInteractionType type, boolean useSearch){
 
         if(type==null)
-            return null;
+            return DEFAULT_LAYOUT;
 
         switch (type) {
             case Icon:
@@ -166,7 +163,7 @@ public class SdlChoiceDialog {
         return null;
     }
 
-    private InteractionMode getCorrectInteractionMode(InteractionType type, boolean useVoice){
+    private InteractionMode getCorrectInteractionMode(ManualInteractionType type, boolean useVoice){
         if(useVoice){
             if(type!=null)
                 return InteractionMode.BOTH;
@@ -184,24 +181,14 @@ public class SdlChoiceDialog {
         private String mInitialText;
         private final boolean mUseVoiceInteraction;
         private TTSChunk mInitialPrompt;
-        private final InteractionType mType;
-        private final boolean mUseSearch;
+        private final ManualInteractionType mType;
+        private boolean mUseSearch= false;
         private ResponseListener mListener;
 
-        public Builder(){
-            mUseVoiceInteraction= true;
-            mType=null;
-            mUseSearch=false;
-        }
 
-        public Builder(InteractionType type, boolean useSearch, boolean includeVoice){
+        public Builder(@Nullable ManualInteractionType type, boolean includeVoice){
             mType= type;
-            mUseSearch= useSearch;
             mUseVoiceInteraction= includeVoice;
-        }
-
-        public Builder(InteractionType type, boolean useSearch){
-            this(type,useSearch,false);
         }
 
 
@@ -213,6 +200,11 @@ public class SdlChoiceDialog {
 
         public Builder setDuration(int mDuration) {
             this.mDuration = mDuration;
+            return this;
+        }
+
+        public Builder setUseSearchWithManual(boolean useSearch){
+            this.mUseSearch= useSearch;
             return this;
         }
 
@@ -247,7 +239,7 @@ public class SdlChoiceDialog {
         }
     }
 
-   public enum InteractionType{
+   public enum ManualInteractionType {
         Icon,
         List,
         Search_Only

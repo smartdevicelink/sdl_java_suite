@@ -30,7 +30,6 @@ public class SdlChoiceSetCreation {
     private SdlContext mContext;
 
     public SdlChoiceSetCreation(@NonNull String name, @NonNull ArrayList<SdlChoice> choices, @NonNull SdlContext context){
-        //grab an id from the manager once
         mContext= context;
         mChoiceId= context.getSdlChoiceSetManager().requestChoiceSetCount();
         mChoices= populateChoicesWithIds(choices,context);
@@ -115,7 +114,6 @@ public class SdlChoiceSetCreation {
         deleteSet.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                //remove self from registry as well
 
             }
             @Override
