@@ -26,104 +26,33 @@ import java.util.HashSet;
 public class SdlChoiceSetManager {
     private static final String TAG = SdlChoiceSetManager.class.getSimpleName();
 
-    private final SdlApplication mSdlApplication;
-
     private Integer Choice_Count=0;
     private Integer Choice_Set_Count=0;
 
-    private HashSet<Integer> mIds = new HashSet<>();
+    private HashMap<String,SdlChoiceSet> mChoiceSet = new HashMap<>();
 
-    public SdlChoiceSetManager(SdlApplication sdlApplication){
-        mSdlApplication = sdlApplication;
+    Integer requestChoiceCount(){
+        return Choice_Count++;
     }
 
-    public boolean uploadChoiceSet(@NonNull final SdlChoiceSet choiceSet, @Nullable final IdReadyListener listener){
-
-        if(containsSet(choiceSet))
-            return true;
-
-        CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
-
-        ArrayList<Choice> proxyChoices= new ArrayList<>();
-        for(int i=0; i<choiceSet.getChoices().size();i++) {
-            int choiceID= choiceSet.getChoices().keyAt(i);
-            SdlChoice currentChoice = choiceSet.getChoices().get(choiceID);
-            Choice convertToChoice= new Choice();
-            convertToChoice.setMenuName(currentChoice.getMenuText());
-            convertToChoice.setSecondaryText(currentChoice.getSubText());
-            convertToChoice.setTertiaryText(currentChoice.getRightHandText());
-            if(currentChoice.getSdlImage()!=null)
-            {
-                Image choiceImage= new Image();
-                choiceImage.setImageType(ImageType.DYNAMIC);
-                choiceImage.setValue(currentChoice.getSdlImage().getSdlName());
-                convertToChoice.setImage(choiceImage);
-            }
-            convertToChoice.setChoiceID(choiceID);
-            ArrayList<String> commands= new ArrayList<>();
-            commands.addAll(currentChoice.getVoiceCommands());
-            convertToChoice.setVrCommands(commands);
-            proxyChoices.add(convertToChoice);
-        }
-        newRequest.setChoiceSet(proxyChoices);
-        newRequest.setInteractionChoiceSetID(choiceSet.getChoiceId());
-        newRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                Log.d(TAG,response.getResultCode().toString());
-                mIds.add(choiceSet.getChoiceId());
-                if(listener!=null)
-                    listener.onIdAdded(choiceSet);
-            }
-
-            @Override
-            public void onError(int correlationId, Result resultCode, String info) {
-                super.onError(correlationId, resultCode, info);
-                Log.e(TAG, resultCode.toString()+" "+info);
-                if(listener!=null)
-                    listener.onIdError(choiceSet);
-            }
-        });
-        mSdlApplication.sendRpc(newRequest);
-        return false;
+    Integer requestChoiceSetCount(){
+        return Choice_Set_Count++;
     }
 
-    public boolean containsSet(SdlChoiceSet set){
-        return mIds.contains(set.getChoiceId());
+    public boolean registerSdlChoiceSet(SdlChoiceSet set){
+        mChoiceSet.put(set.getSetName(),set);
+        return true;
     }
 
-    public boolean deleteChoiceSet(SdlChoiceSet choiceSet){
-        return deleteChoiceSet(choiceSet.getChoiceId());
+    public SdlChoiceSet grabUploadedChoiceSet(String name){
+        if(hasBeenUploaded(name))
+            return mChoiceSet.get(name).copy();
+        else
+            return null;
     }
 
-    private boolean deleteChoiceSet(int setId){
-        mIds.remove(setId);
-        DeleteInteractionChoiceSet deleteRequest = new DeleteInteractionChoiceSet();
-        deleteRequest.setInteractionChoiceSetID(setId);
-        return false;
+    public boolean hasBeenUploaded(String name){
+        return mChoiceSet.containsKey(name);
     }
-
-    public SdlChoiceSet createChoiceSet(@Nullable String choiceSetName, @NonNull Collection<SdlChoice> choices){
-        final int choiceSetId=Choice_Set_Count++;
-        return new SdlChoiceSet(choiceSetName,populateChoicesWithIds(choices),choiceSetId);
-    }
-
-    private SparseArray<SdlChoice> populateChoicesWithIds(Collection<SdlChoice> sdlChoices){
-        SparseArray<SdlChoice> newIdArray= new SparseArray<>();
-        for(SdlChoice choice:sdlChoices){
-            choice.addId(Choice_Count++);
-            newIdArray.append(Choice_Count,choice);
-        }
-        return newIdArray;
-    }
-
-    public interface IdReadyListener{
-
-        void onIdAdded(SdlChoiceSet sdlIdCommand);
-
-        void onIdError(SdlChoiceSet sdlIdCommand);
-
-    }
-
 
 }

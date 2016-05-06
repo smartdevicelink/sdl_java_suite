@@ -122,7 +122,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
         mLifecycleListeners.add(mSdlActivityManager);
         mSdlFileManager = new SdlFileManager(this, mApplicationConfig);
-        mSdlChoiceSetManager = new SdlChoiceSetManager(this);
+        mSdlChoiceSetManager = new SdlChoiceSetManager();
         mLifecycleListeners.add(mSdlFileManager);
         if(mSdlProxyALM != null){
             mConnectionStatus = Status.CONNECTING;

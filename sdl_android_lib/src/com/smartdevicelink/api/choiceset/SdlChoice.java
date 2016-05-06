@@ -12,6 +12,7 @@ import java.util.List;
  * Created by mschwerz on 5/4/16.
  */
 public class SdlChoice {
+    private final String mChoiceName;
     private final String mMenuText;
     private String mSubText;
     private String mRightHandText;
@@ -21,18 +22,22 @@ public class SdlChoice {
     private final Collection<String> mVoiceCommands;
     private boolean isGraphicOnly;
 
-    public SdlChoice(String menuText, Collection<String> manyVoiceCommands, OnSelectedListener listener){
+    public SdlChoice(String choiceName, String menuText, Collection<String> manyVoiceCommands, OnSelectedListener listener){
+        mChoiceName= choiceName;
         mMenuText = menuText;
         mListener = listener;
         mVoiceCommands= manyVoiceCommands;
     }
 
-    public SdlChoice(String menuText, String singleVoiceCommand, OnSelectedListener listener){
+    public SdlChoice(String choiceName, String menuText, String singleVoiceCommand, OnSelectedListener listener){
+        mChoiceName= choiceName;
         mMenuText = menuText;
         mListener = listener;
         mVoiceCommands= new ArrayList<>();
         mVoiceCommands.add(singleVoiceCommand);
     }
+
+    public String getChoiceName(){ return mChoiceName; }
 
     public SdlImage getSdlImage() {
         return mSdlImage;

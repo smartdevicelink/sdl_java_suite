@@ -37,7 +37,7 @@ public class SdlChoiceDialog {
     //hold onto a sparse array of choices to avoid looping over the choiceSets
     //after a selection
     //TODO: hang onto just the listener?
-    private SparseArray<SdlChoice> quickChoiceFind = new SparseArray<>();
+    private SparseArray<SdlChoice.OnSelectedListener> quickChoiceFind = new SparseArray<>();
     private final PerformInteraction newInteraction;
 
     SdlChoiceDialog(Builder builder){
@@ -54,7 +54,7 @@ public class SdlChoiceDialog {
         ArrayList<Integer> choiceIds= new ArrayList<>();
         for(SdlChoiceSet set:builder.mChoiceSets){
             choiceIds.add(set.getChoiceId());
-            SparseArray<SdlChoice> choices = set.getChoices();
+            SparseArray<SdlChoice.OnSelectedListener> choices = set.getChoices();
             for(int i=0; i<choices.size();i++){
                 quickChoiceFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)));
             }
@@ -103,10 +103,10 @@ public class SdlChoiceDialog {
             PerformInteractionResponse piResponse = (PerformInteractionResponse) response;
             switch (piResponse.getTriggerSource()) {
                 case TS_MENU:
-                    quickChoiceFind.get(piResponse.getChoiceID()).getListener().onManualSelection();
+                    quickChoiceFind.get(piResponse.getChoiceID()).onManualSelection();
                     break;
                 case TS_VR:
-                    quickChoiceFind.get(piResponse.getChoiceID()).getListener().onVoiceSelection();
+                    quickChoiceFind.get(piResponse.getChoiceID()).onVoiceSelection();
                     break;
                 case TS_KEYBOARD:
                     mListener.onSearch(piResponse.getManualTextEntry());
