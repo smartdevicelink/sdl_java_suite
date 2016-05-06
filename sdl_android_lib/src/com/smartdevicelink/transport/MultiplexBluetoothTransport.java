@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Locale;
 import java.util.UUID;
 
 import android.annotation.SuppressLint;
@@ -35,8 +34,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-
-import com.smartdevicelink.transport.SdlRouterService;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
