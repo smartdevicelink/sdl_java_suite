@@ -262,7 +262,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {Log.d(TAG, "onProtocolSessionStarted");
+			byte sessionID, byte version, String correlationID) {
 		_connectionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
 	}
 
@@ -543,28 +543,27 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			}
 			if(cachedMultiConfig!=null ){
 				if(cachedMultiConfig.getService()!=null){
-				synchronized(TRANSPORT_REFERENCE_LOCK) {
-					// Ensure transport is null
-					if (_transport != null) {
-						if (_transport.getIsConnected()) {
-							_transport.disconnect();
+					synchronized(TRANSPORT_REFERENCE_LOCK) {
+						// Ensure transport is null
+						if (_transport != null) {
+							if (_transport.getIsConnected()) {
+								_transport.disconnect();
+							}
+							_transport = null;
 						}
-						_transport = null;
+						_transport = new MultiplexTransport(cachedMultiConfig, SdlConnection.this);
+						try {
+							startTransport();
+						} catch (SdlException e) {
+							e.printStackTrace();
+						}
+						((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 					}
-					_transport = new MultiplexTransport(cachedMultiConfig, SdlConnection.this);
-					try {
-						startTransport();
-					} catch (SdlException e) {
-						e.printStackTrace();
+				}else{ //The service must be null or already consumed. Let's see if we can find the connection that consumed it
+					for (SdlSession session : listenerList) {
+						session.checkForOpenMultiplexConnection(SdlConnection.this);;
 					}
-					((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				}
-			}else{ //The service must be null or already consumed. Let's see if we can find the connection that consumed it
-				for (SdlSession session : listenerList) {
-					session.checkForOpenMultiplexConnection(SdlConnection.this);;
-				}
-				
-			}
 			}
 		}
 
@@ -762,16 +761,16 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			}
 		}else if(_transport.getTransportType()==TransportType.BLUETOOTH 
 				&& !_transport.getIsConnected()){
-					if(cachedMultiConfig!=null){
-					//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
-					ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
-					cachedMultiConfig.setService(tempCompName);
-					//We are not connected yet so we should be able to close down
-					_transport.disconnect(); //This will force us into the 
-				}else{
-					Log.i(TAG, "No cached multiplexing config, transport error being called");
-					_transport.disconnect();
-				}
+			if(cachedMultiConfig!=null){
+				//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
+				ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+				cachedMultiConfig.setService(tempCompName);
+				//We are not connected yet so we should be able to close down
+				_transport.disconnect(); //This will force us into the 
+			}else{
+				Log.i(TAG, "No cached multiplexing config, transport error being called");
+				_transport.disconnect();
+			}
 			Log.w(TAG, "Using own transport, but not connected. Attempting to join multiplexing");		
 		}else{
 			Log.w(TAG, "Currently in legacy mode connected to own transport service. Nothing will take place on trnasport cycle");	
