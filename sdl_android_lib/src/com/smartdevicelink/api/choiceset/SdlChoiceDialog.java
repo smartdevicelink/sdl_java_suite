@@ -1,15 +1,18 @@
 package com.smartdevicelink.api.choiceset;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -19,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -27,12 +31,11 @@ public class SdlChoiceDialog {
     private static final String TAG = SdlChoiceDialog.class.getSimpleName();
     private static final LayoutMode DEFAULT_LAYOUT= LayoutMode.ICON_ONLY;
 
-    private int mDuration;
+    private final ManualInteraction mManualInteraction;
+    private final VoiceInteraction mVoiceInteraction;
     private String mInitialText;
-    private boolean mUseVoiceInteraction;
     private TTSChunk mInitialPrompt;
-    private ManualInteractionType mType;
-    private boolean mUseSearch;
+    private TTSChunk mHelpPrompt;
     private ResponseListener mListener;
     private SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
     private final PerformInteraction mNewInteraction;
@@ -40,13 +43,12 @@ public class SdlChoiceDialog {
     SdlChoiceDialog(Builder builder){
         mNewInteraction = new PerformInteraction();
 
-        mDuration = builder.mDuration;
         mInitialText = builder.mInitialText;
-        mUseVoiceInteraction = builder.mUseVoiceInteraction;
         mInitialPrompt = builder.mInitialPrompt;
-        mType = builder.mType;
-        mUseSearch = builder.mUseSearch;
+        mHelpPrompt = builder.mHelpPrompt;
         mListener = builder.mListener;
+        mManualInteraction= builder.mManualInteraction.copy();
+        mVoiceInteraction= builder.mVoiceInteraction.copy();
 
         ArrayList<Integer> choiceIds= new ArrayList<>();
         for(SdlChoiceSet set:builder.mChoiceSets){
@@ -59,17 +61,28 @@ public class SdlChoiceDialog {
         mNewInteraction.setInteractionChoiceSetIDList(choiceIds);
         mNewInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
         mNewInteraction.setInitialText(mInitialText);
-        if(mDuration !=0)
-            mNewInteraction.setTimeout(mDuration);
-        LayoutMode newMode= getCorrectLayoutMode(mType, mUseSearch);
-        if(newMode!=null)
-            mNewInteraction.setInteractionLayout(newMode);
-        mNewInteraction.setInteractionMode(getCorrectInteractionMode(mType,mUseVoiceInteraction));
+        if(mManualInteraction!=null){
+            if(mManualInteraction.getTimeout()!=null)
+                mNewInteraction.setTimeout(mManualInteraction.getTimeout());
+            LayoutMode mode= getCorrectLayoutMode(mManualInteraction.mType, mManualInteraction.isUseSearch());
+            if(mode !=null)
+                mNewInteraction.setInteractionLayout(mode);
+        }
+
+        if(mVoiceInteraction!=null){
+            if(mVoiceInteraction.mTimeoutPrompt !=null)
+                mNewInteraction.setTimeoutPrompt(Collections.singletonList(mVoiceInteraction.mTimeoutPrompt));
+        }
+
+        mNewInteraction.setInteractionMode(getCorrectInteractionMode(mManualInteraction,mVoiceInteraction));
+        mNewInteraction.setHelpPrompt(Collections.singletonList(mHelpPrompt));
 
     }
 
     public boolean send(SdlContext context){
         if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.Alert)) {
+            if(!addVrHelpItems(context))
+                return false;
             mNewInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
@@ -91,6 +104,23 @@ public class SdlChoiceDialog {
             return true;
         }
         return false;
+    }
+
+    private boolean addVrHelpItems(SdlContext context){
+        if(mVoiceInteraction !=null && mVoiceInteraction.mVrHelpItems.size()>0) {
+            ArrayList<VrHelpItem> vrItems = new ArrayList<>();
+            for (VoiceInteraction.SdlVoiceHelpItem item : mVoiceInteraction.mVrHelpItems) {
+                if(context.getSdlFileManager().isFileOnModule(item.mSdlImage.getSdlName()))
+                    return false;
+                VrHelpItem helpItem = new VrHelpItem();
+                helpItem.setText(item.mDisplayText);
+                Image helpImage = new Image();
+                helpImage.setImageType(ImageType.DYNAMIC);
+                helpImage.setValue(item.mSdlImage.getSdlName());
+            }
+            mNewInteraction.setVrHelp(vrItems);
+        }
+        return true;
     }
 
     private void parseResponse(RPCResponse response){
@@ -140,7 +170,7 @@ public class SdlChoiceDialog {
         }
     }
 
-    private LayoutMode getCorrectLayoutMode(ManualInteractionType type, boolean useSearch){
+    private LayoutMode getCorrectLayoutMode(ManualInteraction.ManualInteractionType type, boolean useSearch){
 
         if(type==null)
             return DEFAULT_LAYOUT;
@@ -163,9 +193,9 @@ public class SdlChoiceDialog {
         return null;
     }
 
-    private InteractionMode getCorrectInteractionMode(ManualInteractionType type, boolean useVoice){
-        if(useVoice){
-            if(type!=null)
+    private InteractionMode getCorrectInteractionMode(ManualInteraction manualInteraction, VoiceInteraction voiceInteraction){
+        if(voiceInteraction!=null){
+            if(manualInteraction!=null)
                 return InteractionMode.BOTH;
             else
                 return InteractionMode.VR_ONLY;
@@ -177,18 +207,15 @@ public class SdlChoiceDialog {
 
     public static class Builder{
         private Collection<SdlChoiceSet> mChoiceSets;
-        private int mDuration;
+        private ManualInteraction mManualInteraction;
+        private VoiceInteraction mVoiceInteraction;
         private String mInitialText;
-        private final boolean mUseVoiceInteraction;
         private TTSChunk mInitialPrompt;
-        private final ManualInteractionType mType;
-        private boolean mUseSearch= false;
+        private TTSChunk mHelpPrompt;
         private ResponseListener mListener;
 
 
-        public Builder(@Nullable ManualInteractionType type, boolean includeVoice){
-            mType= type;
-            mUseVoiceInteraction= includeVoice;
+        public Builder(){
         }
 
 
@@ -198,16 +225,15 @@ public class SdlChoiceDialog {
         }
 
 
-        public Builder setDuration(int mDuration) {
-            this.mDuration = mDuration;
+        public Builder setManualInteraction( ManualInteraction interaction){
+            this.mManualInteraction= interaction;
             return this;
         }
 
-        public Builder setUseSearchWithManual(boolean useSearch){
-            this.mUseSearch= useSearch;
+        public Builder setVoiceInteraction(VoiceInteraction interaction){
+            this.mVoiceInteraction= interaction;
             return this;
         }
-
 
         public Builder setInitialText(String mInitialText) {
             this.mInitialText = mInitialText;
@@ -224,7 +250,20 @@ public class SdlChoiceDialog {
             TTSChunk chunk= new TTSChunk();
             chunk.setText(initialPrompt);
             chunk.setType(SpeechCapabilities.TEXT);
-            mInitialPrompt= chunk;
+            this.mInitialPrompt= chunk;
+            return this;
+        }
+
+        public Builder setHelpPrompt(TTSChunk mInitialPrompt) {
+            this.mHelpPrompt = mInitialPrompt;
+            return this;
+        }
+
+        public Builder setHelpPrompt(String initialPrompt){
+            TTSChunk chunk= new TTSChunk();
+            chunk.setText(initialPrompt);
+            chunk.setType(SpeechCapabilities.TEXT);
+            this.mHelpPrompt= chunk;
             return this;
         }
 
@@ -239,16 +278,106 @@ public class SdlChoiceDialog {
         }
     }
 
-   public enum ManualInteractionType {
-        Icon,
-        List,
-        Search_Only
-    }
 
     public interface ResponseListener{
         void onTimeout();
         void onAborted();
         void onError();
         void onSearch(String searchString);
+    }
+
+    public static class ManualInteraction {
+        final ManualInteractionType mType;
+        boolean mUseSearch;
+        Integer mTimeout;
+
+        public ManualInteraction(ManualInteractionType type) {
+            mType = type;
+        }
+        ManualInteraction copy(){
+            ManualInteraction inter= new ManualInteraction(mType);
+            inter.mUseSearch= mUseSearch;
+            inter.mTimeout= mTimeout;
+            return inter;
+        }
+
+        public void setUseSearch(boolean useSearch) {
+            mUseSearch = useSearch;
+        }
+
+        public void setDuration(Integer duration) {
+            mTimeout = duration;
+        }
+
+        ManualInteractionType getType() {
+            return mType;
+        }
+
+        boolean isUseSearch() {
+            return mUseSearch;
+        }
+
+        Integer getTimeout() {
+            return mTimeout;
+        }
+
+        public enum ManualInteractionType {
+            Icon,
+            List,
+            Search_Only
+        }
+
+    }
+
+    public static class VoiceInteraction {
+        TTSChunk mTimeoutPrompt;
+        List<SdlVoiceHelpItem> mVrHelpItems = new ArrayList<>();
+
+        VoiceInteraction() {
+
+        }
+
+        VoiceInteraction copy(){
+            VoiceInteraction inter= new VoiceInteraction();
+            inter.mTimeoutPrompt= mTimeoutPrompt;
+            inter.mVrHelpItems= new ArrayList<>();
+            inter.mVrHelpItems.addAll(mVrHelpItems);
+            return inter;
+        }
+
+        public void addVrHelpItem(String text, SdlImage image) {
+            mVrHelpItems.add(new SdlVoiceHelpItem(text, image));
+        }
+
+        public void addVrHelpItem(SdlVoiceHelpItem item) {
+            mVrHelpItems.add(item);
+        }
+
+        public void setVrHelpItems(List<SdlVoiceHelpItem> items) {
+            mVrHelpItems = items;
+        }
+
+        public void setTimeoutPrompt(TTSChunk timeoutPrompt) {
+            mTimeoutPrompt = timeoutPrompt;
+        }
+
+        public void setTimeoutPrompt(String timeoutText) {
+            TTSChunk chunk = new TTSChunk();
+            chunk.setText(timeoutText);
+            chunk.setType(SpeechCapabilities.TEXT);
+            mTimeoutPrompt = chunk;
+        }
+
+        public class SdlVoiceHelpItem {
+            private final String mDisplayText;
+            private final SdlImage mSdlImage;
+
+            SdlVoiceHelpItem(String displayText, SdlImage image){
+                mDisplayText= displayText;
+                mSdlImage= image;
+            }
+        }
+
+
     }
 }
