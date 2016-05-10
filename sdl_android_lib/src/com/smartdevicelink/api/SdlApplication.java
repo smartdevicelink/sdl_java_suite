@@ -74,8 +74,6 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerALM{
@@ -216,11 +214,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             try {
                 request.setCorrelationID(mAutoCoorId++);
                 Log.d(TAG, "Sending RPCRequest type " + request.getFunctionName());
-                try {
-                    Log.d(TAG,request.serializeJSON().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 mSdlProxyALM.sendRPCRequest(request);
             } catch (SdlException e) {
                 e.printStackTrace();
