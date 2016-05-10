@@ -9,6 +9,7 @@ import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.api.view.SdlView;
 import com.smartdevicelink.api.view.SdlViewManager;
+import com.smartdevicelink.api.menu.SdlMenuItem;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
@@ -155,6 +156,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         mViewManager.getRootView().setIsVisible(true);
         mViewManager.updateView();
         mViewManager.prepareImages();
+        getTopMenu().update();
     }
 
     final void performBackground(){
@@ -216,6 +218,15 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public SdlPermissionManager getSdlPermissionManager() {
         return getSdlApplicationContext().getSdlPermissionManager();
+    }
+
+    public final void registerMenuCallback(int id, SdlMenuItem.SelectListener listener) {
+        getSdlApplicationContext().registerMenuCallback(id, listener);
+    }
+
+    @Override
+    public final void unregisterMenuCallback(int id) {
+        getSdlApplicationContext().unregisterMenuCallback(id);
     }
 
     public class SuperNotCalledException extends RuntimeException{
