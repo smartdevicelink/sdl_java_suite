@@ -14,7 +14,7 @@ public class SdlVoiceInteraction {
     TTSChunk mTimeoutPrompt;
     List<SdlVoiceHelpItem> mVrHelpItems = new ArrayList<>();
 
-    SdlVoiceInteraction() {
+    public SdlVoiceInteraction() {
 
     }
 
@@ -41,6 +41,10 @@ public class SdlVoiceInteraction {
     public void setTimeoutPrompt(TTSChunk timeoutPrompt) {
         mTimeoutPrompt = timeoutPrompt;
     }
+
+    TTSChunk getTimeoutPrompt(){return mTimeoutPrompt;}
+
+    List<SdlVoiceHelpItem> getVrHelpItems(){return mVrHelpItems;}
 
     public void setTimeoutPrompt(String timeoutText) {
         TTSChunk chunk = new TTSChunk();

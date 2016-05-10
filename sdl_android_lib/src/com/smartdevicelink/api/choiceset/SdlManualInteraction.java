@@ -7,6 +7,8 @@ public class SdlManualInteraction {
     final ManualInteractionType mType;
     boolean mUseSearch;
     Integer mTimeout;
+    private final static Integer MIN_VALUE= 5000;
+    private final static Integer MAX_VALUE= 100000;
 
     public SdlManualInteraction(ManualInteractionType type) {
         mType = type;
@@ -24,7 +26,12 @@ public class SdlManualInteraction {
     }
 
     public void setDuration(Integer duration) {
-        mTimeout = duration;
+        if(duration<MIN_VALUE)
+            mTimeout= MIN_VALUE;
+        else if(duration<MAX_VALUE)
+            mTimeout= duration;
+        else
+            mTimeout = MAX_VALUE;
     }
 
     ManualInteractionType getType() {

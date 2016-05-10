@@ -20,7 +20,6 @@ public class SdlChoice {
     private ArrayList<Integer> mIds= new ArrayList<>();
     private SdlImage mSdlImage;
     private final Collection<String> mVoiceCommands;
-    private boolean isGraphicOnly;
 
     public SdlChoice(String choiceName, String menuText, Collection<String> manyVoiceCommands, OnSelectedListener listener){
         mChoiceName= choiceName;
@@ -76,14 +75,6 @@ public class SdlChoice {
 
         void onManualSelection();
         void onVoiceSelection();
-    }
-
-    public boolean isGraphicOnly() {
-        return isGraphicOnly;
-    }
-
-    public void setGraphicOnly(boolean graphicOnly) {
-        isGraphicOnly = graphicOnly;
     }
 
     public void addVoiceCommand(String tts){

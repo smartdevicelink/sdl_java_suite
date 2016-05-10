@@ -14,10 +14,10 @@ import java.util.Set;
  */
 public class SdlChoiceSet {
 
-    private SparseArray<SdlChoice.OnSelectedListener> mChoices= new SparseArray<>();
-    private HashMap<String,Integer> mNameToId;
-    private String mChoiceSetName;
-    private int mChoiceId;
+    private final SparseArray<SdlChoice.OnSelectedListener> mChoices= new SparseArray<>();
+    private final HashMap<String,Integer> mNameToId;
+    private final String mChoiceSetName;
+    private final int mChoiceId;
 
     SdlChoiceSet(String name, int choiceId, HashMap<String,Integer> choices){
         mChoiceSetName = name;
@@ -41,7 +41,7 @@ public class SdlChoiceSet {
         for(String choiceName:relation.keySet()){
             mChoices.put(mNameToId.get(choiceName),relation.get(choiceName));
         }
-        return true;
+        return mNameToId.keySet().equals(relation.keySet());
     }
 
 }

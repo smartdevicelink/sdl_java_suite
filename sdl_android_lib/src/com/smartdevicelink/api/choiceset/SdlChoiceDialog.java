@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.choiceset;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -21,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -36,6 +38,7 @@ public class SdlChoiceDialog {
     private final TTSChunk mHelpPrompt;
     private final ResponseListener mListener;
     private final SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
+    private final HashSet<String> mNames = new HashSet<>();
     private final PerformInteraction mNewInteraction;
 
     SdlChoiceDialog(Builder builder){
@@ -45,13 +48,22 @@ public class SdlChoiceDialog {
         mInitialPrompt = builder.mInitialPrompt;
         mHelpPrompt = builder.mHelpPrompt;
         mListener = builder.mListener;
-        mManualInteraction= builder.mManualInteraction.copy();
-        mVoiceInteraction= builder.mVoiceInteraction.copy();
+
+        if(builder.mManualInteraction!=null)
+            mManualInteraction= builder.mManualInteraction.copy();
+        else
+            mManualInteraction= null;
+
+        if(builder.mVoiceInteraction!=null)
+            mVoiceInteraction= builder.mVoiceInteraction.copy();
+        else
+            mVoiceInteraction= null;
 
         ArrayList<Integer> choiceIds= new ArrayList<>();
         for(SdlChoiceSet set:builder.mChoiceSets){
             choiceIds.add(set.getChoiceId());
             SparseArray<SdlChoice.OnSelectedListener> choices = set.getChoices();
+            mNames.add(set.getSetName());
             for(int i=0; i<choices.size();i++){
                 mQuickListenerFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)));
             }
@@ -62,25 +74,35 @@ public class SdlChoiceDialog {
         if(mManualInteraction!=null){
             if(mManualInteraction.getTimeout()!=null)
                 mNewInteraction.setTimeout(mManualInteraction.getTimeout());
-            LayoutMode mode= getCorrectLayoutMode(mManualInteraction.mType, mManualInteraction.isUseSearch());
+            LayoutMode mode= getCorrectLayoutMode(mManualInteraction.getType(), mManualInteraction.isUseSearch());
             if(mode !=null)
                 mNewInteraction.setInteractionLayout(mode);
         }
 
         if(mVoiceInteraction!=null){
-            if(mVoiceInteraction.mTimeoutPrompt !=null)
+            if(mVoiceInteraction.getTimeoutPrompt() !=null)
                 mNewInteraction.setTimeoutPrompt(Collections.singletonList(mVoiceInteraction.mTimeoutPrompt));
         }
 
         mNewInteraction.setInteractionMode(getCorrectInteractionMode(mManualInteraction,mVoiceInteraction));
-        mNewInteraction.setHelpPrompt(Collections.singletonList(mHelpPrompt));
+        if(mHelpPrompt!=null)
+            mNewInteraction.setHelpPrompt(Collections.singletonList(mHelpPrompt));
 
     }
 
     public boolean send(SdlContext context){
-        if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.Alert)) {
+        //check if we have permissions to show the Perform Interaction first
+        if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.PerformInteraction)) {
+            //attach the help items to the perform interaction RPC
+            //will return false if one of the images provided is not uploaded currently
             if(!addVrHelpItems(context))
                 return false;
+            //checking to see that the interaction choice sets are currently uploaded
+            //to the module
+            for(String name:mNames) {
+                if (!context.getSdlChoiceSetManager().hasBeenUploaded(name))
+                    return false;
+            }
             mNewInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
@@ -105,17 +127,23 @@ public class SdlChoiceDialog {
     }
 
     private boolean addVrHelpItems(SdlContext context){
-        if(mVoiceInteraction !=null && mVoiceInteraction.mVrHelpItems.size()>0) {
+        if(mVoiceInteraction !=null && mVoiceInteraction.getVrHelpItems().size()>0) {
             ArrayList<VrHelpItem> vrItems = new ArrayList<>();
-            for (SdlVoiceInteraction.SdlVoiceHelpItem item : mVoiceInteraction.mVrHelpItems) {
-                if(context.getSdlFileManager().isFileOnModule(item.getSdlImage().getSdlName()))
-                    return false;
+            for (Integer i=0; i<mVoiceInteraction.getVrHelpItems().size();i++){
+                SdlVoiceInteraction.SdlVoiceHelpItem item= mVoiceInteraction.getVrHelpItems().get(i);
                 VrHelpItem helpItem = new VrHelpItem();
                 helpItem.setText(item.getDisplayText());
+                helpItem.setPosition(i+1);
+                vrItems.add(helpItem);
+                if(item.getSdlImage()==null)
+                    continue;
+                if(context.getSdlFileManager().isFileOnModule(item.getSdlImage().getSdlName()))
+                    return false;
                 Image helpImage = new Image();
                 helpImage.setImageType(ImageType.DYNAMIC);
                 helpImage.setValue(item.getSdlImage().getSdlName());
             }
+
             mNewInteraction.setVrHelp(vrItems);
         }
         return true;
@@ -204,7 +232,7 @@ public class SdlChoiceDialog {
 
 
     public static class Builder{
-        private Collection<SdlChoiceSet> mChoiceSets;
+        private Collection<SdlChoiceSet> mChoiceSets = new ArrayList<>();
         private SdlManualInteraction mManualInteraction;
         private SdlVoiceInteraction mVoiceInteraction;
         private String mInitialText;
@@ -217,8 +245,18 @@ public class SdlChoiceDialog {
         }
 
 
-        public Builder setChoiceSets(Collection<SdlChoiceSet> mChoiceSets) {
-            this.mChoiceSets = mChoiceSets;
+        public Builder setChoiceSets(@NonNull Collection<SdlChoiceSet> choiceSets) {
+            this.mChoiceSets = choiceSets;
+            return this;
+        }
+
+        public Builder addChoiceSet(SdlChoiceSet choiceSet){
+            this.mChoiceSets.add(choiceSet);
+            return this;
+        }
+
+        public Builder addChoiceSet(SdlChoiceSetCreation choiceSetCreation){
+            this.mChoiceSets.add(choiceSetCreation.getRepresentativeChoiceSet());
             return this;
         }
 
@@ -233,14 +271,14 @@ public class SdlChoiceDialog {
             return this;
         }
 
-        public Builder setInitialText(String mInitialText) {
-            this.mInitialText = mInitialText;
+        public Builder setInitialText(String initialText) {
+            this.mInitialText = initialText;
             return this;
         }
 
 
-        public Builder setInitialPrompt(TTSChunk mInitialPrompt) {
-            this.mInitialPrompt = mInitialPrompt;
+        public Builder setInitialPrompt(TTSChunk initialPrompt) {
+            this.mInitialPrompt = initialPrompt;
             return this;
         }
 
@@ -252,8 +290,8 @@ public class SdlChoiceDialog {
             return this;
         }
 
-        public Builder setHelpPrompt(TTSChunk mInitialPrompt) {
-            this.mHelpPrompt = mInitialPrompt;
+        public Builder setHelpPrompt(TTSChunk initialPrompt) {
+            this.mHelpPrompt = initialPrompt;
             return this;
         }
 
