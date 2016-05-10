@@ -11,6 +11,7 @@ import com.smartdevicelink.api.menu.SdlMenuItem;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
@@ -71,9 +72,13 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -218,15 +223,41 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
-    final public boolean sendRpc(RPCRequest request){
+    final public boolean sendRpc(final RPCRequest request){
         if(mSdlProxyALM != null){
             try {
                 request.setCorrelationID(mAutoCoorId++);
                 Log.d(TAG, "Sending RPCRequest type " + request.getFunctionName());
+                Log.v(TAG, request.serializeJSON().toString(3));
+                final OnRPCResponseListener listener = request.getOnRPCResponseListener();
+                OnRPCResponseListener newListener = new OnRPCResponseListener() {
+                    @Override
+                    public void onResponse(int correlationId, RPCResponse response) {
+                        try {
+                            Log.v(TAG, request.serializeJSON().toString(3));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(listener != null) listener.onResponse(correlationId, response);
+                        request.setOnRPCResponseListener(listener);
+                    }
+
+                    @Override
+                    public void onError(int correlationId, Result resultCode, String info) {
+                        super.onError(correlationId, resultCode, info);
+                        Log.w(TAG, "RPC Error for correlation ID " + correlationId + " Result: " +
+                                resultCode + " - " + info);
+                        if(listener != null) listener.onError(correlationId, resultCode, info);
+                        request.setOnRPCResponseListener(listener);
+                    }
+                };
+                request.setOnRPCResponseListener(newListener);
                 mSdlProxyALM.sendRPCRequest(request);
             } catch (SdlException e) {
                 e.printStackTrace();
                 return false;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return true;
         } else {
