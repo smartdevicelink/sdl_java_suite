@@ -3,7 +3,6 @@ package com.smartdevicelink.api.choiceset;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -22,7 +21,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -31,13 +29,13 @@ public class SdlChoiceDialog {
     private static final String TAG = SdlChoiceDialog.class.getSimpleName();
     private static final LayoutMode DEFAULT_LAYOUT= LayoutMode.ICON_ONLY;
 
-    private final ManualInteraction mManualInteraction;
-    private final VoiceInteraction mVoiceInteraction;
-    private String mInitialText;
-    private TTSChunk mInitialPrompt;
-    private TTSChunk mHelpPrompt;
-    private ResponseListener mListener;
-    private SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
+    private final SdlManualInteraction mManualInteraction;
+    private final SdlVoiceInteraction mVoiceInteraction;
+    private final String mInitialText;
+    private final TTSChunk mInitialPrompt;
+    private final TTSChunk mHelpPrompt;
+    private final ResponseListener mListener;
+    private final SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
     private final PerformInteraction mNewInteraction;
 
     SdlChoiceDialog(Builder builder){
@@ -109,14 +107,14 @@ public class SdlChoiceDialog {
     private boolean addVrHelpItems(SdlContext context){
         if(mVoiceInteraction !=null && mVoiceInteraction.mVrHelpItems.size()>0) {
             ArrayList<VrHelpItem> vrItems = new ArrayList<>();
-            for (VoiceInteraction.SdlVoiceHelpItem item : mVoiceInteraction.mVrHelpItems) {
-                if(context.getSdlFileManager().isFileOnModule(item.mSdlImage.getSdlName()))
+            for (SdlVoiceInteraction.SdlVoiceHelpItem item : mVoiceInteraction.mVrHelpItems) {
+                if(context.getSdlFileManager().isFileOnModule(item.getSdlImage().getSdlName()))
                     return false;
                 VrHelpItem helpItem = new VrHelpItem();
-                helpItem.setText(item.mDisplayText);
+                helpItem.setText(item.getDisplayText());
                 Image helpImage = new Image();
                 helpImage.setImageType(ImageType.DYNAMIC);
-                helpImage.setValue(item.mSdlImage.getSdlName());
+                helpImage.setValue(item.getSdlImage().getSdlName());
             }
             mNewInteraction.setVrHelp(vrItems);
         }
@@ -170,7 +168,7 @@ public class SdlChoiceDialog {
         }
     }
 
-    private LayoutMode getCorrectLayoutMode(ManualInteraction.ManualInteractionType type, boolean useSearch){
+    private LayoutMode getCorrectLayoutMode(SdlManualInteraction.ManualInteractionType type, boolean useSearch){
 
         if(type==null)
             return DEFAULT_LAYOUT;
@@ -193,7 +191,7 @@ public class SdlChoiceDialog {
         return null;
     }
 
-    private InteractionMode getCorrectInteractionMode(ManualInteraction manualInteraction, VoiceInteraction voiceInteraction){
+    private InteractionMode getCorrectInteractionMode(SdlManualInteraction manualInteraction, SdlVoiceInteraction voiceInteraction){
         if(voiceInteraction!=null){
             if(manualInteraction!=null)
                 return InteractionMode.BOTH;
@@ -207,8 +205,8 @@ public class SdlChoiceDialog {
 
     public static class Builder{
         private Collection<SdlChoiceSet> mChoiceSets;
-        private ManualInteraction mManualInteraction;
-        private VoiceInteraction mVoiceInteraction;
+        private SdlManualInteraction mManualInteraction;
+        private SdlVoiceInteraction mVoiceInteraction;
         private String mInitialText;
         private TTSChunk mInitialPrompt;
         private TTSChunk mHelpPrompt;
@@ -225,12 +223,12 @@ public class SdlChoiceDialog {
         }
 
 
-        public Builder setManualInteraction( ManualInteraction interaction){
+        public Builder setManualInteraction( SdlManualInteraction interaction){
             this.mManualInteraction= interaction;
             return this;
         }
 
-        public Builder setVoiceInteraction(VoiceInteraction interaction){
+        public Builder setVoiceInteraction(SdlVoiceInteraction interaction){
             this.mVoiceInteraction= interaction;
             return this;
         }
@@ -286,98 +284,4 @@ public class SdlChoiceDialog {
         void onSearch(String searchString);
     }
 
-    public static class ManualInteraction {
-        final ManualInteractionType mType;
-        boolean mUseSearch;
-        Integer mTimeout;
-
-        public ManualInteraction(ManualInteractionType type) {
-            mType = type;
-        }
-        ManualInteraction copy(){
-            ManualInteraction inter= new ManualInteraction(mType);
-            inter.mUseSearch= mUseSearch;
-            inter.mTimeout= mTimeout;
-            return inter;
-        }
-
-        public void setUseSearch(boolean useSearch) {
-            mUseSearch = useSearch;
-        }
-
-        public void setDuration(Integer duration) {
-            mTimeout = duration;
-        }
-
-        ManualInteractionType getType() {
-            return mType;
-        }
-
-        boolean isUseSearch() {
-            return mUseSearch;
-        }
-
-        Integer getTimeout() {
-            return mTimeout;
-        }
-
-        public enum ManualInteractionType {
-            Icon,
-            List,
-            Search_Only
-        }
-
-    }
-
-    public static class VoiceInteraction {
-        TTSChunk mTimeoutPrompt;
-        List<SdlVoiceHelpItem> mVrHelpItems = new ArrayList<>();
-
-        VoiceInteraction() {
-
-        }
-
-        VoiceInteraction copy(){
-            VoiceInteraction inter= new VoiceInteraction();
-            inter.mTimeoutPrompt= mTimeoutPrompt;
-            inter.mVrHelpItems= new ArrayList<>();
-            inter.mVrHelpItems.addAll(mVrHelpItems);
-            return inter;
-        }
-
-        public void addVrHelpItem(String text, SdlImage image) {
-            mVrHelpItems.add(new SdlVoiceHelpItem(text, image));
-        }
-
-        public void addVrHelpItem(SdlVoiceHelpItem item) {
-            mVrHelpItems.add(item);
-        }
-
-        public void setVrHelpItems(List<SdlVoiceHelpItem> items) {
-            mVrHelpItems = items;
-        }
-
-        public void setTimeoutPrompt(TTSChunk timeoutPrompt) {
-            mTimeoutPrompt = timeoutPrompt;
-        }
-
-        public void setTimeoutPrompt(String timeoutText) {
-            TTSChunk chunk = new TTSChunk();
-            chunk.setText(timeoutText);
-            chunk.setType(SpeechCapabilities.TEXT);
-            mTimeoutPrompt = chunk;
-        }
-
-        public class SdlVoiceHelpItem {
-            private final String mDisplayText;
-            private final SdlImage mSdlImage;
-
-            SdlVoiceHelpItem(String displayText, SdlImage image){
-                mDisplayText= displayText;
-                mSdlImage= image;
-            }
-        }
-
-
-    }
 }
