@@ -1,16 +1,22 @@
 package com.smartdevicelink.api.menu;
 
+import android.util.Log;
+
 import com.smartdevicelink.api.file.SdlFile;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 public class SdlMenuItem extends SdlMenuEntry{
+
+    private static final String TAG = SdlMenuItem.class.getSimpleName();
 
     private SdlImage mSdlImage;
 
@@ -22,23 +28,27 @@ public class SdlMenuItem extends SdlMenuEntry{
     public void setImage(SdlImage image){
         mSdlImage = image;
         isChanged = true;
+        update();
     }
 
     @Override
     void update() {
-        if(isChanged) {
+        if(isChanged && mRootMenu != null) {
             if (isDisplayed) {
+                isDisplayed = false;
                 sendDeleteCommand();
+            } else {
+                sendAddCommand();
+                isDisplayed = true;
+                isChanged = false;
             }
-            sendAddCommand();
-            isDisplayed = true;
-            isChanged = false;
         }
     }
 
     @Override
     void remove() {
         if(isDisplayed){
+            isDisplayed = false;
             sendDeleteCommand();
         }
         mSdlContext.unregisterButtonCallback(mId);
@@ -47,6 +57,7 @@ public class SdlMenuItem extends SdlMenuEntry{
     private void sendDeleteCommand() {
         DeleteCommand dc = new DeleteCommand();
         dc.setCmdID(mId);
+        dc.setOnRPCResponseListener(mResponseListener);
         mSdlContext.sendRpc(dc);
     }
 
@@ -54,6 +65,7 @@ public class SdlMenuItem extends SdlMenuEntry{
         AddCommand ac = new AddCommand();
         ac.setCmdID(mId);
         if(mSdlImage != null){
+            Log.d(TAG, "Image is set for command: " + mName);
             SdlFileManager fileManager = mSdlContext.getSdlFileManager();
             if(fileManager.isFileOnModule(mSdlImage.getSdlName())) {
                 Image image = new Image();
@@ -64,6 +76,7 @@ public class SdlMenuItem extends SdlMenuEntry{
                 fileManager.uploadSdlImage(mSdlImage, new SdlFileManager.FileReadyListener() {
                     @Override
                     public void onFileReady(SdlFile sdlFile) {
+                        isChanged = true;
                         update();
                     }
 
@@ -78,8 +91,16 @@ public class SdlMenuItem extends SdlMenuEntry{
         mp.setMenuName(mName);
         mp.setParentID(mRootMenu.getId());
         ac.setMenuParams(mp);
+        ac.setOnRPCResponseListener(mResponseListener);
         mSdlContext.sendRpc(ac);
     }
+
+    private OnRPCResponseListener mResponseListener = new OnRPCResponseListener() {
+        @Override
+        public void onResponse(int correlationId, RPCResponse response) {
+            update();
+        }
+    };
 
     public interface SelectListener{
 
