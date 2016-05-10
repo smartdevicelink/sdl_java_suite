@@ -22,23 +22,26 @@ public class ByteArrayMessageSpliter {
 	Long appId;
 	byte[] buffer;
 	int orginalSize;
+	int priorityCoef;
 	
-	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes){
+	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes, int priorityCoef){
 		this.appId = Long.valueOf(appId);
 		this.what = what;
 		stream = new ByteArrayInputStream(bytes);
 		orginalSize  = stream.available();
 		bytesRead = 0; 
 		firstPacket = true;
+		this.priorityCoef = priorityCoef;
 	}
 	
-	public ByteArrayMessageSpliter(Long appId,int what, byte[] bytes){
+	public ByteArrayMessageSpliter(Long appId,int what, byte[] bytes, int priorityCoef){
 		this.appId = appId;
 		this.what = what;
 		stream = new ByteArrayInputStream(bytes);
 		orginalSize  = stream.available();
 		bytesRead = 0; 
 		firstPacket = true;
+		this.priorityCoef = priorityCoef;
 	}
 	
 	public boolean isActive(){
@@ -88,6 +91,7 @@ public class ByteArrayMessageSpliter {
 		//Determine which flag should be sent for this division of the packet
 		if(firstPacket){
 			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START);
+			bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, this.priorityCoef);
 			firstPacket = false;
 		}else if(stream.available()<=0){ //We are at the end of the stream so let the flag reflect that
 			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_END);

@@ -91,9 +91,9 @@ public abstract class AbstractProtocol {
 
 		synchronized(_frameLock) {
 			
-			byte[] frameHeader = header.constructPacket();
-			if(frameHeader!=null){
-				_protocolListener.onProtocolMessageBytesToSend(frameHeader, 0, frameHeader.length);
+			//byte[] frameHeader = header.constructPacket();
+			if(header!=null){
+				_protocolListener.onProtocolMessageBytesToSend(header);
 			}//TODO else log out error
 			
 		}

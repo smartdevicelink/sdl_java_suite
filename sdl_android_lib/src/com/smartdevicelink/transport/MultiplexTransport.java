@@ -85,10 +85,9 @@ public class MultiplexTransport extends SdlTransport{
 	}
 
 	@Override
-	protected boolean sendBytesOverTransport(byte[] msgBytes, int offset,
-			int length) {
+	protected boolean sendBytesOverTransport(SdlPacket packet) {
 		if(brokerThread!=null){
-			brokerThread.sendPacket(msgBytes,offset,length);
+			brokerThread.sendPacket(packet);
 			return true;
 		}
 		return false; //Sure why not.
@@ -206,8 +205,8 @@ public class MultiplexTransport extends SdlTransport{
 			}
 		}
 
-		public void sendPacket(byte[] msgBytes,int offset,int length){
-			broker.sendPacketToRouterService(msgBytes,offset,length);
+		public void sendPacket(SdlPacket packet){
+			broker.sendPacketToRouterService(packet);
 		}
 
 		public void requestNewSession(){

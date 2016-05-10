@@ -63,7 +63,7 @@ public class SdlPacket implements Parcelable{
 	int sessionId;
 	int dataSize;
 	int messageId;
-	
+	int priorityCoefficient;
 	byte[] payload = null;
 
 	public SdlPacket(int version, boolean compression, int frameType,
@@ -77,6 +77,7 @@ public class SdlPacket implements Parcelable{
 		this.sessionId = sessionId;
 		this.dataSize = dataSize;
 		this.messageId = messageId;
+		this.priorityCoefficient = 0;
 		if(payload!=null){
 			this.payload = new byte[payload.length];
 			System.arraycopy(payload, 0, this.payload, 0, payload.length);
@@ -94,6 +95,7 @@ public class SdlPacket implements Parcelable{
 		this.sessionId = sessionId;
 		this.dataSize = dataSize;
 		this.messageId = messageId;
+		this.priorityCoefficient = 0;
 		if(payload!=null){
 			this.payload = new byte[bytesToWrite];
 			System.arraycopy(payload, offset, this.payload, 0, bytesToWrite);
@@ -190,6 +192,16 @@ public class SdlPacket implements Parcelable{
 	}
 	public void setPayload(byte[] bytes){
 		this.payload = bytes;
+	}
+	/**
+	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
+	 * @param priority
+	 */
+	public void setPriorityCoefficient(int priority){
+		this.priorityCoefficient = priority;
+	}
+	public int getPrioirtyCoefficient(){
+		return this.priorityCoefficient;
 	}
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
@@ -293,6 +305,7 @@ public class SdlPacket implements Parcelable{
 			payload = new byte[dataSize];
 			p.readByteArray(payload);
 		}
+		this.priorityCoefficient = p.readInt();
 	}
 	
 	
@@ -316,6 +329,7 @@ public class SdlPacket implements Parcelable{
 		if(payload!=null){
 			dest.writeByteArray(payload);
 		}
+		dest.writeInt(priorityCoefficient);
 
 	}
 	

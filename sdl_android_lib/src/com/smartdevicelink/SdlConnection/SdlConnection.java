@@ -245,12 +245,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 	}
 
 	@Override
-	public void onProtocolMessageBytesToSend(byte[] msgBytes, int offset,
-			int length) {
+	public void onProtocolMessageBytesToSend(SdlPacket packet) {
 		// Protocol has packaged bytes to send, pass to transport for transmission 
 		synchronized(TRANSPORT_REFERENCE_LOCK) {
 			if (_transport != null) {
-				_transport.sendBytes(msgBytes, offset, length);
+				_transport.sendBytes(packet);
 			}
 		}
 	}

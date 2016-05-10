@@ -130,6 +130,7 @@ public class WiProProtocol extends AbstractProtocol {
 				// Second four bytes are frame count.
 				System.arraycopy(BitConverter.intToByteArray(frameCount), 0, firstFrameData, 4, 4);
 				SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, _version,firstFrameData);
+				firstHeader.setPriorityCoefficient(1+protocolMsg.priorityCoefficient);
 				//Send the first frame
 				handlePacketToSend(firstHeader);
 				
@@ -154,12 +155,14 @@ public class WiProProtocol extends AbstractProtocol {
 						bytesToWrite = MAX_DATA_SIZE; 
 					}
 					SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, _version,data, currentOffset, bytesToWrite);
+					consecHeader.setPriorityCoefficient(i+2+protocolMsg.priorityCoefficient);
 					handlePacketToSend(consecHeader);
 					currentOffset += bytesToWrite;
 				}
 			} else {
 				messageID++;
 				SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, _version,data);
+				header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
 				handlePacketToSend(header);
 			}
 		}

@@ -1244,7 +1244,7 @@ public class SdlRouterService extends Service{
 		    				return false;
 		    			}
 	    				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  packet.getDataSize());
-	    				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appid,TransportConstants.ROUTER_RECEIVED_PACKET,bytes);				
+	    				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appid,TransportConstants.ROUTER_RECEIVED_PACKET,bytes,0);				
 	    				while(splitter.isActive()){
 	    					if(!sendPacketMessageToClient(app,splitter.nextMessage(),version)){
 	    						Log.w(TAG, "Error sending first message of split packet to client " + app.appId);
@@ -1836,6 +1836,7 @@ public class SdlRouterService extends Service{
 		Messenger messenger;
 		Vector<Long> sessionIds;
 		ByteAraryMessageAssembler buffer;
+		int prioirtyForBuffingMessage;
 		DeathRecipient deathNote = null;
 		LinkedBlockingQueue<PacketWriteTask> queue;
 		
@@ -1918,6 +1919,9 @@ public class SdlRouterService extends Service{
 			Log.d(TAG, "Flags received: " + flags);
 			if(flags!=TransportConstants.BYTES_TO_SEND_FLAG_NONE){
 				byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
+				if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
+					this.prioirtyForBuffingMessage = receivedBundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0);
+				}
 				handleMessage(flags, packet);
 			}else{
 				//Add the write task on the stack
@@ -1962,7 +1966,7 @@ public class SdlRouterService extends Service{
 			if(buffer.isFinished()){ //We are finished building the buffer so we should write the bytes out
 				byte[] bytes = buffer.getBytes();
 				if(queue!=null){
-					queue.add(new PacketWriteTask(bytes, 0, bytes.length));
+					queue.add(new PacketWriteTask(bytes, 0, bytes.length,this.prioirtyForBuffingMessage));
 					if(packetWriteTaskMaster!=null){
 						packetWriteTaskMaster.alert();
 					}
@@ -2029,21 +2033,23 @@ public class SdlRouterService extends Service{
 	 *
 	 */
 	public class PacketWriteTask implements Runnable{
-		private static final long DELAY_CONSTANT = 250; //250ms
+		private static final long DELAY_CONSTANT = 500; //250ms
 		private static final long SIZE_CONSTANT = 1000; //1kb
-		private static final int DELAY_COEF = 5;
+		private static final long PRIORITY_COEF_CONSTATNT = 500;
+		private static final int DELAY_COEF = 1;
 		private static final int SIZE_COEF = 1;
 		
 		private byte[] bytesToWrite = null;
-		private int offset, size;
+		private int offset, size, priorityCoefficient;
 		private final long timestamp;
 		final Bundle receivedBundle;
 		
-		public PacketWriteTask(byte[] bytes, int offset, int size){
+		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient){
 			timestamp = System.currentTimeMillis();
 			bytesToWrite = bytes;
 			this.offset = offset;
 			this.size = size;
+			this.priorityCoefficient = priorityCoefficient;
 			receivedBundle = null;
 		}
 		
@@ -2053,6 +2059,7 @@ public class SdlRouterService extends Service{
 			bytesToWrite = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
+			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
 		}
 		
 		@Override
@@ -2064,8 +2071,8 @@ public class SdlRouterService extends Service{
 			}
 		}
 		
-		private long getWeight(long currentTime){
-			return ((((currentTime-timestamp) + DELAY_CONSTANT) * DELAY_COEF ) - ((size -SIZE_CONSTANT) * SIZE_COEF));
+		private long getWeight(long currentTime){ //Time waiting - size - prioirty_coef
+			return ((((currentTime-timestamp) + DELAY_CONSTANT) * DELAY_COEF ) - ((size -SIZE_CONSTANT) * SIZE_COEF) - (priorityCoefficient * PRIORITY_COEF_CONSTATNT));
 		}
 	}
 	

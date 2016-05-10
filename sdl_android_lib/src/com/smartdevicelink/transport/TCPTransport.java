@@ -108,10 +108,11 @@ public class TCPTransport extends SdlTransport {
      * @return True if data was sent successfully, False otherwise
      */
     @Override
-    protected boolean sendBytesOverTransport(byte[] msgBytes, int offset, int length) {
+    protected boolean sendBytesOverTransport(SdlPacket packet) {
         TCPTransportState currentState = getCurrentState();
+        byte[] msgBytes = packet.constructPacket();
         logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Size: %d, Offset: %d, Length: %d, Current state is: %s"
-                , msgBytes.length, offset, length, currentState.name()));
+                , msgBytes.length, 0, msgBytes.length, currentState.name()));
 
         boolean bResult = false;
 
@@ -119,7 +120,7 @@ public class TCPTransport extends SdlTransport {
                 if (mOutputStream != null) {
                     logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
                     try {
-                        mOutputStream.write(msgBytes, offset, length);
+                        mOutputStream.write(msgBytes, 0, msgBytes.length);
                         bResult = true;
                         logInfo("TCPTransport.sendBytesOverTransport: successfully send data");
                     } catch (IOException e) {

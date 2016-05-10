@@ -411,36 +411,38 @@ public class TransportBroker {
 		}
 		
 		
-		public boolean sendPacketToRouterService(byte[] bytes, int offset, int count){ //We use ints because that is all that is supported by the outputstream class
+		public boolean sendPacketToRouterService(SdlPacket packet){ //We use ints because that is all that is supported by the outputstream class
 			//Log.d(TAG,whereToReply + "Sending packet to router service");
 			
 			if(routerServiceMessenger==null){
 				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
 				return false;
 			}
-			if(bytes == null 
-					|| offset<0 
-					|| count<0 
-					|| count>(bytes.length-offset)){
+			if(packet == null 
+					//|| offset<0 
+					//|| count<0 
+					){//|| count>(bytes.length-offset)){
 				Log.w(TAG,whereToReply + "incorrect params supplied");
 				return false;
 			}
+			byte[] bytes = packet.constructPacket();
 			if(bytes.length<ByteArrayMessageSpliter.MAX_BINDER_SIZE){//Determine if this is under the packet length.
 				Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
 				message.what = TransportConstants.ROUTER_SEND_PACKET;
 				Bundle bundle = new Bundle();
 				bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
 				bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes); //Do we just change this to the args and objs
-				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, offset);
-				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, count);
+				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
+				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytes.length);
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPrioirtyCoefficient());
 				message.setData(bundle);
 				
 				sendMessageToRouterService(message);
 				return true;
 			}else{ //Message is too big for IPC transaction 
 				Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
-				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes);				
+				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPrioirtyCoefficient() );				
 				while(splitter.isActive()){
 					sendMessageToRouterService(splitter.nextMessage());
 				}

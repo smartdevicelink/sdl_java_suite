@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,7 +15,6 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
-
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.SdlPacket;
@@ -36,6 +35,7 @@ import com.smartdevicelink.util.DebugTool;
  * the other side will NOT be notified and unblocked from reading data until
  * some data is sent again or the USB is physically disconnected.
  */
+@SuppressLint("NewApi")
 public class USBTransport extends SdlTransport {
     /**
      * Broadcast action: sent when a USB accessory is attached.
@@ -205,10 +205,10 @@ public class USBTransport extends SdlTransport {
      * @return true if the bytes are sent successfully
      */
     @Override
-    protected boolean sendBytesOverTransport(byte[] msgBytes, int offset,
-                                             int length) {
-        logD("SendBytes: array size " + msgBytes.length + ", offset " + offset +
-                ", length " + length);
+    protected boolean sendBytesOverTransport(SdlPacket packet) {
+    	byte[] msgBytes = packet.constructPacket();
+        logD("SendBytes: array size " + msgBytes.length + ", offset " + 0 +
+                ", length " + msgBytes.length);
 
         boolean result = false;
         final State state = getState();
@@ -216,13 +216,13 @@ public class USBTransport extends SdlTransport {
             case CONNECTED:
                     if (mOutputStream != null) {
                         try {
-                            mOutputStream.write(msgBytes, offset, length);
+                            mOutputStream.write(msgBytes, 0, msgBytes.length);
                             result = true;
 
                             logI("Bytes successfully sent");
                             SdlTrace.logTransportEvent(TAG + ": bytes sent",
                                     null, InterfaceActivityDirection.Transmit,
-                                    msgBytes, offset, length,
+                                    msgBytes, 0, msgBytes.length,
                                     SDL_LIB_TRACE_KEY);
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";

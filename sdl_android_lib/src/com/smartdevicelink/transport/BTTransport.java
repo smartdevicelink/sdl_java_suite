@@ -307,10 +307,11 @@ public class BTTransport extends SdlTransport {
 	 * Sends data over the transport.  Takes a byte array and transmits data provided starting at the
 	 * offset and of the provided length to fragment transmission.
 	 */
-	public boolean sendBytesOverTransport(byte[] msgBytes, int offset, int length) {
+	public boolean sendBytesOverTransport(SdlPacket packet) {
 		boolean sendResult = false;
 		try {
-			_output.write(msgBytes, offset, length);
+			byte[] msgBytes = packet.constructPacket();
+			_output.write(msgBytes, 0, msgBytes.length);
 			sendResult = true;
 		} catch (Exception ex) {
 			DebugTool.logError("Error writing to Bluetooth socket: " + ex.toString(), ex);
