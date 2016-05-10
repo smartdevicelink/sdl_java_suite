@@ -20,6 +20,7 @@ public class SdlMenu extends SdlMenuEntry {
 
     public void addMenuItem(SdlMenuItem menuItem){
         mMenuEntries.add(menuItem);
+        menuItem.setRootMenu(this);
         if(isDisplayed){
             menuItem.update();
         } else {
@@ -29,6 +30,7 @@ public class SdlMenu extends SdlMenuEntry {
 
     public void addMenuItem(int position, SdlMenuItem menuItem){
         mMenuEntries.add(position, menuItem);
+        menuItem.setRootMenu(this);
         if(isDisplayed){
             menuItem.update();
         } else {
