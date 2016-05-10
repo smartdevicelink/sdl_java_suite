@@ -1,15 +1,8 @@
 package com.smartdevicelink.api.view;
 
-import android.util.Log;
-
 import com.smartdevicelink.api.interfaces.SdlContext;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.Show;
-import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
-
-import org.json.JSONException;
 
 public class SdlViewManager {
 
@@ -42,27 +35,8 @@ public class SdlViewManager {
             mSdlContext.sendRpc(setDisplayLayout);
         }
         mRootView.decorate(mShow);
-        mShow.setOnRPCResponseListener(mShowListener);
         mSdlContext.sendRpc(mShow);
     }
-
-    private OnRPCResponseListener mShowListener = new OnRPCResponseListener() {
-        @Override
-        public void onResponse(int correlationId, RPCResponse response) {
-            try {
-                Log.v(TAG, response.serializeJSON().toString(3));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onError(int correlationId, Result resultCode, String info) {
-            // TODO: Method Stub
-            Log.v(TAG, resultCode + " - " + info);
-            super.onError(correlationId, resultCode, info);
-        }
-    };
 
     int registerButtonCallback(SdlButton.OnPressListener listener){
         return mSdlContext.registerButtonCallback(listener);
