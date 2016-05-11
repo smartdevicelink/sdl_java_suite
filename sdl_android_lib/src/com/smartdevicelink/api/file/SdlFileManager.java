@@ -16,8 +16,6 @@ import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
-import org.json.JSONException;
-
 import java.io.ByteArrayOutputStream;
 import java.util.HashSet;
 import java.util.List;
@@ -134,11 +132,6 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         @Override
         public void onResponse(int correlationId, RPCResponse response) {
             if(response == null) return;
-            try {
-                Log.i(TAG, response.serializeJSON().toString(3));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             ListFilesResponse lfr = (ListFilesResponse) response;
             List<String> fileNames = lfr.getFilenames();
             if(fileNames != null) {

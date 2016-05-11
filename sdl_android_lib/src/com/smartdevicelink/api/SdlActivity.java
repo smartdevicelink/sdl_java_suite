@@ -7,6 +7,7 @@ import com.smartdevicelink.api.choiceset.SdlChoiceSetManager;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.menu.SdlMenuItem;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -185,6 +186,16 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public SdlFileManager getSdlFileManager() {
         return getSdlApplicationContext().getSdlFileManager();
+    }
+
+    @Override
+    public final void registerMenuCallback(int id, SdlMenuItem.SelectListener listener) {
+        getSdlApplicationContext().registerMenuCallback(id, listener);
+    }
+
+    @Override
+    public final void unregisterMenuCallback(int id) {
+        getSdlApplicationContext().unregisterMenuCallback(id);
     }
 
     @Override

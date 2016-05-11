@@ -8,9 +8,12 @@ import com.smartdevicelink.api.choiceset.SdlChoiceSetManager;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
+import com.smartdevicelink.api.menu.SdlMenu;
+import com.smartdevicelink.api.menu.SdlMenuItem;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
@@ -71,14 +74,21 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
 public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerALM{
 
     private static final String TAG = SdlApplication.class.getSimpleName();
+
+    private static final String TOP_MENU_NAME = "Top Menu";
 
     public static final int BACK_BUTTON_ID = 0;
 
@@ -97,6 +107,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private SdlFileManager mSdlFileManager;
     private SdlPermissionManager mSdlPermissionManager;
     private SdlChoiceSetManager mSdlChoiceSetManager;
+    private SdlMenu mTopMenu;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -108,7 +119,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private boolean isFirstHmiNotNoneReceived = false;
 
     private SparseArray<SdlButtonListener> mButtonListenerRegistry = new SparseArray<>();
-    
+    private SparseArray<SdlMenuItem.SelectListener> mMenuListenerRegistry = new SparseArray<>();
+
     SdlApplication(SdlConnectionService service, SdlApplicationConfig config, ConnectionStatusListener listener){
         initialize(service.getApplicationContext());
         mApplicationConfig = config;
@@ -128,6 +140,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             mConnectionStatus = Status.CONNECTING;
             listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
         }
+        mTopMenu = new SdlMenu(this, TOP_MENU_NAME);
     }
 
     void initialize(Context androidContext){
@@ -209,15 +222,51 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
-    final public boolean sendRpc(RPCRequest request){
+    public void registerMenuCallback(int id, SdlMenuItem.SelectListener listener) {
+        mMenuListenerRegistry.append(id, listener);
+    }
+
+    @Override
+    public void unregisterMenuCallback(int id) {
+        mMenuListenerRegistry.remove(id);
+    }
+
+    @Override
+    final public boolean sendRpc(final RPCRequest request){
         if(mSdlProxyALM != null){
             try {
                 request.setCorrelationID(mAutoCoorId++);
                 Log.d(TAG, "Sending RPCRequest type " + request.getFunctionName());
+                Log.v(TAG, request.serializeJSON().toString(3));
+                final OnRPCResponseListener listener = request.getOnRPCResponseListener();
+                OnRPCResponseListener newListener = new OnRPCResponseListener() {
+                    @Override
+                    public void onResponse(int correlationId, RPCResponse response) {
+                        try {
+                            Log.v(TAG, request.serializeJSON().toString(3));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(listener != null) listener.onResponse(correlationId, response);
+                        request.setOnRPCResponseListener(listener);
+                    }
+
+                    @Override
+                    public void onError(int correlationId, Result resultCode, String info) {
+                        super.onError(correlationId, resultCode, info);
+                        Log.w(TAG, "RPC Error for correlation ID " + correlationId + " Result: " +
+                                resultCode + " - " + info);
+                        if(listener != null) listener.onError(correlationId, resultCode, info);
+                        request.setOnRPCResponseListener(listener);
+                    }
+                };
+                request.setOnRPCResponseListener(newListener);
                 mSdlProxyALM.sendRPCRequest(request);
             } catch (SdlException e) {
                 e.printStackTrace();
                 return false;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return true;
         } else {
@@ -228,6 +277,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     @Override
     public SdlPermissionManager getSdlPermissionManager() {
         return mSdlPermissionManager;
+    }
+
+    @Override
+    public SdlMenu getTopMenu() {
+        return mTopMenu;
     }
 
     /***********************************
@@ -326,7 +380,16 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public final void onOnCommand(OnCommand notification) {
-
+        if(notification != null && notification.getCmdID() != null){
+            SdlMenuItem.SelectListener listener = mMenuListenerRegistry.get(notification.getCmdID());
+            if(listener != null){
+                if(notification.getTriggerSource() != null && notification.getTriggerSource() == TriggerSource.TS_VR){
+                    listener.onVoiceSelect();
+                } else {
+                    listener.onTouchSelect();
+                }
+            }
+        }
     }
 
     @Override
