@@ -40,14 +40,14 @@ public class SdlChoiceDialog {
     private final SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
     private final HashSet<String> mNames = new HashSet<>();
     private final PerformInteraction mNewInteraction;
+    private boolean mIsPending=false;
 
-    SdlChoiceDialog(Builder builder){
+    SdlChoiceDialog(final Builder builder){
         mNewInteraction = new PerformInteraction();
 
         mInitialText = builder.mInitialText;
         mInitialPrompt = builder.mInitialPrompt;
         mHelpPrompt = builder.mHelpPrompt;
-        mListener = builder.mListener;
 
         if(builder.mManualInteraction!=null)
             mManualInteraction= builder.mManualInteraction.copy();
@@ -63,6 +63,8 @@ public class SdlChoiceDialog {
         for(SdlChoiceSet set:builder.mChoiceSets){
             choiceIds.add(set.getChoiceId());
             SparseArray<SdlChoice.OnSelectedListener> choices = set.getChoices();
+            //keep the names of the choice sets provided to ensure
+            //that they have been uploaded before sending the Perform Interaction
             mNames.add(set.getSetName());
             for(int i=0; i<choices.size();i++){
                 mQuickListenerFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)));
@@ -88,11 +90,12 @@ public class SdlChoiceDialog {
         if(mHelpPrompt!=null)
             mNewInteraction.setHelpPrompt(Collections.singletonList(mHelpPrompt));
 
+        mListener = createResponseDebugListener(builder.mListener);
     }
 
     public boolean send(SdlContext context){
         //check if we have permissions to show the Perform Interaction first
-        if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.PerformInteraction)) {
+        if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.PerformInteraction)&&!mIsPending) {
             //attach the help items to the perform interaction RPC
             //will return false if one of the images provided is not uploaded currently
             if(!addVrHelpItems(context))
@@ -106,21 +109,18 @@ public class SdlChoiceDialog {
             mNewInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
-                    PerformInteractionResponse interactionResponse = (PerformInteractionResponse) response;
-                    Integer choiceID = ((PerformInteractionResponse) response).getChoiceID();
-                    Log.d(TAG, Integer.toString(choiceID));
                     parseResponse(response);
                 }
 
                 @Override
                 public void onError(int correlationId, Result resultCode, String info) {
                     super.onError(correlationId, resultCode, info);
-                    Log.e(TAG, resultCode.toString()+" "+info);
                     handleResult(resultCode,info);
                 }
             });
 
             context.sendRpc(mNewInteraction);
+            mIsPending=true;
             return true;
         }
         return false;
@@ -168,12 +168,10 @@ public class SdlChoiceDialog {
                     handleResult(response.getResultCode(),response.getInfo());
             }
         }
+        mIsPending=false;
     }
 
     private void handleResult(Result response, String info){
-
-        if(mListener==null)
-            return;
         switch (response) {
             case SUCCESS:
                 mListener.onTimeout();
@@ -228,6 +226,39 @@ public class SdlChoiceDialog {
 
         }else
             return InteractionMode.MANUAL_ONLY;
+    }
+
+    //listener to debug out responses that are parsed to the set listener
+    private ResponseListener createResponseDebugListener(final ResponseListener responseListener){
+       return new ResponseListener() {
+            @Override
+            public void onTimeout() {
+                Log.d(TAG,"Perform Interaction timed out");
+                if(responseListener!=null)
+                    responseListener.onTimeout();
+            }
+
+            @Override
+            public void onAborted() {
+                Log.d(TAG,"Perform Interaction was aborted");
+                if(responseListener!=null)
+                    responseListener.onAborted();
+            }
+
+            @Override
+            public void onError() {
+                Log.d(TAG,"Perform Interaction timed out");
+                if(responseListener!=null)
+                    responseListener.onError();
+            }
+
+            @Override
+            public void onSearch(String searchString) {
+                Log.d(TAG,"Perform Interaction search came back with: "+searchString);
+                if(responseListener!=null)
+                    responseListener.onSearch(searchString);
+            }
+        };
     }
 
 

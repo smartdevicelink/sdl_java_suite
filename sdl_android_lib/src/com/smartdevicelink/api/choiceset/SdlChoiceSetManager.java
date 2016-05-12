@@ -105,13 +105,14 @@ public class SdlChoiceSetManager {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 unregisterSdlChoiceSet(name);
-                listener.onChoiceSetRemoved(name);
+                if(listener!=null)
+                    listener.onChoiceSetRemoved(name);
             }
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
-                //Log.e(TAG, resultCode.toString()+" "+info);
-                listener.onError(name);
+                if(listener!=null)
+                    listener.onError(name);
             }
         });
         return false;
