@@ -1708,6 +1708,13 @@ public class SdlRouterService extends Service{
 					peekWeight = peekTask.getWeight(currentTime);
 					Log.v(TAG, "App " + app.appId +" has a task with weight "+ peekWeight);
 					if(peekWeight>currentPriority){
+						if(app.queuePaused){
+							app.notIt();//Reset the timer
+							continue;
+						}
+						if(priorityApp!=null){
+							priorityApp.notIt();
+						}
 						currentPriority = peekWeight;
 						priorityApp = app;
 					}
@@ -1831,14 +1838,20 @@ public class SdlRouterService extends Service{
 		protected static final int SEND_MESSAGE_ERROR_MESSENGER_NULL 				= 0x02;
 		protected static final int SEND_MESSAGE_ERROR_MESSENGER_GENERIC_EXCEPTION 	= 0x03;
 		protected static final int SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT 		= 0x04;
-
+		
+		protected static final int PAUSE_TIME_FOR_QUEUE 							= 1500;
+		
 		long appId;
 		Messenger messenger;
 		Vector<Long> sessionIds;
 		ByteAraryMessageAssembler buffer;
 		int prioirtyForBuffingMessage;
 		DeathRecipient deathNote = null;
-		LinkedBlockingQueue<PacketWriteTask> queue;
+		//Packey queue vars
+		LinkedBlockingQueue<PacketWriteTask> queue; //FIXME use deque?
+		Handler queueWaitHandler= null;
+		Runnable queueWaitRunnable = null;
+		boolean queuePaused = false;
 		
 		/**
 		 * This is a simple class to hold onto a reference of a registered app.
@@ -1850,6 +1863,7 @@ public class SdlRouterService extends Service{
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
 			this.queue = new LinkedBlockingQueue<PacketWriteTask>();
+			queueWaitHandler = new Handler();
 			setDeathNote();
 		}
 		
@@ -1862,6 +1876,12 @@ public class SdlRouterService extends Service{
 			if(this.queue!=null){
 				this.queue.clear();
 				queue = null;
+			}
+			if(queueWaitHandler!=null){
+				if(queueWaitRunnable!=null){
+					queueWaitHandler.removeCallbacks(queueWaitRunnable);
+				}
+				queueWaitHandler = null;
 			}
 		}
 		
@@ -1988,7 +2008,40 @@ public class SdlRouterService extends Service{
 			}
 			return null;
 		}
-		
+
+		/**
+		 * This will inform the local app object that it was not picked to have the highest priority. This will allow the user to continue to perform interactions
+		 * with the module and not be bogged down by large packet requests. 
+		 */
+		protected void notIt(){
+			if(queue!=null && queue.peek().priorityCoefficient>0){ //If this has any sort of priority coefficient we want to make it wait. 
+				//Flag to wait
+				if(queueWaitHandler == null){
+					Log.e(TAG, "Unable to pause queue, handler was null");
+				}
+				if(queueWaitRunnable == null){
+					queueWaitRunnable = new Runnable(){
+
+						@Override
+						public void run() {
+							pauseQueue(false);
+							if(packetWriteTaskMaster!=null){
+								packetWriteTaskMaster.alert();
+							}
+							
+						}
+						
+					};
+				}
+				if(queuePaused){
+					queueWaitHandler.removeCallbacks(queueWaitRunnable);
+				}
+				pauseQueue(queueWaitHandler.postDelayed(queueWaitRunnable, PAUSE_TIME_FOR_QUEUE));
+			}
+		}
+		private void pauseQueue(boolean paused){
+			this.queuePaused = paused;
+		}
 		protected void clearBuffer(){
 			if(buffer!=null){
 				buffer.close();
