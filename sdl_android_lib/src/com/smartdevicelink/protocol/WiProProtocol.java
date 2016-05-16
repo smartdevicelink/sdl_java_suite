@@ -143,8 +143,8 @@ public class WiProProtocol extends AbstractProtocol {
 				if (sdlSec == null) 
 					return;
 				 
-				int iNumBytes = sdlSec.encryptData(data, dataToRead);
-				if (iNumBytes <= 0)
+				Integer iNumBytes = sdlSec.encryptData(data, dataToRead);
+				if ((iNumBytes == null) || (iNumBytes <= 0))
 					return;
 				
 		        byte[] encryptedData = new byte[iNumBytes];
@@ -325,9 +325,11 @@ public class WiProProtocol extends AbstractProtocol {
 		
 					SdlSecurityBase sdlSec = session.getSdlSecurity();
 					byte[] dataToRead = new byte[4096];	
-		
-					int iNumBytes = sdlSec.decryptData(packet.payload, dataToRead);
-		
+
+					Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
+					 if ((iNumBytes == null) || (iNumBytes <= 0))
+						 return;
+										 
 					byte[] decryptedData = new byte[iNumBytes];
 					System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
 					packet.payload = decryptedData;
