@@ -134,7 +134,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             mConnectionStatus = Status.CONNECTING;
             listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
         }
-        mTopMenu = new SdlMenu(this, TOP_MENU_NAME);
+        mTopMenu = new SdlMenu(TOP_MENU_NAME);
     }
 
     void initialize(Context androidContext){
