@@ -44,7 +44,6 @@ You can build the .jar file and sources .jar by:
 * Tell Maven to re-read the settings file by clicking Preferences -> Maven -> User Settings -> Update settings
 * Now edit pom.xml
 * Update the \<version\> tag
-* Update the repository section to refer to 
 * Update the repository location id, name and url
 
 * Go into Run -> Run As -> Maven build...
