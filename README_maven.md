@@ -16,7 +16,7 @@ Setup your account:
 
 There is an opportunity to create an organization who can own packages, under your profile you can create an organization.  Then this organization can manage the repositories.
 
-Create repos:
+###Create repos:
 In order to publish to a repository, you'll need to first create the repo in bintray. You can create a public repository or a private repository. For testing a private repo is a good way to see if the configuration is correct.  Then you can switch to publishing to the public repo. 
 
 * Create a Maven repository of a given name: either public or private.  For smartdevicelink, a repository name of 'SmartDeviceLink' works. 
@@ -32,16 +32,18 @@ In order to publish to a repository, you'll need to first create the repo in bin
 You can build the .jar file and sources .jar by:
 * Create a settings.xml file in your local home directory/.m2/settings.xml file.
 * Add in a servers location similar to this, but edit the attributes to different appropriate values.
-  <servers>
-     <server>
-     	<id>SOME_ID_NAME</id>
-     	<username>SOME_USERNAME</username>
-        <password>SOME_APIKEY</password>
-     </server>
-  </servers>
+'''
+  \<servers\>
+     \<server\>
+     	\<id\>SOME_ID_NAME\<\/id\>
+     	\<username\>SOME_USERNAME\<\/username\>
+        \<password\>SOME_APIKEY\<\/password\>
+     \<\/server\>
+  \<\/servers\>
+'''
 * Tell Maven to re-read the settings file by clicking Preferences -> Maven -> User Settings -> Update settings
 * Now edit pom.xml
-* Update the <version> tag
+* Update the \<version\> tag
 * Update the repository section to refer to 
 * Update the repository location id, name and url
 
@@ -55,20 +57,20 @@ You can build the .jar file and sources .jar by:
 * Make sure You have the login credentials correct in your settings.xml file.
 * Then click Run-> Run As -> Maven build...
 * Type in a goal of 'deploy' and click Run
-* Logs will indicate the package is deploying similar to these:
-[INFO] --- maven-deploy-plugin:2.8.1:deploy (default-deploy) @ sdl-android-lib ---
-[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.jar
-[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.jar (1123 KB at 409.2 KB/sec)
-[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.pom
-[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.pom (2 KB at 1.8 KB/sec)
-[INFO] Downloading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/maven-metadata.xml
-[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/maven-metadata.xml
-[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/maven-metadata.xml (314 B at 0.8 KB/sec)
-[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1-sources.jar
-[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1-sources.jar (342 KB at 209.6 KB/sec)
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
+* Logs will indicate the package is deploying similar to these:<br>
+[INFO] --- maven-deploy-plugin:2.8.1:deploy (default-deploy) @ sdl-android-lib ---<br>
+[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.jar<br>
+[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.jar (1123 KB at 409.2 KB/sec)<br>
+[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.pom<br>
+[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1.pom (2 KB at 1.8 KB/sec)<br>
+[INFO] Downloading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/maven-metadata.xml<br>
+[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/maven-metadata.xml<br>
+[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/maven-metadata.xml (314 B at 0.8 KB/sec)<br>
+[INFO] Uploading: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1-sources.jar<br>
+[INFO] Uploaded: https://api.bintray.com/maven/XXXXX/com.smartdevicelink/;publish=1/com/smartdevicelink/sdl-android-lib/4.0.1/sdl-android-lib-4.0.1-sources.jar (342 KB at 209.6 KB/sec)<br>
+[INFO] ------------------------------------------------------------------------<br>
+[INFO] BUILD SUCCESS<br>
+[INFO] ------------------------------------------------------------------------<br>
 
 ##5 Using the Maven package in a project
 In order to use this package in an android project you can do the following:
