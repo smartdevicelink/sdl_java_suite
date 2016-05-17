@@ -1,4 +1,4 @@
-[ ![Download](https://api.bintray.com/packages/alangonzalez/SDL_test/com.smartdevicelink/images/download.svg) ](https://bintray.com/alangonzalez/SDL_test/com.smartdevicelink/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/XXXXXX/com.smartdevicelink/images/download.svg) ](https://bintray.com/XXXXXX/com.smartdevicelink/_latestVersion)
 
 # Creating a Maven dependency package in Eclipse
 
