@@ -32,15 +32,15 @@ In order to publish to a repository, you'll need to first create the repo in bin
 You can build the .jar file and sources .jar by:
 * Create a settings.xml file in your local home directory/.m2/settings.xml file.
 * Add in a servers location similar to this, but edit the attributes to different appropriate values.
-'''
-  \<servers\>
-     \<server\>
-     	\<id\>SOME_ID_NAME\<\/id\>
-     	\<username\>SOME_USERNAME\<\/username\>
-        \<password\>SOME_APIKEY\<\/password\>
-     \<\/server\>
-  \<\/servers\>
-'''
+```
+  <servers>
+     <server>
+     	<id>SOME_ID_NAME</id>
+     	<username>SOME_USERNAME</username>
+        <password>SOME_APIKEY</password>
+     </server>
+  </servers>
+```
 * Tell Maven to re-read the settings file by clicking Preferences -> Maven -> User Settings -> Update settings
 * Now edit pom.xml
 * Update the \<version\> tag
