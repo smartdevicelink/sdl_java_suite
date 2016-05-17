@@ -1,6 +1,5 @@
 package com.smartdevicelink.api.menu;
 
-import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 
@@ -13,8 +12,8 @@ public class SdlMenu extends SdlMenuEntry {
 
     private final ArrayList<SdlMenuEntry> mMenuEntries;
 
-    public SdlMenu(SdlContext sdlContext, String name){
-        super(sdlContext, name);
+    public SdlMenu(String name){
+        super(name);
         mMenuEntries = new ArrayList<>();
     }
 
@@ -31,23 +30,34 @@ public class SdlMenu extends SdlMenuEntry {
     public void addMenuItem(int position, SdlMenuItem menuItem){
         mMenuEntries.add(position, menuItem);
         menuItem.setRootMenu(this);
-        if(isDisplayed){
-            menuItem.update();
-        } else {
-            isChanged = true;
+        if(mSdlContext != null) {
+            menuItem.setSdlContext(mSdlContext);
+            mSdlContext.registerMenuCallback(menuItem.getId(), menuItem.getListener());
+            if (isDisplayed) {
+                menuItem.update();
+            } else {
+                isChanged = true;
+            }
         }
     }
 
     public void removeMenuItem(SdlMenuItem menuItem){
-        if(mMenuEntries.remove(menuItem) && menuItem.isDisplayed) {
-            menuItem.remove();
+        if(mMenuEntries.remove(menuItem)) {
+            cleanupEntry(menuItem);
         }
     }
 
     public void removeMenuItem(int position){
         SdlMenuEntry entry = mMenuEntries.remove(position);
         if(entry != null){
-            entry.remove();
+            cleanupEntry(entry);
+        }
+    }
+
+    private void cleanupEntry(SdlMenuEntry entry) {
+        if(mSdlContext != null){
+            mSdlContext.unregisterMenuCallback(entry.getId());
+            if(entry.isDisplayed) entry.remove();
         }
     }
 
@@ -104,14 +114,13 @@ public class SdlMenu extends SdlMenuEntry {
 
     @Override
     public void update() {
-        if(isChanged){
-            if(isDisplayed && mRootMenu != null){
-                sendDeleteSubMenu();
+        if(isChanged && mRootMenu != null){
+            if(isDisplayed){
+                isDisplayed = !sendDeleteSubMenu();
+            } else {
+                isDisplayed = sendAddSubMenu();
+                isChanged = !isDisplayed;
             }
-            if(mRootMenu != null){
-                sendAddSubMenu();
-            }
-            isChanged = false;
         }
         for(SdlMenuEntry entry: mMenuEntries){
             entry.update();
@@ -129,17 +138,27 @@ public class SdlMenu extends SdlMenuEntry {
         }
     }
 
-    private void sendAddSubMenu() {
-        AddSubMenu asm = new AddSubMenu();
-        asm.setMenuID(mId);
-        asm.setMenuName(mName);
-        asm.setPosition(mRootMenu.getEntryPosition(this));
-        mSdlContext.sendRpc(asm);
+    private boolean sendAddSubMenu() {
+        if(mSdlContext != null) {
+            AddSubMenu asm = new AddSubMenu();
+            asm.setMenuID(mId);
+            asm.setMenuName(mName);
+            asm.setPosition(mRootMenu.getEntryPosition(this));
+            mSdlContext.sendRpc(asm);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void sendDeleteSubMenu() {
-        DeleteSubMenu dsm = new DeleteSubMenu();
-        dsm.setMenuID(mId);
-        mSdlContext.sendRpc(dsm);
+    private boolean sendDeleteSubMenu() {
+        if(mSdlContext != null) {
+            DeleteSubMenu dsm = new DeleteSubMenu();
+            dsm.setMenuID(mId);
+            mSdlContext.sendRpc(dsm);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

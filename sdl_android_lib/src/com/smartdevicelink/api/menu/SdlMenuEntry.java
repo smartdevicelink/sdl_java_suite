@@ -14,10 +14,13 @@ public abstract class SdlMenuEntry {
     protected SdlMenu mRootMenu = null;
     protected SdlContext mSdlContext;
 
-    public SdlMenuEntry(SdlContext sdlContext, String name){
-        mSdlContext = sdlContext;
+    public SdlMenuEntry(String name){
         mName = name;
         mId = generateId();
+    }
+
+    public final void setSdlContext(SdlContext sdlContext){
+        mSdlContext = sdlContext;
     }
 
     abstract void update();

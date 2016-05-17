@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.app.Service;
 
 import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.api.menu.SdlMenu;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
@@ -26,6 +27,7 @@ public class SdlApplicationConfig {
     private Class<? extends SdlActivity> mMainSdlActivity;
 
     // Optional parameters - initialized to default values
+    private SdlMenu mSdlMenu;
     private SdlProxyConfigurationResources mSdlProxyConfigurationResources;
     private Vector<TTSChunk> mTTSChunks;
     private String mShortAppName;
@@ -50,6 +52,7 @@ public class SdlApplicationConfig {
         this.isMediaApp = builder.isMediaApp;
         this.mMainSdlActivity = builder.mainSdlActivity;
 
+        this.mSdlMenu = builder.sdlMenu;
         this.mSdlProxyConfigurationResources = builder.sdlProxyConfigurationResources;
         this.mTTSChunks = builder.ttsChunks;
         this.mShortAppName = builder.shortAppName;
@@ -162,6 +165,7 @@ public class SdlApplicationConfig {
         private Class<? extends SdlActivity> mainSdlActivity;
 
         // Optional parameters - initialized to default values
+        private SdlMenu sdlMenu = null;
         private SdlProxyConfigurationResources sdlProxyConfigurationResources = null;
         private Vector<TTSChunk> ttsChunks = null;
         private String shortAppName = null;
@@ -188,6 +192,14 @@ public class SdlApplicationConfig {
          */
         public SdlApplicationConfig build(){
             return new SdlApplicationConfig(this);
+        }
+
+        /**
+         * Setter for top level SdlMenu.
+         * @param sdlMenu
+         */
+        public void setSdlMenu(SdlMenu sdlMenu) {
+            this.sdlMenu = sdlMenu;
         }
 
         /**
