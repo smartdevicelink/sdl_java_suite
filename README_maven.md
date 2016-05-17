@@ -51,9 +51,9 @@ You can build the .jar file and sources .jar by:
 * Click run
 * The build will create some artifacts in the 'target' subdirectory of sdl-android-lib-<VERSION>.jar and sdl-android-lib-<VERSION>-sources.jar
 
-##4. Publishing to Jcenter
-* Now once you have the targets successfully built, we can then deploy to Jcenter
-* Make sure You have the login credentials correct in your settings.xml file.
+##4. Publishing to JCenter
+* Now once you have the targets successfully built, we can then deploy to JCenter
+* First Make sure your login credentials are correct in your settings.xml file.
 * Then click Run-> Run As -> Maven build...
 * Type in a goal of 'deploy' and click Run
 * Logs will indicate the package is deploying similar to these:<br>
@@ -75,11 +75,15 @@ You can build the .jar file and sources .jar by:
 In order to use this package in an android project you can do the following:
 * In Android Studio:
 - Update the build.gradle dependencies with:
+```
 dependencies {
 	compile 'com.smartdevicelink:sdl-android-lib:4.0.1'
 }
+```
 
 If this is a private repository you'll need to specificy the location of the maven repo as well with something like:
+```
 maven {
         url 'http://dl.bintray.com/XXXXXX'
 }
+```
