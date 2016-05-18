@@ -16,11 +16,10 @@ public class SdlReceiver extends com.smartdevicelink.transport.SdlBroadcastRecei
 	}
 
 	@Override
-	public void onSdlEnabled(Context context) {
+	public void onSdlEnabled(Context context, Intent intent) {
 		Log.e(TAG, "SDL Enabled");
-		Intent startIntent = new Intent(context, SdlService.class);
-		startIntent.putExtra(FORCE_TRANSPORT_CONNECTED, true);
-		context.startService(startIntent);
+		intent.setClass(context, SdlService.class);
+		context.startService(intent);
 	}
 
 

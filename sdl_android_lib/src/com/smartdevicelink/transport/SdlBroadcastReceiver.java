@@ -78,7 +78,9 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						if(vlad.validate()){
 							Log.d(TAG, "Router service trusted!");
 							queuedService = componentName;
-							onSdlEnabled(context);
+							intent.setAction(null);
+							intent.putExtra(FORCE_TRANSPORT_CONNECTED, true);
+							onSdlEnabled(context, intent);
 						}else{
 							Log.e(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
 						}
@@ -260,9 +262,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * <p> The most useful code here would be to start the activity or service that handles most of the Livio 
 	 * Connect code.
 	 * @param context this is the context that was passed to this receiver when it was called.
+	 * @param intent this is the intent that alerted this broadcast. Make sure to pass all extra it came with to your service/activity
 	 * {@inheritDoc}
 	 */
-	public abstract void onSdlEnabled(Context context);
+	public abstract void onSdlEnabled(Context context, Intent intent);
 	
 	//public abstract void onSdlDisabled(Context context); //Removing for now until we're able to abstract from developer
 
