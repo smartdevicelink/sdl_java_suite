@@ -45,6 +45,8 @@ You can build the .jar file and sources .jar by:
 * Update the \<version\> tag
 * Update the repository location id, name and url
 
+Now make sure that all sources all compiled, by doing a 'Build Package' on the sdl_android_lib project.  Currently building sources with the Maven system results in errors, so you'll need to build using the Build Project menu to get all the sources into a .jar file.  Once the .jar file is created, then you can create the package.
+
 * Go into Run -> Run As -> Maven build...
 * Type in a goal of 'package'
 * Click run
