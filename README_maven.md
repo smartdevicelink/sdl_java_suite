@@ -1,4 +1,3 @@
-[ ![Download](https://api.bintray.com/packages/alangonzalez/SDL_test/com.smartdevicelink/images/download.svg) ](https://bintray.com/alangonzalez/SDL_test/com.smartdevicelink/_latestVersion)
 
 # Creating a Maven dependency package in Eclipse
 
@@ -32,29 +31,30 @@ In order to publish to a repository, you'll need to first create the repo in bin
 You can build the .jar file and sources .jar by:
 * Create a settings.xml file in your local home directory/.m2/settings.xml file.
 * Add in a servers location similar to this, but edit the attributes to different appropriate values.
-'''
-  \<servers\>
-     \<server\>
-     	\<id\>SOME_ID_NAME\<\/id\>
-     	\<username\>SOME_USERNAME\<\/username\>
-        \<password\>SOME_APIKEY\<\/password\>
-     \<\/server\>
-  \<\/servers\>
-'''
+```
+  <servers>
+     <server>
+     	<id>SOME_ID_NAME</id>
+     	<username>SOME_USERNAME</username>
+        <password>SOME_APIKEY</password>
+     </server>
+  </servers>
+```
 * Tell Maven to re-read the settings file by clicking Preferences -> Maven -> User Settings -> Update settings
 * Now edit pom.xml
 * Update the \<version\> tag
-* Update the repository section to refer to 
 * Update the repository location id, name and url
+
+Now make sure that all sources all compiled, by doing a 'Build Package' on the sdl_android_lib project.  Currently building sources with the Maven system results in errors, so you'll need to build using the Build Project menu to get all the sources into a .jar file.  Once the .jar file is created, then you can create the package.
 
 * Go into Run -> Run As -> Maven build...
 * Type in a goal of 'package'
 * Click run
 * The build will create some artifacts in the 'target' subdirectory of sdl-android-lib-<VERSION>.jar and sdl-android-lib-<VERSION>-sources.jar
 
-##4. Publishing to Jcenter
-* Now once you have the targets successfully built, we can then deploy to Jcenter
-* Make sure You have the login credentials correct in your settings.xml file.
+##4. Publishing to JCenter
+* Now once you have the targets successfully built, we can then deploy to JCenter
+* First Make sure your login credentials are correct in your settings.xml file.
 * Then click Run-> Run As -> Maven build...
 * Type in a goal of 'deploy' and click Run
 * Logs will indicate the package is deploying similar to these:<br>
@@ -76,11 +76,15 @@ You can build the .jar file and sources .jar by:
 In order to use this package in an android project you can do the following:
 * In Android Studio:
 - Update the build.gradle dependencies with:
+```
 dependencies {
 	compile 'com.smartdevicelink:sdl-android-lib:4.0.1'
 }
+```
 
 If this is a private repository you'll need to specificy the location of the maven repo as well with something like:
+```
 maven {
         url 'http://dl.bintray.com/XXXXXX'
 }
+```
