@@ -4,7 +4,13 @@ package com.hellosdl.sdl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import android.annotation.SuppressLint;
+import android.app.Service;
+import android.content.Intent;
+import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
+import android.os.IBinder;
+import android.util.Log;
 import com.hellosdl.MainActivity;
 import com.hellosdl.R;
 import com.smartdevicelink.exception.SdlException;
@@ -71,14 +77,10 @@ import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SdlBroadcastReceiver;
-import com.smartdevicelink.util.DebugTool;
-
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
+import com.smartdevicelink.transport.USBTransportConfig;
 
 /**
  * While this class is just an extension off the base Android Service class, we hope in the future we can offer something 
@@ -117,7 +119,7 @@ public class SdlService extends Service implements IProxyListenerALM{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
         if(proxy == null){
-        	startProxy();
+        	startProxy(intent);
         }else if (intent != null && intent.hasExtra(SdlBroadcastReceiver.FORCE_TRANSPORT_CONNECTED)){
         	proxy.forceOnConnected();
 		}
@@ -135,12 +137,25 @@ public class SdlService extends Service implements IProxyListenerALM{
 	 * *******************************************************  Methods for SdlProxy Management *******************************************************************************
 	 *************************************************************************************************************************************************************************/
 	
-	public void startProxy() {
+	@SuppressLint("InlinedApi")
+	public void startProxy(Intent intent) {
 		if (proxy == null) {
 			try {
+				BaseTransportConfig transport = null;
+				if(intent!=null && intent.hasExtra(UsbManager.EXTRA_ACCESSORY)){ //If we want to support USB transport
+					if(android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB){
+						Log.e(TAG, "Unable to start proxy. Android OS version is too low");
+						return;
+					}
+					//We have a usb transport
+					transport = new USBTransportConfig(getBaseContext(),(UsbAccessory)intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY));
+				}else{
+					//If we don't want anything but USB then would just do a return here and bail
+					transport = new MultiplexTransportConfig(getBaseContext(), APP_ID);
+				}
 				proxy = new SdlProxyALM(this, APP_NAME, 
 						true, APP_ID, 
-						new MultiplexTransportConfig(getBaseContext(), APP_ID));
+						transport);
 				
 			} catch (SdlException e) {
 				e.printStackTrace();

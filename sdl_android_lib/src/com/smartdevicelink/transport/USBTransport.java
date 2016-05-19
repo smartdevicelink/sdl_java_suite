@@ -446,19 +446,25 @@ public class USBTransport extends SdlTransport {
      */
     private void initializeAccessory() {
         logI("Looking for connected accessories");
-        UsbManager usbManager = getUsbManager();
-        UsbAccessory[] accessories = usbManager.getAccessoryList();
-        if (accessories != null) {
-            logD("Found total " + accessories.length + " accessories");
-            for (UsbAccessory accessory : accessories) {
-                if (isAccessorySupported(accessory)) {
-                    connectToAccessory(accessory);
-                    break;
-                }
-            }
-        } else {
-            logI("No connected accessories found");
+        UsbAccessory acc =  mConfig.getUsbAccessory();
+        if(acc == null || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
+        	UsbManager usbManager = getUsbManager();
+        	UsbAccessory[] accessories = usbManager.getAccessoryList();
+        	if (accessories != null) {
+        		logD("Found total " + accessories.length + " accessories");
+        		for (UsbAccessory accessory : accessories) {
+        			if (isAccessorySupported(accessory)) {
+        				acc = accessory;
+        				break;
+        			}
+        		}
+        	} else {
+        		logI("No connected accessories found");
+        		return;
+        	}
         }
+        
+        connectToAccessory(acc);
     }
 
     /**

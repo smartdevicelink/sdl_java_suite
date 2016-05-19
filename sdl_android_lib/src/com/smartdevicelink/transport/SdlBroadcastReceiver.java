@@ -57,10 +57,18 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
         if(!(action.equalsIgnoreCase(BOOT_COMPLETE)
         		|| action.equalsIgnoreCase(ACL_CONNECTED)
         		|| action.equalsIgnoreCase(STATE_CHANGED)
+        		|| action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)
         		|| action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION))){
         	//We don't want anything else here if the child class called super and has different intent filters
         	//Log.i(TAG, "Unwanted intent from child class");
         	return;
+        }
+        
+        if(action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)){
+        	Log.d(TAG, "Usb connected");
+        	intent.setAction(null);
+			onSdlEnabled(context, intent);
+			return;
         }
         
 	    boolean didStart = false;
@@ -102,7 +110,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			}
 
 		}
-
+		
 	    if (intent.getAction().contains("android.bluetooth.adapter.action.STATE_CHANGED")){
 	      
 	    	int state = intent.getExtras().getInt("android.bluetooth.adapter.extra.STATE");
