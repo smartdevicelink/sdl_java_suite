@@ -1,6 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -91,7 +92,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private SdlApplicationConfig mApplicationConfig;
 
-    private SdlActivityManager mSdlActivityManager;
+    @VisibleForTesting
+    SdlActivityManager mSdlActivityManager;
     private SdlPermissionManager mSdlPermissionManager;
     private SdlProxyALM mSdlProxyALM;
 
