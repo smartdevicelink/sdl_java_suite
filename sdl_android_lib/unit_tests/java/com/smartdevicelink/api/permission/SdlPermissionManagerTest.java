@@ -36,6 +36,10 @@ public class SdlPermissionManagerTest {
 
     SdlPermissionManager mSdlPermissionManager;
 
+    public SdlPermissionManagerTest(){
+
+    }
+
     @Before
     public void setUp() throws Exception {
         mSdlPermissionManager = new SdlPermissionManager(mock(SdlProxyALM.class));
