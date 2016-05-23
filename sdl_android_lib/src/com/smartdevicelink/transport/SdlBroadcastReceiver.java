@@ -78,7 +78,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						if(vlad.validate()){
 							Log.d(TAG, "Router service trusted!");
 							queuedService = componentName;
-							intent.setAction(null);
+							intent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
 							intent.putExtra(FORCE_TRANSPORT_CONNECTED, true);
 							onSdlEnabled(context, intent);
 						}else{
