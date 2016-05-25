@@ -38,7 +38,7 @@ public class RouterServiceValidator {
 	private static final String TAG = "PackageCheckUtl";
 	public static final String ROUTER_SERVICE_PACKAGE = "com.sdl.router";
 
-	private static final String REQUEST_PREFIX = "https://woprjr.smartdevicelink.org/api/1/applications/queryTrustedRouters"; 
+	private static final String REQUEST_PREFIX = "https://woprjr.smartdevicelink.com/api/1/applications/queryTrustedRouters"; 
 
 	private static final String DEFAULT_APP_LIST = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
 	
@@ -241,13 +241,13 @@ public class RouterServiceValidator {
 		try {
 			final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
 			//TODO might want to try to get version with this packageManager.getPackageInfo(packageName, 0).versionCode;
-			if ("com.android.vending".equals(packageManager.getInstallerPackageName(applicationInfo.packageName))
-					|| "com.amazon.venezia".equals(packageManager.getInstallerPackageName(applicationInfo.packageName))) {
-				// App was installed by Play Store
+			if(TrustedAppStore.isTrustedStore(packageManager.getInstallerPackageName(applicationInfo.packageName))){
+				// App was installed by trusted app store
 				return true;
 			}
 		} catch (final NameNotFoundException e) {
 			e.printStackTrace();
+			return false;
 		}
 		return false;
 	}
@@ -533,6 +533,41 @@ public class RouterServiceValidator {
 			this.packageName = packageName;
 			this.versionCode = versionCode;
 		}
+	}
+	
+	public static enum TrustedAppStore{
+		PLAY_STORE("com.android.vending"),
+		AMAZON("com.amazon.venezia"),
+		XIAOMI("com.xiaomi.market"),
+		SAMSUNG("com.sec.android.app.samsungapps"),
+		WANDOUJIA("com.wandoujia.phoenix2"),
+		BAIDU_APP_SEARCH("com.baidu.appsearch"),
+		HIAPK("com.hiapk.marketpho"),
+		;
+		
+		String packageString;
+		private TrustedAppStore(String packageString){
+			this.packageString = packageString;
+		}
+		
+		/**
+		 * Test if the supplied store package is one of the trusted app stores
+		 * @param packageString
+		 * @return
+		 */
+		public static boolean isTrustedStore(String packageString){
+			if(packageString == null){
+				return false;
+			}
+			TrustedAppStore[] stores = TrustedAppStore.values();
+			for(int i =0; i<stores.length; i++){
+				if(packageString.equalsIgnoreCase(stores[i].packageString)){
+					return true;
+				}
+			}
+			return false;
+		}
+		
 	}
 	
 	
