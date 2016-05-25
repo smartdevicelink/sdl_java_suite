@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1848,7 +1847,7 @@ public class SdlRouterService extends Service{
 		int prioirtyForBuffingMessage;
 		DeathRecipient deathNote = null;
 		//Packey queue vars
-		LinkedBlockingQueue<PacketWriteTask> queue; //FIXME use deque?
+		PacketWriteTaskBlockingQueue queue; 
 		Handler queueWaitHandler= null;
 		Runnable queueWaitRunnable = null;
 		boolean queuePaused = false;
@@ -1862,7 +1861,7 @@ public class SdlRouterService extends Service{
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
-			this.queue = new LinkedBlockingQueue<PacketWriteTask>();
+			this.queue = new PacketWriteTaskBlockingQueue();
 			queueWaitHandler = new Handler();
 			setDeathNote();
 		}
@@ -2176,4 +2175,167 @@ public class SdlRouterService extends Service{
 			this.isHalted = true;
 		}
 	}
+	
+	/**
+	 * Custom queue to prioritize packet write tasks based on their priority coefficient.<br> The queue is a doubly linked list.<br><br>
+	 * When a tasks is added to the queue, it will be evaluated using it's priority coefficient. If the coefficient is greater than 0, it will simply
+	 * be placed at the end of the queue. If the coefficient is equal to 0, the queue will begin to iterate at the head and work it's way back. Once it is found that the current 
+	 * tasks has a priority coefficient greater than 0, it will be placed right before that task. The idea is to keep a semi-serial queue but creates a priority that allows urgent
+	 * tasks such as UI related to skip near the front. However, it is assumed those tasks of higher priority should also be handled in a serial fashion.
+	 * 
+	 * @author Joey Grover
+	 *
+	 */
+	private class PacketWriteTaskBlockingQueue{
+		final class Node<E> {
+			E item;
+			Node<E> prev;
+			Node<E> next;
+			Node(E item, Node<E> previous, Node<E> next) {
+				this.item = item;
+				this.prev = previous;
+				this.next = next;
+			}
+		}
+
+		private Node<PacketWriteTask> head;
+		private Node<PacketWriteTask> tail;
+
+		/**
+		 * This will take the given task and insert it at the tail of the queue
+		 * @param task the task to be inserted at the tail of the queue
+		 */
+		private void insertAtTail(PacketWriteTask task){
+			if (task == null){
+				throw new NullPointerException();
+			}
+			Node<PacketWriteTask> oldTail = tail;
+			Node<PacketWriteTask> newTail = new Node<PacketWriteTask>(task, oldTail, null);
+			tail = newTail;
+			if (head == null){
+				head = newTail;
+			}else{
+				oldTail.next = newTail;
+			}
+
+		}
+
+		/**
+		 * This will take the given task and insert it at the head of the queue
+		 * @param task the task to be inserted at the head of the queue
+		 */
+		private void insertAtHead(PacketWriteTask task){
+			if (task == null){
+				throw new NullPointerException();
+			}
+			Node<PacketWriteTask> oldHead = head;
+			Node<PacketWriteTask> newHead = new Node<PacketWriteTask>(task, null, oldHead);
+			head = newHead;
+			if (tail == null){
+				tail = newHead;
+			}else{
+				if(oldHead!=null){
+					oldHead.prev = newHead;
+				}
+			}
+		}
+
+		/**
+		 * Insert the task in the queue where it belongs
+		 * @param task
+		 */
+		 public void add(PacketWriteTask task){
+			synchronized(this){
+				if (task == null){
+					throw new NullPointerException();
+				}
+
+				//If we currently don't have anything in our queue
+				if(head == null || tail == null){
+					Node<PacketWriteTask> taskNode = new Node<PacketWriteTask>(task, head, tail);
+					head = taskNode;
+					tail = taskNode;
+					return;
+				}else if(task.priorityCoefficient>0){ //If the  task is already a not high priority task, we just need to insert it at the tail
+					insertAtTail(task);
+					return;
+				}else if(head.item.priorityCoefficient>0){ //If the head task is already a not high priority task, we just need to insert at head
+					insertAtHead(task);
+					return;
+				}else{
+					if(tail!=null && tail.item.priorityCoefficient==0){ //Saves us from going through the entire list if all of these tasks are priority coef == 0
+						insertAtTail(task);
+						return;
+					}
+					Node<PacketWriteTask> currentPlace = head;
+					while(true){
+						if(currentPlace.item.priorityCoefficient==0){
+							if(currentPlace.next==null){
+								//We've reached the end of the list
+								insertAtTail(task);
+								return;
+							}else{
+								currentPlace = currentPlace.next;
+								continue;
+							}
+						}else{
+							//We've found where this task should be inserted
+							Node<PacketWriteTask> previous = currentPlace.prev;
+							Node<PacketWriteTask> taskNode = new Node<PacketWriteTask>(task, previous, currentPlace);
+							previous.next = taskNode;
+							currentPlace.prev = taskNode;
+							return;
+
+						}
+					}
+				}
+			}
+		 }
+
+		 /**
+		  * Peek at the current head of the queue
+		  * @return the task at the head of the queue but does not remove it from the queue
+		  */
+		 public PacketWriteTask peek(){
+			 synchronized(this){
+				 if(head == null){
+					 return null;
+				 }else{
+					 return head.item;
+				 }
+			 }
+		 }
+
+		 /**
+		  * Remove the head of the queue
+		  * @return the old head of the queue
+		  */
+		 public PacketWriteTask poll(){
+			 synchronized(this){
+				 if(head == null){
+					 return null;
+				 }else{
+					 Node<PacketWriteTask> retValNode = head;
+					 Node<PacketWriteTask> newHead = head.next;
+					 if(newHead == null){
+						 tail = null;
+					 }
+					 head = newHead;
+
+					 return retValNode.item;
+				 }
+			 }
+		 }
+
+		 /**
+		  * Currently only clears the head and the tail of the queue.
+		  */
+		 public void clear(){
+			 //Should probably go through the linked list and clear elements, but gc should clear them out automatically. 
+			 head = null;
+			 tail = null;
+		 }
+	}
+
+
 }

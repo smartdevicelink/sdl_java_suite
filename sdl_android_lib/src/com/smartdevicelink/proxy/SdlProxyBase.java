@@ -1613,8 +1613,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
 			}
 			pm.setCorrID(request.getCorrelationID());
-			if (request.getBulkData() != null) 
+			if (request.getBulkData() != null){
 				pm.setBulkData(request.getBulkData());
+			}
+			if(request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
+				pm.setPriorityCoefficient(1);
+			}
 			
 			// Queue this outgoing message
 			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
