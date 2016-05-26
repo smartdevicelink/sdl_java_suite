@@ -1,8 +1,6 @@
 package com.smartdevicelink.api.choiceset;
 
 import com.smartdevicelink.api.SdlApplication;
-import com.smartdevicelink.api.file.SdlFileManager;
-import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
@@ -45,16 +43,17 @@ public class SdlChoiceSetManager {
         return true;
     }
 
-    public boolean uploadChoiceSetCreation(final SdlChoiceSetCreation creation, final ChoiceSetReadyListener listener){
-        if(hasBeenUploaded(creation.getSetName()))
+    //TODO:throw exception if the image is not uploaded for the choice?
+    public boolean uploadChoiceSetCreation(final SdlChoiceSet choiceSet, final ChoiceSetReadyListener listener){
+        if(hasBeenUploaded(choiceSet.getSetName()))
             return true;
 
         CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
 
         ArrayList<Choice> proxyChoices= new ArrayList<>();
-        for(int i=0; i<creation.getChoices().size();i++) {
-            int choiceID= creation.getChoices().keyAt(i);
-            SdlChoice currentChoice = creation.getChoices().get(choiceID);
+        for(int i=0; i<choiceSet.getChoices().size();i++) {
+            int choiceID= choiceSet.getChoices().keyAt(i);
+            SdlChoice currentChoice = choiceSet.getChoices().get(choiceID);
             Choice convertToChoice= new Choice();
             convertToChoice.setMenuName(currentChoice.getMenuText());
             convertToChoice.setSecondaryText(currentChoice.getSubText());
@@ -73,20 +72,20 @@ public class SdlChoiceSetManager {
             proxyChoices.add(convertToChoice);
         }
         newRequest.setChoiceSet(proxyChoices);
-        newRequest.setInteractionChoiceSetID(creation.getChoiceSetId());
+        newRequest.setInteractionChoiceSetID(choiceSet.getChoiceSetId());
         newRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                registerSdlChoiceSet(creation.createChoiceSet());
+                registerSdlChoiceSet(choiceSet.deepCopy());
                 if(listener!=null)
-                    listener.onChoiceSetAdded(creation);
+                    listener.onChoiceSetAdded(choiceSet);
             }
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
                 if(listener!=null)
-                    listener.onError(creation, info);
+                    listener.onError(choiceSet, info);
             }
         });
         mApplication.sendRpc(newRequest);
@@ -100,7 +99,7 @@ public class SdlChoiceSetManager {
             return true;
 
         DeleteInteractionChoiceSet deleteSet= new DeleteInteractionChoiceSet();
-        deleteSet.setInteractionChoiceSetID(grabUploadedChoiceSet(name).getChoiceId());
+        deleteSet.setInteractionChoiceSetID(grabUploadedChoiceSet(name).getChoiceSetId());
         deleteSet.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
@@ -129,7 +128,7 @@ public class SdlChoiceSetManager {
 
     public SdlChoiceSet grabUploadedChoiceSet(String choiceSetName){
         if(hasBeenUploaded(choiceSetName))
-            return mChoiceSet.get(choiceSetName).copy();
+            return mChoiceSet.get(choiceSetName).deepCopy();
         else
             return null;
     }
@@ -141,9 +140,9 @@ public class SdlChoiceSetManager {
 
     public interface ChoiceSetReadyListener {
 
-        void onChoiceSetAdded(SdlChoiceSetCreation sdlIdCommand);
+        void onChoiceSetAdded(SdlChoiceSet sdlIdCommand);
 
-        void onError(SdlChoiceSetCreation sdlIdCommand, String info);
+        void onError(SdlChoiceSet sdlIdCommand, String info);
 
     }
 

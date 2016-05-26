@@ -1,47 +1,77 @@
 package com.smartdevicelink.api.choiceset;
 
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.api.interfaces.SdlContext;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
- * Created by mschwerz on 5/4/16.
+ * Created by mschwerz on 5/6/16.
  */
 public class SdlChoiceSet {
+    private final static String TAG= SdlChoiceSet.class.getSimpleName();
 
-    private final SparseArray<SdlChoice.OnSelectedListener> mChoices= new SparseArray<>();
-    private final HashMap<String,Integer> mNameToId;
-    private final String mChoiceSetName;
-    private final int mChoiceId;
+    private SparseArray<SdlChoice> mChoices;
+    private String mChoiceSetName;
+    private final Integer mChoiceSetId;
+    private SdlChoiceSetManager mManager;
 
-    SdlChoiceSet(String name, int choiceId, HashMap<String,Integer> choices){
-        mChoiceSetName = name;
-        mNameToId = choices;
-        mChoiceId = choiceId;
+    public SdlChoiceSet(@NonNull String name, @NonNull ArrayList<SdlChoice> choices, @NonNull SdlContext context){
+        mChoices= populateChoicesWithIds(choices,context);
+        mChoiceSetName= name;
+        mManager= context.getSdlChoiceSetManager();
+        mChoiceSetId = mManager.requestChoiceSetCount();
     }
 
-    SdlChoiceSet copy(){
-        return new SdlChoiceSet(mChoiceSetName,mChoiceId,mNameToId);
+    private SdlChoiceSet(Integer id){
+        mChoiceSetId= id;
     }
-
 
     public String getSetName(){return mChoiceSetName;}
-    public Set<String> getChoiceNames(){return mNameToId.keySet();}
 
-    SparseArray<SdlChoice.OnSelectedListener> getChoices(){return mChoices;}
+    SparseArray<SdlChoice> getChoices(){return mChoices;}
 
-    int getChoiceId(){ return mChoiceId; }
+    int getChoiceSetId(){
+        return mChoiceSetId;
+    }
 
-    public boolean setListenersForChoiceName(HashMap<String,SdlChoice.OnSelectedListener> relation){
-        for(String choiceName:relation.keySet()){
-            mChoices.put(mNameToId.get(choiceName),relation.get(choiceName));
+    public boolean hasBeenUploaded(){return mManager.hasBeenUploaded(getSetName());}
+
+    private SparseArray<SdlChoice> populateChoicesWithIds(Collection<SdlChoice> sdlChoices, SdlContext context){
+        SparseArray<SdlChoice> newIdArray= new SparseArray<>();
+        for(SdlChoice choice:sdlChoices){
+            Integer newId= context.getSdlChoiceSetManager().requestChoiceCount();
+            choice.addId(newId);
+            newIdArray.append(newId,choice);
         }
-        return mNameToId.keySet().equals(relation.keySet());
+        return newIdArray;
+    }
+
+    SdlChoiceSet deepCopy(){
+        SdlChoiceSet set= new SdlChoiceSet(mChoiceSetId);
+        set.mChoiceSetName= mChoiceSetName;
+        set.mManager= mManager;
+        set.mChoices = depopulatedListenerChoices(mChoices);
+        return set;
+    }
+
+    SparseArray<SdlChoice> depopulatedListenerChoices(SparseArray<SdlChoice> choices){
+        SparseArray<SdlChoice> cloneArray= new SparseArray<>();
+        for(int j=0; j<choices.size();j++){
+            SdlChoice cloneChoice= choices.get(choices.keyAt(j)).getListenerLessDeepCopy();
+            cloneArray.append(choices.keyAt(j), cloneChoice);
+        }
+        return cloneArray;
+    }
+    public void setListenersForChoices(HashMap<String,SdlChoice.OnSelectedListener> relation){
+        for(int i=0; i<mChoices.size();i++) {
+            SdlChoice choice= mChoices.get(mChoices.keyAt(i));
+            choice.setOnSelectedListener(relation.get(choice.getChoiceName()));
+        }
     }
 
 }

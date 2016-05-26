@@ -1,11 +1,16 @@
 package com.smartdevicelink.api.choiceset;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,24 +21,20 @@ public class SdlChoice {
     private final String mMenuText;
     private String mSubText;
     private String mRightHandText;
-    private final OnSelectedListener mListener;
+    private OnSelectedListener mListener;
     private ArrayList<Integer> mIds= new ArrayList<>();
     private SdlImage mSdlImage;
-    private final Collection<String> mVoiceCommands;
+    private final ArrayList<String> mVoiceCommands;
 
-    public SdlChoice(String choiceName, String menuText, Collection<String> manyVoiceCommands, OnSelectedListener listener){
+    public SdlChoice(@NonNull String choiceName, @NonNull String menuText, @NonNull ArrayList<String> manyVoiceCommands, @Nullable OnSelectedListener listener){
         mChoiceName= choiceName;
         mMenuText = menuText;
         mListener = listener;
         mVoiceCommands= manyVoiceCommands;
     }
 
-    public SdlChoice(String choiceName, String menuText, String singleVoiceCommand, OnSelectedListener listener){
-        mChoiceName= choiceName;
-        mMenuText = menuText;
-        mListener = listener;
-        mVoiceCommands= new ArrayList<>();
-        mVoiceCommands.add(singleVoiceCommand);
+    public SdlChoice(@NonNull String choiceName, @NonNull String menuText, @NonNull final String singleVoiceCommand, @Nullable OnSelectedListener listener){
+        this(choiceName,menuText, new ArrayList<>(Collections.singletonList(singleVoiceCommand)),listener);
     }
 
     public String getChoiceName(){ return mChoiceName; }
@@ -51,7 +52,7 @@ public class SdlChoice {
     }
 
 
-    public OnSelectedListener getListener() {
+    OnSelectedListener getListener() {
         return mListener;
     }
 
@@ -62,14 +63,26 @@ public class SdlChoice {
     void addId(int id) {
         mIds.add(id);
     }
+    void setIds(ArrayList<Integer> ids){ mIds= ids;}
 
-    void setRightHandText( String text ) {mRightHandText= text;}
+    public void setRightHandText( String text ) {mRightHandText= text;}
 
     public String getRightHandText(){return mRightHandText;}
 
-    void setSubText( String text ){mSubText= text;}
+    public void setSubText( String text ){mSubText= text;}
 
     public String getSubText(){return mSubText;}
+
+    SdlChoice getListenerLessDeepCopy(){
+        SdlChoice copyChoice = new SdlChoice(mChoiceName, mMenuText,mVoiceCommands,null);
+        copyChoice.mSubText =mSubText;
+        copyChoice.mRightHandText= mRightHandText;
+        copyChoice.mIds= mIds;
+        copyChoice.mSdlImage= mSdlImage;
+        return copyChoice;
+    }
+
+    void setOnSelectedListener(OnSelectedListener listener){ mListener= listener;}
 
     public interface OnSelectedListener {
 

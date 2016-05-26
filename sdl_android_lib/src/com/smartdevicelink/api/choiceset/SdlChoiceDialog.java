@@ -61,13 +61,13 @@ public class SdlChoiceDialog {
 
         ArrayList<Integer> choiceIds= new ArrayList<>();
         for(SdlChoiceSet set:builder.mChoiceSets){
-            choiceIds.add(set.getChoiceId());
-            SparseArray<SdlChoice.OnSelectedListener> choices = set.getChoices();
+            choiceIds.add(set.getChoiceSetId());
+            SparseArray<SdlChoice> choices = set.getChoices();
             //keep the names of the choice sets provided to ensure
             //that they have been uploaded before sending the Perform Interaction
             mNames.add(set.getSetName());
             for(int i=0; i<choices.size();i++){
-                mQuickListenerFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)));
+                mQuickListenerFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)).getListener());
             }
         }
         mNewInteraction.setInteractionChoiceSetIDList(choiceIds);
@@ -94,6 +94,7 @@ public class SdlChoiceDialog {
     }
 
     public boolean send(SdlContext context){
+        Log.d(TAG,"SdlChoiceDialog being sent");
         //check if we have permissions to show the Perform Interaction first
         if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.PerformInteraction)&&!mIsPending) {
             //attach the help items to the perform interaction RPC
@@ -283,11 +284,6 @@ public class SdlChoiceDialog {
 
         public Builder addChoiceSet(SdlChoiceSet choiceSet){
             this.mChoiceSets.add(choiceSet);
-            return this;
-        }
-
-        public Builder addChoiceSet(SdlChoiceSetCreation choiceSetCreation){
-            this.mChoiceSets.add(choiceSetCreation.getRepresentativeChoiceSet());
             return this;
         }
 

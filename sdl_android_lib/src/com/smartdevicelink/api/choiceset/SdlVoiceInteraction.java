@@ -21,8 +21,7 @@ public class SdlVoiceInteraction {
     SdlVoiceInteraction copy() {
         SdlVoiceInteraction inter = new SdlVoiceInteraction();
         inter.mTimeoutPrompt = mTimeoutPrompt;
-        inter.mVrHelpItems = new ArrayList<>();
-        inter.mVrHelpItems.addAll(mVrHelpItems);
+        inter.mVrHelpItems = new ArrayList<>(mVrHelpItems);
         return inter;
     }
 
