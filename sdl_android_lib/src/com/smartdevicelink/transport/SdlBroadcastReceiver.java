@@ -1,5 +1,7 @@
 package com.smartdevicelink.transport;
 
+import java.util.Locale;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
@@ -7,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
@@ -182,7 +183,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	    	//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
-	    	if ((service.service.getClassName()).toLowerCase().contains(SDL_ROUTER_SERVICE_CLASS_NAME)) {
+	    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME)) {
 	    		runningBluetoothServicePackage = service.service;	//Store which instance is running
 	            if(pingService){
 	            	Intent intent = new Intent();
@@ -251,6 +252,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return Return the local copy of SdlRouterService.class
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("rawtypes")
 	public abstract Class defineLocalSdlRouterClass();
 
 	

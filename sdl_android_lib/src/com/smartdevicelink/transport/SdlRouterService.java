@@ -45,7 +45,6 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -215,6 +214,7 @@ public class SdlRouterService extends Service{
 						}
 
 					}
+					@SuppressWarnings("unused")
 					private void notifyStartedService(Context context){
 						Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
 				    	restart.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA, getLocalRouterService());
@@ -242,7 +242,6 @@ public class SdlRouterService extends Service{
 						return;
 					}
 
-					//TODO make sure it's ok to comment out closeBluetoothSerialServer();
 					connectAsClient=false;
 					
 					if(action!=null && intent.getAction().equalsIgnoreCase("android.bluetooth.adapter.action.STATE_CHANGED") 
@@ -257,7 +256,7 @@ public class SdlRouterService extends Service{
 						if(legacyModeEnabled){
 							Log.d(TAG, "Legacy mode enabled and bluetooth d/c'ed, restarting router service bluetooth.");
 							enableLegacyMode(false);
-							onTransportDisconnected(TransportType.BLUETOOTH); //TODO check that this is ok
+							onTransportDisconnected(TransportType.BLUETOOTH);
 							initBluetoothSerialService();
 						}
 					}
@@ -362,7 +361,7 @@ public class SdlRouterService extends Service{
 	                	Log.i(TAG, "Unregistering client: " + appIdToUnregister);
 	                	RegisteredApp unregisteredApp = null;
 	                	synchronized(REGISTERED_APPS_LOCK){
-	                		unregisteredApp = registeredApps.remove(appIdToUnregister);//TODO check if this works
+	                		unregisteredApp = registeredApps.remove(appIdToUnregister);
 	                	}
 	                	Message response = Message.obtain();
 	                	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
@@ -529,7 +528,7 @@ public class SdlRouterService extends Service{
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS;
         					onTransportConnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_CONNECTED)));
         				}else{ //There seems to be some other transport connected
-        					//TODO error
+        					//Error
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_ALREADY_CONNECTED;
         				}
         				if(msg.replyTo!=null){
@@ -590,7 +589,6 @@ public class SdlRouterService extends Service{
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
-		// TODO If we are supposed to be shutting down, we need to try again.
 		Log.d(TAG, "Unbind being called.");
 		return super.onUnbind(intent);
 	}
@@ -846,7 +844,7 @@ public class SdlRouterService extends Service{
         builder.setTicker("SmartDeviceLink Connected");
         builder.setContentText("Connected to " + this.getConnectedDeviceName());
        
-       //TODO use icon from library resources if available
+       //We should use icon from library resources if available
         builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
         builder.setLargeIcon(icon);
         builder.setOngoing(true);
@@ -877,7 +875,7 @@ public class SdlRouterService extends Service{
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
 	
-	public  String getConnectedDeviceName(){ //FIXME we need to implement something better than this, but for now it will work....
+	public  String getConnectedDeviceName(){
 		return connectedDeviceName;
 	}
 	
@@ -959,8 +957,6 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void onTransportConnected(final TransportType type){
-		//TODO remove
-		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport Connected", Toast.LENGTH_SHORT).show();
 		enterForeground();
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
@@ -1006,7 +1002,7 @@ public class SdlRouterService extends Service{
 			Bundle bundle = new Bundle();
 			bundle.putString(HARDWARE_DISCONNECTED, type.name());
 			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-			message.setData(bundle);		//TODO should we add a transport event what message type?
+			message.setData(bundle);
 			notifyClients(message);
 		}
 		//We've notified our clients, less clean up the mess now.
@@ -1018,13 +1014,7 @@ public class SdlRouterService extends Service{
 				return;
 			}
 			registeredApps.clear();
-			//for (RegisteredApp app : registeredApps.values()) {
-			//	app.clearSessionIds();
-			//	app.getSessionIds().add((long)-1); //Since we should be expecting at least one session.
-			//}
 		}
-		//TODO remove
-		Toast.makeText(getBaseContext(), "SDL "+ type.name()+ " Transport disconnected", Toast.LENGTH_SHORT).show();
 	}
 	
 	public void onPacketRead(SdlPacket packet){
@@ -1047,7 +1037,7 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
-	 private final Handler mHandlerBT = new Handler() { //TODO make this generic transport handler
+	 private final Handler mHandlerBT = new Handler() {
 	        @Override
 	        public void handleMessage(Message msg) {
 	            switch (msg.what) {
@@ -1058,7 +1048,7 @@ public class SdlRouterService extends Service{
 	            		switch (msg.arg1) {
 	            		case MultiplexBluetoothTransport.STATE_CONNECTED:
 	            			storeConnectedStatus(true);
-	            			onTransportConnected(TransportType.BLUETOOTH); //FIXME actually check
+	            			onTransportConnected(TransportType.BLUETOOTH);
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_CONNECTING:
 	            			// Currently attempting to connect - update UI?
@@ -1073,7 +1063,7 @@ public class SdlRouterService extends Service{
 	            				if(!legacyModeEnabled){
 	            					initBluetoothSerialService();
 	            				}
-	            				onTransportDisconnected(TransportType.BLUETOOTH); //FIXME actually check
+	            				onTransportDisconnected(TransportType.BLUETOOTH);
 	            			}
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_ERROR:
@@ -1082,7 +1072,6 @@ public class SdlRouterService extends Service{
 	            				mSerialService.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
 	            				mSerialService = null;
 	            			}
-	            			
 	            			break;
 	            		}
 	                break;
@@ -1218,8 +1207,6 @@ public class SdlRouterService extends Service{
 	    			
 	    			if(packetSize < ByteArrayMessageSpliter.MAX_BINDER_SIZE){ //This is a small enough packet just send on through
 	    				//Log.w(TAG, " Packet size is just right " + packetSize  + " is smaller than " + ByteArrayMessageSpliter.MAX_BINDER_SIZE + " = " + (packetSize<ByteArrayMessageSpliter.MAX_BINDER_SIZE));
-	    				
-		    			//TODO put arg1 and 2
 		    			message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
 		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
 	    				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
@@ -1323,7 +1310,7 @@ public class SdlRouterService extends Service{
 			return true;//We should have sent our packet, so we can return true now
 	    }
 
-		private synchronized void closeBluetoothSerialServer(){ //FIXME change to ITransport
+		private synchronized void closeBluetoothSerialServer(){
 			if(mSerialService != null){
 				mSerialService.stop();
 				mSerialService = null;
@@ -1380,6 +1367,8 @@ public class SdlRouterService extends Service{
 		//********************************************************* PREFERENCES ****************************************************************
 		//**************************************************************************************************************************************
 		
+		@SuppressLint("WorldReadableFiles")
+		@SuppressWarnings("deprecation")
 		private void storeConnectedStatus(boolean isConnected){
 			SharedPreferences prefs = getApplicationContext().getSharedPreferences(getApplicationContext().getPackageName()+SdlBroadcastReceiver.TRANSPORT_GLOBAL_PREFS,
                     Context.MODE_WORLD_READABLE);
@@ -1556,7 +1545,7 @@ public class SdlRouterService extends Service{
 			Log.d(TAG, "Investigating session " +sessions.get(i).intValue());
 			Log.d(TAG, "App id is: " + sessionMap.get(sessions.get(i).intValue()));
 			sessionId = sessions.get(i).intValue();
-			removeSessionFromMap(sessionId); //TODO instead of removing, put a null there
+			removeSessionFromMap(sessionId);
 			if(cleanModule){
 				attemptToCleanUpModule(sessionId, cachedModuleVersion);
 			}
@@ -1745,7 +1734,7 @@ public class SdlRouterService extends Service{
 		ComponentName name;
 		
 		private LocalRouterService(Intent intent, int version, long timeStamp,ComponentName name ){
-			this.launchIntent = intent; //TODO we can create an intent object based on component name instead
+			this.launchIntent = intent;
 			this.version = version;
 			this.timestamp = timeStamp;
 			this.name = name;

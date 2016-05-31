@@ -1,12 +1,10 @@
 package com.smartdevicelink.transport;
 
-import android.util.Log;
-
 import com.smartdevicelink.protocol.SdlPacket;
 
 
 public class SdlPsm{
-	private static final String TAG = "Sdl PSM";
+	//private static final String TAG = "Sdl PSM";
 	//Each state represents the byte that should be incomming
 	
 	public static final int START_STATE							= 	0x0;

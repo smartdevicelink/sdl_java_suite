@@ -21,7 +21,4 @@ public class SdlReceiver extends com.smartdevicelink.transport.SdlBroadcastRecei
 		intent.setClass(context, SdlService.class);
 		context.startService(intent);
 	}
-
-
-
 }

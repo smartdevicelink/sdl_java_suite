@@ -519,13 +519,7 @@ public class MultiplexBluetoothTransport {
 	                // This is a blocking call and will only return on a
 	                // successful connection or an exception
 	            	mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
-	            	long waitTime = 0;
-	            	if(mmDevice.getName().toLowerCase().contains("fireplug")){
-	            		waitTime = 500;
-	            	}
-	            	else{
-	            		waitTime = 3000;
-	            	}
+	            	long waitTime = 3000;
 	                try {
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
@@ -841,8 +835,7 @@ public class MultiplexBluetoothTransport {
 	    }
 		Field[] f = bsSocket.getClass().getDeclaredFields();
 
-	    int channel = -1;
-	   
+	    //int channel = -1;
 	    BluetoothSocket mySocket = null;
 	    for (Field field : f) {
 	        if(field.getName().equals("mSocket")){

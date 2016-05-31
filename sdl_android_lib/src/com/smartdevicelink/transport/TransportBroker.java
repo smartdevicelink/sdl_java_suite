@@ -7,11 +7,9 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -127,7 +125,8 @@ public class TransportBroker {
     /**
      * Handler of incoming messages from service.
      */
-    class ClientHandler extends Handler {
+    @SuppressLint("HandlerLeak")
+	class ClientHandler extends Handler {
         ClassLoader loader = getClass().getClassLoader();
     	@Override
         public void handleMessage(Message msg) {
@@ -149,7 +148,7 @@ public class TransportBroker {
 			}
             
         	//Find out what message we have and what to do with it
-            switch (msg.what) {//FIXME
+            switch (msg.what) {
             	case TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE:
             		switch(msg.arg1){
             		case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
@@ -279,8 +278,8 @@ public class TransportBroker {
 				SimpleDateFormat s = new SimpleDateFormat("hhmmssss"); //So we have a time stamp of the event
 				String timeStamp = s.format(new Date(System.currentTimeMillis()));
 				if(whereToReply==null){
-					if(appId==null){ //FIXME this should really just throw an error
-						whereToReply = WHERE_TO_REPLY_PREFIX + "."+ timeStamp; //TODO get appid
+					if(appId==null){ //This should really just throw an error
+						whereToReply = WHERE_TO_REPLY_PREFIX + "."+ timeStamp;
 					}else{
 						whereToReply = WHERE_TO_REPLY_PREFIX + appId +"."+ timeStamp; 
 					}
@@ -318,7 +317,7 @@ public class TransportBroker {
 			Log.d(TAG, "RESETING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
-				routerServiceMessenger = null; //TODO make sure theres nothing else we need
+				routerServiceMessenger = null;
 				queuedOnTransportConnect = null;
 				unBindFromRouterService();
 			}
@@ -484,6 +483,7 @@ public class TransportBroker {
 
 		}
 		
+		@SuppressLint("InlinedApi")
 		private boolean sendBindingIntent(){
 			if(this.routerPackage !=null && this.routerClassName !=null){
 				Log.d(TAG, "Sending bind request to " + this.routerPackage + " - " + this.routerClassName);
@@ -492,7 +492,11 @@ public class TransportBroker {
 				//Quickly make sure it's just up and running
 				getContext().startService(bindingIntent);
 				bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_ABOVE_CLIENT);
+				int flags = 0;
+				if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+					flags = Context.BIND_ABOVE_CLIENT;
+				}
+				return getContext().bindService(bindingIntent, routerConnection, flags);
 			}else{
 				return false;
 			}

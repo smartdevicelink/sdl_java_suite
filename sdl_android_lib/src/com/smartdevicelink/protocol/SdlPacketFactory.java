@@ -1,7 +1,5 @@
 package com.smartdevicelink.protocol;
 
-import android.util.Log;
-
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
 
@@ -24,14 +22,14 @@ public class SdlPacketFactory {
     
     	return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),FrameDataControlFrameType.Heartbeat.value(),sessionID,
-				0,0,null);		//TODO check that 0 works for message Id. I can't find where it gets set otherwise
+				0,0,null);
 
     }
 
 	public static SdlPacket createHeartbeatACK(SessionType serviceType, byte sessionID, byte version) {
 		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),FrameDataControlFrameType.HeartbeatACK.value(),sessionID,
-				0,0,null);		//TODO check that 0 works for message Id. I can't find where it gets set otherwise
+				0,0,null);
 		}
 	
 	public static SdlPacket createStartSessionACK(SessionType serviceType, byte sessionID, int messageID, byte version) {

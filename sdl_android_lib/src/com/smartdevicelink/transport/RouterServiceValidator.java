@@ -75,6 +75,7 @@ public class RouterServiceValidator {
 
 	private Context context= null;
 	private boolean inDebugMode = false;
+	@SuppressWarnings("unused")
 	private static boolean pendingListRefresh = false;
 	
 	private ComponentName service;//This is how we can save different routers over another in a waterfall method if we choose to.
@@ -132,7 +133,6 @@ public class RouterServiceValidator {
 			Log.d(TAG, "It's our router service running, so time to shut it down");
 			Intent intent = new Intent();
 			intent.setComponent(service);
-			//TODO Have to fix logic when router service stops. What is the correcty flow?
 			try{context.stopService(intent);}catch(Exception e){}
 		}
 		wakeUpRouterServices();
@@ -165,6 +165,7 @@ public class RouterServiceValidator {
 		return (this.inDebugMode && ((this.flags & FLAG_DEBUG_INSTALLED_FROM_CHECK) != FLAG_DEBUG_INSTALLED_FROM_CHECK));
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean shouldOverrideTimeCheck(){
 		return (this.inDebugMode && ((this.flags & FLAG_DEBUG_USE_TIMESTAMP_CHECK) != FLAG_DEBUG_USE_TIMESTAMP_CHECK));
 	}
@@ -240,7 +241,6 @@ public class RouterServiceValidator {
 		PackageManager packageManager = context.getPackageManager();
 		try {
 			final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
-			//TODO might want to try to get version with this packageManager.getPackageInfo(packageName, 0).versionCode;
 			if(TrustedAppStore.isTrustedStore(packageManager.getInstallerPackageName(applicationInfo.packageName))){
 				// App was installed by trusted app store
 				return true;
@@ -325,7 +325,7 @@ public class RouterServiceValidator {
 		List<SdlApp> apps = new ArrayList<SdlApp>();
 		PackageManager packageManager = context.getPackageManager();
 		Intent intent = new Intent();
-		intent.setAction("sdl.router.startservice");			//FIXME change this string in both the docs and the code
+		intent.setAction("sdl.router.startservice");
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
 		if(infoList!=null){
 			Log.i(TAG, "Number of SDL apps: " + infoList.size());
@@ -361,7 +361,7 @@ public class RouterServiceValidator {
 			return false;
 		}
 		
-		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ //FIXME
+		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ 
 			Log.d(TAG, "Don't need to get new list");
 			//Our list should still be ok for now so we will skip the request
 			pendingListRefresh = false;
@@ -446,7 +446,7 @@ public class RouterServiceValidator {
 		if(json==null){
 			return stringToJson(DEFAULT_APP_LIST);
 		}
-		try {//FIXME this isn't complete. Once SHAID or other service is POC'd we can adjust
+		try {
 			JSONObject object = new JSONObject(json);
 			JSONObject trustedApps = object.getJSONObject(JSON_RESPONSE_OBJECT_TAG);
 			return trustedApps;

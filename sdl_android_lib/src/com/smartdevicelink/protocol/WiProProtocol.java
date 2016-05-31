@@ -3,8 +3,6 @@ package com.smartdevicelink.protocol;
 import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 
-import android.util.Log;
-
 import com.smartdevicelink.exception.*;
 import com.smartdevicelink.protocol.enums.*;
 import com.smartdevicelink.util.BitConverter;

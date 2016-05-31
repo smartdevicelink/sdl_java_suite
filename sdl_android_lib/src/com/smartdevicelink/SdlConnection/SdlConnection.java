@@ -115,9 +115,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if(isLegacyModeEnabled() && legacyTransportRequest == TransportType.BLUETOOTH){
 				Log.d(TAG, "Creating legacy bluetooth connection");
-				_transport = new BTTransport(this, true); //TODO make sure blindly sending true is ok
+				_transport = new BTTransport(this, true); 
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
-				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());	//FIXME we should chage this over to a special legacy config
+				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());
 			}
 			else if (transportConfig.getTransportType() == TransportType.TCP)
 			{
@@ -733,7 +733,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener, ISt
 			MultiplexTransportConfig config = multi.getConfig();
 			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
 			//Log.d(TAG, "Consumed component name: " +tempCompName );
-			//TODO check to see what component name connected and comapre it to what we are connected to
 			if(config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
 				boolean forced = multi.forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				
