@@ -114,6 +114,15 @@ public class SdlService extends Service implements IProxyListenerALM{
 	}
 	
 	
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		startProxy();
+	}
+
+
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
         if(proxy == null){
