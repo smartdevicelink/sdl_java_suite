@@ -126,7 +126,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private SparseArray<SdlButtonListener> mButtonListenerRegistry = new SparseArray<>();
     private SparseArray<SdlMenuItem.SelectListener> mMenuListenerRegistry = new SparseArray<>();
-    
+
     SdlApplication(final SdlConnectionService service,
                    final SdlApplicationConfig config,
                    final ConnectionStatusListener listener,
