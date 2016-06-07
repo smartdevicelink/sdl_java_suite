@@ -683,12 +683,17 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
-    public final void onOnLockScreenNotification(OnLockScreenStatus notification) {
-        Log.i(TAG, "OnLockScreenStatus received.");
-        if(notification != null && notification.getShowLockScreen() != null) {
-            Log.i(TAG, "LockScreenStatus: " + notification.getShowLockScreen().name());
-            mLockScreenStatusListener.onLockScreenStatus(getId(), notification.getShowLockScreen());
-        }
+    public final void onOnLockScreenNotification(final OnLockScreenStatus notification) {
+        mExecutionHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "OnLockScreenStatus received.");
+                if(notification != null && notification.getShowLockScreen() != null) {
+                    Log.i(TAG, "LockScreenStatus: " + notification.getShowLockScreen().name());
+                    mLockScreenStatusListener.onLockScreenStatus(getId(), notification.getShowLockScreen());
+                }
+            }
+        });
     }
 
     @Override
