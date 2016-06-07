@@ -127,14 +127,15 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private SparseArray<SdlButtonListener> mButtonListenerRegistry = new SparseArray<>();
     private SparseArray<SdlMenuItem.SelectListener> mMenuListenerRegistry = new SparseArray<>();
-    
-    SdlApplication(final SdlConnectionService service, final SdlApplicationConfig config,
+
+    SdlApplication(final SdlConnectionService service,
+                   final SdlApplicationConfig config,
                    final ConnectionStatusListener listener){
+        mApplicationConfig = config;
         initialize(service.getApplicationContext());
         mExecutionHandler.post(new Runnable() {
             @Override
             public void run() {
-                mApplicationConfig = config;
                 mSdlProxyALM = mApplicationConfig.buildProxy(service, null, SdlApplication.this);
                 if(mSdlProxyALM == null){
                     listener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
@@ -165,8 +166,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             mExecutionThread = new HandlerThread(
                     THREAD_NAME_BASE + mApplicationConfig.getAppName().replace(' ', '_'),
                     Process.THREAD_PRIORITY_DEFAULT + Process.THREAD_PRIORITY_LESS_FAVORABLE);
-            mExecutionHandler = new Handler(mExecutionThread.getLooper());
             mExecutionThread.start();
+            mExecutionHandler = new Handler(mExecutionThread.getLooper());
             setInitialized(true);
         } else {
             Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
@@ -204,6 +205,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 e.printStackTrace();
             }
             mSdlProxyALM = null;
+            mExecutionHandler.removeCallbacksAndMessages(null);
+            mExecutionHandler = null;
+            mExecutionThread.quit();
+            mExecutionThread = null;
         }
     }
 
@@ -256,6 +261,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     @Override
     final public boolean sendRpc(final RPCRequest request){
         if(Thread.currentThread() != mExecutionThread){
+            Log.e(TAG, "RPC Sent from thread: " + + Thread.currentThread().getId() + " - " +
+                    Thread.currentThread().getName());
             throw new RuntimeException("RPCs may only be sent from the SdlApplication's execution " +
                     "thread. Use SdlContext#getExecutionHandler() to obtain a reference to the " +
                     "execution handler");
@@ -268,23 +275,32 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 final OnRPCResponseListener listener = request.getOnRPCResponseListener();
                 OnRPCResponseListener newListener = new OnRPCResponseListener() {
                     @Override
-                    public void onResponse(int correlationId, RPCResponse response) {
-                        try {
-                            Log.v(TAG, request.serializeJSON().toString(3));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        if(listener != null) listener.onResponse(correlationId, response);
-                        request.setOnRPCResponseListener(listener);
+                    public void onResponse(final int correlationId, final RPCResponse response) {
+                        mExecutionHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Log.v(TAG, request.serializeJSON().toString(3));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                if(listener != null) listener.onResponse(correlationId, response);
+                                request.setOnRPCResponseListener(listener);
+                            }
+                        });
                     }
 
                     @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        super.onError(correlationId, resultCode, info);
-                        Log.w(TAG, "RPC Error for correlation ID " + correlationId + " Result: " +
-                                resultCode + " - " + info);
-                        if(listener != null) listener.onError(correlationId, resultCode, info);
-                        request.setOnRPCResponseListener(listener);
+                    public void onError(final int correlationId, final Result resultCode, final String info) {
+                        mExecutionHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.w(TAG, "RPC Error for correlation ID " + correlationId + " Result: " +
+                                        resultCode + " - " + info);
+                                if(listener != null) listener.onError(correlationId, resultCode, info);
+                                request.setOnRPCResponseListener(listener);
+                            }
+                        });
                     }
                 };
                 request.setOnRPCResponseListener(newListener);
