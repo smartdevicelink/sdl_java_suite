@@ -23,7 +23,7 @@ public class SdlManager {
     private static final Object SYNC_LOCK = new Object();
 
     private static SdlManager mInstance;
-    private SdlConnectionService mSdlConnectionService;
+    private SdlConnectionService mSdlService;
     private Context mAndroidContext;
     private Notification mPersistentNotification;
     private boolean isBound = false;
@@ -75,7 +75,7 @@ public class SdlManager {
             if(isBound){
                 mAndroidContext.unbindService(mSdlServiceConnection);
                 isBound = false;
-                mSdlConnectionService = null;
+                mSdlService = null;
             }
         }
     }
@@ -83,8 +83,8 @@ public class SdlManager {
     void onBluetoothConnected(){
         synchronized (SYNC_LOCK) {
             if (isPrepared) {
-                if(mSdlConnectionService != null){
-                    mSdlConnectionService.startSdlApplication(mApplicationConfigRegistry);
+                if(mSdlService != null){
+                    mSdlService.startSdlApplication(mApplicationConfigRegistry);
                 } else {
                     bindConnectionService();
                 }
@@ -103,10 +103,10 @@ public class SdlManager {
         public void onServiceConnected(ComponentName name, IBinder service) {
             synchronized (SYNC_LOCK) {
                 Log.i(TAG, "ConnectionService bound.");
-                mSdlConnectionService = ((SdlConnectionService.SdlConnectionBinder) service).getSdlConnectionService();
-                mSdlConnectionService.setSdlManager(mInstance);
-                mSdlConnectionService.setPersistentNotification(mPersistentNotification);
-                mSdlConnectionService.startSdlApplication(mApplicationConfigRegistry);
+                mSdlService = ((SdlConnectionService.SdlConnectionBinder) service).getSdlConnectionService();
+                mSdlService.setSdlManager(mInstance);
+                mSdlService.setPersistentNotification(mPersistentNotification);
+                mSdlService.startSdlApplication(mApplicationConfigRegistry);
             }
         }
 
@@ -114,7 +114,7 @@ public class SdlManager {
         public void onServiceDisconnected(ComponentName name) {
             synchronized (SYNC_LOCK) {
                 Log.i(TAG, "ConnectionService disconnected.");
-                mSdlConnectionService = null;
+                mSdlService = null;
             }
         }
     };
