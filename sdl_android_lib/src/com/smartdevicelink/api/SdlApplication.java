@@ -4,14 +4,15 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.file.SdlFileManager;
-import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.api.menu.SdlMenu;
 import com.smartdevicelink.api.menu.SdlMenuItem;
+import com.smartdevicelink.api.permission.SdlPermissionManager;
+import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -109,8 +110,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private int mAutoButtonId = BACK_BUTTON_ID + 1;
 
     private SdlApplicationConfig mApplicationConfig;
-
-    private SdlActivityManager mSdlActivityManager;
+    @VisibleForTesting
+    SdlActivityManager mSdlActivityManager;
     private SdlPermissionManager mSdlPermissionManager;
     private SdlFileManager mSdlFileManager;
     private SdlMenu mTopMenu;
@@ -140,7 +141,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 }
                 mApplicationStatusListener = listener;
                 mSdlActivityManager = new SdlActivityManager();
-                mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
+                mSdlPermissionManager = new SdlPermissionManager();
                 mLifecycleListeners.add(mSdlActivityManager);
                 mSdlFileManager = new SdlFileManager(SdlApplication.this, mApplicationConfig);
                 mLifecycleListeners.add(mSdlFileManager);
@@ -340,7 +341,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 }
 
                 HMILevel hmiLevel = notification.getHmiLevel();
-                mSdlPermissionManager.setCurrentHMILevel(hmiLevel);
+                mSdlPermissionManager.onHmi(hmiLevel);
 
                 Log.i(TAG, toString() + " Received HMILevel: " + hmiLevel.name());
 
@@ -554,7 +555,13 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
-    public final void onOnPermissionsChange(OnPermissionsChange notification) {
+    public final void onOnPermissionsChange(final OnPermissionsChange notification) {
+        mExecutionHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mSdlPermissionManager.onPermissionChange(notification);
+            }
+        });
     }
 
     @Override

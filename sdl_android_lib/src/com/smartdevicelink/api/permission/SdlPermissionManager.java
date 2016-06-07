@@ -3,14 +3,9 @@ package com.smartdevicelink.api.permission;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.SdlProxyALM;
-import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -28,14 +23,9 @@ public class SdlPermissionManager {
 
     private final Object PERMISSION_LOCK = new Object();
 
-    public SdlPermissionManager(SdlProxyALM sdlProxy){
+    public SdlPermissionManager(){
         mSdlPermissionSet = SdlPermissionSet.obtain();
-
         mListeners = new ArrayList<>();
-        sdlProxy.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE,
-                mPermissionChangeListener);
-        sdlProxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,
-                mHMIStatusListener);
     }
 
     /**
@@ -46,28 +36,6 @@ public class SdlPermissionManager {
     public boolean isPermissionAvailable(@NonNull SdlPermission permission){
         synchronized (PERMISSION_LOCK) {
             return mSdlPermissionSet.permissions.get(mCurrentHMILevel.ordinal()).contains(permission);
-        }
-
-    }
-
-    /**
-     * Method to change the current HMI level if it has changed and to notify added {@link SdlPermissionListener}
-     * of any changes in {@link SdlPermission} with the {@link HMILevel} transition.
-     * @param hmiLevel The {@link HMILevel} to change to
-     */
-    public void setCurrentHMILevel(@NonNull HMILevel hmiLevel){
-        synchronized (PERMISSION_LOCK) {
-            if(hmiLevel!=mCurrentHMILevel) {
-                for (ListenerWithFilter lwf : mListeners) {
-                    //filter out the permissions that we are not interested in
-                    SdlPermissionSet intersection = SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet);
-                    //see if there is any change in the EnumSet between the old HMI Level and the new HMI Level
-                    if (intersection.checkForChangeBetweenHMILevels(mCurrentHMILevel, hmiLevel)) {
-                        lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, hmiLevel));
-                    }
-                }
-                mCurrentHMILevel = hmiLevel;
-            }
         }
     }
 
@@ -92,80 +60,82 @@ public class SdlPermissionManager {
         }
     }
 
-    private OnRPCNotificationListener mPermissionChangeListener = new OnRPCNotificationListener() {
-        @Override
-        public void onNotified(RPCNotification notification) {
-            synchronized (PERMISSION_LOCK) {
-                Log.d(TAG, "onPermissionChange");
-                OnPermissionsChange onPermissionsChange = (OnPermissionsChange) notification;
-
-                List<PermissionItem> permissionItems = onPermissionsChange.getPermissionItem();
-
-                if(permissionItems == null){
-                    return;
-                }
-
-                SdlPermissionSet newPermissions = SdlPermissionSet.obtain();
-
-                for (PermissionItem pi : permissionItems) {
-                    String rpcName = pi.getRpcName();
-                    SdlPermission permission = SdlPermission.valueOf(rpcName);
-                    List<HMILevel> hmiLevels = pi.getHMIPermissions().getAllowed();
-
-                    if(hmiLevels != null) {
-                        for (HMILevel level : hmiLevels) {
-                            newPermissions.permissions.get(level.ordinal()).add(permission);
-
-                            switch (permission) {
-                                case GetVehicleData:
-                                    addVdataRpcPermission("Get", pi, level, newPermissions);
-                                    break;
-                                case SubscribeVehicleData:
-                                    addVdataRpcPermission("Subscribe", pi, level, newPermissions);
-                                    break;
-                                case OnVehicleData:
-                                    addVdataRpcPermission("On", pi, level, newPermissions);
-                                    break;
-                                case UnsubscribeVehicleData:
-                                    addVdataRpcPermission("Unsubscribe", pi, level, newPermissions);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                SdlPermissionSet changed = SdlPermissionSet.symmetricDifference(mSdlPermissionSet, newPermissions);
-
-                mSdlPermissionSet.recycle();
-                mSdlPermissionSet = newPermissions;
-
+    /**
+     * Method to change the current HMI level if it has changed and to notify added {@link SdlPermissionListener}
+     * of any changes in {@link SdlPermission} with the {@link HMILevel} transition.
+     * @param hmiLevel The {@link HMILevel} to change to
+     */
+    public void onHmi(@NonNull HMILevel hmiLevel){
+        synchronized (PERMISSION_LOCK) {
+            if(hmiLevel!=mCurrentHMILevel) {
                 for (ListenerWithFilter lwf : mListeners) {
-                        //ensure there is a change in permissions first for the given HMI level and requested permissions
-                        if (changed.containsAnyForHMILevel(lwf.filter.permissionSet,mCurrentHMILevel)) {
-                            lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
-                        }
-
+                    //filter out the permissions that we are not interested in
+                    SdlPermissionSet intersection = SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet);
+                    //see if there is any change in the EnumSet between the old HMI Level and the new HMI Level
+                    if (intersection.checkForChangeBetweenHMILevels(mCurrentHMILevel, hmiLevel)) {
+                        lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, hmiLevel));
                     }
                 }
+                mCurrentHMILevel = hmiLevel;
             }
+        }
+    }
 
-    };
+    public void onPermissionChange(OnPermissionsChange permissionsChange){
+        synchronized (PERMISSION_LOCK) {
+            Log.d(TAG, "onPermissionChange");
 
-    private OnRPCNotificationListener mHMIStatusListener = new OnRPCNotificationListener() {
-        @Override
-        public void onNotified(RPCNotification notification) {
-            OnHMIStatus hmiStatus = (OnHMIStatus) notification;
-            if(notification == null || hmiStatus.getHmiLevel() == null){
-                Log.w(TAG, "INVALID OnHMIStatus Notification Received!");
+            List<PermissionItem> permissionItems = permissionsChange.getPermissionItem();
+
+            if(permissionItems == null){
                 return;
             }
-            HMILevel hmiLevel = hmiStatus.getHmiLevel();
-            setCurrentHMILevel(hmiLevel);
 
+            SdlPermissionSet newPermissions = SdlPermissionSet.obtain();
+
+            for (PermissionItem pi : permissionItems) {
+                String rpcName = pi.getRpcName();
+                SdlPermission permission = SdlPermission.valueOf(rpcName);
+                List<HMILevel> hmiLevels = pi.getHMIPermissions().getAllowed();
+
+                if(hmiLevels != null) {
+                    for (HMILevel level : hmiLevels) {
+                        newPermissions.permissions.get(level.ordinal()).add(permission);
+
+                        switch (permission) {
+                            case GetVehicleData:
+                                addVdataRpcPermission("Get", pi, level, newPermissions);
+                                break;
+                            case SubscribeVehicleData:
+                                addVdataRpcPermission("Subscribe", pi, level, newPermissions);
+                                break;
+                            case OnVehicleData:
+                                addVdataRpcPermission("On", pi, level, newPermissions);
+                                break;
+                            case UnsubscribeVehicleData:
+                                addVdataRpcPermission("Unsubscribe", pi, level, newPermissions);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
+            SdlPermissionSet changed = SdlPermissionSet.symmetricDifference(mSdlPermissionSet, newPermissions);
+
+            mSdlPermissionSet.recycle();
+            mSdlPermissionSet = newPermissions;
+
+            for (ListenerWithFilter lwf : mListeners) {
+                //ensure there is a change in permissions first for the given HMI level and requested permissions
+                if (changed.containsAnyForHMILevel(lwf.filter.permissionSet,mCurrentHMILevel)) {
+                    lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
+                }
+
+            }
         }
-    };
+    }
 
     private void addVdataRpcPermission(String prefix, PermissionItem pi,
                                        HMILevel hmi, SdlPermissionSet permissionSet){
