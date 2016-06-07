@@ -142,7 +142,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 }
                 mApplicationStatusListener = listener;
                 mSdlActivityManager = new SdlActivityManager();
-                mSdlPermissionManager = new SdlPermissionManager(mSdlProxyALM);
+                mSdlPermissionManager = new SdlPermissionManager();
                 mLifecycleListeners.add(mSdlActivityManager);
                 mSdlFileManager = new SdlFileManager(SdlApplication.this, mApplicationConfig);
                 mLifecycleListeners.add(mSdlFileManager);
@@ -333,6 +333,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 }
 
                 HMILevel hmiLevel = notification.getHmiLevel();
+                mSdlPermissionManager.onHmi(hmiLevel);
 
                 Log.i(TAG, toString() + " Received HMILevel: " + hmiLevel.name());
 
@@ -546,7 +547,13 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
-    public final void onOnPermissionsChange(OnPermissionsChange notification) {
+    public final void onOnPermissionsChange(final OnPermissionsChange notification) {
+        mExecutionHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mSdlPermissionManager.onPermissionChange(notification);
+            }
+        });
     }
 
     @Override
