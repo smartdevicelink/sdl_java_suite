@@ -1,5 +1,6 @@
 package com.smartdevicelink.api;
 
+import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
@@ -227,6 +228,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public final void unregisterMenuCallback(int id) {
         getSdlApplicationContext().unregisterMenuCallback(id);
+    }
+
+    @Override
+    public Handler getExecutionHandler() {
+        return getSdlApplicationContext().getExecutionHandler();
     }
 
     public class SuperNotCalledException extends RuntimeException{

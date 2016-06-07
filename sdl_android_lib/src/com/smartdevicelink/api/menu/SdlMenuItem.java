@@ -5,7 +5,6 @@ import android.util.Log;
 import com.smartdevicelink.api.file.SdlFile;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.file.SdlImage;
-import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
@@ -19,10 +18,12 @@ public class SdlMenuItem extends SdlMenuEntry{
     private static final String TAG = SdlMenuItem.class.getSimpleName();
 
     private SdlImage mSdlImage;
+    private SelectListener mListener;
 
-    public SdlMenuItem(SdlContext sdlContext, String name, SelectListener listener){
-        super(sdlContext, name);
-        mSdlContext.registerMenuCallback(mId, listener);
+    public SdlMenuItem(String name, SelectListener listener){
+        super(name);
+        mListener = listener;
+
     }
 
     public void setImage(SdlImage image){
@@ -31,16 +32,18 @@ public class SdlMenuItem extends SdlMenuEntry{
         update();
     }
 
+    SelectListener getListener() {
+        return mListener;
+    }
+
     @Override
     void update() {
         if(isChanged && mRootMenu != null) {
             if (isDisplayed) {
-                isDisplayed = false;
-                sendDeleteCommand();
+                isDisplayed = !sendDeleteCommand();
             } else {
-                sendAddCommand();
-                isDisplayed = true;
-                isChanged = false;
+                isDisplayed = sendAddCommand();
+                isChanged = !isDisplayed;
             }
         }
     }
@@ -48,51 +51,59 @@ public class SdlMenuItem extends SdlMenuEntry{
     @Override
     void remove() {
         if(isDisplayed){
-            isDisplayed = false;
-            sendDeleteCommand();
+            isDisplayed = !sendDeleteCommand();
         }
-        mSdlContext.unregisterButtonCallback(mId);
     }
 
-    private void sendDeleteCommand() {
-        DeleteCommand dc = new DeleteCommand();
-        dc.setCmdID(mId);
-        dc.setOnRPCResponseListener(mResponseListener);
-        mSdlContext.sendRpc(dc);
+    private boolean sendDeleteCommand() {
+        if(mSdlContext != null) {
+            DeleteCommand dc = new DeleteCommand();
+            dc.setCmdID(mId);
+            dc.setOnRPCResponseListener(mResponseListener);
+            mSdlContext.sendRpc(dc);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void sendAddCommand() {
-        AddCommand ac = new AddCommand();
-        ac.setCmdID(mId);
-        if(mSdlImage != null){
-            Log.d(TAG, "Image is set for command: " + mName);
-            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
-            if(fileManager.isFileOnModule(mSdlImage.getSdlName())) {
-                Image image = new Image();
-                image.setImageType(ImageType.DYNAMIC);
-                image.setValue(mSdlImage.getSdlName());
-                ac.setCmdIcon(image);
-            } else {
-                fileManager.uploadSdlImage(mSdlImage, new SdlFileManager.FileReadyListener() {
-                    @Override
-                    public void onFileReady(SdlFile sdlFile) {
-                        isChanged = true;
-                        update();
-                    }
+    private boolean sendAddCommand() {
+        if(mSdlContext != null){
+            AddCommand ac = new AddCommand();
+            ac.setCmdID(mId);
+            if(mSdlImage != null){
+                Log.d(TAG, "Image is set for command: " + mName);
+                SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+                if(fileManager.isFileOnModule(mSdlImage.getSdlName())) {
+                    Image image = new Image();
+                    image.setImageType(ImageType.DYNAMIC);
+                    image.setValue(mSdlImage.getSdlName());
+                    ac.setCmdIcon(image);
+                } else {
+                    fileManager.uploadSdlImage(mSdlImage, new SdlFileManager.FileReadyListener() {
+                        @Override
+                        public void onFileReady(SdlFile sdlFile) {
+                            isChanged = true;
+                            update();
+                        }
 
-                    @Override
-                    public void onFileError(SdlFile sdlFile) {
+                        @Override
+                        public void onFileError(SdlFile sdlFile) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
+            MenuParams mp = new MenuParams();
+            mp.setMenuName(mName);
+            mp.setParentID(mRootMenu.getId());
+            ac.setMenuParams(mp);
+            ac.setOnRPCResponseListener(mResponseListener);
+            mSdlContext.sendRpc(ac);
+            return true;
+        } else {
+            return false;
         }
-        MenuParams mp = new MenuParams();
-        mp.setMenuName(mName);
-        mp.setParentID(mRootMenu.getId());
-        ac.setMenuParams(mp);
-        ac.setOnRPCResponseListener(mResponseListener);
-        mSdlContext.sendRpc(ac);
     }
 
     private OnRPCResponseListener mResponseListener = new OnRPCResponseListener() {
