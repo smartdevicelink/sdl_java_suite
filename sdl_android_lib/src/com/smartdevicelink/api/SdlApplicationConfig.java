@@ -2,6 +2,8 @@ package com.smartdevicelink.api;
 
 import android.app.Service;
 
+import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.api.menu.SdlMenu;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
@@ -25,6 +27,7 @@ public class SdlApplicationConfig {
     private Class<? extends SdlActivity> mMainSdlActivity;
 
     // Optional parameters - initialized to default values
+    private SdlMenu mSdlMenu;
     private SdlProxyConfigurationResources mSdlProxyConfigurationResources;
     private Vector<TTSChunk> mTTSChunks;
     private String mShortAppName;
@@ -35,7 +38,7 @@ public class SdlApplicationConfig {
     private String mAutoActivateID;
     private BaseTransportConfig mTransport;
 
-    private Integer appIconResId;
+    private SdlImage mAppIcon;
 
     // Handled internally
     private boolean isCallbackToUIThread = false;
@@ -49,6 +52,7 @@ public class SdlApplicationConfig {
         this.isMediaApp = builder.isMediaApp;
         this.mMainSdlActivity = builder.mainSdlActivity;
 
+        this.mSdlMenu = builder.sdlMenu;
         this.mSdlProxyConfigurationResources = builder.sdlProxyConfigurationResources;
         this.mTTSChunks = builder.ttsChunks;
         this.mShortAppName = builder.shortAppName;
@@ -59,14 +63,14 @@ public class SdlApplicationConfig {
         this.mAutoActivateID = builder.autoActivateID;
         this.mTransport = builder.transport;
 
-        this.appIconResId = builder.appIconResId;
+        this.mAppIcon = builder.appIcon;
     }
 
     /**
      * Getter for the AppId of the SdlApplication defined by this config.
      * @return The AppId as a {@link String}
      */
-    String getAppId(){
+    public String getAppId(){
         return mAppId;
     }
 
@@ -74,8 +78,12 @@ public class SdlApplicationConfig {
      * Getter for the AppName of the SdlApplication defined by this config.
      * @return The AppName as a {@link String}
      */
-    String getAppName(){
+    public String getAppName(){
         return mAppName;
+    }
+
+    public SdlImage getAppIcon(){
+        return mAppIcon;
     }
 
     /**
@@ -83,7 +91,7 @@ public class SdlApplicationConfig {
      * by a first HMIFull from the module without a resume state saved.
      * @return {@link SdlActivity} that should be created as the entry point to the app.
      */
-    Class<? extends SdlActivity> getMainSdlActivity(){
+    public Class<? extends SdlActivity> getMainSdlActivity(){
         return mMainSdlActivity;
     }
 
@@ -157,6 +165,7 @@ public class SdlApplicationConfig {
         private Class<? extends SdlActivity> mainSdlActivity;
 
         // Optional parameters - initialized to default values
+        private SdlMenu sdlMenu = null;
         private SdlProxyConfigurationResources sdlProxyConfigurationResources = null;
         private Vector<TTSChunk> ttsChunks = null;
         private String shortAppName = null;
@@ -167,7 +176,7 @@ public class SdlApplicationConfig {
         private String autoActivateID = null;
         private BaseTransportConfig transport = new BTTransportConfig();
 
-        private Integer appIconResId;
+        private SdlImage appIcon;
 
         public Builder(String appId, String appName, boolean isMedia,
                        Class<? extends SdlActivity> mainSdlActivity){
@@ -183,6 +192,14 @@ public class SdlApplicationConfig {
          */
         public SdlApplicationConfig build(){
             return new SdlApplicationConfig(this);
+        }
+
+        /**
+         * Setter for top level SdlMenu.
+         * @param sdlMenu
+         */
+        public void setSdlMenu(SdlMenu sdlMenu) {
+            this.sdlMenu = sdlMenu;
         }
 
         /**
@@ -261,10 +278,10 @@ public class SdlApplicationConfig {
         /**
          * Sets the resource ID from R.drawable to use for the app icon displayed on the HMI.
          * This will automatically be sent and set.
-         * @param appIconResId
+         * @param appIcon
          */
-        public void setAppIconResId(Integer appIconResId) {
-            this.appIconResId = appIconResId;
+        public void setAppIcon(SdlImage appIcon) {
+            this.appIcon = appIcon;
         }
     }
 }
