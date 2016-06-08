@@ -18,42 +18,6 @@ public class SdlPushNotification extends SdlCommonAlert{
         super(builder);
     }
 
-    /**
-     * Method to send the built {@link SdlPushNotification} to the module. If there is a {@link SdlAlertDialog.InteractionListener}
-     * set to {@link SdlAlertDialog}, then the listener will be informed if the dialog fails, is cancelled or if
-     * the interaction is able to be completed normally. Permissions must be granted to use
-     * push notification while not in foreground. If you do not have these permissions, please use
-     * {@link SdlAlertDialog} while in the foreground.
-     * @param context The SdlContext that the {@link SdlPushNotification} will be sent from
-     */
-    @Override
-    public boolean send(@NonNull SdlContext context) {
-        SdlPermissionManager checkPermissions = context.getSdlPermissionManager();
-        if (checkPermissions.isPermissionAvailable(SdlPermission.Alert) && !mIsPending) {
-            mIsButtonPressed=false;
-
-            final SdlContext applicationContext= context.getSdlApplicationContext();
-            if(!registerAllButtons(newAlert, applicationContext))
-                return false;
-            newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onError(int correlationId, Result resultCode, String info) {
-                    super.onError(correlationId, resultCode, info);
-                    handleResultResponse(resultCode, info, applicationContext);
-                }
-
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    handleResultResponse(response.getResultCode(), response.getInfo(), applicationContext);
-                }
-            });
-            context.sendRpc(newAlert);
-            mIsPending=true;
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public static class Builder extends SdlCommonAlert.Builder<Builder>{
 

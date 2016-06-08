@@ -20,49 +20,10 @@ public class SdlAlertDialog extends SdlCommonAlert{
         super(builder);
     }
 
-    /**
-     * Method to send the built {@link SdlAlertDialog} to the module, while the app is in the foreground. If there is a {@link SdlAlertDialog.InteractionListener}
-     * set to {@link SdlAlertDialog}, then the listener will be informed if the dialog fails, is cancelled or if
-     * the interaction is able to be completed normally.
-     * @param context The SdlActivity that the SdlAlertDialog will be sent from
-     */
     @Override
-    public final boolean send(@NonNull SdlContext context) {
-
-        //TODO: Figure out how to inform the AlertDialog that it is in Foreground
-        /*
-        if(!isInForeground || mIsPending){
-            Log.w(TAG, "SdlAlertDialog was attempted to be sent while the SdlActivity was not in the foreground, please try again");
-            return false;
-        }
-        */
-        SdlPermissionManager checkPermissions = context.getSdlPermissionManager();
-
-        if (checkPermissions.isPermissionAvailable(SdlPermission.Alert)) {
-            mIsButtonPressed=false;
-
-            final SdlContext applicationContext= context.getSdlApplicationContext();
-
-            if(!registerAllButtons(newAlert, applicationContext))
-                return false;
-            newAlert.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onError(int correlationId, Result resultCode, String info) {
-                    super.onError(correlationId, resultCode, info);
-                    handleResultResponse(resultCode, info, applicationContext);
-                }
-
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    handleResultResponse(response.getResultCode(), response.getInfo(), applicationContext);
-                }
-            });
-            context.sendRpc(newAlert);
-            mIsPending=true;
-            return true;
-        } else {
-            return false;
-        }
+    protected boolean verifyRPCCanbeSent(SdlContext context) {
+        //TODO: Check here if the activity is in foreground
+        return super.verifyRPCCanbeSent(context) && true;
     }
 
     //Extends the common Builder for the Alerts
