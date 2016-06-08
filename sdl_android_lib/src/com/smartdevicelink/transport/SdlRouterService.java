@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +83,8 @@ public class SdlRouterService extends Service{
 	
 	private static final int FOREGROUND_SERVICE_ID = 849;
 	
+	private static final long CLIENT_PING_DELAY = 1000;
+	
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
 	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
@@ -98,6 +102,7 @@ public class SdlRouterService extends Service{
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
+	private boolean isTarnsportConnected = false;
 	private static Context currentContext = null;
     
     private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
@@ -111,7 +116,7 @@ public class SdlRouterService extends Service{
     private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
 	private SparseArray<Long> sessionMap;
-	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object();
+	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
 	
@@ -129,6 +134,15 @@ public class SdlRouterService extends Service{
 	private boolean isForeground = false;
 
 	private int cachedModuleVersion = -1;
+	
+	/**
+	 * Executor for making sure clients are still running during trying times
+	 */
+	private ScheduledExecutorService clientPingExecutor = null;
+	Intent pingIntent = null;
+	private boolean isPingingClients = false;
+	int pingCount = 0;
+
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
@@ -743,6 +757,7 @@ public class SdlRouterService extends Service{
 
 	@Override
 	public void onDestroy(){
+		stopClientPings();
 		if(versionCheckTimeOutHandler!=null){versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);}
 		if(altTransportTimerHandler!=null){
 			altTransportTimerHandler.removeCallbacks(versionCheckRunable);
@@ -957,6 +972,7 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void onTransportConnected(final TransportType type){
+		isTarnsportConnected = true;
 		enterForeground();
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
@@ -968,9 +984,10 @@ public class SdlRouterService extends Service{
 		Intent startService = new Intent();  
 		startService.setAction(START_SERVICE_ACTION);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
+		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
-    	sendBroadcast(startService);    	
+    	sendBroadcast(startService); 
 		//HARDWARE_CONNECTED
 	}
 	
@@ -979,6 +996,9 @@ public class SdlRouterService extends Service{
 			return;
 		}
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
+		
+		isTarnsportConnected = false;
+		stopClientPings();
 		
 		exitForeground();//Leave our foreground state as we don't have a connection anymore
 		
@@ -1715,6 +1735,66 @@ public class SdlRouterService extends Service{
 		return null;
 	}
 	
+	private void startClientPings(){
+		synchronized(this){
+			if(!isTarnsportConnected){ //If we aren't connected, bail
+				return;
+			}
+		if(isPingingClients){
+			Log.w(TAG, "Already pinging clients. Resting count");
+			synchronized(PING_COUNT_LOCK){
+				pingCount = 0;
+			}
+			return;
+		}
+		if(clientPingExecutor == null){
+			clientPingExecutor = Executors.newSingleThreadScheduledExecutor();
+		}
+		isPingingClients = true;
+		synchronized(PING_COUNT_LOCK){
+			pingCount = 0;
+		}
+		clientPingExecutor.scheduleAtFixedRate(new Runnable(){
+			
+			@Override
+			public void run() {
+				if(getPingCount()>=10){
+					Log.d(TAG, "Hit ping limit");
+					stopClientPings();
+					return;
+				}
+				if(pingIntent == null){
+					pingIntent = new Intent();  
+					pingIntent.setAction(START_SERVICE_ACTION);
+					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
+					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
+					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
+					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
+				}
+				getBaseContext().sendBroadcast(pingIntent); 
+				synchronized(PING_COUNT_LOCK){
+					pingCount++;
+				}
+				
+			}
+		}, CLIENT_PING_DELAY, CLIENT_PING_DELAY, TimeUnit.MILLISECONDS); //Give a little delay for first call
+		}
+	}
+	
+	private int getPingCount(){
+		synchronized(PING_COUNT_LOCK){
+			return pingCount;
+		}
+	}
+	
+	private void stopClientPings(){
+		if(clientPingExecutor!=null && !clientPingExecutor.isShutdown()){
+			clientPingExecutor.shutdownNow();
+			clientPingExecutor = null;
+			isPingingClients = false;
+		}
+		pingIntent = null;
+	}
 	
 	/* ****************************************************************************************************************************************
 	// **********************************************************   TINY CLASSES   ************************************************************
@@ -2046,6 +2126,7 @@ public class SdlRouterService extends Service{
 							Log.w(TAG, "Binder died");
 							removeAllSessionsForApp(RegisteredApp.this,true);
 							removeAppFromMap(RegisteredApp.this);
+							startClientPings();
 						}
 					};
 				}

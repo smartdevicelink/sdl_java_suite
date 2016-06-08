@@ -17,7 +17,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		if(SdlReceiver.isTransportConnected(getBaseContext())){
 			Intent startIntent = new Intent(getBaseContext(), SdlService.class);
-			startIntent.putExtra(SdlReceiver.FORCE_TRANSPORT_CONNECTED, true);
 			startService(startIntent);
 		}
 	}

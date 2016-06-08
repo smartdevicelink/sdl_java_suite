@@ -5,6 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.util.Log;
+
 import com.hellosdl.MainActivity;
 import com.hellosdl.R;
 import com.smartdevicelink.exception.SdlException;
@@ -72,13 +77,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.SdlBroadcastReceiver;
-import com.smartdevicelink.util.DebugTool;
-
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
+import com.smartdevicelink.transport.TransportConstants;
 
 /**
  * While this class is just an extension off the base Android Service class, we hope in the future we can offer something 
@@ -127,7 +126,7 @@ public class SdlService extends Service implements IProxyListenerALM{
 	public int onStartCommand(Intent intent, int flags, int startId) {
         if(proxy == null){
         	startProxy();
-        }else if (intent != null && intent.hasExtra(SdlBroadcastReceiver.FORCE_TRANSPORT_CONNECTED)){
+        }else if (intent != null && intent.hasExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED)){
         	proxy.forceOnConnected();
 		}
         return START_STICKY;

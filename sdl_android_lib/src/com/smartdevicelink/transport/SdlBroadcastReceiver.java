@@ -22,8 +22,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	private static final String STATE_CHANGED = "android.bluetooth.adapter.action.STATE_CHANGED" ;
 	
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
-
-	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	
 	public static final String LOCAL_ROUTER_SERVICE_EXTRA					= "router_service";
 	public static final String LOCAL_ROUTER_SERVICE_DID_START_OWN			= "did_start";
@@ -80,7 +78,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							Log.d(TAG, "Router service trusted!");
 							queuedService = componentName;
 							intent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
-							intent.putExtra(FORCE_TRANSPORT_CONNECTED, true);
 							onSdlEnabled(context, intent);
 						}else{
 							Log.e(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
