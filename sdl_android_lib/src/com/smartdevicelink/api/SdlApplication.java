@@ -275,7 +275,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                             @Override
                             public void run() {
                                 try {
-                                    Log.v(TAG, request.serializeJSON().toString(3));
+                                    Log.v(TAG, response.serializeJSON().toString(3));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
