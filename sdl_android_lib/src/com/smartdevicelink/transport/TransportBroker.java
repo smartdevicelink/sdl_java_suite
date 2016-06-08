@@ -492,11 +492,7 @@ public class TransportBroker {
 				//Quickly make sure it's just up and running
 				getContext().startService(bindingIntent);
 				bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-				int flags = 0;
-				if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH){
-					flags = Context.BIND_ABOVE_CLIENT;
-				}
-				return getContext().bindService(bindingIntent, routerConnection, flags);
+				return getContext().bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
 			}else{
 				return false;
 			}
