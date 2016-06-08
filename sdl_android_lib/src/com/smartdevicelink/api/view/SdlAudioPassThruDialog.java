@@ -96,27 +96,27 @@ public class SdlAudioPassThruDialog {
     }
 
     protected void handleResultResponse(Result response, String info, SdlContext context) {
-        switch (response) {
-            case ABORTED:
-                if(mListener!=null)
+        if(mListener!=null){
+            switch (response) {
+                case SUCCESS:
+                    mListener.onSuccess();
+                    break;
+                case ABORTED:
                     mListener.onAborted();
-                break;
-            case INVALID_DATA:
-                if(mListener!=null)
+                    break;
+                case INVALID_DATA:
                     mListener.onError(info);
-                break;
-            case DISALLOWED:
-                if(mListener!=null)
+                    break;
+                case DISALLOWED:
                     mListener.onError(info);
-                break;
-            case REJECTED:
-                if(mListener!=null)
+                    break;
+                case REJECTED:
                     mListener.onError(info);
-                break;
-            default:
-                if(mListener!=null)
+                    break;
+                default:
                     mListener.onError(info);
-                break;
+                    break;
+            }
         }
         context.unregisterAudioPassThruListener(mDataListener);
         mIsPending = false;
@@ -221,6 +221,7 @@ public class SdlAudioPassThruDialog {
     }
 
     public interface InteractionListener{
+        void onSuccess();
         void onAborted();
         void onError(String moreInfo);
     }
