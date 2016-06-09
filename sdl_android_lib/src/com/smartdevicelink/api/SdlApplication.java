@@ -275,7 +275,47 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                             @Override
                             public void run() {
                                 try {
-                                    Log.v(TAG, response.serializeJSON().toString(3));
+                                    String jsonString = response.serializeJSON().toString(3);
+                                    switch(response.getResultCode()){
+
+                                        case SUCCESS:
+                                            Log.v(TAG, jsonString);
+                                            break;
+                                        case ABORTED:
+                                        case IGNORED:
+                                        case UNSUPPORTED_REQUEST:
+                                        case WARNINGS:
+                                        case USER_DISALLOWED:
+                                            Log.w(TAG, jsonString);
+                                            break;
+                                        case INVALID_DATA:
+                                        case OUT_OF_MEMORY:
+                                        case TOO_MANY_PENDING_REQUESTS:
+                                        case INVALID_ID:
+                                        case DUPLICATE_NAME:
+                                        case TOO_MANY_APPLICATIONS:
+                                        case APPLICATION_REGISTERED_ALREADY:
+                                        case WRONG_LANGUAGE:
+                                        case APPLICATION_NOT_REGISTERED:
+                                        case IN_USE:
+                                        case VEHICLE_DATA_NOT_ALLOWED:
+                                        case VEHICLE_DATA_NOT_AVAILABLE:
+                                        case REJECTED:
+                                        case UNSUPPORTED_RESOURCE:
+                                        case FILE_NOT_FOUND:
+                                        case GENERIC_ERROR:
+                                        case DISALLOWED:
+                                        case TIMED_OUT:
+                                        case CANCEL_ROUTE:
+                                        case TRUNCATED_DATA:
+                                        case RETRY:
+                                        case SAVED:
+                                        case INVALID_CERT:
+                                        case EXPIRED_CERT:
+                                        case RESUME_FAILED:
+                                            Log.e(TAG, jsonString);
+                                            break;
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
