@@ -76,9 +76,10 @@ public class WiProProtocol extends AbstractProtocol {
 		handlePacketToSend(header);
 	} // end-method
 	
-	public void EndProtocolSession(SessionType sessionType, byte sessionID) {
-		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, _version);
+	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
+		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, _version, BitConverter.intToByteArray(hashId));
 		handlePacketToSend(header);
+
 	} // end-method
 
 	public void SendMessage(ProtocolMessage protocolMsg) {	
@@ -301,24 +302,22 @@ public class WiProProtocol extends AbstractProtocol {
 					messageLock = new Object();
 					_messageLocks.put((byte)packet.getSessionId(), messageLock);
 				}
-				//hashID = BitConverter.intFromByteArray(data, 0);
+				int hashID = 0;
 				if (_version > 1){
-					hashID = packet.getMessageId();
-				}
-				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "");				
+					if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
+						hashID = BitConverter.intFromByteArray(packet.payload, 0);
+					}
+				}	
+				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "", hashID);				
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), _version, "");
-
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + packet.getSessionId(), null);
 				}
 			} else if (frameInfo == FrameDataControlFrameType.EndSession.getValue()) {
-				//if (hashID == BitConverter.intFromByteArray(data, 0)) 
 				if (_version > 1) {
-					if (hashID == packet.getMessageId()){
-						handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
-					}//else...nothing
+					handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
 				} else {
 					handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
 				}
@@ -400,5 +399,12 @@ public class WiProProtocol extends AbstractProtocol {
 	public void SendHeartBeatACK(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, _version);        
         handlePacketToSend(heartbeat);		
+	}
+
+	@Override
+	public void EndProtocolService(SessionType serviceType, byte sessionID) {
+ 		SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, _version, new byte[4]);
+		handlePacketToSend(header);
+		
 	}
 } // end-class

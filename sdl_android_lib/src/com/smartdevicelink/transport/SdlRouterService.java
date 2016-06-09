@@ -1214,7 +1214,7 @@ public class SdlRouterService extends Service{
 	    				removeSessionFromMap(session);
 	    				byte[] uai = createForceUnregisterApp((byte)session, (byte)packet.getVersion());
 	    				manuallyWriteBytes(uai,0,uai.length);
-	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion())).constructPacket();
+	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),new byte[4])).constructPacket();
 						manuallyWriteBytes(stopService,0,stopService.length);
 	    				return false;
 	    			}
@@ -1298,7 +1298,7 @@ public class SdlRouterService extends Service{
 			Log.i(TAG, "Attempting to stop session " + session);
 			byte[] uai = createForceUnregisterApp((byte)session, (byte)version);
 			manuallyWriteBytes(uai,0,uai.length);
-			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version)).constructPacket();
+			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,new byte[4])).constructPacket();
 			manuallyWriteBytes(stopService,0,stopService.length);
 		}
 		
@@ -1316,7 +1316,7 @@ public class SdlRouterService extends Service{
 					sessionId = sessions.get(i).intValue();
 					unregister = createForceUnregisterApp((byte)sessionId,version);
 					manuallyWriteBytes(unregister,0,unregister.length);
-					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version)).constructPacket();
+					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version,new byte[4])).constructPacket();
 					manuallyWriteBytes(stopService,0,stopService.length);
 					synchronized(SESSION_LOCK){
 						this.sessionMap.remove(sessionId);

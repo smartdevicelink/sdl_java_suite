@@ -47,10 +47,10 @@ public class SdlPacketFactory {
 				0,messageID,null);
 	}
 
-	public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version) {
+	public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, byte[] payload) {
 		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),SdlPacket.FRAME_INFO_END_SERVICE,sessionID,
-				0,messageID,null);
+				payload.length,messageID,payload);
 	}
 
 	public static SdlPacket createSingleSendData(SessionType serviceType, byte sessionID,

@@ -12,7 +12,7 @@ public interface IProtocolListener {
 	void onProtocolMessageReceived(ProtocolMessage msg);
 
 	// Called to indicate that a protocol session has been started (from either side)
-	void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID);
+	void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID);
 	
 	void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID);	
 

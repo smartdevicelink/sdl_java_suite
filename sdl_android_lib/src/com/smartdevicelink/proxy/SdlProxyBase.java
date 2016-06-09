@@ -295,7 +295,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID, int hashID) {
 			
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
@@ -323,7 +323,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				NavServiceStarted();
 			} else if (sessionType.eq(SessionType.PCM)) {
 				AudioServiceStarted();
-			} 
+			} else if (sessionType.eq(SessionType.RPC)){
+				cycleProxy(SdlDisconnectedReason.RPC_SESSION_ENDED);
+			}
 			else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
 				startRPCProtocolSession(sessionID, correlationID);
