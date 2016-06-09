@@ -11,6 +11,7 @@ public class SdlViewManager {
     private SdlView mRootView;
     private SdlContext mSdlContext;
     private Show mShow;
+    private String mTemplateName = "";
 
     public SdlViewManager (SdlContext sdlContext){
         mSdlContext = sdlContext;
@@ -29,7 +30,8 @@ public class SdlViewManager {
 
     public void updateView(){
         String templateName = mRootView.getTemplateName();
-        if(templateName != null){
+        if(templateName != null && !mTemplateName.equals(templateName)){
+            mTemplateName = templateName;
             SetDisplayLayout setDisplayLayout = new SetDisplayLayout();
             setDisplayLayout.setDisplayLayout(templateName);
             mSdlContext.sendRpc(setDisplayLayout);
