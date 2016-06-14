@@ -116,6 +116,7 @@ public class SdlRouterService extends Service{
     private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
 	private SparseArray<Long> sessionMap;
+	private SparseArray<Integer> sessionHashIdMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
@@ -696,6 +697,7 @@ public class SdlRouterService extends Service{
 		
 		synchronized(SESSION_LOCK){
 			this.sessionMap = new SparseArray<Long>();
+			this.sessionHashIdMap = new SparseArray<Integer>();
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
@@ -780,6 +782,10 @@ public class SdlRouterService extends Service{
 			if(this.sessionMap!=null){ 
 				this.sessionMap.clear();
 				this.sessionMap = null;
+			}
+			if(this.sessionHashIdMap!=null){
+				this.sessionHashIdMap.clear();
+				this.sessionHashIdMap = null;
 			}
 		}
 		
@@ -1028,6 +1034,7 @@ public class SdlRouterService extends Service{
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
 			this.sessionMap.clear();
+			this.sessionHashIdMap.clear();
 		}
 		synchronized(REGISTERED_APPS_LOCK){
 			if(registeredApps==null){
@@ -1214,12 +1221,27 @@ public class SdlRouterService extends Service{
 	    				removeSessionFromMap(session);
 	    				byte[] uai = createForceUnregisterApp((byte)session, (byte)packet.getVersion());
 	    				manuallyWriteBytes(uai,0,uai.length);
-	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),new byte[4])).constructPacket();
+	    				int hashId = 0;
+	    				synchronized(this.SESSION_LOCK){
+	    					if(this.sessionHashIdMap.indexOfKey(session)>=0){
+	    						hashId = this.sessionHashIdMap.get(session); 
+	    						this.sessionHashIdMap.remove(session);
+	    					}
+	    				}
+	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId))).constructPacket();
 						manuallyWriteBytes(stopService,0,stopService.length);
 	    				return false;
 	    			}
-
 	    			byte version = (byte)packet.getVersion();
+	    			
+	    			if(shouldAssertNewSession && version>1 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){ //we know this was a start session response
+	    				if (packet.getPayload() != null && packet.getDataSize() == 4){ //hashid will be 4 bytes in length
+	    					synchronized(SESSION_LOCK){
+	    						this.sessionHashIdMap.put(session, (BitConverter.intFromByteArray(packet.getPayload(), 0)));
+	    					}
+	    				}
+	    			}
+
 	    			int packetSize = (int) (packet.getDataSize() + SdlPacket.HEADER_SIZE);
 	    			//Log.i(TAG, "Checking packet size: " + packetSize);
 	    			Message message = Message.obtain();
@@ -1298,7 +1320,14 @@ public class SdlRouterService extends Service{
 			Log.i(TAG, "Attempting to stop session " + session);
 			byte[] uai = createForceUnregisterApp((byte)session, (byte)version);
 			manuallyWriteBytes(uai,0,uai.length);
-			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,new byte[4])).constructPacket();
+			int hashId = 0;
+			synchronized(this.SESSION_LOCK){
+				if(this.sessionHashIdMap.indexOfKey(session)>=0){
+					hashId = this.sessionHashIdMap.get(session); 
+					this.sessionHashIdMap.remove(session);
+				}
+			}
+			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,BitConverter.intToByteArray(hashId))).constructPacket();
 			manuallyWriteBytes(stopService,0,stopService.length);
 		}
 		
@@ -1316,10 +1345,18 @@ public class SdlRouterService extends Service{
 					sessionId = sessions.get(i).intValue();
 					unregister = createForceUnregisterApp((byte)sessionId,version);
 					manuallyWriteBytes(unregister,0,unregister.length);
-					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version,new byte[4])).constructPacket();
+					int hashId = 0;
+					synchronized(this.SESSION_LOCK){
+						if(this.sessionHashIdMap.indexOfKey(sessionId)>=0){
+							hashId = this.sessionHashIdMap.get(sessionId); 
+						}
+					}
+					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version,BitConverter.intToByteArray(hashId))).constructPacket();
+					
 					manuallyWriteBytes(stopService,0,stopService.length);
 					synchronized(SESSION_LOCK){
 						this.sessionMap.remove(sessionId);
+						this.sessionHashIdMap.remove(sessionId);
 					}
 				}
 				synchronized(REGISTERED_APPS_LOCK){
@@ -1536,7 +1573,6 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
-	@SuppressLint("NewApi")
 	private boolean removeAllSessionsWithAppId(long appId){
 		synchronized(SESSION_LOCK){
 			if(sessionMap!=null){
@@ -1546,7 +1582,8 @@ public class SdlRouterService extends Service{
 					Log.d(TAG, "Investigating session " +iter.keyAt(i));
 					Log.d(TAG, "App id is: " + iter.valueAt(i));
 					if(((Long)iter.valueAt(i)).compareTo(appId) == 0){
-						sessionMap.removeAt(i);
+						sessionHashIdMap.remove(iter.keyAt(i));
+						sessionMap.removeAt(i);	
 					}
 				}
 			}
