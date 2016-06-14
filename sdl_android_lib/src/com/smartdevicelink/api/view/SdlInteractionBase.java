@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by mschwerz on 5/3/16.
  */
-abstract class SdlCommonInteraction {
+abstract class SdlInteractionBase {
 
     protected String[] mTextFields= new String[3];
     protected int mDuration;
@@ -31,7 +31,7 @@ abstract class SdlCommonInteraction {
     protected boolean mIsButtonPressed= false;
     protected InteractionListener mListener;
 
-    protected SdlCommonInteraction(Builder builder) {
+    protected SdlInteractionBase(Builder builder) {
 
         this.mTextFields=builder.mTextFields;
         this.mDuration= builder.mDuration;
@@ -43,10 +43,10 @@ abstract class SdlCommonInteraction {
     IRPCRequestWithButtons getSettableButtonRPCMessage();
 
     /**
-     * Method to send the built {@link SdlCommonInteraction} to the module, while the app is in the foreground. If there is a {@link SdlCommonInteraction.InteractionListener}
-     * set to {@link SdlCommonInteraction}, then the listener will be informed if the dialog fails, is cancelled or if
+     * Method to send the built {@link SdlInteractionBase} to the module, while the app is in the foreground. If there is a {@link SdlInteractionBase.InteractionListener}
+     * set to {@link SdlInteractionBase}, then the listener will be informed if the dialog fails, is cancelled or if
      * the interaction is able to be completed normally.
-     * @param context The SdlContext that the SdlCommonInteraction will be sent from
+     * @param context The SdlContext that the SdlInteractionBase will be sent from
      */
     public boolean send(@NonNull SdlContext context){
         if(verifyRPCCanbeSent(context) && !mIsPending){
@@ -219,10 +219,10 @@ abstract class SdlCommonInteraction {
         public abstract T setText(String text);
 
         /**
-         * Sets the duration that the {@link SdlCommonInteraction} will show up for.
+         * Sets the duration that the {@link SdlInteractionBase} will show up for.
          * The min value is 3000 and the max value is 10000
-         * @param duration The amount of milliseconds the SdlCommonAlert should appear
-         * @return The builder for the {@link SdlCommonInteraction}
+         * @param duration The amount of milliseconds the SdlAlertBase should appear
+         * @return The builder for the {@link SdlInteractionBase}
          */
         public T setDuration(int duration){
             if(duration < getMinDuration()) {
@@ -237,12 +237,12 @@ abstract class SdlCommonInteraction {
 
 
         /**
-         * Sets the push buttons that the user can touch when the {@link SdlCommonInteraction}
+         * Sets the push buttons that the user can touch when the {@link SdlInteractionBase}
          * appears. The buttons provided must contain text to be set, even if the button only needs
          * to provide an image. In case the image is not available at the time of the showing of
          * the dialog on the module, the text will be used instead.
          * @param buttons Collection of SdlButtons that describe what the buttons should look like
-         * @return The builder for the {@link SdlCommonInteraction}
+         * @return The builder for the {@link SdlInteractionBase}
          */
         public T setButtons(Collection<SdlButton> buttons){
             this.mButtons = buttons;
@@ -251,17 +251,17 @@ abstract class SdlCommonInteraction {
 
 
         /**
-         * Sets the listener for when the {@link SdlCommonInteraction} finishes with the interaction,
+         * Sets the listener for when the {@link SdlInteractionBase} finishes with the interaction,
          * is interrupted by another interaction, or an error occurred.
-         * @param listener The object to listen for the {@link SdlCommonInteraction} callbacks.
-         * @return The builder for the {@link SdlCommonInteraction}
+         * @param listener The object to listen for the {@link SdlInteractionBase} callbacks.
+         * @return The builder for the {@link SdlInteractionBase}
          */
         public T setListener(InteractionListener listener){
             this.mListener = listener;
             return grabBuilder();
         }
 
-        public abstract <T extends SdlCommonInteraction> T  build() throws IllegalCreation;
+        public abstract <T extends SdlInteractionBase> T  build() throws IllegalCreation;
 
     }
     public interface InteractionListener{

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by mschwerz on 5/3/16.
  */
-public class SdlInformationDialog extends SdlCommonInteraction {
+public class SdlInformationDialog extends SdlInteractionBase {
 
     protected SdlInformationDialog(Builder builder) {
         super(builder);
@@ -41,7 +41,7 @@ public class SdlInformationDialog extends SdlCommonInteraction {
         };
     }
 
-    public static class Builder extends SdlCommonInteraction.Builder<Builder>{
+    public static class Builder extends SdlInteractionBase.Builder<Builder>{
 
         @Override
         protected int getMaxDuration() {

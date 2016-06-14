@@ -15,14 +15,14 @@ import java.util.List;
 /**
  * Created by mschwerz on 5/3/16.
  */
-abstract class SdlCommonAlert extends SdlCommonInteraction{
+abstract class SdlAlertBase extends SdlInteractionBase {
     private final String TAG = getClass().getSimpleName();
 
     protected boolean mIsToneUsed;
     protected boolean mIsIndicatorUsed;
     protected TTSChunk mTtsChunk;
 
-    protected SdlCommonAlert(Builder builder) {
+    protected SdlAlertBase(Builder builder) {
         super(builder);
         mIsToneUsed= builder.mIsToneUsed;
         mIsIndicatorUsed= builder.mIsIndicatorShown;
@@ -58,7 +58,7 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
         };
     }
 
-    protected abstract static class Builder <T extends Builder<T>> extends SdlCommonInteraction.Builder<T> {
+    protected abstract static class Builder <T extends Builder<T>> extends SdlInteractionBase.Builder<T> {
 
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
@@ -86,11 +86,11 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
         protected abstract T grabBuilder();
 
         /**
-         * Sets a specific line of text for the built {@link SdlCommonAlert}. If you need to leave the line
+         * Sets a specific line of text for the built {@link SdlAlertBase}. If you need to leave the line
          * empty, please don't set the field or set it to null.
-         * @param textField The string to be shown with the SdlCommonAlert.
+         * @param textField The string to be shown with the SdlAlertBase.
          *                   Cannot be an empty string or all whitespace.
-         * @return The builder for the {@link SdlCommonAlert}
+         * @return The builder for the {@link SdlAlertBase}
          */
         public T setTextField(String textField, int row){
             mTextFields[row] = textField;
@@ -101,7 +101,7 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
          * Convenience method to take in a string and set to the appropriate line items
          * based on the line breaks in the given string
          * @param text A string with optional linebreaks
-         * @return The builder for the {@link SdlCommonAlert}
+         * @return The builder for the {@link SdlAlertBase}
          */
         public T setText(String text){
             String [] lines= text.split("\\r?\\n");
@@ -114,9 +114,9 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
         }
 
         /**
-         * Sets if a tone should sound when the {@link SdlCommonAlert} appears.
-         * @param isToneUsed Set to true if a tone should sound when the SdlCommonAlert appears.
-         * @return The builder for the {@link SdlCommonAlert}
+         * Sets if a tone should sound when the {@link SdlAlertBase} appears.
+         * @param isToneUsed Set to true if a tone should sound when the SdlAlertBase appears.
+         * @return The builder for the {@link SdlAlertBase}
          */
         public T setToneUsed(boolean isToneUsed){
             mIsToneUsed = isToneUsed;
@@ -126,7 +126,7 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
         /**
          *
          * @param isIndicatorShown
-         * @return The builder for the {@link SdlCommonAlert}
+         * @return The builder for the {@link SdlAlertBase}
          */
         public T setProgressIndicatorShown(boolean isIndicatorShown){
             mIsIndicatorShown = isIndicatorShown;
@@ -136,9 +136,9 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
 
 
         /**
-         * Sets the TTS to be spoken when the {@link SdlCommonAlert} appears.
+         * Sets the TTS to be spoken when the {@link SdlAlertBase} appears.
          * @param ttsChunk The description of the Text To Speech to be read aloud
-         * @return The builder for the {@link SdlCommonAlert}
+         * @return The builder for the {@link SdlAlertBase}
          */
         public T setSpeak(TTSChunk ttsChunk){
             mTtsChunk = ttsChunk;
@@ -146,10 +146,10 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
         }
 
         /**
-         * Convenience method for Text to Speech with the {@link SdlCommonAlert} which
+         * Convenience method for Text to Speech with the {@link SdlAlertBase} which
          * will speak the text provided aloud.
          * @param textToSpeak Text to be spoken aloud
-         * @return The builder for the {@link SdlCommonAlert}
+         * @return The builder for the {@link SdlAlertBase}
          */
         public T setSpeak(String textToSpeak){
             TTSChunk newChunk= new TTSChunk();
@@ -161,7 +161,7 @@ abstract class SdlCommonAlert extends SdlCommonInteraction{
 
 
 
-        protected void validateCommonAlert(SdlCommonAlert builtAlert) throws IllegalAlertCreation{
+        protected void validateCommonAlert(SdlAlertBase builtAlert) throws IllegalAlertCreation{
             if(builtAlert.mButtons !=null){
                 if(builtAlert.mButtons.size()>4){
                     throw new IllegalAlertCreation("More buttons were added then possible for the AlertDialog");
