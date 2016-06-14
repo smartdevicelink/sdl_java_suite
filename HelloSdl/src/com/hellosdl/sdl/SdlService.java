@@ -81,6 +81,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SdlBroadcastReceiver;
 import com.smartdevicelink.transport.USBTransportConfig;
+import com.smartdevicelink.transport.TransportConstants;
 
 /**
  * While this class is just an extension off the base Android Service class, we hope in the future we can offer something 
@@ -116,11 +117,20 @@ public class SdlService extends Service implements IProxyListenerALM{
 	}
 	
 	
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		startProxy(null);
+	}
+
+
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
         if(proxy == null){
         	startProxy(intent);
-        }else if (intent != null && intent.hasExtra(SdlBroadcastReceiver.FORCE_TRANSPORT_CONNECTED)){
+        }else if (intent != null && intent.hasExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED)){
         	proxy.forceOnConnected();
 		}
         return START_STICKY;

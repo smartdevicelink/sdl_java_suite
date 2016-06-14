@@ -67,6 +67,9 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 
 		if(urlString == null || request_type == null){
 			Log.e(TAG, "Can't process request, param error");
+			if(cb!=null){
+				cb.httpFailure(-1);
+			}
 			return "Error";
 		}
 
@@ -140,6 +143,9 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 				} catch (final IOException e) {
 					Log.e(TAG, "Error closing stream", e);
 				}
+			}
+			if(cb!=null){
+				cb.httpFailure(-1);
 			}
 		}
 		return null;
