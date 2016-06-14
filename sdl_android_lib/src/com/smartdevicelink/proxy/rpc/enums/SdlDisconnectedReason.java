@@ -21,7 +21,13 @@ public enum SdlDisconnectedReason {
     SDL_REGISTRATION_ERROR,
     APP_INTERFACE_UNREG,
     GENERIC_ERROR,
-    RPC_SESSION_ENDED;
+    /**
+     * This only occurs when multiplexing is running and it is found to be on an old gen 1 system.
+     */
+    LEGACY_BLUETOOTH_MODE_ENABLED,
+    RPC_SESSION_ENDED
+    ;
+
 	
 	public static SdlDisconnectedReason valueForString(String value) {
         try{

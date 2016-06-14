@@ -11,6 +11,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener {
@@ -183,8 +184,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID);
 		//if (version == 3)
 			initialiseSession();
-		if (sessionType.eq(SessionType.RPC) )
+		if (sessionType.eq(SessionType.RPC)){
 			sessionHashId = hashID;
+		}
 	}
 
 	@Override
@@ -244,5 +246,32 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
 		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	}
+	
+	public void clearConnection(){
+		_sdlConnection = null;
+	}
+	
+	public void checkForOpenMultiplexConnection(SdlConnection connection){
+		removeConnection(connection);
+		connection.unregisterSession(this);
+		_sdlConnection = null;
+		for (SdlConnection c : shareConnections) {
+			if (c.getCurrentTransportType() == TransportType.MULTIPLEX) {
+				if(c.getIsConnected() || ((MultiplexTransport)c._transport).isPendingConnected()){
+					_sdlConnection = c;
+					try {
+						_sdlConnection.registerSession(this);//Handshake will start when register.
+					} catch (SdlException e) {
+						e.printStackTrace();
+					} 
+					return;
+				}
+				
+			}
+		}
+	}
+	public static boolean removeConnection(SdlConnection connection){
+		return shareConnections.remove(connection);
 	}
 }
