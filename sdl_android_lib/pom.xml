@@ -47,12 +47,12 @@
   </scm>
   <name>SmartDeviceLink Android Library</name>
   <url>http://github.com/smartdevicelink/sdl_android</url>
-  <description>Android implemention of SmartDeviceLink Libray</description>
+  <description>Android implementation of SmartDeviceLink Library</description>
   <distributionManagement>
 	<repository>
-       <id>bintray-XXXXXX</id>
-       <name>XXXXXX</name>
-       <url>https://api.bintray.com/maven/XXXXXXXXX/com.smartdevicelink/;publish=1</url>
+ 		<id>bintray-smartdevicelink-maven</id>
+        <name>smartdevicelink-maven</name>
+        <url>https://api.bintray.com/maven/smartdevicelink/maven/sdl_android/;publish=1</url>
     </repository>
   </distributionManagement>
 </project>
