@@ -4,9 +4,11 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
     }
 }
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
@@ -38,5 +40,26 @@ android {
         // by a similar customization.
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    pkg {
+        repo = 'maven'
+        name = 'sdl_android'
+        userOrg = 'smartdevicelink'
+        licenses = ['BSD 3-Clause']
+        vcsUrl = 'https://github.com/smartdevicelink/sdl_android.git'
+        version {
+            name = 'distribution-test'
+            desc = 'Testing Bintray distribution'
+            released  = new Date()
+            vcsTag = '4.0.1'
+        }
     }
 }
