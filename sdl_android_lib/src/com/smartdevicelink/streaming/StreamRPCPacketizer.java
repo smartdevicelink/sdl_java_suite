@@ -151,7 +151,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 			PutFile msg = (PutFile) _request;
 			long iOffsetCounter = msg.getOffset();
 			sFileName = msg.getSdlFileName();
-									
+			int priorityCoefficient = 1;
+			
 			if (lFileSize != 0)
 			{
 				Long iFileSize = (long) lFileSize;
@@ -211,6 +212,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 						pm.setBulkDataNoCopy(buffer);
 
 					pm.setCorrID(msg.getCorrelationID());
+					priorityCoefficient++;
+					pm.setPriorityCoefficient(priorityCoefficient);
 						
 					notification = new OnStreamRPC();
 					notification.setFileName(msg.getSdlFileName());
