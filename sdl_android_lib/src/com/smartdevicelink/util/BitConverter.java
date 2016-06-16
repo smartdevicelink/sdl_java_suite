@@ -69,4 +69,22 @@ public class BitConverter {
     	}
     	return ret;
     }
+	
+	/**
+	 * Converts the byte array into a string of hex values.
+	 * @param bytes
+	 * @param end EXCLUSIVE so if it it receives 10 it will print 0-9
+	 * @return
+	 */
+	public static String bytesToHex(byte[] bytes,int end){
+		if(bytes.length<end){
+			end = bytes.length;
+		}
+		StringBuilder sb = new StringBuilder();
+	    for(int i=0;i<end;i++){
+	    	sb.append(" ");
+	        sb.append(String.format("%02X ", bytes[i]));
+	    }
+	   return sb.toString();
+	}
 }
