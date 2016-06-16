@@ -95,7 +95,14 @@ public class SdlPermissionManager {
 
             for (PermissionItem pi : permissionItems) {
                 String rpcName = pi.getRpcName();
-                SdlPermission permission = SdlPermission.valueOf(rpcName);
+                SdlPermission permission;
+                try {
+                    permission = SdlPermission.valueOf(rpcName);
+                } catch (IllegalArgumentException e){
+                    Log.w(TAG, "RPC '" + rpcName + "' not supported");
+                    Log.w(TAG, e);
+                    continue;
+                }
                 List<HMILevel> hmiLevels = pi.getHMIPermissions().getAllowed();
 
                 if(hmiLevels != null) {
