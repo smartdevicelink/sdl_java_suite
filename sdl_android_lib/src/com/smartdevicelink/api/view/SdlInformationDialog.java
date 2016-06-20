@@ -3,14 +3,12 @@ package com.smartdevicelink.api.view;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.api.permission.SdlPermission;
-import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.ScrollableMessage;
-import com.smartdevicelink.proxy.rpc.SoftButton;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by mschwerz on 5/3/16.

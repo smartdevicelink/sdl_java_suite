@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Slider;

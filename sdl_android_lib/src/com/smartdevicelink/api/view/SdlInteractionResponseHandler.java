@@ -3,7 +3,7 @@ package com.smartdevicelink.api.view;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 
-import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 

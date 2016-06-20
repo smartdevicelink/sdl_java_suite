@@ -1,7 +1,7 @@
 package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
-import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;

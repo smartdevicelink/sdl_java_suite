@@ -1,4 +1,4 @@
-package com.smartdevicelink.api.view;
+package com.smartdevicelink.api.interfaces;
 
 /**
  * Created by mschwerz on 6/17/16.
