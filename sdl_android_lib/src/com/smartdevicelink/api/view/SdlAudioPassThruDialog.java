@@ -1,8 +1,9 @@
 package com.smartdevicelink.api.view;
 
+import android.support.annotation.Nullable;
+
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -11,7 +12,6 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.Collections;
 
@@ -25,16 +25,16 @@ public class SdlAudioPassThruDialog {
     protected static final int DEFAULT_DURATION = 5000;
     protected static final int MAX_DURATION = 1000000;
 
-    TTSChunk mInitialPrompt;
-    String[] mDisplayLines;
-    int mDuration;
-    boolean mAudioMuted;
-    SamplingRate mSamplingRate;
-    BitsPerSample mBitsPerSample;
-    AudioType mAudioType;
-    boolean mIsPending;
-    InteractionListener mListener;
-    ReceiveDataListener mDataListener;
+    final TTSChunk mInitialPrompt;
+    final String[] mDisplayLines;
+    final int mDuration;
+    final boolean mAudioMuted;
+    final SamplingRate mSamplingRate;
+    final BitsPerSample mBitsPerSample;
+    final AudioType mAudioType;
+    final ReceiveDataListener mDataListener;
+    final SdlInteractionSender mAPTSender= new SdlInteractionSender(SdlPermission.PerformAudioPassThru);
+    final SdlEndAPTInteractionSender mEndAPTSender= new SdlEndAPTInteractionSender(SdlPermission.EndAudioPassThru);
 
     SdlAudioPassThruDialog(Builder builder){
         this.mInitialPrompt=builder.mInitialPrompt;
@@ -44,41 +44,20 @@ public class SdlAudioPassThruDialog {
         this.mSamplingRate= builder.mSamplingRate;
         this.mBitsPerSample= builder.mBitsPerSample;
         this.mAudioType= builder.mAudioType;
-        this.mListener= builder.mListener;
         this.mDataListener= builder.mDataListener;
     }
 
-    public boolean send(SdlContext context){
-        if(context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.PerformAudioPassThru) && !mIsPending){
-            PerformAudioPassThru newPassThruDialog= createAudioPassThru();
-            final SdlContext finalApplicationContext= context.getSdlApplicationContext();
-            newPassThruDialog.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                        handleResultResponse(response.getResultCode(),response.getInfo(), finalApplicationContext);
-                }
+    public boolean send(SdlContext context, @Nullable SdlInteractionResponseListener listener){
 
-                @Override
-                public void onError(int correlationId, Result resultCode, String info) {
-                    super.onError(correlationId, resultCode, info);
-                    handleResultResponse(resultCode,info, finalApplicationContext);
-                }
-            });
-            context.sendRpc(newPassThruDialog);
+        boolean result= mAPTSender.sendInteraction(context.getSdlApplicationContext(),createAudioPassThru(), new SdlAPTInteractionResponseHandler(listener, context.getSdlApplicationContext()));
+        if(result)
             context.registerAudioPassThruListener(mDataListener);
-            mIsPending= true;
-            return true;
-        }
-        return false;
+        return result;
+
     }
 
-    public boolean stopAudioPassThru(SdlContext context){
-        if(context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.EndAudioPassThru) && mIsPending) {
-            EndAudioPassThru endAudioPassThru = new EndAudioPassThru();
-            context.sendRpc(endAudioPassThru);
-            return true;
-        }
-        return false;
+    public boolean stopAudioPassThru(SdlContext context, @Nullable SdlInteractionResponseListener listener){
+        return mEndAPTSender.sendInteraction(context.getSdlApplicationContext() , new EndAudioPassThru(), new SdlInteractionResponseHandler(listener));
     }
 
     private PerformAudioPassThru createAudioPassThru(){
@@ -95,33 +74,6 @@ public class SdlAudioPassThruDialog {
         return passThru;
     }
 
-    protected void handleResultResponse(Result response, String info, SdlContext context) {
-        if(mListener!=null){
-            switch (response) {
-                case SUCCESS:
-                    mListener.onSuccess();
-                    break;
-                case ABORTED:
-                    mListener.onAborted();
-                    break;
-                case INVALID_DATA:
-                    mListener.onError(info);
-                    break;
-                case DISALLOWED:
-                    mListener.onError(info);
-                    break;
-                case REJECTED:
-                    mListener.onError(info);
-                    break;
-                default:
-                    mListener.onError(info);
-                    break;
-            }
-        }
-        context.unregisterAudioPassThruListener(mDataListener);
-        mIsPending = false;
-    }
-
 
     public static class Builder{
         TTSChunk mInitialPrompt;
@@ -131,7 +83,6 @@ public class SdlAudioPassThruDialog {
         SamplingRate mSamplingRate;
         BitsPerSample mBitsPerSample;
         AudioType mAudioType= AudioType.PCM;
-        InteractionListener mListener;
         ReceiveDataListener mDataListener;
 
         public Builder(SamplingRate samplingRate, BitsPerSample bitsPerSample, AudioType audioType){
@@ -198,11 +149,6 @@ public class SdlAudioPassThruDialog {
             return this;
         }
 
-        public Builder setListener(InteractionListener listener){
-            mListener=listener;
-            return this;
-        }
-
         public Builder setDataListener(ReceiveDataListener listener){
             mDataListener= listener;
             return this;
@@ -215,14 +161,36 @@ public class SdlAudioPassThruDialog {
 
     }
 
+    private class SdlEndAPTInteractionSender extends SdlInteractionSender{
+
+        public SdlEndAPTInteractionSender(SdlPermission permission) {
+            super(permission);
+        }
+
+        @Override
+        protected boolean isAbleToSendInteraction(SdlPermission permission, SdlContext context) {
+            return super.isAbleToSendInteraction(permission, context) && mAPTSender.mIsPending;
+        }
+    }
+
+    private class SdlAPTInteractionResponseHandler extends SdlInteractionResponseHandler {
+        SdlContext mContext;
+
+        public SdlAPTInteractionResponseHandler(@Nullable SdlInteractionResponseListener listener, SdlContext context) {
+            super(listener);
+            mContext= context;
+        }
+
+        @Override
+        protected void handleResultResponse(SdlInteractionSender sender, Result response) {
+            super.handleResultResponse(sender, response);
+            mContext.unregisterAudioPassThruListener(mDataListener);
+        }
+    }
+
     public interface ReceiveDataListener{
         void receiveData(byte[] data);
 
     }
 
-    public interface InteractionListener{
-        void onSuccess();
-        void onAborted();
-        void onError(String moreInfo);
-    }
 }

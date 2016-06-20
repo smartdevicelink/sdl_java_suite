@@ -1,14 +1,13 @@
 package com.smartdevicelink.api.view;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Slider;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,8 +26,8 @@ public class SdlSlideControl {
     private final String mHeaderText;
     private final int mDuration;
     private final int mPosition;
-    private boolean mIsPending =false;
-    private final InteractionListener mListener;
+    private final SdlSliderTickListener mListener;
+    private SdlInteractionSender mSender= new SdlInteractionSender(SdlPermission.Slider);
 
     SdlSlideControl(Builder builder){
         this.mNumOfTicks= builder.mNumOfTicks;
@@ -39,53 +38,10 @@ public class SdlSlideControl {
         this.mListener= builder.mListener;
     }
 
-    public boolean send(SdlContext context){
-        if(context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.Slider) && !mIsPending){
-            Slider sliderRPC= createSlider();
-            sliderRPC.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    if(response.getSuccess())
-                        mListener.onTickSelected(((SliderResponse)response).getSliderPosition());
-                    else
-                        handleResultResponse(response.getResultCode(),response.getInfo());
-                }
-
-                @Override
-                public void onError(int correlationId, Result resultCode, String info) {
-                    super.onError(correlationId, resultCode, info);
-                    handleResultResponse(resultCode,info);
-                }
-            });
-            context.getSdlApplicationContext().sendRpc(sliderRPC);
-            return true;
-        }
-        return false;
+    public boolean send(SdlContext context, @Nullable SdlInteractionResponseListener listener){
+        return mSender.sendInteraction(context.getSdlApplicationContext(),createSlider(),new SdlSliderInteractionResponseHandler(listener, mListener));
     }
 
-    private void handleResultResponse(Result response, String info) {
-        switch (response) {
-            case TIMED_OUT:
-                mListener.onTimeout();
-                break;
-            case ABORTED:
-                mListener.onAborted();
-                break;
-            case INVALID_DATA:
-                mListener.onError(info);
-                break;
-            case DISALLOWED:
-                mListener.onError(info);
-                break;
-            case REJECTED:
-                mListener.onError(info);
-                break;
-            default:
-                mListener.onError(info);
-                break;
-        }
-        mIsPending = false;
-    }
     private Slider createSlider(){
         Slider newSlider= new Slider();
         newSlider.setNumTicks(mNumOfTicks);
@@ -103,7 +59,7 @@ public class SdlSlideControl {
         private final String mHeaderText;
         private int mDuration= DEFAULT_DURATION;
         private int mPosition=1;
-        private InteractionListener mListener;
+        private SdlSliderTickListener mListener;
 
         /**
          * Builder that takes in static text for the Footer for the SdlSlideControl.
@@ -112,7 +68,7 @@ public class SdlSlideControl {
          * @param footerText The static text that will appear under the slider
          * @param listener Responds when the user finishes the interaction.
          */
-        public Builder(int numOfTicks, @NonNull String headerText, @NonNull String footerText, @NonNull InteractionListener listener){
+        public Builder(int numOfTicks, @NonNull String headerText, @NonNull String footerText, SdlSliderTickListener listener){
             mNumOfTicks= numOfTicks;
             mHeaderText= headerText;
             mFooterText.add(footerText);
@@ -127,7 +83,7 @@ public class SdlSlideControl {
          *               when that tick is selected. (Max of 26 labels)
          * @param listener Responds when the user finishes the interaction.
          */
-        public Builder(@NonNull String headerText, @NonNull Collection<String> labels, @NonNull InteractionListener listener){
+        public Builder(@NonNull String headerText, @NonNull Collection<String> labels, SdlSliderTickListener listener){
             mHeaderText= headerText;
             mNumOfTicks= labels.size();
             mFooterText.addAll(labels);
@@ -161,10 +117,23 @@ public class SdlSlideControl {
         }
     }
 
-    public interface InteractionListener{
-        void onTickSelected(int tickMark);
-        void onTimeout();
-        void onAborted();
-        void onError(String moreInfo);
+    private class SdlSliderInteractionResponseHandler extends SdlInteractionResponseHandler {
+        SdlSliderTickListener mTickListener;
+
+        public SdlSliderInteractionResponseHandler(SdlInteractionResponseListener listener, SdlSliderTickListener tickListener) {
+            super(listener);
+            mTickListener= tickListener;
+        }
+
+        @Override
+        protected void handleRPCResponse(SdlInteractionSender sender, RPCResponse response) {
+            super.handleRPCResponse(sender, response);
+            mTickListener.onTickSelected(((SliderResponse)response).getSliderPosition());
+        }
     }
+
+    public interface SdlSliderTickListener{
+        void onTickSelected(int tickMark);
+    }
+
 }

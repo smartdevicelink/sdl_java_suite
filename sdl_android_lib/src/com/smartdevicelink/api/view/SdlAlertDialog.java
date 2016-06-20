@@ -1,12 +1,13 @@
 package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.permission.SdlPermission;
 
 
 /**
  * Created by mschwerz on 4/21/16.
  */
-public class SdlAlertDialog extends SdlAlertBase {
+public class SdlAlertDialog extends SdlAlertBase{
     private final String TAG = getClass().getSimpleName();
 
     protected SdlAlertDialog(Builder builder) {
@@ -14,9 +15,22 @@ public class SdlAlertDialog extends SdlAlertBase {
     }
 
     @Override
-    protected boolean verifyRPCCanbeSent(SdlContext context) {
-        //TODO: Check here if the activity is in foreground
-        return super.verifyRPCCanbeSent(context) && true;
+    protected SdlInteractionSender getSender() {
+        if(mSender==null)
+            mSender= new SdlAlertDialogSender(SdlPermission.Alert);
+        return mSender;
+    }
+
+    public class SdlAlertDialogSender extends SdlInteractionSender{
+        public SdlAlertDialogSender(SdlPermission permission) {
+            super(permission);
+        }
+
+        @Override
+        protected boolean isAbleToSendInteraction(SdlPermission permission, SdlContext context) {
+            //TODO: Be able to know when the app is in foreground
+            return super.isAbleToSendInteraction(permission, context) && true;
+        }
     }
 
     //Extends the common Builder for the Alerts
