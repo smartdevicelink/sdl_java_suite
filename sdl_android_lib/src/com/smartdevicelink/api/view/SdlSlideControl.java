@@ -40,7 +40,12 @@ public class SdlSlideControl {
     }
 
     public boolean send(SdlContext context, @Nullable SdlInteractionResponseListener listener){
-        return mSender.sendInteraction(context.getSdlApplicationContext(),createSlider(),new SdlSliderInteractionResponseHandler(listener, mListener));
+        return mSender.sendInteraction(context.getSdlApplicationContext(), createSlider(), new SdlInteractionSender.SdlDataReceiver() {
+            @Override
+            public void handleRPCResponse(RPCResponse response) {
+                mListener.onTickSelected(((SliderResponse)response).getSliderPosition());
+            }
+        },listener);
     }
 
     private Slider createSlider(){
@@ -115,21 +120,6 @@ public class SdlSlideControl {
          */
         public SdlSlideControl build(){
             return new SdlSlideControl(this);
-        }
-    }
-
-    private class SdlSliderInteractionResponseHandler extends SdlInteractionResponseHandler {
-        SdlSliderTickListener mTickListener;
-
-        public SdlSliderInteractionResponseHandler(SdlInteractionResponseListener listener, SdlSliderTickListener tickListener) {
-            super(listener);
-            mTickListener= tickListener;
-        }
-
-        @Override
-        protected void handleRPCResponse(SdlInteractionSender sender, RPCResponse response) {
-            super.handleRPCResponse(sender, response);
-            mTickListener.onTickSelected(((SliderResponse)response).getSliderPosition());
         }
     }
 

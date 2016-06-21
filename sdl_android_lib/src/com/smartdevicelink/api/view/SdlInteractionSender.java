@@ -1,6 +1,10 @@
 package com.smartdevicelink.api.view;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -22,20 +26,21 @@ public class SdlInteractionSender {
         return context.getSdlPermissionManager().isPermissionAvailable(permission) && !mIsPending;
     }
 
-    protected boolean sendInteraction(SdlContext context, RPCRequest request, final SdlInteractionResponseHandler handler){
+    boolean sendInteraction(@NonNull SdlContext context, @NonNull RPCRequest request, @Nullable final SdlDataReceiver receiver, @Nullable final SdlInteractionResponseListener listener){
         if(isAbleToSendInteraction(mSdlPermission, context)){
             if(request.getOnRPCResponseListener()==null){
-                final SdlInteractionSender finalSelf= this;
                 request.setOnRPCResponseListener(new OnRPCResponseListener() {
                     @Override
                     public void onResponse(int correlationId, RPCResponse response) {
-                        handler.handleRPCResponse(finalSelf,response);
+                        if(receiver!=null)
+                            receiver.handleRPCResponse(response);
+                        handleResultResponse(response.getResultCode(),listener);
                     }
 
                     @Override
                     public void onError(int correlationId, Result resultCode, String info) {
                         super.onError(correlationId, resultCode, info);
-                        handler.handleResultResponse(finalSelf,resultCode);
+                        handleResultResponse(resultCode, listener);
                     }
                 });
             }
@@ -46,8 +51,40 @@ public class SdlInteractionSender {
             return false;
     }
 
-    public void notifyResponseReceived(){
+
+
+    private void handleResultResponse(Result response, SdlInteractionResponseListener listener){
+        if(listener!=null) {
+            switch (response) {
+                case SUCCESS:
+                    listener.onSuccess();
+                    break;
+                case TIMED_OUT:
+                    listener.onTimeout();
+                    break;
+                case ABORTED:
+                    listener.onAborted();
+                    break;
+                case INVALID_DATA:
+                    listener.onError();
+                    break;
+                case DISALLOWED:
+                    listener.onError();
+                    break;
+                case REJECTED:
+                    listener.onError();
+                    break;
+                default:
+                    listener.onError();
+                    break;
+            }
+        }
         mIsPending=false;
+    }
+
+
+    interface SdlDataReceiver{
+        void handleRPCResponse(RPCResponse response);
     }
 
 

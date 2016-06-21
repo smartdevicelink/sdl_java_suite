@@ -76,7 +76,7 @@ abstract class SdlAlertBase {
      * @param context The SdlActivity that the SdlCommonAlert will be sent from
      */
     public boolean send(@NonNull SdlContext context, @Nullable SdlInteractionResponseListener listener){
-        return getSender().sendInteraction(context,createAlert(context),new SdlInteractionResponseHandler(mButtonManager.getCleanUpListener(context,listener)));
+        return getSender().sendInteraction(context.getSdlApplicationContext(),createAlert(context),null,mButtonManager.getCleanUpListener(context.getSdlApplicationContext(),listener));
     }
 
     abstract static class Builder <T extends Builder> {

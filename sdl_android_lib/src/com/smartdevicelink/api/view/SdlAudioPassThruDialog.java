@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.api.permission.SdlPermission;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -50,15 +51,21 @@ public class SdlAudioPassThruDialog {
 
     public boolean send(SdlContext context, @Nullable SdlInteractionResponseListener listener){
 
-        boolean result= mAPTSender.sendInteraction(context.getSdlApplicationContext(),createAudioPassThru(), new SdlAPTInteractionResponseHandler(listener, context.getSdlApplicationContext()));
+        final SdlContext applicationContext= context.getSdlApplicationContext();
+        boolean result= mAPTSender.sendInteraction(context.getSdlApplicationContext(), createAudioPassThru(), new SdlInteractionSender.SdlDataReceiver() {
+            @Override
+            public void handleRPCResponse(RPCResponse response) {
+                applicationContext.unregisterAudioPassThruListener(mDataListener);
+            }
+        }, listener);
         if(result)
-            context.registerAudioPassThruListener(mDataListener);
+            applicationContext.registerAudioPassThruListener(mDataListener);
         return result;
 
     }
 
     public boolean stopAudioPassThru(SdlContext context, @Nullable SdlInteractionResponseListener listener){
-        return mEndAPTSender.sendInteraction(context.getSdlApplicationContext() , new EndAudioPassThru(), new SdlInteractionResponseHandler(listener));
+        return mEndAPTSender.sendInteraction(context.getSdlApplicationContext() , new EndAudioPassThru(), null, listener);
     }
 
     private PerformAudioPassThru createAudioPassThru(){
@@ -171,21 +178,6 @@ public class SdlAudioPassThruDialog {
         @Override
         protected boolean isAbleToSendInteraction(SdlPermission permission, SdlContext context) {
             return super.isAbleToSendInteraction(permission, context) && mAPTSender.mIsPending;
-        }
-    }
-
-    private class SdlAPTInteractionResponseHandler extends SdlInteractionResponseHandler {
-        SdlContext mContext;
-
-        public SdlAPTInteractionResponseHandler(@Nullable SdlInteractionResponseListener listener, SdlContext context) {
-            super(listener);
-            mContext= context;
-        }
-
-        @Override
-        protected void handleResultResponse(SdlInteractionSender sender, Result response) {
-            super.handleResultResponse(sender, response);
-            mContext.unregisterAudioPassThruListener(mDataListener);
         }
     }
 
