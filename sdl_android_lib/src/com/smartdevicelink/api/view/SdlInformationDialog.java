@@ -39,7 +39,8 @@ public class SdlInformationDialog {
     }
 
     public boolean send(SdlContext context, SdlInteractionResponseListener listener){
-        return mSender.sendInteraction(context,createScrollableMessage(context), new SdlInteractionResponseHandler(mButtonManager.getCleanUpListener(context,listener)));
+        SdlContext applicationContext= context.getSdlApplicationContext();
+        return mSender.sendInteraction(applicationContext,createScrollableMessage(applicationContext), null, mButtonManager.getCleanUpListener(applicationContext,listener));
     }
 
     public static class Builder{
