@@ -271,7 +271,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
-				cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				if(SdlConnection.isLegacyModeEnabled()){
+					cycleProxy(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
+
+				}else{
+					cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				}
 			} else {
 				notifyProxyClosed(info, e, SdlDisconnectedReason.TRANSPORT_ERROR);
 			}
@@ -290,7 +295,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID, int hashID) {
 			
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
@@ -318,7 +323,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				NavServiceStarted();
 			} else if (sessionType.eq(SessionType.PCM)) {
 				AudioServiceStarted();
-			} 
+			} else if (sessionType.eq(SessionType.RPC)){
+				cycleProxy(SdlDisconnectedReason.RPC_SESSION_ENDED);
+			}
 			else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
 				startRPCProtocolSession(sessionID, correlationID);
@@ -1145,6 +1152,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				sendTransportBroadcast();
 			}
 	}
+	/**
+	 * This method will fake the multiplex connection event
+	 * @param action
+	 */
+	public void forceOnConnected(){
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (sdlSession != null) {
+				if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
+					try {
+						sdlSession.startSession();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+				}
+				sdlSession.getSdlConnection().forceHardwareConnectEvent(TransportType.BLUETOOTH);
+				
+			}
+		}
+	}
 	
 	public void sendTransportBroadcast()
 	{
@@ -1332,7 +1358,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_cycling = true;
 				cleanProxy(disconnectedReason);
 				initializeProxy();
-				notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);							
+				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
+					notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);							
+				}
 			}
 		 catch (SdlException e) {
 			Intent sendIntent = createBroadcastIntent();
@@ -1587,8 +1615,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
 			}
 			pm.setCorrID(request.getCorrelationID());
-			if (request.getBulkData() != null) 
+			if (request.getBulkData() != null){
 				pm.setBulkData(request.getBulkData());
+			}
+			if(request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
+				pm.setPriorityCoefficient(1);
+			}
 			
 			// Queue this outgoing message
 			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {

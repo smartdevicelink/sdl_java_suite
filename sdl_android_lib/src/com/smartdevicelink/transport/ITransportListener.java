@@ -1,8 +1,10 @@
 package com.smartdevicelink.transport;
 
+import com.smartdevicelink.protocol.SdlPacket;
+
 public interface ITransportListener {
-	// Called to indicate and deliver bytes received from transport
-	void onTransportBytesReceived(byte[] receivedBytes, int receivedBytesLength);
+	// Called to indicate and deliver a packet received from transport
+	void onTransportPacketReceived(SdlPacket packet);
 
 	// Called to indicate that transport connection was established
 	void onTransportConnected();
