@@ -1,10 +1,11 @@
-package com.smartdevicelink.api.choiceset;
+package com.smartdevicelink.api.view;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.api.permission.SdlPermission;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -15,13 +16,12 @@ import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -36,15 +36,12 @@ public class SdlChoiceDialog {
     private final String mInitialText;
     private final TTSChunk mInitialPrompt;
     private final TTSChunk mHelpPrompt;
-    private final ResponseListener mListener;
-    private final SparseArray<SdlChoice.OnSelectedListener> mQuickListenerFind = new SparseArray<>();
+    private final ArrayList<Integer> mChoiceSets= new ArrayList<>();
+    private final HashMap<Integer,SdlChoice.OnSelectedListener> mQuickListenerFind = new HashMap<>();
     private final HashSet<String> mNames = new HashSet<>();
-    private final PerformInteraction mNewInteraction;
-    private boolean mIsPending=false;
+    protected SdlInteractionSender mSender= new SdlInteractionSender(SdlPermission.PerformInteraction);
 
     SdlChoiceDialog(final Builder builder){
-        mNewInteraction = new PerformInteraction();
-
         mInitialText = builder.mInitialText;
         mInitialPrompt = builder.mInitialPrompt;
         mHelpPrompt = builder.mHelpPrompt;
@@ -59,75 +56,50 @@ public class SdlChoiceDialog {
         else
             mVoiceInteraction= null;
 
-        ArrayList<Integer> choiceIds= new ArrayList<>();
         for(SdlChoiceSet set:builder.mChoiceSets){
-            choiceIds.add(set.getChoiceSetId());
+            mChoiceSets.add(set.getChoiceSetId());
             SparseArray<SdlChoice> choices = set.getChoices();
             //keep the names of the choice sets provided to ensure
             //that they have been uploaded before sending the Perform Interaction
             mNames.add(set.getSetName());
             for(int i=0; i<choices.size();i++){
-                mQuickListenerFind.append(choices.keyAt(i),choices.get(choices.keyAt(i)).getListener());
+                mQuickListenerFind.put(choices.keyAt(i),choices.get(choices.keyAt(i)).getListener());
             }
         }
-        mNewInteraction.setInteractionChoiceSetIDList(choiceIds);
-        mNewInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
-        mNewInteraction.setInitialText(mInitialText);
-        if(mManualInteraction!=null){
-            if(mManualInteraction.getTimeout()!=null)
-                mNewInteraction.setTimeout(mManualInteraction.getTimeout());
-            LayoutMode mode= getCorrectLayoutMode(mManualInteraction.getType(), mManualInteraction.isUseSearch());
-            if(mode !=null)
-                mNewInteraction.setInteractionLayout(mode);
-        }
 
-        if(mVoiceInteraction!=null){
-            if(mVoiceInteraction.getTimeoutPrompt() !=null)
-                mNewInteraction.setTimeoutPrompt(Collections.singletonList(mVoiceInteraction.mTimeoutPrompt));
-        }
-
-        mNewInteraction.setInteractionMode(getCorrectInteractionMode(mManualInteraction,mVoiceInteraction));
-        if(mHelpPrompt!=null)
-            mNewInteraction.setHelpPrompt(Collections.singletonList(mHelpPrompt));
-
-        mListener = createResponseDebugListener(builder.mListener);
     }
 
-    public boolean send(SdlContext context){
-        Log.d(TAG,"SdlChoiceDialog being sent");
-        //check if we have permissions to show the Perform Interaction first
-        if (context.getSdlPermissionManager().isPermissionAvailable(SdlPermission.PerformInteraction)&&!mIsPending) {
-            //attach the help items to the perform interaction RPC
-            //will return false if one of the images provided is not uploaded currently
-            if(!addVrHelpItems(context))
-                return false;
-            //checking to see that the interaction choice sets are currently uploaded
-            //to the module
-            for(String name:mNames) {
-                if (!context.getSdlChoiceSetManager().hasBeenUploaded(name))
-                    return false;
+    private PerformInteraction createPerformInteraction(SdlContext context){
+        PerformInteraction newPerformInteraction= addVrHelpItems(context, new PerformInteraction());
+        if(newPerformInteraction!=null) {
+            newPerformInteraction.setInitialText(mInitialText);
+            newPerformInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
+            if(mManualInteraction!=null){
+                if(mManualInteraction.getTimeout()!=null)
+                    newPerformInteraction.setTimeout(mManualInteraction.getTimeout());
+                LayoutMode mode= getCorrectLayoutMode(mManualInteraction.getType(), mManualInteraction.isUseSearch());
+                if(mode !=null)
+                    newPerformInteraction.setInteractionLayout(mode);
             }
-            mNewInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-                @Override
-                public void onResponse(int correlationId, RPCResponse response) {
-                    parseResponse(response);
-                }
+            if(mVoiceInteraction!=null){
+                if(mVoiceInteraction.getTimeoutPrompt() !=null)
+                    newPerformInteraction.setTimeoutPrompt(Collections.singletonList(mVoiceInteraction.mTimeoutPrompt));
+            }
+            newPerformInteraction.setInteractionMode(getCorrectInteractionMode(mManualInteraction,mVoiceInteraction));
+            if(mHelpPrompt!=null)
+                newPerformInteraction.setHelpPrompt(Collections.singletonList(mHelpPrompt));
 
-                @Override
-                public void onError(int correlationId, Result resultCode, String info) {
-                    super.onError(correlationId, resultCode, info);
-                    handleResult(resultCode,info);
-                }
-            });
-
-            context.sendRpc(mNewInteraction);
-            mIsPending=true;
-            return true;
+            if(mChoiceSets.size()>0)
+                newPerformInteraction.setInteractionChoiceSetIDList(mChoiceSets);
+            else
+                //A choice set was not given by the developer
+                Log.d(TAG, "The user has not specified a choice set...");
         }
-        return false;
+        return newPerformInteraction;
+
     }
 
-    private boolean addVrHelpItems(SdlContext context){
+    private PerformInteraction addVrHelpItems(SdlContext context, PerformInteraction performInteraction){
         if(mVoiceInteraction !=null && mVoiceInteraction.getVrHelpItems().size()>0) {
             ArrayList<VrHelpItem> vrItems = new ArrayList<>();
             for (Integer i=0; i<mVoiceInteraction.getVrHelpItems().size();i++){
@@ -139,60 +111,15 @@ public class SdlChoiceDialog {
                 if(item.getSdlImage()==null)
                     continue;
                 if(context.getSdlFileManager().isFileOnModule(item.getSdlImage().getSdlName()))
-                    return false;
+                    return null;
                 Image helpImage = new Image();
                 helpImage.setImageType(ImageType.DYNAMIC);
                 helpImage.setValue(item.getSdlImage().getSdlName());
             }
 
-            mNewInteraction.setVrHelp(vrItems);
+            performInteraction.setVrHelp(vrItems);
         }
-        return true;
-    }
-
-    private void parseResponse(RPCResponse response){
-        if(response.getResultCode()!=Result.SUCCESS)
-            handleResult(response.getResultCode(),response.getInfo());
-        else{
-            PerformInteractionResponse piResponse = (PerformInteractionResponse) response;
-            switch (piResponse.getTriggerSource()) {
-                case TS_MENU:
-                    mQuickListenerFind.get(piResponse.getChoiceID()).onManualSelection();
-                    break;
-                case TS_VR:
-                    mQuickListenerFind.get(piResponse.getChoiceID()).onVoiceSelection();
-                    break;
-                case TS_KEYBOARD:
-                    mListener.onSearch(piResponse.getManualTextEntry());
-                    break;
-                default:
-                    handleResult(response.getResultCode(),response.getInfo());
-            }
-        }
-        mIsPending=false;
-    }
-
-    private void handleResult(Result response, String info){
-        switch (response) {
-            case SUCCESS:
-                mListener.onTimeout();
-                break;
-            case ABORTED:
-                mListener.onAborted();
-                break;
-            case INVALID_DATA:
-                mListener.onError();
-                break;
-            case DISALLOWED:
-                mListener.onError();
-                break;
-            case REJECTED:
-                mListener.onError();
-                break;
-            default:
-                mListener.onError();
-                break;
-        }
+        return performInteraction;
     }
 
     private LayoutMode getCorrectLayoutMode(SdlManualInteraction.ManualInteractionType type, boolean useSearch){
@@ -229,39 +156,28 @@ public class SdlChoiceDialog {
             return InteractionMode.MANUAL_ONLY;
     }
 
-    //listener to debug out responses that are parsed to the set listener
-    private ResponseListener createResponseDebugListener(final ResponseListener responseListener){
-       return new ResponseListener() {
+    public boolean send(SdlContext context, final SdlChoiceResponseListener listener){
+        PerformInteraction performInteraction= createPerformInteraction(context);
+        //should give a more definitive way to indicate the cause of the PerformInteraction not being sent
+        return performInteraction!=null&& mSender.sendInteraction(context, performInteraction, new SdlInteractionSender.SdlDataReceiver() {
             @Override
-            public void onTimeout() {
-                Log.d(TAG,"Perform Interaction timed out");
-                if(responseListener!=null)
-                    responseListener.onTimeout();
+            public void handleRPCResponse(RPCResponse response) {
+                PerformInteractionResponse piResponse = (PerformInteractionResponse) response;
+                switch (piResponse.getTriggerSource()) {
+                    case TS_MENU:
+                        mQuickListenerFind.get(piResponse.getChoiceID()).onManualSelection();
+                        break;
+                    case TS_VR:
+                        mQuickListenerFind.get(piResponse.getChoiceID()).onVoiceSelection();
+                        break;
+                    case TS_KEYBOARD:
+                        if(listener!=null)
+                            listener.onSearch(piResponse.getManualTextEntry());
+                        break;
+                }
             }
-
-            @Override
-            public void onAborted() {
-                Log.d(TAG,"Perform Interaction was aborted");
-                if(responseListener!=null)
-                    responseListener.onAborted();
-            }
-
-            @Override
-            public void onError() {
-                Log.d(TAG,"Perform Interaction timed out");
-                if(responseListener!=null)
-                    responseListener.onError();
-            }
-
-            @Override
-            public void onSearch(String searchString) {
-                Log.d(TAG,"Perform Interaction search came back with: "+searchString);
-                if(responseListener!=null)
-                    responseListener.onSearch(searchString);
-            }
-        };
+        }, listener);
     }
-
 
     public static class Builder{
         private Collection<SdlChoiceSet> mChoiceSets = new ArrayList<>();
@@ -270,7 +186,6 @@ public class SdlChoiceDialog {
         private String mInitialText;
         private TTSChunk mInitialPrompt;
         private TTSChunk mHelpPrompt;
-        private ResponseListener mListener;
 
 
         public Builder(){
@@ -331,10 +246,6 @@ public class SdlChoiceDialog {
         }
 
 
-        public Builder setListener(ResponseListener listener){
-            this.mListener = listener;
-            return this;
-        }
 
         public SdlChoiceDialog build(){
             return new SdlChoiceDialog(this);
@@ -342,10 +253,7 @@ public class SdlChoiceDialog {
     }
 
 
-    public interface ResponseListener{
-        void onTimeout();
-        void onAborted();
-        void onError();
+    public interface SdlChoiceResponseListener extends SdlInteractionResponseListener{
         void onSearch(String searchString);
     }
 

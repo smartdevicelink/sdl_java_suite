@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
-import com.smartdevicelink.api.choiceset.SdlChoiceSetManager;
+import com.smartdevicelink.api.view.SdlChoiceSetManager;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.menu.SdlMenuItem;
@@ -13,7 +13,6 @@ import com.smartdevicelink.api.view.SdlAudioPassThruDialog;
 import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.api.view.SdlView;
 import com.smartdevicelink.api.view.SdlViewManager;
-import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {

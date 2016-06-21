@@ -1,4 +1,4 @@
-package com.smartdevicelink.api.choiceset;
+package com.smartdevicelink.api.view;
 
 import android.support.annotation.NonNull;
 import android.util.SparseArray;

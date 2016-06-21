@@ -1,4 +1,4 @@
-package com.smartdevicelink.api.choiceset;
+package com.smartdevicelink.api.view;
 
 /**
  * Created by mschwerz on 5/9/16.

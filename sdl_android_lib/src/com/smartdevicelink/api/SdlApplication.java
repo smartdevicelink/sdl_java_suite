@@ -8,14 +8,13 @@ import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.smartdevicelink.api.choiceset.SdlChoiceSetManager;
+import com.smartdevicelink.api.view.SdlChoiceSetManager;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.view.SdlAudioPassThruDialog;
 import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.api.menu.SdlMenu;
 import com.smartdevicelink.api.menu.SdlMenuItem;
-import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;

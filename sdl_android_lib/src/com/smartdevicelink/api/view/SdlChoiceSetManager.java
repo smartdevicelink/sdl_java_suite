@@ -1,4 +1,4 @@
-package com.smartdevicelink.api.choiceset;
+package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.api.SdlApplication;
 import com.smartdevicelink.proxy.RPCResponse;

@@ -1,4 +1,4 @@
-package com.smartdevicelink.api.choiceset;
+package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
