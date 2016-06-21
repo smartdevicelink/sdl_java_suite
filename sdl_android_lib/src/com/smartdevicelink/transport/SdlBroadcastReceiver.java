@@ -198,11 +198,14 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 	/**
 	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
-	 * @param context A context to access Android system services through.
+	 * @param context A context to access Android system services through. If null is passed, this will always return false
 	 * @return True if a transport connection is established, false otherwise.
 	 */
 	public static boolean isTransportConnected(Context context){
 		Log.d(TAG, "Checking to see if router service is transport connected");
+		if(context == null){
+			return false;
+		}
 		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {
