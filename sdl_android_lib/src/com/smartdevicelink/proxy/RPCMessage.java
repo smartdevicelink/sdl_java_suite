@@ -2,8 +2,6 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
-
 
 public class RPCMessage extends RPCStruct  {
     public static final String KEY_REQUEST = "request";
