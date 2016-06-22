@@ -31,8 +31,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		
 	public static ComponentName runningBluetoothServicePackage = null;
 
-	private static ComponentName broadcastServicePackage = null;
-
     @SuppressWarnings("rawtypes")
 	private static Class localRouterClass;
 
@@ -79,7 +77,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						if(vlad.validate()){
 							Log.d(TAG, "Router service trusted!");
 							queuedService = componentName;
-							broadcastServicePackage = componentName;
 							intent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
 							onSdlEnabled(context, intent);
 						}else{
@@ -222,8 +219,18 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return True if a transport connection is established, false otherwise.
 	 */
 	public static boolean isTransportConnected(Context context){
+		return isTransportConnected(context, null);
+	}
+
+	/**
+	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
+	 * @param context A context to access Android system services through.
+	 * @param routerService ComponentName of router service if already connected
+	 * @return True if a transport connection is established, false otherwise.
+	 */
+	public static boolean isTransportConnected(Context context, ComponentName routerService) {
 		Log.d(TAG, "Checking to see if router service is transport connected");
-		if(isRouterServiceRunning(context, broadcastServicePackage) || isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
+		if(isRouterServiceRunning(context, routerService) || isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {
 				con = context.createPackageContext(runningBluetoothServicePackage.getPackageName(), 0);
