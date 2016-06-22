@@ -10,11 +10,11 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * Updates the list of next maneuvers, which can be requested by the user pressing the softbutton "Turns" on the
  * Navigation base screen. Three softbuttons are predefined by the system: Up, Down, Close
- * <p>
- * Function Group: Navigation
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * <p>
+ * 
+ * <p>Function Group: Navigation</p>
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
  * 
  * @since SmartDeviceLink 2.0
  * @see ShowConstantTbt
@@ -49,7 +49,7 @@ public class UpdateTurnList extends RPCRequest{
      * @param turnList
      *            a List<Turn> value representing a list of turns to be shown to the user
      *            <p>
-     *            <b>Notes: </b>Minsize=1; Maxsize=100
+     *            <b>Notes: </b>Minsize=1; Maxsize=100</p>
      */
     public void setTurnList(List<Turn> turnList){
         if(turnList != null){
@@ -119,7 +119,7 @@ public class UpdateTurnList extends RPCRequest{
      * @param softButtons
      *            a List<SoftButton> value
      *            <p>
-     *            <b>Notes: </b><br/>
+     *            <b>Notes: </b></p>
      *            <ul>
      *            <li>If omitted on supported displays, the alert will not have any SoftButton</li>
      *            <li>ArrayMin: 0</li>

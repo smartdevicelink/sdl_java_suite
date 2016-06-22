@@ -2,7 +2,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Specifies what function should be performed on the media clock/counter
- * <p>
+ * 
  * 
  * @since SmartDeviceLink 1.0
  */

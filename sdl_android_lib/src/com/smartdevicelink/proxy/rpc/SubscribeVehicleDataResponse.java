@@ -45,9 +45,9 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
 	/**
-	 * Constructs a new SubscribeVehicleDataResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new SubscribeVehicleDataResponse object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

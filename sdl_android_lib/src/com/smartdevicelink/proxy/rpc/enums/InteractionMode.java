@@ -33,12 +33,12 @@ public enum InteractionMode {
 	 * recognized choice), the interaction becomes strictly, and irreversibly, a
 	 * VR_ONLY interaction (i.e. the MANUAL_ONLY mode forms of interaction will
 	 * no longer be honored)
-	 * <P>
-	 * The TriggerSource parameter of the
+	 * 
+	 * <p>The TriggerSource parameter of the
 	 * {@linkplain com.smartdevicelink.proxy.rpc.PerformInteraction} response will
 	 * indicate which interaction mode the user finally chose to attempt the
 	 * selection (even if the interaction did not end with a selection being
-	 * made)
+	 * made)</P>
 	 */
 	BOTH;
 

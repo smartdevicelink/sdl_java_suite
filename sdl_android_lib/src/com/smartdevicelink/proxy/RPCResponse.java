@@ -22,18 +22,18 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
  * </li> <li>ResultCode:
  * <ul>
  * 
- * The result code provides additional information about a response returning a
- * failed outcome.
- * <br>
+ * <p>The result code provides additional information about a response returning a
+ * failed outcome.</p>
  * 
- * Any response can have at least one, or possibly more, of the following result
+ * 
+ * <p>Any response can have at least one, or possibly more, of the following result
  * code values: SUCCESS, INVALID_DATA, OUT_OF_MEMORY, TOO_MANY_PENDING_REQUESTS,
- * APPLICATION_NOT_REGISTERED, GENERIC_ERROR,REJECTED.
- * <br>
+ * APPLICATION_NOT_REGISTERED, GENERIC_ERROR,REJECTED.</p>
  * 
- * Any additional result codes for a given operation can be found in related
- * RPCs
- * <br>
+ * 
+ * <p>Any additional result codes for a given operation can be found in related
+ * RPCs</p>
+ * 
  * </ul>
  * </li> <li>Info:
  * <ul>

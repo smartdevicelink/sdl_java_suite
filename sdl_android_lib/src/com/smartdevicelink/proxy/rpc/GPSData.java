@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 /**
  * Describes the GPS data. Not all data will be available on all carlines.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -55,21 +55,21 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 		<tr>
  * 			<td>utcHours</td>
  * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 23
+ * 			<td>Minvalue: 0<b>Maxvalue: 23
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>utcMinutes</td>
  * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 59
+ * 			<td>Minvalue: 0<b>Maxvalue: 59
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
  * 		<tr>
  * 			<td>utcSeconds</td>
  * 			<td>Integer</td>
- * 			<td>Minvalue: 1<b>Maxvalue: 59
+ * 			<td>Minvalue: 0<b>Maxvalue: 59
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
@@ -115,9 +115,9 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 			<td>altitude</td>
  * 			<td>Integer</td>
  * 			<td>Altitude in meters
- *					<b>Minvalue: -10000
- *					<b>Maxvalue: 10000
- * 			</td>
+ *					<b>Minvalue: -10000</b>
+ *					<b>Maxvalue: 10000</b>
+ * 			<b>Note:</b> SYNC uses Mean Sea Level for calculating GPS. </td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
  * 		<tr>

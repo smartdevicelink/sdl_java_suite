@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Contains information about on-screen preset capabilities.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

@@ -10,7 +10,15 @@ public enum VehicleDataStatus {
 	 * No data available
 	 */
 	NO_DATA_EXISTS,
+	/**
+	 * The vehicle item is in Off state
+	 */
+
     OFF,
+    /**
+     * The vehicle item is in On state
+     */
+
     ON;
 
     /**

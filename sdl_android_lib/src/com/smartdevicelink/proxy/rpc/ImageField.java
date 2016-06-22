@@ -8,6 +8,53 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.util.DebugTool;
+/** <p>The name that identifies the field.For example AppIcon,SoftButton, LocationImage, etc.</p>
+ * 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th> Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>name</td>
+ * 			<td>ImageFieldName</td>
+ * 			<td>The name that identifies the field.{@linkplain  ImageFieldName}</td>
+ *                 <td></td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>imageTypeSupported</td>
+ * 			<td>FileType</td>
+ * 			<td>The image types that are supported in this field. {@linkplain FileType}</td>
+ *                 <td></td>
+ *                 <td>maxlength: 100</td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>imageResolution</td>
+ * 			<td>ImageResolution</td>
+ * 			<td>The image resolution of this field.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 3.0 </td>
+ * 		</tr>
+ *  </table>
+ * @since SmartDeviceLink 3.0
+ * @see DisplayType 
+ * @see MediaClockFormat
+ * @see TextFieldName
+ * @see ImageType
+ * 
+ *
+ * 
+ *
+ */
 
 public class ImageField extends RPCStruct {
     public static final String KEY_IMAGE_TYPE_SUPPORTED = "imageTypeSupported";

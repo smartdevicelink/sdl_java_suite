@@ -8,24 +8,24 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.DebugTool;
 
 /**
-* <p>
-* This class will add a command to the application's Command Menu
-* </p>
-* <p>
-* <b>Note:</b> A command will be added to the end of the list of elements in
-* the Command Menu under the following conditions:
-* </p>
+* 
+* <p>This class will add a command to the application's Command Menu</p>
+* 
+* 
+* <p><b>Note:</b> A command will be added to the end of the list of elements in
+* the Command Menu under the following conditions:</p>
+* 
 * <ul>
 * <li>When a Command is added with no MenuParams value provided</li>
 * <li>When a MenuParams value is provided with a MenuParam.position value
 * greater than or equal to the number of menu items currently defined in the
 * menu specified by the MenuParam.parentID value</li>
 * </ul>
-* <br/>
-* <p>
-* The set of choices which the application builds using AddCommand can be a
-* mixture of:
-* </p>
+* 
+* 
+* <p>The set of choices which the application builds using AddCommand can be a
+* mixture of:</p>
+* 
 * <ul>
 * <li>Choices having only VR synonym definitions, but no MenuParams definitions
 * </li>
@@ -33,10 +33,53 @@ import com.smartdevicelink.util.DebugTool;
 * </li>
 * <li>Choices having both MenuParams and VR synonym definitions</li>
 * </ul>
-* <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b>
-* </p>
 * 
+* <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
+* 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>cmdID</td>
+ * 			<td> Integer</td>
+ * 			<td>unique ID of the command to add</td>
+ *                 <td>Y</td>
+ * 			<td> minvalue:0; maxvalue:2000000000</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>menuParams</td>
+ * 			<td>ButtonName</td>
+ * 			<td>Name of the button to unsubscribe.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr/>
+ * 		<tr>
+ * 			<td>vrCommands</td>
+ * 			<td>String</td>
+ * 			<td><p>An array of strings to be used as VR synonyms for this command.</p>    	<p>If this array is provided, it may not be empty.</p></td>
+ *                 <td>N</td>
+ * 			<td>minsize:1; maxsize:100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		<tr>
+ * 			<td>cmdIcon</td>
+ * 			<td>Image</td>
+ * 			<td><p>Image struct determining whether static or dynamic icon.</p><p>If omitted on supported displays, no (or the default if applicable) icon shall be displayed.</p></td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+*  </table>
+* <p> <b>Response</b></p><p>Indicates that the corresponding request has failed or succeeded, if the response returns with a SUCCESS result code, this means a command was added to the Command Menu successfully.</p> 
+*  
+*  <p><b>Non-default Result Codes:</b></p> <p>INVALID_ID</p> <p>DUPLICATE_NAME</p>
 * @since SmartDeviceLink 1.0
 * @see DeleteCommand
 * @see AddSubMenu
@@ -79,15 +122,15 @@ public class AddCommand extends RPCRequest {
         return (Integer) parameters.get(KEY_CMD_ID);
     }
 	/**
-	 * Sets an Unique Command ID that identifies the command. Is returned in an
+	 * <p>Sets an Unique Command ID that identifies the command. Is returned in an
 	 * <i>{@linkplain OnCommand}</i> notification to identify the command
-	 * selected by the user
-	 * <p>
+	 * selected by the user</p>
+	 * 
 	 * 
 	 * @param cmdID
 	 *            an integer object representing a Command ID
 	 *            <p>
-	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000
+	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */
     public void setCmdID(Integer cmdID) {
         if (cmdID != null) {
@@ -103,6 +146,7 @@ public class AddCommand extends RPCRequest {
 	 * </p>
 	 * 
 	 * @return MenuParams -a MenuParams object
+	 * 
 	 */
     @SuppressWarnings("unchecked")
     public MenuParams getMenuParams() {
@@ -121,9 +165,9 @@ public class AddCommand extends RPCRequest {
     }
 	/**
 	 * <p>
-	 * Sets Menu parameters<br/>
+	 * Sets Menu parameters</p>
 	 * If provided, this will define the command and how it is added to the
-	 * Command Menu<br/>
+	 * Command Menu<p>
 	 * If null, commands will not be accessible through the HMI application menu
 	 * </p>
 	 * 
@@ -159,11 +203,11 @@ public class AddCommand extends RPCRequest {
     }
 	/**
 	 * <p>
-	 * Sets Voice Recognition Commands <br/>
-	 * If provided, defines one or more VR phrases the recognition of any of
+	 * Sets Voice Recognition Commands </p>
+	 * <p>If provided, defines one or more VR phrases the recognition of any of
 	 * which triggers the <i>{@linkplain OnCommand}</i> notification with this
-	 * cmdID<br/>
-	 * If null, commands will not be accessible by voice commands (when the user
+	 * cmdID</p>
+	 * <p>If null, commands will not be accessible by voice commands (when the user
 	 * hits push-to-talk)
 	 * </p>
 	 * 
@@ -172,7 +216,7 @@ public class AddCommand extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes: </b>Optional only if menuParams is provided. If
 	 *            provided, array must contain at least one non-empty (not null,
-	 *            not zero-length, not whitespace only) element
+	 *            not zero-length, not whitespace only) element</p>
 	 */
     public void setVrCommands( List<String> vrCommands ) {
         if (vrCommands != null) {
@@ -183,7 +227,7 @@ public class AddCommand extends RPCRequest {
     }
 
 	/**
-	 * Gets the image to be shown along with a command </p>
+	 * <p>Gets the image to be shown along with a command </p>
 	 * 
 	 * @return Image -an Image object
 	 * @since SmartDeviceLink 2.0
@@ -204,14 +248,14 @@ public class AddCommand extends RPCRequest {
     }
 
 	/**
-	 * Sets the Image<br/>
-	 * If provided, defines the image to be be shown along with a  command
+	 * <p>Sets the Image
+	 * If provided, defines the image to be be shown along with a  command</p>
 	 * @param cmdIcon
-	 *            an Image obj representing the Image obj shown along with a
-	 *            command
+	 *            <p>an Image obj representing the Image obj shown along with a
+	 *            command</p>
 	 *            <p>
 	 *            <b>Notes: </b>If omitted on supported displays, no (or the
-	 *            default if applicable) icon will be displayed
+	 *            default if applicable) icon will be displayed</p>
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCmdIcon(Image cmdIcon) {

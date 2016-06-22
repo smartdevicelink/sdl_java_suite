@@ -8,13 +8,13 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
- * This will bring up an alert with information related to the next navigation maneuver including potential voice
+ * <p>This will bring up an alert with information related to the next navigation maneuver including potential voice
  * navigation instructions. Shown information will be taken from the ShowConstantTBT function
- * <p>
- * Function Group: Navigation
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * <p>
+ * </p>
+ * <p>Function Group: Navigation</p>
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
  * 
  * @since SmartDeviceLink 2.0
  * @see ShowConstantTbt
@@ -32,9 +32,9 @@ public class AlertManeuver extends RPCRequest{
     }
 
     /**
-     * <p>
-     * Constructs a new AlertManeuver object indicated by the Hashtable parameter
-     * </p>
+     * 
+     * <p>Constructs a new AlertManeuver object indicated by the Hashtable parameter</p>
+     * 
      * 
      * @param hash
      *            The Hashtable to use
@@ -76,7 +76,7 @@ public class AlertManeuver extends RPCRequest{
      * @param softButtons
      *            a List<SoftButton> value
      *            <p>
-     *            <b>Notes: </b><br/>
+     *            <b>Notes: </b></p>
      *            <ul>
      *            <li>If omitted on supported displays, the alert will not have any SoftButton</li>
      *            <li>ArrayMin: 0</li>
@@ -125,7 +125,7 @@ public class AlertManeuver extends RPCRequest{
      * 
      * @param ttsChunks
      *            <p>
-     *            <b>Notes: </b>Array must have a least one element
+     *            <b>Notes: </b></p>Array must have a least one element
      */
     public void setTtsChunks(List<TTSChunk> ttsChunks){
         if(ttsChunks != null){
