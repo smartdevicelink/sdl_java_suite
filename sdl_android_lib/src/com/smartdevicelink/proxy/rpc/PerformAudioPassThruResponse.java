@@ -20,9 +20,9 @@ public class PerformAudioPassThruResponse extends RPCResponse {
     }
 
 	/**
-	 * Constructs a new PerformAudioPassThruResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new PerformAudioPassThruResponse object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

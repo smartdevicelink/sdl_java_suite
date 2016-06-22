@@ -20,9 +20,9 @@ public class ChangeRegistrationResponse extends RPCResponse {
     }
 
 	/**
-	 * Constructs a new ChangeRegistrationResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new ChangeRegistrationResponse object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

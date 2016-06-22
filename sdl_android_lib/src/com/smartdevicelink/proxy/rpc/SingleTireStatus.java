@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 
 /**
  * Tire pressure status of a single tire.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -19,7 +19,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
  * 			<td>status</td>
  * 			<td>ComponentVolumeStatus</td>
  * 			<td>Describes the volume status of a single tire
- * 					See ComponentVolumeStatus
+ * 					See {@linkplain ComponentVolumeStatus}
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>

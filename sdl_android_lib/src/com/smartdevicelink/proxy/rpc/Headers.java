@@ -3,6 +3,11 @@ package com.smartdevicelink.proxy.rpc;
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
+/**
+ * 
+ * @since SmartDeviceLink 3.0
+ *
+ */
 
 public class Headers extends RPCStruct {
 	public static final String KEY_CONTENT_TYPE = "ContentType";
@@ -17,7 +22,16 @@ public class Headers extends RPCStruct {
 	public static final String KEY_CONTENT_LENGTH = "Content-Length";
 
     public Headers() { }
-    
+    /**
+	* <p>
+	* Constructs a new Headers object indicated by the Hashtable
+	* parameter
+	* </p>
+	* 
+	* @param hash
+	*            The Hashtable to use
+	*/   
+
     public Headers(Hashtable<String, Object> hash) {
         super(hash);
     }	

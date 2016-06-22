@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * Provides information to the user using either TTS, the Display or both and
  * can include a system-generated alert tone
- * <p>
+ * 
  * <ul>
  * <li>The displayed portion of the Alert, if any, will persist until the
  * specified timeout has elapsed, or the Alert is preempted</li>
@@ -20,7 +20,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <li>An Alert can be preempted by a user action (button push)</li>
  * <li>An Alert will fail if it is issued while another Alert is in progress</li>
  * <li>Although each Alert parameter is optional, in fact each Alert request
- * must supply at least one of the following parameters:<br/>
+ * must supply at least one of the following parameters:
  * <ul>
  * <li>alertText1</li>
  * <li>alertText2</li>
@@ -29,12 +29,89 @@ import com.smartdevicelink.proxy.RPCRequest;
  * </ul>
  * </li>
  * </ul>
- * <br/>
- * <b>HMILevel needs to be FULL or LIMITED.</b><br/>
- * <b>If the app has been granted function group Notification the HMILevel can
- * also be BACKGROUND</b><br/>
  * 
+ * <p><b>HMILevel needs to be FULL or LIMITED.</b></p>
+ * <b>If the app has been granted function group Notification the HMILevel can
+ * also be BACKGROUND</b>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>alertText1</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed in the first field of the display during the Alert. </td>
+ *                 <td>N</td>
+ * 			<td>	Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>alertText2</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed in the second field of the display during the Alert. </td>
+ *                 <td>N</td>
+ * 			<td>	Only permitted if HMI supports a second display line.	Length is limited to what is indicated in RegisterAppInterface response. 	If omitted, second display line will be cleared.  </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>alertText3</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed in the third field of the display during the Alert.</td>
+ *                 <td>N</td>
+ * 			<td>Array must have a least one element. </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ttsChunks</td>
+ * 			<td>TTSChunk[]</td>
+ * 			<td>Array of type TTSChunk which, taken together, specify what is to be spoken to the user.</td>
+ *                 <td>N</td>
+ * 			<td>Array must have a least one element. </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>duration</td>
+ * 			<td>Integer</td>
+ * 			<td><p>The duration of the displayed portion of the alert, in milliseconds.</p> After this amount of time has passed, the display fields alertText1 and alertText2 will revert to what was displayed in those fields before the alert began.</td>
+ *                 <td>N</td>
+ * 			<td>Min Value: 3000 Max Value: 10000	<p>If omitted, the default is 5000 milliseconds</p></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>playTone</td>
+ * 			<td>Boolean</td>
+ * 			<td>Specifies whether the alert tone should be played before the TTS (if any) is spoken.</td>
+ *                 <td>N</td>
+ * 			<td>If omitted, default is true.</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>softButtons</td>
+ * 			<td>SoftButton[]</td>
+ * 			<td>Specifies the softbuttons, the apps wants to use in this alert.</td>
+ *                 <td></td>
+ * 			<td>If omitted on supported displays, the alert will not have any SoftButton.ArrayMin: 0; ArrayMax: 4</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>progressIndicator</td>
+ * 			<td>Boolean</td>
+ * 			<td>If supported on the given platform, the alert GUI will include some sort of animation indicating that loading of a feature is progressing.  e.g. a spinning wheel or hourglass, etc.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
  * @since SmartDeviceLink 1.0
+ * 
+ *  
+ * @see GetVehicleData
+ * @see OnVehicleData 
  * @see Show
  * @see Speak
  */
@@ -55,8 +132,8 @@ public class Alert extends RPCRequest {
         super(FunctionID.ALERT.toString());
     }
 	/**
-	 * Constructs a new Alert object indicated by the Hashtable parameter
-	 * <p>
+	 * <p>Constructs a new Alert object indicated by the Hashtable parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -80,8 +157,8 @@ public class Alert extends RPCRequest {
 	 * 
 	 * @param alertText1
 	 *            String Value
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            
+	 *            <p><b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Length is limited to what is indicated in <i>
 	 *            {@linkplain RegisterAppInterface}</i> response</li>
@@ -112,8 +189,8 @@ public class Alert extends RPCRequest {
 	 * 
 	 * @param alertText2
 	 *            String Value
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            
+	 *            <p><b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Only permitted if HMI supports a second display line</li>
 	 *            <li>Length is limited to what is indicated in <i>
@@ -149,8 +226,8 @@ public class Alert extends RPCRequest {
 	 * 
 	 * @param alertText3
 	 *            String Value
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            
+	 *           <p> <b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Only permitted if HMI supports a third display line</li>
 	 *            <li>Length is limited to what is indicated in <i>
@@ -199,8 +276,8 @@ public class Alert extends RPCRequest {
 	 * spoken to the user
 	 * 
 	 * @param ttsChunks
-	 *            <p>
-	 *            <b>Notes: </b>Array must have a least one element
+	 *            
+	 *           <p> <b>Notes: </b>Array must have a least one element</p>
 	 */    
     public void setTtsChunks(List<TTSChunk> ttsChunks) {
         if (ttsChunks != null) {
@@ -219,17 +296,17 @@ public class Alert extends RPCRequest {
         return (Integer) parameters.get(KEY_DURATION);
     }
 	/**
-	 * Sets the duration of the displayed portion of the alert, in milliseconds.
+	 * <p>Sets the duration of the displayed portion of the alert, in milliseconds.
 	 * After this amount of time has passed, the display fields alertText1 and
 	 * alertText2 will revert to what was displayed in those fields before the
-	 * alert began
-	 * <p>
+	 * alert began</p>
+	 * 
 	 * 
 	 * @param duration
 	 *            the Integer values representing the duration time, in
 	 *            milliseconds
 	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>Min Value: 3000; Max Value: 10000</li>
 	 *            <li>If omitted, the default is 5000 milliseconds</li>
@@ -258,8 +335,8 @@ public class Alert extends RPCRequest {
 	 * @param playTone
 	 *            a Boolean value which specifies whether the alert tone should
 	 *            be played before the TTS (if any) is spoken
-	 *            <p>
-	 *            <b>Notes: </b>If omitted, default is true
+	 *            
+	 *           <p> <b>Notes: </b>If omitted, default is true</p>
 	 */    
     public void setPlayTone(Boolean playTone) {
         if (playTone != null) {
@@ -302,7 +379,7 @@ public class Alert extends RPCRequest {
 	 * @param softButtons
 	 *            a List<SoftButton> value
 	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <b>Notes: </b></p>
 	 *            <ul>
 	 *            <li>If omitted on supported displays, the alert will not have
 	 *            any SoftButton</li>
