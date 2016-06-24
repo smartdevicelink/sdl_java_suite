@@ -95,11 +95,12 @@ public class SdlChoiceSetManager {
 
     public boolean deleteChoiceSetCreation(final String name, final ChoiceSetDeletedListener listener){
 
-        if(!hasBeenUploaded(name))
-            return true;
-
         DeleteInteractionChoiceSet deleteSet= new DeleteInteractionChoiceSet();
-        deleteSet.setInteractionChoiceSetID(grabUploadedChoiceSet(name).getChoiceSetId());
+        SdlChoiceSet setToDelete= grabUploadedChoiceSet(name);
+        if(setToDelete!=null)
+            deleteSet.setInteractionChoiceSetID(setToDelete.getChoiceSetId());
+        else
+            return true;
         deleteSet.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
@@ -114,6 +115,7 @@ public class SdlChoiceSetManager {
                     listener.onError(name);
             }
         });
+        mApplication.sendRpc(deleteSet);
         return false;
     }
 
@@ -126,9 +128,9 @@ public class SdlChoiceSetManager {
             return false;
     }
 
-    public SdlChoiceSet grabUploadedChoiceSet(String choiceSetName){
+    SdlChoiceSet grabUploadedChoiceSet(String choiceSetName){
         if(hasBeenUploaded(choiceSetName))
-            return mChoiceSet.get(choiceSetName).deepCopy();
+            return mChoiceSet.get(choiceSetName);
         else
             return null;
     }

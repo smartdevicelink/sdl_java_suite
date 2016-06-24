@@ -5,9 +5,11 @@ import android.support.annotation.Nullable;
 
 import com.smartdevicelink.api.file.SdlImage;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -17,16 +19,16 @@ public class SdlChoice {
     private final String mMenuText;
     private String mSubText;
     private String mRightHandText;
-    private OnSelectedListener mListener;
-    private ArrayList<Integer> mIds= new ArrayList<>();
+    private final OnSelectedListener mListener;
+    private final ArrayList<Integer> mIds= new ArrayList<>();
     private SdlImage mSdlImage;
-    private final ArrayList<String> mVoiceCommands;
+    private final HashSet<String> mVoiceCommands= new HashSet<>();
 
-    public SdlChoice(@NonNull String choiceName, @NonNull String menuText, @NonNull ArrayList<String> manyVoiceCommands, @Nullable OnSelectedListener listener){
+    public SdlChoice(@NonNull String choiceName, @NonNull String menuText, @NonNull Collection<String> manyVoiceCommands, @Nullable OnSelectedListener listener){
         mChoiceName= choiceName;
         mMenuText = menuText;
         mListener = listener;
-        mVoiceCommands= manyVoiceCommands;
+        mVoiceCommands.addAll(manyVoiceCommands);
     }
 
     public SdlChoice(@NonNull String choiceName, @NonNull String menuText, @NonNull final String singleVoiceCommand, @Nullable OnSelectedListener listener){
@@ -59,7 +61,11 @@ public class SdlChoice {
     void addId(int id) {
         mIds.add(id);
     }
-    void setIds(ArrayList<Integer> ids){ mIds= ids;}
+
+    void setIds(ArrayList<Integer> ids){
+        mIds.clear();
+        mIds.addAll(ids);
+    }
 
     public void setRightHandText( String text ) {mRightHandText= text;}
 
@@ -73,12 +79,20 @@ public class SdlChoice {
         SdlChoice copyChoice = new SdlChoice(mChoiceName, mMenuText,mVoiceCommands,null);
         copyChoice.mSubText =mSubText;
         copyChoice.mRightHandText= mRightHandText;
-        copyChoice.mIds= mIds;
+        copyChoice.setIds(mIds);
         copyChoice.mSdlImage= mSdlImage;
         return copyChoice;
     }
 
-    void setOnSelectedListener(OnSelectedListener listener){ mListener= listener;}
+    boolean compareModelData(SdlChoice choice){
+        boolean checker=  compareStrings(choice.mChoiceName,mChoiceName);
+        checker= checker&& compareStrings(choice.mMenuText,mMenuText);
+        checker= checker&& compareStrings(choice.mSubText,mSubText);
+        checker= checker&& compareStrings(choice.mRightHandText,mRightHandText);
+        checker= checker&& choice.mVoiceCommands.size()== mVoiceCommands.size() && choice.mVoiceCommands.containsAll(mVoiceCommands);
+        return checker;
+    }
+
 
     public interface OnSelectedListener {
 
@@ -91,5 +105,13 @@ public class SdlChoice {
     }
 
     public Collection<String> getVoiceCommands(){ return mVoiceCommands; }
+
+    private boolean compareStrings(String string1, String string2){
+        if(string1!=null){
+            return string1.equals(string2);
+        }else
+            return string2==null;
+
+    }
 
 }
