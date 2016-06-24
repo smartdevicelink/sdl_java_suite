@@ -199,28 +199,14 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	/**
 	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
 	 * @param context A context to access Android system services through.
+	 * @param callback Use this callback to find out if the router service is connected or not. 
 	 * @return True if a transport connection is established, false otherwise.
 	 */
-	public static boolean isTransportConnected(Context context){
+	public static void isTransportConnected(Context context, SdlRouterStatusProvider.ConnectedStatusCallback callback){
 		Log.d(TAG, "Checking to see if router service is transport connected");
 		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
-			Context con;
-			try {
-				con = context.createPackageContext(runningBluetoothServicePackage.getPackageName(), 0);
-	            if(con==null ){
-	            	Log.w(TAG, "Unable to check for service connection. Returning false. "+runningBluetoothServicePackage);
-	            	return false; // =( well that sucks.
-	            }
-				SharedPreferences pref = con.getSharedPreferences(
-	            		con.getPackageName()+TRANSPORT_GLOBAL_PREFS , 4);
-	            boolean connected = pref.getBoolean(IS_TRANSPORT_CONNECTED, false);
-	           // Log.w(TAG, "Is Connected? Returning " + connected);
-				return connected;
-			} catch (NameNotFoundException e) {
-				e.printStackTrace();
-				return false;
-			}
-
+			SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,runningBluetoothServicePackage,callback);
+			provider.checkIsConnected();
 		}else{
 			Log.w(TAG, "Router service isn't running, returning false.");
 			if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
@@ -229,9 +215,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				serviceIntent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
 	    		context.sendBroadcast(serviceIntent);
 			}
+			if(callback!=null){
+				callback.onConnectionStatusUpdate(false, context);
+			}
 		}
-
-		return false;
 	}
 
 	

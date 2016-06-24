@@ -2,10 +2,13 @@ package com.hellosdl;
 
 import com.hellosdl.sdl.SdlReceiver;
 import com.hellosdl.sdl.SdlService;
+import com.smartdevicelink.transport.SdlRouterStatusProvider;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,10 +18,17 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if(SdlReceiver.isTransportConnected(getBaseContext())){
-			Intent startIntent = new Intent(getBaseContext(), SdlService.class);
-			startService(startIntent);
-		}
+		SdlReceiver.isTransportConnected(getBaseContext(),new SdlRouterStatusProvider.ConnectedStatusCallback(){
+			@Override
+			public void onConnectionStatusUpdate(boolean connected,Context context) {
+				Log.d("JOEY", "Received connection status back: " + connected);
+				if(connected){
+					Intent startIntent = new Intent(getBaseContext(), SdlService.class);
+					startService(startIntent);
+				}
+			}
+		});
+
 	}
 
 	@Override
