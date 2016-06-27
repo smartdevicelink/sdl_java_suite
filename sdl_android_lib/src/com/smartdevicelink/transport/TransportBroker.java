@@ -154,6 +154,12 @@ public class TransportBroker {
             		case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
             			// yay! we have been registered. Now what?
             			registeredWithRouterService = true;
+            			if(bundle !=null && bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+            				if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
+            					//Keep track if we actually get this
+            				}
+            				onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            			}
             			break;
             		case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
             			Log.d(TAG, "Denied registration because router is in legacy mode" );

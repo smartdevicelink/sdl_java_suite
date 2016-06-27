@@ -356,9 +356,15 @@ public class SdlRouterService extends Service{
 	                		}
 	                	}
 	            		onAppRegistered(app);
-	            		
+
 	            		returnBundle = new Bundle();
-	            		
+	            		//Add params if connected
+	            		if(SdlRouterService.this.isTransportConnected){
+	            			returnBundle.putString(TransportConstants.HARDWARE_CONNECTED, SdlRouterService.this.connectedTransportType.name());
+	                		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+	                			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+	                		}
+	            		}
 	            		if(!returnBundle.isEmpty()){
 	            			message.setData(returnBundle);
 	            		}
@@ -367,12 +373,6 @@ public class SdlRouterService extends Service{
 	            			synchronized(REGISTERED_APPS_LOCK){
 	            				registeredApps.remove(appId);
 	            			}
-	            		}
-	            		//Send a hardware connection event
-	            		if(SdlRouterService.this.isTransportConnected){
-	            			Message connectedMessage = SdlRouterService.this.createHardwareConnectedMessage(SdlRouterService.this.connectedTransportType);
-	            			
-	            			app.sendMessage(connectedMessage);
 	            		}
 	                    break;
 	                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
