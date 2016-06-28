@@ -14,7 +14,70 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
-
+/**
+ * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud. Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
+ * 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestType</td>
+ * 			<td>RequestType</td>
+ * 			<td>The type of system request.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>url</td>
+ * 			<td>Array of Strings</td>
+ * 			<td>Optional URL for HTTP requests.If blank, the binary data shall be forwarded to the app.If not blank, the binary data shall be forwarded to the url with a provided timeout in seconds.</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 1000; minsize:1;  maxsize: 100</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>timeout</td>
+ * 			<td>Integer</td>
+ * 			<td>Optional timeout for HTTP requests;Required if a URL is provided</td>
+ *                 <td>N</td>
+ *                 <td>minvalue:0; maxvalue: 2000000000</td>
+ * 			<td>SmartDeviceLink </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Optional file type (meant for HTTP file requests).</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>offset</td>
+ * 			<td>Float</td>
+ * 			<td>Optional offset in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ *                 <td>minvalue:0; maxvalue:100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>length</td>
+ * 			<td>Float</td>
+ * 			<td>Optional length in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ *                 <td>minvalue: 0; maxvalue:100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ *  </table>	      	
+ * @since SmartDeviceLink 2.3.2
+ */
 public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
@@ -29,8 +92,12 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_LENGTH = "length";
 	
 	private String body;
-	private Headers headers;
+	private Headers headers;	
 	
+	/** Constructs a new OnSystemsRequest object
+	 * 	
+	 */
+
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
@@ -52,18 +119,32 @@ public class OnSystemRequest extends RPCNotification {
         JSONObject httpJson;
         String tempBody = null;
         Headers tempHeaders = null;
-        
-        try{
-            JSONObject bulkJson = new JSONObject(new String(bulkData));
-            httpJson = bulkJson.getJSONObject("HTTPRequest");
-            tempBody = getBody(httpJson);
-            tempHeaders = getHeaders(httpJson);
-        }catch(JSONException e){
-            Log.e("OnSystemRequest", "HTTPRequest in bulk data was malformed.");
-            e.printStackTrace();
-        }catch(NullPointerException e){
-            Log.e("OnSystemRequest", "Invalid HTTPRequest object in bulk data.");
-            e.printStackTrace();
+        if(RequestType.PROPRIETARY.equals(this.getRequestType())){
+        	try{
+            	JSONObject bulkJson = new JSONObject(new String(bulkData));
+           
+            	httpJson = bulkJson.getJSONObject("HTTPRequest");
+            	tempBody = getBody(httpJson);
+            	tempHeaders = getHeaders(httpJson);
+        	}catch(JSONException e){
+            	Log.e("OnSystemRequest", "HTTPRequest in bulk data was malformed.");
+            	e.printStackTrace();
+        	}catch(NullPointerException e){
+            	Log.e("OnSystemRequest", "Invalid HTTPRequest object in bulk data.");
+            	e.printStackTrace();
+        	}
+        }else if(RequestType.HTTP.equals(this.getRequestType())){
+        	tempHeaders = new Headers();
+        	tempHeaders.setContentType("application/json");
+        	tempHeaders.setConnectTimeout(7);
+        	tempHeaders.setDoOutput(true);
+        	tempHeaders.setDoInput(true);
+        	tempHeaders.setUseCaches(false);
+        	tempHeaders.setRequestMethod("POST");
+        	tempHeaders.setReadTimeout(7);
+        	tempHeaders.setInstanceFollowRedirects(false);
+        	tempHeaders.setCharset("utf-8");
+        	tempHeaders.setContentLength(bulkData.length); 
         }
         
         this.body = tempBody;

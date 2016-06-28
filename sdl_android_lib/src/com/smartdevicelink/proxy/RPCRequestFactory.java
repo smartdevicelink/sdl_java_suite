@@ -2,6 +2,8 @@ package com.smartdevicelink.proxy;
 
 import java.util.Vector;
 
+import android.os.Build;
+
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.Alert;
@@ -12,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
+import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -498,6 +501,7 @@ public class RPCRequestFactory {
 		return putFile;
 	}
 	
+	@Deprecated
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(10000);
@@ -507,8 +511,20 @@ public class RPCRequestFactory {
 		putFile.setOffset(iOffset);
 		putFile.setLength(iLength);
 		return putFile;
-	}	
+	}
+	
+	public static PutFile buildPutFile(String sdlFileName, Long iOffset, Long iLength) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(10000);
+		putFile.setSdlFileName(sdlFileName);		
+		putFile.setFileType(FileType.BINARY);
+		putFile.setSystemFile(true);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}
 
+	@Deprecated
 	public static PutFile buildPutFile(String syncFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(10000);
@@ -521,6 +537,19 @@ public class RPCRequestFactory {
 		return putFile;
 	}
 	
+	public static PutFile buildPutFile(String syncFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(10000);
+		putFile.setSdlFileName(syncFileName);
+		putFile.setFileType(fileType);
+		putFile.setPersistentFile(bPersistentFile);
+		putFile.setSystemFile(bSystemFile);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}
+	
+	@Deprecated
 	public static PutFile buildPutFile(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
 		PutFile putFile = new PutFile();
 		putFile.setCorrelationID(iCorrelationID);
@@ -532,6 +561,18 @@ public class RPCRequestFactory {
 		putFile.setLength(iLength);
 		return putFile;
 	}	
+	
+	public static PutFile buildPutFile(String sdlFileName, Long iOffset, Long iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) {
+		PutFile putFile = new PutFile();
+		putFile.setCorrelationID(iCorrelationID);
+		putFile.setSdlFileName(sdlFileName);
+		putFile.setFileType(fileType);
+		putFile.setPersistentFile(bPersistentFile);
+		putFile.setSystemFile(bSystemFile);
+		putFile.setOffset(iOffset);
+		putFile.setLength(iLength);
+		return putFile;
+	}
 		
 	public static RegisterAppInterface buildRegisterAppInterface(String appName, String appID) {
 		return buildRegisterAppInterface(appName, false, appID);
@@ -541,14 +582,14 @@ public class RPCRequestFactory {
 			String appName, Boolean isMediaApp, String appID) {
 		
 		return buildRegisterAppInterface(null, appName, null, null, null, isMediaApp, 
-				null, null, null, appID, null); 
+				null, null, null, appID, null, null);
 	}	
 		
 	public static RegisterAppInterface buildRegisterAppInterface(
 			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, 
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, Integer correlationID) {
+			String appID, Integer correlationID, DeviceInfo deviceInfo) {
 		RegisterAppInterface msg = new RegisterAppInterface();
 		
 		if (correlationID == null) {
@@ -562,7 +603,7 @@ public class RPCRequestFactory {
 			sdlMsgVersion.setMinorVersion(Integer.valueOf(SDL_MSG_MINOR_VERSION));
 		} 
 		msg.setSdlMsgVersion(sdlMsgVersion);
-		
+		msg.setDeviceInfo(deviceInfo);
 		msg.setAppName(appName);
 		
 		msg.setTtsName(ttsName);
@@ -939,5 +980,14 @@ public class RPCRequestFactory {
 		
 		return msg;
 	}
-	
+
+	public static DeviceInfo BuildDeviceInfo(String carrierName)
+	{
+		DeviceInfo msg = new DeviceInfo();
+		msg.setHardware(android.os.Build.MODEL);
+		msg.setOs(DeviceInfo.DEVICE_OS);
+		msg.setOsVersion(Build.VERSION.RELEASE);
+		msg.setCarrier(carrierName);
+		return msg;
+	}
 }

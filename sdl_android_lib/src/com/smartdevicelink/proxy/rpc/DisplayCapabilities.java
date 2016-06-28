@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Contains information about the display for the SDL system to which the application is currently connected.
-  * <p><b> Parameter List
+ * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -47,6 +47,11 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  * </table>
  * @since SmartDeviceLink 1.0
+ * @see DisplayType
+ * @see MediaClockFormat
+ * @see TextFieldName
+ * @see ImageType
+ * 
  */
 public class DisplayCapabilities extends RPCStruct {
 	public static final String KEY_DISPLAY_TYPE = "displayType";

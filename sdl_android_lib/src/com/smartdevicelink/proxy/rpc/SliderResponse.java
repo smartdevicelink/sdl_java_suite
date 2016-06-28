@@ -23,7 +23,7 @@ public class SliderResponse extends RPCResponse {
 	/**
 	 * Constructs a new SliderResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

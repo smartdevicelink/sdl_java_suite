@@ -1,12 +1,14 @@
 package com.smartdevicelink.trace;
 
 import java.sql.Timestamp;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Process;
-import com.smartdevicelink.protocol.ProtocolFrameHeader;
+
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -32,13 +34,10 @@ import com.smartdevicelink.util.NativeLogTool;
 @SuppressLint("DefaultLocale")
 public class SdlTrace {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
-	static boolean canWriteLogs = false;
-		
+			
 	public static final String SYSTEM_LOG_TAG = "SdlTrace";
 	
 	private static long baseTics  = java.lang.System.currentTimeMillis();
-	private final static String KeyStr = SDL_LIB_TRACE_KEY;
 	private static boolean acceptAPITraceAdjustments = true;
 
 	protected static ISTListener m_appTraceListener = null;
@@ -60,12 +59,6 @@ public class SdlTrace {
 	
 	public static void setAppTraceListener(ISTListener listener) {
 		m_appTraceListener = listener;
-	} // end-method
-
-	public static void setTracingEnable(Boolean enable) {
-		if (enable != null) {
-			canWriteLogs = enable;
-		}
 	} // end-method
 
 	public static void setAppTraceLevel(DetailLevel dt) {
@@ -140,7 +133,7 @@ public class SdlTrace {
 	} // end-method
 	
 	public static boolean logProxyEvent(String eventText, String token) {
-		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.proxy) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -162,7 +155,7 @@ public class SdlTrace {
 
 	public static boolean logRPCEvent(InterfaceActivityDirection msgDirection, RPCMessage rpcMsg, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.rpc);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -208,7 +201,7 @@ public class SdlTrace {
 
 	public static boolean logMarshallingEvent(InterfaceActivityDirection msgDirection, byte[] marshalledMessage, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.mar);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -227,20 +220,20 @@ public class SdlTrace {
 		return writeXmlTraceMessage(xml);
 	}
 
-	public static boolean logProtocolEvent(InterfaceActivityDirection frameDirection, ProtocolFrameHeader frameHeader, byte[] frameData, int frameDataOffset, int frameDataLength, String token) {
+	public static boolean logProtocolEvent(InterfaceActivityDirection frameDirection, SdlPacket packet, int frameDataOffset, int frameDataLength, String token) {
 		DetailLevel dl = DiagLevel.getLevel(Mod.proto);
-		if (dl == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (dl == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
 		StringBuffer protoMsg = new StringBuffer();
 		protoMsg.append("<frame>");
-		protoMsg.append(SdlTrace.getProtocolFrameHeaderInfo(frameHeader, frameData));
+		protoMsg.append(SdlTrace.getProtocolFrameHeaderInfo(packet));
 		if (dl == DetailLevel.VERBOSE) {
-			if (frameData != null && frameDataLength > 0) {
+			if (packet.getPayload() != null && frameDataLength > 0) {
 				protoMsg.append("<d>");
 				String bytesInfo = "";
-				bytesInfo = Mime.base64Encode(frameData, frameDataOffset, frameDataLength);
+				bytesInfo = Mime.base64Encode(packet.getPayload(), frameDataOffset, frameDataLength);
 				// Base64 only available in 2.2, when SmartDeviceLink base is 2.2 use: bytesInfo = Base64.encodeToString(frameData, frameDataOffset, frameDataLength, Base64.DEFAULT);
 				protoMsg.append(bytesInfo);
 				protoMsg.append("</d>");
@@ -275,24 +268,24 @@ public class SdlTrace {
 		return s;
 	} // end-method
 
-	private static String getProtocolFrameHeaderInfo(ProtocolFrameHeader hdr, byte[] buf) {
+	private static String getProtocolFrameHeaderInfo(SdlPacket hdr) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<hdr>");
 		sb.append("<ver>");
 		sb.append(hdr.getVersion());
 		sb.append("</ver><cmp>");
-		sb.append(hdr.isCompressed());
+		sb.append(hdr.isCompression());
 		sb.append("</cmp><ft>");
 		sb.append(getProtocolFrameType(hdr.getFrameType()));
 		sb.append("</ft><st>");
-		sb.append(getProtocolSessionType(hdr.getSessionType()));
+		sb.append(getProtocolSessionType(SessionType.valueOf((byte)hdr.getServiceType())));
 		sb.append("</st><sid>");
-		sb.append(hdr.getSessionID());
+		sb.append(hdr.getSessionId());
 		sb.append("</sid><sz>");
 		sb.append(hdr.getDataSize());
 		sb.append("</sz>");
 
-		int frameData = hdr.getFrameData();
+		int frameData = hdr.getFrameInfo();
 		if (hdr.getFrameType() == FrameType.Control) {
 			sb.append("<ca>");
 			if (frameData == FrameDataControlFrameType.StartSession.getValue()) 
@@ -312,8 +305,8 @@ public class SdlTrace {
 				sb.append(String.format("%02X",frameData)); 
 			sb.append("</fsn>");
 		} else if (hdr.getFrameType() == FrameType.First ) {
-			int totalSize = BitConverter.intFromByteArray(buf, 0);			
-			int numFrames = BitConverter.intFromByteArray(buf, 4);
+			int totalSize = BitConverter.intFromByteArray(hdr.getPayload(), 0);			
+			int numFrames = BitConverter.intFromByteArray(hdr.getPayload(), 4);
 			sb.append("<total>" + totalSize + "</total><numframes>" + numFrames + "</numframes>");
 		} else if (hdr.getFrameType() == FrameType.Single ) {
 			sb.append("<single/>");
@@ -348,7 +341,7 @@ public class SdlTrace {
 	} // end-method
 
 	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int offset, int byteLength, String token) {
-		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(KeyStr)) {
+		if (DiagLevel.getLevel(Mod.tran) == DetailLevel.OFF || !token.equals(SDL_LIB_TRACE_KEY)) {
 			return false;
 		}
 
@@ -407,7 +400,7 @@ public class SdlTrace {
 
 			if (localTraceListener != null) {
 				try {
-					localTraceListener.logXmlMsg(msg, KeyStr);
+					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 				} catch (Exception ex) {
 					DebugTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
 					return false;

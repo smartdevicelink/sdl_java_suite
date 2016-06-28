@@ -1,5 +1,9 @@
 package com.smartdevicelink.proxy.rpc.enums;
-
+/**
+ * Enumeration listing possible keyboard layouts.
+ * 
+ * @since SmartDeviceLink 2.3.2
+ */
 public enum KeyboardLayout {
     QWERTY,
     QWERTZ,

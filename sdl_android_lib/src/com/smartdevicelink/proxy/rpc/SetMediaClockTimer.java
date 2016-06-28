@@ -8,10 +8,64 @@ import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 /**
  * Sets the media clock/timer value and the update method (e.g.count-up,
  * count-down, etc.)
- * <p>
- * Function Group: Base <p>
- * <b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b>
- * </p>
+ * 
+ * <p>Function Group: Base </p>
+ * <p><b>HMILevel needs to be FULL, LIMITIED or BACKGROUND</b></p>
+ * 
+ * <p><b>Parameter List</b></p>
+ * 
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>startTime</td>
+ * 			<td>StartTime</td>
+ * 			<td>StartTime struct specifying hour, minute, second values to which media clock timer is set.</td>
+ *                 <td>N</td>
+ * 			<td> </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>endTime</td>
+ * 			<td>StartTime</td>
+ * 			<td> EndTime can be provided for "COUNTUP" and "COUNTDOWN"; to be used to calculate any visual progress bar (if not provided, this feature is ignored)
+ * If endTime is greater then startTime for COUNTDOWN or less than startTime for COUNTUP, then the request will return an INVALID_DATA.
+ * endTime will be ignored for "RESUME", and "CLEAR"
+ * endTime can be sent for "PAUSE", in which case it will update the paused endTime</td>
+ *                 <td>N</td>
+ * 			<td>Array must have at least one element.<p>Only optional it helpPrompt has been specified</p> minsize: 1; maxsize: 100</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>updateMode</td>
+ * 			<td>UpdateMode</td>
+ * 			<td>Specifies how the media clock/timer is to be updated (COUNTUP/COUNTDOWN/PAUSE/RESUME), based at the startTime.</td>
+ *                 <td>Y</td>
+ * 			<td>If "updateMode" is COUNTUP or COUNTDOWN, this parameter must be provided. Will be ignored for PAUSE,RESUME and CLEAR</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ *
+ *  </table>
+ *  
+ *<p><b>Response </b></p>
+ *
+ *<p><b> Non-default Result Codes: </b></p>
+ *
+ *	<p> SUCCESS </p>
+ *	<p> INVALID_DATA</p>
+ *	<p> OUT_OF_MEMORY</p>
+ *  <p>   TOO_MANY_PENDING_REQUESTS</p>
+ *   <p>  APPLICATION_NOT_REGISTERED</p>
+ *    <p> GENERIC_ERROR</p>
+ *   <p>   REJECTED </p>
+ *    <p>  IGNORED </p>
  * 
  * @since SmartDeviceLink 1.0
  */
@@ -28,7 +82,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	/**
 	 * Constructs a new SetMediaClockTimer object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -57,7 +111,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * 
 	 * @param startTime
 	 *            a startTime object with specifying hour, minute, second values
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If "updateMode" is COUNTUP or COUNTDOWN, this parameter
@@ -111,7 +165,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * 
 	 * @param updateMode
 	 *            a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value

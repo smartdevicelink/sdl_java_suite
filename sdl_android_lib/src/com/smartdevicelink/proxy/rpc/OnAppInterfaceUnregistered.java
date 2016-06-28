@@ -20,7 +20,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
  * SystemContext: 
  * <ul><li>Any</li></ul>
  * </ul>
- * <p>
+ * <p></p>
  * <b>Parameter List:</b>
  * <table  border="1" rules="all">
  * <tr>
@@ -36,7 +36,6 @@ import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
  * </table>
- * </p>
  * @since SmartDeviceLink 1.0
  * @see RegisterAppInterface
  */

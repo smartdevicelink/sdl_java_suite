@@ -5,8 +5,8 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 
 /**
- * Contains information about a SoftButton's capabilities.
- * <p><b>Parameter List
+ * <p>Contains information about a SoftButton's capabilities.</p>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

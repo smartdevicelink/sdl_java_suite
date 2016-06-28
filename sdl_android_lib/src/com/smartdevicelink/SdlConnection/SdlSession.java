@@ -11,7 +11,8 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.MultiplexTransport;
+import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener {
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
@@ -22,9 +23,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     private byte wiproProcolVer;
 	private ISdlConnectionListener sessionListener;
 	private BaseTransportConfig transportConfig;
-    IHeartbeatMonitor _heartbeatMonitor = null;
+    IHeartbeatMonitor _outgoingHeartbeatMonitor = null;
+    IHeartbeatMonitor _incomingHeartbeatMonitor = null;
     private static final String TAG = "SdlSession";
     private LockScreenManager lockScreenMan  = new LockScreenManager();
+    private int sessionHashId = 0;
 
     
 	
@@ -50,16 +53,28 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private SdlSession() {
 	}
 	
-    public IHeartbeatMonitor getHeartbeatMonitor() {
-        return _heartbeatMonitor;
+    public IHeartbeatMonitor getOutgoingHeartbeatMonitor() {
+        return _outgoingHeartbeatMonitor;
+    }
+	
+    public IHeartbeatMonitor getIncomingHeartbeatMonitor() {
+        return _incomingHeartbeatMonitor;
     }
 
-    public void setHeartbeatMonitor(IHeartbeatMonitor heartbeatMonitor) {
-        this._heartbeatMonitor = heartbeatMonitor;
-        _heartbeatMonitor.setListener(this);
+    public void setOutgoingHeartbeatMonitor(IHeartbeatMonitor outgoingHeartbeatMonitor) {
+        this._outgoingHeartbeatMonitor = outgoingHeartbeatMonitor;
+        _outgoingHeartbeatMonitor.setListener(this);
+    }	
+
+    public void setIncomingHeartbeatMonitor(IHeartbeatMonitor incomingHeartbeatMonitor) {
+        this._incomingHeartbeatMonitor = incomingHeartbeatMonitor;
+        _incomingHeartbeatMonitor.setListener(this);
     }	
 	
-	
+    public int getSessionHashId() {
+    	return this.sessionHashId;
+    }
+    
 	public byte getSessionId() {
 		return this.sessionId;
 	}
@@ -113,8 +128,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
     private void initialiseSession() {
-        if (_heartbeatMonitor != null) {
-            _heartbeatMonitor.start();
+        if (_outgoingHeartbeatMonitor != null) {
+        	_outgoingHeartbeatMonitor.start();
+        }
+        if (_incomingHeartbeatMonitor != null) {
+        	_incomingHeartbeatMonitor.start();
         }
     }	
 	
@@ -160,12 +178,15 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
+			byte sessionID, byte version, String correlationID, int hashID) {
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
-		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID);
+		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID);
 		//if (version == 3)
 			initialiseSession();
+		if (sessionType.eq(SessionType.RPC)){
+			sessionHashId = hashID;
+		}
 	}
 
 	@Override
@@ -210,8 +231,47 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
-	public void onProtocolSessionNACKed(SessionType sessionType,
+	public void onProtocolSessionStartedNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);		
-	}	
+		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);		
+	}
+
+	@Override
+	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+			byte sessionID, String correlationID) {
+		this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
+		
+	}
+
+	@Override
+	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID) {
+		this.sessionListener.onProtocolServiceDataACK(sessionType, sessionID);
+	}
+	
+	public void clearConnection(){
+		_sdlConnection = null;
+	}
+	
+	public void checkForOpenMultiplexConnection(SdlConnection connection){
+		removeConnection(connection);
+		connection.unregisterSession(this);
+		_sdlConnection = null;
+		for (SdlConnection c : shareConnections) {
+			if (c.getCurrentTransportType() == TransportType.MULTIPLEX) {
+				if(c.getIsConnected() || ((MultiplexTransport)c._transport).isPendingConnected()){
+					_sdlConnection = c;
+					try {
+						_sdlConnection.registerSession(this);//Handshake will start when register.
+					} catch (SdlException e) {
+						e.printStackTrace();
+					} 
+					return;
+				}
+				
+			}
+		}
+	}
+	public static boolean removeConnection(SdlConnection connection){
+		return shareConnections.remove(connection);
+	}
 }

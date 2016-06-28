@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 /**
- * Reflects the status of ignition..
+ * Reflects the status of ignition.
  * @since SmartDeviceLink 2.0
  */
 public enum IgnitionStatus {

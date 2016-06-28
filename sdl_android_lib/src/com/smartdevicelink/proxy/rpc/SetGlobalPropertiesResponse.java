@@ -22,7 +22,7 @@ public class SetGlobalPropertiesResponse extends RPCResponse {
 	/**
 	 * Constructs a new SetGlobalPropertiesResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

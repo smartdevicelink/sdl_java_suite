@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.interfaces;
 
+import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
+import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
@@ -43,6 +46,7 @@ import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
 import com.smartdevicelink.proxy.rpc.SpeakResponse;
@@ -52,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
 
@@ -78,10 +83,15 @@ public interface IProxyListenerBase  {
 	 * @param e - The exception that occurred. 
 	 */
 	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason);
-	
+
+	public void onServiceEnded(OnServiceEnded serviceEnded);
+
+	public void onServiceNACKed(OnServiceNACKed serviceNACKed);
+
 	public void onOnStreamRPC(OnStreamRPC notification);
 	
 	public void onStreamRPCResponse(StreamRPCResponse response);
+
 	/**
 	 * onProxyError() being called indicates that the SDL Proxy experenced an error.
 	 * 
@@ -307,4 +317,12 @@ public interface IProxyListenerBase  {
 	public void onDialNumberResponse(DialNumberResponse response);
 	
 	public void onSendLocationResponse(SendLocationResponse response);
+
+	public void onShowConstantTbtResponse(ShowConstantTbtResponse response);
+
+	public void onAlertManeuverResponse(AlertManeuverResponse response);
+
+	public void onUpdateTurnListResponse(UpdateTurnListResponse response);
+
+	public void onServiceDataACK();
 }

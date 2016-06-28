@@ -4,6 +4,114 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
+/** The status of the seat belts. 
+ *
+ * <p><b>Parameter List</b></p>
+ * 
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Mandatory</th>
+ * 			<th>Description</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>driverBeltDeployed</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The driver seat belt is deployed.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>passengerBeltDeployed</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The passenger seat belt is deployed.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>passengerBuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The passenger seat belt is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>driverBuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The driver seat belt is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>leftRow2BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The left seat belt of the 2nd row is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>passengerChildDetected</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The child passenger is detected.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rightRow2BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The right seat belt of the 2nd row is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>middleRow2BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The middle seat belt of the 2nd row is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>middleRow3BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The middle seat belt of the 3rd row is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>leftRow3BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The left seat belt of the 3rd row is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rightRow3BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The right seat belt of the 3rd row is buckled.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>leftRearInflatableBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The left rear inflatable is belted.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>rightRearInflatableBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The right rear inflatable is belted.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>middleRow1BeltDeployed</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The seat belt of the middle row is deployed.</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>middleRow1BuckleBelted</td>
+ * 			<td>VehicleDataEventStatus</td>
+ * 			<td>false</td>
+ * 			<td>The seat belt of the middle row is buckled.</td>
+ * 		</tr>
+ *  </table>
+* @since SmartDeviceLink 2.0
+* @see VehicleDataEventStatus
+* @see GetVehicleData 
+* @see OnVehicleData
+ * @see SubscribeVehicleData
+ */
 
 public class BeltStatus extends RPCStruct {
     public static final String KEY_DRIVER_BELT_DEPLOYED = "driverBeltDeployed";
@@ -21,6 +129,13 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
     public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
+	/** Constructs a new BeltStatus object indicated by the Hashtable
+	 * parameter
+	 * @param hash
+	 * The hash table to use
+	 * 
+	 *
+	 */
 
     public BeltStatus() { }
     public BeltStatus(Hashtable<String, Object> hash) {

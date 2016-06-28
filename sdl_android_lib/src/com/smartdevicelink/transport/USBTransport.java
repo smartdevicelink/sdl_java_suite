@@ -1,5 +1,12 @@
 package com.smartdevicelink.transport;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,23 +15,16 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.ParcelFileDescriptor;
-
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.SdlTransport;
 import com.smartdevicelink.transport.SiphonServer;
-import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
-
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Class that implements USB transport.
@@ -35,6 +35,7 @@ import java.io.OutputStream;
  * the other side will NOT be notified and unblocked from reading data until
  * some data is sent again or the USB is physically disconnected.
  */
+@SuppressLint("NewApi")
 public class USBTransport extends SdlTransport {
     /**
      * Broadcast action: sent when a USB accessory is attached.
@@ -63,12 +64,12 @@ public class USBTransport extends SdlTransport {
      * Manufacturer name of the accessory we want to connect to. Must be the
      * same as in accessory_filter.xml to work properly.
      */
-    private final static String ACCESSORY_MANUFACTURER = "Ford";
+    private final static String ACCESSORY_MANUFACTURER = "SDL";
     /**
      * Model name of the accessory we want to connect to. Must be the same as
      * in accessory_filter.xml to work properly.
      */
-    private final static String ACCESSORY_MODEL = "HMI";
+    private final static String ACCESSORY_MODEL = "Core";
     /**
      * Version of the accessory we want to connect to. Must be the same as in
      * accessory_filter.xml to work properly.
@@ -204,25 +205,24 @@ public class USBTransport extends SdlTransport {
      * @return true if the bytes are sent successfully
      */
     @Override
-    protected boolean sendBytesOverTransport(byte[] msgBytes, int offset,
-                                             int length) {
-        logD("SendBytes: array size " + msgBytes.length + ", offset " + offset +
-                ", length " + length);
+    protected boolean sendBytesOverTransport(SdlPacket packet) {
+    	byte[] msgBytes = packet.constructPacket();
+        logD("SendBytes: array size " + msgBytes.length + ", offset " + 0 +
+                ", length " + msgBytes.length);
 
         boolean result = false;
         final State state = getState();
         switch (state) {
             case CONNECTED:
-                synchronized (this) {
                     if (mOutputStream != null) {
                         try {
-                            mOutputStream.write(msgBytes, offset, length);
+                            mOutputStream.write(msgBytes, 0, msgBytes.length);
                             result = true;
 
                             logI("Bytes successfully sent");
                             SdlTrace.logTransportEvent(TAG + ": bytes sent",
                                     null, InterfaceActivityDirection.Transmit,
-                                    msgBytes, offset, length,
+                                    msgBytes, 0, msgBytes.length,
                                     SDL_LIB_TRACE_KEY);
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";
@@ -235,7 +235,6 @@ public class USBTransport extends SdlTransport {
                         logW(msg);
                         handleTransportError(msg, null);
                     }
-                }
                 break;
 
             default:
@@ -435,7 +434,7 @@ public class USBTransport extends SdlTransport {
      * Returns the type of the transport.
      *
      * @return TransportType.USB
-     * @see com.smartdevicelink.transport.TransportType
+     * @see com.smartdevicelink.transport.enums.TransportType
      */
     @Override
     public TransportType getTransportType() {
@@ -652,6 +651,8 @@ public class USBTransport extends SdlTransport {
          */
         private final String TAG = USBTransportReader.class.getSimpleName();
 
+    	SdlPsm psm;
+    	
         /**
          * Checks if the thread has been interrupted.
          *
@@ -669,7 +670,8 @@ public class USBTransport extends SdlTransport {
         @Override
         public void run() {
             logD("USB reader started!");
-
+            psm = new SdlPsm();
+            psm.reset();
             if (connect()) {
                 readFromTransport();
             }
@@ -744,11 +746,13 @@ public class USBTransport extends SdlTransport {
             final int READ_BUFFER_SIZE = 4096;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
             int bytesRead;
+           // byte input;
+            boolean stateProgress = false;
 
             // read loop
             while (!isInterrupted()) {
                 try {
-                    bytesRead = mInputStream.read(buffer);
+                	bytesRead = mInputStream.read(buffer);
                     if (bytesRead == -1) {
                         if (isInterrupted()) {
                             logI("EOF reached, and thread is interrupted");
@@ -769,19 +773,34 @@ public class USBTransport extends SdlTransport {
                 }
 
                 logD("Read " + bytesRead + " bytes");
-                SdlTrace.logTransportEvent(TAG + ": read bytes", null,
-                        InterfaceActivityDirection.Receive, buffer, bytesRead,
-                        SDL_LIB_TRACE_KEY);
+               //FIXME SdlTrace.logTransportEvent(TAG + ": read bytes", null,
+                //        InterfaceActivityDirection.Receive, buffer, bytesRead,
+                //        SDL_LIB_TRACE_KEY);
 
                 if (isInterrupted()) {
                     logI("Read some data, but thread is interrupted");
                     return;
                 }
+                	byte input;
+                	for(int i=0;i<bytesRead; i++){
+                		input=buffer[i];
+                		stateProgress = psm.handleByte(input); 
+                		if(!stateProgress){//We are trying to weed through the bad packet info until we get something
+                			//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                			psm.reset();
+                			buffer = new byte[READ_BUFFER_SIZE];
+                		}
+                     
+                     if(psm.getState() == SdlPsm.FINISHED_STATE){
+                    	 synchronized (USBTransport.this) {
+                    		 //Log.d(TAG, "Packet formed, sending off");
+                    		 handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                    	 }
+                     	//We put a trace statement in the message read so we can avoid all the extra bytes
+                     	psm.reset();
+                        buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
 
-                if (bytesRead > 0) {
-                    synchronized (USBTransport.this) {
-                        handleReceivedBytes(buffer, bytesRead);
-                    }
+                     }
                 }
             }
         }

@@ -20,9 +20,9 @@ public class SubscribeButtonResponse extends RPCResponse {
     }
 
 	/**
-	 * Constructs a new SubscribeButtonResponse object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new SubscribeButtonResponse object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
