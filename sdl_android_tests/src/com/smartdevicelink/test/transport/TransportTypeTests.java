@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.smartdevicelink.test.Test;
-import com.smartdevicelink.transport.TransportType;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import junit.framework.TestCase;
 

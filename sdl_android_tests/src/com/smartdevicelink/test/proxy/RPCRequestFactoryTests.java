@@ -3,6 +3,7 @@ package com.smartdevicelink.test.proxy;
 import java.util.Vector;
 
 import junit.framework.TestCase;
+import android.telephony.TelephonyManager;
 
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.TTSChunkFactory;
@@ -16,6 +17,7 @@ import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
+import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThru;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -53,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.test.NullValues;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
@@ -571,7 +574,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testOffset, testPF.getOffset());
 		assertEquals(Test.MATCH, testLength, testPF.getLength());
 		
-		testPF = RPCRequestFactory.buildPutFile(null, null, null);
+		testPF = RPCRequestFactory.buildPutFile(NullValues.STRING, NullValues.INTEGER, NullValues.INTEGER);
 		assertNull(Test.NULL, testPF.getSdlFileName());
 		assertNull(Test.NULL, testPF.getOffset());
 		assertNull(Test.NULL, testPF.getLength());
@@ -584,7 +587,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testPF.getPersistentFile());
 		assertEquals(Test.MATCH, testSystemFile, testPF.getSystemFile());
 		
-		testPF = RPCRequestFactory.buildPutFile(null, null, null, null, null, null);
+		testPF = RPCRequestFactory.buildPutFile(NullValues.STRING, NullValues.INTEGER, NullValues.INTEGER, null, NullValues.BOOLEAN, NullValues.BOOLEAN);
 		assertNull(Test.NULL, testPF.getSdlFileName());
 		assertNull(Test.NULL, testPF.getOffset());
 		assertNull(Test.NULL, testPF.getLength());
@@ -607,6 +610,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		Language testLang = Language.EN_US, testHMILang = Language.EN_GB;
 		Vector<AppHMIType> testHMIType = new Vector<AppHMIType>();
 		testHMIType.add(AppHMIType.DEFAULT);
+		DeviceInfo testDI = RPCRequestFactory.BuildDeviceInfo(null);
 		RegisterAppInterface testRAI;
 		
 		// Test -- buildRegisterAppInterface(String appName, String appID)
@@ -616,7 +620,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		// ^ Calls another build method.
 		
 		// Test -- buildRegisterAppInterface(SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,  Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, Integer correlationID)
-		testRAI = RPCRequestFactory.buildRegisterAppInterface(testSMV, testAppName, testTTSName, testNGN, testSynonyms, testIMA, testLang, testHMILang, testHMIType, testAppID, testCorrelationID);
+		testRAI = RPCRequestFactory.buildRegisterAppInterface(testSMV, testAppName, testTTSName, testNGN, testSynonyms, testIMA, testLang, testHMILang, testHMIType, testAppID, testCorrelationID,testDI);
 		assertTrue(Test.TRUE, Validator.validateSdlMsgVersion(testSMV, testRAI.getSdlMsgVersion()));
 		assertEquals(Test.MATCH, testAppName, testRAI.getAppName());
 		assertTrue(Test.TRUE, Validator.validateTtsChunks(testTTSName, testRAI.getTtsName()));
@@ -628,8 +632,10 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, AppHMIType.DEFAULT, testRAI.getAppHMIType().get(0));
 		assertEquals(Test.MATCH, testAppID, testRAI.getAppID());
 		assertEquals(Test.MATCH, testCorrelationID, testRAI.getCorrelationID());
+		assertEquals(Test.MATCH, testDI, testRAI.getDeviceInfo());
+
 		
-		testRAI = RPCRequestFactory.buildRegisterAppInterface(null, null, null, null, null, null, null, null, null, null, null);
+		testRAI = RPCRequestFactory.buildRegisterAppInterface(null, null, null, null, null, null, null, null, null, null, null,null);
 		assertEquals(Test.MATCH, (Integer) 1, testRAI.getCorrelationID());
 		assertEquals(Test.MATCH, testSMV.getMajorVersion(), testRAI.getSdlMsgVersion().getMajorVersion());
 		assertEquals(Test.MATCH, testSMV.getMinorVersion(), testRAI.getSdlMsgVersion().getMinorVersion());
@@ -642,6 +648,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNotNull(Test.NOT_NULL, testRAI.getHmiDisplayLanguageDesired());
 		assertNull(Test.NULL, testRAI.getAppHMIType());
 		assertNull(Test.NULL, testRAI.getAppID());
+		assertNull(Test.NULL, testRAI.getDeviceInfo());
 	}
 	
 	public void testBuildSetAppIcon () {
