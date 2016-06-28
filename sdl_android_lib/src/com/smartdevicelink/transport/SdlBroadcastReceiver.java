@@ -196,14 +196,41 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		
 	}
 
+	private static boolean isRouterServiceRunning(Context context, ComponentName routerService) {
+		if ((context == null) || (routerService == null)) {
+			return false;
+		}
+		if (routerService.getClassName().toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME)) {
+			ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+			for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+				if (service.service.getClassName().equalsIgnoreCase(routerService.getClassName())
+						&& service.service.getPackageName().equalsIgnoreCase(routerService.getPackageName())) {
+					runningBluetoothServicePackage = routerService;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
 	 * @param context A context to access Android system services through.
 	 * @return True if a transport connection is established, false otherwise.
 	 */
 	public static boolean isTransportConnected(Context context){
+		return isTransportConnected(context, null);
+	}
+
+	/**
+	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
+	 * @param context A context to access Android system services through.
+	 * @param routerService ComponentName of router service if already connected
+	 * @return True if a transport connection is established, false otherwise.
+	 */
+	public static boolean isTransportConnected(Context context, ComponentName routerService) {
 		Log.d(TAG, "Checking to see if router service is transport connected");
-		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
+		if(isRouterServiceRunning(context, routerService) || isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {
 				con = context.createPackageContext(runningBluetoothServicePackage.getPackageName(), 0);

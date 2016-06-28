@@ -160,7 +160,7 @@ public class TransportBroker {
             			if(queuedOnTransportConnect!=null){
         					onHardwareConnected(queuedOnTransportConnect);
         					queuedOnTransportConnect = null;
-        				}else if(SdlBroadcastReceiver.isTransportConnected(getContext())){
+        				}else if(SdlBroadcastReceiver.isTransportConnected(getContext(), TransportBroker.this.routerService)){
         					onHardwareConnected(null); //FIXME to include type
         				}
             			break;
