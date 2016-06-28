@@ -10,7 +10,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.transport.TcpTransportConfig}
  */
-public class TcpTransportConfigTests extends TestCase {
+public class TCPTransportConfigTests extends TestCase {
 	
 	/**
 	 * This is a unit test for the following methods : 

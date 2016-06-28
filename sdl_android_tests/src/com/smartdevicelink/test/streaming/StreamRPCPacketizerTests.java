@@ -18,7 +18,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.streaming.StreamRpcPacketizer}
  */
-public class StreamRpcPacketizerTests extends TestCase {
+public class StreamRPCPacketizerTests extends TestCase {
 		
 	/**
 	 * This is a unit test for the following methods : 

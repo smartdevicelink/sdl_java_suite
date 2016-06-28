@@ -10,7 +10,7 @@ import com.smartdevicelink.transport.TransportType;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.transport.BtTransportConfig}
  */
-public class BtTransportConfigTests extends TestCase {
+public class BTTransportConfigTests extends TestCase {
 	
 	/**
 	 * This is a unit test for the following methods : 
