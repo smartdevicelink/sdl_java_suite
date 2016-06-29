@@ -132,6 +132,7 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 		enumTestList.add(FrameDataControlFrameType.EndSession);
 		enumTestList.add(FrameDataControlFrameType.EndSessionACK);
 		enumTestList.add(FrameDataControlFrameType.EndSessionNACK);
+		enumTestList.add(FrameDataControlFrameType.ServiceDataACK);
 		enumTestList.add(FrameDataControlFrameType.HeartbeatACK);
 		
 		assertTrue("List does not match enum test list.",
@@ -144,7 +145,8 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 				FrameDataControlFrameType.Heartbeat,       FrameDataControlFrameType.StartSession,
 				FrameDataControlFrameType.StartSessionACK, FrameDataControlFrameType.StartSessionNACK,
 				FrameDataControlFrameType.EndSession,      FrameDataControlFrameType.EndSessionACK,
-				FrameDataControlFrameType.EndSessionNACK,  FrameDataControlFrameType.HeartbeatACK };
+				FrameDataControlFrameType.EndSessionNACK,  FrameDataControlFrameType.ServiceDataACK,
+				FrameDataControlFrameType.HeartbeatACK, };
 		
 		assertTrue("Array does not match enum values array.",
 					Validator.validateFrameDataControlFrameTypeArray(enumValueArray, enumTestArray));

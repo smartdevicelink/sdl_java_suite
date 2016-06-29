@@ -548,7 +548,8 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		String testFileName = "test";
 		Boolean testPFile = true, testSystemFile = true;
-		Integer testCorrelationID = 0, testOffset = 1, testLength = 2;
+		Integer testCorrelationID = 0;
+		Long testOffset = 1L, testLength = 2L;
 		FileType testFileType = FileType.BINARY;		
 		byte[] testFileData = {(byte) 0x00, (byte) 0x01, (byte) 0x02 };
 		PutFile testPF;

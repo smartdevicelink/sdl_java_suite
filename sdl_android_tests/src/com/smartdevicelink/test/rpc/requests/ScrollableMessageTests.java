@@ -93,7 +93,7 @@ public class ScrollableMessageTests extends BaseRpcTests {
      * Tests a valid JSON construction of this RPC message.
      */
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+    	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
     	assertNotNull(Test.NOT_NULL, commandJson);
     	
 		try {

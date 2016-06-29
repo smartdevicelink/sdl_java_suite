@@ -54,7 +54,7 @@ public class UpdateTurnListResponseTests extends BaseRpcTests {
 	 * Tests the expected values of the RPC message.
 	 */
 	 public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
 		assertNotNull(Test.NOT_NULL, commandJson);
 		
 		try {

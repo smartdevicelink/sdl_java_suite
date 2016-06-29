@@ -22,32 +22,39 @@ public class TransportTypeTests extends TestCase {
 	public void testTransportTypeEnum () {
 		
 		// Test Values
-		String testTcp       = "TCP";
-		String testUsb       = "USB";
-		String testInvalid   = "INVALID";
-		String testBluetooth = "BLUETOOTH";
+		String testTcp       	= "TCP";
+		String testUsb       	= "USB";
+		String testInvalid   	= "INVALID";
+		String testBluetooth 	= "BLUETOOTH";
+		String testMultiplexing = "MULTIPLEX";
 		
 		try {
 			// Comparison Values
-			TransportType expectedTcpEnum        = TransportType.TCP;
-			TransportType expectedUsbEnum        = TransportType.USB;
-			TransportType expectedBluetoothEnum  = TransportType.BLUETOOTH;
+			TransportType expectedTcpEnum        	= TransportType.TCP;
+			TransportType expectedUsbEnum        	= TransportType.USB;
+			TransportType expectedBluetoothEnum  	= TransportType.BLUETOOTH;
+			TransportType expectedMultiplexingEnum  = TransportType.MULTIPLEX;
+			
 			List<TransportType> expectedEnumList = new ArrayList<TransportType>();
 			expectedEnumList.add(TransportType.BLUETOOTH);
 			expectedEnumList.add(TransportType.TCP);
 			expectedEnumList.add(TransportType.USB);
+			expectedEnumList.add(TransportType.MULTIPLEX);
 			
-			TransportType actualNullEnum       = TransportType.valueForString(null);
-			TransportType actualTcpEnum        = TransportType.valueForString(testTcp);
-			TransportType actualUsbEnum        = TransportType.valueForString(testUsb);
-			TransportType actualInvalidEnum    = TransportType.valueForString(testInvalid);
-			TransportType actualBluetoothEnum  = TransportType.valueForString(testBluetooth);
+			TransportType actualNullEnum       		= TransportType.valueForString(null);
+			TransportType actualTcpEnum        		= TransportType.valueForString(testTcp);
+			TransportType actualUsbEnum        		= TransportType.valueForString(testUsb);
+			TransportType actualInvalidEnum    		= TransportType.valueForString(testInvalid);
+			TransportType actualBluetoothEnum  		= TransportType.valueForString(testBluetooth);
+			TransportType actualMultiplexingEnum 	= TransportType.valueForString(testMultiplexing);
+
 			List<TransportType> actualEnumList = Arrays.asList(TransportType.values());
 			
 			// Valid Tests
 			assertEquals(Test.MATCH, expectedTcpEnum, actualTcpEnum);
 			assertEquals(Test.MATCH, expectedUsbEnum, actualUsbEnum);
 			assertEquals(Test.MATCH, expectedBluetoothEnum, actualBluetoothEnum);
+			assertEquals(Test.MATCH, expectedMultiplexingEnum, actualMultiplexingEnum);
 			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests

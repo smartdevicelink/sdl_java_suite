@@ -60,6 +60,10 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		SdlDisconnectedReason enumAppInterfaceUnreg = SdlDisconnectedReason.valueForString(example);
 		example = "GENERIC_ERROR";
 		SdlDisconnectedReason enumGenericError = SdlDisconnectedReason.valueForString(example);
+		example = "LEGACY_BLUETOOTH_MODE_ENABLED";
+		SdlDisconnectedReason enumLegacyMode = SdlDisconnectedReason.valueForString(example);
+		example = "RPC_SESSION_ENDED";
+		SdlDisconnectedReason enumRpcSessionEnded = SdlDisconnectedReason.valueForString(example);
 		
 		assertNotNull("USER_EXIT returned null", enumUserExit);
 		assertNotNull("IGNITION_OFF returned null", enumIgnitionOff);
@@ -81,6 +85,8 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		assertNotNull("SDL_REGISTRATION_ERROR returned null", enumSdlRegistrationError);
 		assertNotNull("APP_INTERFACE_UNREG returned null", enumAppInterfaceUnreg);
 		assertNotNull("GENERIC_ERROR returned null", enumGenericError);
+		assertNotNull("LEGACY_BLUETOOTH_MODE_ENABLED returned null", enumLegacyMode);
+		assertNotNull("RPC_SESSION_ENDED returned null", enumRpcSessionEnded);
 	}
 
 	/**
@@ -138,6 +144,8 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		enumTestList.add(SdlDisconnectedReason.SDL_REGISTRATION_ERROR);
 		enumTestList.add(SdlDisconnectedReason.APP_INTERFACE_UNREG);
 		enumTestList.add(SdlDisconnectedReason.GENERIC_ERROR);
+		enumTestList.add(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
+		enumTestList.add(SdlDisconnectedReason.RPC_SESSION_ENDED);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
