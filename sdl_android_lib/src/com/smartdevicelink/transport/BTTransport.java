@@ -182,7 +182,7 @@ public class BTTransport extends SdlTransport {
 				throw new SdlException("Bluetooth adapter must be on to instantiate a SdlProxy object.", SdlExceptionCause.BLUETOOTH_DISABLED);
 			}
 
-			if(((SdlException) ex).getSdlExceptionCause() == SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE) {
+			if(ex instanceof SdlException && ((SdlException) ex).getSdlExceptionCause() == SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE) {
 
 				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
 
