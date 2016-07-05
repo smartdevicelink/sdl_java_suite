@@ -176,7 +176,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			return false;
 		}
 		Log.d(TAG, "Looking for Service: "+ SDL_ROUTER_SERVICE_CLASS_NAME);
-		ActivityManager manager = (ActivityManager) context.getSystemService("activity");
+		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	    	//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
