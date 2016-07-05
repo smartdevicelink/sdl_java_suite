@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.Vector;
 
 import android.app.Service;
+import android.content.Context;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -27,7 +28,9 @@ import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+
 
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	
@@ -43,7 +46,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param appName - Name of the application displayed on SDL. 
 	 * @param isMediaApp - Indicates if the app is a media application.
 	 */
-	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, String appName, Boolean isMediaApp, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, String appID) throws SdlException {
 		super(	listener, 
 				/*sdl proxy configuration resources*/null, 
@@ -60,7 +63,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				/*App ID*/appID,
 				/*autoActivateID*/null,
 				/*callbackToUIThread*/ false,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, appName, and isMediaApp.", SDL_LIB_TRACE_KEY);
 	}
@@ -82,7 +85,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param autoActivateID - ID used to re-register previously registered application.
 	 * @throws SdlException
 	 */
-	public SdlProxyALM(IProxyListenerALM listener, String appName, String ngnMediaScreenAppName, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, String appName, String ngnMediaScreenAppName, 
 			Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, String appID, 
 			String autoActivateID) throws SdlException {
@@ -101,7 +104,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				/*App ID*/appID,
 				autoActivateID,
 				/*callbackToUIThread*/ false,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, appName, ngnMediaScreenAppName, " +
 				"vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, and autoActivateID.", SDL_LIB_TRACE_KEY);
@@ -124,7 +127,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param autoActivateID - ID used to re-register previously registered application.
 	 * @throws SdlException
 	 */
-	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, 
 			Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, 
 			Language hmiDisplayLanguageDesired, String appID, String autoActivateID) throws SdlException {
@@ -143,7 +146,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				/*App ID*/appID,
 				autoActivateID,
 				/*callbackToUIThread*/ false,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, and autoActivateID.", SDL_LIB_TRACE_KEY);
@@ -167,7 +170,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
 	 * @throws SdlException
 	 */
-	public SdlProxyALM(IProxyListenerALM listener, String appName, String ngnMediaScreenAppName, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, String appName, String ngnMediaScreenAppName, 
 			Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, String appID, 
 			String autoActivateID, boolean callbackToUIThread) throws SdlException {
@@ -186,7 +189,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				/*App ID*/appID,
 				autoActivateID,
 				callbackToUIThread,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
@@ -211,7 +214,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
 	 * @throws SdlException
 	 */
-	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
 			String appID, String autoActivateID, 
@@ -231,14 +234,14 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				/*App ID*/appID,
 				autoActivateID,
 				callbackToUIThread,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
 				"and callbackToUIThread", SDL_LIB_TRACE_KEY);
 	}
 	
-	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
 			String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException {
@@ -258,7 +261,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				autoActivateID,
 				callbackToUIThread,
 				preRegister,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
@@ -546,7 +549,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param preRegister Flag that indicates that client should be pre-registred or not
 	 * @throws SdlException
 	 */	
-	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,Language languageDesired, Language hmiDisplayLanguageDesired,
+	public SdlProxyALM(Context context,IProxyListenerALM listener, String appName, Boolean isMediaApp,Language languageDesired, Language hmiDisplayLanguageDesired,
 						String appID, boolean callbackToUIThread, boolean preRegister) throws SdlException 
 	{
 		super(	listener, 
@@ -565,7 +568,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			/*autoActivateID*/null,
 			callbackToUIThread,
 			preRegister,
-			new BTTransportConfig());
+			new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
 			"appName, isMediaApp, languageDesired, hmiDisplayLanguageDesired" + "callbackToUIThread and version", SDL_LIB_TRACE_KEY);
@@ -582,9 +585,44 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param appID Identifier of the client application.
 	 * @throws SdlException
 	 */		
-	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID) throws SdlException {
+	public SdlProxyALM(Context context,IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID) throws SdlException {
 		super(	listener, 
 				/*sdlProxyConfigurationResources*/null,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*ttsName*/null,
+				/*ngnMediaScreenAppName*/null,
+				/*vrSynonyms*/null,
+				isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*languageDesired*/null,
+				/*hmiDisplayLanguageDesired*/null,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				false,
+				false,
+				new MultiplexTransportConfig(context,appID));
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
+	}
+
+	/**
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param sdlProxyConfigurationResources Proxy configuration resources.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param appID Identifier of the client application.
+	 * @throws SdlException
+	 */		
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Boolean isMediaApp,String appID) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
 				/*enable advanced lifecycle management*/true, 
 				appName,
 				/*ttsName*/null,
@@ -602,7 +640,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				new BTTransportConfig());
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
-				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
+				"sdlProxyConfigurationResources, appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
 	}
 
 	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID,BaseTransportConfig transportConfig) throws SdlException {
@@ -642,7 +680,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param preRegister Flag that indicates that client should be pre-registred or not
 	 * @throws SdlException
 	 */		
-	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID, 
 						 boolean callbackToUIThread, boolean preRegister) throws SdlException {
 		super(	listener, 
 				/*sdlProxyConfigurationResources*/null,
@@ -660,7 +698,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				/*autoActivateID*/null,
 				callbackToUIThread,
 				preRegister,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
 				"appName, isMediaApp, " + "callbackToUIThread and version", SDL_LIB_TRACE_KEY);
@@ -709,7 +747,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				autoActivateID,
 				callbackToUIThread,
 				preRegister,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(appService.getBaseContext(),appID));
 		
 				this.setAppService(appService);
 				this.sendTransportBroadcast();
@@ -776,7 +814,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param preRegister Flag that indicates that client should be pre-registred or not
 	 * @throws SdlException
 	 */	
-	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
 			String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException {
@@ -796,7 +834,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				autoActivateID,
 				callbackToUIThread,
 				preRegister,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
@@ -880,7 +918,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param preRegister Flag that indicates that client should be pre-registred or not
 	 * @throws SdlException
 	 */	
-	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+	public SdlProxyALM(Context context,IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
 			Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException {
@@ -900,7 +938,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				autoActivateID,
 				callbackToUIThread,
 				preRegister,
-				new BTTransportConfig());
+				new MultiplexTransportConfig(context,appID));
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
@@ -1341,7 +1379,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	* Gets AudioPassThruCapabilities set when application interface is registered.
 	*
 	* @return AudioPassThruCapabilities
-	* @throws SyncException
+	* @throws SdlException
 	*/
 	public List<AudioPassThruCapabilities> getAudioPassThruCapabilities() throws SdlException {
 		// Test if proxy has been disposed
@@ -1349,9 +1387,9 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
 
-		// Test SYNC availability
+		// Test SDL availability
 		if (!_appInterfaceRegisterd) {
-			throw new SdlException("SYNC is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
+			throw new SdlException("SDL is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 		return _audioPassThruCapabilities;
 	}
@@ -1367,6 +1405,33 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("SDL is not connected. Unable to get SupportedDiagModes.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 		return _diagModes;
+	}	
+	
+	public HMICapabilities getHmiCapabilities() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to get the HMICapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _hmiCapabilities;
+	}	
+	
+	
+	public String getSystemSoftwareVersion() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to get the SystemSoftwareVersion.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _systemSoftwareVersion;
 	}	
 	
 	public boolean isAppResumeSuccess() throws SdlException {

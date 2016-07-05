@@ -29,28 +29,17 @@ public class GetDTCsResponse extends RPCResponse{
         if(parameters.get(KEY_DTC) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_DTC);
             if(list != null && list.size() > 0){
-            	for( Object obj : list ) {
-        			if (!(obj instanceof String)) {
-        				return null;
-        			}
-        		}
-        		return (List<String>) list;
+                Object obj = list.get(0);
+                if(obj instanceof String){
+                    return (List<String>) list;
+                }
             }
         }
         return null;
     }
 
     public void setDtc(List<String> dtc){
-
-    	boolean valid = true;
-    	
-    	for ( String item : dtc ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (dtc != null) && (dtc.size() > 0) && valid) {
+        if(dtc != null){
             parameters.put(KEY_DTC, dtc);
         }
         else{

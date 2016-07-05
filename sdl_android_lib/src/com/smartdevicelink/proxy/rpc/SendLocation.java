@@ -46,8 +46,8 @@ public class SendLocation extends RPCRequest{
     /**
      * Getter for longitude of the location to send.
      * 
-     * <p><b>IMPORTANT NOTE:</b> A previous version of this method call returned a Float
-     * value, however, it has been changed to return a Double. This will compile, 
+     * <p><b>IMPORTANT NOTE:</b> </p><p>A previous version of this method call returned a Float
+     * value, however, it has been changed to return a Double.</p> This will compile, 
      * but cause a ClassCastException if your value is not also a Double type.
      * @since SmartDeviceLink v4.0
      * 
@@ -74,8 +74,8 @@ public class SendLocation extends RPCRequest{
     /**
      * Getter for latitude of the location to send.
      * 
-     * <p><b>IMPORTANT NOTE:</b> A previous version of this method call returned a Float
-     * value, however, it has been changed to return a Double. This will compile, 
+     * <p><b>IMPORTANT NOTE:</b> </p><p>A previous version of this method call returned a Float
+     * value, however, it has been changed to return a Double.</p> This will compile, 
      * but cause a ClassCastException if your value is not also a Double type.
      * @since SmartDeviceLink v4.0
      * 
@@ -171,12 +171,10 @@ public class SendLocation extends RPCRequest{
         if(parameters.get(KEY_ADDRESS_LINES) instanceof List<?>){
             List<?> list = (List<?>) parameters.get(KEY_ADDRESS_LINES);
             if(list != null && list.size() > 0){
-            	for( Object obj : list ) {
-        			if (!(obj instanceof String)) {
-        				return null;
-        			}
-        		}
-        		return (List<String>) list;
+                Object obj = list.get(0);
+                if(obj instanceof String){
+                    return (List<String>) list;
+                }
             }
         }
         return null;
@@ -187,16 +185,7 @@ public class SendLocation extends RPCRequest{
      * @param addressLines The address lines of the location
      */
     public void setAddressLines(List<String> addressLines){
-
-    	boolean valid = true;
-    	
-    	for (String item : addressLines ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (addressLines != null) && (addressLines.size() > 0) && valid) {
+        if(addressLines != null){
             parameters.put(KEY_ADDRESS_LINES, addressLines);
         }
         else{

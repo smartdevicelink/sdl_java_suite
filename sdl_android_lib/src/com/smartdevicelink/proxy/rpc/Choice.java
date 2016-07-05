@@ -8,7 +8,8 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * A choice is an option which a user can select either via the menu or via voice recognition (VR) during an application initiated interaction.
- * <p><b> Parameter List
+ *  For example, the application may request for the user`s choice among several suggested ones: Yes, No, Skip.
+ * <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -18,10 +19,10 @@ import com.smartdevicelink.util.DebugTool;
  * 		</tr>
  * 		<tr>
  * 			<td>choiceID</td>
- * 			<td>Int16</td>
+ * 			<td>Integer</td>
  * 			<td>Application-scoped identifier that uniquely identifies this choice.
- *             <br/>Min: 0
- *				<br/>Max: 65535
+ *             Min: 0;
+ *				Max: 65535
  *			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -29,8 +30,8 @@ import com.smartdevicelink.util.DebugTool;
  * 			<td>menuName</td>
  * 			<td>String</td>
  * 			<td>Text which appears in menu, representing this choice.
- *				<br/>Min: 1
- *				<br/>Max: 100
+ *				Min: 1;
+ *				Max: 100
  * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -49,6 +50,10 @@ import com.smartdevicelink.util.DebugTool;
  * </table>
  * 
   * @since SmartDeviceLink 1.0
+  * 
+  * @see AddCommand
+  * @see PerformInteraction
+  * @see Image
  */
 public class Choice extends RPCStruct {
 	public static final String KEY_SECONDARY_TEXT = "secondaryText";
@@ -71,7 +76,7 @@ public class Choice extends RPCStruct {
     }
     /**
      * Get the application-scoped identifier that uniquely identifies this choice.
-     * @return choiceID Min: 0  Max: 65535
+     * @return choiceID Min: 0;  Max: 65535
      */    
     public Integer getChoiceID() {
         return (Integer) store.get(KEY_CHOICE_ID);
@@ -89,8 +94,8 @@ public class Choice extends RPCStruct {
     }
     /**
      * Text which appears in menu, representing this choice.
-     *				<br/>Min: 1
-     *				<br/>Max: 100
+     *				Min: 1;
+     *				Max: 100
      * @return menuName the menu name
      */    
     public String getMenuName() {
@@ -98,8 +103,8 @@ public class Choice extends RPCStruct {
     }
     /**
      * Text which appears in menu, representing this choice.
-     *				<br/>Min: 1
-     *				<br/>Max: 100
+     *				Min: 1;
+     *				Max: 100
      * @param menuName the menu name
      */    
     public void setMenuName(String menuName) {
@@ -119,12 +124,10 @@ public class Choice extends RPCStruct {
         if (store.get(KEY_VR_COMMANDS) instanceof List<?>) {
         	List<?> list = (List<?>)store.get( KEY_VR_COMMANDS);
         	if (list != null && list.size() > 0) {
-        		for( Object obj : list ) {
-        			if (!(obj instanceof String)) {
-        				return null;
-        			}
+        		Object obj = list.get(0);
+        		if (obj instanceof String) {
+                	return (List<String>) list;
         		}
-        		return (List<String>) list;
         	}
         }
         return null;
@@ -135,16 +138,7 @@ public class Choice extends RPCStruct {
      * @since SmartDeviceLink 2.0
      */    
     public void setVrCommands(List<String> vrCommands) {
-
-    	boolean valid = true;
-    	
-    	for ( String item : vrCommands ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (vrCommands != null) && (vrCommands.size() > 0) && valid) {
+        if (vrCommands != null) {
             store.put(KEY_VR_COMMANDS, vrCommands);
         } else {
         	store.remove(KEY_VR_COMMANDS);

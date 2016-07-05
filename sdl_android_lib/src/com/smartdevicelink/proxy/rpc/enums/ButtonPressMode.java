@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 /**
- * Indicates whether this is a LONG or SHORT button press
- * <p>
- * 
- * @since SmartDeviceLink 1.0
+ * Indicates whether this is a LONG or SHORT button press.
+ * <p></p>
+ *@see ButtonEventMode
+ *@since SmartDeviceLink 1.0
  */
 public enum ButtonPressMode {
 	/**

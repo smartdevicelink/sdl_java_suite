@@ -1,21 +1,19 @@
 package com.smartdevicelink.Dispatcher;
 
-import java.util.Comparator;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.smartdevicelink.util.DebugTool;
 
 public class ProxyMessageDispatcher<T> {
-	PriorityBlockingQueue<T> _queue = null;
+	LinkedBlockingQueue<T> _queue = null;
 	private Thread _messageDispatchingThread = null;
 	IDispatchingStrategy<T> _strategy = null;
 
 	// Boolean to track if disposed
 	private Boolean dispatcherDisposed = false;
 	
-	public ProxyMessageDispatcher(String THREAD_NAME, Comparator<T> messageComparator, 
-			IDispatchingStrategy<T> strategy) {
-		_queue = new PriorityBlockingQueue<T>(10, messageComparator);
+	public ProxyMessageDispatcher(String THREAD_NAME, IDispatchingStrategy<T> strategy) {
+		_queue = new LinkedBlockingQueue<T>();
 		
 		_strategy = strategy;
 		

@@ -12,13 +12,84 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 
 /**
  * This will open an audio pass thru session. By doing so the app can receive
- * audio data through the vehicle�s microphone
- * <p>
- * Function Group: AudioPassThru
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * </p>
+ * audio data through the vehicles microphone
  * 
+ * <p>Function Group: AudioPassThru</p>
+ * 
+ * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
+ * 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th> Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>initialPrompt</td>
+ * 			<td>TTSChunk[]</td>
+ * 			<td>SDL will speak this prompt before opening the audio pass thru session. </td>
+ *                 <td>N</td>
+ *                 <td>This is an array of text chunks of type TTSChunk. The array must have at least one item If omitted, then no initial prompt is spoken: <p>Array Minsize: 1</p> Array Maxsize: 100</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>audioPassThruDisplayText1</td>
+ * 			<td>String</td>
+ * 			<td>First line of text displayed during audio capture.</td>
+ *                 <td>N</td>
+ *                 <td>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>samplingRate</td>
+ * 			<td>SamplingRate</td>
+ * 			<td>This value shall is allowed to be 8 or 16 or 22 or 44 khz.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>maxDuration</td>
+ * 			<td>Integer</td>
+ * 			<td>The maximum duration of audio recording in milliseconds.</td>
+ *                 <td>Y</td>
+ *                 <td>Minvalue: 1; Maxvalue: 1000000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>bitsPerSample</td>
+ * 			<td>BitsPerSample</td>
+ * 			<td>Specifies the quality the audio is recorded - 8 bit or 16 bit.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>audioType</td>
+ * 			<td>AudioType</td>
+ * 			<td>Specifies the type of audio data being requested.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>muteAudio</td>
+ * 			<td>Boolean</td>
+ * 			<td>N</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ * 		
+ * 			
+ * 			
+ * 			
+ *  </table>
  * @since SmartDeviceLink 2.0
  * @see EndAudioPassThru
  */
@@ -40,9 +111,9 @@ public class PerformAudioPassThru extends RPCRequest {
     }
 
 	/**
-	 * Constructs a new PerformAudioPassThru object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new PerformAudioPassThru object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -59,7 +130,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a List<TTSChunk> value represents the initial prompt which
 	 *            will be spoken before opening the audio pass thru session by
 	 *            SDL
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>This is an array of text chunks of type TTSChunk</li>
@@ -70,16 +141,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            </ul>
 	 */
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-
-    	boolean valid = true;
-    	
-    	for ( TTSChunk item : initialPrompt ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (initialPrompt != null) && (initialPrompt.size() > 0) && valid) {
+    	if (initialPrompt != null) {
     		parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
     	} else {
     		parameters.remove(KEY_INITIAL_PROMPT);
@@ -99,43 +161,16 @@ public class PerformAudioPassThru extends RPCRequest {
     	if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
     		List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
 	        if (list != null && list.size() > 0) {
-
-	        	List<TTSChunk> ttsChunkList  = new ArrayList<TTSChunk>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw TTSChunk and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof TTSChunk) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			ttsChunkList.add(new TTSChunk((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<TTSChunk>) list;
-	        	} else if (flagHash) {
-	        		return ttsChunkList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof TTSChunk) {
+	                return (List<TTSChunk>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
+	                for (Object hashObj : list) {
+	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
     	}
         return null;
@@ -145,9 +180,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Sets a line of text displayed during audio capture
 	 * 
 	 * @param audioPassThruDisplayText1
-	 *            a String value representing the line of text displayed during
-	 *            audio capture
-	 *            <p>
+	 *            <p>a String value representing the line of text displayed during
+	 *            audio capture</p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setAudioPassThruDisplayText1(String audioPassThruDisplayText1) {
@@ -172,9 +207,9 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * Sets a line of text displayed during audio capture
 	 * 
 	 * @param audioPassThruDisplayText2
-	 *            a String value representing the line of text displayed during
-	 *            audio capture
-	 *            <p>
+	 *            <p>a String value representing the line of text displayed during
+	 *            audio capture</p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setAudioPassThruDisplayText2(String audioPassThruDisplayText2) {
@@ -230,7 +265,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @param maxDuration
 	 *            an Integer value representing the maximum duration of audio
 	 *            recording in millisecond
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue:1; Maxvalue:1000000
 	 */
     public void setMaxDuration(Integer maxDuration) {
@@ -310,8 +345,8 @@ public class PerformAudioPassThru extends RPCRequest {
     }
 
 	/**
-	 * Gets a Boolean value representing if the current audio source should be
-	 * muted during the APT session<br/>
+	 *<p> Gets a Boolean value representing if the current audio source should be
+	 * muted during the APT session</p>
 	 * 
 	 * 
 	 * @return Boolean -a Boolean value representing if the current audio source
@@ -322,11 +357,11 @@ public class PerformAudioPassThru extends RPCRequest {
     }
 
 	/**
-	 * Sets a muteAudio value representing if the current audio source should be
-	 * muted during the APT session<br/>
+	 * <p>Sets a muteAudio value representing if the current audio source should be
+	 * muted during the APT session
 	 * If not, the audio source will play without interruption. If omitted, the
-	 * value is set to true
-	 * <p>
+	 * value is set to true</p>
+	 * 
 	 * 
 	 * @param muteAudio
 	 *            a Boolean value representing if the current audio source

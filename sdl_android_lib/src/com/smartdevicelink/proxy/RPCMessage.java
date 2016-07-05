@@ -51,7 +51,7 @@ public class RPCMessage extends RPCStruct  {
 	protected String messageType;
 	protected Hashtable<String, Object> parameters;
 	protected Hashtable<String, Object> function;
-	
+
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
 	}
@@ -80,4 +80,5 @@ public class RPCMessage extends RPCStruct  {
 	public Object getParameters(String functionName) {
 		return parameters.get(functionName);
 	}
+
 }

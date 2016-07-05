@@ -5,9 +5,16 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-
+/**
+ * Diagnostic Message Response is sent, when DiagnosticMessage has been called.
+ * 
+ * @since SmartDeviceLink 3.0
+ */
 public class DiagnosticMessageResponse extends RPCResponse {
 	public static final String KEY_MESSAGE_DATA_RESULT = "messageDataResult";
+	/** 
+	 * Constructs a new DiagnosticMessageResponse object
+	 */
 
     public DiagnosticMessageResponse() {
         super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
@@ -20,28 +27,17 @@ public class DiagnosticMessageResponse extends RPCResponse {
     	if(parameters.get(KEY_MESSAGE_DATA_RESULT) instanceof List<?>){
     		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA_RESULT);
     		if(list != null && list.size()>0){
-    			for( Object obj : list ) {
-        			if (!(obj instanceof Integer)) {
-        				return null;
-        			}
+        		Object obj = list.get(0);
+        		if(obj instanceof Integer){
+        			return (List<Integer>) list;
         		}
-        		return (List<Integer>) list;
     		}
     	}
         return null;
     }
     
     public void setMessageDataResult(List<Integer> messageDataResult) {
-
-    	boolean valid = true;
-    	
-    	for ( Integer item : messageDataResult ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (messageDataResult != null) && (messageDataResult.size() > 0) && valid) {
+        if (messageDataResult != null) {
             parameters.put(KEY_MESSAGE_DATA_RESULT, messageDataResult);
         } else {
         	parameters.remove(KEY_MESSAGE_DATA_RESULT);

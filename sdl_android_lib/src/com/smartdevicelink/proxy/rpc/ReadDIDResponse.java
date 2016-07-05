@@ -22,16 +22,7 @@ public class ReadDIDResponse extends RPCResponse {
         super(hash);
     }
     public void setDidResult(List<DIDResult> didResult) {
-
-    	boolean valid = true;
-    	
-    	for ( DIDResult item : didResult ) {
-    		if (item == null) {
-    			valid = false;
-    		}
-    	}
-    	
-    	if ( (didResult != null) && (didResult.size() > 0) && valid) {
+    	if (didResult != null) {
     		parameters.put(KEY_DID_RESULT, didResult);
     	} else {
     		parameters.remove(KEY_DID_RESULT);
@@ -42,43 +33,16 @@ public class ReadDIDResponse extends RPCResponse {
         if (parameters.get(KEY_DID_RESULT) instanceof List<?>) {
         	List<?> list = (List<?>)parameters.get(KEY_DID_RESULT);
 	        if (list != null && list.size() > 0) {
-
-	        	List<DIDResult> didResultList  = new ArrayList<DIDResult>();
-
-	        	boolean flagRaw  = false;
-	        	boolean flagHash = false;
-	        	
-	        	for ( Object obj : list ) {
-	        		
-	        		// This does not currently allow for a mixing of types, meaning
-	        		// there cannot be a raw DIDResult and a Hashtable value in the
-	        		// same same list. It will not be considered valid currently.
-	        		if (obj instanceof DIDResult) {
-	        			if (flagHash) {
-	        				return null;
-	        			}
-
-	        			flagRaw = true;
-
-	        		} else if (obj instanceof Hashtable) {
-	        			if (flagRaw) {
-	        				return null;
-	        			}
-
-	        			flagHash = true;
-	        			didResultList.add(new DIDResult((Hashtable<String, Object>) obj));
-
-	        		} else {
-	        			return null;
-	        		}
-
-	        	}
-
-	        	if (flagRaw) {
-	        		return (List<DIDResult>) list;
-	        	} else if (flagHash) {
-	        		return didResultList;
-	        	}
+	            Object obj = list.get(0);
+	            if (obj instanceof DIDResult) {
+	                return (List<DIDResult>) list;
+	            } else if (obj instanceof Hashtable) {
+	            	List<DIDResult> newList = new ArrayList<DIDResult>();
+	                for (Object hashObj : list) {
+	                    newList.add(new DIDResult((Hashtable<String, Object>)hashObj));
+	                }
+	                return newList;
+	            }
 	        }
         }
         return null;
