@@ -247,13 +247,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	}
 	
 	/**
-	 * We need to define this for local copy of the Sdl Bluetooth Service class.
-	 * It will be the main point of connection for Sdl Connected apps
+	 * We need to define this for local copy of the Sdl Router Service class.
+	 * It will be the main point of connection for Sdl enabled apps
 	 * @return Return the local copy of SdlRouterService.class
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("rawtypes")
-	public abstract Class defineLocalSdlRouterClass();
+	public abstract Class<SdlRouterService> defineLocalSdlRouterClass();
 
 	
 	
