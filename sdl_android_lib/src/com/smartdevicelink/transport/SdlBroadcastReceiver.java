@@ -252,7 +252,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return Return the local copy of SdlRouterService.class
 	 * {@inheritDoc}
 	 */
-	public abstract Class<SdlRouterService> defineLocalSdlRouterClass();
+	public abstract Class<? extends SdlRouterService> defineLocalSdlRouterClass();
 
 	
 	
