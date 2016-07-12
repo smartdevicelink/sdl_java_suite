@@ -21,7 +21,6 @@ public class MainActivity extends Activity {
 		SdlReceiver.isTransportConnected(getBaseContext(),new SdlRouterStatusProvider.ConnectedStatusCallback(){
 			@Override
 			public void onConnectionStatusUpdate(boolean connected,Context context) {
-				Log.d("JOEY", "Received connection status back: " + connected);
 				if(connected){
 					Intent startIntent = new Intent(getBaseContext(), SdlService.class);
 					startService(startIntent);
