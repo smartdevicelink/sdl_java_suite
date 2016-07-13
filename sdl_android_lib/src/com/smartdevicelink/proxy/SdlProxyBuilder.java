@@ -10,7 +10,10 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+
 import android.app.Service;
+import android.content.Context;
 
 public class SdlProxyBuilder
 {
@@ -42,6 +45,7 @@ public class SdlProxyBuilder
 	    private String appId;
 	    private String appName;
 	    private Boolean isMediaApp;
+	    private Context context;
 
 	    // Optional parameters - initialized to default values
 	    private Service service = null;
@@ -57,16 +61,32 @@ public class SdlProxyBuilder
 	    private boolean callbackToUIThread = false;
 	    private boolean preRegister = false;
 	    private String sAppResumeHash = null;
-	    private BaseTransportConfig mTransport = new BTTransportConfig();
+	    private BaseTransportConfig mTransport; //Initialized in constructor
 
+	    
+	    /**
+	     * @deprecated Use Builder(IProxyListenerALM, String, String, Boolean, Context) instead
+	     */
+	    @Deprecated
 	    public Builder(IProxyListenerALM listener, String appId, String appName, Boolean isMediaApp)
 	    {
 	    	this.listener 		= listener;
 	        this.appId    		= appId;
 	        this.appName		= appName;
 	        this.isMediaApp		= isMediaApp;
+	        this.mTransport 	= new BTTransportConfig();
 	    }
-
+	    
+	    public Builder(IProxyListenerALM listener, String appId, String appName, Boolean isMediaApp, Context context)
+	    {
+	    	this.listener 		= listener;
+	        this.appId    		= appId;
+	        this.appName		= appName;
+	        this.isMediaApp		= isMediaApp;
+	        this.context 		= context;
+	        this.mTransport 	= new MultiplexTransportConfig(context, appId);
+	    }
+	    
 	    public Builder setService(Service val)
 	    	{ service = val; return this; }
 	    public Builder setSdlProxyConfigurationResources(SdlProxyConfigurationResources val)
