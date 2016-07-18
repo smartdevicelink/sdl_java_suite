@@ -275,7 +275,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
-				cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				if(SdlConnection.isLegacyModeEnabled()){
+					cycleProxy(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
+
+				}else{
+					cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
+				}
 			} else {
 				notifyProxyClosed(info, e, SdlDisconnectedReason.TRANSPORT_ERROR);
 			}
@@ -294,7 +299,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, boolean isEncrypted) {
+				byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 			
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
@@ -330,6 +335,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				NavServiceStarted();
 			} else if (sessionType.eq(SessionType.PCM)) {
 				AudioServiceStarted();
+			} else if (sessionType.eq(SessionType.RPC)){
+				cycleProxy(SdlDisconnectedReason.RPC_SESSION_ENDED);
+			}
+			else if (_wiproVersion > 1) {
+				//If version is 2 or above then don't need to specify a Session Type
+				startRPCProtocolSession(sessionID, correlationID);
+			}  else {
+				// Handle other protocol session types here
 			}
 		}
 
@@ -901,17 +914,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			String sBodyString = msg.getBody();			
 			
 			JSONObject jsonObjectToSendToServer;
-			String valid_json;
-			
+			String valid_json = "";
+			int length;
 			if (sBodyString == null)
-			{				
-				List<String> legacyData = msg.getLegacyData();
-				JSONArray jsonArrayOfSdlPPackets = new JSONArray(legacyData);
-				jsonObjectToSendToServer = new JSONObject();
-				jsonObjectToSendToServer.put("data", jsonArrayOfSdlPPackets);
-				bLegacy = true;
-				updateBroadcastIntent(sendIntent, "COMMENT6", "\r\nLegacy SystemRequest: true");
-				valid_json = jsonObjectToSendToServer.toString().replace("\\", "");
+			{		
+				if(RequestType.HTTP.equals(msg.getRequestType())){
+					length = msg.getBulkData().length;
+					Intent sendIntent3 = createBroadcastIntent();
+					updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
+					updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + length);				
+					sendBroadcastIntent(sendIntent3);
+					
+				}else{
+					List<String> legacyData = msg.getLegacyData();
+					JSONArray jsonArrayOfSdlPPackets = new JSONArray(legacyData);
+					jsonObjectToSendToServer = new JSONObject();
+					jsonObjectToSendToServer.put("data", jsonArrayOfSdlPPackets);
+					bLegacy = true;
+					updateBroadcastIntent(sendIntent, "COMMENT6", "\r\nLegacy SystemRequest: true");
+					valid_json = jsonObjectToSendToServer.toString().replace("\\", "");
+					length = valid_json.getBytes("UTF-8").length;
+				}
 			}
  			else
  			{		
@@ -919,10 +942,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
 				updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + sBodyString.getBytes("UTF-8").length);				
 				sendBroadcastIntent(sendIntent3);
- 				valid_json = sBodyString.replace("\\", "");
+				valid_json = sBodyString.replace("\\", "");
+				length = valid_json.getBytes("UTF-8").length;
  			}
 			
-			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, valid_json.getBytes("UTF-8").length);
+			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 			
 			if (urlConnection == null)
 			{
@@ -932,7 +956,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 			DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-			wr.writeBytes(valid_json);
+			if(RequestType.HTTP.equals(msg.getRequestType())){
+				wr.write(msg.getBulkData());
+			}else{
+				wr.writeBytes(valid_json);
+			}
+			
 			wr.flush();
 			wr.close();
 			
@@ -958,68 +987,89 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			InputStream is = urlConnection.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 		    String line;
-		    StringBuffer response = new StringBuffer(); 
+		    StringBuilder response = new StringBuilder(); 
 		    while((line = rd.readLine()) != null) 
 		    {
 		        response.append(line);
 		        response.append('\r');
 			}
 		    rd.close();
+		    //We've read the body
+		    if(RequestType.HTTP.equals(msg.getRequestType())){
+		    	// Create the SystemRequest RPC to send to module.
+		    	PutFile putFile = new PutFile();
+		    	putFile.setFileType(FileType.JSON);
+		    	putFile.setCorrelationID(POLICIES_CORRELATION_ID);
+		    	putFile.setSdlFileName("response_data");
+		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
+		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
+		    	
+		    	sendRPCRequestPrivate(putFile);
+		    	Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
 
-			Vector<String> cloudDataReceived = new Vector<String>();			
-				
-			// Convert the response to JSON
-			JSONObject jsonResponse = new JSONObject(response.toString());				
-			if (jsonResponse.get("data") instanceof JSONArray) 
-			{
-				JSONArray jsonArray = jsonResponse.getJSONArray("data");
-				for (int i=0; i<jsonArray.length(); i++) 
-				{
-					if (jsonArray.get(i) instanceof String) 
-					{
-						cloudDataReceived.add(jsonArray.getString(i));
-						//Log.i("sendOnSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
-					}
-				}
-			} 
-			else if (jsonResponse.get("data") instanceof String) 
-			{
-				cloudDataReceived.add(jsonResponse.getString("data"));
-				//Log.i("sendOnSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
-			} 
-			else 
-			{
-				DebugTool.logError("sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-				//Log.i("sendOnSystemRequestToUrl", "sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-				return;
-			}
-				
-			String sResponse = cloudDataReceived.toString();
-				
-			if (sResponse.length() > 512)
-			{
-				sResponse = sResponse.substring(0, 511);
-			}
-								
-			updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + sResponse);
-				
-			// Send new SystemRequest to SDL
-			SystemRequest mySystemRequest;
-			
-			if (bLegacy)
-				mySystemRequest = RPCRequestFactory.buildSystemRequestLegacy(cloudDataReceived, getPoliciesReservedCorrelationID());
-			else
-				mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
-			   
-			if (getIsConnected()) 
-			{			    	
-				sendRPCRequestPrivate(mySystemRequest);
-				Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
-										
-				updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
-				updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
-				updateBroadcastIntent(sendIntent2, "CORRID", mySystemRequest.getCorrelationID());
-			}
+	    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.PUT_FILE.toString());
+	    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
+	    		updateBroadcastIntent(sendIntent2, "CORRID", putFile.getCorrelationID());
+		    	
+		    }else{
+		    	Vector<String> cloudDataReceived = new Vector<String>();			
+		    	final String dataKey = "data";
+		    	// Convert the response to JSON
+		    	JSONObject jsonResponse = new JSONObject(response.toString());				
+		    	if(jsonResponse.has(dataKey)){
+		    		if (jsonResponse.get(dataKey) instanceof JSONArray) 
+		    		{
+		    			JSONArray jsonArray = jsonResponse.getJSONArray(dataKey);
+		    			for (int i=0; i<jsonArray.length(); i++) 
+		    			{
+		    				if (jsonArray.get(i) instanceof String) 
+		    				{
+		    					cloudDataReceived.add(jsonArray.getString(i));
+		    					//Log.i("sendOnSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+		    				}
+		    			}
+		    		} 
+		    		else if (jsonResponse.get(dataKey) instanceof String) 
+		    		{
+		    			cloudDataReceived.add(jsonResponse.getString(dataKey));
+		    			//Log.i("sendOnSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+		    		} 
+		    	}
+		    	else 
+		    	{
+		    		DebugTool.logError("sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+		    		//Log.i("sendOnSystemRequestToUrl", "sendOnSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+		    		return;
+		    	}
+
+		    	String sResponse = cloudDataReceived.toString();
+
+		    	if (sResponse.length() > 512)
+		    	{
+		    		sResponse = sResponse.substring(0, 511);
+		    	}
+
+		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + sResponse);
+
+		    	// Send new SystemRequest to SDL
+		    	SystemRequest mySystemRequest;
+
+		    	if (bLegacy){
+		    		mySystemRequest = RPCRequestFactory.buildSystemRequestLegacy(cloudDataReceived, getPoliciesReservedCorrelationID());
+		    	}else{
+		    		mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
+		    	}
+
+		    	if (getIsConnected()) 
+		    	{			    	
+		    		sendRPCRequestPrivate(mySystemRequest);
+		    		Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
+
+		    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
+		    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
+		    		updateBroadcastIntent(sendIntent2, "CORRID", mySystemRequest.getCorrelationID());
+		    	}
+		    }
 		}
 		catch (SdlException e) 
 		{
@@ -1139,6 +1189,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			this.sdlSession.startSession();
 				sendTransportBroadcast();
 			}
+	}
+	/**
+	 * This method will fake the multiplex connection event
+	 * @param action
+	 */
+	public void forceOnConnected(){
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (sdlSession != null) {
+				if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
+					try {
+						sdlSession.startSession();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+				}
+				sdlSession.getSdlConnection().forceHardwareConnectEvent(TransportType.BLUETOOTH);
+				
+			}
+		}
 	}
 	
 	public void sendTransportBroadcast()
@@ -1327,7 +1396,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_cycling = true;
 				cleanProxy(disconnectedReason);
 				initializeProxy();
-				notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);							
+				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
+					notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);							
+				}
 			}
 		 catch (SdlException e) {
 			Intent sendIntent = createBroadcastIntent();
@@ -1361,7 +1432,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void dispatchIncomingMessage(ProtocolMessage message) {
 		try{
 			// Dispatching logic
-			if (message.getSessionType().equals(SessionType.RPC)) {
+			if (message.getSessionType().equals(SessionType.RPC)
+					||message.getSessionType().equals(SessionType.BULK_DATA) ) {
 				try {
 					if (_wiproVersion == 1) {
 						if (message.getVersion() > 1) setWiProVersion(message.getVersion());
@@ -1583,8 +1655,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
 			}
 			pm.setCorrID(request.getCorrelationID());
-			if (request.getBulkData() != null) 
+			if (request.getBulkData() != null){
 				pm.setBulkData(request.getBulkData());
+			}
+			if(request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
+				pm.setPriorityCoefficient(1);
+			}
 			
 			// Queue this outgoing message
 			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
@@ -1795,13 +1871,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 					if (_bAppResumeEnabled)
 					{
-						if ( (msg.getResultCode() == Result.RESUME_FAILED) || (msg.getResultCode() != Result.SUCCESS) )
+						if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getSuccess()) && (msg.getResultCode() != Result.RESUME_FAILED) )
+							_bResumeSuccess = true;
+						else
 						{
 							_bResumeSuccess = false;
 							_lastHashID = null;
 						}
-						else if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getResultCode() == Result.SUCCESS) )
-							_bResumeSuccess = true;				
 					}
 					_diagModes = msg.getSupportedDiagModes();
 					
@@ -1949,15 +2025,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				if (_bAppResumeEnabled)
 				{
-					if ( (msg.getResultCode() == Result.RESUME_FAILED) || (msg.getResultCode() != Result.SUCCESS) )
+					if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getSuccess()) && (msg.getResultCode() != Result.RESUME_FAILED) )
+						_bResumeSuccess = true;
+					else
 					{
 						_bResumeSuccess = false;
 						_lastHashID = null;
 					}
-					else if ( (_sdlMsgVersion.getMajorVersion() > 2) && (_lastHashID != null) && (msg.getResultCode() == Result.SUCCESS) )
-						_bResumeSuccess = true;				
-				}						
-				
+				}
+
 				_diagModes = msg.getSupportedDiagModes();				
 				
 				if (!isDebugEnabled()) 
@@ -2952,10 +3028,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					
-					if ( (msg.getUrl() != null) &&
-						 (msg.getRequestType() == RequestType.PROPRIETARY) &&
-						 (msg.getFileType() == FileType.JSON) )
-					{
+					if ((msg.getUrl() != null) &&
+							(((msg.getRequestType() == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON)) 
+									|| ((msg.getRequestType() == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY)))){
 						Thread handleOffboardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
@@ -3578,49 +3653,75 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
     
-	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
-	            int height, int bitrate, boolean isEncrypted) {
-	
-		if (sdlSession == null) return null;
-		
-		navServiceStartResponseReceived = false;
-		navServiceStartResponse = false;
-		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-		
-        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(10000));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
-		
-		while (!navServiceStartResponseReceived  && !fTask.isDone());
-		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
-		
-		if (navServiceStartResponse) {
-			return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
-		                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
-		} else {
-			return null;
-		}
-	}
-	
-	public void startEncoder () {
-		if (sdlSession == null) return;
-		
-		sdlSession.startEncoder();
-	}
-	
-	public void releaseEncoder() {
-		if (sdlSession == null) return;
-		
-		sdlSession.releaseEncoder();
-	}
-	
-	public void drainEncoder(boolean endOfStream) {
-		if (sdlSession == null) return;		
-		
-		sdlSession.drainEncoder(endOfStream);
-	}
+	/**
+	 * Opens the video service (serviceType 11) and creates a Surface (used for streaming video) with input parameters provided by the app
+	 * @param frameRate - specified rate of frames to utilize for creation of Surface 
+	 * @param iFrameInterval - specified interval to utilize for creation of Surface
+	 * @param width - specified width to utilize for creation of Surface
+	 * @param height - specified height to utilize for creation of Surface
+	 * @param bitrate - specified bitrate to utilize for creation of Surface
+	 *@return Surface if service is opened successfully and stream is started, return null otherwise
+	 */
+    public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+                                            int height, int bitrate, boolean isEncrypted) {
+        
+        if (sdlSession == null) return null;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return null;
+        
+        navServiceStartResponseReceived = false;
+        navServiceStartResponse = false;
+        sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
+        
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(2000));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+        
+        while (!navServiceStartResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+        scheduler = null;
+        fTask = null;
+        
+        if (navServiceStartResponse) {
+            return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+                                                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+        } else {
+            return null;
+        }
+    }
+    
+	/**
+	 *Starts the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 */
+    public void startEncoder () {
+        if (sdlSession == null) return;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return;
+        
+        sdlSession.startEncoder();
+    }
+    
+	/**
+	 *Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 */
+    public void releaseEncoder() {
+        if (sdlSession == null) return;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return;
+        
+        sdlSession.releaseEncoder();
+    }
+    
+	/**
+	 *Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 */
+    public void drainEncoder(boolean endOfStream) {
+        if (sdlSession == null) return;		
+        SdlConnection sdlConn = sdlSession.getSdlConnection();		
+        if (sdlConn == null) return;
+        
+        sdlSession.drainEncoder(endOfStream);
+    }
 	
 	private void NavServiceStarted() {
 		navServiceStartResponseReceived = true;

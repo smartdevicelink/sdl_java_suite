@@ -28,6 +28,7 @@ import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener, ISecurityInitializedListener {
@@ -49,7 +50,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
-	
+    private int sessionHashId = 0;
+
+    
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
 		SdlSession session =  new SdlSession();
@@ -90,7 +93,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         _incomingHeartbeatMonitor.setListener(this);
     }	
 	
-	
+    public int getSessionHashId() {
+    	return this.sessionHashId;
+    }
+    
 	public byte getSessionId() {
 		return this.sessionId;
 	}
@@ -462,14 +468,17 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID, boolean isEncrypted) {
+			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
 		if (isEncrypted)
 			encryptedServices.addIfAbsent(sessionType);
-		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, isEncrypted);
-		
-		initialiseSession();
+		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
+		//if (version == 3)
+			initialiseSession();
+		if (sessionType.eq(SessionType.RPC)){
+			sessionHashId = hashID;
+		}
 	}
 
 	@Override
@@ -551,5 +560,32 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 				iter.remove();				
 			}
 		}					
+	}
+	
+	public void clearConnection(){
+		_sdlConnection = null;
+	}
+	
+	public void checkForOpenMultiplexConnection(SdlConnection connection){
+		removeConnection(connection);
+		connection.unregisterSession(this);
+		_sdlConnection = null;
+		for (SdlConnection c : shareConnections) {
+			if (c.getCurrentTransportType() == TransportType.MULTIPLEX) {
+				if(c.getIsConnected() || ((MultiplexTransport)c._transport).isPendingConnected()){
+					_sdlConnection = c;
+					try {
+						_sdlConnection.registerSession(this);//Handshake will start when register.
+					} catch (SdlException e) {
+						e.printStackTrace();
+					} 
+					return;
+				}
+				
+			}
+		}
+	}
+	public static boolean removeConnection(SdlConnection connection){
+		return shareConnections.remove(connection);
 	}
 }

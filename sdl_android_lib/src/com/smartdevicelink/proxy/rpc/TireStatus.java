@@ -5,6 +5,67 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.util.DebugTool;
+/** <p>The status and pressure of the tires.</p>
+ *   <p><b> Parameter List:</b></p>
+ *   
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *          <th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>PressureTellTale</td>
+ * 			<td>WarningLightStatus</td>
+ * 			<td>Status of the Tire Pressure TellTale</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * <tr>
+ * 			<td>LeftFront</td>
+ * 			<td>SingleTireStatus</td>
+ * 			<td>The status of the left front tire.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * <tr>
+ * 			<td>RightFront</td>
+ * 			<td>SingleTireStatus</td>
+ * 			<td>The status of the right front tire.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * <tr>
+ * 			<td>LeftRear</td>
+ * 			<td>SingleTireStatus</td>
+ * 			<td>The status of the left rear tire.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>RightRear</td>
+ * 			<td>SingleTireStatus</td>
+ * 			<td>The status of the right rear tire</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>InnerLeftRear</td>
+ * 			<td>SingleTireStatus</td>
+ * 			<td>The status of the inner left rear tire.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>InnerRightRear</td>
+ * 			<td>SingleTireStatus</td>
+ * 			<td>The status of the inner right rear tire.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
+ *  
+ *  @since SmartDeviceLink 2.0
+ *  
+ * @see WarningLightStatus
+ * @see SingleTireStatus
+ * @see GetVehicleData 
+ * @see OnVehicleData
+ */
 
 public class TireStatus extends RPCStruct {
 	public static final String KEY_PRESSURE_TELL_TALE = "pressureTellTale";
@@ -14,6 +75,14 @@ public class TireStatus extends RPCStruct {
 	public static final String KEY_INNER_LEFT_REAR = "innerLeftRear";
 	public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
 	public static final String KEY_RIGHT_REAR = "rightRear";
+	 /**
+		 * <p>Constructs a new TireStatus object indicated by the Hashtable parameter</p>
+		 * 
+		 * 
+		 * @param hash
+		 * <p>
+		 *            The Hashtable to use</p>
+		 */
 
     public TireStatus() { }
     public TireStatus(Hashtable<String, Object> hash) {

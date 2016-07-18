@@ -11,7 +11,9 @@ import com.smartdevicelink.proxy.RPCResponse;
  * @since SmartDeviceLink 1.0
  */
 public class AddCommandResponse extends RPCResponse {
-
+	/**
+	 * Constructs a new AddCommandResponse object
+	 */
     public AddCommandResponse() {
         super(FunctionID.ADD_COMMAND.toString());
     }

@@ -20,7 +20,14 @@ public enum SdlDisconnectedReason {
     BLUETOOTH_ADAPTER_ERROR,
     SDL_REGISTRATION_ERROR,
     APP_INTERFACE_UNREG,
-    GENERIC_ERROR;
+    GENERIC_ERROR,
+    /**
+     * This only occurs when multiplexing is running and it is found to be on an old gen 1 system.
+     */
+    LEGACY_BLUETOOTH_MODE_ENABLED,
+    RPC_SESSION_ENDED
+    ;
+
 	
 	public static SdlDisconnectedReason valueForString(String value) {
         try{

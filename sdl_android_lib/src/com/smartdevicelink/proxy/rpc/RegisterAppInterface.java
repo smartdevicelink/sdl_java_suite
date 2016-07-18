@@ -18,14 +18,14 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * sending an <i> {@linkplain OnAppInterfaceUnregistered}</i> notification, or
  * by loss of the underlying transport connection, or closing of the underlying
  * message transmission protocol RPC session
- * <p>
+ * <p></p>
  * Until the application receives its first <i>{@linkplain OnHMIStatus}</i>
  * Notification, its HMI Status is assumed to be: <i>
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.HMILevel}</i>=NONE, <i>
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.AudioStreamingState}
  * </i>=NOT_AUDIBLE, <i>
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.SystemContext}</i>=MAIN
- * <p>
+ * <p></p>
  * All SDL&reg; resources which the application creates or uses (e.g. Choice
  * Sets, Command Menu, etc.) are associated with the application's interface
  * registration. Therefore, when the interface registration ends, the SDL&reg;
@@ -36,9 +36,9 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * interface registration and re-creating its required SDL&reg; resources. That
  * is, SDL&reg; resources created by (or on behalf of) an application do not
  * persist beyond the life-span of the interface registration
- * <p>
+ * <p></p>
  * Resources and settings whose lifespan is tied to the duration of an
- * application's interface registration:<br/>
+ * application's interface registration:
  * <ul>
  * <li>Choice Sets</li>
  * <li>Command Menus (built by successive calls to <i>{@linkplain AddCommand}
@@ -47,13 +47,13 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * <li>Media clock timer display value</li>
  * <li>Media clock timer display value</li>
  * </ul>
- * <p>
+ * <p></p>
  * The autoActivateID is used to grant an application the HMILevel and
  * AudioStreamingState it had when it last disconnected
- * <p>
+ * <p></p>
  * <b>Notes: </b>The autoActivateID parameter, and associated behavior, is
  * currently ignored by SDL&reg;
- * <p>
+ * <p></p>
  * When first calling this method (i.e. first time within life cycle of mobile
  * app), an autoActivateID should not be included. After successfully
  * registering an interface, an autoActivateID is returned to the mobile
@@ -62,19 +62,154 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
  * turned off while the application is running, the autoActivateID can then be
  * passed in another call to RegisterAppInterface to re-acquire <i>
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.HMILevel}</i>=FULL
- * <p>
+ * <p></p>
  * If the application intends to stream audio it is important to indicate so via
  * the isMediaApp parameter. When set to true, audio will reliably stream
  * without any configuration required by the user. When not set, audio may
  * stream, depending on what the user might have manually configured as a media
  * source on SDL&reg;
- * <p>
+ * <p></p>
  * There is no time limit for how long the autoActivateID is "valid" (i.e. would
  * confer focus and opt-in)
- * <p>
- * <b>HMILevel is not defined before registering</b><br/>
- * </p>
  * 
+ *<p> <b>HMILevel is not defined before registering</b></p>
+ * 
+ * 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th>Reg.</th>
+ *               <th>Notes</th>
+ * 			<th>Version</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>MsgVersion</td>
+ * 			<td>MsgVersion</td>
+ * 			<td>Declares what version of the SDL interface the application expects to use with SDL</td>
+ *                 <td>Y</td>
+ *                 <td>To be compatible, app msg major version number must be less than or equal to SDL major version number. <p>If msg versions are incompatible, app has 20 seconds to attempt successful RegisterAppInterface (w.r.t. msg version) on underlying protocol session, else will be terminated. Major version number is a compatibility declaration. Minor version number indicates minor functional variations (e.g. features, capabilities, bug fixes) when sent from SDL to app (in RegisterAppInterface response).</p>However, the minor version number sent from the app to SDL (in RegisterAppInterface request) is ignored by SDL.</td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>appName</td>
+ * 			<td>String</td>
+ * 			<td>The mobile application's name. This name is displayed in the SDL Mobile Applications menu. It also serves as the unique identifier of the application for SDL .</td>
+ *                 <td>Y</td>
+ *                 <td><p> Must be 1-100 characters in length. Must consist of following characters: </p><p>May not be the same (by case insensitive comparison) as the name or any synonym of any currently registered application.</p> </td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ttsName</td>
+ * 			<td>TTSChunk</td>
+ * 			<td>TTS string for VR recognition of the mobile application name. Meant to overcome any failing on speech engine in properly pronouncing / understanding app name.</td>
+ *                 <td>N</td>
+ *                 <td><p>Size must be 1-100 Needs to be unique over all applications. May not be empty.<p>May not start with a new line character.</p></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ngnMediaScreenAppName</td>
+ * 			<td>String</td>
+ * 			<td>Provides an abbreviated version of the app name (if necessary) that will be displayed on the NGN media screen.</td>
+ *                 <td>N</td>
+ *                 <td>- Must be 1-5 characters. If not provided, value will be derived from appName truncated to 5 characters.</td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vrSynonyms</td>
+ * 			<td>String</td>
+ * 			<td>An array of 1-100 elements, each element containing a voice-recognition synonym by which this app can be called when being addressed in the mobile applications menu.</td>
+ *                 <td>N</td>
+ *                 <td>Each vr synonym is limited to 40 characters, and there can be 1-100 synonyms in array. May not be the same (by case insensitive comparison) as the name or any synonym of any currently-registered application.</td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>isMediaApplication</td>
+ * 			<td>Boolean</td>
+ * 			<td>Indicates that the application will be streaming audio to SDL (via A2DP) that is audible outside of the BT media source.</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 1.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>languageDesired</td>
+ * 			<td>Language</td>
+ * 			<td>An enumeration indicating what language the application intends to use for user interaction (Display, TTS and VR).</td>
+ *                 <td>Y</td>
+ *                 <td>If the language indicated does not match the active language on SDL, the interface registration will be rejected.If the user changes the SDL language while this interface registration is active, the interface registration will be terminated. </td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>hmiDisplayLanguageDesired</td>
+ * 			<td>Language</td>
+ * 			<td>An enumeration indicating what language the application intends to use for user interaction ( Display).</td>
+ *                 <td>Y</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>appHMIType</td>
+ * 			<td>AppHMIType</td>
+ * 			<td>List of all applicable app types stating which classifications to be given to the app.e.g. for platforms , like GEN2, this will determine which "corner(s)" the app can populate</td>
+ *                 <td>N</td>
+ *                 <td>Array Minsize: 1; Array Maxsize: 100</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>hashID</td>
+ * 			<td>String</td>
+ * 			<td>ID used to uniquely identify current state of all app data that can persist through connection cycles (e.g. ignition cycles).This registered data (commands, submenus, choice sets, etc.) can be reestablished without needing to explicitly reregister each piece. If omitted, then the previous state of an app's commands, etc. will not be restored.When sending hashID, all RegisterAppInterface parameters should still be provided (e.g. ttsName, etc.). </td>
+ *                 <td>N</td>
+ *                 <td>maxlength:100</td>
+ * 			<td>SmartDeviceLink 2.3.1 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>deviceInfo</td>
+ * 			<td>DeviceInfo</td>
+ * 			<td>Various information abount connecting device.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.1 </td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>appID</td>
+ * 			<td>String</td>
+ * 			<td>ID used to validate app with policy table entries</td>
+ *                 <td>Y</td>
+ *                 <td>Maxlength: 100</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
+ * 
+ * 		<tr>
+ * 			<td>hmiCapabilities</td>
+ * 			<td>HMICapabilities</td>
+ * 			<td>Specifies the HMI capabilities.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 2.3.2.2 </td>
+ * 		</tr>
+ * 
+ * 		<tr>
+ * 			<td>sdlVersion</td>
+ * 			<td>String</td>
+ * 			<td>The SmartDeviceLink version.</td>
+ *                 <td>N</td>
+ *                 <td>Maxlength: 100</td>
+ * 			<td>SmartDeviceLink 2.3.2.2</td>
+ * 		</tr>
+ * 
+ * 		<tr>
+ * 			<td>systemSoftwareVersion</td>
+ * 			<td>String</td>
+ * 			<td>The software version of the system that implements the SmartDeviceLink core.</td>
+ *                 <td>N</td>
+ *                 <td>Maxlength: 100</td>
+ * 			<td>SmartDeviceLink 2.3.2.2</td>
+ * 		</tr>
+ *  </table>
+ *  <p></p>
  * @since SmartDeviceLink 1.0
  * @see UnregisterAppInterface
  * @see OnAppInterfaceUnregistered
@@ -101,7 +236,7 @@ public class RegisterAppInterface extends RPCRequest {
 	/**
 	 * Constructs a new RegisterAppInterface object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -131,7 +266,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param sdlMsgVersion
 	 *            a SdlMsgVersion object representing version of the SDL&reg;
 	 *            SmartDeviceLink interface
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>To be compatible, app msg major version number
 	 *            must be less than or equal to SDL&reg; major version number.
 	 *            If msg versions are incompatible, app has 20 seconds to
@@ -185,7 +320,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 * @param appName
 	 *            a String value representing the Mobile Application's Name
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Must be 1-100 characters in length</li>
@@ -232,8 +367,8 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 * @param ttsName
 	 *            a List<TTSChunk> value represeting the TTS Name
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <p></p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Size must be 1-100</li>
 	 *            <li>Needs to be unique over all applications</li>
@@ -272,7 +407,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param ngnMediaScreenAppName
 	 *            a String value representing an abbreviated version of the
 	 *            mobile applincation's name
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Must be 1-5 characters</li>
@@ -315,7 +450,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param vrSynonyms
 	 *            a List<String> value representing the an array of 1-100
 	 *            elements
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Each vr synonym is limited to 40 characters, and there can
@@ -376,7 +511,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 * @param languageDesired
 	 *            a Language Enumeration
-	 *            <p>
+	 *            
 	 * 
 	 */    
     public void setLanguageDesired(Language languageDesired) {
@@ -462,7 +597,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 * @param appHMIType
 	 *            a List<AppHMIType>
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Array Minsize: = 1</li>
@@ -507,7 +642,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param appID
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength = 100
 	 * @since SmartDeviceLink 2.0
 	 */

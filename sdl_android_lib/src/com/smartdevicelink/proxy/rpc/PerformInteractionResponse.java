@@ -26,7 +26,7 @@ public class PerformInteractionResponse extends RPCResponse {
 	/**
 	 * Constructs a new PerformInteractionResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -66,7 +66,7 @@ public class PerformInteractionResponse extends RPCResponse {
         return null;
     }
     /**
-     * <p>Sets TriggerSource<br/>
+     * <p>Sets TriggerSource
      * Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
      * @param triggerSource a TriggerSource object
      */    

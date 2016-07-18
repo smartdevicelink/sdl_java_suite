@@ -80,7 +80,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @param sdlMsgVersion
 	 *            a SdlMsgVersion object representing version of the SDL&reg;
 	 *            SmartDeviceLink interface
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>To be compatible, app msg major version number
 	 *            must be less than or equal to SDL&reg; major version number.
 	 *            If msg versions are incompatible, app has 20 seconds to
@@ -123,7 +123,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @param language
 	 *            a Language Enumeration
-	 *            <p>
+	 *           
 	 * 
 	 */
     public void setLanguage(Language language) {

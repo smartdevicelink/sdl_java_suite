@@ -1,6 +1,7 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -30,15 +31,15 @@ public abstract class SdlTransport {
     
     // This method is called by the subclass to indicate that data has arrived from
     // the transport.
-    protected void handleReceivedBytes(byte[] receivedBytes, int receivedBytesLength) {
+    protected void handleReceivedPacket(SdlPacket packet) {
 		try {
 			// Trace received data
-			if (receivedBytesLength > 0) {
+			if (packet!=null) {
 				// Send transport data to the siphon server
-				SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
-				SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
+				//FIXME SiphonServer.sendBytesFromSDL(receivedBytes, 0, receivedBytesLength);
+				//SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Receive, receivedBytes, receivedBytesLength, SDL_LIB_TRACE_KEY);
 				
-				_transportListener.onTransportBytesReceived(receivedBytes, receivedBytesLength);
+				_transportListener.onTransportPacketReceived(packet);
 			} // end-if
 		} catch (Exception excp) {
 			DebugTool.logError(FailurePropagating_Msg + "handleBytesFromTransport: " + excp.toString(), excp);
@@ -49,25 +50,25 @@ public abstract class SdlTransport {
     // This method must be implemented by transport subclass, and is called by this
     // base class to actually send an array of bytes out over the transport.  This
     // method is meant to only be callable within the class hierarchy.
-    protected abstract boolean sendBytesOverTransport(byte[] msgBytes, int offset, int length);
+    protected abstract boolean sendBytesOverTransport(SdlPacket packet);
 
     // This method is called by whomever has reference to transport to have bytes
     // sent out over transport.
-    public boolean sendBytes(byte[] message) {
+   /* public boolean sendBytes(byte[] message) {
         return sendBytes(message, 0, message.length);
-    } // end-method
+    }*/ // end-method
     
     // This method is called by whomever has reference to transport to have bytes
     // sent out over transport.
-    public boolean sendBytes(byte[] message, int offset, int length) {
+    public boolean sendBytes(SdlPacket packet) {
         boolean bytesWereSent = false;
         synchronized (_sendLockObj) {
-        	bytesWereSent = sendBytesOverTransport(message, offset, length);
+        	bytesWereSent = sendBytesOverTransport(packet);//message, offset, length);
         } // end-lock
         // Send transport data to the siphon server
-		SiphonServer.sendBytesFromAPP(message, offset, length);
+		//FIXME SiphonServer.sendBytesFromAPP(message, offset, length);
         
-		SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Transmit, message, offset, length, SDL_LIB_TRACE_KEY);
+		//FIXME SdlTrace.logTransportEvent("", null, InterfaceActivityDirection.Transmit, message, offset, length, SDL_LIB_TRACE_KEY);
         return bytesWereSent;
     } // end-method
 

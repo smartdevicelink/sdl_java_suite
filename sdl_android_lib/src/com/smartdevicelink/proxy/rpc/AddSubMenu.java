@@ -6,15 +6,55 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
- * Add a SubMenu to the Command Menu
- * <p>
- * A SubMenu can only be added to the Top Level Menu (i.e.a SunMenu cannot be
- * added to a SubMenu), and may only contain commands as children
- * <p>
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b>
- * </p>
+ * <p>Add a SubMenu to the Command Menu</p>
  * 
+ * <p>A SubMenu can only be added to the Top Level Menu (i.e.a SubMenu cannot be
+ * added to a SubMenu), and may only contain commands as children</p>
+ * 
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUD</b></p>
+ * 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuID</td>
+ * 			<td>Integer</td>
+ * 			<td>Unique ID that identifies this sub menu. This value is used in AddCommand to which SubMenu is the parent of the command being added.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>position</td>
+ * 			<td>Integer</td>
+ * 			<td>Position within the items of the top level Command Menu. 0 will insert at the front, 1 will insert after the first existing element, etc. Position of any submenu will always be located before the return and exit options.</td>
+ *                 <td>N</td>
+ * 			<td>Min Value: 0 <p>Max Value: 1000</p> <p>If position is greater or equal than the number of items on top level, the sub menu will be appended by the end.</p><p>If this parameter is omitted, the entry will be added at the end of the list.</P></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuName</td>
+ * 			<td>String</td>
+ * 			<td>Text which is displayed representing this submenu item</td>
+ *                 <td>Y</td>
+ * 			<td>maxlength:500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ *  </table>
+ *  <b>Response</b>
+ *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
+ *  
+ *  <p><b>Non-default Result Codes:</b></p>
+ *  <p>INVALID_ID</p>
+ *  <p>DUPLICATE NAME</p>
  * @since SmartDeviceLink 1.0
  * @see DeleteSubMenu
  * @see AddCommand
@@ -33,7 +73,7 @@ public class AddSubMenu extends RPCRequest {
     }
 	/**
 	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
-	 * <p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -44,7 +84,7 @@ public class AddSubMenu extends RPCRequest {
 	/**
 	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
 	 * a sub menu
-	 * <p>
+	 * 
 	 * 
 	 * @return Integer -an integer representing the Menu ID that identifies a sub
 	 *         menu
@@ -53,15 +93,15 @@ public class AddSubMenu extends RPCRequest {
         return (Integer) parameters.get( KEY_MENU_ID );
     }
 	/**
-	 * Sets a Menu ID that identifies a sub menu. This value is used in
+	 * <p>Sets a Menu ID that identifies a sub menu.</p><p> This value is used in
 	 * {@linkplain AddCommand} to which SubMenu is the parent of the command
-	 * being added
-	 * <p>
+	 * being added</p>
+	 * 
 	 * 
 	 * @param menuID
 	 *            an integer object representing a Menu ID
-	 *            <p>
-	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000
+	 *            
+	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */    
     public void setMenuID( Integer menuID ) {
         if (menuID != null) {
@@ -71,8 +111,8 @@ public class AddSubMenu extends RPCRequest {
         }
     }
 	/**
-	 * Returns an <i>Integer</i> object representing the position of menu
-	 * <p>
+	 * <p>Returns an <i>Integer</i> object representing the position of menu</p>
+	 * 
 	 * 
 	 * @return Integer -the value representing the relative position of menus
 	 */    
@@ -83,17 +123,17 @@ public class AddSubMenu extends RPCRequest {
 	 * Sets a position of menu
 	 * 
 	 * @param position
-	 *            An Integer object representing the position within the items
+	 *            <p>An Integer object representing the position within the items
 	 *            of the top level Command Menu. 0 will insert at the front, 1
 	 *            will insert after the first existing element, etc. Position of
 	 *            any submenu will always be located before the return and exit
 	 *            options
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            </p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>
 	 *            Min Value: 0; Max Value: 1000</li>
-	 *            <li>If position is greater or equal than the number of items
+	 *            <li>If position is greater than or equal to the number of items
 	 *            on top level, the sub menu will be appended by the end</li>
 	 *            <li>If this parameter is omitted, the entry will be added at
 	 *            the end of the list</li>

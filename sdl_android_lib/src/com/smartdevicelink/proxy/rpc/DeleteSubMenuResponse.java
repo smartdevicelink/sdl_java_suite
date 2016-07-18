@@ -11,6 +11,9 @@ import com.smartdevicelink.proxy.RPCResponse;
  * @since SmartDeviceLink 1.0
  */
 public class DeleteSubMenuResponse extends RPCResponse {
+	/**
+	 * Constructs a new DeleteSubMenuResponse object
+	 */
 
     public DeleteSubMenuResponse() {
         super(FunctionID.DELETE_SUB_MENU.toString());

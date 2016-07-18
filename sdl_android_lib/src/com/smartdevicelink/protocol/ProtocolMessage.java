@@ -14,6 +14,8 @@ public class ProtocolMessage {
 	private int _jsonSize;
 	private boolean payloadProtected = false;
 	
+	int priorityCoefficient = 0;
+
 	private byte[] _data = null;
 	private byte[] _bulkData = null;
 	
@@ -132,4 +134,14 @@ public class ProtocolMessage {
 		return payloadProtected;
 	}	
 	
+	/**
+	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
+	 * @param priority
+	 */
+	public void setPriorityCoefficient(int priority){
+		this.priorityCoefficient = priority;
+	}
+	public int getPrioirtyCoefficient(){
+		return this.priorityCoefficient;
+	}
 } // end-class

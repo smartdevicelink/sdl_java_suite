@@ -10,6 +10,9 @@ import com.smartdevicelink.proxy.RPCResponse;
  * @since SmartDeviceLink 1.0
  */
 public class AddSubMenuResponse extends RPCResponse {
+	/**
+	 * Constructs a new AddSubMenuResponse object
+	 */
 
     public AddSubMenuResponse() {
         super(FunctionID.ADD_SUB_MENU.toString());

@@ -28,7 +28,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
 	/**
 	 * Constructs a new SetDisplayLayoutResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
