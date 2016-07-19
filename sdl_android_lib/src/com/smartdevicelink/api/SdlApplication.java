@@ -10,7 +10,7 @@ import android.util.SparseArray;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.menu.SdlMenu;
-import com.smartdevicelink.api.menu.SdlMenuItem;
+import com.smartdevicelink.api.menu.SdlMenuOption;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -122,7 +122,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     private boolean isFirstHmiNotNoneReceived = false;
 
     private SparseArray<SdlButtonListener> mButtonListenerRegistry = new SparseArray<>();
-    private SparseArray<SdlMenuItem.SelectListener> mMenuListenerRegistry = new SparseArray<>();
+    private SparseArray<SdlMenuOption.SelectListener> mMenuListenerRegistry = new SparseArray<>();
 
     SdlApplication(final SdlConnectionService service,
                    final SdlApplicationConfig config,
@@ -146,13 +146,13 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                     mConnectionStatus = Status.CONNECTING;
                     listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
                 }
-                mTopMenu = new SdlMenu(TOP_MENU_NAME);
+                mTopMenu = new SdlMenu(TOP_MENU_NAME, true);
             }
         });
     }
 
     // Executed on main to set up execution thread
-    void initialize(Context androidContext){
+    final void initialize(Context androidContext){
         if(!isInitialized()) {
             setAndroidContext(androidContext);
             setSdlApplicationContext(this);
@@ -206,9 +206,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             mExecutionThread = null;
         }
     }
-
     @Override
-    public String toString(){
+    public final String toString(){
         return String.format("SdlApplication: %s-%s",
                 mApplicationConfig.getAppName(), mApplicationConfig.getAppId());
     }
@@ -239,17 +238,17 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     }
 
     @Override
-    public void unregisterButtonCallback(int id) {
+    final public void unregisterButtonCallback(int id) {
         mButtonListenerRegistry.remove(id);
     }
 
     @Override
-    public void registerMenuCallback(int id, SdlMenuItem.SelectListener listener) {
+    final public void registerMenuCallback(int id, SdlMenuOption.SelectListener listener) {
         mMenuListenerRegistry.append(id, listener);
     }
 
     @Override
-    public void unregisterMenuCallback(int id) {
+    final public void unregisterMenuCallback(int id) {
         mMenuListenerRegistry.remove(id);
     }
 
@@ -479,13 +478,10 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
             @Override
             public void run() {
                 if(notification != null && notification.getCmdID() != null){
-                    SdlMenuItem.SelectListener listener = mMenuListenerRegistry.get(notification.getCmdID());
+                    SdlMenuOption.SelectListener listener = mMenuListenerRegistry.get(notification.getCmdID());
                     if(listener != null){
-                        if(notification.getTriggerSource() != null && notification.getTriggerSource() == TriggerSource.TS_VR){
-                            listener.onVoiceSelect();
-                        } else {
-                            listener.onTouchSelect();
-                        }
+                        TriggerSource triggerSource = notification.getTriggerSource();
+                        listener.onSelect(triggerSource != null ? triggerSource: TriggerSource.TS_MENU);
                     }
                 }
             }
