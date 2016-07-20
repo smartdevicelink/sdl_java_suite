@@ -7,8 +7,9 @@ import android.util.Log;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
-import com.smartdevicelink.api.menu.SdlMenuItem;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
+import com.smartdevicelink.api.menu.SdlLocalMenuManager;
+import com.smartdevicelink.api.menu.SdlMenuOption;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
@@ -34,9 +35,10 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     private boolean superCalled;
     private boolean isBackHandled;
+    private SdlLocalMenuManager mLocalMenuManager;
 
-    final void initialize(SdlContext sdlContext){
-        if(!isInitialized()) {
+    final void initialize(SdlContext sdlContext) {
+        if (!isInitialized()) {
             setSdlApplicationContext(sdlContext);
             setAndroidContext(sdlContext.getAndroidApplicationContext());
             setInitialized(true);
@@ -131,7 +133,6 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         this.onForeground();
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onForeground(). This should NEVER happen.");
-        getTopMenu().update();
     }
 
     final void performBackground(){
@@ -193,7 +194,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public final void registerMenuCallback(int id, SdlMenuItem.SelectListener listener) {
+    public final void registerMenuCallback(int id, SdlMenuOption.SelectListener listener) {
         getSdlApplicationContext().registerMenuCallback(id, listener);
     }
 
