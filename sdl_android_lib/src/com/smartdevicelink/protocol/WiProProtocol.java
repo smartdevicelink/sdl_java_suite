@@ -314,7 +314,7 @@ public class WiProProtocol extends AbstractProtocol {
 		
 		protected void handleFrame(SdlPacket packet) {
 	
-			if (packet != null && packet.payload.length > 0 && packet.isEncrypted()  )
+			if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted()  )
 			{
 				if (sdlconn != null)
 				{
@@ -389,7 +389,6 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 			} else if (frameInfo == FrameDataControlFrameType.EndSession.getValue()) {
 				if (_version > 1) {
-					if (hashID == packet.getMessageId())
 					handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
 				} else {
 					handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
@@ -399,9 +398,9 @@ public class WiProProtocol extends AbstractProtocol {
 			} else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 				handleProtocolSessionEndedNACK(serviceType, (byte)packet.getSessionId(), "");
 			} else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {
-				if (packet.payload != null && packet.payload.length == 4) //service data ack will be 4 bytes in length
+				if (packet.getPayload() != null && packet.getDataSize() == 4) //service data ack will be 4 bytes in length
 				{
-					int serviceDataAckSize = BitConverter.intFromByteArray(packet.payload, 0);
+					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
 			}
