@@ -20,44 +20,57 @@ public class SdlMenuOption extends SdlMenuItem {
 
     private SdlImage mSdlImage;
     private SelectListener mListener;
+    private boolean isVisible;
+    private boolean isRegistered;
 
     public SdlMenuOption(@NonNull String name, @NonNull SelectListener listener) {
-        this(name, listener, null, -1);
-    }
-
-    public SdlMenuOption(@NonNull String name, @NonNull SelectListener listener, Integer index) {
-        this(name, listener, null, index);
+        this(name, listener, null);
     }
 
     public SdlMenuOption(@NonNull String name, @NonNull SelectListener listener, SdlImage image){
-        this(name, listener, image, -1);
-    }
-
-    public SdlMenuOption(@NonNull String name, @NonNull SelectListener listener, SdlImage image, Integer index){
         super(name);
         mListener = listener;
         mSdlImage = image;
     }
 
     @Override
-    void update(SdlContext sdlContext, int index) {
-
+    void update(SdlContext sdlContext, int subMenuId, int index) {
+        if(isVisible) sendDeleteCommand(sdlContext);
+        sendAddCommand(sdlContext, subMenuId, index);
     }
 
     @Override
     void remove(SdlContext sdlContext) {
+        if(isVisible) sendDeleteCommand(sdlContext);
+    }
 
+    @Override
+    void registerSelectListener(SdlContext sdlContext) {
+        if(!isRegistered) {
+            sdlContext.registerMenuCallback(mId, mListener);
+            isRegistered = true;
+        }
+    }
+
+    @Override
+    void unregisterSelectListener(SdlContext sdlContext) {
+        if(isRegistered) {
+            sdlContext.unregisterMenuCallback(mId);
+            isRegistered = false;
+        }
     }
 
     private void sendDeleteCommand(SdlContext sdlContext) {
         DeleteCommand dc = new DeleteCommand();
         dc.setCmdID(mId);
         sdlContext.sendRpc(dc);
+        isVisible = false;
     }
 
-    private void sendAddCommand(final SdlContext sdlContext, final SdlMenu rootMenu, final int index) {
+    private void sendAddCommand(final SdlContext sdlContext, final int rootMenuId, final int index) {
         AddCommand ac = new AddCommand();
         ac.setCmdID(mId);
+
         if(mSdlImage != null){
             Log.d(TAG, "Image is set for command: " + mName);
             SdlFileManager fileManager = sdlContext.getSdlFileManager();
@@ -70,22 +83,24 @@ public class SdlMenuOption extends SdlMenuItem {
                 fileManager.uploadSdlImage(mSdlImage, new SdlFileManager.FileReadyListener() {
                     @Override
                     public void onFileReady(SdlFile sdlFile) {
-                        update(sdlContext, index);
+                        if(isVisible) update(sdlContext, rootMenuId, index);
                     }
 
                     @Override
                     public void onFileError(SdlFile sdlFile) {
-
                     }
                 });
             }
         }
+
         MenuParams mp = new MenuParams();
         mp.setMenuName(mName);
-        mp.setParentID(rootMenu.getId());
+        mp.setParentID(rootMenuId);
         mp.setPosition(index);
         ac.setMenuParams(mp);
+
         sdlContext.sendRpc(ac);
+        isVisible = true;
     }
 
     public interface SelectListener{
@@ -93,4 +108,5 @@ public class SdlMenuOption extends SdlMenuItem {
         void onSelect(TriggerSource triggerSource);
 
     }
+
 }

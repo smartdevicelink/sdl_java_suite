@@ -26,7 +26,12 @@ public abstract class SdlMenuItem {
         return autoId++;
     }
 
-    abstract void update(SdlContext sdlContext, int index);
+    abstract void update(SdlContext sdlContext, int subMenuId, int index);
 
     abstract void remove(SdlContext sdlContext);
+
+    abstract void registerSelectListener(SdlContext sdlContext);
+
+    abstract void unregisterSelectListener(SdlContext sdlContext);
+
 }

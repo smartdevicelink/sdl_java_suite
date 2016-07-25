@@ -25,7 +25,7 @@ public class SdlMenu extends SdlMenuItem {
     private boolean isDirty = false;
     private int mDirtyIndex = -1;
 
-    public SdlMenu(String name, boolean isRootMenu){
+    SdlMenu(String name, boolean isRootMenu){
         super(name);
         this.isRootMenu = isCreated = isRootMenu;
         mEntryKeyList = new ArrayList<>();
@@ -63,10 +63,7 @@ public class SdlMenu extends SdlMenuItem {
     }
 
     void removeMenuItem(SdlMenuItem menuItem){
-        removeMenuItem(menuItem.getName());
-    }
-
-    void removeMenuItem(String name){
+        String name = menuItem.getName();
         if(mEntryMap.containsKey(name)){
             SdlMenuItem item = mEntryMap.remove(name);
             removeEntryKey(name);
@@ -80,29 +77,41 @@ public class SdlMenu extends SdlMenuItem {
         }
     }
 
+    SdlMenuItem getMenuItemByName(String name){
+        return mEntryMap.get(name);
+    }
+
+    int indexOf(SdlMenuItem item){
+        return mEntryKeyList.indexOf(item.getName());
+    }
+
     @Override
-    void update(SdlContext sdlContext, int index) {
-        if(!isCreated && isRootMenu){
+    void update(SdlContext sdlContext, int subMenuId, int index) {
+        if(!isCreated && !isRootMenu) {
             isCreated = true;
             sendAddSubMenu(sdlContext, index);
         }
-
         sendPendingRemovals(sdlContext);
+        updateDirtyIndexes(sdlContext);
+    }
 
+    private void updateDirtyIndexes(SdlContext sdlContext) {
         if(isDirty){
             for(int i = mDirtyIndex; i < mEntryKeyList.size(); i++){
                 SdlMenuItem item = mEntryMap.get(mEntryKeyList.get(i));
-                item.update(sdlContext, i);
+                int menuId = isRootMenu ? -1: mId;
+                item.update(sdlContext, menuId, i);
             }
+            mPendingAdditions.clear();
             makeClean();
         }
-
     }
 
     private void sendPendingRemovals(SdlContext sdlContext) {
         while(!mPendingRemovals.isEmpty()){
             SdlMenuItem item = mPendingRemovals.removeFirst();
             item.remove(sdlContext);
+            item.unregisterSelectListener(sdlContext);
         }
     }
 
@@ -125,6 +134,22 @@ public class SdlMenu extends SdlMenuItem {
 
         makeClean();
         isCreated = false;
+    }
+
+    @Override
+    void registerSelectListener(SdlContext sdlContext) {
+        for(int i = 0; i < mEntryKeyList.size(); i++){
+            SdlMenuItem item = mEntryMap.get(mEntryKeyList.get(i));
+            item.registerSelectListener(sdlContext);
+        }
+    }
+
+    @Override
+    void unregisterSelectListener(SdlContext sdlContext) {
+        for(int i = 0; i < mEntryKeyList.size(); i++){
+            SdlMenuItem item = mEntryMap.get(mEntryKeyList.get(i));
+            item.unregisterSelectListener(sdlContext);
+        }
     }
 
     private void sendAddSubMenu(SdlContext sdlContext, int index) {

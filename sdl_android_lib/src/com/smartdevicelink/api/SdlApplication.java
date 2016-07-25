@@ -9,8 +9,9 @@ import android.util.SparseArray;
 
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
-import com.smartdevicelink.api.menu.SdlMenu;
+import com.smartdevicelink.api.menu.SdlMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuOption;
+import com.smartdevicelink.api.menu.SdlMenuTransaction;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -89,7 +90,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private static final String TAG = SdlApplication.class.getSimpleName();
 
-    private static final String TOP_MENU_NAME = "Top Menu";
     private static final String THREAD_NAME_BASE = "SDL_THREAD_";
 
     public static final int BACK_BUTTON_ID = 0;
@@ -110,7 +110,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     private SdlActivityManager mSdlActivityManager;
     private SdlFileManager mSdlFileManager;
-    private SdlMenu mTopMenu;
+    private SdlMenuManager mSdlMenuManager;
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
@@ -139,6 +139,8 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                 }
                 mApplicationStatusListener = listener;
                 mSdlActivityManager = new SdlActivityManager();
+                mSdlMenuManager = new SdlMenuManager();
+
                 mLifecycleListeners.add(mSdlActivityManager);
                 mSdlFileManager = new SdlFileManager(SdlApplication.this, mApplicationConfig);
                 mLifecycleListeners.add(mSdlFileManager);
@@ -146,7 +148,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
                     mConnectionStatus = Status.CONNECTING;
                     listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
                 }
-                mTopMenu = new SdlMenu(TOP_MENU_NAME, true);
             }
         });
     }
@@ -231,6 +232,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         return mSdlFileManager;
     }
 
+    @Override
+    public SdlMenuManager getSdlMenuManager() {
+        return mSdlMenuManager;
+    }
+
     public int registerButtonCallback(SdlButtonListener listener) {
         int buttonId = mAutoButtonId++;
         mButtonListenerRegistry.append(buttonId, listener);
@@ -245,6 +251,11 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
     @Override
     final public void registerMenuCallback(int id, SdlMenuOption.SelectListener listener) {
         mMenuListenerRegistry.append(id, listener);
+    }
+
+    @Override
+    public SdlMenuTransaction beginGlobalMenuTransaction() {
+        return new SdlMenuTransaction(mSdlMenuManager, null);
     }
 
     @Override
@@ -349,11 +360,6 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
         } else {
             return false;
         }
-    }
-
-    @Override
-    public SdlMenu getTopMenu() {
-        return mTopMenu;
     }
 
     @Override

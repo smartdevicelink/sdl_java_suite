@@ -5,8 +5,9 @@ import android.os.Handler;
 
 import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.file.SdlFileManager;
-import com.smartdevicelink.api.menu.SdlMenu;
+import com.smartdevicelink.api.menu.SdlMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuOption;
+import com.smartdevicelink.api.menu.SdlMenuTransaction;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public interface SdlContext {
@@ -19,6 +20,8 @@ public interface SdlContext {
 
     SdlFileManager getSdlFileManager();
 
+    SdlMenuManager getSdlMenuManager();
+
     int registerButtonCallback(SdlButtonListener listener);
 
     void unregisterButtonCallback(int id);
@@ -29,8 +32,8 @@ public interface SdlContext {
 
     boolean sendRpc(RPCRequest request);
 
-    SdlMenu getTopMenu();
-
     Handler getExecutionHandler();
+
+    SdlMenuTransaction beginGlobalMenuTransaction();
 
 }
