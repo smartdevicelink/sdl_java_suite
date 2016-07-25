@@ -36,12 +36,14 @@ public class SdlMenuOption extends SdlMenuItem {
     @Override
     void update(SdlContext sdlContext, int subMenuId, int index) {
         if(isVisible) sendDeleteCommand(sdlContext);
+        if(!isRegistered) registerSelectListener(sdlContext);
         sendAddCommand(sdlContext, subMenuId, index);
     }
 
     @Override
     void remove(SdlContext sdlContext) {
         if(isVisible) sendDeleteCommand(sdlContext);
+        if(isRegistered) unregisterSelectListener(sdlContext);
     }
 
     @Override

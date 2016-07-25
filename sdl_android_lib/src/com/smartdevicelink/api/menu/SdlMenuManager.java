@@ -30,19 +30,21 @@ public class SdlMenuManager {
 
     public void undoTransactions(SdlActivity sdlActivity){
         ArrayList<SdlMenuTransaction> transactionRecord = mTransactionRecords.get(sdlActivity);
-        if(transactionRecord != null){
+        if(transactionRecord != null && transactionRecord.size() > 0){
             for(int i = transactionRecord.size() - 1; i >= 0; i--){
                 transactionRecord.get(i).undo();
             }
+            mSdlMenu.update(sdlActivity, 0, 0);
         }
     }
 
     public void redoTransactions(SdlActivity sdlActivity){
         ArrayList<SdlMenuTransaction> transactionRecord = mTransactionRecords.get(sdlActivity);
-        if(transactionRecord != null){
+        if(transactionRecord != null && transactionRecord.size() > 0){
             for(SdlMenuTransaction transaction: transactionRecord){
                 transaction.execute();
             }
+            mSdlMenu.update(sdlActivity, 0, 0);
         }
     }
 

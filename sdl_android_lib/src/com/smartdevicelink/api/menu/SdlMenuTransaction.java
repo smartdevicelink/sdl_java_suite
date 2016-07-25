@@ -73,6 +73,7 @@ public class SdlMenuTransaction{
         if(mTopActivity != null){
             mMenuManager.registerTransaction(mTopActivity, this);
         }
+        mMenuManager.getTopMenu().update(mTopActivity, 0, 0);
     }
 
     void undo(){

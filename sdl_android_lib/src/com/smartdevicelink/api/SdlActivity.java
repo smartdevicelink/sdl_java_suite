@@ -166,6 +166,10 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         return isBackHandled;
     }
 
+    public SdlMenuTransaction beginLocalMenuTransaction(){
+        return new SdlMenuTransaction(getSdlMenuManager(), this);
+    }
+
     @Override
     public int registerButtonCallback(SdlButtonListener listener) {
         return getSdlApplicationContext().registerButtonCallback(listener);
@@ -184,11 +188,6 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
         getSdlApplicationContext().startSdlActivity(activity, flags);
-    }
-
-    @Override
-    public SdlMenuTransaction beginGlobalMenuTransaction() {
-        return new SdlMenuTransaction(getSdlMenuManager(), this);
     }
 
     @Override

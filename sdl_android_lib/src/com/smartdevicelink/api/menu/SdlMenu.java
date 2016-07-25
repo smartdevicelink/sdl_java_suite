@@ -77,6 +77,14 @@ public class SdlMenu extends SdlMenuItem {
         }
     }
 
+    public boolean contains(SdlMenuItem sdlMenuItem){
+        return sdlMenuItem != null && contains(sdlMenuItem.getName());
+    }
+
+    public boolean contains(String itemName){
+        return itemName != null && mEntryMap.containsKey(itemName);
+    }
+
     SdlMenuItem getMenuItemByName(String name){
         return mEntryMap.get(name);
     }
