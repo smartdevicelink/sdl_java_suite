@@ -202,7 +202,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @param callback Use this callback to find out if the router service is connected or not. 
 	 * @return True if a transport connection is established, false otherwise.
 	 */
-	public static void isTransportConnected(Context context, SdlRouterStatusProvider.ConnectedStatusCallback callback){
+	public static void requestTransportStatus(Context context, SdlRouterStatusProvider.ConnectedStatusCallback callback){
 		Log.d(TAG, "Checking to see if router service is transport connected");
 		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,runningBluetoothServicePackage,callback);
