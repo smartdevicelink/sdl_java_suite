@@ -2,15 +2,11 @@ package com.smartdevicelink.api.permission;
 
 import android.support.annotation.NonNull;
 
-import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-
-import junit.framework.TestListener;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +18,10 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -203,6 +202,19 @@ public class SdlPermissionManagerTest {
         verify(mockListener,never()).onPermissionChanged(any(SdlPermissionEvent.class));
     }
 
+    @Test
+    public void testThatListenersAreBeingRemoved(){
+        SdlPermissionListener listener= new SdlPermissionListener() {
+            @Override
+            public void onPermissionChanged(@NonNull SdlPermissionEvent event) {
+
+            }
+        };
+        mSdlPermissionManager.addListener(listener,getStandardSdlFilter());
+        assertTrue(mSdlPermissionManager.removeListener(listener));
+        assertFalse(mSdlPermissionManager.removeListener(listener));
+    }
+
 
 
     //Test Utility helpers
@@ -329,20 +341,12 @@ public class SdlPermissionManagerTest {
 
     //filter created that fits the above OnPermissionChange objects
     private SdlPermissionFilter getStandardSdlFilter(){
-        SdlPermissionFilter filter = new SdlPermissionFilter();
-        filter.addPermission(SdlPermission.Alert);
-        filter.addPermission(SdlPermission.ListFiles);
-        filter.addPermission(SdlPermission.DeleteFile);
-        filter.addPermission(SdlPermission.GetBeltStatus);
-        return filter;
+        return new SdlPermissionFilter(Arrays.asList(new SdlPermission[]{SdlPermission.Alert,SdlPermission.ListFiles, SdlPermission.DeleteFile,SdlPermission.GetBeltStatus}));
     }
 
     //filter used to not match any of the above OnPermissionChange objects
     private SdlPermissionFilter getNonMatchingSdlFilter(){
-        SdlPermissionFilter filter = new SdlPermissionFilter();
-        filter.addPermission(SdlPermission.Speak);
-        filter.addPermission(SdlPermission.AlertManeuver);
-        return filter;
+        return  new SdlPermissionFilter(Arrays.asList(new SdlPermission[]{SdlPermission.Speak,SdlPermission.AlertManeuver}));
     }
 
     private String[] allParameterPermissions = new String[]{"accPedalPosition",
@@ -376,11 +380,7 @@ public class SdlPermissionManagerTest {
     private EnumSet<SdlPermission> everySet= getEveryPermissionFilter().permissionSet.permissions.get(0);
 
     private SdlPermissionFilter getEveryPermissionFilter(){
-        SdlPermissionFilter filter = new SdlPermissionFilter();
-        for(SdlPermission permission:SdlPermission.values()){
-            filter.addPermission(permission);
-        }
-        return filter;
+        return new SdlPermissionFilter(Arrays.asList(SdlPermission.values()));
     }
 
     //Ensures that the callback event matches what we initialize the listener to check

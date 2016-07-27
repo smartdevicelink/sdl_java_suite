@@ -7,8 +7,10 @@ import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class SdlPermissionManager {
@@ -61,6 +63,28 @@ public class SdlPermissionManager {
     }
 
     /**
+     * Removes listeners that use the provided listener from the {@link SdlPermissionManager}
+     * @param listener The listener reference to be removed from the {@link SdlPermissionManager}
+     * @return boolean indicating if any listeners were removed based on the listener provided
+     */
+    public boolean removeListener(@NonNull SdlPermissionListener listener){
+        synchronized (PERMISSION_LOCK){
+            boolean removedListener = false;
+            for(Iterator<ListenerWithFilter> iterator = mListeners.iterator(); iterator.hasNext();){
+                SdlPermissionListener permissionListener;
+                if((permissionListener= cleanNullFromListenerList(iterator.next(), iterator))==null){
+                    continue;
+                }
+                if(permissionListener == listener){
+                    iterator.remove();
+                    removedListener= true;
+                }
+            }
+            return removedListener;
+        }
+    }
+
+    /**
      * Method to change the current HMI level if it has changed and to notify added {@link SdlPermissionListener}
      * of any changes in {@link SdlPermission} with the {@link HMILevel} transition.
      * @param hmiLevel The {@link HMILevel} to change to
@@ -68,12 +92,18 @@ public class SdlPermissionManager {
     public void onHmi(@NonNull HMILevel hmiLevel){
         synchronized (PERMISSION_LOCK) {
             if(hmiLevel!=mCurrentHMILevel) {
-                for (ListenerWithFilter lwf : mListeners) {
+                for(Iterator<ListenerWithFilter> iterator = mListeners.iterator(); iterator.hasNext();){
+                    ListenerWithFilter lwf= iterator.next();
+                    SdlPermissionListener permissionListener;
+                    if((permissionListener= cleanNullFromListenerList(lwf, iterator))==null){
+                        continue;
+                    }
+
                     //filter out the permissions that we are not interested in
                     SdlPermissionSet intersection = SdlPermissionSet.intersect(mSdlPermissionSet, lwf.filter.permissionSet);
                     //see if there is any change in the EnumSet between the old HMI Level and the new HMI Level
                     if (intersection.checkForChangeBetweenHMILevels(mCurrentHMILevel, hmiLevel)) {
-                        lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, hmiLevel));
+                        permissionListener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, hmiLevel));
                     }
                 }
                 mCurrentHMILevel = hmiLevel;
@@ -134,12 +164,15 @@ public class SdlPermissionManager {
             mSdlPermissionSet.recycle();
             mSdlPermissionSet = newPermissions;
 
-            for (ListenerWithFilter lwf : mListeners) {
-                //ensure there is a change in permissions first for the given HMI level and requested permissions
-                if (changed.containsAnyForHMILevel(lwf.filter.permissionSet,mCurrentHMILevel)) {
-                    lwf.listener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
+            for(Iterator<ListenerWithFilter> iterator = mListeners.iterator(); iterator.hasNext();) {
+                ListenerWithFilter lwf= iterator.next();
+                SdlPermissionListener permissionListener;
+                if((permissionListener= cleanNullFromListenerList(lwf, iterator))==null){
+                    continue;
                 }
-
+                if (changed.containsAnyForHMILevel(lwf.filter.permissionSet,mCurrentHMILevel)) {
+                    permissionListener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
+                }
             }
         }
     }
@@ -157,11 +190,11 @@ public class SdlPermissionManager {
     }
 
     private class ListenerWithFilter{
-        final SdlPermissionListener listener;
+        final WeakReference<SdlPermissionListener> listener;
         final SdlPermissionFilter filter;
 
         ListenerWithFilter(SdlPermissionListener listener, SdlPermissionFilter filter){
-            this.listener = listener;
+            this.listener = new WeakReference<>(listener);
             this.filter = filter;
         }
     }
@@ -186,5 +219,14 @@ public class SdlPermissionManager {
             return new SdlPermissionEvent(checkPermissions.permissions.get(hmiLevel.ordinal()), SdlPermissionEvent.PermissionLevel.NONE);
         }
     }
+
+    private SdlPermissionListener cleanNullFromListenerList(ListenerWithFilter lwf, Iterator<ListenerWithFilter> lwfIterator){
+        SdlPermissionListener listener = lwf.listener.get();
+        if(listener==null){
+            lwfIterator.remove();
+        }
+        return listener;
+    }
+
 
 }
