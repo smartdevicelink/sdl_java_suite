@@ -93,6 +93,32 @@ public class RSVTestCase extends AndroidTestCase {
 		assertFalse(RouterServiceValidator.setTrustedList(mContext,null));
 		assertFalse(RouterServiceValidator.setTrustedList(null,"test"));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,"test"));
+		String test= "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,test+test+test+test+test));
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i<1000; i++){
+			builder.append(test);
+		}
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
+	}
+	
+	public void testTrustedListSetAndGet(){
+		String test= "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
+		String retVal = RouterServiceValidator.getTrustedList(mContext);
+		assertNotNull(retVal);
+		assertTrue(test.equals(retVal));
+		
+		retVal = null;
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i<1000; i++){
+			builder.append(test);
+		}
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
+		retVal = RouterServiceValidator.getTrustedList(mContext);
+		assertNotNull(retVal);
+		assertTrue(builder.toString().equals(retVal));
 	}
 	
 	public void testInvalidationSequence(){
