@@ -1,5 +1,7 @@
 package com.smartdevicelink.transport;
 
+import java.lang.ref.WeakReference;
+
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
@@ -22,7 +24,7 @@ public class SdlRouterStatusProvider {
 	Messenger routerServiceMessenger = null;
 	private ComponentName routerService = null;
 
-	final Messenger clientMessenger = new Messenger(new ClientHandler());
+	final Messenger clientMessenger; 
 	
 	private ServiceConnection routerConnection= new ServiceConnection() {
 
@@ -59,6 +61,7 @@ public class SdlRouterStatusProvider {
 		this.context = context;
 		this.routerService = service;
 		this.cb = callback;
+		this.clientMessenger = new Messenger(new ClientHandler(this));
 
 	}
 	
@@ -100,17 +103,26 @@ public class SdlRouterStatusProvider {
 		}
 	}
 	
-	@SuppressLint("HandlerLeak")
-	class ClientHandler extends Handler {
+	private void handleRouterStatusConnectedResponse(int connectedStatus){
+		if(cb!=null){
+			  cb.onConnectionStatusUpdate(connectedStatus == 1, context);
+		  }
+		  unBindFromService();
+		  routerServiceMessenger =null;
+	}
+	
+	static class ClientHandler extends Handler {
+		 WeakReference<SdlRouterStatusProvider> provider;
+
+		 public ClientHandler(SdlRouterStatusProvider provider){
+			 this.provider = new WeakReference<SdlRouterStatusProvider>(provider);
+		 }
+		 
     	@Override
         public void handleMessage(Message msg) {
     		  switch (msg.what) {
     		  case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE:
-    			  if(cb!=null){
-    				  cb.onConnectionStatusUpdate(msg.arg1 == 1, context);
-    			  }
-    			  unBindFromService();
-    			  routerServiceMessenger =null;
+    			  provider.get().handleRouterStatusConnectedResponse(msg.arg1);
     			  break;
     		  default:
     			  break;
