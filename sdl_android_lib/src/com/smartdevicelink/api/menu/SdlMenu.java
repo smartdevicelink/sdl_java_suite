@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.menu;
 
+import android.util.Log;
+
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
@@ -10,6 +12,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 public class SdlMenu extends SdlMenuItem {
+
+    private static final String TAG = SdlMenu.class.getSimpleName();
 
     private final HashMap<String, SdlMenuItem> mEntryMap;
     // Used to keep track of indexes
@@ -22,11 +26,10 @@ public class SdlMenu extends SdlMenuItem {
     // True if menu has been created on head unit
     private boolean isCreated = false;
     // True if menu on head unit needs updated
-    private boolean isDirty = false;
-    private int mDirtyIndex = -1;
 
-    SdlMenu(String name, boolean isRootMenu){
+    SdlMenu(String name, int index, boolean isRootMenu){
         super(name);
+        mIndex = index;
         this.isRootMenu = isCreated = isRootMenu;
         mEntryKeyList = new ArrayList<>();
         mEntryMap = new HashMap<>();
@@ -34,14 +37,17 @@ public class SdlMenu extends SdlMenuItem {
         mPendingAdditions = new HashSet<>();
     }
 
+    SdlMenu(String name, boolean isRootMenu){
+        this(name, -1, isRootMenu);
+    }
+
     void addMenuItem(SdlMenuItem item){
         if(!mEntryMap.containsKey(item.getName())){
             String itemName = item.getName();
+            Log.d(TAG, mName + ": adding item name " + itemName);
             mEntryKeyList.add(itemName);
             mEntryMap.put(itemName, item);
             mPendingAdditions.add(itemName);
-
-            makeDirty(mEntryKeyList.size() - 1);
         } else {
             throw new IllegalArgumentException(String.format("Menu named '%s' already contains item " +
                     "named '%s", mName, item.mName));
@@ -51,11 +57,10 @@ public class SdlMenu extends SdlMenuItem {
     void addMenuItem(int index, SdlMenuItem item){
         if(!mEntryMap.containsKey(item.getName())){
             String itemName = item.getName();
+            Log.d(TAG, mName + ": adding item name " + itemName);
             mEntryKeyList.add(index, itemName);
             mEntryMap.put(itemName, item);
             mPendingAdditions.add(itemName);
-
-            makeDirty(index);
         } else {
             throw new IllegalArgumentException(String.format("Menu named '%s' already contains item " +
                     "named '%s", mName, item.mName));
@@ -65,6 +70,7 @@ public class SdlMenu extends SdlMenuItem {
     void removeMenuItem(SdlMenuItem menuItem){
         String name = menuItem.getName();
         if(mEntryMap.containsKey(name)){
+            Log.d(TAG, mName + ": removing item name " + name);
             SdlMenuItem item = mEntryMap.remove(name);
             removeEntryKey(name);
             if(item != null){
@@ -94,25 +100,24 @@ public class SdlMenu extends SdlMenuItem {
     }
 
     @Override
-    void update(SdlContext sdlContext, int subMenuId, int index) {
+    void update(SdlContext sdlContext, int subMenuId) {
         if(!isCreated && !isRootMenu) {
             isCreated = true;
-            sendAddSubMenu(sdlContext, index);
+            sendAddSubMenu(sdlContext);
         }
         sendPendingRemovals(sdlContext);
-        updateDirtyIndexes(sdlContext);
+        sendPendingAdditions(sdlContext);
     }
 
-    private void updateDirtyIndexes(SdlContext sdlContext) {
-        if(isDirty){
-            for(int i = mDirtyIndex; i < mEntryKeyList.size(); i++){
-                SdlMenuItem item = mEntryMap.get(mEntryKeyList.get(i));
-                int menuId = isRootMenu ? -1: mId;
-                item.update(sdlContext, menuId, i);
+    private void sendPendingAdditions(SdlContext sdlContext){
+        for(String key: mPendingAdditions){
+            SdlMenuItem item = mEntryMap.get(key);
+            if(item != null){
+                item.update(sdlContext,
+                        isRootMenu ? -1: mId);
             }
-            mPendingAdditions.clear();
-            makeClean();
         }
+        mPendingAdditions.clear();
     }
 
     private void sendPendingRemovals(SdlContext sdlContext) {
@@ -140,7 +145,6 @@ public class SdlMenu extends SdlMenuItem {
             sendDeleteSubMenu(sdlContext);
         }
 
-        makeClean();
         isCreated = false;
     }
 
@@ -160,9 +164,9 @@ public class SdlMenu extends SdlMenuItem {
         }
     }
 
-    private void sendAddSubMenu(SdlContext sdlContext, int index) {
+    private void sendAddSubMenu(SdlContext sdlContext) {
         AddSubMenu asm = new AddSubMenu();
-        asm.setPosition(index);
+        if(mIndex > 0) asm.setPosition(mIndex);
         asm.setMenuID(mId);
         asm.setMenuName(mName);
         sdlContext.sendRpc(asm);
@@ -174,24 +178,9 @@ public class SdlMenu extends SdlMenuItem {
         sdlContext.sendRpc(dsm);
     }
 
-    private void makeClean(){
-        isDirty = false;
-        mDirtyIndex = -1;
-    }
-
-    private void makeDirty(int dirtyIndex){
-        isDirty = true;
-        if(mDirtyIndex < 0 || mDirtyIndex > dirtyIndex){
-            mDirtyIndex = dirtyIndex;
-        }
-    }
-
     private void removeEntryKey(String key){
         for(int i = 0; i < mEntryKeyList.size(); i++){
             if(mEntryKeyList.get(i).equals(key)){
-                if(i != mEntryKeyList.size() - 1){
-                    makeDirty(i);
-                }
                 mEntryKeyList.remove(key);
                 break;
             }

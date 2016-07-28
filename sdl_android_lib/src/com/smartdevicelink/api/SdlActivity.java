@@ -120,8 +120,9 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     final void performStart(){
         superCalled = false;
         mActivityState = SdlActivityState.BACKGROUND;
-        this.onStart();
         getSdlMenuManager().redoTransactions(this);
+        this.onStart();
+        Log.d(TAG, "Redo complete.");
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStart(). This should NEVER happen.");
     }
@@ -167,7 +168,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     public SdlMenuTransaction beginLocalMenuTransaction(){
-        return new SdlMenuTransaction(getSdlMenuManager(), this);
+        return new SdlMenuTransaction(this, this);
     }
 
     @Override

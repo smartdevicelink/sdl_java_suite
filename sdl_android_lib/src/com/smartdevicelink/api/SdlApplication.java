@@ -255,7 +255,7 @@ public class SdlApplication extends SdlContextAbsImpl implements IProxyListenerA
 
     @Override
     public SdlMenuTransaction beginGlobalMenuTransaction() {
-        return new SdlMenuTransaction(mSdlMenuManager, null);
+        return new SdlMenuTransaction(this, null);
     }
 
     @Override

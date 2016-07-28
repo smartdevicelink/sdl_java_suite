@@ -1,21 +1,27 @@
 package com.smartdevicelink.api.menu;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.api.SdlActivity;
+import com.smartdevicelink.api.interfaces.SdlContext;
 
 import java.util.ArrayList;
 
 public class SdlMenuTransaction{
 
+    private static final String TAG = SdlMenuTransaction.class.getSimpleName();
+
     private ArrayList<SdlMenuCommand> mCommandList = new ArrayList<>();
     private SdlActivity mTopActivity;
+    private SdlContext mSdlContext;
     private SdlMenuManager mMenuManager;
     private boolean isExecuted = false;
 
-    public SdlMenuTransaction(SdlMenuManager sdlMenuManager, SdlActivity topActivity){
+    public SdlMenuTransaction(SdlContext sdlContext, SdlActivity topActivity){
+        mSdlContext = sdlContext;
         mTopActivity = topActivity;
-        mMenuManager = sdlMenuManager;
+        mMenuManager = sdlContext.getSdlMenuManager();
     }
 
     public SdlMenu createSubMenu(String menuName){
@@ -31,6 +37,7 @@ public class SdlMenuTransaction{
     }
 
     public void addMenuOption(SdlMenuOption sdlMenuOption){
+        Log.d(TAG, "addMenuOption called for option: " + sdlMenuOption.getName());
         mCommandList.add(new AddMenuItemCommand(mMenuManager.getTopMenu(), sdlMenuOption, null));
     }
 
@@ -73,7 +80,7 @@ public class SdlMenuTransaction{
         if(mTopActivity != null){
             mMenuManager.registerTransaction(mTopActivity, this);
         }
-        mMenuManager.getTopMenu().update(mTopActivity, 0, 0);
+        mMenuManager.getTopMenu().update(mSdlContext, 0);
     }
 
     void undo(){
@@ -87,6 +94,8 @@ public class SdlMenuTransaction{
 
     void execute(){
         if(isExecuted) return;
+
+        Log.d(TAG, "My command list has " + mCommandList.size() + " members.");
 
         for(SdlMenuCommand command: mCommandList){
             command.execute();
@@ -105,27 +114,28 @@ public class SdlMenuTransaction{
     class AddMenuItemCommand implements SdlMenuCommand{
 
         private SdlMenu mRootMenu;
-        private SdlMenuItem mSdlMenuOption;
+        private SdlMenuItem mSdlMenuItem;
         private Integer mIndex;
 
         AddMenuItemCommand(@NonNull SdlMenu rootMenu, @NonNull SdlMenuItem sdlMenuItem, Integer index){
             mRootMenu = rootMenu;
-            mSdlMenuOption = sdlMenuItem;
+            mSdlMenuItem = sdlMenuItem;
             mIndex = index;
         }
 
         @Override
         public void execute() {
+            Log.d(TAG, "Executing command for SdlMenuItem: " + mSdlMenuItem.getName());
             if(mIndex == null){
-                mRootMenu.addMenuItem(mSdlMenuOption);
+                mRootMenu.addMenuItem(mSdlMenuItem);
             } else {
-                mRootMenu.addMenuItem(mIndex, mSdlMenuOption);
+                mRootMenu.addMenuItem(mIndex, mSdlMenuItem);
             }
         }
 
         @Override
         public void undo() {
-            mRootMenu.removeMenuItem(mSdlMenuOption);
+            mRootMenu.removeMenuItem(mSdlMenuItem);
         }
     }
 

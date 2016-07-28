@@ -8,9 +8,16 @@ public abstract class SdlMenuItem {
 
     protected String mName;
     protected int mId;
+    protected int mIndex = -1;
 
     public SdlMenuItem(String name){
         mName = name;
+        mId = generateId();
+    }
+
+    public SdlMenuItem(String name, int index){
+        mName = name;
+        mIndex = index;
         mId = generateId();
     }
 
@@ -26,7 +33,7 @@ public abstract class SdlMenuItem {
         return autoId++;
     }
 
-    abstract void update(SdlContext sdlContext, int subMenuId, int index);
+    abstract void update(SdlContext sdlContext, int subMenuId);
 
     abstract void remove(SdlContext sdlContext);
 

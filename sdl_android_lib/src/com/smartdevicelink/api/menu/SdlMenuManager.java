@@ -15,7 +15,7 @@ public class SdlMenuManager {
         mTransactionRecords = new HashMap<>();
     }
 
-    SdlMenu getTopMenu(){
+    public SdlMenu getTopMenu(){
         return mSdlMenu;
     }
 
@@ -34,7 +34,7 @@ public class SdlMenuManager {
             for(int i = transactionRecord.size() - 1; i >= 0; i--){
                 transactionRecord.get(i).undo();
             }
-            mSdlMenu.update(sdlActivity, 0, 0);
+            mSdlMenu.update(sdlActivity, 0);
         }
     }
 
@@ -44,7 +44,7 @@ public class SdlMenuManager {
             for(SdlMenuTransaction transaction: transactionRecord){
                 transaction.execute();
             }
-            mSdlMenu.update(sdlActivity, 0, 0);
+            mSdlMenu.update(sdlActivity, 0);
         }
     }
 

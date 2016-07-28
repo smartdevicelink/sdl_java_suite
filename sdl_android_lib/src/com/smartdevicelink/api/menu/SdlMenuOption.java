@@ -7,12 +7,14 @@ import com.smartdevicelink.api.file.SdlFile;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.file.SdlImage;
 import com.smartdevicelink.api.interfaces.SdlContext;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 public class SdlMenuOption extends SdlMenuItem {
 
@@ -33,16 +35,26 @@ public class SdlMenuOption extends SdlMenuItem {
         mSdlImage = image;
     }
 
+    public SdlMenuOption(int index, @NonNull String name, @NonNull SelectListener listener) {
+        this(index, name, listener, null);
+    }
+
+    public SdlMenuOption(int index, @NonNull String name, @NonNull SelectListener listener, SdlImage image){
+        super(name, index);
+        mListener = listener;
+        mSdlImage = image;
+    }
+
     @Override
-    void update(SdlContext sdlContext, int subMenuId, int index) {
-        if(isVisible) sendDeleteCommand(sdlContext);
+    void update(SdlContext sdlContext, int subMenuId) {
+        if(isVisible) sendReplaceCommand(sdlContext, subMenuId);
         if(!isRegistered) registerSelectListener(sdlContext);
-        sendAddCommand(sdlContext, subMenuId, index);
+        sendAddCommand(sdlContext, subMenuId);
     }
 
     @Override
     void remove(SdlContext sdlContext) {
-        if(isVisible) sendDeleteCommand(sdlContext);
+        if(isVisible) sendDeleteCommand(sdlContext, null);
         if(isRegistered) unregisterSelectListener(sdlContext);
     }
 
@@ -62,14 +74,26 @@ public class SdlMenuOption extends SdlMenuItem {
         }
     }
 
-    private void sendDeleteCommand(SdlContext sdlContext) {
+    private void sendDeleteCommand(SdlContext sdlContext, OnRPCResponseListener listener) {
         DeleteCommand dc = new DeleteCommand();
         dc.setCmdID(mId);
+        dc.setOnRPCResponseListener(listener);
         sdlContext.sendRpc(dc);
         isVisible = false;
     }
 
-    private void sendAddCommand(final SdlContext sdlContext, final int rootMenuId, final int index) {
+    private void sendReplaceCommand(final SdlContext sdlContext, final int subMenuId){
+        sendDeleteCommand(sdlContext, new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if(response != null && response.getSuccess()){
+                    sendAddCommand(sdlContext, subMenuId);
+                }
+            }
+        });
+    }
+
+    private void sendAddCommand(final SdlContext sdlContext, final int rootMenuId) {
         AddCommand ac = new AddCommand();
         ac.setCmdID(mId);
 
@@ -85,7 +109,7 @@ public class SdlMenuOption extends SdlMenuItem {
                 fileManager.uploadSdlImage(mSdlImage, new SdlFileManager.FileReadyListener() {
                     @Override
                     public void onFileReady(SdlFile sdlFile) {
-                        if(isVisible) update(sdlContext, rootMenuId, index);
+                        if(isVisible) update(sdlContext, rootMenuId);
                     }
 
                     @Override
@@ -97,8 +121,8 @@ public class SdlMenuOption extends SdlMenuItem {
 
         MenuParams mp = new MenuParams();
         mp.setMenuName(mName);
-        mp.setParentID(rootMenuId);
-        mp.setPosition(index);
+        if(rootMenuId > 0) mp.setParentID(rootMenuId);
+        if(mIndex >= 0) mp.setPosition(mIndex);
         ac.setMenuParams(mp);
 
         sdlContext.sendRpc(ac);
