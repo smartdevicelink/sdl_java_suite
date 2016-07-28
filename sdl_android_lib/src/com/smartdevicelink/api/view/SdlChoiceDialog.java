@@ -1,12 +1,14 @@
 package com.smartdevicelink.api.view;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.interfaces.SdlInteractionResponseListener;
 import com.smartdevicelink.api.permission.SdlPermission;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
@@ -38,8 +40,7 @@ public class SdlChoiceDialog {
     private final TTSChunk mHelpPrompt;
     private final ArrayList<Integer> mChoiceSets= new ArrayList<>();
     private final HashMap<Integer,SdlChoice.OnSelectedListener> mQuickListenerFind = new HashMap<>();
-    private final HashSet<String> mNames = new HashSet<>();
-    protected SdlInteractionSender mSender= new SdlInteractionSender(SdlPermission.PerformInteraction);
+    protected SdlChoiceDialogSender mSender= new SdlChoiceDialogSender(SdlPermission.PerformInteraction);
 
     SdlChoiceDialog(final Builder builder){
         mInitialText = builder.mInitialText;
@@ -61,7 +62,6 @@ public class SdlChoiceDialog {
             SparseArray<SdlChoice> choices = set.getChoices();
             //keep the names of the choice sets provided to ensure
             //that they have been uploaded before sending the Perform Interaction
-            mNames.add(set.getSetName());
             for(int i=0; i<choices.size();i++){
                 mQuickListenerFind.put(choices.keyAt(i),choices.get(choices.keyAt(i)).getListener());
             }
@@ -179,8 +179,32 @@ public class SdlChoiceDialog {
         }, listener);
     }
 
+    private class SdlChoiceDialogSender extends SdlInteractionSender{
+
+        protected SdlChoiceDialogSender(SdlPermission permission) {
+            super(permission);
+        }
+
+        @Override
+        protected boolean isAbleToSendInteraction(SdlPermission permission, SdlContext context) {
+            boolean checkAllAreUploaded = true;
+            for (Integer choiceId:mChoiceSets){
+                if(!context.getSdlChoiceSetManager().hasBeenUploaded(choiceId)){
+                    checkAllAreUploaded = false;
+                    break;
+                }
+            }
+            return super.isAbleToSendInteraction(permission, context)&&checkAllAreUploaded;
+        }
+
+        @Override
+        boolean sendInteraction(@NonNull SdlContext context, @NonNull RPCRequest request, @Nullable SdlDataReceiver receiver, @Nullable SdlInteractionResponseListener listener) {
+            return super.sendInteraction(context, request, receiver, listener);
+        }
+    }
+
     public static class Builder{
-        private Collection<SdlChoiceSet> mChoiceSets = new ArrayList<>();
+        private HashSet<SdlChoiceSet> mChoiceSets = new HashSet<>();
         private SdlManualInteraction mManualInteraction;
         private SdlVoiceInteraction mVoiceInteraction;
         private String mInitialText;
@@ -193,11 +217,12 @@ public class SdlChoiceDialog {
 
 
         public Builder setChoiceSets(@NonNull Collection<SdlChoiceSet> choiceSets) {
-            this.mChoiceSets = choiceSets;
+            this.mChoiceSets.clear();
+            this.mChoiceSets.addAll(choiceSets);
             return this;
         }
 
-        public Builder addChoiceSet(SdlChoiceSet choiceSet){
+        public Builder addChoiceSet(@NonNull SdlChoiceSet choiceSet){
             this.mChoiceSets.add(choiceSet);
             return this;
         }

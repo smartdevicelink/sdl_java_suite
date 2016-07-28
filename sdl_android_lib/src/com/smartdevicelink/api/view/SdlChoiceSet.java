@@ -7,10 +7,6 @@ import com.smartdevicelink.api.interfaces.SdlContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Created by mschwerz on 5/6/16.
@@ -19,22 +15,21 @@ public class SdlChoiceSet {
     private final static String TAG= SdlChoiceSet.class.getSimpleName();
 
     private final SparseArray<SdlChoice> mChoices;
-    private final String mChoiceSetName;
     private final Integer mChoiceSetId;
     private final SdlChoiceSetManager mManager;
 
-    public SdlChoiceSet(@NonNull String name, @NonNull ArrayList<SdlChoice> choices, @NonNull SdlContext context){
-        mChoiceSetName= name;
+    public SdlChoiceSet( @NonNull ArrayList<SdlChoice> choices, @NonNull SdlContext context){
         mManager= context.getSdlChoiceSetManager();
-        SdlChoiceSet potentialIdentical= mManager.grabUploadedChoiceSet(name);
-        HashMap<String, SdlChoice> easyMappingForArrayList= null;
-
-        if(potentialIdentical!=null)
-            easyMappingForArrayList= potentialIdentical.compareToSavedSet(name,choices);
-
-        if(easyMappingForArrayList!=null){
-            mChoices= copyOverChoiceIds(easyMappingForArrayList,potentialIdentical.getChoices());
-            mChoiceSetId= potentialIdentical.getChoiceSetId();
+        SdlChoiceSet matchingSet = null;
+        for(SdlChoiceSet setToCompare:mManager.getUploadedSets()){
+            if(setToCompare.compareToSavedSet(choices)){
+                matchingSet = setToCompare;
+                break;
+            }
+        }
+        if(matchingSet!=null) {
+            mChoices= copyOverChoiceIds(choices,matchingSet.getChoices());
+            mChoiceSetId= matchingSet.getChoiceSetId();
         }else {
             mChoices= populateChoicesWithIds(choices,context);
             mChoiceSetId = mManager.requestChoiceSetCount();
@@ -43,13 +38,11 @@ public class SdlChoiceSet {
     }
 
     private SdlChoiceSet(SdlChoiceSet set){
-        mChoiceSetName= set.getSetName();
         mChoices= set.depopulatedListenerChoices(set.getChoices());
         mChoiceSetId= set.getChoiceSetId();
         mManager= set.mManager;
     }
 
-    public String getSetName(){return mChoiceSetName;}
 
     SparseArray<SdlChoice> getChoices(){return mChoices;}
 
@@ -57,7 +50,7 @@ public class SdlChoiceSet {
         return mChoiceSetId;
     }
 
-    public boolean hasBeenUploaded(){return mManager.hasBeenUploaded(getSetName());}
+    public boolean hasBeenUploaded(){return mManager.hasBeenUploaded(this);}
 
     private SparseArray<SdlChoice> populateChoicesWithIds(Collection<SdlChoice> sdlChoices, SdlContext context){
         SparseArray<SdlChoice> newIdArray= new SparseArray<>();
@@ -82,38 +75,24 @@ public class SdlChoiceSet {
         return cloneArray;
     }
 
-    //returns a mapping of the user provided choices keyed off of their choice name
-    private HashMap<String,SdlChoice> compareToSavedSet(String name, ArrayList<SdlChoice> choices){
-        boolean firstCheck= name.equals(mChoiceSetName);
-        if(!firstCheck)
-            return null;
-        ArrayList<SdlChoice> copyList= new ArrayList<>(choices);
-        HashMap<String,SdlChoice> positionInArray= new HashMap<>();
+    private boolean compareToSavedSet(ArrayList<SdlChoice> choices){
         for(int i=0; i<mChoices.size();i++) {
-            boolean foundChoice=false;
-            for (SdlChoice choice : copyList) {
-                int key= mChoices.keyAt(i);
-                foundChoice= mChoices.get(key).compareModelData(choice);
-                if(foundChoice){
-                    positionInArray.put(choice.getChoiceName(),choice);
-                    copyList.remove(choice);
-                    break;
-                }
+            if(!mChoices.get(mChoices.keyAt(i)).compareModelData(choices.get(i))){
+                return false;
             }
-            if(!foundChoice)
-                return null;
         }
-        return positionInArray;
+
+        return true;
     }
 
 
-    private SparseArray<SdlChoice> copyOverChoiceIds(HashMap<String, SdlChoice> mapping, SparseArray<SdlChoice> choices){
+    private SparseArray<SdlChoice> copyOverChoiceIds(ArrayList<SdlChoice> choicesToBePopulated, SparseArray<SdlChoice> previousSet){
         SparseArray<SdlChoice> cloneArray= new SparseArray<>();
-        for(int i=0; i<choices.size(); i++){
-            int key= choices.keyAt(i);
-            SdlChoice choice=  choices.get(key);
+        for(int i=0; i<previousSet.size(); i++){
+            int key= previousSet.keyAt(i);
+            SdlChoice choice=  previousSet.get(key);
 
-            SdlChoice choiceReference= mapping.get(choice.getChoiceName());
+            SdlChoice choiceReference= choicesToBePopulated.get(i);
             choiceReference.setIds(choice.getId());
 
             cloneArray.put(key,choiceReference);
@@ -121,15 +100,4 @@ public class SdlChoiceSet {
         return cloneArray;
     }
 
-    /*
-    SparseArray<SdlChoice> copyOverChoiceIds(ArrayList<SdlChoice> newChoices, SparseArray<SdlChoice> choices){
-        SparseArray<SdlChoice> cloneArray= new SparseArray<>();
-        for(int i=0; i<choices.size(); i++){
-            SdlChoice choice= choices.get(choices.keyAt(i));
-            newChoices.get(i).setIds(choice.getId());
-            cloneArray.append(choices.keyAt(i),newChoices.get(i));
-        }
-        return cloneArray;
-    }
-    */
 }

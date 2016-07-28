@@ -1,6 +1,9 @@
 package com.smartdevicelink.api.view;
 
-import com.smartdevicelink.api.SdlApplication;
+import com.smartdevicelink.api.file.SdlFile;
+import com.smartdevicelink.api.file.SdlFileManager;
+import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
@@ -11,7 +14,10 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -22,13 +28,13 @@ public class SdlChoiceSetManager {
     private Integer Choice_Count=0;
     private Integer Choice_Set_Count=0;
 
-    private SdlApplication mApplication;
+    private SdlContext mApplicationContext;
 
-    public SdlChoiceSetManager(SdlApplication application){
-        mApplication= application;
+    public SdlChoiceSetManager(SdlContext application){
+        mApplicationContext = application;
     }
 
-    private HashMap<String,SdlChoiceSet> mChoiceSet = new HashMap<>();
+    private HashMap<Integer,SdlChoiceSet> mChoiceSetsUploaded = new HashMap<>();
 
     Integer requestChoiceCount(){
         return Choice_Count++;
@@ -39,18 +45,18 @@ public class SdlChoiceSetManager {
     }
 
     boolean registerSdlChoiceSet(SdlChoiceSet set){
-        mChoiceSet.put(set.getSetName(),set);
+        mChoiceSetsUploaded.put(set.getChoiceSetId(),set);
         return true;
     }
 
-    //TODO:throw exception if the image is not uploaded for the choice?
     public boolean uploadChoiceSetCreation(final SdlChoiceSet choiceSet, final ChoiceSetReadyListener listener){
-        if(hasBeenUploaded(choiceSet.getSetName()))
+        if(hasBeenUploaded(choiceSet))
             return true;
 
-        CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
+        final CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
 
-        ArrayList<Choice> proxyChoices= new ArrayList<>();
+        ArrayList<Choice> proxyChoices = new ArrayList<>();
+        final HashSet<SdlImage> unsentImages = new HashSet<>();
         for(int i=0; i<choiceSet.getChoices().size();i++) {
             int choiceID= choiceSet.getChoices().keyAt(i);
             SdlChoice currentChoice = choiceSet.getChoices().get(choiceID);
@@ -64,6 +70,9 @@ public class SdlChoiceSetManager {
                 choiceImage.setImageType(ImageType.DYNAMIC);
                 choiceImage.setValue(currentChoice.getSdlImage().getSdlName());
                 convertToChoice.setImage(choiceImage);
+                if(!mApplicationContext.getSdlFileManager().isFileOnModule(currentChoice.getSdlImage().getSdlName())){
+                    unsentImages.add(currentChoice.getSdlImage());
+                }
             }
             convertToChoice.setChoiceID(choiceID);
             ArrayList<String> commands= new ArrayList<>();
@@ -88,15 +97,42 @@ public class SdlChoiceSetManager {
                     listener.onError(choiceSet, info);
             }
         });
-        mApplication.sendRpc(newRequest);
+        if(!unsentImages.isEmpty()){
+            HashSet<SdlImage> unsentImageIteration= new HashSet<>(unsentImages);
+            for (SdlImage unsentImage:unsentImageIteration){
+                mApplicationContext.getSdlFileManager().uploadSdlImage(unsentImage, new SdlFileManager.FileReadyListener() {
+                    @Override
+                    public void onFileReady(SdlFile sdlFile) {
+                        //it is and SdlImage
+                        unsentImages.remove(sdlFile);
+                        if(unsentImages.isEmpty()){
+                            mApplicationContext.sendRpc(newRequest);
+                        }
+                    }
+
+                    @Override
+                    public void onFileError(SdlFile sdlFile) {
+
+                    }
+                });
+            }
+
+        }else {
+            mApplicationContext.sendRpc(newRequest);
+        }
+
         return false;
     }
 
+    public boolean uploadSingleChoiceCreation(final SdlChoice choice, final ChoiceSetReadyListener listener){
+        SdlChoiceSet choiceSet = new SdlChoiceSet( new ArrayList<>(Collections.singletonList(choice)), mApplicationContext);
+        return uploadChoiceSetCreation(choiceSet, listener);
+    }
 
-    public boolean deleteChoiceSetCreation(final String name, final ChoiceSetDeletedListener listener){
+
+    public boolean deleteChoiceSetCreation(final SdlChoiceSet setToDelete, final ChoiceSetDeletedListener listener){
 
         DeleteInteractionChoiceSet deleteSet= new DeleteInteractionChoiceSet();
-        SdlChoiceSet setToDelete= grabUploadedChoiceSet(name);
         if(setToDelete!=null)
             deleteSet.setInteractionChoiceSetID(setToDelete.getChoiceSetId());
         else
@@ -104,40 +140,49 @@ public class SdlChoiceSetManager {
         deleteSet.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                unregisterSdlChoiceSet(name);
+                unregisterSdlChoiceSet(setToDelete);
                 if(listener!=null)
-                    listener.onChoiceSetRemoved(name);
+                    listener.onChoiceSetRemoved(setToDelete);
             }
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
                 if(listener!=null)
-                    listener.onError(name);
+                    listener.onError(setToDelete);
             }
         });
-        mApplication.sendRpc(deleteSet);
+        mApplicationContext.sendRpc(deleteSet);
         return false;
     }
 
 
-    boolean unregisterSdlChoiceSet(String choiceSetName){
+    boolean unregisterSdlChoiceSet(SdlChoiceSet choiceSetName){
         if(hasBeenUploaded(choiceSetName)){
-            mChoiceSet.remove(choiceSetName);
+            mChoiceSetsUploaded.remove(choiceSetName);
             return true;
         }else
             return false;
     }
 
-    SdlChoiceSet grabUploadedChoiceSet(String choiceSetName){
-        if(hasBeenUploaded(choiceSetName))
-            return mChoiceSet.get(choiceSetName);
+    SdlChoiceSet grabUploadedChoiceSet(SdlChoiceSet choiceSetName) {
+        if (hasBeenUploaded(choiceSetName))
+            return mChoiceSetsUploaded.get(choiceSetName);
         else
             return null;
     }
 
-    public boolean hasBeenUploaded(String name){
-        return mChoiceSet.containsKey(name);
+    public boolean hasBeenUploaded(SdlChoiceSet choiceSet){
+        return hasBeenUploaded(choiceSet.getChoiceSetId());
     }
+
+    boolean hasBeenUploaded(Integer choiceId){
+        return mChoiceSetsUploaded.containsKey(choiceId);
+    }
+
+    Collection<SdlChoiceSet> getUploadedSets(){
+        return mChoiceSetsUploaded.values();
+    }
+
 
 
     public interface ChoiceSetReadyListener {
@@ -149,7 +194,7 @@ public class SdlChoiceSetManager {
     }
 
     public interface ChoiceSetDeletedListener{
-        void onChoiceSetRemoved(String name);
-        void onError(String name);
+        void onChoiceSetRemoved(SdlChoiceSet setRemoved);
+        void onError(SdlChoiceSet setErroredOn);
     }
 }
