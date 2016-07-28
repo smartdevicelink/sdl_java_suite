@@ -201,72 +201,81 @@ public class SdlApplicationConfig {
          * Specifies a custom implementation of an SdlActivity.
          * @param sdlApplication Class to be used to instantiate the SdlAppliation.
          */
-        public void setSdlApplicationClass(Class<? extends SdlApplication> sdlApplication) {
+        public Builder setSdlApplicationClass(Class<? extends SdlApplication> sdlApplication) {
             this.sdlApplication = sdlApplication;
+            return this;
         }
 
         /**
          * Setter for Proxy Configuration Resources
          * @param sdlProxyConfigurationResources {@link SdlProxyConfigurationResources} to be used.
          */
-        public void setSdlProxyConfigurationResources(SdlProxyConfigurationResources sdlProxyConfigurationResources) {
+        public Builder setSdlProxyConfigurationResources(SdlProxyConfigurationResources sdlProxyConfigurationResources) {
             this.sdlProxyConfigurationResources = sdlProxyConfigurationResources;
+            return this;
         }
 
         /**
          * Setter for TTS Chunks to be used by the app.
          * @param ttsChunks
          */
-        public void setTtsChunks(Vector<TTSChunk> ttsChunks) {
+        public Builder setTtsChunks(Vector<TTSChunk> ttsChunks) {
             this.ttsChunks = ttsChunks;
+            return this;
         }
 
         /**
          * Setter for the abbreviated app name.
          * @param shortAppName
          */
-        public void setShortAppName(String shortAppName) {
+        public Builder setShortAppName(String shortAppName) {
             this.shortAppName = shortAppName;
+            return this;
         }
 
         /**
          * Setter for voice recognition synonyms to be used for the app name.
          * @param vrSynonyms
          */
-        public void setVrSynonyms(Vector<String> vrSynonyms) {
+        public Builder setVrSynonyms(Vector<String> vrSynonyms) {
             this.vrSynonyms = vrSynonyms;
+            return this;
         }
 
         /**
          * Setter for desired language.
          * @param language
          */
-        public void setLanguage(Language language) {
+        public Builder setLanguage(Language language) {
             this.language = language;
+            return this;
         }
 
         /**
          * Setter for desired display language.
          * @param hmiLanguage
          */
-        public void setHmiLanguage(Language hmiLanguage) {
+        public Builder setHmiLanguage(Language hmiLanguage) {
             this.hmiLanguage = hmiLanguage;
+            return this;
         }
 
         /**
          * Setter for app type classification.
          * @param vrAppHMITypes
          */
-        public void setVrAppHMITypes(Vector<AppHMIType> vrAppHMITypes) {
+        public Builder setVrAppHMITypes(Vector<AppHMIType> vrAppHMITypes) {
             this.vrAppHMITypes = vrAppHMITypes;
+            return this;
         }
 
         /**
          * Setter for auto activate ID.
          * @param autoActivateID
          */
-        public void setAutoActivateID(String autoActivateID) {
+        public Builder setAutoActivateID(String autoActivateID) {
             this.autoActivateID = autoActivateID;
+            return this;
         }
 
         /**
@@ -274,8 +283,9 @@ public class SdlApplicationConfig {
          * such as {@link BTTransportConfig} and {@link com.smartdevicelink.transport.TCPTransportConfig}.
          * @param transport
          */
-        public void setTransport(BaseTransportConfig transport) {
+        public Builder setTransport(BaseTransportConfig transport) {
             this.transport = transport;
+            return this;
         }
 
         /**
@@ -283,8 +293,9 @@ public class SdlApplicationConfig {
          * This will automatically be sent and set.
          * @param appIcon
          */
-        public void setAppIcon(SdlImage appIcon) {
+        public Builder setAppIcon(SdlImage appIcon) {
             this.appIcon = appIcon;
+            return this;
         }
     }
 }
