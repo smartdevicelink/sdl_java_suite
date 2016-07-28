@@ -84,8 +84,18 @@ public class TouchEvent extends RPCStruct {
         return (Integer) store.get(KEY_ID);
     }
     
-    @SuppressWarnings("unchecked")
+    /**
+     * Use getTimestamps
+     * @deprecated 4.0.2
+     * @return
+     */
+    @Deprecated
     public List<Long> getTs() {
+    	return getTimestamps();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Long> getTimestamps() {
     	if(store.get(KEY_TS) instanceof List<?>){
     		List<?> list = (List<?>)store.get(KEY_TS);
     		if(list != null && list.size()>0){
@@ -106,16 +116,35 @@ public class TouchEvent extends RPCStruct {
         return null;
     }
     
-    public void setTs(List<Long> ts) {
-        if (ts != null) {
+    public void setTimestamps(List<Long> ts){
+    	if (ts != null) {
             store.put(KEY_TS, ts);
         } else {
         	store.remove(KEY_TS);
         }
     }
     
-    @SuppressWarnings("unchecked")
+    /**
+     * Use setTimestamps. 
+     * @deprecated 4.0.2
+     * @param ts
+     */
+    @Deprecated
+    public void setTs(List<Long> ts) {
+       setTimestamps(ts);
+    }
+    
+    /**
+     * Use getTouchCoordinates
+     * @deprecated 4.0.2
+     * @return
+     */
+    @Deprecated
     public List<TouchCoord> getC() {
+    	return getTouchCoordinates();
+    }
+    @SuppressWarnings("unchecked")
+    public List<TouchCoord> getTouchCoordinates() {
         if (store.get(KEY_C) instanceof List<?>) {
         	List<?> list = (List<?>)store.get(KEY_C);
 	        if (list != null && list.size() > 0) {
@@ -134,7 +163,17 @@ public class TouchEvent extends RPCStruct {
         return null;
     } 
     
+    /**
+     * Use setTouchCoordinates
+     * @deprecated 4.0.2
+     * @return
+     */
+    @Deprecated
     public void setC( List<TouchCoord> c ) {
+    	setTouchCoordinates(c);
+    }
+    
+    public void setTouchCoordinates( List<TouchCoord> c ) {
         if (c != null) {
             store.put(KEY_C, c );
         } else {

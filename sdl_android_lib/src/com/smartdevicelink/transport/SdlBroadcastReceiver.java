@@ -176,7 +176,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			return false;
 		}
 		Log.d(TAG, "Looking for Service: "+ SDL_ROUTER_SERVICE_CLASS_NAME);
-		ActivityManager manager = (ActivityManager) context.getSystemService("activity");
+		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	    	//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
@@ -198,11 +198,14 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 	/**
 	 * If a Router Service is running, this method determines if that service is connected to a device over some form of transport.
-	 * @param context A context to access Android system services through.
+	 * @param context A context to access Android system services through. If null is passed, this will always return false
 	 * @return True if a transport connection is established, false otherwise.
 	 */
 	public static boolean isTransportConnected(Context context){
 		Log.d(TAG, "Checking to see if router service is transport connected");
+		if(context == null){
+			return false;
+		}
 		if(isRouterServiceRunning(context,false)){	//So there is a service up, let's see if it's connected
 			Context con;
 			try {
@@ -244,13 +247,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	}
 	
 	/**
-	 * We need to define this for local copy of the Sdl Bluetooth Service class.
-	 * It will be the main point of connection for Sdl Connected apps
+	 * We need to define this for local copy of the Sdl Router Service class.
+	 * It will be the main point of connection for Sdl enabled apps
 	 * @return Return the local copy of SdlRouterService.class
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("rawtypes")
-	public abstract Class defineLocalSdlRouterClass();
+	public abstract Class<? extends SdlRouterService> defineLocalSdlRouterClass();
 
 	
 	

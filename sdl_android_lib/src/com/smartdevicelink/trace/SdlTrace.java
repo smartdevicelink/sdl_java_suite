@@ -274,7 +274,7 @@ public class SdlTrace {
 		sb.append("<ver>");
 		sb.append(hdr.getVersion());
 		sb.append("</ver><cmp>");
-		sb.append(hdr.isCompression());
+		sb.append(hdr.isEncrypted());
 		sb.append("</cmp><ft>");
 		sb.append(getProtocolFrameType(hdr.getFrameType()));
 		sb.append("</ft><st>");

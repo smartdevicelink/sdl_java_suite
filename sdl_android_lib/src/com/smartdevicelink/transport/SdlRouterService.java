@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Notification;
@@ -40,6 +41,7 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
+import android.os.Build;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcel;
@@ -1086,8 +1088,8 @@ public class SdlRouterService extends Service{
 	            		case MultiplexBluetoothTransport.STATE_NONE:
 	            			// We've just lost the connection
 	            			storeConnectedStatus(false);
-	            			if(!connectAsClient && !closing){
-	            				if(!legacyModeEnabled){
+	            			if(!connectAsClient ){
+	            				if(!legacyModeEnabled && !closing){
 	            					initBluetoothSerialService();
 	            				}
 	            				onTransportDisconnected(TransportType.BLUETOOTH);
@@ -1258,7 +1260,7 @@ public class SdlRouterService extends Service{
 	    				//Log.w(TAG, "Packet too big for IPC buffer. Breaking apart and then sending to client.");
 	    				//We need to churn through the packet payload and send it in chunks
 	    				byte[] bytes = packet.getPayload();
-	    				SdlPacket copyPacket = new SdlPacket(packet.getVersion(),packet.isCompression(),
+	    				SdlPacket copyPacket = new SdlPacket(packet.getVersion(),packet.isEncrypted(),
 	    										(int)packet.getFrameType().getValue(),
 	    													packet.getServiceType(),packet.getFrameInfo(), session,
 	    													(int)packet.getDataSize(),packet.getMessageId(),null);
@@ -1573,6 +1575,7 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB) 
 	private boolean removeAllSessionsWithAppId(long appId){
 		synchronized(SESSION_LOCK){
 			if(sessionMap!=null){

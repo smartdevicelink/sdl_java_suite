@@ -397,7 +397,7 @@ public class TransportBroker {
 				
 				return false;
 			}
-			ActivityManager manager = (ActivityManager) context.getSystemService("activity");
+			ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 		    	//We will check to see if it contains this name, should be pretty specific
 		    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) { 
