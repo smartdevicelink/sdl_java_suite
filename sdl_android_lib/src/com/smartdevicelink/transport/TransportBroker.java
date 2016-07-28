@@ -154,11 +154,16 @@ public class TransportBroker {
             		case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
             			// yay! we have been registered. Now what?
             			registeredWithRouterService = true;
-            			if(bundle !=null && bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
-            				if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
-            					//Keep track if we actually get this
+            			if(bundle !=null){
+            				if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+            					if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
+            						//Keep track if we actually get this
+            					}
+            					onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
             				}
-            				onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            				/*if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
+            					//Keep track if we actually get this
+            				}*/
             			}
             			break;
             		case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:

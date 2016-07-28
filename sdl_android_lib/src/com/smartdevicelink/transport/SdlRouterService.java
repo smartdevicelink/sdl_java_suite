@@ -365,9 +365,11 @@ public class SdlRouterService extends Service{
 	                			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
 	                		}
 	            		}
-	            		if(!returnBundle.isEmpty()){
-	            			message.setData(returnBundle);
-	            		}
+	            		//Add the version of this router service
+	            		returnBundle.putInt(TransportConstants.ROUTER_SERVICE_VERSION, SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER);
+	            		
+	            		message.setData(returnBundle);
+	            		
 	            		int result = app.sendMessage(message);
 	            		if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
 	            			synchronized(REGISTERED_APPS_LOCK){
