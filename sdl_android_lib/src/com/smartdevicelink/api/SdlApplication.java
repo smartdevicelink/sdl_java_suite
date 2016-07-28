@@ -18,6 +18,7 @@ import com.smartdevicelink.api.view.SdlButton;
 import com.smartdevicelink.api.view.SdlChoiceSetManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
@@ -90,6 +91,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class SdlApplication extends SdlContextAbsImpl {
 
@@ -121,6 +123,7 @@ public class SdlApplication extends SdlContextAbsImpl {
     private SdlProxyALM mSdlProxyALM;
 
     private final ArrayList<LifecycleListener> mLifecycleListeners = new ArrayList<>();
+    private final SparseArray<HashSet<OnRPCNotificationListener>> mNotificationListeners = new SparseArray<>();
 
     private ConnectionStatusListener mApplicationStatusListener;
     private Status mConnectionStatus;
@@ -189,14 +192,6 @@ public class SdlApplication extends SdlContextAbsImpl {
             Log.w(TAG, "Attempting to initialize SdlContext that is already initialized. Class " +
                     this.getClass().getCanonicalName());
         }
-    }
-
-    public final void addNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-        mSdlProxyALM.addOnRPCNotificationListener(notificationId, listener);
-    }
-
-    public final void removeNotificationListener(FunctionID notificationId) {
-        mSdlProxyALM.removeOnRPCNotificationListener(notificationId);
     }
 
     public final String getName() {
@@ -285,6 +280,43 @@ public class SdlApplication extends SdlContextAbsImpl {
     @Override
     public final void registerMenuCallback(int id, SdlMenuOption.SelectListener listener) {
         mMenuListenerRegistry.append(id, listener);
+    }
+
+    @Override
+    public void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
+        final int id = functionID.getId();
+        HashSet<OnRPCNotificationListener> listenerSet = mNotificationListeners.get(id);
+        if(listenerSet == null){
+            listenerSet = new HashSet<>();
+            listenerSet.add(rpcNotificationListener);
+
+            OnRPCNotificationListener dispatchingListener = new OnRPCNotificationListener(){
+
+                @Override
+                public void onNotified(RPCNotification notification) {
+                    HashSet<OnRPCNotificationListener> listenerSet = mNotificationListeners.get(id);
+                    for(OnRPCNotificationListener clientListener: listenerSet){
+                        clientListener.onNotified(notification);
+                    }
+                }
+            };
+
+            mSdlProxyALM.addOnRPCNotificationListener(functionID, dispatchingListener);
+        } else {
+            listenerSet.add(rpcNotificationListener);
+        }
+    }
+
+    @Override
+    public void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
+        int id = functionID.getId();
+        HashSet<OnRPCNotificationListener> listenerSet = mNotificationListeners.get(id);
+        if(listenerSet != null){
+            listenerSet.remove(rpcNotificationListener);
+            if(listenerSet.isEmpty()){
+                mSdlProxyALM.removeOnRPCNotificationListener(functionID);
+            }
+        }
     }
 
     @Override
