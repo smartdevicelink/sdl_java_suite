@@ -1137,8 +1137,8 @@ public class SdlRouterService extends Service{
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_NONE:
 	            			// We've just lost the connection
-	            			if(!connectAsClient && !closing){
-	            				if(!legacyModeEnabled){
+	            			if(!connectAsClient ){
+	            				if(!legacyModeEnabled && !closing){
 	            					initBluetoothSerialService();
 	            				}
 	            				onTransportDisconnected(TransportType.BLUETOOTH);
