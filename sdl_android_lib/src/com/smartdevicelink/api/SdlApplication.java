@@ -144,22 +144,21 @@ public class SdlApplication extends SdlContextAbsImpl {
                 mLifecycleListeners.add(mSdlActivityManager);
                 mSdlFileManager = new SdlFileManager(SdlApplication.this, mApplicationConfig);
                 mLifecycleListeners.add(mSdlFileManager);
-                onCreate();
                 if (mSdlProxyALM != null) {
                     mConnectionStatus = Status.CONNECTING;
                     listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
                 } else {
-                    onConnect();
+                    onCreate();
                 }
             }
         });
     }
 
     // Methods to be overridden by developer.
-    protected void onCreate() {
+    protected void onConnect() {
     }
 
-    protected void onConnect() {
+    protected void onCreate() {
     }
 
     protected void onDisconnect() {
@@ -409,6 +408,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                     if (!isFirstHmiReceived) {
                         isFirstHmiReceived = true;
                         mConnectionStatus = Status.CONNECTED;
+                        onConnect();
                         mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTED);
 
                         for (LifecycleListener listener : mLifecycleListeners) {
@@ -419,6 +419,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                     if (!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE) {
                         Log.i(TAG, toString() + " is launching activity: " + mApplicationConfig.getMainSdlActivityClass().getCanonicalName());
                         // TODO: Add check for resume
+                        onCreate();
                         mSdlActivityManager.onSdlAppLaunch(SdlApplication.this, mApplicationConfig.getMainSdlActivityClass());
                         isFirstHmiNotNoneReceived = true;
                     }
