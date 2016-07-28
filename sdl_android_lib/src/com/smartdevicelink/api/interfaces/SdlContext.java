@@ -8,7 +8,9 @@ import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.menu.SdlMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuOption;
 import com.smartdevicelink.api.menu.SdlMenuTransaction;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public interface SdlContext {
 
@@ -35,5 +37,9 @@ public interface SdlContext {
     Handler getExecutionHandler();
 
     SdlMenuTransaction beginGlobalMenuTransaction();
+
+    void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
+
+    void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
 
 }

@@ -5,6 +5,8 @@ import android.content.Context;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.menu.SdlMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuTransaction;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 abstract class SdlContextAbsImpl implements SdlContext {
 
@@ -49,6 +51,16 @@ abstract class SdlContextAbsImpl implements SdlContext {
 
     final boolean isInitialized(){
         return isInitialized;
+    }
+
+    @Override
+    public void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
+        mSdlApplicationContext.registerRpcNotificationListener(functionID, rpcNotificationListener);
+    }
+
+    @Override
+    public void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
+        mSdlApplicationContext.unregisterRpcNotificationListener(functionID, rpcNotificationListener);
     }
 
 }
