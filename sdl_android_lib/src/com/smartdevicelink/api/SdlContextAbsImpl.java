@@ -3,7 +3,8 @@ package com.smartdevicelink.api;
 import android.content.Context;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
-import com.smartdevicelink.api.menu.SdlMenu;
+import com.smartdevicelink.api.menu.SdlMenuManager;
+import com.smartdevicelink.api.menu.SdlMenuTransaction;
 
 abstract class SdlContextAbsImpl implements SdlContext {
 
@@ -15,11 +16,6 @@ abstract class SdlContextAbsImpl implements SdlContext {
     private Context mAndroidContext;
 
     @Override
-    public SdlMenu getTopMenu() {
-        return mSdlApplicationContext.getTopMenu();
-    }
-
-    @Override
     public final SdlContext getSdlApplicationContext(){
         return mSdlApplicationContext;
     }
@@ -27,6 +23,16 @@ abstract class SdlContextAbsImpl implements SdlContext {
     @Override
     public final Context getAndroidApplicationContext(){
         return mAndroidContext;
+    }
+
+    @Override
+    public SdlMenuTransaction beginGlobalMenuTransaction() {
+        return mSdlApplicationContext.beginGlobalMenuTransaction();
+    }
+
+    @Override
+    public SdlMenuManager getSdlMenuManager() {
+        return mSdlApplicationContext.getSdlMenuManager();
     }
 
     final void setSdlApplicationContext(SdlContext sdlContext){
