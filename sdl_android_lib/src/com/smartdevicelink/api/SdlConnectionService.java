@@ -31,9 +31,21 @@ public class SdlConnectionService extends Service {
     void startSdlApplication(SdlApplicationConfig config){
         synchronized (MAP_LOCK) {
             if (mRunningApplications.get(config.getAppId()) == null) {
-                mRunningApplications.put(config.getAppId(),
-                        new SdlApplication(this, config, mConnectionStatusListener));
-                startTimer();
+                try {
+                    SdlApplication application;
+                    if(config.getSdlApplicationClass() == null){
+                        application = new SdlApplication();
+                    } else {
+                        Class<? extends SdlApplication> clazz = config.getSdlApplicationClass();
+                        application = clazz.newInstance();
+                    }
+                    application.initialize(this, config, mConnectionStatusListener);
+                    mRunningApplications.put(config.getAppId(), application);
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -41,10 +53,8 @@ public class SdlConnectionService extends Service {
     void startSdlApplication(Map<String, SdlApplicationConfig> configRegistry){
         synchronized (MAP_LOCK) {
             for (Map.Entry<String, SdlApplicationConfig> entry : configRegistry.entrySet()) {
-                if (mRunningApplications.get(entry.getKey()) == null) {
-                    mRunningApplications.put(entry.getKey(),
-                            new SdlApplication(this, entry.getValue(), mConnectionStatusListener));
-                }
+                SdlApplicationConfig config = entry.getValue();
+                startSdlApplication(config);
             }
         }
     }

@@ -8,8 +8,8 @@ import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
-import com.smartdevicelink.api.menu.SdlLocalMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuOption;
+import com.smartdevicelink.api.menu.SdlMenuTransaction;
 import com.smartdevicelink.proxy.RPCRequest;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
@@ -35,7 +35,6 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     private boolean superCalled;
     private boolean isBackHandled;
-    private SdlLocalMenuManager mLocalMenuManager;
 
     final void initialize(SdlContext sdlContext) {
         if (!isInitialized()) {
@@ -122,7 +121,9 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     final void performStart(){
         superCalled = false;
         mActivityState = SdlActivityState.BACKGROUND;
+        getSdlMenuManager().redoTransactions(this);
         this.onStart();
+        Log.d(TAG, "Redo complete.");
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStart(). This should NEVER happen.");
     }
@@ -147,6 +148,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         superCalled = false;
         mActivityState = SdlActivityState.STOPPED;
         this.onStop();
+        getSdlMenuManager().undoTransactions(this);
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStop(). This should NEVER happen.");
     }
@@ -155,6 +157,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         superCalled = false;
         mActivityState = SdlActivityState.DESTROYED;
         this.onDestroy();
+        getSdlMenuManager().clearTransactionRecord(this);
         if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onDestroy(). This should NEVER happen.");
     }
@@ -163,6 +166,10 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         isBackHandled = true;
         this.onBackNavigation();
         return isBackHandled;
+    }
+
+    public SdlMenuTransaction beginLocalMenuTransaction(){
+        return new SdlMenuTransaction(this, this);
     }
 
     @Override
