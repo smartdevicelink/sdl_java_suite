@@ -14,7 +14,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 /**
  * Created by mschwerz on 6/17/16.
  */
-public class SdlInteractionSender {
+class SdlInteractionSender {
     boolean mIsPending;
     private final SdlPermission mSdlPermission;
 

@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * Created by mschwerz on 6/20/16.
  */
-public class SdlInteractionButtonManager {
+class SdlInteractionButtonManager {
 
     private Collection<SdlButton> mButtons;
     private boolean mIsButtonPressed= false;

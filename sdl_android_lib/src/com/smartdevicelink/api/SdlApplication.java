@@ -264,9 +264,9 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
-    public SdlChoiceSetManager getSdlChoiceSetManager(){return mSdlChoiceSetManager;}
+    public final SdlChoiceSetManager getSdlChoiceSetManager(){return mSdlChoiceSetManager;}
 
-    public int registerButtonCallback(SdlButton.OnPressListener listener) {
+    public final int registerButtonCallback(SdlButton.OnPressListener listener) {
         int buttonId = mAutoButtonId++;
         mButtonListenerRegistry.append(buttonId, listener);
         return buttonId;
@@ -330,12 +330,12 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
-    public void registerAudioPassThruListener(SdlAudioPassThruDialog.ReceiveDataListener listener) {
+    public final void registerAudioPassThruListener(SdlAudioPassThruDialog.ReceiveDataListener listener) {
         mAudioPassThruListener= listener;
     }
 
     @Override
-    public void unregisterAudioPassThruListener(SdlAudioPassThruDialog.ReceiveDataListener listener) {
+    public final void unregisterAudioPassThruListener(SdlAudioPassThruDialog.ReceiveDataListener listener) {
         if(mAudioPassThruListener==listener){
             mAudioPassThruListener=null;
         }
@@ -441,7 +441,7 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
-    public SdlPermissionManager getSdlPermissionManager() {
+    public final SdlPermissionManager getSdlPermissionManager() {
         return mSdlPermissionManager;
     }
 
