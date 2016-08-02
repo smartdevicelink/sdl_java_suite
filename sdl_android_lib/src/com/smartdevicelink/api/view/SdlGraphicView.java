@@ -32,6 +32,8 @@ public class SdlGraphicView extends SdlView {
 
     @Override
     public void setSdlContext(SdlContext sdlContext) {
+        Log.i(TAG, "SdlContext set on graphic view.");
+        if(sdlContext == null) Log.w(TAG, "SdlContext is null.");
         super.setSdlContext(sdlContext);
         if(mSdlImage != null) {
             checkImagePresence();
@@ -43,6 +45,7 @@ public class SdlGraphicView extends SdlView {
     }
 
     private void checkImagePresence() {
+        Log.i(TAG, "Checking image presence for SdlImage: " + mSdlImage.getSdlName());
         SdlFileManager fileManager = mSdlContext.getSdlFileManager();
         isImagePresent = fileManager.isFileOnModule(mSdlImage.getSdlName());
         if (!isWaitingToUpload && !isImagePresent) {

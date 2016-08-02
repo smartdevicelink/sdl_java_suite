@@ -202,19 +202,19 @@ public class SdlTemplateView extends SdlView {
             if(mLeftView != null){
                 mLeftView.setSdlViewManager(mViewManager);
                 mLeftView.setDisplayCapabilities(mDisplayCapabilities);
-                mLeftView.setSdlContext(mSdlContext);
+                if(mSdlContext != null) mLeftView.setSdlContext(mSdlContext);
             }
             mRightView = secondaryView;
             if(mRightView != null){
                 mRightView.setSdlViewManager(mViewManager);
                 mRightView.setDisplayCapabilities(mDisplayCapabilities);
-                mRightView.setSdlContext(mSdlContext);
+                if(mSdlContext != null) mRightView.setSdlContext(mSdlContext);
             }
             mSdlButtonView = buttonView;
             if(mSdlButtonView != null){
                 mSdlButtonView.setSdlViewManager(mViewManager);
                 mSdlButtonView.setDisplayCapabilities(mDisplayCapabilities);
-                mSdlButtonView.setSdlContext(mSdlContext);
+                if(mSdlContext != null) mSdlButtonView.setSdlContext(mSdlContext);
             }
             isLayoutDifferent = template != mTemplate;
             mTemplate = template;
@@ -246,15 +246,26 @@ public class SdlTemplateView extends SdlView {
 
     @Override
     public void setSdlContext(SdlContext sdlContext) {
+        Log.i(TAG, "SdlTemplateView setSdlContext called.");
+        if(sdlContext == null) Log.w(TAG, "SdlContext is null!");
         mSdlContext = sdlContext;
         if(mLeftView != null){
             mLeftView.setSdlViewManager(mViewManager);
+            mLeftView.setSdlContext(mSdlContext);
+        } else {
+            Log.w(TAG, "mLeftView is null!");
         }
         if(mRightView != null){
             mRightView.setSdlViewManager(mViewManager);
+            mRightView.setSdlContext(mSdlContext);
+        } else {
+            Log.w(TAG, "mRightView is null!");
         }
         if(mSdlButtonView != null){
             mSdlButtonView.setSdlViewManager(mViewManager);
+            mRightView.setSdlContext(mSdlContext);
+        } else {
+            Log.w(TAG, "mButtonView is null!");
         }
     }
 
