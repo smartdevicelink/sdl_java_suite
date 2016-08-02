@@ -82,7 +82,7 @@ public class RPCStruct {
 		protectedPayload = bVal;
 	}
 	
-	public Boolean getPayloadProtected() {
+	public Boolean isPayloadProtected() {
 		return protectedPayload;
 	}
 	

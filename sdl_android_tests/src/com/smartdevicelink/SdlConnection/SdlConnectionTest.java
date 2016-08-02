@@ -1,15 +1,14 @@
 package com.smartdevicelink.SdlConnection;
 
 import android.test.AndroidTestCase;
-import android.util.Log;
 
+import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.test.SdlUnitTestContants;
 
 public class SdlConnectionTest extends AndroidTestCase {
 	

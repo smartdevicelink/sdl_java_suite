@@ -9,7 +9,6 @@ import java.net.URLConnection;
 import junit.framework.TestCase;
 
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
-import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -113,58 +112,48 @@ class MockInterfaceBroker implements ISdlConnectionListener {
 	public MockInterfaceBroker () { }
 	@Override
 	public void onTransportDisconnected(String info) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onTransportError(String info, Exception e) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolMessageReceived(ProtocolMessage msg) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID,
 			boolean isEncrypted) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
 			String correlationID) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolSessionEndedNACKed(SessionType sessionType,
 			byte sessionID, String correlationID) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolError(String info, Exception e) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onHeartbeatTimedOut(byte sessionID) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
 			byte sessionID) {
-		// TODO Auto-generated method stub
 		
 	}
 }
