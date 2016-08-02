@@ -9,7 +9,7 @@ public abstract class LockScreenActivity extends Activity {
     @Override
     @CallSuper
     protected final void onDestroy() {
-        LockScreenActivityManager.setLockScreenInstance(null);
+        LockScreenManager.setLockScreenInstance(null);
         super.onDestroy();
     }
 
@@ -17,7 +17,7 @@ public abstract class LockScreenActivity extends Activity {
     @CallSuper
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LockScreenActivityManager.setLockScreenInstance(this);
+        LockScreenManager.setLockScreenInstance(this);
     }
 
     @Override

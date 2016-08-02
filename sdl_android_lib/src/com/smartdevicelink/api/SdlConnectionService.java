@@ -10,7 +10,7 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.smartdevicelink.api.lockscreen.LockScreenActivityManager;
+import com.smartdevicelink.api.lockscreen.LockScreenManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class SdlConnectionService extends Service {
             if (mRunningApplications.get(config.getAppId()) == null) {
                 mRunningApplications.put(config.getAppId(),
                         new SdlApplication(this, config, mConnectionStatusListener,
-                                LockScreenActivityManager.getInstance()));
+                                LockScreenManager.getInstance()));
                 startTimer();
             }
         }
@@ -47,7 +47,7 @@ public class SdlConnectionService extends Service {
                 if (mRunningApplications.get(entry.getKey()) == null) {
                     mRunningApplications.put(entry.getKey(),
                             new SdlApplication(this, entry.getValue(), mConnectionStatusListener,
-                                    LockScreenActivityManager.getInstance()));
+                                    LockScreenManager.getInstance()));
                 }
             }
         }

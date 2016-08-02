@@ -11,8 +11,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.smartdevicelink.api.lockscreen.LockScreenActivityManager;
+import com.smartdevicelink.api.lockscreen.LockScreenManager;
 import com.smartdevicelink.api.lockscreen.LockScreenConfig;
+import com.smartdevicelink.api.lockscreen.SdlLockScreenListener;
 
 import java.util.HashMap;
 
@@ -58,7 +59,23 @@ public class SdlManager {
         synchronized (SYNC_LOCK) {
             if (!isPrepared) {
                 mPersistentNotification = persistentNotification;
-                LockScreenActivityManager.initialize(application, lockScreenConfig);
+                LockScreenManager.initialize(application, lockScreenConfig);
+                mAndroidContext = application;
+                bindConnectionService();
+                isPrepared = true;
+            } else {
+                Log.w(TAG, "SdlManager.prepare(Context context) called when SdlManager is already prepared.\n" +
+                        "No action taken.");
+            }
+        }
+    }
+
+    public void prepare(@NonNull Application application, @NonNull SdlLockScreenListener lockScreenListener,
+                        @Nullable Notification persistentNotification){
+        synchronized (SYNC_LOCK) {
+            if (!isPrepared) {
+                mPersistentNotification = persistentNotification;
+                LockScreenManager.initialize(application, lockScreenListener);
                 mAndroidContext = application;
                 bindConnectionService();
                 isPrepared = true;
