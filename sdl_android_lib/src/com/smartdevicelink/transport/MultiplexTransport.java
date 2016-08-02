@@ -33,16 +33,6 @@ public class MultiplexTransport extends SdlTransport{
 		//brokerThread.start();
 
 	}
-
-	public boolean forceHardwareConnectEvent(TransportType type){
-		if(brokerThread!=null){
-			brokerThread.onHardwareConnected(type);
-			return true;
-		}
-		Log.w(TAG, "Transport broker thread was null, nothing to force connect. Are we disconnecting? " + isDisconnecting);
-		return false;
-
-	}
 	
 	public boolean isDisconnecting(){
 		return this.isDisconnecting;

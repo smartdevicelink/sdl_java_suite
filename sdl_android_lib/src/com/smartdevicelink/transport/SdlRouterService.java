@@ -104,7 +104,8 @@ public class SdlRouterService extends Service{
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
-	private boolean isTarnsportConnected = false;
+	private boolean isTransportConnected = false;
+	private TransportType connectedTransportType = null;
 	private static Context currentContext = null;
     
     private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
@@ -320,9 +321,10 @@ public class SdlRouterService extends Service{
 	                	pingClients();
 	                	Message message = Message.obtain();
 	                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
+            			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_SUCESS;
 	                	long appId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	if(appId<0 || msg.replyTo == null){
-	                		Log.w(TAG, "Unable to requster app as no id or messenger was included");
+	                		Log.w(TAG, "Unable to register app as no id or messenger was included");
 	                		if(msg.replyTo!=null){
 	                			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
 	                			try {
@@ -356,11 +358,14 @@ public class SdlRouterService extends Service{
 	                		}
 	                	}
 	            		onAppRegistered(app);
-	            		
+
 	            		returnBundle = new Bundle();
-	            		
-	            		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
-	            			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+	            		//Add params if connected
+	            		if(SdlRouterService.this.isTransportConnected){
+	            			returnBundle.putString(TransportConstants.HARDWARE_CONNECTED, SdlRouterService.this.connectedTransportType.name());
+	                		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+	                			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+	                		}
 	            		}
 	            		if(!returnBundle.isEmpty()){
 	            			message.setData(returnBundle);
@@ -371,7 +376,6 @@ public class SdlRouterService extends Service{
 	            				registeredApps.remove(appId);
 	            			}
 	            		}
-
 	                    break;
 	                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
 	                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
@@ -520,7 +524,6 @@ public class SdlRouterService extends Service{
         						&& altTransportService.equals(msg.replyTo)){
         					//The same transport that was connected to the router service is now telling us it's disconnected. Let's inform clients and clear our saved messenger
         					altTransportService = null;
-        					storeConnectedStatus(false);
         					onTransportDisconnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
         					shouldServiceRemainOpen(null); //this will close the service if bluetooth is not available
         				}
@@ -540,7 +543,6 @@ public class SdlRouterService extends Service{
         					altTransportTimerHandler = null;
         					altTransportTimerRunnable = null;
         					
-        					storeConnectedStatus(true);
         					//Let the alt transport know they are good to go
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS;
         					onTransportConnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_CONNECTED)));
@@ -576,6 +578,39 @@ public class SdlRouterService extends Service{
 	        	
 	        }
 	    };
+	    
+	    /**
+	     * Target we publish for alternative transport (USB) clients to send messages to RouterHandler.
+	     */
+	    final Messenger routerStatusMessenger = new Messenger(new RouterStatusHandler());
+	    
+		 /**
+	     * Handler of incoming messages from an alternative transport (USB).
+	     */
+	    class RouterStatusHandler extends Handler {
+	    	ClassLoader loader = getClass().getClassLoader();
+	        @Override
+	        public void handleMessage(Message msg) {
+	        	switch(msg.what){
+	        	case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
+	        		if(msg.replyTo==null){
+	        			break;
+	        		}
+	        		Message message = Message.obtain();
+	        		message.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
+	        		message.arg1 = (isTransportConnected == true) ? 1 : 0;
+	        		try {
+						msg.replyTo.send(message);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+	        		break;
+	        	default:
+	        		Log.w(TAG, "Unsopported request: " + msg.what);
+	        		break;
+	        	}
+	        }
+	    };
 		
 /* **************************************************************************************************************************************
 ***********************************************  Life Cycle **************************************************************
@@ -594,6 +629,8 @@ public class SdlRouterService extends Service{
 				return this.altTransportMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_CLIENT.equals(requestType)){
 				return this.routerMessenger.getBinder();
+			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
+				return this.routerStatusMessenger.getBinder();
 			}else{
 				Log.w(TAG, "Uknown bind request type");
 			}
@@ -691,7 +728,6 @@ public class SdlRouterService extends Service{
 		}
 		closing = false;
 		currentContext = getBaseContext();
-		storeConnectedStatus(false);
 		
 		startVersionCheck();
 		Log.i(TAG, "SDL Router Service has been created");
@@ -947,7 +983,6 @@ public class SdlRouterService extends Service{
 	 */
 	public void closeSelf(){
 		closing = true;
-		storeConnectedStatus(false);
 		if(getBaseContext()!=null){
 			stopSelf();
 		}else{
@@ -980,7 +1015,7 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void onTransportConnected(final TransportType type){
-		isTarnsportConnected = true;
+		isTransportConnected = true;
 		enterForeground();
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
@@ -988,6 +1023,8 @@ public class SdlRouterService extends Service{
 		}
 		packetWriteTaskMaster = new PacketWriteTaskMaster();
 		packetWriteTaskMaster.start();
+		
+		connectedTransportType = type;
 		
 		Intent startService = new Intent();  
 		startService.setAction(START_SERVICE_ACTION);
@@ -997,6 +1034,23 @@ public class SdlRouterService extends Service{
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
     	sendBroadcast(startService); 
 		//HARDWARE_CONNECTED
+    	if(!(registeredApps== null || registeredApps.isEmpty())){
+    		//If we have clients
+			notifyClients(createHardwareConnectedMessage(type));
+    	}
+	}
+	
+	private Message createHardwareConnectedMessage(final TransportType type){
+			Message message = Message.obtain();
+			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
+			Bundle bundle = new Bundle();
+			bundle.putString(TransportConstants.HARDWARE_CONNECTED, type.name());
+    		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+    			bundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+    		}
+			message.setData(bundle);
+			return message;
+		
 	}
 	
 	public void onTransportDisconnected(TransportType type){
@@ -1004,8 +1058,8 @@ public class SdlRouterService extends Service{
 			return;
 		}
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
-		
-		isTarnsportConnected = false;
+		connectedTransportType = null;
+		isTransportConnected = false;
 		stopClientPings();
 		
 		exitForeground();//Leave our foreground state as we don't have a connection anymore
@@ -1076,18 +1130,15 @@ public class SdlRouterService extends Service{
 	            	case MESSAGE_STATE_CHANGE:
 	            		switch (msg.arg1) {
 	            		case MultiplexBluetoothTransport.STATE_CONNECTED:
-	            			storeConnectedStatus(true);
 	            			onTransportConnected(TransportType.BLUETOOTH);
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_CONNECTING:
 	            			// Currently attempting to connect - update UI?
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_LISTEN:
-	            			storeConnectedStatus(false);
 	            			break;
 	            		case MultiplexBluetoothTransport.STATE_NONE:
 	            			// We've just lost the connection
-	            			storeConnectedStatus(false);
 	            			if(!connectAsClient ){
 	            				if(!legacyModeEnabled && !closing){
 	            					initBluetoothSerialService();
@@ -1425,17 +1476,6 @@ public class SdlRouterService extends Service{
 		//**************************************************************************************************************************************
 		//********************************************************* PREFERENCES ****************************************************************
 		//**************************************************************************************************************************************
-		
-		@SuppressLint("WorldReadableFiles")
-		@SuppressWarnings("deprecation")
-		private void storeConnectedStatus(boolean isConnected){
-			SharedPreferences prefs = getApplicationContext().getSharedPreferences(getApplicationContext().getPackageName()+SdlBroadcastReceiver.TRANSPORT_GLOBAL_PREFS,
-                    Context.MODE_WORLD_READABLE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(SdlBroadcastReceiver.IS_TRANSPORT_CONNECTED, isConnected);
-            editor.commit();
-		}
-		
 		/**
 		 * This method will set the last known bluetooth connection method that worked with this phone.
 		 * This helps speed up the process of connecting
@@ -1777,7 +1817,7 @@ public class SdlRouterService extends Service{
 	
 	private void startClientPings(){
 		synchronized(this){
-			if(!isTarnsportConnected){ //If we aren't connected, bail
+			if(!isTransportConnected){ //If we aren't connected, bail
 				return;
 			}
 		if(isPingingClients){
