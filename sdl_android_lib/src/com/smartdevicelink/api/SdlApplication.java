@@ -272,6 +272,7 @@ public class SdlApplication extends SdlContextAbsImpl {
         HashSet<OnRPCNotificationListener> listenerSet = mNotificationListeners.get(id);
         if(listenerSet == null){
             listenerSet = new HashSet<>();
+            mNotificationListeners.append(id, listenerSet);
             listenerSet.add(rpcNotificationListener);
 
             OnRPCNotificationListener dispatchingListener = new OnRPCNotificationListener(){
@@ -279,7 +280,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                 @Override
                 public void onNotified(RPCNotification notification) {
                     HashSet<OnRPCNotificationListener> listenerSet = mNotificationListeners.get(id);
-                    for(OnRPCNotificationListener clientListener: listenerSet){
+                    for (OnRPCNotificationListener clientListener : listenerSet) {
                         clientListener.onNotified(notification);
                     }
                 }
@@ -331,6 +332,8 @@ public class SdlApplication extends SdlContextAbsImpl {
                 OnRPCResponseListener newListener = new OnRPCResponseListener() {
                     @Override
                     public void onResponse(final int correlationId, final RPCResponse response) {
+                        request.setOnRPCResponseListener(listener);
+
                         mExecutionHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -380,21 +383,19 @@ public class SdlApplication extends SdlContextAbsImpl {
                                     e.printStackTrace();
                                 }
                                 if (listener != null) listener.onResponse(correlationId, response);
-                                request.setOnRPCResponseListener(listener);
                             }
                         });
                     }
 
                     @Override
                     public void onError(final int correlationId, final Result resultCode, final String info) {
+                        request.setOnRPCResponseListener(listener);
                         mExecutionHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 Log.w(TAG, "RPC Error for correlation ID " + correlationId + " Result: " +
                                         resultCode + " - " + info);
-                                if (listener != null)
-                                    listener.onError(correlationId, resultCode, info);
-                                request.setOnRPCResponseListener(listener);
+                                if(listener != null) listener.onError(correlationId, resultCode, info);
                             }
                         });
                     }
