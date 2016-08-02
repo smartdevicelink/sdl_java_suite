@@ -362,7 +362,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 						} catch (SdlException e) {
 							e.printStackTrace();
 						}
-						((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 					}
 				}else{ //The service must be null or already consumed. Let's see if we can find the connection that consumed it
 					for (SdlSession session : listenerList) {
@@ -532,12 +531,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
 			//Log.d(TAG, "Consumed component name: " +tempCompName );
 			if(config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
-				boolean forced = multi.forceHardwareConnectEvent(TransportType.BLUETOOTH);
-				
-				if(!forced && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
+				if(!multi.getIsConnected() && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
 					//Log.d(TAG, "Recreating our multiplexing transport");
 					_transport = new MultiplexTransport(config,this);
-					((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
+					try {
+						startTransport();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
 				}//else{Log.w(TAG, "Guess we're just calling it a day");}
 			}else if(tempCompName!=null){
 				//We have a conflicting service request
@@ -552,7 +553,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				} catch (SdlException e) {
 					e.printStackTrace();
 				}
-				((MultiplexTransport)_transport).forceHardwareConnectEvent(TransportType.BLUETOOTH);
 				
 			}
 		}else if(_transport.getTransportType()==TransportType.BLUETOOTH 
