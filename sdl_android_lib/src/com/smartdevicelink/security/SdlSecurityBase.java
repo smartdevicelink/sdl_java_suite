@@ -10,13 +10,13 @@ import com.smartdevicelink.protocol.enums.SessionType;
 
 public abstract class SdlSecurityBase {
 	
-	private SdlSession session = null;	
-	private String appId = null;
-	private List<String> makeList = null;
-	private boolean isInitSuccess = false;
-	private byte sessionId = 0;
-	private static Service appService = null;
-	private List<SessionType> startServiceList = new ArrayList<SessionType>();	
+	protected SdlSession session = null;	
+	protected String appId = null;
+	protected List<String> makeList = null;
+	protected boolean isInitSuccess = false;
+	protected byte sessionId = 0;
+	protected static Service appService = null;
+	protected List<SessionType> startServiceList = new ArrayList<SessionType>();	
 	
     public SdlSecurityBase() {
 	}

@@ -45,7 +45,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 		iInitialCorrID = request.getCorrelationID();
         mPauseLock = new Object();
         mPaused = false;
-        isRPCProtected = request.getPayloadProtected();
+        isRPCProtected = request.isPayloadProtected();
 		if (proxy != null)
 		{
 			_proxy = proxy;
