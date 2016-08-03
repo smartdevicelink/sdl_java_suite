@@ -36,6 +36,7 @@ public enum SdlPermission {
     RegisterAppInterface,
     ResetGlobalProperties,
     ScrollableMessage,
+    SendLocation,
     SetAppIcon,
     SetDisplayLayout,
     SetGlobalProperties,

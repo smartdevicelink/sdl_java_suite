@@ -1,6 +1,7 @@
 package com.smartdevicelink.api.interfaces;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 
 import com.smartdevicelink.api.SdlActivity;
@@ -20,6 +21,8 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public interface SdlContext {
+
+    void startSdlActivity(Class<? extends SdlActivity> activity, Bundle bundle, int flags);
 
     void startSdlActivity(Class<? extends SdlActivity> activity, int flags);
 
