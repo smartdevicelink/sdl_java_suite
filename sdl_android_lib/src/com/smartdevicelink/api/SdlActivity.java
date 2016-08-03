@@ -1,7 +1,9 @@
 package com.smartdevicelink.api;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.smartdevicelink.api.file.SdlFileManager;
@@ -20,7 +22,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     public static final int FLAG_CLEAR_HISTORY = 1;
     public static final int FLAG_CLEAR_TOP = 2;
 
-    enum SdlActivityState{
+    enum SdlActivityState {
         PRE_CREATE,
         POST_CREATE,
         BACKGROUND,
@@ -48,32 +50,32 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @CallSuper
-    protected void onCreate(){
+    protected void onCreate(@Nullable Bundle bundle) {
         superCalled = true;
     }
 
     @CallSuper
-    protected void onRestart(){
+    protected void onRestart() {
         superCalled = true;
     }
 
     @CallSuper
-    protected void onStart(){
+    protected void onStart() {
         superCalled = true;
     }
 
     @CallSuper
-    protected void onForeground(){
+    protected void onForeground() {
         superCalled = true;
     }
 
     @CallSuper
-    protected void onBackground(){
+    protected void onBackground() {
         superCalled = true;
     }
 
     @CallSuper
-    protected void onStop(){
+    protected void onStop() {
         superCalled = true;
     }
 
@@ -82,15 +84,15 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         superCalled = true;
     }
 
-    protected final void finish(){
-        ((SdlApplication)getSdlApplicationContext()).getSdlActivityManager().finish();
+    protected final void finish() {
+        ((SdlApplication) getSdlApplicationContext()).getSdlActivityManager().finish();
     }
 
-    public void onBackNavigation(){
+    public void onBackNavigation() {
         isBackHandled = false;
     }
 
-    final SdlActivityState getActivityState(){
+    final SdlActivityState getActivityState() {
         return mActivityState;
     }
 
@@ -102,58 +104,58 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         this.isFinishing = isFinishing;
     }
 
-    final void performCreate(){
+    final void performCreate(Bundle bundle) {
         superCalled = false;
         mActivityState = SdlActivityState.POST_CREATE;
-        this.onCreate();
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+        this.onCreate(bundle);
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onCreate(). This should NEVER happen.");
     }
 
-    final  void performRestart(){
+    final void performRestart() {
         superCalled = false;
         mActivityState = SdlActivityState.POST_CREATE;
         this.onRestart();
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onRestart(). This should NEVER happen.");
     }
 
-    final void performStart(){
+    final void performStart() {
         superCalled = false;
         mActivityState = SdlActivityState.BACKGROUND;
         getSdlMenuManager().redoTransactions(this);
         this.onStart();
         Log.d(TAG, "Redo complete.");
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStart(). This should NEVER happen.");
     }
 
-    final void performForeground(){
+    final void performForeground() {
         superCalled = false;
         mActivityState = SdlActivityState.FOREGROUND;
         this.onForeground();
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onForeground(). This should NEVER happen.");
     }
 
-    final void performBackground(){
+    final void performBackground() {
         superCalled = false;
         mActivityState = SdlActivityState.BACKGROUND;
         this.onBackground();
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onBackground(). This should NEVER happen.");
     }
 
-    final void performStop(){
+    final void performStop() {
         superCalled = false;
         mActivityState = SdlActivityState.STOPPED;
         this.onStop();
         getSdlMenuManager().undoTransactions(this);
-        if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
+        if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStop(). This should NEVER happen.");
     }
 
-    final void performDestroy(){
+    final void performDestroy() {
         superCalled = false;
         mActivityState = SdlActivityState.DESTROYED;
         this.onDestroy();
@@ -162,13 +164,13 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
                 + " did not call through to super() in method onDestroy(). This should NEVER happen.");
     }
 
-    final boolean performBackNavigation(){
+    final boolean performBackNavigation() {
         isBackHandled = true;
         this.onBackNavigation();
         return isBackHandled;
     }
 
-    public SdlMenuTransaction beginLocalMenuTransaction(){
+    public SdlMenuTransaction beginLocalMenuTransaction() {
         return new SdlMenuTransaction(this, this);
     }
 
@@ -194,7 +196,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
 
     @Override
     public SdlPermissionManager getSdlPermissionManager() {
-        return getSdlApplicationContext().getSdlPermissionManager();}
+        return getSdlApplicationContext().getSdlPermissionManager();
+    }
 
     public SdlFileManager getSdlFileManager() {
         return getSdlApplicationContext().getSdlFileManager();

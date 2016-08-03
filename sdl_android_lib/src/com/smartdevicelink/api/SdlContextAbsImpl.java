@@ -1,6 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.menu.SdlMenuManager;
@@ -19,6 +20,16 @@ abstract class SdlContextAbsImpl implements SdlContext {
 
     private SdlContext mSdlApplicationContext;
     private Context mAndroidContext;
+
+    @Override
+    public void startSdlActivity(Class<? extends SdlActivity> activity, Bundle bundle, int flags) {
+        getSdlApplicationContext().startSdlActivity(activity, bundle, flags);
+    }
+
+    @Override
+    public void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+        startSdlActivity(activity, null, flags);
+    }
 
     @Override
     public final SdlContext getSdlApplicationContext(){
