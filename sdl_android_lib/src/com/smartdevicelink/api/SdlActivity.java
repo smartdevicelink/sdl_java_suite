@@ -1,7 +1,9 @@
 package com.smartdevicelink.api;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.smartdevicelink.api.file.SdlFileManager;
@@ -47,7 +49,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @CallSuper
-    protected void onCreate(){
+    protected void onCreate(@Nullable Bundle bundle){
         superCalled = true;
     }
 
@@ -101,10 +103,10 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         this.isFinishing = isFinishing;
     }
 
-    final void performCreate(){
+    final void performCreate(Bundle bundle){
         superCalled = false;
         mActivityState = SdlActivityState.POST_CREATE;
-        this.onCreate();
+        this.onCreate(bundle);
         if(!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onCreate(). This should NEVER happen.");
     }
@@ -184,11 +186,6 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public boolean sendRpc(RPCRequest request) {
         return getSdlApplicationContext().sendRpc(request);
-    }
-
-    @Override
-    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
-        getSdlApplicationContext().startSdlActivity(activity, flags);
     }
 
     @Override

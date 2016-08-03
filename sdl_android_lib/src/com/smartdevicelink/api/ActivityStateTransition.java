@@ -49,7 +49,7 @@ abstract class ActivityStateTransition {
     }
 
     ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext,
-                                          Class<? extends SdlActivity> activity, int flags){
+                                          Class<? extends SdlActivity> activity, Bundle bundle, int flags){
         return this;
     }
 
@@ -58,7 +58,7 @@ abstract class ActivityStateTransition {
     }
 
     protected boolean instantiateActivity(SdlActivityManager sam, SdlContext sdlContext,
-                                              Class<? extends SdlActivity> main, int flags){
+                                          Class<? extends SdlActivity> main, Bundle bundle, int flags){
 
         Stack<SdlActivity> backStack = sam.getBackStack();
 
@@ -91,6 +91,7 @@ abstract class ActivityStateTransition {
             }
 
             backStack.push(newActivity);
+            createTopActivity(backStack, bundle);
             startTopActivity(backStack);
             return true;
         } catch (InstantiationException e) {
@@ -123,15 +124,25 @@ abstract class ActivityStateTransition {
         }
     }
 
+    protected void createTopActivity(Stack<SdlActivity> backStack, Bundle bundle) {
+        if (backStack.empty()) return;
+
+        SdlActivity activity = backStack.peek();
+        if (activity != null) {
+            SdlActivity.SdlActivityState activityState = activity.getActivityState();
+            if (activityState == SdlActivity.SdlActivityState.PRE_CREATE) {
+                activity.performCreate(bundle);
+            }
+        }
+    }
+
     protected void startTopActivity(Stack<SdlActivity> backStack){
         if(backStack.empty()) return;
 
         SdlActivity activity = backStack.peek();
         if(activity != null){
             SdlActivity.SdlActivityState activityState = activity.getActivityState();
-            if(activityState == SdlActivity.SdlActivityState.PRE_CREATE){
-                activity.performCreate();
-            } else if(activityState == SdlActivity.SdlActivityState.STOPPED){
+            if(activityState == SdlActivity.SdlActivityState.STOPPED){
                 activity.performRestart();
             }
 
@@ -210,14 +221,14 @@ abstract class ActivityStateTransition {
 
         SdlActivity topActivity = backStack.peek();
         if(!topActivity.isFinishing()){
-            SdlActivity.SdlActivityState state = topActivity.getActivityState();
-            Log.d(TAG, "State was: " + state.name());
+            SdlActivity.SdlActivityState targetState = topActivity.getActivityState();
+            Log.d(TAG, "State was: " + targetState.name());
             destroyTopActivity(backStack);
-            if(state == SdlActivity.SdlActivityState.FOREGROUND ||
-                    state == SdlActivity.SdlActivityState.BACKGROUND){
+            if(targetState == SdlActivity.SdlActivityState.FOREGROUND ||
+                    targetState == SdlActivity.SdlActivityState.BACKGROUND){
                 startTopActivity(backStack);
             }
-            if(state == SdlActivity.SdlActivityState.FOREGROUND){
+            if(targetState == SdlActivity.SdlActivityState.FOREGROUND){
                 foregroundTopActivity(backStack);
             }
         } else {

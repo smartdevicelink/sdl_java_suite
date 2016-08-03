@@ -1,5 +1,7 @@
 package com.smartdevicelink.api;
 
+import android.os.Bundle;
+
 import com.smartdevicelink.api.interfaces.SdlContext;
 
 class BackgroundStateTransition extends ActivityStateTransition {
@@ -35,8 +37,9 @@ class BackgroundStateTransition extends ActivityStateTransition {
     }
 
     @Override
-    ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext sdlContext, Class<? extends SdlActivity> activity, int flags) {
-        instantiateActivity(sam, sdlContext, activity, flags);
+    ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext sdlContext,
+                                          Class<? extends SdlActivity> activity, Bundle bundle, int flags) {
+        instantiateActivity(sam, sdlContext, activity, bundle, flags);
         return this;
     }
 

@@ -1,5 +1,7 @@
 package com.smartdevicelink.api;
 
+import android.os.Bundle;
+
 import com.smartdevicelink.api.interfaces.SdlContext;
 
 class ForegroundStateTransition extends ActivityStateTransition {
@@ -37,8 +39,8 @@ class ForegroundStateTransition extends ActivityStateTransition {
 
     @Override
     ActivityStateTransition startActivity(SdlActivityManager sam, SdlContext SdlContext,
-                                          Class<? extends SdlActivity> activity, int flags) {
-        boolean activityStarted = instantiateActivity(sam, SdlContext, activity, flags);
+                                          Class<? extends SdlActivity> activity, Bundle bundle, int flags) {
+        boolean activityStarted = instantiateActivity(sam, SdlContext, activity, bundle, flags);
         if(activityStarted){
             foregroundTopActivity(sam.getBackStack());
         }
