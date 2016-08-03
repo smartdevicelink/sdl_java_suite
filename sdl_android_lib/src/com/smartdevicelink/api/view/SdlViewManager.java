@@ -31,6 +31,14 @@ public class SdlViewManager {
         return mRootView;
     }
 
+    public void setCurrentTemplate(String templateName){
+        mTemplateName = templateName;
+    }
+
+    public String getCurrentTemplate(){
+        return mTemplateName;
+    }
+
     public void updateView(){
         String templateName = mRootView.getTemplateName();
         if(templateName != null && !mTemplateName.equals(templateName)){

@@ -145,10 +145,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
                 + " did not call through to super() in method onRestart(). This should NEVER happen.");
     }
 
-    final void performStart() {
+    final void performStart(String currentTemplate) {
         superCalled = false;
         mActivityState = SdlActivityState.BACKGROUND;
         getSdlMenuManager().redoTransactions(this);
+        mViewManager.setCurrentTemplate(currentTemplate);
         this.onStart();
         if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStart(). This should NEVER happen.");
@@ -174,13 +175,14 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
                 + " did not call through to super() in method onBackground(). This should NEVER happen.");
     }
 
-    final void performStop() {
+    final String performStop() {
         superCalled = false;
         mActivityState = SdlActivityState.STOPPED;
         this.onStop();
         getSdlMenuManager().undoTransactions(this);
         if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStop(). This should NEVER happen.");
+        return mViewManager.getCurrentTemplate();
     }
 
     final void performDestroy() {
