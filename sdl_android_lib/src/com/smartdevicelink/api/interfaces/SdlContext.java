@@ -14,6 +14,9 @@ import com.smartdevicelink.api.menu.SdlMenuTransaction;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public interface SdlContext {
@@ -53,5 +56,11 @@ public interface SdlContext {
     void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
 
     void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
+
+    HMICapabilities getHmiCapabilities();
+
+    DisplayCapabilities getDisplayCapabilities();
+
+    VehicleType getVehicleType();
 
 }

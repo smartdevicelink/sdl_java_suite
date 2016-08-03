@@ -6,6 +6,9 @@ import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.menu.SdlMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuTransaction;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 abstract class SdlContextAbsImpl implements SdlContext {
@@ -61,6 +64,21 @@ abstract class SdlContextAbsImpl implements SdlContext {
     @Override
     public void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
         mSdlApplicationContext.unregisterRpcNotificationListener(functionID, rpcNotificationListener);
+    }
+
+    @Override
+    public HMICapabilities getHmiCapabilities() {
+        return mSdlApplicationContext.getHmiCapabilities();
+    }
+
+    @Override
+    public DisplayCapabilities getDisplayCapabilities() {
+        return mSdlApplicationContext.getDisplayCapabilities();
+    }
+
+    @Override
+    public VehicleType getVehicleType() {
+        return mSdlApplicationContext.getVehicleType();
     }
 
 }
