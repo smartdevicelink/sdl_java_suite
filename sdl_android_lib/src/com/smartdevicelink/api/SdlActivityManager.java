@@ -90,7 +90,7 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
      */
     public void startSdlActivity(SdlContext sdlContext, Class<? extends SdlActivity> activity,
                                  Bundle bundle, int flags){
-        mStateTransition = mStateTransition.startActivity(this, sdlContext, activity, , flags);
+        mStateTransition = mStateTransition.startActivity(this, sdlContext, activity, bundle, flags);
     }
 
 }
