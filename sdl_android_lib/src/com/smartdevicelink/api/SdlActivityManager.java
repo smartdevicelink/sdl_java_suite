@@ -89,8 +89,8 @@ class SdlActivityManager implements SdlApplication.LifecycleListener {
      * @param flags Indication from the caller on how the backstack should behave.
      */
     public void startSdlActivity(SdlContext sdlContext, Class<? extends SdlActivity> activity,
-                                 int flags){
-        mStateTransition = mStateTransition.startActivity(this, sdlContext, activity, flags);
+                                 Bundle bundle, int flags){
+        mStateTransition = mStateTransition.startActivity(this, sdlContext, activity, , flags);
     }
 
 }

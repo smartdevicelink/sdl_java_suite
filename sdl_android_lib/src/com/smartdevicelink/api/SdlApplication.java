@@ -1,6 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
@@ -242,11 +243,11 @@ public class SdlApplication extends SdlContextAbsImpl {
      ****************************/
 
     @Override
-    public final void startSdlActivity(final Class<? extends SdlActivity> activity, final int flags) {
+    public final void startSdlActivity(final Class<? extends SdlActivity> activity, final Bundle bundle, final int flags) {
         mExecutionHandler.post(new Runnable() {
             @Override
             public void run() {
-                mSdlActivityManager.startSdlActivity(SdlApplication.this, activity, flags);
+                mSdlActivityManager.startSdlActivity(SdlApplication.this, activity, bundle, flags);
             }
         });
     }
