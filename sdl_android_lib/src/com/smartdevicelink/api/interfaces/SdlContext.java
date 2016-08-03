@@ -5,9 +5,15 @@ import android.os.Handler;
 
 import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.file.SdlFileManager;
-import com.smartdevicelink.api.menu.SdlMenu;
-import com.smartdevicelink.api.menu.SdlMenuItem;
+import com.smartdevicelink.api.menu.SdlMenuManager;
+import com.smartdevicelink.api.menu.SdlMenuOption;
+import com.smartdevicelink.api.menu.SdlMenuTransaction;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public interface SdlContext {
 
@@ -19,18 +25,30 @@ public interface SdlContext {
 
     SdlFileManager getSdlFileManager();
 
+    SdlMenuManager getSdlMenuManager();
+
     int registerButtonCallback(SdlButtonListener listener);
 
     void unregisterButtonCallback(int id);
 
-    void registerMenuCallback(int id, SdlMenuItem.SelectListener listener);
+    void registerMenuCallback(int id, SdlMenuOption.SelectListener listener);
 
     void unregisterMenuCallback(int id);
 
     boolean sendRpc(RPCRequest request);
 
-    SdlMenu getTopMenu();
-
     Handler getExecutionHandler();
+
+    SdlMenuTransaction beginGlobalMenuTransaction();
+
+    void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
+
+    void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
+
+    HMICapabilities getHmiCapabilities();
+
+    DisplayCapabilities getDisplayCapabilities();
+
+    VehicleType getVehicleType();
 
 }

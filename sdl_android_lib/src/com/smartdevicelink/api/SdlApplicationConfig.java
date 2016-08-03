@@ -3,7 +3,6 @@ package com.smartdevicelink.api;
 import android.app.Service;
 
 import com.smartdevicelink.api.file.SdlImage;
-import com.smartdevicelink.api.menu.SdlMenu;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
@@ -25,9 +24,9 @@ public class SdlApplicationConfig {
     private String mAppName;
     private Boolean isMediaApp;
     private Class<? extends SdlActivity> mMainSdlActivity;
+    private Class<? extends SdlApplication> mSdlApplication;
 
     // Optional parameters - initialized to default values
-    private SdlMenu mSdlMenu;
     private SdlProxyConfigurationResources mSdlProxyConfigurationResources;
     private Vector<TTSChunk> mTTSChunks;
     private String mShortAppName;
@@ -51,8 +50,8 @@ public class SdlApplicationConfig {
         this.mAppName = builder.appName;
         this.isMediaApp = builder.isMediaApp;
         this.mMainSdlActivity = builder.mainSdlActivity;
+        this.mSdlApplication = builder.sdlApplication;
 
-        this.mSdlMenu = builder.sdlMenu;
         this.mSdlProxyConfigurationResources = builder.sdlProxyConfigurationResources;
         this.mTTSChunks = builder.ttsChunks;
         this.mShortAppName = builder.shortAppName;
@@ -86,12 +85,16 @@ public class SdlApplicationConfig {
         return mAppIcon;
     }
 
+    public Class<? extends SdlApplication> getSdlApplicationClass() {
+        return mSdlApplication;
+    }
+
     /**
      * Getter for the main SdlActivity that should be launched when the SdlApplication is started
      * by a first HMIFull from the module without a resume state saved.
      * @return {@link SdlActivity} that should be created as the entry point to the app.
      */
-    public Class<? extends SdlActivity> getMainSdlActivity(){
+    public Class<? extends SdlActivity> getMainSdlActivityClass(){
         return mMainSdlActivity;
     }
 
@@ -162,10 +165,10 @@ public class SdlApplicationConfig {
         private String appId;
         private String appName;
         private boolean isMediaApp;
+        private Class<? extends SdlApplication> sdlApplication;
         private Class<? extends SdlActivity> mainSdlActivity;
 
         // Optional parameters - initialized to default values
-        private SdlMenu sdlMenu = null;
         private SdlProxyConfigurationResources sdlProxyConfigurationResources = null;
         private Vector<TTSChunk> ttsChunks = null;
         private String shortAppName = null;
@@ -195,75 +198,84 @@ public class SdlApplicationConfig {
         }
 
         /**
-         * Setter for top level SdlMenu.
-         * @param sdlMenu
+         * Specifies a custom implementation of an SdlActivity.
+         * @param sdlApplication Class to be used to instantiate the SdlAppliation.
          */
-        public void setSdlMenu(SdlMenu sdlMenu) {
-            this.sdlMenu = sdlMenu;
+        public Builder setSdlApplicationClass(Class<? extends SdlApplication> sdlApplication) {
+            this.sdlApplication = sdlApplication;
+            return this;
         }
 
         /**
          * Setter for Proxy Configuration Resources
          * @param sdlProxyConfigurationResources {@link SdlProxyConfigurationResources} to be used.
          */
-        public void setSdlProxyConfigurationResources(SdlProxyConfigurationResources sdlProxyConfigurationResources) {
+        public Builder setSdlProxyConfigurationResources(SdlProxyConfigurationResources sdlProxyConfigurationResources) {
             this.sdlProxyConfigurationResources = sdlProxyConfigurationResources;
+            return this;
         }
 
         /**
          * Setter for TTS Chunks to be used by the app.
          * @param ttsChunks
          */
-        public void setTtsChunks(Vector<TTSChunk> ttsChunks) {
+        public Builder setTtsChunks(Vector<TTSChunk> ttsChunks) {
             this.ttsChunks = ttsChunks;
+            return this;
         }
 
         /**
          * Setter for the abbreviated app name.
          * @param shortAppName
          */
-        public void setShortAppName(String shortAppName) {
+        public Builder setShortAppName(String shortAppName) {
             this.shortAppName = shortAppName;
+            return this;
         }
 
         /**
          * Setter for voice recognition synonyms to be used for the app name.
          * @param vrSynonyms
          */
-        public void setVrSynonyms(Vector<String> vrSynonyms) {
+        public Builder setVrSynonyms(Vector<String> vrSynonyms) {
             this.vrSynonyms = vrSynonyms;
+            return this;
         }
 
         /**
          * Setter for desired language.
          * @param language
          */
-        public void setLanguage(Language language) {
+        public Builder setLanguage(Language language) {
             this.language = language;
+            return this;
         }
 
         /**
          * Setter for desired display language.
          * @param hmiLanguage
          */
-        public void setHmiLanguage(Language hmiLanguage) {
+        public Builder setHmiLanguage(Language hmiLanguage) {
             this.hmiLanguage = hmiLanguage;
+            return this;
         }
 
         /**
          * Setter for app type classification.
          * @param vrAppHMITypes
          */
-        public void setVrAppHMITypes(Vector<AppHMIType> vrAppHMITypes) {
+        public Builder setVrAppHMITypes(Vector<AppHMIType> vrAppHMITypes) {
             this.vrAppHMITypes = vrAppHMITypes;
+            return this;
         }
 
         /**
          * Setter for auto activate ID.
          * @param autoActivateID
          */
-        public void setAutoActivateID(String autoActivateID) {
+        public Builder setAutoActivateID(String autoActivateID) {
             this.autoActivateID = autoActivateID;
+            return this;
         }
 
         /**
@@ -271,8 +283,9 @@ public class SdlApplicationConfig {
          * such as {@link BTTransportConfig} and {@link com.smartdevicelink.transport.TCPTransportConfig}.
          * @param transport
          */
-        public void setTransport(BaseTransportConfig transport) {
+        public Builder setTransport(BaseTransportConfig transport) {
             this.transport = transport;
+            return this;
         }
 
         /**
@@ -280,8 +293,9 @@ public class SdlApplicationConfig {
          * This will automatically be sent and set.
          * @param appIcon
          */
-        public void setAppIcon(SdlImage appIcon) {
+        public Builder setAppIcon(SdlImage appIcon) {
             this.appIcon = appIcon;
+            return this;
         }
     }
 }
