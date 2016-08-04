@@ -14,6 +14,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
@@ -56,5 +57,7 @@ public interface SdlContext {
     DisplayCapabilities getDisplayCapabilities();
 
     VehicleType getVehicleType();
+
+    SdlMsgVersion getSdlMessageVersion();
 
 }

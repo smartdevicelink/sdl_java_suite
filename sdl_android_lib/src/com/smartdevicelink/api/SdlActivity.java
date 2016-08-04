@@ -10,9 +10,16 @@ import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
+import com.smartdevicelink.api.menu.SdlMenuManager;
 import com.smartdevicelink.api.menu.SdlMenuOption;
 import com.smartdevicelink.api.menu.SdlMenuTransaction;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
 
@@ -88,7 +95,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         ((SdlApplication) getSdlApplicationContext()).getSdlActivityManager().finish();
     }
 
-    public void onBackNavigation() {
+
+    public final void onBackNavigation() {
         isBackHandled = false;
     }
 
@@ -170,28 +178,24 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         return isBackHandled;
     }
 
-    public SdlMenuTransaction beginLocalMenuTransaction() {
+
+    public final SdlMenuTransaction beginLocalMenuTransaction() {
         return new SdlMenuTransaction(this, this);
     }
 
     @Override
-    public int registerButtonCallback(SdlButtonListener listener) {
+    public final int registerButtonCallback(SdlButtonListener listener) {
         return getSdlApplicationContext().registerButtonCallback(listener);
     }
 
     @Override
-    public void unregisterButtonCallback(int id) {
+    public final void unregisterButtonCallback(int id) {
         getSdlApplicationContext().unregisterButtonCallback(id);
     }
 
     @Override
-    public boolean sendRpc(RPCRequest request) {
+    public final boolean sendRpc(RPCRequest request) {
         return getSdlApplicationContext().sendRpc(request);
-    }
-
-    @Override
-    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
-        getSdlApplicationContext().startSdlActivity(activity, flags);
     }
 
     @Override
@@ -199,7 +203,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         return getSdlApplicationContext().getSdlPermissionManager();
     }
 
-    public SdlFileManager getSdlFileManager() {
+    public final SdlFileManager getSdlFileManager() {
         return getSdlApplicationContext().getSdlFileManager();
     }
 
@@ -214,8 +218,58 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public Handler getExecutionHandler() {
+    public final Handler getExecutionHandler() {
         return getSdlApplicationContext().getExecutionHandler();
+    }
+
+    @Override
+    public final void startSdlActivity(Class<? extends SdlActivity> activity, Bundle bundle, int flags) {
+        getSdlApplicationContext().startSdlActivity(activity, bundle, flags);
+    }
+
+    @Override
+    public final void startSdlActivity(Class<? extends SdlActivity> activity, int flags) {
+        startSdlActivity(activity, null, flags);
+    }
+
+    @Override
+    public final SdlMenuManager getSdlMenuManager() {
+        return getSdlApplicationContext().getSdlMenuManager();
+    }
+
+    @Override
+    public final SdlMenuTransaction beginGlobalMenuTransaction() {
+        return getSdlApplicationContext().beginGlobalMenuTransaction();
+    }
+
+    @Override
+    public final void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
+        getSdlApplicationContext().registerRpcNotificationListener(functionID, rpcNotificationListener);
+    }
+
+    @Override
+    public final void unregisterRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener) {
+        getSdlApplicationContext().unregisterRpcNotificationListener(functionID, rpcNotificationListener);
+    }
+
+    @Override
+    public final HMICapabilities getHmiCapabilities() {
+        return getSdlApplicationContext().getHmiCapabilities();
+    }
+
+    @Override
+    public final DisplayCapabilities getDisplayCapabilities() {
+        return getSdlApplicationContext().getDisplayCapabilities();
+    }
+
+    @Override
+    public final VehicleType getVehicleType() {
+        return getSdlApplicationContext().getVehicleType();
+    }
+
+    @Override
+    public final SdlMsgVersion getSdlMessageVersion() {
+        return getSdlApplicationContext().getSdlMessageVersion();
     }
 
     public class SuperNotCalledException extends RuntimeException{
