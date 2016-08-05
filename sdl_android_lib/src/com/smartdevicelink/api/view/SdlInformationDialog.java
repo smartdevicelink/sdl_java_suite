@@ -46,7 +46,7 @@ public class SdlInformationDialog {
     public static class Builder{
         protected String mTextFields;
         protected int mDuration = DEFAULT_DURATION;
-        protected Collection<SdlButton> mButtons;
+        protected Collection<SdlButton> mButtons = new ArrayList<>();
 
         /**
          * Sets the duration that the {@link SdlAlertBase} will show up for.
@@ -70,8 +70,14 @@ public class SdlInformationDialog {
             return this;
         }
 
-        public Builder setButtons(Collection<SdlButton> buttons){
-            mButtons= buttons;
+        public Builder setButtons(@NonNull Collection<SdlButton> buttons){
+            mButtons.clear();
+            mButtons.addAll(buttons);
+            return this;
+        }
+
+        public Builder addButton(@NonNull SdlButton button){
+            mButtons.add(button);
             return this;
         }
 

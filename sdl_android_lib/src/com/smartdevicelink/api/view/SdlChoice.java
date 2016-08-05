@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.smartdevicelink.api.file.SdlImage;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,6 +84,7 @@ public class SdlChoice {
     }
 
     boolean compareModelData(SdlChoice choice){
+        //TODO: should compare the image name as well
         boolean checker=  compareStrings(choice.mChoiceName,mChoiceName);
         checker= checker&& compareStrings(choice.mMenuText,mMenuText);
         checker= checker&& compareStrings(choice.mSubText,mSubText);

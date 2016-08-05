@@ -85,7 +85,7 @@ abstract class SdlAlertBase {
         private int mDuration = DEFAULT_DURATION;
         private boolean mIsToneUsed;
         private boolean mIsIndicatorShown;
-        private Collection<SdlButton> mButtons;
+        private ArrayList<SdlButton> mButtons = new ArrayList<>();
         private TTSChunk mTtsChunk;
 
         public Builder(){
@@ -168,8 +168,14 @@ abstract class SdlAlertBase {
          * @param buttons Collection of SdlButtons that describe what the buttons should look like
          * @return The builder for the {@link SdlAlertBase}
          */
-        public T setButtons(Collection<SdlButton> buttons){
-            this.mButtons = buttons;
+        public T setButtons(@NonNull Collection<SdlButton> buttons){
+            this.mButtons.clear();
+            this.mButtons.addAll(buttons);
+            return grabBuilder();
+        }
+
+        public T addButton(@NonNull SdlButton button){
+            this.mButtons.add(button);
             return grabBuilder();
         }
 
