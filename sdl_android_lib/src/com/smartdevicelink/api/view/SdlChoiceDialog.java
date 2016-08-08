@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Created by mschwerz on 5/4/16.
@@ -204,7 +203,7 @@ public class SdlChoiceDialog {
     }
 
     public static class Builder{
-        private HashSet<SdlChoiceSet> mChoiceSets = new HashSet<>();
+        private ArrayList<SdlChoiceSet> mChoiceSets = new ArrayList<>();
         private SdlManualInteraction mManualInteraction;
         private SdlVoiceInteraction mVoiceInteraction;
         private String mInitialText;
