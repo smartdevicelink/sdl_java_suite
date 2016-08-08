@@ -17,7 +17,7 @@ public class SdlGraphicView extends SdlView {
 
     private SdlImage mSdlImage;
     private boolean isImagePresent = false;
-    private boolean isWaitingToUpload = true;
+    private boolean isWaitingForUpload = false;
 
     private boolean isSecondaryGraphic = false;
 
@@ -32,8 +32,6 @@ public class SdlGraphicView extends SdlView {
 
     @Override
     public void setSdlContext(SdlContext sdlContext) {
-        Log.i(TAG, "SdlContext set on graphic view.");
-        if(sdlContext == null) Log.w(TAG, "SdlContext is null.");
         super.setSdlContext(sdlContext);
         if(mSdlImage != null) {
             checkImagePresence();
@@ -45,11 +43,13 @@ public class SdlGraphicView extends SdlView {
     }
 
     private void checkImagePresence() {
-        Log.i(TAG, "Checking image presence for SdlImage: " + mSdlImage.getSdlName());
         SdlFileManager fileManager = mSdlContext.getSdlFileManager();
         isImagePresent = fileManager.isFileOnModule(mSdlImage.getSdlName());
-        if (!isWaitingToUpload && !isImagePresent) {
+        Log.i(TAG, "SdlImage: " + mSdlImage.getSdlName());
+        Log.i(TAG, "is " + (isImagePresent ? "" : "not ") + "present on module");
+        if (!isWaitingForUpload && !isImagePresent) {
             fileManager.uploadSdlImage(mSdlImage, mFileReadyListener);
+            isWaitingForUpload = true;
         }
     }
 
@@ -65,6 +65,7 @@ public class SdlGraphicView extends SdlView {
 
     @Override
     void decorate(Show show) {
+        Log.i(TAG, "Decorate called.");
         if(mSdlImage == null){
             Image image = new Image();
             image.setImageType(ImageType.DYNAMIC);
@@ -89,9 +90,7 @@ public class SdlGraphicView extends SdlView {
     @Override
     void uploadRequiredImages() {
         if(!isImagePresent && mSdlImage != null){
-            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
-            fileManager.uploadSdlImage(mSdlImage, mFileReadyListener);
-            isWaitingToUpload = false;
+            checkImagePresence();
         }
     }
 
@@ -99,6 +98,7 @@ public class SdlGraphicView extends SdlView {
         @Override
         public void onFileReady(SdlFile sdlFile) {
             isImagePresent = true;
+            isWaitingForUpload = false;
             Log.d(TAG, "Graphic ready.");
             if(isVisible) {
                 redraw();
