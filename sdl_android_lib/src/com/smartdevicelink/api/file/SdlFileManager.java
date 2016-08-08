@@ -17,8 +17,6 @@ import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
-import org.json.JSONException;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SdlFileManager implements SdlApplication.LifecycleListener{
@@ -36,6 +35,8 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
 
     private final SdlApplication mSdlApplication;
     private final SdlApplicationConfig mSdlApplicationConfig;
+    private boolean isReady = false;
+    private LinkedList<ImageTaskObject> mPendingRequests = new LinkedList<>();
 
     public SdlFileManager(SdlApplication sdlApplication, SdlApplicationConfig config){
         mSdlApplication = sdlApplication;
@@ -45,10 +46,19 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
 
     public boolean uploadSdlImage(@NonNull final SdlImage sdlImage, @Nullable final FileReadyListener listener){
         Log.d(TAG, "SdlImage isForceReplace = " + sdlImage.isForceReplace());
-        if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())) return true;
+        if(!sdlImage.isForceReplace() && mFileSet.contains(sdlImage.getSdlName())){
+            return true;
+        }
 
-        new LoadImageTask().execute(new ImageTaskObject(sdlImage, listener));
+        ImageTaskObject taskObject = new ImageTaskObject(sdlImage, listener);
 
+        if(!isReady){
+            Log.d(TAG, "Adding " + sdlImage.getSdlName() + " to mPendingRequests");
+            mPendingRequests.add(taskObject);
+        } else {
+            Log.d(TAG, "Uploading image: " + sdlImage.getSdlName() + " to mPendingRequests");
+            new LoadImageTask().execute(taskObject);
+        }
         return false;
     }
 
@@ -114,11 +124,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
         @Override
         public void onResponse(int correlationId, RPCResponse response) {
             if(response == null) return;
-            try {
-                Log.i(TAG, response.serializeJSON().toString(3));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
             ListFilesResponse lfr = (ListFilesResponse) response;
             List<String> fileNames = lfr.getFilenames();
             if(fileNames != null) {
@@ -133,8 +139,24 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
             } else {
                 setAppIcon();
             }
+
+            if(!isReady){
+                handlePendingRequests();
+                isReady = true;
+            }
         }
     };
+
+    private void handlePendingRequests(){
+        while(!mPendingRequests.isEmpty()){
+            ImageTaskObject taskObject = mPendingRequests.removeFirst();
+            if(mFileSet.contains(taskObject.image.getSdlName())){
+                taskObject.listener.onFileReady(taskObject.image);
+            } else {
+                new LoadImageTask().execute(taskObject);
+            }
+        }
+    }
 
     public interface FileReadyListener{
 
