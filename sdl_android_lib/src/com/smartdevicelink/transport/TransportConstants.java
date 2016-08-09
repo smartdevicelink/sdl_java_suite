@@ -190,7 +190,8 @@ public class TransportConstants {
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;
 	
-	
+	public static final String ROUTER_SERVICE_VERSION						= "router_service_version";
+
 	/**
 	 * Status binder
 	 */
