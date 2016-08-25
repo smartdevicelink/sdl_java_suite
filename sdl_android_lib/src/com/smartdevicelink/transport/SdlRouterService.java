@@ -588,22 +588,27 @@ public class SdlRouterService extends Service{
 	     * Handler of incoming messages from an alternative transport (USB).
 	     */
 	    class RouterStatusHandler extends Handler {
-	    	ClassLoader loader = getClass().getClassLoader();
 	        @Override
 	        public void handleMessage(Message msg) {
 	        	switch(msg.what){
 	        	case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
-	        		if(msg.replyTo==null){
-	        			break;
+        			int flags = msg.arg1;
+	        		if(msg.replyTo!=null){
+	        			Message message = Message.obtain();
+	        			message.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
+	        			message.arg1 = (isTransportConnected == true) ? 1 : 0;
+	        			try {
+	        				msg.replyTo.send(message);
+	        			} catch (RemoteException e) {
+	        				e.printStackTrace();
+	        			}
 	        		}
-	        		Message message = Message.obtain();
-	        		message.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
-	        		message.arg1 = (isTransportConnected == true) ? 1 : 0;
-	        		try {
-						msg.replyTo.send(message);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-					}
+	        		if(isTransportConnected && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
+	        			if(pingIntent == null){
+	        				initPingIntent();
+	        			}
+	        			getBaseContext().sendBroadcast(pingIntent); 
+	        		}
 	        		break;
 	        	default:
 	        		Log.w(TAG, "Unsopported request: " + msg.what);
@@ -1814,6 +1819,15 @@ public class SdlRouterService extends Service{
 		return null;
 	}
 	
+	private void initPingIntent(){
+		pingIntent = new Intent();  
+		pingIntent.setAction(START_SERVICE_ACTION);
+		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
+		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
+		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
+		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
+	}
+	
 	private void startClientPings(){
 		synchronized(this){
 			if(!isTransportConnected){ //If we aren't connected, bail
@@ -1843,12 +1857,7 @@ public class SdlRouterService extends Service{
 					return;
 				}
 				if(pingIntent == null){
-					pingIntent = new Intent();  
-					pingIntent.setAction(START_SERVICE_ACTION);
-					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
-					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
-					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
-					pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
+					initPingIntent();
 				}
 				getBaseContext().sendBroadcast(pingIntent); 
 				synchronized(PING_COUNT_LOCK){
