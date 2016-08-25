@@ -316,7 +316,7 @@ public class SdlRouterService extends Service{
 	        			}
 	            	//**************** We don't break here so we can let the app register as well
 	                case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
-	                	pingClients();
+	                	//pingClients();
 	                	Message message = Message.obtain();
 	                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
             			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_SUCESS;
