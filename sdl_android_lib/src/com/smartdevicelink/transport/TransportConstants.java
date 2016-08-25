@@ -198,6 +198,11 @@ public class TransportConstants {
 	
 	public static final int ROUTER_STATUS_CONNECTED_STATE_REQUEST			= 0x01;
 	public static final int ROUTER_STATUS_CONNECTED_STATE_RESPONSE			= 0x02;
+	/**
+	 * This flag when used to check router status will trigger the router service in sending out a ping that if it is connected to a device
+	 */
+	public static final int ROUTER_STATUS_FLAG_TRIGGER_PING					= 0x02;
+ 
 
 
 	
