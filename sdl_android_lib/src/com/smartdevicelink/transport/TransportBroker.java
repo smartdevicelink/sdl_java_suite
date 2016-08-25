@@ -1,5 +1,6 @@
 package com.smartdevicelink.transport;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -40,7 +41,7 @@ public class TransportBroker {
 	private TransportType queuedOnTransportConnect = null;
 	
 	Messenger routerServiceMessenger = null;
-	final Messenger clientMessenger = new Messenger(new ClientHandler());
+	final Messenger clientMessenger;
 
 	boolean isBound = false, registeredWithRouterService = false;
 	private String routerPackage = null, routerClassName = null;
@@ -125,12 +126,20 @@ public class TransportBroker {
     /**
      * Handler of incoming messages from service.
      */
-    @SuppressLint("HandlerLeak")
-	class ClientHandler extends Handler {
-        ClassLoader loader = getClass().getClassLoader();
+	static class ClientHandler extends Handler {
+        ClassLoader loader;
+        WeakReference<TransportBroker> provider;
+
+		 public ClientHandler(TransportBroker provider){
+			 this.provider = new WeakReference<TransportBroker>(provider);
+			 loader =  getClass().getClassLoader();
+		 }
     	@Override
         public void handleMessage(Message msg) {
-        	
+        	TransportBroker broker = provider.get();
+        	if(broker == null){
+        		Log.e(TAG, "Broker object null, unable to process message");
+        	}
         	Bundle bundle = msg.getData();
 
         	if(bundle!=null){
@@ -144,7 +153,7 @@ public class TransportBroker {
         			&& bundle.containsKey(TransportConstants.ENABLE_LEGACY_MODE_EXTRA)){
 				boolean enableLegacy = bundle.getBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, false);
 				Log.d(TAG, "Setting legacy mode: " +enableLegacy );
-				enableLegacyMode(enableLegacy);
+				broker.enableLegacyMode(enableLegacy);
 			}
             
         	//Find out what message we have and what to do with it
@@ -153,13 +162,13 @@ public class TransportBroker {
             		switch(msg.arg1){
             		case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
             			// yay! we have been registered. Now what?
-            			registeredWithRouterService = true;
+            			broker.registeredWithRouterService = true;
             			if(bundle !=null){
             				if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
             					if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
             						//Keep track if we actually get this
             					}
-            					onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            					broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
             				}
             				/*if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
             					//Keep track if we actually get this
@@ -168,14 +177,14 @@ public class TransportBroker {
             			break;
             		case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
             			Log.d(TAG, "Denied registration because router is in legacy mode" );
-            			registeredWithRouterService = false; 
-        				enableLegacyMode(true);
+            			broker.registeredWithRouterService = false; 
+            			broker.enableLegacyMode(true);
         				//We call this so we can start the process of legacy connection
         				//onHardwareDisconnected(TransportType.BLUETOOTH);
-        				onLegacyModeEnabled();
+            			broker.onLegacyModeEnabled();
         				break;
             		default:
-            			registeredWithRouterService = false; 
+            			broker.registeredWithRouterService = false; 
             			Log.w(TAG, "Registration denied from router service. Reason - " + msg.arg1);
             			break;
             		};
@@ -202,37 +211,37 @@ public class TransportBroker {
 
             			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE){
             				if(packet!=null){ Log.i(TAG, "received packet to process "+  packet.toString());
-            					onPacketReceived(packet);
+            				broker.onPacketReceived(packet);
             				}else{
             					Log.w(TAG, "Received null packet from router service, not passing along");
             				}
             			}else if(flags == TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED){
             				Log.i(TAG, "Starting a buffered split packet");
-            				bufferedPacket = (SdlPacket) packet;
-            				if(bufferedPayloadAssembler !=null){
-            					bufferedPayloadAssembler.close();
-            					bufferedPayloadAssembler = null;            					
+            				broker.bufferedPacket = (SdlPacket) packet;
+            				if(broker.bufferedPayloadAssembler !=null){
+            					broker.bufferedPayloadAssembler.close();
+            					broker.bufferedPayloadAssembler = null;            					
             				}
             				
-            				bufferedPayloadAssembler = new ByteAraryMessageAssembler();
-            				bufferedPayloadAssembler.init();
+            				broker.bufferedPayloadAssembler = new ByteAraryMessageAssembler();
+            				broker.bufferedPayloadAssembler.init();
             			}
             		}else if(bundle.containsKey(TransportConstants.BYTES_TO_SEND_EXTRA_NAME)){
             				//This should contain the payload
-            				if(bufferedPayloadAssembler!=null){
+            				if(broker.bufferedPayloadAssembler!=null){
             					byte[] chunk = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
-            					if(!bufferedPayloadAssembler.handleMessage(flags, chunk)){
+            					if(!broker.bufferedPayloadAssembler.handleMessage(flags, chunk)){
             						//If there was a problem
             						Log.e(TAG, "Error handling bytes for split packet");
             					}
-            					if(bufferedPayloadAssembler.isFinished()){
-            						bufferedPacket.setPayload(bufferedPayloadAssembler.getBytes());
+            					if(broker.bufferedPayloadAssembler.isFinished()){
+            						broker.bufferedPacket.setPayload(broker.bufferedPayloadAssembler.getBytes());
             						
-            						bufferedPayloadAssembler.close();
-            						bufferedPayloadAssembler = null;
-            						Log.i(TAG, "Split packet finished from router service = " + bufferedPacket.toString());
-            						onPacketReceived(bufferedPacket);
-            						bufferedPacket = null;
+            						broker.bufferedPayloadAssembler.close();
+            						broker.bufferedPayloadAssembler = null;
+            						Log.i(TAG, "Split packet finished from router service = " + broker.bufferedPacket.toString());
+            						broker.onPacketReceived(broker.bufferedPacket);
+            						broker.bufferedPacket = null;
             					}
             				}
             			//}
@@ -246,9 +255,9 @@ public class TransportBroker {
         				//We should shut down, so call 
         				Log.d(TAG, "Hardware disconnected");
         				if(isLegacyModeEnabled()){
-        					onLegacyModeEnabled();
+        					broker.onLegacyModeEnabled();
         				}else{
-        					onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        					broker.onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
         				}
         				break;
         			}
@@ -257,7 +266,7 @@ public class TransportBroker {
             			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
         					//Keep track if we actually get this
         				}
-        				onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            			broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
         				break;
         			}
             		break;
@@ -278,6 +287,7 @@ public class TransportBroker {
 		@SuppressLint("SimpleDateFormat")
 		public TransportBroker(Context context, String appId, ComponentName service){
 			synchronized(INIT_LOCK){
+				clientMessenger = new Messenger(new ClientHandler(this));
 				initRouterConnection();
 				//So the user should have set the AppId, lets define where the intents need to be sent
 				SimpleDateFormat s = new SimpleDateFormat("hhmmssss"); //So we have a time stamp of the event
