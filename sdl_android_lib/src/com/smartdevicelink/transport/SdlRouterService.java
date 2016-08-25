@@ -2209,12 +2209,19 @@ public class SdlRouterService extends Service{
 			if(messenger!=null){
 				if(deathNote == null){
 					deathNote = new DeathRecipient(){
+						final Object deathLock = new Object();
 						@Override
 						public void binderDied() {
-							Log.w(TAG, "Binder died");
-							removeAllSessionsForApp(RegisteredApp.this,true);
-							removeAppFromMap(RegisteredApp.this);
-							startClientPings();
+							synchronized(deathLock){
+								Log.w(TAG, "Binder died for app " + RegisteredApp.this.appId);
+								if(messenger!=null && messenger.getBinder()!=null){
+									Log.d(TAG, "attempt to unlink this death note");
+									messenger.getBinder().unlinkToDeath(this, 0);
+								}
+								removeAllSessionsForApp(RegisteredApp.this,true);
+								removeAppFromMap(RegisteredApp.this);
+								startClientPings();
+							}
 						}
 					};
 				}
