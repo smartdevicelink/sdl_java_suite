@@ -2,7 +2,7 @@ package com.smartdevicelink.api.interfaces;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Looper;
 
 import com.smartdevicelink.api.SdlActivity;
 import com.smartdevicelink.api.view.SdlChoiceSetManager;
@@ -53,9 +53,9 @@ public interface SdlContext {
 
     SdlChoiceSetManager getSdlChoiceSetManager();
 
-    SdlMenuTransaction beginGlobalMenuTransaction();
+    Looper getSdlExecutionLooper();
 
-    Handler getExecutionHandler();
+    SdlMenuTransaction beginGlobalMenuTransaction();
 
     void registerRpcNotificationListener(FunctionID functionID, OnRPCNotificationListener rpcNotificationListener);
 

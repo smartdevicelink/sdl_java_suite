@@ -37,7 +37,7 @@ public class UnitTestSdlActivityManager{
     @Before
     public void setup(){
 
-        mSdlApplication = new SdlApplication(mock(SdlConnectionService.class),mock(SdlApplicationConfig.class),mock(SdlApplication.ConnectionStatusListener.class));
+        mSdlApplication = new SdlApplication();
         mSdlActivityManager = new SdlActivityManager();
         mSdlActivityManager.onSdlConnect();
 

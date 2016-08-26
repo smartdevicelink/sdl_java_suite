@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.testUtil;
 
+import android.os.Bundle;
+
 import com.smartdevicelink.api.SdlActivity;
 import java.util.LinkedList;
 
@@ -54,8 +56,8 @@ public class SdlTestActivity extends SdlActivity {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
         stateTracking.add(StateTracking.onCreate);
     }
 
