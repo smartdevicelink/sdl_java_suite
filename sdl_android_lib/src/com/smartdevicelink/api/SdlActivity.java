@@ -1,7 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -218,8 +218,8 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public final Handler getExecutionHandler() {
-        return getSdlApplicationContext().getExecutionHandler();
+    public final Looper getSdlExecutionLooper() {
+        return getSdlApplicationContext().getSdlExecutionLooper();
     }
 
     @Override

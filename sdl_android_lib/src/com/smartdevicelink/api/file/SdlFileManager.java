@@ -3,6 +3,7 @@ package com.smartdevicelink.api.file;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -37,9 +38,11 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     private final SdlApplicationConfig mSdlApplicationConfig;
     private boolean isReady = false;
     private LinkedList<ImageTaskObject> mPendingRequests = new LinkedList<>();
+    private final Handler mExecutionHandler;
 
     public SdlFileManager(SdlApplication sdlApplication, SdlApplicationConfig config){
         mSdlApplication = sdlApplication;
+        mExecutionHandler = new Handler(mSdlApplication.getSdlExecutionLooper());
         mSdlApplicationConfig = config;
         mFileSet = new HashSet<>();
     }
@@ -210,7 +213,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
                 });
             }
 
-            mSdlApplication.getExecutionHandler().post(new Runnable() {
+            mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mSdlApplication.sendRpc(putFile);
