@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 import android.util.SparseArray;
@@ -469,8 +470,8 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
-    public final Handler getExecutionHandler() {
-        return mExecutionHandler;
+    public final Looper getSdlExecutionLooper() {
+        return mExecutionThread.getLooper();
     }
 
     /***********************************
