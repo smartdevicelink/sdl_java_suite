@@ -5,6 +5,7 @@ import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXT
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -291,16 +292,23 @@ public class SdlRouterService extends Service{
 	    /**
 	     * Target we publish for clients to send messages to RouterHandler.
 	     */
-	    final Messenger routerMessenger = new Messenger(new RouterHandler());
+	    final Messenger routerMessenger = new Messenger(new RouterHandler(this));
 	    
 		 /**
 	     * Handler of incoming messages from clients.
 	     */
-	    class RouterHandler extends Handler {
+	    static class RouterHandler extends Handler {
+	    	WeakReference<SdlRouterService> provider;
+
+	    	public RouterHandler(SdlRouterService provider){
+	    		this.provider = new WeakReference<SdlRouterService>(provider);
+	    	}
+	    	
 	        @Override
 	        public void handleMessage(Message msg) {
 	        	final Bundle receivedBundle = msg.getData();
 	        	Bundle returnBundle;
+	        	final SdlRouterService service = this.provider.get();
 	        	
 	            switch (msg.what) {
 	            case TransportConstants.ROUTER_REQUEST_BT_CLIENT_CONNECT:              	
@@ -309,7 +317,7 @@ public class SdlRouterService extends Service{
 	        				//Log.d(TAG,"Attempting to connect as bt client");
 	        				BluetoothDevice device = receivedBundle.getParcelable(BluetoothDevice.EXTRA_DEVICE);
 	        				connectAsClient = true;
-	        				if(device==null || !bluetoothConnect(device)){
+	        				if(device==null || !service.bluetoothConnect(device)){
 	        					Log.e(TAG, "Unable to connect to bluetooth device");
 	        					connectAsClient = false;
 	        				}
@@ -333,7 +341,7 @@ public class SdlRouterService extends Service{
 	                		}
 	                		break;
 	                	}
-	                	if(SdlRouterService.this.legacyModeEnabled){
+	                	if(service.legacyModeEnabled){
 	                		Log.w(TAG, "Unable to register app as legacy mode is enabled");
 	                		if(msg.replyTo!=null){
 	                			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED;
@@ -346,21 +354,21 @@ public class SdlRouterService extends Service{
 	                		break;
 	                	}
 	                	
-	                	RegisteredApp app = new RegisteredApp(appId,msg.replyTo);
-	                	synchronized(REGISTERED_APPS_LOCK){
+	                	RegisteredApp app = service.new RegisteredApp(appId,msg.replyTo);
+	                	synchronized(service.REGISTERED_APPS_LOCK){
 	                		RegisteredApp old = registeredApps.put(app.getAppId(), app); 
 	                		if(old!=null){
 	                			Log.w(TAG, "Replacing already existing app with this app id");
-	                			removeAllSessionsForApp(old, true);
+	                			service.removeAllSessionsForApp(old, true);
 	                			old.close();
 	                		}
 	                	}
-	            		onAppRegistered(app);
+	                	service.onAppRegistered(app);
 
 	            		returnBundle = new Bundle();
 	            		//Add params if connected
-	            		if(SdlRouterService.this.isTransportConnected){
-	            			returnBundle.putString(TransportConstants.HARDWARE_CONNECTED, SdlRouterService.this.connectedTransportType.name());
+	            		if(service.isTransportConnected){
+	            			returnBundle.putString(TransportConstants.HARDWARE_CONNECTED, service.connectedTransportType.name());
 	                		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
 	                			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
 	                		}
@@ -372,7 +380,7 @@ public class SdlRouterService extends Service{
 	            		
 	            		int result = app.sendMessage(message);
 	            		if(result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT){
-	            			synchronized(REGISTERED_APPS_LOCK){
+	            			synchronized(service.REGISTERED_APPS_LOCK){
 	            				registeredApps.remove(appId);
 	            			}
 	            		}
@@ -381,17 +389,17 @@ public class SdlRouterService extends Service{
 	                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	Log.i(TAG, "Unregistering client: " + appIdToUnregister);
 	                	RegisteredApp unregisteredApp = null;
-	                	synchronized(REGISTERED_APPS_LOCK){
+	                	synchronized(service.REGISTERED_APPS_LOCK){
 	                		unregisteredApp = registeredApps.remove(appIdToUnregister);
 	                	}
 	                	Message response = Message.obtain();
 	                	response.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
 	                	if(unregisteredApp == null){
 	                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_FAILED_APP_ID_NOT_FOUND;
-	                		removeAllSessionsWithAppId(appIdToUnregister);
+	                		service.removeAllSessionsWithAppId(appIdToUnregister);
 	                	}else{
 	                		response.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
-	                		removeAllSessionsForApp(unregisteredApp,false);
+	                		service.removeAllSessionsForApp(unregisteredApp,false);
 	                	}
 	                	Log.i(TAG, "Unregistering client response: " + response.arg1 );
 	                	try {
@@ -415,7 +423,7 @@ public class SdlRouterService extends Service{
 	                					Long buffAppId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA);
 	                					RegisteredApp buffApp = null;
 	                					if(buffAppId!=null){
-	                						synchronized(REGISTERED_APPS_LOCK){
+	                						synchronized(service.REGISTERED_APPS_LOCK){
 	                							buffApp = registeredApps.get(buffAppId);
 	                						}
 	                					}
@@ -423,13 +431,13 @@ public class SdlRouterService extends Service{
 	                					if(buffApp !=null){
 	                						buffApp.handleIncommingClientMessage(receivedBundle);
 	                					}else{
-	                						writeBytesToTransport(receivedBundle);
+	                						service.writeBytesToTransport(receivedBundle);
 	                					}
 	                				}
 	                			}
 	                		};
-	                		if(packetExecuter!=null){
-	                			packetExecuter.execute(packetRun); 
+	                		if(service.packetExecuter!=null){
+	                			service.packetExecuter.execute(packetRun); 
 	                		}
 	                	}
 	                    break;
@@ -438,7 +446,7 @@ public class SdlRouterService extends Service{
 	                	Message extraSessionResponse = Message.obtain();
 	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE;
 	                	if(appIdRequesting>0){
-							synchronized(REGISTERED_APPS_LOCK){
+							synchronized(service.REGISTERED_APPS_LOCK){
 								if(registeredApps!=null){
 									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
 									if(appRequesting!=null){
@@ -463,12 +471,12 @@ public class SdlRouterService extends Service{
 	                case  TransportConstants.ROUTER_REMOVE_SESSION:
 	                	long appIdWithSession = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	long sessionId = receivedBundle.getLong(TransportConstants.SESSION_ID_EXTRA, -1);
-	                	removeSessionFromMap((int)sessionId);
+	                	service.removeSessionFromMap((int)sessionId);
 	                	Message removeSessionResponse = Message.obtain();
 	                	removeSessionResponse.what = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE;
 	                	if(appIdWithSession>0){
 	                		if(sessionId>=0){
-	                			synchronized(REGISTERED_APPS_LOCK){
+	                			synchronized(service.REGISTERED_APPS_LOCK){
 	                				if(registeredApps!=null){
 	                					RegisteredApp appRequesting = registeredApps.get(appIdWithSession);
 	                					if(appRequesting!=null){
@@ -506,15 +514,23 @@ public class SdlRouterService extends Service{
 	    /**
 	     * Target we publish for alternative transport (USB) clients to send messages to RouterHandler.
 	     */
-	    final Messenger altTransportMessenger = new Messenger(new AltTransportHandler());
+	    final Messenger altTransportMessenger = new Messenger(new AltTransportHandler(this));
 	    
 		 /**
 	     * Handler of incoming messages from an alternative transport (USB).
 	     */
-	    class AltTransportHandler extends Handler {
-	    	ClassLoader loader = getClass().getClassLoader();
+	    static class AltTransportHandler extends Handler {
+	    	ClassLoader loader; 
+	    	WeakReference<SdlRouterService> provider;
+
+	    	public AltTransportHandler(SdlRouterService provider){
+	    		this.provider = new WeakReference<SdlRouterService>(provider);
+	    		loader = getClass().getClassLoader();
+	    	}
+
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	SdlRouterService service = this.provider.get();
 	        	Bundle receivedBundle = msg.getData();
 	        	switch(msg.what){
 	        	case TransportConstants.HARDWARE_CONNECTION_EVENT:
@@ -524,8 +540,8 @@ public class SdlRouterService extends Service{
         						&& altTransportService.equals(msg.replyTo)){
         					//The same transport that was connected to the router service is now telling us it's disconnected. Let's inform clients and clear our saved messenger
         					altTransportService = null;
-        					onTransportDisconnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
-        					shouldServiceRemainOpen(null); //this will close the service if bluetooth is not available
+        					service.onTransportDisconnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        					service.shouldServiceRemainOpen(null); //this will close the service if bluetooth is not available
         				}
         			}else if(receivedBundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
     					Message retMsg =  Message.obtain();
@@ -537,15 +553,15 @@ public class SdlRouterService extends Service{
         					}
         					altTransportService = msg.replyTo;
         					//Clear out the timer to make sure the service knows we're good to go
-        					if(altTransportTimerHandler!=null && altTransportTimerRunnable!=null){
-        						altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
+        					if(service.altTransportTimerHandler!=null && service.altTransportTimerRunnable!=null){
+        						service.altTransportTimerHandler.removeCallbacks(service.altTransportTimerRunnable);
         					}
-        					altTransportTimerHandler = null;
-        					altTransportTimerRunnable = null;
+        					service.altTransportTimerHandler = null;
+        					service.altTransportTimerRunnable = null;
         					
         					//Let the alt transport know they are good to go
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_RESPONSE_SUCESS;
-        					onTransportConnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+        					service.onTransportConnected(TransportType.valueOf(receivedBundle.getString(TransportConstants.HARDWARE_CONNECTED)));
         				}else{ //There seems to be some other transport connected
         					//Error
         					retMsg.arg1 = TransportConstants.ROUTER_REGISTER_ALT_TRANSPORT_ALREADY_CONNECTED;
@@ -564,7 +580,7 @@ public class SdlRouterService extends Service{
             		if(receivedBundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
             			SdlPacket packet = receivedBundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
     					if(packet!=null){
-    						onPacketRead(packet);
+    						service.onPacketRead(packet);
     					}else{
     						Log.w(TAG, "Received null packet from alt transport service");
     					}
@@ -582,32 +598,39 @@ public class SdlRouterService extends Service{
 	    /**
 	     * Target we publish for alternative transport (USB) clients to send messages to RouterHandler.
 	     */
-	    final Messenger routerStatusMessenger = new Messenger(new RouterStatusHandler());
+	    final Messenger routerStatusMessenger = new Messenger(new RouterStatusHandler(this));
 	    
 		 /**
 	     * Handler of incoming messages from an alternative transport (USB).
 	     */
-	    class RouterStatusHandler extends Handler {
+	    static class RouterStatusHandler extends Handler {
+	    	 WeakReference<SdlRouterService> provider;
+
+	    	 public RouterStatusHandler(SdlRouterService provider){
+				 this.provider = new WeakReference<SdlRouterService>(provider);
+	    	 }
+
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	SdlRouterService service = this.provider.get();
 	        	switch(msg.what){
 	        	case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
         			int flags = msg.arg1;
 	        		if(msg.replyTo!=null){
 	        			Message message = Message.obtain();
 	        			message.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
-	        			message.arg1 = (isTransportConnected == true) ? 1 : 0;
+	        			message.arg1 = (service.isTransportConnected == true) ? 1 : 0;
 	        			try {
 	        				msg.replyTo.send(message);
 	        			} catch (RemoteException e) {
 	        				e.printStackTrace();
 	        			}
 	        		}
-	        		if(isTransportConnected && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
-	        			if(pingIntent == null){
-	        				initPingIntent();
+	        		if(service.isTransportConnected && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
+	        			if(service.pingIntent == null){
+	        				service.initPingIntent();
 	        			}
-	        			getBaseContext().sendBroadcast(pingIntent); 
+	        			service.getBaseContext().sendBroadcast(service.pingIntent); 
 	        		}
 	        		break;
 	        	default:
