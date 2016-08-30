@@ -11,10 +11,6 @@ package com.smartdevicelink.transport;
 public class TransportConstants {
 	public static final String START_ROUTER_SERVICE_ACTION					="sdl.router.startservice";
 
-	public static final String UNREGISTER_WITH_ROUTER_ACTION 				= "com.sdl.android.unregister"; 
-	public static final String SEND_PACKET_ACTION 							= "com.sdl.android.sendpacket";
-	public static final String SEND__GLOBAL_PACKET_ACTION 					= "com.sdl.android.sendglobalpacket";
-
 	public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
 	public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";
 	
@@ -37,10 +33,6 @@ public class TransportConstants {
 	public static final String PACKAGE_NAME_STRING							= "package.name";
 	public static final String APP_ID_EXTRA									= "app.id";
 	public static final String SESSION_ID_EXTRA								= "session.id";
-
-	public static final String LOG_BASIC_DEBUG_BOOLEAN_EXTRA				= "basicDebugBool";
-	public static final String LOG_TRACE_BT_DEBUG_BOOLEAN_EXTRA				= "btTraceBool";
-
 
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
 	
