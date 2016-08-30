@@ -292,8 +292,9 @@ public class SdlApplication extends SdlContextAbsImpl {
                     }
                 }
             };
-
-            mSdlProxyALM.addOnRPCNotificationListener(functionID, dispatchingListener);
+            if(mSdlProxyALM != null) {
+                mSdlProxyALM.addOnRPCNotificationListener(functionID, dispatchingListener);
+            }
         } else {
             listenerSet.add(rpcNotificationListener);
         }
@@ -305,7 +306,7 @@ public class SdlApplication extends SdlContextAbsImpl {
         HashSet<OnRPCNotificationListener> listenerSet = mNotificationListeners.get(id);
         if(listenerSet != null){
             listenerSet.remove(rpcNotificationListener);
-            if(listenerSet.isEmpty()){
+            if(listenerSet.isEmpty() && mSdlProxyALM != null){
                 mSdlProxyALM.removeOnRPCNotificationListener(functionID);
             }
         }
