@@ -66,7 +66,7 @@ public class TransportBroker {
 			}
 
 			public void onServiceDisconnected(ComponentName className) {
-				Log.d(TAG, "UN-Bound from service " + className.getClassName());
+				Log.d(TAG, "Unbound from service " + className.getClassName());
 				routerServiceMessenger = null;
 				registeredWithRouterService = false;
 				isBound = false;
@@ -152,7 +152,6 @@ public class TransportBroker {
         	if(bundle !=null 
         			&& bundle.containsKey(TransportConstants.ENABLE_LEGACY_MODE_EXTRA)){
 				boolean enableLegacy = bundle.getBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, false);
-				Log.d(TAG, "Setting legacy mode: " +enableLegacy );
 				broker.enableLegacyMode(enableLegacy);
 			}
             
@@ -210,13 +209,12 @@ public class TransportBroker {
             			Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
 
             			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE){
-            				if(packet!=null){ Log.i(TAG, "received packet to process "+  packet.toString());
+            				if(packet!=null){ //Log.i(TAG, "received packet to process "+  packet.toString());
             				broker.onPacketReceived(packet);
             				}else{
             					Log.w(TAG, "Received null packet from router service, not passing along");
             				}
             			}else if(flags == TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED){
-            				Log.i(TAG, "Starting a buffered split packet");
             				broker.bufferedPacket = (SdlPacket) packet;
             				if(broker.bufferedPayloadAssembler !=null){
             					broker.bufferedPayloadAssembler.close();
@@ -239,7 +237,6 @@ public class TransportBroker {
             						
             						broker.bufferedPayloadAssembler.close();
             						broker.bufferedPayloadAssembler = null;
-            						Log.i(TAG, "Split packet finished from router service = " + broker.bufferedPacket.toString());
             						broker.onPacketReceived(broker.bufferedPacket);
             						broker.bufferedPacket = null;
             					}
@@ -311,7 +308,7 @@ public class TransportBroker {
 		 * This beings the initial connection with the router service.
 		 */
 		public boolean start(){
-			Log.d(TAG, "Starting up transport broker for " + whereToReply);
+			//Log.d(TAG, "Starting up transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				if(currentContext==null){
 					throw new IllegalStateException("This instance can't be started since it's local reference of context is null. Ensure when suppling a context to the TransportBroker that it is valid");
@@ -329,7 +326,6 @@ public class TransportBroker {
 		}
 		
 		public void resetSession(){
-			Log.d(TAG, "RESETING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
 				routerServiceMessenger = null;
@@ -341,7 +337,7 @@ public class TransportBroker {
 		 * This method will end our communication with the router service. 
 		 */
 		public void stop(){
-			Log.d(TAG, "STOPPING transport broker for " + whereToReply);
+			//Log.d(TAG, "STOPPING transport broker for " + whereToReply);
 			synchronized(INIT_LOCK){
 				unregisterWithRouterService();
 				unBindFromRouterService();
@@ -374,7 +370,7 @@ public class TransportBroker {
 		}
 		
 		public void onHardwareDisconnected(TransportType type){
-			synchronized(INIT_LOCK){Log.d(TAG, "onHardwareDisconnect");
+			synchronized(INIT_LOCK){
 				unBindFromRouterService();
 				routerServiceMessenger = null;
 				routerConnection = null;
@@ -407,7 +403,6 @@ public class TransportBroker {
 		 * @return
 		 */
 		private boolean isRouterServiceRunning(Context context){
-			Log.d(TAG,whereToReply + " checking if a bluetooth service is running");
 			if(context==null){
 				
 				return false;
@@ -455,7 +450,7 @@ public class TransportBroker {
 				sendMessageToRouterService(message);
 				return true;
 			}else{ //Message is too big for IPC transaction 
-				Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
+				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
 				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPrioirtyCoefficient() );				
 				while(splitter.isActive()){
 					sendMessageToRouterService(splitter.nextMessage());

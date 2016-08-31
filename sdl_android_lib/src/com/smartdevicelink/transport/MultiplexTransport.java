@@ -213,7 +213,7 @@ public class MultiplexTransport extends SdlTransport{
 		public void run() {
 			Looper.prepare();
 			
-			if(broker==null){Log.d("JOEY", "Starting broker");
+			if(broker==null){
 				synchronized(this){
 					initTransportBroker();
 					if(queueStart){
@@ -228,7 +228,6 @@ public class MultiplexTransport extends SdlTransport{
 			}
 			threadLooper = Looper.myLooper();
 			Looper.loop();
-			Log.i(TAG, "Looper has finished. Thread should be sutting down");
 			
 		}
 		
@@ -242,9 +241,8 @@ public class MultiplexTransport extends SdlTransport{
 						Log.d(TAG, "On transport connected...");
 						if(!connected){
 							connected = true;
-							Log.d(TAG, "Handling transport connected");
 							handleTransportConnected();
-						}else{Log.d(TAG, "Already connected");}
+						}//else{Log.d(TAG, "Already connected");}
 						return true;
 					}else{
 						try{

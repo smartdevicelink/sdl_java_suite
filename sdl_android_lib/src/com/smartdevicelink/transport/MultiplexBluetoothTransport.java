@@ -731,7 +731,6 @@ public class MultiplexBluetoothTransport {
 
         public synchronized void cancel() {
             try {
-            	Log.d(TAG, "Calling Cancel in the write thread");
             	if(mmOutStream!=null){
             		mmOutStream.flush();
             		mmOutStream.close();

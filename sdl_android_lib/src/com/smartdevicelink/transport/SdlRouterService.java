@@ -1019,13 +1019,11 @@ public class SdlRouterService extends Service{
 			Log.d(TAG, "Not starting own bluetooth during legacy mode");
 			return;
 		}
-		Log.i(TAG, "Iniitializing Bluetooth Serial Class");
+		Log.i(TAG, "Iniitializing bluetooth transport");
 		//init serial service
 		if(mSerialService ==null){
-			Log.d(TAG, "Local copy of BT Server is null");
 			mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
 			if(mSerialService==null){
-				Log.d(TAG, "Local copy of BT Server is still null and so is global");
 				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
 			}
 		}
@@ -1096,7 +1094,6 @@ public class SdlRouterService extends Service{
 		
 		cachedModuleVersion = -1; //Reset our cached version
 		if(registeredApps== null || registeredApps.isEmpty()){
-			Log.w(TAG, "No clients to notify. Sending global notification.");
 			Intent unregisterIntent = new Intent();
 			unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
 			unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
@@ -1198,7 +1195,7 @@ public class SdlRouterService extends Service{
 				int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
 				int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
 				if(packet!=null){
-					mSerialService.write(packet,offset,count); Log.i(TAG, "Wrote out bytes");
+					mSerialService.write(packet,offset,count);
 					return true;
 				}
 				return false;
@@ -1214,7 +1211,7 @@ public class SdlRouterService extends Service{
 		private boolean manuallyWriteBytes(byte[] bytes, int offset, int count){
 			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
 				if(bytes!=null){
-					mSerialService.write(bytes,offset,count);Log.i(TAG, "Wrote out bytes manually");
+					mSerialService.write(bytes,offset,count);
 					return true;
 				}
 				return false;
@@ -1234,7 +1231,6 @@ public class SdlRouterService extends Service{
 		 */
 		private boolean sendThroughAltTransport(Bundle bundle){
 			if(altTransportService!=null){
-				Log.d(TAG, "Sending packet through alt transport");
 				Message msg = Message.obtain();
 				msg.what = TransportConstants.ROUTER_SEND_PACKET;
 				msg.setData(bundle);
@@ -1258,7 +1254,6 @@ public class SdlRouterService extends Service{
 		 */
 		private boolean sendThroughAltTransport(byte[] bytes, int offset, int count){
 			if(altTransportService!=null){
-				Log.d(TAG, "Sending packet through alt transport");
 				Message msg = Message.obtain();
 				msg.what = TransportConstants.ROUTER_SEND_PACKET;
 				Bundle bundle = new Bundle();
@@ -1344,7 +1339,7 @@ public class SdlRouterService extends Service{
 		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, copyPacket);
 		    			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED);
 		    			message.setData(bundle);
-		    			Log.d(TAG, "First packet before sending: " + message.getData().toString());
+		    			//Log.d(TAG, "First packet before sending: " + message.getData().toString());
 		    			if(!sendPacketMessageToClient(app, message, version)){
 		    				Log.w(TAG, "Error sending first message of split packet to client " + app.appId);
 		    				return false;
@@ -1358,7 +1353,7 @@ public class SdlRouterService extends Service{
 	    						return false;
 	    					}
 	    				}
-	    				Log.i(TAG, "Large packet finished being sent");
+	    				//Log.i(TAG, "Large packet finished being sent");
 	    			} 
 	    			
     		}else{	//If we can't find a session for this packet we just drop the packet
@@ -1573,8 +1568,8 @@ public class SdlRouterService extends Service{
             	
             	LocalRouterService newestServiceReceived = getLocalBluetoothServiceComapre();
             	LocalRouterService self = getLocalRouterService(); //We can send in null here, because it should have already been created
-            	Log.v(TAG, "Self service info " + self);
-            	Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
+            	//Log.v(TAG, "Self service info " + self);
+            	//Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
             	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
             		Log.d(TAG, "There is a newer version of the Router Service, starting it up");
                 	closing = true;
@@ -1646,8 +1641,8 @@ public class SdlRouterService extends Service{
 				SparseArray<Long> iter = sessionMap.clone();
 				int size = iter.size();
 				for(int i = 0; i<size; i++){
-					Log.d(TAG, "Investigating session " +iter.keyAt(i));
-					Log.d(TAG, "App id is: " + iter.valueAt(i));
+					//Log.d(TAG, "Investigating session " +iter.keyAt(i));
+					//Log.d(TAG, "App id is: " + iter.valueAt(i));
 					if(((Long)iter.valueAt(i)).compareTo(appId) == 0){
 						sessionHashIdMap.remove(iter.keyAt(i));
 						sessionMap.removeAt(i);	
@@ -1666,8 +1661,8 @@ public class SdlRouterService extends Service{
     	Vector<Long> sessions = app.getSessionIds();
 		int size = sessions.size(), sessionId;
 		for(int i=0; i<size;i++){
-			Log.d(TAG, "Investigating session " +sessions.get(i).intValue());
-			Log.d(TAG, "App id is: " + sessionMap.get(sessions.get(i).intValue()));
+			//Log.d(TAG, "Investigating session " +sessions.get(i).intValue());
+			//Log.d(TAG, "App id is: " + sessionMap.get(sessions.get(i).intValue()));
 			sessionId = sessions.get(i).intValue();
 			removeSessionFromMap(sessionId);
 			if(cleanModule){
@@ -1709,7 +1704,7 @@ public class SdlRouterService extends Service{
 					}
 				}
 			}
-			Log.d(TAG, sessionId + " session returning App Id: " + appId);
+			//Log.d(TAG, sessionId + " session returning App Id: " + appId);
 			return appId;
 		}
 	}
@@ -1818,7 +1813,7 @@ public class SdlRouterService extends Service{
 				peekTask = app.peekNextTask();
 				if(peekTask!=null){
 					peekWeight = peekTask.getWeight(currentTime);
-					Log.v(TAG, "App " + app.appId +" has a task with weight "+ peekWeight);
+					//Log.v(TAG, "App " + app.appId +" has a task with weight "+ peekWeight);
 					if(peekWeight>currentPriority){
 						if(app.queuePaused){
 							app.notIt();//Reset the timer
@@ -2112,7 +2107,7 @@ public class SdlRouterService extends Service{
 		
 		public boolean handleIncommingClientMessage(final Bundle receivedBundle){
 			int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
-			Log.d(TAG, "Flags received: " + flags);
+			//Log.d(TAG, "Flags received: " + flags);
 			if(flags!=TransportConstants.BYTES_TO_SEND_FLAG_NONE){
 				byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 				if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
@@ -2235,7 +2230,6 @@ public class SdlRouterService extends Service{
 							synchronized(deathLock){
 								Log.w(TAG, "Binder died for app " + RegisteredApp.this.appId);
 								if(messenger!=null && messenger.getBinder()!=null){
-									Log.d(TAG, "attempt to unlink this death note");
 									messenger.getBinder().unlinkToDeath(this, 0);
 								}
 								removeAllSessionsForApp(RegisteredApp.this,true);
