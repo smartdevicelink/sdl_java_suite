@@ -774,14 +774,11 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void startUpSequence(){
-		IntentFilter stateChangeFilter = new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED");
-		stateChangeFilter.addAction("android.bluetooth.device.action.CLASS_CHANGED");
-		IntentFilter disconnectFilter1 = new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECTED");
-		IntentFilter disconnectFilter2 = new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED");
-
-		registerReceiver(mListenForDisconnect,stateChangeFilter );
-		registerReceiver(mListenForDisconnect,disconnectFilter1 );
-		registerReceiver(mListenForDisconnect,disconnectFilter2 );
+		IntentFilter disconnectFilter = new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED");
+		disconnectFilter.addAction("android.bluetooth.device.action.CLASS_CHANGED");
+		disconnectFilter.addAction("android.bluetooth.device.action.ACL_DISCONNECTED");
+		disconnectFilter.addAction("android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED");
+		registerReceiver(mListenForDisconnect,disconnectFilter );
 		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(REGISTER_WITH_ROUTER_ACTION);
