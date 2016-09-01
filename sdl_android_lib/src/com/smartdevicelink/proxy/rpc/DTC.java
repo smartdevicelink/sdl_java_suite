@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * String containing hexadecimal identifier as well as other common names.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

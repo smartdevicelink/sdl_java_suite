@@ -2,8 +2,8 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Indicates the format of the time displayed on the connected SDL unit.Format
- * description follows the following nomenclature:<br> Sp = Space<br> | = or <br>c =
- * character
+ * description follows the following nomenclature:<p> Sp = Space</p> <p>| = or </p><p>c =
+ * character</p>
  * 
  * @since SmartDeviceLink 1.0
  */

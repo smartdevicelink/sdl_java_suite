@@ -35,7 +35,6 @@ import com.smartdevicelink.proxy.RPCNotification;
  * <th>Notes</th>
  * <th>SmartDeviceLink Ver Available</th>
  * </tr>
-
  * </table>
  * </p>
  *

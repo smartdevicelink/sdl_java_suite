@@ -154,15 +154,17 @@ public class TransportBroker {
             		case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
             			// yay! we have been registered. Now what?
             			registeredWithRouterService = true;
-            			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
-        					//Keep track if we actually get this
-        				}
-            			if(queuedOnTransportConnect!=null){
-        					onHardwareConnected(queuedOnTransportConnect);
-        					queuedOnTransportConnect = null;
-        				}else if(SdlBroadcastReceiver.isTransportConnected(getContext())){
-        					onHardwareConnected(null); //FIXME to include type
-        				}
+            			if(bundle !=null){
+            				if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+            					if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
+            						//Keep track if we actually get this
+            					}
+            					onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            				}
+            				/*if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
+            					//Keep track if we actually get this
+            				}*/
+            			}
             			break;
             		case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
             			Log.d(TAG, "Denied registration because router is in legacy mode" );
@@ -252,6 +254,9 @@ public class TransportBroker {
         			}
         			
         			if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+            			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
+        					//Keep track if we actually get this
+        				}
         				onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
         				break;
         			}
@@ -397,7 +402,7 @@ public class TransportBroker {
 				
 				return false;
 			}
-			ActivityManager manager = (ActivityManager) context.getSystemService("activity");
+			ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 		    	//We will check to see if it contains this name, should be pretty specific
 		    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) { 

@@ -12,6 +12,9 @@ import com.smartdevicelink.proxy.RPCResponse;
  */
 public class DeleteFileResponse extends RPCResponse {
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
+	/** Constructs a new DeleteFileResponse object
+	 * 
+	 */
 
     public DeleteFileResponse() {
         super(FunctionID.DELETE_FILE.toString());

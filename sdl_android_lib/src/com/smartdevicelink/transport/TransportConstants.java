@@ -53,6 +53,7 @@ public class TransportConstants {
 	
 	public static final String	BIND_REQUEST_TYPE_CLIENT						= "BIND_REQUEST_TYPE_CLIENT";
 	public static final String	BIND_REQUEST_TYPE_ALT_TRANSPORT					= "BIND_REQUEST_TYPE_ALT_TRANSPORT";
+	public static final String	BIND_REQUEST_TYPE_STATUS						= "BIND_REQUEST_TYPE_STATUS";
 
 	
 	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
@@ -189,7 +190,15 @@ public class TransportConstants {
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;
 	
+	public static final String ROUTER_SERVICE_VERSION						= "router_service_version";
+
+	/**
+	 * Status binder
+	 */
 	
+	public static final int ROUTER_STATUS_CONNECTED_STATE_REQUEST			= 0x01;
+	public static final int ROUTER_STATUS_CONNECTED_STATE_RESPONSE			= 0x02;
+
 
 	
 

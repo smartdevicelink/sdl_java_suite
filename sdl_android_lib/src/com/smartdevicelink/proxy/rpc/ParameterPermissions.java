@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
- * <p><b>Parameter List
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

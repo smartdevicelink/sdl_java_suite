@@ -6,15 +6,15 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 /**
- * Specifies what is to be spoken. This can be simply a text phrase, which SDL will speak according to its own rules.
+ * <p>Specifies what is to be spoken. This can be simply a text phrase, which SDL will speak according to its own rules.
  *  It can also be phonemes from either the Microsoft SAPI phoneme set, or from the LHPLUS phoneme set. 
- *  It can also be a pre-recorded sound in WAV format (either developer-defined, or provided by the SDL platform).
+ *  It can also be a pre-recorded sound in WAV format (either developer-defined, or provided by the SDL platform).</p>
  *  
  *  <p>In SDL, words, and therefore sentences, can be built up from phonemes and are used to explicitly provide the proper pronounciation to the TTS engine.
  *   For example, to have SDL pronounce the word "read" as "red", rather than as when it is pronounced like "reed",
- *   the developer would use phonemes to express this desired pronounciation.
- *  <p>For more information about phonemes, see <a href="http://en.wikipedia.org/wiki/Phoneme">http://en.wikipedia.org/wiki/Phoneme</a>.
- *  <p><b> Parameter List
+ *   the developer would use phonemes to express this desired pronounciation.</p>
+ *  <p>For more information about phonemes, see <a href="http://en.wikipedia.org/wiki/Phoneme">http://en.wikipedia.org/wiki/Phoneme</a></p>.
+ *  <p><b> Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>

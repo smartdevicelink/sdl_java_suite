@@ -22,7 +22,7 @@ public class ShowResponse extends RPCResponse {
 	/**
 	 * Constructs a new ShowResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

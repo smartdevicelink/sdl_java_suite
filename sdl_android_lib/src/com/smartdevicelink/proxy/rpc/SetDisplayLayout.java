@@ -8,8 +8,38 @@ import com.smartdevicelink.proxy.RPCRequest;
 /**
  * Used to set an alternate display layout. If not sent, default screen for
  * given platform will be shown
- * <p>
  * 
+ * 
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>displayLayout</td>
+ * 			<td>string</td>
+ * 			<td>Predefined or dynamically created screen layout.<p>Currently only predefined screen layouts are defined.</p> Predefined layouts include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen presets. </td>
+ *                 <td>Y</td>
+ * 			<td>maxlength: 500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *  </table>
+ *<p><b>Response </b></p>
+ *
+ *<p><b> Non-default Result Codes: </b></p>
+ *<p> SUCCESS </p>
+ *<p> INVALID_DATA</p>
+ *<p> OUT_OF_MEMORY</p>
+ *<p>  TOO_MANY_PENDING_REQUESTS</p>
+ * <p>  APPLICATION_NOT_REGISTERED</p>
+ * <p>  GENERIC_ERROR</p>
+ * <p>   REJECTED</p>
  * @since SmartDeviceLink 2.0
  */
 public class SetDisplayLayout extends RPCRequest {
@@ -24,7 +54,7 @@ public class SetDisplayLayout extends RPCRequest {
 	/**
 	 * Constructs a new SetDisplayLayout object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

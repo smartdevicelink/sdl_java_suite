@@ -21,9 +21,9 @@ public class AlertResponse extends RPCResponse {
     }
 
 	/**
-	 * Constructs a new AlertResponse object indicated by the Hashtable
+	 * <p>Constructs a new AlertResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * </p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

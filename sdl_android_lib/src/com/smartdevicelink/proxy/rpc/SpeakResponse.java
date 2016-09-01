@@ -22,7 +22,7 @@ public class SpeakResponse extends RPCResponse {
 	/**
 	 * Constructs a new SpeakResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

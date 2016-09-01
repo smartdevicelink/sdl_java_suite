@@ -22,7 +22,7 @@ public class ScrollableMessageResponse extends RPCResponse {
 	/**
 	 * Constructs a new ScrollableMessageResponse object indicated by the Hashtable
 	 * parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use

@@ -8,8 +8,10 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 
 /**
- * Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
- * <p><b>Parameter List
+ *<p> Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
+ * Specifies the capabilities of audio capturing: sampling rate, bits per sample, audio type.</p>
+ * 
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
  * 		<tr>
  * 			<th>Name</th>
@@ -39,6 +41,8 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
+ *  @see ButtonName
+ *  @see GetCapabilities
  * @since SmartDeviceLink 2.0
  */
 public class AudioPassThruCapabilities extends RPCStruct {
