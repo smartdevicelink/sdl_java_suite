@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
+import java.util.EnumSet;
 import java.util.Vector;
 
 public class SdlApplicationConfig {
@@ -33,6 +34,7 @@ public class SdlApplicationConfig {
     private Vector<String> mVrSynonyms;
     private Language mLang;
     private Language mHmiLang;
+    private EnumSet<Language> mSupportedLang;
     private Vector<AppHMIType> mVrAppHMITypes;
     private String mAutoActivateID;
     private BaseTransportConfig mTransport;
@@ -58,6 +60,7 @@ public class SdlApplicationConfig {
         this.mVrSynonyms = builder.vrSynonyms;
         this.mLang = builder.language;
         this.mHmiLang = builder.hmiLanguage;
+        this.mSupportedLang = builder.supportedLanguages;
         this.mVrAppHMITypes = builder.vrAppHMITypes;
         this.mAutoActivateID = builder.autoActivateID;
         this.mTransport = builder.transport;
@@ -96,6 +99,14 @@ public class SdlApplicationConfig {
      */
     public Class<? extends SdlActivity> getMainSdlActivityClass(){
         return mMainSdlActivity;
+    }
+
+    public Language getDefaultLanguage(){
+        return mLang;
+    }
+
+    public boolean languageIsSupported(Language checkLanguage){
+        return mSupportedLang.contains(checkLanguage);
     }
 
     /**
@@ -175,6 +186,7 @@ public class SdlApplicationConfig {
         private Vector<String> vrSynonyms = null;
         private Language language = Language.EN_US;
         private Language hmiLanguage = Language.EN_US;
+        private EnumSet<Language> supportedLanguages = EnumSet.of(Language.EN_US);
         private Vector<AppHMIType> vrAppHMITypes = null;
         private String autoActivateID = null;
         private BaseTransportConfig transport = new BTTransportConfig();
@@ -295,6 +307,11 @@ public class SdlApplicationConfig {
          */
         public Builder setAppIcon(SdlImage appIcon) {
             this.appIcon = appIcon;
+            return this;
+        }
+
+        public Builder setSupportedLanguages(EnumSet<Language> supportedLanguages){
+            this.supportedLanguages = supportedLanguages;
             return this;
         }
     }
