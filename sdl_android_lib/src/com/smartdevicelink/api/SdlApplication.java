@@ -204,7 +204,7 @@ public class SdlApplication extends SdlContextAbsImpl {
         return mSdlActivityManager;
     }
 
-    final void closeConnection(boolean notifyStatusListener) {
+    final void closeConnection(boolean notifyStatusListener, boolean destroyProxy, boolean destroyThread) {
         if (mConnectionStatus != Status.DISCONNECTED) {
             for (LifecycleListener listener : mLifecycleListeners) {
                 listener.onSdlDisconnect();
@@ -212,17 +212,22 @@ public class SdlApplication extends SdlContextAbsImpl {
             mConnectionStatus = Status.DISCONNECTED;
             if (notifyStatusListener)
                 mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.DISCONNECTED);
-            try {
-                mSdlProxyALM.dispose();
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
             onDisconnect();
-            mSdlProxyALM = null;
-            mExecutionHandler.removeCallbacksAndMessages(null);
-            mExecutionHandler = null;
-            mExecutionThread.quit();
-            mExecutionThread = null;
+            if(destroyProxy){
+                try {
+                    mSdlProxyALM.dispose();
+                } catch (SdlException e) {
+                    e.printStackTrace();
+                }
+                mSdlProxyALM = null;
+
+            }
+            if(destroyThread){
+                mExecutionHandler.removeCallbacksAndMessages(null);
+                mExecutionHandler = null;
+                mExecutionThread.quit();
+                mExecutionThread = null;
+            }
         }
     }
 
@@ -611,12 +616,22 @@ public class SdlApplication extends SdlContextAbsImpl {
 
         @Override
         public final void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason) {
-            mExecutionHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    closeConnection(true);
-                }
-            });
+            if(reason!= SdlDisconnectedReason.LANGUAGE_CHANGE){
+                mExecutionHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeConnection(true, true, true);
+                    }
+                });
+            }else {
+                closeConnection(false, false, false);
+                isFirstHmiReceived = false;
+                isFirstHmiNotNoneReceived = false;
+                isReregisterFinished = false;
+
+                mConnectionStatus = Status.CONNECTING;
+                mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
+            }
         }
 
         @Override
@@ -644,7 +659,7 @@ public class SdlApplication extends SdlContextAbsImpl {
             mExecutionHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    closeConnection(true);
+                    closeConnection(true, true, true);
                 }
             });
         }
