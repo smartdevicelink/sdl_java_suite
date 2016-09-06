@@ -61,6 +61,7 @@ public class SdlApplicationConfig {
         this.mLang = builder.language;
         this.mHmiLang = builder.hmiLanguage;
         this.mSupportedLang = builder.supportedLanguages;
+        this.mSupportedLang.add(this.mLang);
         this.mVrAppHMITypes = builder.vrAppHMITypes;
         this.mAutoActivateID = builder.autoActivateID;
         this.mTransport = builder.transport;
@@ -186,7 +187,7 @@ public class SdlApplicationConfig {
         private Vector<String> vrSynonyms = null;
         private Language language = Language.EN_US;
         private Language hmiLanguage = Language.EN_US;
-        private EnumSet<Language> supportedLanguages = EnumSet.of(Language.EN_US);
+        private EnumSet<Language> supportedLanguages = EnumSet.noneOf(Language.class);
         private Vector<AppHMIType> vrAppHMITypes = null;
         private String autoActivateID = null;
         private BaseTransportConfig transport = new BTTransportConfig();
