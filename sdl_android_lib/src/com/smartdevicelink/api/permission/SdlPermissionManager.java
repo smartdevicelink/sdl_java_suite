@@ -10,8 +10,8 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SdlPermissionManager {
 
@@ -19,7 +19,11 @@ public class SdlPermissionManager {
 
     private SdlPermissionSet mSdlPermissionSet;
 
-    private ArrayList<ListenerWithFilter> mListeners;
+    private CopyOnWriteArraySet<ListenerWithFilter> mListeners;
+
+    private ArrayList<ListenerWithFilter> mRemovedListener = new ArrayList<>();
+
+    boolean isPermissionEventIter = false;
 
     private HMILevel mCurrentHMILevel = HMILevel.HMI_NONE;
 
@@ -27,7 +31,7 @@ public class SdlPermissionManager {
 
     public SdlPermissionManager(){
         mSdlPermissionSet = SdlPermissionSet.obtain();
-        mListeners = new ArrayList<>();
+        mListeners = new CopyOnWriteArraySet<>();
     }
 
     /**
@@ -70,16 +74,21 @@ public class SdlPermissionManager {
     public boolean removeListener(@NonNull SdlPermissionListener listener){
         synchronized (PERMISSION_LOCK){
             boolean removedListener = false;
-            for(Iterator<ListenerWithFilter> iterator = mListeners.iterator(); iterator.hasNext();){
+            ArrayList<ListenerWithFilter> removeListeners = new ArrayList<>();
+            for (ListenerWithFilter lwf : mListeners) {
                 SdlPermissionListener permissionListener;
-                if((permissionListener= cleanNullFromListenerList(iterator.next(), iterator))==null){
+                if ((permissionListener = cleanNullFromListenerList(lwf, removeListeners)) == null) {
                     continue;
                 }
-                if(permissionListener == listener){
-                    iterator.remove();
-                    removedListener= true;
+                if (permissionListener == listener) {
+                    mListeners.remove(lwf);
+                    removedListener = true;
+                    if(isPermissionEventIter){
+                        mRemovedListener.add(lwf);
+                    }
                 }
             }
+            mListeners.removeAll(removeListeners);
             return removedListener;
         }
     }
@@ -92,10 +101,10 @@ public class SdlPermissionManager {
     public void onHmi(@NonNull HMILevel hmiLevel){
         synchronized (PERMISSION_LOCK) {
             if(hmiLevel!=mCurrentHMILevel) {
-                for(Iterator<ListenerWithFilter> iterator = mListeners.iterator(); iterator.hasNext();){
-                    ListenerWithFilter lwf= iterator.next();
+                ArrayList<ListenerWithFilter> nullListeners = new ArrayList<>();
+                for (ListenerWithFilter lwf : mListeners) {
                     SdlPermissionListener permissionListener;
-                    if((permissionListener= cleanNullFromListenerList(lwf, iterator))==null){
+                    if ((permissionListener = cleanNullFromListenerList(lwf, nullListeners)) == null) {
                         continue;
                     }
 
@@ -106,6 +115,7 @@ public class SdlPermissionManager {
                         permissionListener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, hmiLevel));
                     }
                 }
+                mListeners.removeAll(nullListeners);
                 mCurrentHMILevel = hmiLevel;
             }
         }
@@ -163,17 +173,25 @@ public class SdlPermissionManager {
 
             mSdlPermissionSet.recycle();
             mSdlPermissionSet = newPermissions;
-
-            for(Iterator<ListenerWithFilter> iterator = mListeners.iterator(); iterator.hasNext();) {
-                ListenerWithFilter lwf= iterator.next();
+            ArrayList<ListenerWithFilter> nullListeners = new ArrayList<>();
+            for (ListenerWithFilter lwf : mListeners) {
+                //denote here that if any listener gets removed while we are iterating, to keep note of it
+                //and make sure we do not call it
+                isPermissionEventIter = true;
                 SdlPermissionListener permissionListener;
-                if((permissionListener= cleanNullFromListenerList(lwf, iterator))==null){
+                //besides checking for a garbage collected listener, we check for if
+                //the listener was removed from our current list
+                if (((permissionListener = cleanNullFromListenerList(lwf, nullListeners)) == null)
+                        || mRemovedListener.contains(lwf)) {
                     continue;
                 }
-                if (changed.containsAnyForHMILevel(lwf.filter.permissionSet,mCurrentHMILevel)) {
+                if (changed.containsAnyForHMILevel(lwf.filter.permissionSet, mCurrentHMILevel)) {
                     permissionListener.onPermissionChanged(generateSdlPermmisionEvent(mSdlPermissionSet, lwf.filter, mCurrentHMILevel));
                 }
             }
+            isPermissionEventIter = false;
+            mListeners.removeAll(nullListeners);
+            mRemovedListener.clear();
         }
     }
 
@@ -220,10 +238,10 @@ public class SdlPermissionManager {
         }
     }
 
-    private SdlPermissionListener cleanNullFromListenerList(ListenerWithFilter lwf, Iterator<ListenerWithFilter> lwfIterator){
+    private SdlPermissionListener cleanNullFromListenerList(ListenerWithFilter lwf, ArrayList<ListenerWithFilter> nullListeners){
         SdlPermissionListener listener = lwf.listener.get();
         if(listener==null){
-            lwfIterator.remove();
+            nullListeners.add(lwf);
         }
         return listener;
     }
