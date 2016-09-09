@@ -25,10 +25,7 @@ public class SdlButtonView extends SdlView {
     private boolean containsBackButton = false;
     private HashMap<String, SdlButtonImageRecord> mImageStatusRegister;
 
-    private final SdlButton BACK_BUTTON = new SdlButton("Back", null);
-
     public SdlButtonView(){
-        BACK_BUTTON.setId(SdlApplication.BACK_BUTTON_ID);
         mImageStatusRegister = new HashMap<>();
     }
 
@@ -68,26 +65,38 @@ public class SdlButtonView extends SdlView {
         return isTiles;
     }
 
-    public void includeBackButton(boolean isIncluded){
-        if(!containsBackButton && isIncluded){
-            mSdlButtons.add(0, BACK_BUTTON);
-        } else if(containsBackButton && !isIncluded){
+    public void includeBackButton(String buttonText, SdlImage buttonImage, boolean isImageOnly){
+        // Clear current back button if any.
+        removeBackButton();
+
+        // Create new back button to take its place.
+        SdlButton backButton = createBackButton(buttonText);
+        backButton.setSdlImage(buttonImage);
+        backButton.setGraphicOnly(isImageOnly);
+        mSdlButtons.add(0, backButton);
+
+        containsBackButton = true;
+    }
+
+    public void includeBackButton(String buttonText){
+        includeBackButton(buttonText, null, false);
+    }
+
+    public void includeBackButton(){
+        includeBackButton("Back");
+    }
+
+    public void removeBackButton(){
+        if(containsBackButton){
             mSdlButtons.remove(0);
-        }
-        containsBackButton = isIncluded;
-    }
-
-    public void setBackButtonIcon(SdlImage sdlImage){
-        BACK_BUTTON.setSdlImage(sdlImage);
-        if(sdlImage != null){
-            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
-            mImageStatusRegister.put(sdlImage.getSdlName(), new SdlButtonImageRecord(sdlImage,
-                    fileManager.isFileOnModule(sdlImage.getSdlName())));
+            containsBackButton = false;
         }
     }
 
-    public void setBackButtonGraphicOnly(boolean graphicOnly){
-        BACK_BUTTON.setGraphicOnly(graphicOnly);
+    private SdlButton createBackButton(String text){
+        SdlButton backButton = new SdlButton(text, null);
+        backButton.setId(SdlApplication.BACK_BUTTON_ID);
+        return backButton;
     }
 
     @Override
