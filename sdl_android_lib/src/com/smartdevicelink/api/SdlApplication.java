@@ -308,6 +308,7 @@ public class SdlApplication extends SdlContextAbsImpl {
             listenerSet.remove(rpcNotificationListener);
             if(listenerSet.isEmpty() && mSdlProxyALM != null){
                 mSdlProxyALM.removeOnRPCNotificationListener(functionID);
+                mNotificationListeners.put(id, null);
             }
         }
     }
