@@ -1,16 +1,17 @@
 package com.smartdevicelink.transport;
 
-import android.util.Log;
-
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.transport.enums.TransportType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import android.util.Log;
+
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.transport.enums.TransportType;
 
 /**
  * General comments:
@@ -107,10 +108,11 @@ public class TCPTransport extends SdlTransport {
      * @return True if data was sent successfully, False otherwise
      */
     @Override
-    protected boolean sendBytesOverTransport(byte[] msgBytes, int offset, int length) {
+    protected boolean sendBytesOverTransport(SdlPacket packet) {
         TCPTransportState currentState = getCurrentState();
+        byte[] msgBytes = packet.constructPacket();
         logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Size: %d, Offset: %d, Length: %d, Current state is: %s"
-                , msgBytes.length, offset, length, currentState.name()));
+                , msgBytes.length, 0, msgBytes.length, currentState.name()));
 
         boolean bResult = false;
 
@@ -118,7 +120,7 @@ public class TCPTransport extends SdlTransport {
                 if (mOutputStream != null) {
                     logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
                     try {
-                        mOutputStream.write(msgBytes, offset, length);
+                        mOutputStream.write(msgBytes, 0, msgBytes.length);
                         bResult = true;
                         logInfo("TCPTransport.sendBytesOverTransport: successfully send data");
                     } catch (IOException e) {
@@ -288,7 +290,10 @@ public class TCPTransport extends SdlTransport {
      * Internal class that represents separate thread, that does actual work, related to connecting/reading/writing data
      */
     private class TCPTransportThread extends Thread {
-
+    	SdlPsm psm;
+    	public TCPTransportThread(){
+    		psm = new SdlPsm();
+    	}
         /**
          * Represents current thread state - halted or not. This flag is used to change internal behavior depending
          * on current state.
@@ -313,7 +318,7 @@ public class TCPTransport extends SdlTransport {
         private boolean connect() {
             boolean bConnected;
             int remainingRetry = RECONNECT_RETRY_COUNT;
-
+            
             synchronized (TCPTransport.this) {
                 do {
                     try {
@@ -359,7 +364,7 @@ public class TCPTransport extends SdlTransport {
         @Override
         public void run() {
             logInfo("TCPTransport.run: transport thread created. Starting connect stage");
-
+            psm.reset();
             while(!isHalted) {
                 setCurrentState(TCPTransportState.CONNECTING);
                 if(!connect()){
@@ -377,13 +382,13 @@ public class TCPTransport extends SdlTransport {
                     handleTransportConnected();
                 }
 
-                byte[] buffer = new byte[READ_BUFFER_SIZE];
-
+                byte input;
+                boolean stateProgress = false;
                 while (!isHalted) {
                     logInfo("TCPTransport.run: Waiting for data...");
-                    int bytesRead;
                     try {
-                        bytesRead = mInputStream.read(buffer);
+                    	input = (byte) mInputStream.read();
+                        //bytesRead = mInputStream.read(buffer);
                     } catch (IOException e) {
                         internalHandleStreamReadError();
                         break;
@@ -397,17 +402,25 @@ public class TCPTransport extends SdlTransport {
                     }
 
                     logInfo("TCPTransport.run: Got new data");
-                    if (-1 == bytesRead) {
-                        internalHandleTCPDisconnect();
-                        break;
-                    } else if (0 == bytesRead) {
-                        logInfo("TCPTransport.run: Received zero bytes");
-                    } else {
-                        logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
-                        synchronized (TCPTransport.this) {
-                            handleReceivedBytes(buffer, bytesRead);
+                        // Send the response of what we received
+                        stateProgress = psm.handleByte(input); 
+                        if(!stateProgress){//We are trying to weed through the bad packet info until we get something
+                        	
+                        	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                        	psm.reset();
                         }
-                    }
+                        
+                        if(psm.getState() == SdlPsm.FINISHED_STATE)
+                        {
+                        	synchronized (TCPTransport.this) {
+                        		//Log.d(TAG, "Packet formed, sending off");
+                        		handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+                        	}
+                        	//We put a trace statement in the message read so we can avoid all the extra bytes
+                        	psm.reset();
+                        }
+                        //FIXME logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
+                        
                 }
             }
 
