@@ -152,11 +152,11 @@ public class SdlApplication extends SdlContextAbsImpl {
                 }
                 mApplicationStatusListener = listener;
                 mSdlActivityManager = new SdlActivityManager();
-                mSdlMenuManager = new SdlMenuManager();
 
                 mLifecycleListeners.add(mSdlActivityManager);
                 mSdlFileManager = new SdlFileManager(SdlApplication.this, mApplicationConfig);
                 mLifecycleListeners.add(mSdlFileManager);
+                createItemManagers();
                 if (mSdlProxyALM != null) {
                     mConnectionStatus = Status.CONNECTING;
                     listener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
@@ -165,6 +165,11 @@ public class SdlApplication extends SdlContextAbsImpl {
                 }
             }
         });
+    }
+
+    //TODO: have it so that we are not recreating the managers
+    private void createItemManagers(){
+        mSdlMenuManager = new SdlMenuManager();
     }
 
     // Methods to be overridden by developer.
@@ -529,11 +534,8 @@ public class SdlApplication extends SdlContextAbsImpl {
                             Log.e(TAG, "Language could not be grabbed from proxy object");
                             mConnectedLanguage = mApplicationConfig.getDefaultLanguage();
                         }
-                        //do a change registration here...but need to wait until it responds?
-                        //potential for more hmi statuses to come through and run this code again
                         Language connectedLang = getConnectedLanguage();
                         if(connectedLang != mApplicationConfig.getDefaultLanguage()){
-                            //need to change registration now
                             ChangeRegistration reRegister = new ChangeRegistration();
                             reRegister.setLanguage(connectedLang);
                             reRegister.setHmiDisplayLanguage(connectedLang);
@@ -567,9 +569,6 @@ public class SdlApplication extends SdlContextAbsImpl {
                         }
                     }
 
-                    //when to launch the activity
-                    //need to start them once we have not received a none status and once we
-                    //receive a callback on the change registration
                     if (!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE) {
                         isFirstHmiNotNoneReceived = true;
                         if(isReregisterFinished){
@@ -616,23 +615,23 @@ public class SdlApplication extends SdlContextAbsImpl {
         }
 
         @Override
-        public final void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason) {
-            if(reason!= SdlDisconnectedReason.LANGUAGE_CHANGE){
-                mExecutionHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
+        public final void onProxyClosed(String info, Exception e, final SdlDisconnectedReason reason) {
+            mExecutionHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(reason!= SdlDisconnectedReason.LANGUAGE_CHANGE){
                         closeConnection(true, true, true);
+                    }else {
+                        closeConnection(false, false, false);
+                        isFirstHmiReceived = false;
+                        isFirstHmiNotNoneReceived = false;
+                        isReregisterFinished = false;
+                        createItemManagers();
+                        mConnectionStatus = Status.CONNECTING;
+                        mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
                     }
-                });
-            }else {
-                closeConnection(false, false, false);
-                isFirstHmiReceived = false;
-                isFirstHmiNotNoneReceived = false;
-                isReregisterFinished = false;
-
-                mConnectionStatus = Status.CONNECTING;
-                mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
-            }
+                }
+            });
         }
 
         @Override
