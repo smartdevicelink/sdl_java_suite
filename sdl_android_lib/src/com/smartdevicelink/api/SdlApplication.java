@@ -162,7 +162,6 @@ public class SdlApplication extends SdlContextAbsImpl {
                 mSdlPermissionManager = new SdlPermissionManager();
                 mLifecycleListeners.add(mSdlActivityManager);
                 mSdlFileManager = new SdlFileManager(SdlApplication.this, mApplicationConfig);
-                mSdlChoiceSetManager = new SdlChoiceSetManager(SdlApplication.this);
                 mLifecycleListeners.add(mSdlFileManager);
                 createItemManagers();
                 if (mSdlProxyALM != null) {
@@ -178,6 +177,7 @@ public class SdlApplication extends SdlContextAbsImpl {
     //TODO: have it so that we are not recreating the managers
     private void createItemManagers(){
         mSdlMenuManager = new SdlMenuManager();
+        mSdlChoiceSetManager = new SdlChoiceSetManager(SdlApplication.this);
     }
 
     // Methods to be overridden by developer.
