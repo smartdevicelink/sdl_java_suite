@@ -73,7 +73,7 @@ public class SdlConnectionService extends Service {
             public void run() {
                 synchronized (MAP_LOCK) {
                     for (Map.Entry<String, SdlApplication> entry : mRunningApplications.entrySet()) {
-                        entry.getValue().closeConnection(false);
+                        entry.getValue().closeConnection(false, true, true);
                     }
                     mRunningApplications.clear();
                     mConnectedApplications.clear();
