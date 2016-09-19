@@ -104,6 +104,8 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     public static final int BACK_BUTTON_ID = 0;
 
+    private static final int CHANGE_REGISTRATION_DELAY = 3000;
+
     public enum Status {
         CONNECTING,
         CONNECTED,
@@ -132,7 +134,6 @@ public class SdlApplication extends SdlContextAbsImpl {
 
     private boolean isFirstHmiReceived = false;
     private boolean isFirstHmiNotNoneReceived = false;
-    private boolean isReregisterFinished = false;
 
     private SparseArray<SdlButtonListener> mButtonListenerRegistry = new SparseArray<>();
     private SparseArray<SdlMenuOption.SelectListener> mMenuListenerRegistry = new SparseArray<>();
@@ -534,32 +535,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                             Log.e(TAG, "Language could not be grabbed from proxy object");
                             mConnectedLanguage = mApplicationConfig.getDefaultLanguage();
                         }
-                        Language connectedLang = getConnectedLanguage();
-                        if(connectedLang != mApplicationConfig.getDefaultLanguage()){
-                            ChangeRegistration reRegister = new ChangeRegistration();
-                            reRegister.setLanguage(connectedLang);
-                            reRegister.setHmiDisplayLanguage(connectedLang);
-                            reRegister.setOnRPCResponseListener(new OnRPCResponseListener() {
-                                @Override
-                                public void onResponse(int correlationId, RPCResponse response) {
-                                    mExecutionHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            isReregisterFinished = true;
-                                            if(isFirstHmiNotNoneReceived){
-                                                Log.d(TAG,"We are done reregistering and have received a non None hmi status");
-                                                launchSdlActivity();
-                                            }else{
-                                                Log.d(TAG,"No HMI status besides none has been received yet, will not launch the activity");
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                            sendRpc(reRegister);
-                        } else {
-                            isReregisterFinished = true;
-                        }
+                        changeRegistrationTask().run();
                         mConnectionStatus = Status.CONNECTED;
                         onConnect();
                         mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTED);
@@ -571,12 +547,10 @@ public class SdlApplication extends SdlContextAbsImpl {
 
                     if (!isFirstHmiNotNoneReceived && hmiLevel != HMILevel.HMI_NONE) {
                         isFirstHmiNotNoneReceived = true;
-                        if(isReregisterFinished){
-                            Log.d(TAG, "We are good already to go and start the sdl activity");
-                            launchSdlActivity();
-                        }else {
-                            Log.d(TAG, "We are not done reregistering the language. Waiting for the reregister to come back");
-                        }
+                        Log.i(TAG, toString() + " is launching activity: " + mApplicationConfig.getMainSdlActivityClass().getCanonicalName());
+                        // TODO: Add check for resume
+                        onCreate();
+                        mSdlActivityManager.onSdlAppLaunch(SdlApplication.this, mApplicationConfig.getMainSdlActivityClass());
                     }
 
                     switch (hmiLevel) {
@@ -607,13 +581,6 @@ public class SdlApplication extends SdlContextAbsImpl {
 
         }
 
-        private void launchSdlActivity(){
-            Log.i(TAG, toString() + " is launching activity: " + mApplicationConfig.getMainSdlActivityClass().getCanonicalName());
-            // TODO: Add check for resume
-            onCreate();
-            mSdlActivityManager.onSdlAppLaunch(SdlApplication.this, mApplicationConfig.getMainSdlActivityClass());
-        }
-
         @Override
         public final void onProxyClosed(String info, Exception e, final SdlDisconnectedReason reason) {
             mExecutionHandler.post(new Runnable() {
@@ -625,7 +592,6 @@ public class SdlApplication extends SdlContextAbsImpl {
                         closeConnection(false, false, false);
                         isFirstHmiReceived = false;
                         isFirstHmiNotNoneReceived = false;
-                        isReregisterFinished = false;
                         createItemManagers();
                         mConnectionStatus = Status.CONNECTING;
                         mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
@@ -970,6 +936,36 @@ public class SdlApplication extends SdlContextAbsImpl {
         void onExit();
         void onSdlDisconnect();
 
+    }
+
+    private Runnable changeRegistrationTask(){
+        return new Runnable() {
+            boolean hasExecutedOnce = false;
+
+            @Override
+            public void run() {
+                Language connectedLang = getConnectedLanguage();
+                ChangeRegistration reRegister = new ChangeRegistration();
+                reRegister.setLanguage(connectedLang);
+                reRegister.setHmiDisplayLanguage(connectedLang);
+                final Runnable reuseRunnable = this;
+                reRegister.setOnRPCResponseListener(new OnRPCResponseListener() {
+                    @Override
+                    public void onResponse(int correlationId, final RPCResponse response) {
+                    }
+
+                    @Override
+                    public void onError(int correlationId, Result resultCode, String info) {
+                        super.onError(correlationId, resultCode, info);
+                        if(resultCode != Result.SUCCESS && !hasExecutedOnce){
+                            hasExecutedOnce = true;
+                            mExecutionHandler.postDelayed(reuseRunnable,CHANGE_REGISTRATION_DELAY);
+                        }
+                    }
+                });
+                sendRpc(reRegister);
+            }
+        };
     }
 
 }
