@@ -15,7 +15,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 public class MultiplexTransport extends SdlTransport{
 	private final static String TAG = "Multiplex Transport";
-	private String sComment = "I'm_a_little_teapot";
+	private String sComment = "Multiplexing";
 	
 	TransportBrokerThread brokerThread;
 	protected boolean isDisconnecting = false;
