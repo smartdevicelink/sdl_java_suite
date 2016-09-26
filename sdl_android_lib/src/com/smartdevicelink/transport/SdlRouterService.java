@@ -654,7 +654,9 @@ public class SdlRouterService extends Service{
 			}
 			String requestType = intent.getAction();//intent.getIntExtra(TransportConstants.ROUTER_BIND_REQUEST_TYPE_EXTRA, TransportConstants.BIND_REQUEST_TYPE_CLIENT);
 			if(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT.equals(requestType)){
-				return this.altTransportMessenger.getBinder();
+				if(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)){ //Only allow alt transport in debug mode
+					return this.altTransportMessenger.getBinder();
+				}
 			}else if(TransportConstants.BIND_REQUEST_TYPE_CLIENT.equals(requestType)){
 				return this.routerMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
