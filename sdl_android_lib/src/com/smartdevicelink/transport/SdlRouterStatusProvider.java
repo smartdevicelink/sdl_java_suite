@@ -23,6 +23,7 @@ public class SdlRouterStatusProvider {
 	ConnectedStatusCallback cb = null;
 	Messenger routerServiceMessenger = null;
 	private ComponentName routerService = null;
+	private int flags = 0;
 
 	final Messenger clientMessenger; 
 	
@@ -36,13 +37,14 @@ public class SdlRouterStatusProvider {
 			//Register with router service
 			Message msg = Message.obtain();
 			msg.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST;
+			msg.arg1 = flags;
 			msg.replyTo = clientMessenger;
 			try {
 				routerServiceMessenger.send(msg);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 				if(cb!=null){
-					cb.onConnectionStatusUpdate(false, context);
+					cb.onConnectionStatusUpdate(false, routerService, context);
 				}
 			}			
 		}
@@ -64,11 +66,14 @@ public class SdlRouterStatusProvider {
 		this.clientMessenger = new Messenger(new ClientHandler(this));
 
 	}
-	
+	public void setFlags(int flags){
+		this.flags = flags;
+	}
 	public void checkIsConnected(){
 		if(!bindToService()){
 			//We are unable to bind to service
-			cb.onConnectionStatusUpdate(false, context);
+			cb.onConnectionStatusUpdate(false, routerService, context);
+			unBindFromService();
 		}
 	}
 	
@@ -77,7 +82,7 @@ public class SdlRouterStatusProvider {
 			unBindFromService();
 		}
 	}
-	
+
 	private boolean bindToService(){
 		if(isBound){
 			return true;
@@ -105,7 +110,7 @@ public class SdlRouterStatusProvider {
 	
 	private void handleRouterStatusConnectedResponse(int connectedStatus){
 		if(cb!=null){
-			  cb.onConnectionStatusUpdate(connectedStatus == 1, context);
+			  cb.onConnectionStatusUpdate(connectedStatus == 1, routerService,context);
 		  }
 		  unBindFromService();
 		  routerServiceMessenger =null;
@@ -131,7 +136,7 @@ public class SdlRouterStatusProvider {
 	};
 	
 	public interface ConnectedStatusCallback{
-		public void onConnectionStatusUpdate(boolean connected, Context context);
+		public void onConnectionStatusUpdate(boolean connected, ComponentName service, Context context);
 	}
 	
 }

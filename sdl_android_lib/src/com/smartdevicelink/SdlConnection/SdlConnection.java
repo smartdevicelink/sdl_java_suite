@@ -102,7 +102,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 						cachedMultiConfig.setService(null);
 					}
 					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
-					Log.d(TAG, "Legacy transport : " + legacyTransportRequest);
 				}
 			}
 			
@@ -110,7 +109,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if(isLegacyModeEnabled() && legacyTransportRequest == TransportType.BLUETOOTH){
-				Log.d(TAG, "Creating legacy bluetooth connection");
 				_transport = new BTTransport(this, true); 
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());
@@ -529,22 +527,20 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			MultiplexTransport multi = ((MultiplexTransport)_transport);
 			MultiplexTransportConfig config = multi.getConfig();
 			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
-			//Log.d(TAG, "Consumed component name: " +tempCompName );
 			if(config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
 				if(!multi.getIsConnected() && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
-					//Log.d(TAG, "Recreating our multiplexing transport");
 					_transport = new MultiplexTransport(config,this);
 					try {
 						startTransport();
 					} catch (SdlException e) {
 						e.printStackTrace();
 					}
-				}//else{Log.w(TAG, "Guess we're just calling it a day");}
+				}
 			}else if(tempCompName!=null){
 				//We have a conflicting service request
 				Log.w(TAG, "Conflicting services. Disconnecting from current and connecting to new");
-				Log.w(TAG, "Old service " + config.getService().toShortString());
-				Log.w(TAG, "New Serivce " + tempCompName.toString());
+				//Log.w(TAG, "Old service " + config.getService().toShortString());
+				//Log.w(TAG, "New Serivce " + tempCompName.toString());
 				multi.disconnect();
 				config.setService(tempCompName);
 				_transport = new MultiplexTransport(config,this);
