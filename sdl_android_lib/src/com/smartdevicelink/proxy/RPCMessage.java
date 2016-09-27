@@ -2,7 +2,6 @@ package com.smartdevicelink.proxy;
 
 import java.util.Hashtable;
 
-
 public class RPCMessage extends RPCStruct  {
     public static final String KEY_REQUEST = "request";
     public static final String KEY_RESPONSE = "response";
@@ -45,6 +44,9 @@ public class RPCMessage extends RPCStruct  {
         parameters = (Hashtable<String, Object>) function.get(KEY_PARAMETERS);
         if (hasKey(hash.keySet(), RPCStruct.KEY_BULK_DATA)) {
             setBulkData((byte[]) hash.get(RPCStruct.KEY_BULK_DATA));
+        }
+        if (hasKey(hash.keySet(), RPCStruct.KEY_PROTECTED)) {
+        	setPayloadProtected((Boolean) hash.get(RPCStruct.KEY_PROTECTED));
         }
 	}
 

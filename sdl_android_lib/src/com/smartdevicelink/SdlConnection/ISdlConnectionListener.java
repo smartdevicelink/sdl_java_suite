@@ -15,7 +15,7 @@ public interface ISdlConnectionListener {
 			byte sessionID, byte version, String correlationID);	
 	
 	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID, int hashID);
+			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);
 	
 	public void onProtocolSessionEnded(SessionType sessionType,
 			byte sessionID, String correlationID);
@@ -27,5 +27,5 @@ public interface ISdlConnectionListener {
 	
 	public void onHeartbeatTimedOut(byte sessionID);
 	
-	public void onProtocolServiceDataACK(SessionType sessionType, byte sessionID);
+	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID);
 }
