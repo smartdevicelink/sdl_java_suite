@@ -40,9 +40,9 @@ public class SdlButtonView extends SdlView {
     public void addButton(SdlButton button){
         mSdlButtons.add(button);
         SdlImage image = button.getSdlImage();
-        SdlFileManager fileManager = mSdlContext.getSdlFileManager();
         if(image != null){
             Log.d(TAG, "Adding " + image.getSdlName() + " to ImageStatusRegister");
+            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
             mImageStatusRegister.put(image.getSdlName(),
                     new SdlButtonImageRecord(image, fileManager.isFileOnModule(image.getSdlName())));
         }
@@ -74,6 +74,13 @@ public class SdlButtonView extends SdlView {
         backButton.setSdlImage(buttonImage);
         backButton.setGraphicOnly(isImageOnly);
         mSdlButtons.add(0, backButton);
+
+        if(buttonImage != null){
+            SdlFileManager fileManager = mSdlContext.getSdlFileManager();
+            Log.d(TAG, "Adding " + buttonImage.getSdlName() + " to ImageStatusRegister");
+            mImageStatusRegister.put(buttonImage.getSdlName(),
+                    new SdlButtonImageRecord(buttonImage, fileManager.isFileOnModule(buttonImage.getSdlName())));
+        }
 
         containsBackButton = true;
     }
