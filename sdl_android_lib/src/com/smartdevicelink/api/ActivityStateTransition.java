@@ -58,23 +58,35 @@ abstract class ActivityStateTransition {
     }
 
     protected boolean instantiateActivity(SdlActivityManager sam, SdlContext sdlContext,
-                                          Class<? extends SdlActivity> main, Bundle bundle, int flags){
+                                          Class<? extends SdlActivity> activity, Bundle bundle, int flags){
 
         Stack<SdlActivity> backStack = sam.getBackStack();
 
         switch (flags){
             case SdlActivity.FLAG_CLEAR_HISTORY:
                 clearHistory(backStack);
-                if(!backStack.empty() && backStack.peek().getClass() == main){
+                if(!backStack.empty() && backStack.peek().getClass() == activity){
                     startTopActivity(backStack, "");
                     return true;
                 }
                 break;
             case SdlActivity.FLAG_CLEAR_TOP:
-                SdlActivity newTop = getInstanceFromStack(backStack, main);
+                SdlActivity newTop = getInstanceFromStack(backStack, activity);
                 if(newTop != null){
                     String currentTemplate = clearTop(backStack, newTop);
                     startTopActivity(backStack, currentTemplate);
+                    return true;
+                }
+                break;
+            case SdlActivity.FLAG_PULL_TO_TOP:
+                SdlActivity instanceFromStack = getInstanceFromStack(backStack, activity);
+                if(instanceFromStack != null){
+                    if(instanceFromStack != backStack.peek()) {
+                        String currentTemplate = stopTopActivity(backStack);
+                        backStack.remove(instanceFromStack);
+                        backStack.push(instanceFromStack);
+                        startTopActivity(backStack, currentTemplate);
+                    }
                     return true;
                 }
                 break;
@@ -84,7 +96,7 @@ abstract class ActivityStateTransition {
 
         try {
             String currentTemplate = "";
-            SdlActivity newActivity = main.newInstance();
+            SdlActivity newActivity = activity.newInstance();
             newActivity.initialize(sdlContext);
 
             if(!backStack.empty()) {
@@ -96,10 +108,10 @@ abstract class ActivityStateTransition {
             startTopActivity(backStack, currentTemplate);
             return true;
         } catch (InstantiationException e) {
-            Log.e(TAG, "Unable to instantiate " + main.getSimpleName(), e);
+            Log.e(TAG, "Unable to instantiate " + activity.getSimpleName(), e);
             return false;
         } catch (IllegalAccessException e) {
-            Log.e(TAG, "Unable to access constructor for " + main.getSimpleName(), e);
+            Log.e(TAG, "Unable to access constructor for " + activity.getSimpleName(), e);
             return false;
         }
     }
