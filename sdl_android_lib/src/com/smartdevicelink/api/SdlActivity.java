@@ -29,6 +29,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     public static final int FLAG_DEFAULT = 0;
     public static final int FLAG_CLEAR_HISTORY = 1;
     public static final int FLAG_CLEAR_TOP = 2;
+    public static final int FLAG_PULL_TO_TOP = 3;
 
     enum SdlActivityState {
         PRE_CREATE,
