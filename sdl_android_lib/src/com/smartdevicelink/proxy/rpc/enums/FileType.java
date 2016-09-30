@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 /**
- * Enumeration listing possible file tpyes.
+ * Enumeration listing possible file types.
  * @since SmartDeviceLink 2.0
  */
 public enum FileType {

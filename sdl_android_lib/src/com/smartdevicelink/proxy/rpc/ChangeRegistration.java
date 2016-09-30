@@ -9,15 +9,91 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
 /**
- * If the app recognizes during the app registration that the Sdl HMI language
+ * If the app recognizes during the app registration that the SDL HMI language
  * (voice/TTS and/or display) does not match the app language, the app will be
  * able (but does not need) to change this registration with changeRegistration
- * prior to app being brought into focus
- * <p>
- * Function Group: Base
- * <p>
- * <b>HMILevel can by any</b>
- * <p>
+ * prior to app being brought into focus.
+ * 
+ * <p>Function Group: Base</p>
+ * 
+ * <p><b>HMILevel can by any</b></p>
+ * 
+ * <b>Note:</b>
+ * 
+ * <p>SDL will send the language value confirmed to be supported by HMI via UI.GetCapabilities.</p>
+ * <p><b> Parameter List</b></p>
+ * 
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>Language</td>
+ * 			<td>Language</td>
+ * 			<td>Requested SDL voice engine (VR+TTS) language registration.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>hmiDisplayLanguage</td>
+ * 			<td>Language</td>
+ * 			<td>Request display language registration.</td>
+ *                 <td>Y</td>
+ * 			<td>Minvalue=0; Maxvalue=2000000000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *            <tr>
+ * 			<td>appName</td>
+ * 			<td>String</td>
+ * 			<td>Request new app name registration</td>
+ *                 <td>N</td>
+ *                 <td>maxlength:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>ttsName</td>
+ * 			<td>TTSChunk</td>
+ * 			<td>Request new ttsName registration</td>
+ *                 <td>N</td>
+ *                 <td>minsize:1; maxsize:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *            <tr>
+ * 			<td>ngnMediaScreenAppName</td>
+ * 			<td>String</td>
+ * 			<td>Request new app short name registration</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>vrSynonyms</td>
+ * 			<td>String</td>
+ * 			<td>Request new VR synonyms registration</td>
+ *                 <td>N</td>
+ *                 <td>maxlength: 40; minsize:1; maxsize:100</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *  </table>
+ *  
+ * <p><b>Response </b></p>
+ * 
+ * <p><b>Non-default Result Codes:</b></p>
+ * 	<p>SUCCESS</p>
+ * 	<p>INVALID_DATA</p>
+ * 	<p>OUT_OF_MEMORY</p>
+ * <p>	TOO_MANY_PENDING_REQUESTS</p>
+ * 	<p>APPLICATION_NOT_REGISTERED</p>
+ * 	<p>GENERIC_ERROR</p>
+ * 	<p>REJECTED</p>
+ *    <p>DISALLOWED</p>
  * 
  * @since SmartDeviceLink 2.0
  * @see RegisterAppInterface
@@ -38,9 +114,9 @@ public class ChangeRegistration extends RPCRequest {
     }
 
 	/**
-	 * Constructs a new ChangeRegistration object indicated by the Hashtable
-	 * parameter
-	 * <p>
+	 * <p>Constructs a new ChangeRegistration object indicated by the Hashtable
+	 * parameter</p>
+	 * 
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -222,7 +298,7 @@ public class ChangeRegistration extends RPCRequest {
      *            a List<String> value representing the an array of 1-100
      *            elements
      *            <p>
-     *            <b>Notes: </b>
+     *            <b>Notes: </b></p>
      *            <ul>
      *            <li>Each vr synonym is limited to 40 characters, and there can
      *            be 1-100 synonyms in array</li>

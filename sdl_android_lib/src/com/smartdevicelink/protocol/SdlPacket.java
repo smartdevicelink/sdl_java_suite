@@ -13,7 +13,7 @@ public class SdlPacket implements Parcelable{
 	public static final int HEADER_SIZE 						= 12;
 	public static final int HEADER_SIZE_V1 						= 8;//Backwards
 
-	private static final int COMPRESSION_MASK 					= 0x08; //4th lowest bit
+	private static final int ENCRYPTION_MASK 					= 0x08; //4th lowest bit
 	
 	public static final int FRAME_TYPE_CONTROL 					= 0x00;
 	public static final int FRAME_TYPE_SINGLE 					= 0x01;
@@ -56,7 +56,7 @@ public class SdlPacket implements Parcelable{
 
 	
 	int version;
-	boolean compression;
+	boolean encryption;
 	int frameType;
 	int serviceType;
 	int frameInfo;
@@ -66,11 +66,11 @@ public class SdlPacket implements Parcelable{
 	int priorityCoefficient;
 	byte[] payload = null;
 
-	public SdlPacket(int version, boolean compression, int frameType,
+	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
 			int dataSize, int messageId, byte[] payload) {
 		this.version = version;
-		this.compression = compression;
+		this.encryption = encryption;
 		this.frameType = frameType;
 		this.serviceType = serviceType;
 		this.frameInfo = frameInfo;
@@ -84,11 +84,11 @@ public class SdlPacket implements Parcelable{
 		}
 	}
 
-	public SdlPacket(int version, boolean compression, int frameType,
+	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
 			int dataSize, int messageId, byte[] payload, int offset,int bytesToWrite) {
 		this.version = version;
-		this.compression = compression;
+		this.encryption = encryption;
 		this.frameType = frameType;
 		this.serviceType = serviceType;
 		this.frameInfo = frameInfo;
@@ -114,7 +114,7 @@ public class SdlPacket implements Parcelable{
 		//Package only empty constructor
 		//TODO add defaults
 		this.version = 1;
-		this.compression = false;
+		this.encryption = false;
 		this.frameType = -1;	//This NEEDS to be set
 		this.serviceType = -1;
 		this.frameInfo = -1;
@@ -130,7 +130,7 @@ public class SdlPacket implements Parcelable{
 	 */
 	protected SdlPacket(SdlPacket packet){
 		this.version = packet.version;
-		this.compression = packet.compression;
+		this.encryption = packet.encryption;
 		this.frameType = packet.frameType;	
 		this.serviceType = packet.serviceType;
 		this.frameInfo = packet.frameInfo;
@@ -143,8 +143,8 @@ public class SdlPacket implements Parcelable{
 		return version;
 	}
 
-	public boolean isCompression() {
-		return compression;
+	public boolean isEncrypted() {
+		return encryption;
 	}
 
 	public FrameType getFrameType() {
@@ -186,7 +186,7 @@ public class SdlPacket implements Parcelable{
 	}
 	
 	public byte[] constructPacket(){
-		return constructPacket(version, compression, frameType,
+		return constructPacket(version, encryption, frameType,
 				serviceType, frameInfo, sessionId,
 				dataSize, messageId, payload);
 	}
@@ -206,7 +206,7 @@ public class SdlPacket implements Parcelable{
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
 	 * @param version
-	 * @param compression
+	 * @param encryption
 	 * @param frameType
 	 * @param serviceType
 	 * @param controlFrameInfo
@@ -216,7 +216,7 @@ public class SdlPacket implements Parcelable{
 	 * @param payload
 	 * @return
 	 */
-	public static byte[] constructPacket(int version, boolean compression, int frameType,
+	public static byte[] constructPacket(int version, boolean encryption, int frameType,
 			int serviceType, int controlFrameInfo, int sessionId,
 			int dataSize, int messageId, byte[] payload){
 		ByteBuffer builder;
@@ -229,7 +229,7 @@ public class SdlPacket implements Parcelable{
 				break;
 		}
 		
-		builder.put((byte)((version<<4) + getCompressionBit(compression) + frameType));
+		builder.put((byte)((version<<4) + getEncryptionBit(encryption) + frameType));
 		builder.put((byte)serviceType);
 		builder.put((byte)controlFrameInfo);
 		builder.put((byte)sessionId);
@@ -254,9 +254,9 @@ public class SdlPacket implements Parcelable{
 	}
 	
 	
-	public static int getCompressionBit(boolean compression){
-		if(compression){
-			return COMPRESSION_MASK;
+	public static int getEncryptionBit(boolean encryption){
+		if(encryption){
+			return ENCRYPTION_MASK;
 		}else{
 			return 0;
 		}
@@ -269,7 +269,7 @@ public class SdlPacket implements Parcelable{
 		StringBuilder builder = new StringBuilder();
 		builder.append("***** Sdl Packet ******");
 		builder.append(	"\nVersion:  " +version);
-		builder.append(	"\nCompression:  " +compression);
+		builder.append(	"\nEncryption:  " +encryption);
 		builder.append(	"\nFrameType:  " +frameType);
 		builder.append(	"\nServiceType:  " +serviceType);
 		builder.append(	"\nFrameInfo:  " +frameInfo);
@@ -294,7 +294,7 @@ public class SdlPacket implements Parcelable{
 	//I think this is FIFO...right?
 	public SdlPacket(Parcel p) {
 		this.version = p.readInt();
-		this.compression = (p.readInt() == 0) ? false : true;
+		this.encryption = (p.readInt() == 0) ? false : true;
 		this.frameType = p.readInt();
 		this.serviceType = p.readInt();
 		this.frameInfo = p.readInt();
@@ -318,7 +318,7 @@ public class SdlPacket implements Parcelable{
 	public void writeToParcel(Parcel dest, int flags) {
 		
 		dest.writeInt(version);
-		dest.writeInt(compression? 1 : 0);
+		dest.writeInt(encryption? 1 : 0);
 		dest.writeInt(frameType);
 		dest.writeInt(serviceType);
 		dest.writeInt(frameInfo);

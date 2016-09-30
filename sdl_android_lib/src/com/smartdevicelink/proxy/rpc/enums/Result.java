@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * Defines the possible result codes returned by SDL to the application in a
  * Response to a requested operation
- * <p>
+ * 
  * 
  * @since SmartDeviceLink 1.0
  */
@@ -13,7 +13,7 @@ public enum Result {
 	 */    
 	SUCCESS,
 	/**
-	 * The data sent is invalid. For example:<br/>
+	 * <p>The data sent is invalid. For example:</p>
 	 * <ul>
 	 * <li>Invalid Json syntax</li>
 	 * <li>Parameters out of bounds (number or enum range)</li>
@@ -39,7 +39,7 @@ public enum Result {
 	 */    
 	TOO_MANY_PENDING_REQUESTS,
 	/**
-	 * One of the provided IDs is not valid. For example:<br/>
+	 * <p>One of the provided IDs is not valid. For example:</p>
 	 * <ul>
 	 * <li>CorrelationID</li>
 	 * <li>CommandID</li>
@@ -169,6 +169,11 @@ public enum Result {
      * The provided hash ID does not match the hash of the current set of registered data or the core could not resume the previous data.
      */
     RESUME_FAILED;
+	 /**
+     * Convert String to Result
+     * @param value String
+     * @return Result
+     */
 
     public static Result valueForString(String value) {
         try{

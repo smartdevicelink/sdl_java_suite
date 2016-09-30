@@ -35,7 +35,7 @@ import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
  *
  */
 public class RouterServiceValidator {
-	private static final String TAG = "PackageCheckUtl";
+	private static final String TAG = "RSVP";
 	public static final String ROUTER_SERVICE_PACKAGE = "com.sdl.router";
 
 	private static final String REQUEST_PREFIX = "https://woprjr.smartdevicelink.com/api/1/applications/queryTrustedRouters"; 
@@ -116,7 +116,7 @@ public class RouterServiceValidator {
 			}
 		}
 		
-		Log.d(TAG, "Checking app package: " + service.getClassName());
+		//Log.d(TAG, "Checking app package: " + service.getClassName());
 		packageName = this.appPackageForComponentName(service, pm);
 		
 
@@ -328,10 +328,9 @@ public class RouterServiceValidator {
 		intent.setAction("sdl.router.startservice");
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
 		if(infoList!=null){
-			Log.i(TAG, "Number of SDL apps: " + infoList.size());
 			String packageName;
 			for(ResolveInfo info : infoList){
-				Log.i(TAG, "SDL apps: " + info.activityInfo.packageName);
+				//Log.i(TAG, "SDL apps: " + info.activityInfo.packageName);
 				packageName = info.activityInfo.packageName;
 				try {
 					apps.add(new SdlApp(packageName,packageManager.getPackageInfo(packageName,0).versionCode));
@@ -362,7 +361,6 @@ public class RouterServiceValidator {
 		}
 		
 		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ 
-			Log.d(TAG, "Don't need to get new list");
 			//Our list should still be ok for now so we will skip the request
 			pendingListRefresh = false;
 			return false;
@@ -393,15 +391,13 @@ public class RouterServiceValidator {
 		
 		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
 		
-		Log.d(TAG, "Request of apps: " + object.toString());
-
 		if (cb == null) {
 			cb = new HttpRequestTaskCallback() {
 
 				@Override
 				public void httpCallComplete(String response) {
 					// Might want to check if this list is ok
-					Log.d(TAG, "APPS! " + response);
+					//Log.d(TAG, "APPS! " + response);
 					setTrustedList(context, response);
 					pendingListRefresh = false;
 				}

@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  * Describes different sampling rates for PerformAudioPassThru
- * 
+ * @since SmartDeviceLink 2.0
  */
 public enum SamplingRate {
 

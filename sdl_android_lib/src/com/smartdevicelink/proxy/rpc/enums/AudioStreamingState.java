@@ -30,6 +30,11 @@ public enum AudioStreamingState {
 	 * @since SmartDeviceLink 1.0
 	 */
 	NOT_AUDIBLE;
+	/**
+     * Convert String to AudioStreamingState
+     * @param value String
+     * @return AudioStreamingState
+     */ 
 
     public static AudioStreamingState valueForString(String value) {
         try{

@@ -49,7 +49,7 @@ public class MultiplexBluetoothTransport {
 	private static final String TAG = "Bluetooth Transport";
     private static final UUID SERVER_UUID= new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
     // Name for the SDP record when creating server socket
-    private static final String NAME_SECURE =" SdlProxy";// = "LIVIO_CONNECT";
+    private static final String NAME_SECURE =" SdlRouterService";
     
 
 	protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
@@ -696,7 +696,7 @@ public class MultiplexBluetoothTransport {
         	//Log.d(TAG, "Creating a Connected - Write Thread");
             mmSocket = socket;
             OutputStream tmpOut = null;
-            setName(" Livio Bluetooth Write Thread");
+            setName("SDL Router BT Write Thread");
             // Get the BluetoothSocket input and output streams
             try {
                 tmpOut = socket.getOutputStream();
@@ -731,7 +731,6 @@ public class MultiplexBluetoothTransport {
 
         public synchronized void cancel() {
             try {
-            	Log.d(TAG, "Calling Cancel in the write thread");
             	if(mmOutStream!=null){
             		mmOutStream.flush();
             		mmOutStream.close();
@@ -756,7 +755,7 @@ public class MultiplexBluetoothTransport {
         	//Log.d(TAG, "Creating a Connected - Read Thread");
             mmSocket = socket;
             InputStream tmpIn = null;
-            setName(" Livio Bluetooth Read Thread");
+            setName("SDL Router BT Read Thread");
             // Get the BluetoothSocket input and output streams
             try {
                 tmpIn = socket.getInputStream();

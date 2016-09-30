@@ -37,11 +37,41 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	@SuppressWarnings("unused")
     private static final String SDL_LIB_PRIVATE_TOKEN = "{DAE1A88C-6C16-4768-ACA5-6F1247EA01C2}";
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL
+	 * 
+	 * Takes advantage of the advanced lifecycle management.
+	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
+	 * @param appName - Name of the application displayed on SDL. 
+	 * @param isMediaApp - Indicates if the app is a media application.
+	 */
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp, 
+			Language languageDesired, Language hmiDisplayLanguageDesired, String appID) throws SdlException {
+		super(	listener, 
+				/*sdl proxy configuration resources*/null, 
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*TTS Name*/null,
+				/*ngn media app*/null,
+				/*vr synonyms*/null,
+				/*is media app*/isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*language desired*/languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				/*callbackToUIThread*/ false,
+				new BTTransportConfig());
+	}
 	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL
 	 * 
 	 * Takes advantage of the advanced lifecycle management.
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
 	 * @param appName - Name of the application displayed on SDL. 
 	 * @param isMediaApp - Indicates if the app is a media application.
@@ -67,12 +97,55 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, appName, and isMediaApp.", SDL_LIB_TRACE_KEY);
 	}
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
+	 * @param appName - Name of the application displayed on SDL. 
+	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
+	 * vehicles. Limited to five characters. 
+	 * @param vrSynonyms - A vector of strings, all of which can be used as voice commands to 
+	 * @param isMediaApp - Indicates if the app is a media application.
+	 * @param sdlMsgVersion - Indicates the version of SDL SmartDeviceLink Messages desired. Must be less than
+	 * or equal to the version of SDL SmartDeviceLink running on the vehicle. 
+	 * @param languageDesired - Indicates the language desired for the SDL interface.
+	 * @param autoActivateID - ID used to re-register previously registered application.
+	 * @throws SdlException
+	 */
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, String appName, String ngnMediaScreenAppName, 
+			Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
+			Language languageDesired, Language hmiDisplayLanguageDesired, String appID, 
+			String autoActivateID) throws SdlException {
+		super(	listener, 
+				/*sdl proxy configuration resources*/null, 
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*TTS Name*/null,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				autoActivateID,
+				/*callbackToUIThread*/ false,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, appName, ngnMediaScreenAppName, " +
+				"vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, and autoActivateID.", SDL_LIB_TRACE_KEY);
+	}
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
 	 * @param appName - Name of the application displayed on SDL. 
 	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
@@ -109,12 +182,55 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, appName, ngnMediaScreenAppName, " +
 				"vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, and autoActivateID.", SDL_LIB_TRACE_KEY);
 	}
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
+	 * @param appName - Name of the application displayed on SDL. 
+	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
+	 * vehicles. Limited to five characters. 
+	 * @param vrSynonyms - A vector of strings, all of which can be used as voice commands to 
+	 * @param isMediaApp - Indicates if the app is a media application.
+	 * @param sdlMsgVersion - Indicates the version of SDL SmartDeviceLink Messages desired. Must be less than
+	 * or equal to the version of SDL SmartDeviceLink running on the vehicle. 
+	 * @param languageDesired - Indicates the language desired for the SDL interface.
+	 * @param autoActivateID - ID used to re-register previously registered application.
+	 * @throws SdlException
+	 */
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+			String appName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, 
+			Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, Language languageDesired, 
+			Language hmiDisplayLanguageDesired, String appID, String autoActivateID) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources, 
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*TTS Name*/null,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				autoActivateID,
+				/*callbackToUIThread*/ false,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, and autoActivateID.", SDL_LIB_TRACE_KEY);
+	}
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
 	 * @param appName - Name of the application displayed on SDL. 
 	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
@@ -151,12 +267,57 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, and autoActivateID.", SDL_LIB_TRACE_KEY);
 	}
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
+	 * @param appName - Name of the application displayed on SDL. 
+	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
+	 * vehicles. Limited to five characters. 
+	 * @param vrSynonyms - A vector of strings, all of which can be used as voice commands to 
+	 * @param isMediaApp - Indicates if the app is a media application.
+	 * @param sdlMsgVersion - Indicates the version of SDL SmartDeviceLink Messages desired. Must be less than
+	 * or equal to the version of SDL SmartDeviceLink running on the vehicle. 
+	 * @param languageDesired - Indicates the language desired for the SDL interface.
+	 * @param autoActivateID - ID used to re-register previously registered application.
+	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
+	 * @throws SdlException
+	 */
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, String appName, String ngnMediaScreenAppName, 
+			Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
+			Language languageDesired, Language hmiDisplayLanguageDesired, String appID, 
+			String autoActivateID, boolean callbackToUIThread) throws SdlException {
+		super(	listener, 
+				/*sdl proxy configuration resources*/null,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*TTS Name*/null,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				autoActivateID,
+				callbackToUIThread,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
+				"and callbackToUIThread", SDL_LIB_TRACE_KEY);
+	}
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
 	 * @param appName - Name of the application displayed on SDL. 
 	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
@@ -195,12 +356,58 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
 				"and callbackToUIThread", SDL_LIB_TRACE_KEY);
 	}
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
+	 * @param appName - Name of the application displayed on SDL. 
+	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
+	 * vehicles. Limited to five characters. 
+	 * @param vrSynonyms - A vector of strings, all of which can be used as voice commands to 
+	 * @param isMediaApp - Indicates if the app is a media application.
+	 * @param sdlMsgVersion - Indicates the version of SDL SmartDeviceLink Messages desired. Must be less than
+	 * or equal to the version of SDL SmartDeviceLink running on the vehicle. 
+	 * @param languageDesired - Indicates the language desired for the SDL interface.
+	 * @param autoActivateID - ID used to re-register previously registered application.
+	 * @param callbackToUIThread - If true, all callbacks will occur on the UI thread.
+	 * @throws SdlException
+	 */
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+			String appName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
+			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
+			String appID, String autoActivateID, 
+			boolean callbackToUIThread) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*TTS Name*/null,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				autoActivateID,
+				callbackToUIThread,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
+				"and callbackToUIThread", SDL_LIB_TRACE_KEY);
+	}
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener - Reference to the object in the App listening to callbacks from SDL. 
 	 * @param appName - Name of the application displayed on SDL. 
 	 * @param ngnMediaScreenAppName - Name of the application displayed on SDL for Navigation equipped 
@@ -239,6 +446,34 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
 				"and callbackToUIThread", SDL_LIB_TRACE_KEY);
+	}
+	
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+			String appName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
+			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
+			String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*TTS Name*/null,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				autoActivateID,
+				callbackToUIThread,
+				preRegister,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
+				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}
 	
 	public SdlProxyALM(Context context,IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
@@ -535,10 +770,52 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	}
 
 	/**
+	 * @deprecated
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param languageDesired Indicates the language desired for the SDL interface.
+	 * @param hmiDisplayLanguageDesired Desired language in HMI.
+	 * @param appID Identifier of the client application.
+	 * @param callbackToUIThread If true, all callbacks will occur on the UI thread.
+	 * @param preRegister Flag that indicates that client should be pre-registred or not
+	 * @throws SdlException
+	 */	
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,Language languageDesired, Language hmiDisplayLanguageDesired,
+						String appID, boolean callbackToUIThread, boolean preRegister) throws SdlException 
+	{
+		super(	listener, 
+			/*sdlProxyConfigurationResources*/null,
+			/*enable advanced lifecycle management*/true, 
+			appName,
+			/*ttsName*/null,
+			/*ngnMediaScreenAppName*/null,
+			/*vrSynonyms*/null,
+			isMediaApp,
+			/*sdlMsgVersion*/null,
+			languageDesired,
+			hmiDisplayLanguageDesired,
+			/*App Type*/null,
+			/*App ID*/appID,
+			/*autoActivateID*/null,
+			callbackToUIThread,
+			preRegister,
+			new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+			"appName, isMediaApp, languageDesired, hmiDisplayLanguageDesired" + "callbackToUIThread and version", SDL_LIB_TRACE_KEY);
+	}
+	/**
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener Reference to the object in the App listening to callbacks from SDL.
 	 * @param appName Name of the application displayed on SDL.
 	 * @param isMediaApp Indicates if the app is a media application.
@@ -575,10 +852,47 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	}
 	
 	/**
+	 * @deprecated
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param appID Identifier of the client application.
+	 * @throws SdlException
+	 */	
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID) throws SdlException {
+		super(	listener, 
+				/*sdlProxyConfigurationResources*/null,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*ttsName*/null,
+				/*ngnMediaScreenAppName*/null,
+				/*vrSynonyms*/null,
+				isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*languageDesired*/null,
+				/*hmiDisplayLanguageDesired*/null,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				false,
+				false,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
+	}
+	
+	/**
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener Reference to the object in the App listening to callbacks from SDL.
 	 * @param appName Name of the application displayed on SDL.
 	 * @param isMediaApp Indicates if the app is a media application.
@@ -609,6 +923,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	}
 
 	/**
+	 * @deprecated
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
@@ -619,7 +934,8 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	 * @param isMediaApp Indicates if the app is a media application.
 	 * @param appID Identifier of the client application.
 	 * @throws SdlException
-	 */		
+	 */	
+	@Deprecated
 	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Boolean isMediaApp,String appID) throws SdlException {
 		super(	listener, 
 				sdlProxyConfigurationResources,
@@ -643,6 +959,42 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"sdlProxyConfigurationResources, appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
 	}
 
+	/**
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param context - Used to create a multiplexing transport config
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param sdlProxyConfigurationResources Proxy configuration resources.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param appID Identifier of the client application.
+	 * @throws SdlException
+	 */		
+	public SdlProxyALM(Context context, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, String appName, Boolean isMediaApp,String appID) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*ttsName*/null,
+				/*ngnMediaScreenAppName*/null,
+				/*vrSynonyms*/null,
+				isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*languageDesired*/null,
+				/*hmiDisplayLanguageDesired*/null,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				false,
+				false,
+				new MultiplexTransportConfig(context,appID));
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"sdlProxyConfigurationResources, appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
+	}
+	
 	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID,BaseTransportConfig transportConfig) throws SdlException {
 		super(	listener, 
 				/*sdlProxyConfigurationResources*/null,
@@ -666,12 +1018,50 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
 	}
 
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param appID Identifier of the client application.
+	 * @param callbackToUIThread If true, all callbacks will occur on the UI thread.
+	 * @param preRegister Flag that indicates that client should be pre-registred or not
+	 * @throws SdlException
+	 */		
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp,String appID, 
+						 boolean callbackToUIThread, boolean preRegister) throws SdlException {
+		super(	listener, 
+				/*sdlProxyConfigurationResources*/null,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				/*ttsName*/null,
+				/*ngnMediaScreenAppName*/null,
+				/*vrSynonyms*/null,
+				isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*languageDesired*/null,
+				/*hmiDisplayLanguageDesired*/null,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				callbackToUIThread,
+				preRegister,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"appName, isMediaApp, " + "callbackToUIThread and version", SDL_LIB_TRACE_KEY);
+	}
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener Reference to the object in the App listening to callbacks from SDL.
 	 * @param appName Name of the application displayed on SDL.
 	 * @param isMediaApp Indicates if the app is a media application.
@@ -790,12 +1180,63 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 	
 	
 	
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param sdlProxyConfigurationResources Proxy configuration resources.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param ttsName TTS name.
+	 * @param ngnMediaScreenAppName Name of the application displayed on SDL for Navigation equipped 
+	 * vehicles. Limited to five characters.
+	 * @param vrSynonyms A vector of strings, all of which can be used as voice commands too
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param sdlMsgVersion Indicates the version of SDL SmartDeviceLink Messages desired. Must be less than
+	 * or equal to the version of SDL SmartDeviceLink running on the vehicle.
+	 * @param languageDesired Indicates the language desired for the SDL interface.
+	 * @param hmiDisplayLanguageDesired Desired language in HMI.
+	 * @param appID Identifier of the client application.
+	 * @param autoActivateID ID used to re-register previously registered application.
+	 * @param callbackToUIThread If true, all callbacks will occur on the UI thread.
+	 * @param preRegister Flag that indicates that client should be pre-registred or not
+	 * @throws SdlException
+	 */	
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
+			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
+			String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				ttsName,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/null,
+				/*App ID*/appID,
+				autoActivateID,
+				callbackToUIThread,
+				preRegister,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
+				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
+	}
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener Reference to the object in the App listening to callbacks from SDL.
 	 * @param sdlProxyConfigurationResources Proxy configuration resources.
 	 * @param appName Name of the application displayed on SDL.
@@ -893,12 +1334,64 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, autoActivateID, " +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}		
-	
+	/**
+	 * @deprecated
+	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
+	 * 
+	 * Takes advantage of the advanced lifecycle management. 
+	 * 
+	 * @param listener Reference to the object in the App listening to callbacks from SDL.
+	 * @param sdlProxyConfigurationResources Proxy configuration resources.
+	 * @param appName Name of the application displayed on SDL.
+	 * @param ttsName TTS name.
+	 * @param ngnMediaScreenAppName Name of the application displayed on SDL for Navigation equipped 
+	 * vehicles. Limited to five characters.
+	 * @param vrSynonyms A vector of strings, all of which can be used as voice commands too
+	 * @param isMediaApp Indicates if the app is a media application.
+	 * @param sdlMsgVersion Indicates the version of SDL SmartDeviceLink Messages desired. Must be less than
+	 * or equal to the version of SDL SmartDeviceLink running on the vehicle.
+	 * @param languageDesired Indicates the language desired for the SDL interface.
+	 * @param hmiDisplayLanguageDesired Desired language in HMI. 
+	 * @param appType Type of application. 
+	 * @param appID Identifier of the client application.
+	 * @param autoActivateID ID used to re-register previously registered application.
+	 * @param callbackToUIThread If true, all callbacks will occur on the UI thread.
+	 * @param preRegister Flag that indicates that client should be pre-registred or not
+	 * @throws SdlException
+	 */	
+	@Deprecated
+	public SdlProxyALM(IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
+			String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
+			SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, 
+			Vector<AppHMIType> appType, String appID, String autoActivateID, boolean callbackToUIThread, boolean preRegister) throws SdlException {
+		super(	listener, 
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true, 
+				appName,
+				ttsName,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/appType,
+				/*App ID*/appID,
+				autoActivateID,
+				callbackToUIThread,
+				preRegister,
+				new BTTransportConfig());
+		
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
+				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
+	}	
 	/**
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
 	 * 
 	 * Takes advantage of the advanced lifecycle management. 
 	 * 
+	 * @param context - Used to create a multiplexing transport config
 	 * @param listener Reference to the object in the App listening to callbacks from SDL.
 	 * @param sdlProxyConfigurationResources Proxy configuration resources.
 	 * @param appName Name of the application displayed on SDL.

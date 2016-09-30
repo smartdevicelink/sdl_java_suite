@@ -10,9 +10,102 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
- * icons and album art
- * <p>
+ * icons and album art.
  * 
+ * <p><b> Parameter List</b></p>
+ * 
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>FileName</td>
+ * 			<td>String</td>
+ * 			<td>File reference name.</td>
+ *                 <td>Y</td>
+ * 			<td>Maxlength=500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>fileType</td>
+ * 			<td>FileType</td>
+ * 			<td>Selected file type.</td>
+ *                 <td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>persistentFile</td>
+ * 			<td>Boolean</td>
+ * 			<td>Indicates if the file is meant to persist between sessions / ignition cycles. If set to TRUE,then the system will aim to persist this file through session / cycles. While files with this designation will have priority over others,they are subject to deletion by the system at any time.In the event of automatic deletion by the system, the app will receive a rejection and have to resend the file. If omitted, the value will be set to false.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>systemFile</td>
+ * 			<td>Boolean</td>
+ * 			<td>Indicates if the file is meant to be passed thru core to elsewhere on the system. If set to TRUE, then the system will instead pass the data thru as it arrives to a predetermined area outside of core. If omitted, the value will be set to false.</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>offset</td>
+ * 			<td>Float</td>
+ * 			<td>Optional offset in bytes for resuming partial data chunks</td>
+ *                 <td>N</td>
+ * 			<td>Minvalue=0; Maxvalue=100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>length</td>
+ * 			<td>Float</td>
+ * 			<td>Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is the total length of the file to be downloaded</td>
+ *                 <td>N</td>
+ * 			<td>Minvalue=0; Maxvalue=100000000000</td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ *  </table>
+ * <p> <b>Note: </b></p>
+ *  When using PutFiles you may want to check for memory
+ *  
+ * <p><b>Response</b> </p>
+ * Response is sent, when the file data was copied (success case). Or when an error occurred. Not supported on First generation SDL modules.
+ * 
+ * <p><b>	Non-default Result Codes:</b></p>
+ * <p>	SUCCESS</p>
+ * <p>	INVALID_DATA</p>
+ * <p>	OUT_OF_MEMORY</p>
+ * <p>	TOO_MANY_PENDING_REQUESTS</p>
+ * <p>	APPLICATION_NOT_REGISTERED</p>
+ * <p>	GENERIC_ERROR</p>
+ * 	<p>REJECTED</p>
+ *
+ * <p><table border="1" rules="all"></p>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>spaceAvailable</td>
+ * 			<td>Integer</td>
+ * 			<td>Provides the total local space available on SDL for the registered app.</td>
+ *                 <td></td>
+ * 			<td>Minvalue=0; Maxvalue=2000000000</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *  </table>
  * @since SmartDeviceLink 2.0
  * @see DeleteFile
  * @see ListFiles
@@ -35,7 +128,7 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Constructs a new PutFile object indicated by the Hashtable parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -49,7 +142,7 @@ public class PutFile extends RPCRequest {
 	 * 
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
@@ -106,7 +199,7 @@ public class PutFile extends RPCRequest {
 	 * by the system at any time. In the event of automatic deletion by the
 	 * system, the app will receive a rejection and have to resend the file. If
 	 * omitted, the value will be set to false
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param persistentFile
 	 *            a Boolean value

@@ -8,13 +8,13 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 /**
- * This RPC is used to update the user with navigation information for the constantly shown screen (base screen), but
- * also for the alert type screen
- * <p>
- * Function Group: Navigation
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * <p>
+ * <p>This RPC is used to update the user with navigation information for the constantly shown screen (base screen), but
+ * also for the alert type screen</p>
+ * 
+ * <p>Function Group: Navigation</p>
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ * 
  * 
  * @since SmartDeviceLink 2.0
  * @see AlertManeuver
@@ -57,7 +57,7 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @param navigationText1
      *            a String value representing a text for navigation text field 1
-     *            <p>
+     *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText1(String navigationText1){
@@ -83,7 +83,7 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @param navigationText2
      *            a String value representing a text for navigation text field 2
-     *            <p>
+     *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText2(String navigationText2){
@@ -109,7 +109,7 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @param eta
      *            a String value representing a text field for estimated time of arrival
-     *            <p>
+     *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
     public void setEta(String eta){
@@ -135,7 +135,7 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @param totalDistance
      *            a String value representing a text field for total distance
-     *            <p>
+     *            <p></p>
      *            <b>Notes: </b>Maxlength=500
      */
     public void setTotalDistance(String totalDistance){
@@ -223,7 +223,7 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @param distanceToManeuver
      *            a Double value representing a Fraction of distance till next maneuver
-     *            <p>
+     *            <p></p>
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuver(Double distanceToManeuver){
@@ -249,7 +249,7 @@ public class ShowConstantTbt extends RPCRequest{
      * 
      * @param distanceToManeuverScale
      *            a Double value representing a Distance till next maneuver (starting from) from previous maneuver
-     *            <p>
+     *            <p></p>
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuverScale(Double distanceToManeuverScale){
@@ -271,10 +271,10 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Sets a maneuver complete flag. If and when a maneuver has completed while an AlertManeuver is active, the app
-     * must send this value set to TRUE in order to clear the AlertManeuver overlay<br/>
-     * If omitted the value will be assumed as FALSE
-     * <p>
+     * <p>Sets a maneuver complete flag. If and when a maneuver has completed while an AlertManeuver is active, the app
+     * must send this value set to TRUE in order to clear the AlertManeuver overlay
+     * If omitted the value will be assumed as FALSE</p>
+     * 
      * 
      * @param maneuverComplete
      *            a Boolean value
@@ -298,10 +298,10 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     /**
-     * Sets Three dynamic SoftButtons available (first SoftButton is fixed to "Turns"). If omitted on supported
-     * displays, the currently displayed SoftButton values will not change
-     * <p>
-     * <b>Notes: </b>Minsize=0; Maxsize=3
+     * <p>Sets Three dynamic SoftButtons available (first SoftButton is fixed to "Turns"). If omitted on supported
+     * displays, the currently displayed SoftButton values will not change</p>
+     * 
+     * <p><b>Notes: </b>Minsize=0; Maxsize=3</p>
      * 
      * @param softButtons
      *            a List<SoftButton> value

@@ -1,10 +1,20 @@
 package com.smartdevicelink.util;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.protocol.BinaryFrameHeader;
+import com.smartdevicelink.protocol.ProtocolMessage;
+import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.MessageType;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.transport.SiphonServer;
 
@@ -266,5 +276,77 @@ public class DebugTool {
 				Log.e(TAG, "Failure propagating logRPCReceive: " + ex.toString(), ex);
 			} // end-catch
 		}
+	}
+	
+	/**
+	 * Debug method to try to extract the RPC hash from the packet payload. Should only be used while debugging, not in production.
+	 * Currently it will only handle single frame RPCs
+	 * @param packet to inspect
+	 * @return The Hashtable to be used to construct an RPC
+	 */
+	public static Hashtable<String, Object> getRPCHash(SdlPacket packet){
+		if(packet == null || 
+				packet.getFrameType().getValue() != SdlPacket.FRAME_TYPE_SINGLE || 
+				packet.getServiceType()!=SdlPacket.SERVICE_TYPE_RPC){
+			Log.w("Debug", "Unable to get hash");
+			return null;
+		}
+		int version = packet.getVersion();
+		
+		ProtocolMessage message = new ProtocolMessage();
+        SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
+		if (serviceType == SessionType.RPC) {
+			message.setMessageType(MessageType.RPC);
+		} else if (serviceType == SessionType.BULK_DATA) {
+			message.setMessageType(MessageType.BULK);
+		} // end-if
+		message.setSessionType(serviceType);
+		message.setSessionID((byte)packet.getSessionId());
+		//If it is WiPro 2.0 it must have binary header
+		if (version > 1) {
+			BinaryFrameHeader binFrameHeader = BinaryFrameHeader.
+					parseBinaryHeader(packet.getPayload());
+			message.setVersion((byte) version);
+			message.setRPCType(binFrameHeader.getRPCType());
+			message.setFunctionID(binFrameHeader.getFunctionID());
+			message.setCorrID(binFrameHeader.getCorrID());
+			if (binFrameHeader.getJsonSize() > 0){
+				message.setData(binFrameHeader.getJsonData());
+			}
+			if (binFrameHeader.getBulkData() != null){
+				message.setBulkData(binFrameHeader.getBulkData());
+			}
+		} else {
+			message.setData(packet.getPayload());
+		}
+		Hashtable<String, Object> hash = new Hashtable<String, Object>();
+		if (packet.getVersion() > 1) {
+			Hashtable<String, Object> hashTemp = new Hashtable<String, Object>();
+			
+			hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
+			if (message.getJsonSize() > 0) {
+				final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
+				hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
+			}
+
+			String functionName = FunctionID.getFunctionName(message.getFunctionID());
+			if (functionName != null) {
+				hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
+			} else {
+				return null;
+			}
+			if (message.getRPCType() == 0x00) {
+				hash.put(RPCMessage.KEY_REQUEST, hashTemp);
+			} else if (message.getRPCType() == 0x01) {
+				hash.put(RPCMessage.KEY_RESPONSE, hashTemp);
+			} else if (message.getRPCType() == 0x02) {
+				hash.put(RPCMessage.KEY_NOTIFICATION, hashTemp);
+			}
+			if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
+		} else {
+			final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
+			hash = mhash;
+		}
+		return hash;
 	}
 }

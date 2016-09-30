@@ -13,10 +13,30 @@ public enum GlobalProperty{
      * The prompt to be spoken if the user-initiated interaction times out waiting for the user's verbal input.
      */
     TIMEOUTPROMPT,
+    /** 
+     * The property vrHelpTitle of setGlobalProperties
+     */
+
     VRHELPTITLE,
+    /**
+     * The property array of vrHelp of setGlobalProperties
+     */
+
     VRHELPITEMS,
+    /**
+     * The property in-app menu name of setGlobalProperties
+     */
+
     MENUNAME,
+    /**
+     * The property in-app menu icon of setGlobalProperties
+     */
+
     MENUICON,
+    /**
+     * The on-screen keyboard configuration of setGlobalProperties
+     */
+
     KEYBOARDPROPERTIES;
 
     /**

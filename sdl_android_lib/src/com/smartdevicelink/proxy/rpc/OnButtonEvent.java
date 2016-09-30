@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 
 /**
  * Notifies application that user has depressed or released a button to which
- * the application has subscribed.</br> Further information about button events
+ * the application has subscribed.Further information about button events
  * and button-presses can be found at {@linkplain SubscribeButton}.
  * <p>
  * </p>
@@ -36,7 +36,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * button will cancel VR.</li>
  * </ul>
  * </ul>
- * <p>
+ * <p></p>
  * <b>Parameter List:</b>
  * <table  border="1" rules="all">
  * <tr>
@@ -66,14 +66,14 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
  * <tr>
  * <td>customButtonID</td>
  * <td>Integer</td>
- * <td>If ButtonName is ��CUSTOM_BUTTON", this references the integer ID passed
+ * <td>If ButtonName is CUSTOM_BUTTON", this references the integer ID passed
  * by a custom button. (e.g. softButton ID)</td>
  * <td>N</td>
  * <td>Minvalue=0 Maxvalue=65536</td>
  * <td>SmartDeviceLink 2.0</td>
  * </tr>
  * </table>
- * </p>
+ * <p></p>
  * 
  * @since SmartDeviceLink 1.0
  * 
@@ -142,7 +142,7 @@ public class OnButtonEvent extends RPCNotification {
         return null;
     }
     /**
-     * <p> Set the event mode of the button,pressed or released
+     * <p> Set the event mode of the button,pressed or released</p>
      * @param buttonEventMode indicates the button is pressed or released
      * @see ButtonEventMode
      */    

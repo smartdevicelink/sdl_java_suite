@@ -83,7 +83,11 @@ public enum AppInterfaceUnregisteredReason {
 	 */
 	PROTOCOL_VIOLATION,
 	;
-
+	/**
+     * Convert String to AppInterfaceUnregisteredReason
+     * @param value String
+     * @return AppInterfaceUnregisteredReason
+     */
     public static AppInterfaceUnregisteredReason valueForString(String value) {
         try{
             return valueOf(value);

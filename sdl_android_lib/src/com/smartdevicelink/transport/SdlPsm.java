@@ -195,14 +195,17 @@ public class SdlPsm{
 			if(dataLength==0){
 				return FINISHED_STATE; //We are done if we don't have any payload
 			}
-			payload = new byte[dataLength];
+			try{
+				payload = new byte[dataLength];
+			}catch(OutOfMemoryError oom){
+				return ERROR_STATE;
+			}
 			dumpSize = dataLength;
 			return DATA_PUMP_STATE;
 			
 		case DATA_PUMP_STATE:
 			payload[dataLength-dumpSize] = rawByte;
 			dumpSize--;
-			//Log.trace(TAG,rawByte + " read. Data Length remaining: " + dumpSize);
 			//Do we have any more bytes to read in?
 			if(dumpSize>0){
 				return DATA_PUMP_STATE;

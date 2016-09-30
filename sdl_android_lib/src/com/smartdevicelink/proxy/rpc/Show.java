@@ -14,19 +14,140 @@ import com.smartdevicelink.util.DebugTool;
  * this text area is visible to the user at the time of the request. The
  * application's display text area remains unchanged until updated by subsequent
  * calls to Show
- * <p>
+ * <p></p>
  * The content of the application's display text area is visible to the user
  * when the application's {@linkplain com.smartdevicelink.proxy.rpc.enums.HMILevel}
  * is FULL or LIMITED, and the
  * {@linkplain com.smartdevicelink.proxy.rpc.enums.SystemContext}=MAIN and no
  * {@linkplain Alert} is in progress
- * <p>
+ * <p></p>
  * The Show operation cannot be used to create an animated scrolling screen. To
  * avoid distracting the driver, Show commands cannot be issued more than once
  * every 4 seconds. Requests made more frequently than this will be rejected
- * <p>
- * <b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b>
- * </p>
+ * 
+ * <p><b>HMILevel needs to be FULL, LIMITED or BACKGROUND</b></p>
+ *  
+ * <p><b>Parameter List</b></p>
+ * <table border="1" rules="all">
+ * 		<tr>
+ * 			<th>Param Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ *                 <th> Req.</th>
+ * 			<th>Notes</th>
+ * 			<th>Version Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField1</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed in a single-line display, or in the upper display line in a two-line display.</td>
+ *                 <td>N</td>
+ * 			<td>If this parameter is omitted, the text of mainField1 does not change. If this parameter is an empty string, the field will be cleared. <p>Maxlength = 500</p></td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField2</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed on the second display line of a two-line display.</td>
+ *                 <td>N</td>
+ * 			<td><p>If this parameter is omitted, the text of mainField2 does not change. </p> <p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField3</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed on the first display line of the second page.</td>
+ *                 <td>N</td>
+ * 			<td><p>If this parameter is omitted, the text of mainField3 does not change. </p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p> Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mainField4</td>
+ * 			<td>String</td>
+ * 			<td>Text to be displayed on the second display line of the second page.</td>
+ *                 <td>N</td>
+ * 			<td><p>If this parameter is omitted, the text of mainField4 does not change. </p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display is a single-line display, the parameter is ignored.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>alignment</td>
+ * 			<td>TextAlignment</td>
+ * 			<td>Specifies how mainField1 and mainField2 text should be aligned on display.</td>
+ *                 <td>N</td>
+ * 			<td><p>Applies only to mainField1 and mainField2 provided on this call, not to what is already showing in display.</p><p>If this parameter is omitted, text in both mainField1 and mainField2 will be centered. </p>Has no effect with navigation display</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>statusBar</td>
+ * 			<td>String</td>
+ * 			<td>The text is placed in the status bar area.</td>
+ *                 <td>N</td>
+ * 			<td><p>Note: The status bar only exists on navigation displays</p><p>If this parameter is omitted, the status bar text will remain unchanged.</p><p>If this parameter is an empty string, the field will be cleared.</p><p>If provided and the display has no status bar, this parameter is ignored.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mediaClock</td>
+ * 			<td>String</td>
+ * 			<td><p>Text value for MediaClock field.</p> <p>Has to be properly formatted by Mobile App according to SDL capabilities.</p>If this text is set, any automatic media clock updates previously set with SetMediaClockTimer will be stopped.</td>
+ *                 <td>N</td>
+ * 			<td><p>Must be properly formatted as described in the MediaClockFormat enumeration. </p><p>If a value of five spaces is provided, this will clear that field on the display (i.e. the media clock timer field will not display anything) </p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>mediaTrack</td>
+ * 			<td>String</td>
+ * 			<td>Array of one or more TTSChunk elements specifying the help prompt used in an interaction started by PTT.</td>
+ *                 <td>N</td>
+ * 			<td><p>If parameter is omitted, the track field remains unchanged.</p><p>If an empty string is provided, the field will be cleared.</p><p>This field is only valid for media applications on navigation displays.</p>Maxlength = 500</td>
+ * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>graphic</td>
+ * 			<td>Image</td>
+ * 			<td>Image to be shown on supported displays.</td>
+ *                 <td>N</td>
+ * 			<td>If omitted on supported displays, the displayed graphic shall not change.</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>secondaryGraphic</td>
+ * 			<td>Image</td>
+ * 			<td>	<p>Image struct determining whether static or dynamic secondary image to display in app.</p>If omitted on supported displays, the displayed secondary graphic shall not change.</td>
+ *                 <td>N</td>
+ * 			<td> </td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>softButtons</td>
+ * 			<td>SoftButton</td>
+ * 			<td>Soft buttons as defined by the App</td>
+ *                 <td>N</td>
+ * 			<td><p>If omitted on supported displays, the currently displayed SoftButton values will not change.</p>Array Minsize: 0; Array Maxsize: 8</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>customPresets</td>
+ * 			<td>String</td>
+ * 			<td>Custom presets as defined by the App.</td>
+ *                 <td>N</td>
+ * 			<td><p>If omitted on supported displays, the presets will be shown as not defined.</p>Minsize: 0; Maxsize: 6</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ *
+ *  </table>
+ *<p><b>Response </b></p>
+ *
+ *<p><b> Non-default Result Codes: </b></p>
+ *	 <p>SUCCESS </p>
+ *	 <p>INVALID_DATA</p>
+ *	 <p>OUT_OF_MEMORY</p>
+ *    <p> TOO_MANY_PENDING_REQUESTS</p>
+ *     <p>APPLICATION_NOT_REGISTERED</p>
+ *    <p> GENERIC_ERROR</p>
+ *    <p>  REJECTED</p>
+ *    <p>  DISALLOWED</p>
+ * <p> UNSUPPORTED_RESOURCE </p>     
+ *  <p>ABORTED</p>
  * 
  * @since SmartDeviceLink 1.0
  * @see Alert
@@ -53,7 +174,7 @@ public class Show extends RPCRequest {
     }
 	/**
 	 * Constructs a new Show object indicated by the Hashtable parameter
-	 * <p>
+	 * <p></p>
 	 * 
 	 * @param hash
 	 *            The Hashtable to use
@@ -80,7 +201,7 @@ public class Show extends RPCRequest {
 	 *            the String value representing the text displayed in a
 	 *            single-line display, or in the upper display line in a
 	 *            two-line display
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If this parameter is omitted, the text of mainField1 does
@@ -111,7 +232,7 @@ public class Show extends RPCRequest {
 	 * @param mainField2
 	 *            the String value representing the text displayed on the second
 	 *            display line of a two-line display
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If this parameter is omitted, the text of mainField2 does
@@ -148,7 +269,7 @@ public class Show extends RPCRequest {
 	 * @param mainField3
 	 *            the String value representing the text displayed on the first
 	 *            display line of the second page
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If this parameter is omitted, the text of mainField3 does
@@ -186,7 +307,7 @@ public class Show extends RPCRequest {
 	 * @param mainField4
 	 *            the String value representing the text displayed on the second
 	 *            display line of the second page
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If this parameter is omitted, the text of mainField4 does
@@ -227,7 +348,7 @@ public class Show extends RPCRequest {
 	 * 
 	 * @param alignment
 	 *            an Enumeration value
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Applies only to mainField1 and mainField2 provided on this
@@ -258,9 +379,9 @@ public class Show extends RPCRequest {
 	 * @param statusBar
 	 *            a String representing the text you want to add in the Status
 	 *            Bar
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b><i>The status bar only exists on navigation
-	 *            displays</i><br/>
+	 *            displays</i>
 	 *            <ul>
 	 *            <li>If this parameter is omitted, the status bar text will
 	 *            remain unchanged</li>
@@ -292,8 +413,8 @@ public class Show extends RPCRequest {
 	 * 
 	 * @param mediaClock
 	 *            a String value for the MdaiaClock
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <p></p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Must be properly formatted as described in the
 	 *            MediaClockFormat enumeration</li>
@@ -323,8 +444,8 @@ public class Show extends RPCRequest {
 	 * 
 	 * @param mediaTrack
 	 *            a String value disaplayed in the track field
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <p></p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If parameter is omitted, the track field remains unchanged</li>
 	 *            <li>If an empty string is provided, the field will be cleared</li>
@@ -344,9 +465,9 @@ public class Show extends RPCRequest {
 	 * 
 	 * @param graphic
 	 *            the value representing the image shown on supported displays
-	 *            <p>
+	 *            <p></p>
 	 *            <b>Notes: </b>If omitted on supported displays, the displayed
-	 *            graphic shall not change<br/>
+	 *            graphic shall not change
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setGraphic(Image graphic) {
@@ -438,8 +559,8 @@ public class Show extends RPCRequest {
 	 * @param softButtons
 	 *            a List value represemting the Soft buttons defined by the
 	 *            App
-	 *            <p>
-	 *            <b>Notes: </b><br/>
+	 *            <p></p>
+	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>If omitted on supported displays, the currently displayed
 	 *            SoftButton values will not change</li>
@@ -484,7 +605,7 @@ public class Show extends RPCRequest {
 	 * @param customPresets
 	 *            a List value representing the Custom Presets defined by the
 	 *            App
-	 *            <p>
+	 *            <p></p>
 	 *            <ul>
 	 *            <li>If omitted on supported displays, the presets will be shown as not defined</li>
 	 *            <li>Array Minsize: 0</li>
