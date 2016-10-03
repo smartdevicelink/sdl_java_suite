@@ -56,7 +56,7 @@ public class SdlChoiceSetManager {
         final CreateInteractionChoiceSet newRequest = new CreateInteractionChoiceSet();
 
         ArrayList<Choice> proxyChoices = new ArrayList<>();
-        final HashSet<SdlImage> unsentImages = new HashSet<>();
+        final HashMap<SdlImage, ArrayList<Choice>> unsentImages = new HashMap<>();
         for(int i=0; i<choiceSet.getChoices().size();i++) {
             int choiceID= choiceSet.getChoices().keyAt(i);
             SdlChoice currentChoice = choiceSet.getChoices().get(choiceID);
@@ -69,9 +69,16 @@ public class SdlChoiceSetManager {
                 Image choiceImage= new Image();
                 choiceImage.setImageType(ImageType.DYNAMIC);
                 choiceImage.setValue(currentChoice.getSdlImage().getSdlName());
-                convertToChoice.setImage(choiceImage);
                 if(!mApplicationContext.getSdlFileManager().isFileOnModule(currentChoice.getSdlImage().getSdlName())){
-                    unsentImages.add(currentChoice.getSdlImage());
+                    if(!unsentImages.containsKey(currentChoice.getSdlImage())){
+                        ArrayList<Choice> choices = new ArrayList<>();
+                        unsentImages.put(currentChoice.getSdlImage(), choices);
+                        choices.add(convertToChoice);
+                    } else {
+                        unsentImages.get(currentChoice.getSdlImage()).add(convertToChoice);
+                    }
+                } else {
+                    convertToChoice.setImage(choiceImage);
                 }
             }
             convertToChoice.setChoiceID(choiceID);
@@ -98,12 +105,18 @@ public class SdlChoiceSetManager {
             }
         });
         if(!unsentImages.isEmpty()){
-            HashSet<SdlImage> unsentImageIteration= new HashSet<>(unsentImages);
-            for (SdlImage unsentImage:unsentImageIteration){
+            HashSet<SdlImage> unsentImageIteration= new HashSet<>(unsentImages.keySet());
+            for (final SdlImage unsentImage:unsentImageIteration){
                 mApplicationContext.getSdlFileManager().uploadSdlImage(unsentImage, new SdlFileManager.FileReadyListener() {
                     @Override
                     public void onFileReady(SdlFile sdlFile) {
                         //it is and SdlImage
+                        Image choiceImage= new Image();
+                        choiceImage.setImageType(ImageType.DYNAMIC);
+                        choiceImage.setValue(sdlFile.getSdlName());
+                        for(Choice choices: unsentImages.get(sdlFile)){
+                            choices.setImage(choiceImage);
+                        }
                         unsentImages.remove(sdlFile);
                         if(unsentImages.isEmpty()){
                             mApplicationContext.sendRpc(newRequest);
@@ -112,7 +125,10 @@ public class SdlChoiceSetManager {
 
                     @Override
                     public void onFileError(SdlFile sdlFile) {
-
+                        unsentImages.remove(sdlFile);
+                        if(unsentImages.isEmpty()){
+                            mApplicationContext.sendRpc(newRequest);
+                        }
                     }
                 });
             }
