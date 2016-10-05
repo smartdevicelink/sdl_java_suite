@@ -53,6 +53,10 @@ public class SdlMenuTransaction{
         mCommandList.add(new AddMenuItemCommand(subMenu, sdlMenuOption, index));
     }
 
+    public void setMenuProperties(final SdlGlobalProperties properties){
+        mCommandList.add(new PropertiesItemCommand(properties));
+    }
+
     public void removeMenuItem(String menuItemName){
         SdlMenuItem item = mMenuManager.getTopMenu().getMenuItemByName(menuItemName);
         removeMenuItem(item);
@@ -155,6 +159,25 @@ public class SdlMenuTransaction{
         @Override
         public void undo() {
             mAddMenuItemCommand.execute();
+        }
+    }
+
+    class PropertiesItemCommand implements SdlMenuCommand{
+        private SdlGlobalProperties mPropertiesItem;
+
+        PropertiesItemCommand(@NonNull SdlGlobalProperties globalProperties){
+            mPropertiesItem = globalProperties;
+        }
+
+        @Override
+        public void execute() {
+            //just send off the SetGlobalProperties from the object
+            mMenuManager.getPropertiesManager().addSetProperty(mPropertiesItem);
+        }
+
+        @Override
+        public void undo() {
+            mMenuManager.getPropertiesManager().removeSetProperty(mPropertiesItem);
         }
     }
 
