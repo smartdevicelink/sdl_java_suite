@@ -8,9 +8,7 @@ import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 
 class SdlGlobalPropertiesManager {
 
@@ -36,11 +34,12 @@ class SdlGlobalPropertiesManager {
     }
 
     void update(SdlContext context){
-        ResetGlobalProperties resetCommand = new ResetGlobalProperties();
-        List<GlobalProperty> properties = Collections.emptyList();
-        properties.addAll(removalProperties);
-        resetCommand.setProperties(properties);
-        context.sendRpc(resetCommand);
+        if(!removalProperties.isEmpty()){
+            ResetGlobalProperties resetCommand = new ResetGlobalProperties();
+            resetCommand.setProperties(new ArrayList<>(removalProperties));
+            context.sendRpc(resetCommand);
+        }
+
 
         if(!mPropertyTransactions.isEmpty()){
             ArrayList<SdlGlobalProperties> deepCopy = new ArrayList<>(mPropertyTransactions);
