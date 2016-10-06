@@ -118,8 +118,7 @@ public class WiProProtocol extends AbstractProtocol {
 				data = new byte[12 + protocolMsg.getJsonSize()];
 			}
             if (!sessionType.eq(SessionType.CONTROL)) {
-            	BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
-            	binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
+            	BinaryFrameHeader binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
             	System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
             	System.arraycopy(protocolMsg.getData(), 0, data, 12, protocolMsg.getJsonSize());
             	if (protocolMsg.getBulkData() != null) {
@@ -233,10 +232,13 @@ public class WiProProtocol extends AbstractProtocol {
 	
 	
 	protected MessageFrameAssembler getFrameAssemblerForFrame(SdlPacket packet) {
-		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(packet.getSessionId());
+		Integer iSessionId = Integer.valueOf(packet.getSessionId());
+		Byte bySessionId = iSessionId.byteValue();
+	
+		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(bySessionId);
 		if (hashSessionID == null) {
 			hashSessionID = new Hashtable<Integer, MessageFrameAssembler>();
-			_assemblerForSessionID.put((byte)packet.getSessionId(), hashSessionID);
+			_assemblerForSessionID.put(bySessionId, hashSessionID);
 		} // end-if
 		
 		MessageFrameAssembler ret = (MessageFrameAssembler) _assemblerForMessageID.get(Integer.valueOf(packet.getMessageId()));
@@ -358,7 +360,9 @@ public class WiProProtocol extends AbstractProtocol {
         } // end-method		
 	
 		private void handleControlFrame(SdlPacket packet) {
-            int frameInfo = packet.getFrameInfo();
+			Integer frameTemp = Integer.valueOf(packet.getFrameInfo());
+			Byte frameInfo = frameTemp.byteValue();
+			
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
 
             if (frameInfo == FrameDataControlFrameType.Heartbeat.getValue()) {
@@ -406,7 +410,7 @@ public class WiProProtocol extends AbstractProtocol {
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
 			}
-            
+            _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
 				
 		private void handleSingleFrameMessageFrame(SdlPacket packet) {
