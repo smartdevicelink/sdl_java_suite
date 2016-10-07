@@ -35,8 +35,8 @@ public class SdlMenuManager {
             for(int i = transactionRecord.size() - 1; i >= 0; i--){
                 transactionRecord.get(i).undo();
             }
-            mSdlMenu.update(sdlActivity, 0);
             mPropertiesManager.update(sdlActivity);
+            mSdlMenu.update(sdlActivity, 0);
         }
     }
 
@@ -46,8 +46,8 @@ public class SdlMenuManager {
             for(SdlMenuTransaction transaction: transactionRecord){
                 transaction.execute();
             }
-            mSdlMenu.update(sdlActivity, 0);
             mPropertiesManager.update(sdlActivity);
+            mSdlMenu.update(sdlActivity, 0);
         }
     }
 

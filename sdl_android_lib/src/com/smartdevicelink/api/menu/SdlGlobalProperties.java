@@ -14,13 +14,13 @@ import java.util.EnumSet;
 
 public class SdlGlobalProperties {
 
-    private final TTSChunk mHelpPrompt;
-    private final TTSChunk mTimeoutPrompt;
-    private final String mVrHelpTitle;
-    private final VrHelpItem mHelpItems;
-    private final String mMenuTitle;
-    private final SdlImage mMenuIcon;
-    private final KeyboardProperties mKeyboardProperties;
+    private TTSChunk mHelpPrompt;
+    private TTSChunk mTimeoutPrompt;
+    private String mVrHelpTitle;
+    private VrHelpItem mHelpItems;
+    private String mMenuTitle;
+    private SdlImage mMenuIcon;
+    private KeyboardProperties mKeyboardProperties;
 
     private SdlGlobalProperties(Builder builder){
         mHelpPrompt = builder.mHelpPrompt;
@@ -85,6 +85,30 @@ public class SdlGlobalProperties {
             properties.add(GlobalProperty.TIMEOUTPROMPT);
         }
         return properties;
+    }
+
+    void updateWithLaterProperties(SdlGlobalProperties newProperties){
+        if(newProperties.mMenuTitle!=null){
+            mMenuTitle = newProperties.mMenuTitle;
+        }
+        if(newProperties.mHelpPrompt!=null){
+            mHelpPrompt = newProperties.mHelpPrompt;
+        }
+        if(newProperties.mKeyboardProperties!=null){
+            mKeyboardProperties = newProperties.mKeyboardProperties;
+        }
+        if(newProperties.mMenuIcon!=null){
+            mMenuIcon = newProperties.mMenuIcon;
+        }
+        if(newProperties.mVrHelpTitle!=null){
+            mVrHelpTitle = newProperties.mVrHelpTitle;
+        }
+        if(newProperties.mHelpItems!=null){
+            mHelpItems = newProperties.mHelpItems;
+        }
+        if(newProperties.mTimeoutPrompt!=null){
+            mTimeoutPrompt = newProperties.mTimeoutPrompt;
+        }
     }
 
 

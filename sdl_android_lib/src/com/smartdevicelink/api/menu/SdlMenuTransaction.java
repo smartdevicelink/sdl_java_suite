@@ -84,6 +84,7 @@ public class SdlMenuTransaction{
         if(mTopActivity != null){
             mMenuManager.registerTransaction(mTopActivity, this);
         }
+        mMenuManager.getPropertiesManager().update(mSdlContext);
         mMenuManager.getTopMenu().update(mSdlContext, 0);
     }
 
@@ -171,7 +172,6 @@ public class SdlMenuTransaction{
 
         @Override
         public void execute() {
-            //just send off the SetGlobalProperties from the object
             mMenuManager.getPropertiesManager().addSetProperty(mPropertiesItem);
         }
 
