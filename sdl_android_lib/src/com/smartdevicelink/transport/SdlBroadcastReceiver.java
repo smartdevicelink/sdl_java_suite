@@ -199,11 +199,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	            	intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, pingService);
 	            	context.startService(intent);
 	            }
-	    		return true;
 	        }
 	    }
 		
-		return false;
+		return runningBluetoothServicePackage.size() > 0;
 		
 	}
 
