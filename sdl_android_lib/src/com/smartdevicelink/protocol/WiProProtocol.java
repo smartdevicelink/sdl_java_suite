@@ -3,8 +3,15 @@ package com.smartdevicelink.protocol;
 import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 
-import com.smartdevicelink.exception.*;
-import com.smartdevicelink.protocol.enums.*;
+import com.smartdevicelink.SdlConnection.SdlConnection;
+import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
+import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.MessageType;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 
@@ -19,7 +26,8 @@ public class WiProProtocol extends AbstractProtocol {
 
 	int hashID = 0;
 	int messageID = 0;
-
+	SdlConnection sdlconn = null;
+	
     @SuppressWarnings("unused")
     private int _heartbeatSendInterval_ms = 0;
     @SuppressWarnings("unused")
@@ -36,6 +44,11 @@ public class WiProProtocol extends AbstractProtocol {
 
 	public WiProProtocol(IProtocolListener protocolListener) {
 		super(protocolListener);
+		
+		if (protocolListener instanceof SdlConnection)
+		{
+			sdlconn = (SdlConnection) protocolListener;
+		}
 	} // end-ctor
 	
 	public byte getVersion() {
@@ -67,7 +80,7 @@ public class WiProProtocol extends AbstractProtocol {
     }
 
 	public void StartProtocolSession(SessionType sessionType) {
-		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00);
+		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00, false);
 		handlePacketToSend(header);
 	} // end-method
 
@@ -89,19 +102,54 @@ public class WiProProtocol extends AbstractProtocol {
 		
 		byte[] data = null;
 		if (_version > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
-			if (protocolMsg.getBulkData() != null) {
+            if (sessionType.eq(SessionType.CONTROL)) {
+                final byte[] secureData = protocolMsg.getData().clone();
+                data = new byte[HEADER_SIZE + secureData.length];
+                
+                final BinaryFrameHeader binFrameHeader =
+                		SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(),protocolMsg.getFunctionID(), protocolMsg.getCorrID(), 0);
+                System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, HEADER_SIZE);
+                System.arraycopy(secureData, 0, data,HEADER_SIZE, secureData.length);
+            }
+            else if (protocolMsg.getBulkData() != null) {
 				data = new byte[12 + protocolMsg.getJsonSize() + protocolMsg.getBulkData().length];
 				sessionType = SessionType.BULK_DATA;
-			} else data = new byte[12 + protocolMsg.getJsonSize()];
-			BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
-			binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
-			System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
-			System.arraycopy(protocolMsg.getData(), 0, data, 12, protocolMsg.getJsonSize());
-			if (protocolMsg.getBulkData() != null) {
-				System.arraycopy(protocolMsg.getBulkData(), 0, data, 12 + protocolMsg.getJsonSize(), protocolMsg.getBulkData().length);
+			} else { 
+				data = new byte[12 + protocolMsg.getJsonSize()];
 			}
+            if (!sessionType.eq(SessionType.CONTROL)) {
+            	BinaryFrameHeader binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(protocolMsg.getRPCType(), protocolMsg.getFunctionID(), protocolMsg.getCorrID(), protocolMsg.getJsonSize());
+            	System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
+            	System.arraycopy(protocolMsg.getData(), 0, data, 12, protocolMsg.getJsonSize());
+            	if (protocolMsg.getBulkData() != null) {
+            		System.arraycopy(protocolMsg.getBulkData(), 0, data, 12 + protocolMsg.getJsonSize(), protocolMsg.getBulkData().length);
+            	}
+            }
 		} else {
 			data = protocolMsg.getData();
+		}
+		
+		if (sdlconn != null && protocolMsg.getPayloadProtected())
+		{			
+			if (data != null && data.length > 0) {
+				SdlSession session = sdlconn.findSessionById(sessionID);
+				
+				if (session == null)
+					return;
+				
+				byte[] dataToRead = new byte[4096];
+				SdlSecurityBase sdlSec = session.getSdlSecurity();
+				if (sdlSec == null) 
+					return;
+				 
+				Integer iNumBytes = sdlSec.encryptData(data, dataToRead);
+				if ((iNumBytes == null) || (iNumBytes <= 0))
+					return;
+				
+		        byte[] encryptedData = new byte[iNumBytes];
+		        System.arraycopy(dataToRead, 0, encryptedData, 0, iNumBytes);
+				data = encryptedData;
+			}
 		}
 		
 		// Get the message lock for this protocol session
@@ -128,7 +176,8 @@ public class WiProProtocol extends AbstractProtocol {
 				System.arraycopy(BitConverter.intToByteArray(data.length), 0, firstFrameData, 0, 4);
 				// Second four bytes are frame count.
 				System.arraycopy(BitConverter.intToByteArray(frameCount), 0, firstFrameData, 4, 4);
-				SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, _version,firstFrameData);
+
+				SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, _version,firstFrameData,protocolMsg.getPayloadProtected());
 				firstHeader.setPriorityCoefficient(1+protocolMsg.priorityCoefficient);
 				//Send the first frame
 				handlePacketToSend(firstHeader);
@@ -153,14 +202,14 @@ public class WiProProtocol extends AbstractProtocol {
 					if (bytesToWrite > MAX_DATA_SIZE) { 
 						bytesToWrite = MAX_DATA_SIZE; 
 					}
-					SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, _version,data, currentOffset, bytesToWrite);
+					SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, _version,data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
 					consecHeader.setPriorityCoefficient(i+2+protocolMsg.priorityCoefficient);
 					handlePacketToSend(consecHeader);
 					currentOffset += bytesToWrite;
 				}
 			} else {
 				messageID++;
-				SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, _version,data);
+				SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, _version,data, protocolMsg.getPayloadProtected());
 				header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
 				handlePacketToSend(header);
 			}
@@ -183,10 +232,13 @@ public class WiProProtocol extends AbstractProtocol {
 	
 	
 	protected MessageFrameAssembler getFrameAssemblerForFrame(SdlPacket packet) {
-		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(packet.getSessionId());
+		Integer iSessionId = Integer.valueOf(packet.getSessionId());
+		Byte bySessionId = iSessionId.byteValue();
+	
+		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(bySessionId);
 		if (hashSessionID == null) {
 			hashSessionID = new Hashtable<Integer, MessageFrameAssembler>();
-			_assemblerForSessionID.put((byte)packet.getSessionId(), hashSessionID);
+			_assemblerForSessionID.put(bySessionId, hashSessionID);
 		} // end-if
 		
 		MessageFrameAssembler ret = (MessageFrameAssembler) _assemblerForMessageID.get(Integer.valueOf(packet.getMessageId()));
@@ -222,6 +274,7 @@ public class WiProProtocol extends AbstractProtocol {
 			if (packet.getFrameType() == FrameType.Consecutive && packet.getFrameInfo() == 0x0) 
 			{
 				ProtocolMessage message = new ProtocolMessage();
+				message.setPayloadProtected(packet.isEncrypted());
 				message.setSessionType(SessionType.valueOf((byte)packet.getServiceType()));
 				message.setSessionID((byte)packet.getSessionId());
 				//If it is WiPro 2.0 it must have binary header
@@ -262,6 +315,29 @@ public class WiProProtocol extends AbstractProtocol {
 		} // end-method
 		
 		protected void handleFrame(SdlPacket packet) {
+	
+			if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted()  )
+			{
+				if (sdlconn != null)
+				{
+					SdlSession session = sdlconn.findSessionById((byte)packet.getSessionId());
+		
+					if (session == null)
+						return;
+		
+					SdlSecurityBase sdlSec = session.getSdlSecurity();
+					byte[] dataToRead = new byte[4096];	
+
+					Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
+					 if ((iNumBytes == null) || (iNumBytes <= 0))
+						 return;
+										 
+					byte[] decryptedData = new byte[iNumBytes];
+					System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
+					packet.payload = decryptedData;
+				}
+			}
+		
 			if (packet.getFrameType().equals(FrameType.Control)) {
 				handleControlFrame(packet);
 			} else {
@@ -284,7 +360,9 @@ public class WiProProtocol extends AbstractProtocol {
         } // end-method		
 	
 		private void handleControlFrame(SdlPacket packet) {
-            int frameInfo = packet.getFrameInfo();
+			Integer frameTemp = Integer.valueOf(packet.getFrameInfo());
+			Byte frameInfo = frameTemp.byteValue();
+			
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
 
             if (frameInfo == FrameDataControlFrameType.Heartbeat.getValue()) {
@@ -308,7 +386,7 @@ public class WiProProtocol extends AbstractProtocol {
 						hashID = BitConverter.intFromByteArray(packet.payload, 0);
 					}
 				}	
-				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "", hashID);				
+				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "", hashID, packet.isEncrypted());				
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), _version, "");
@@ -326,13 +404,18 @@ public class WiProProtocol extends AbstractProtocol {
 			} else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 				handleProtocolSessionEndedNACK(serviceType, (byte)packet.getSessionId(), "");
 			} else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {
-				handleProtocolServiceDataACK(serviceType, (byte)packet.getSessionId ());
+				if (packet.getPayload() != null && packet.getDataSize() == 4) //service data ack will be 4 bytes in length
+				{
+					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
+					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
+				}
 			}
-            
+            _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
 				
 		private void handleSingleFrameMessageFrame(SdlPacket packet) {
 			ProtocolMessage message = new ProtocolMessage();
+			message.setPayloadProtected(packet.isEncrypted());
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
 			if (serviceType == SessionType.RPC) {
 				message.setMessageType(MessageType.RPC);
@@ -342,7 +425,8 @@ public class WiProProtocol extends AbstractProtocol {
 			message.setSessionType(serviceType);
 			message.setSessionID((byte)packet.getSessionId());
 			//If it is WiPro 2.0 it must have binary header
-			if (_version > 1) {
+			boolean isControlService = message.getSessionType().equals(SessionType.CONTROL);
+			if (_version > 1&& !isControlService) {
 				BinaryFrameHeader binFrameHeader = BinaryFrameHeader.
 						parseBinaryHeader(packet.payload);
 				message.setVersion(_version);
@@ -371,8 +455,8 @@ public class WiProProtocol extends AbstractProtocol {
 	} // end-class
 
 	@Override
-	public void StartProtocolService(SessionType sessionType, byte sessionID) {
-		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, sessionID);
+	public void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted) {
+		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, sessionID, isEncrypted);
 		handlePacketToSend(header);
 		
 	}
@@ -407,4 +491,5 @@ public class WiProProtocol extends AbstractProtocol {
 		handlePacketToSend(header);
 		
 	}
+
 } // end-class

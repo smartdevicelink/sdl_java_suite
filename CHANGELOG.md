@@ -1,12 +1,16 @@
-# 4.0.1 Release Notes
+# 4.1.0 Release Notes
 
 ### API New Features & Breaking Changes
-  * Added ability to retrieve HMICapabilities and SystemSoftwareVersion from the proxy object.
+* Added multiplexing transport that gives the ability to share a single bluetooth RCOMM channel with many clients.
+* Added external security framework that allows OEM's to provide custom security libraries.
+* ProxyALM constructors have changed and old signatures been deprecated.
+* Changed TouchEvent method names to be more intuitive.
 
 ### Enhancements
-  * Added RPC request callbacks. Developers can now set a listener object into any RPC request and recieve the response through it.
-  * Added RPC notification listeners. Developers can now designate a listener for each notifcation type.
-  * Added a correlation id generator. Id's can be generated through this class to avoid having to keep track between multiple classes.
+* Multiplexing will now be the default mode of transport
 
 ### Bug Fixes
-  * Removed unused imports
+* Fixed issue with sending a stop session with an incorrect hash id
+* Fixed the library throwing away hybrid packets
+* Fixed http onSystemRequests to actually function correctly
+* Fixed a class cast exception in the BTTransport class

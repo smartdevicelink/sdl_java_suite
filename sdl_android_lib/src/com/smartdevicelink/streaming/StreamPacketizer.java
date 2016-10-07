@@ -4,22 +4,28 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
+import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 
 public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
 	public final static String TAG = "StreamPacketizer";
+
 	private Thread t = null;
+
+	private final static int BUFF_READ_SIZE = 1024;
 
 	public SdlConnection sdlConnection = null;
     private Object mPauseLock;
     private boolean mPaused;
-
-	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
-		super(streamListener, is, sType, rpcSessionID);
+    private boolean isServiceProtected = false;
+    
+	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
+		super(streamListener, is, sType, rpcSessionID, session);
         mPauseLock = new Object();
         mPaused = false;
+        isServiceProtected = _session.isServiceProtected(_serviceType);
 	}
 
 	public void start() throws IOException {
@@ -41,7 +47,6 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
 	public void run() {
 		int length;
-
 		try 
 		{
 			while (t != null && !t.isInterrupted()) 
@@ -58,16 +63,17 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
                     }
                 }
 
-				length = is.read(buffer, 0, 1488);
+				length = is.read(buffer, 0, BUFF_READ_SIZE);
 				
 				if (length >= 0) 
 				{
 					ProtocolMessage pm = new ProtocolMessage();
 					pm.setSessionID(_rpcSessionID);
-					pm.setSessionType(_session);
+					pm.setSessionType(_serviceType);
 					pm.setFunctionID(0);
 					pm.setCorrID(0);
 					pm.setData(buffer, length);
+					pm.setPayloadProtected(isServiceProtected);
 										
 					if (t != null && !t.isInterrupted())
 						_streamListener.sendStreamPacket(pm);
@@ -81,7 +87,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 		{
 			 if (sdlConnection != null)
 			 {
-				 sdlConnection.endService(_session, _rpcSessionID);
+				 sdlConnection.endService(_serviceType, _rpcSessionID);
 			 }
 
 		}

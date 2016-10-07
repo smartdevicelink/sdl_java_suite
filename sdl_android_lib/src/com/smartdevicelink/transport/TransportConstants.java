@@ -11,10 +11,6 @@ package com.smartdevicelink.transport;
 public class TransportConstants {
 	public static final String START_ROUTER_SERVICE_ACTION					="sdl.router.startservice";
 
-	public static final String UNREGISTER_WITH_ROUTER_ACTION 				= "com.sdl.android.unregister"; 
-	public static final String SEND_PACKET_ACTION 							= "com.sdl.android.sendpacket";
-	public static final String SEND__GLOBAL_PACKET_ACTION 					= "com.sdl.android.sendglobalpacket";
-
 	public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
 	public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";
 	
@@ -38,10 +34,6 @@ public class TransportConstants {
 	public static final String APP_ID_EXTRA									= "app.id";
 	public static final String SESSION_ID_EXTRA								= "session.id";
 
-	public static final String LOG_BASIC_DEBUG_BOOLEAN_EXTRA				= "basicDebugBool";
-	public static final String LOG_TRACE_BT_DEBUG_BOOLEAN_EXTRA				= "btTraceBool";
-
-
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
 	
 	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
@@ -53,6 +45,7 @@ public class TransportConstants {
 	
 	public static final String	BIND_REQUEST_TYPE_CLIENT						= "BIND_REQUEST_TYPE_CLIENT";
 	public static final String	BIND_REQUEST_TYPE_ALT_TRANSPORT					= "BIND_REQUEST_TYPE_ALT_TRANSPORT";
+	public static final String	BIND_REQUEST_TYPE_STATUS						= "BIND_REQUEST_TYPE_STATUS";
 
 	
 	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
@@ -189,7 +182,20 @@ public class TransportConstants {
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;
 	
+	public static final String ROUTER_SERVICE_VERSION						= "router_service_version";
+
+	/**
+	 * Status binder
+	 */
 	
+	public static final int ROUTER_STATUS_CONNECTED_STATE_REQUEST			= 0x01;
+	public static final int ROUTER_STATUS_CONNECTED_STATE_RESPONSE			= 0x02;
+	/**
+	 * This flag when used to check router status will trigger the router service in sending out a ping that if it is connected to a device
+	 */
+	public static final int ROUTER_STATUS_FLAG_TRIGGER_PING					= 0x02;
+ 
+
 
 	
 

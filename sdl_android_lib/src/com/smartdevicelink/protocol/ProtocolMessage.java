@@ -12,6 +12,8 @@ public class ProtocolMessage {
 	private int _functionID;
 	private int _correlationID;
 	private int _jsonSize;
+	private boolean payloadProtected = false;
+	
 	int priorityCoefficient = 0;
 
 	private byte[] _data = null;
@@ -123,6 +125,15 @@ public class ProtocolMessage {
 	public void setJsonSize(int _jsonSize) {
 		this._jsonSize = _jsonSize;
 	}
+	
+	public void setPayloadProtected(boolean bVal) {
+		payloadProtected = bVal;
+	}
+	
+	public boolean getPayloadProtected() {
+		return payloadProtected;
+	}	
+	
 	/**
 	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
 	 * @param priority

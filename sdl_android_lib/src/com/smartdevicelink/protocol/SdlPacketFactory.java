@@ -10,8 +10,8 @@ public class SdlPacketFactory {
 			int serviceType, int frameInfo, int sessionId,
 			int dataSize, int messageId, byte[] payload) {
 	 */
-	public static SdlPacket createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID) {
-		SdlPacket packet =  new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
+	public static SdlPacket createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID, boolean encrypted) {
+		SdlPacket packet =  new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),SdlPacket.FRAME_INFO_START_SERVICE,sessionID,
 				0,messageID,null);
 
@@ -54,26 +54,26 @@ public class SdlPacketFactory {
 	}
 
 	public static SdlPacket createSingleSendData(SessionType serviceType, byte sessionID,
-			int dataLength, int messageID, byte version, byte[] payload) {
+			int dataLength, int messageID, byte version, byte[] payload, boolean encrypted) {
 		
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_SINGLE,
+		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_SINGLE,
 				serviceType.getValue(),0,sessionID,
 				payload.length,messageID,payload);
 	}
 
 	public static SdlPacket createMultiSendDataFirst(SessionType serviceType, byte sessionID, 
-			int messageID, byte version, byte[] payload) {
+			int messageID, byte version, byte[] payload, boolean encrypted) {
 		
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_FIRST,
+		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_FIRST,
 				serviceType.getValue(),0,sessionID,
 				8,messageID,payload);
 
 	}
 
 	public static SdlPacket createMultiSendDataRest(SessionType serviceType, byte sessionID,
-			int dataLength, byte frameSequenceNumber, int messageID, byte version, byte[] payload,int offset,int length) {
+			int dataLength, byte frameSequenceNumber, int messageID, byte version, byte[] payload,int offset,int length, boolean encrypted) {
 		
-		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONSECUTIVE,
+		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_CONSECUTIVE,
 				serviceType.getValue(),frameSequenceNumber,sessionID,
 				length,messageID,payload,offset,length);
 	}
