@@ -9,15 +9,16 @@ import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 
 public class SdlGlobalProperties {
 
-    private TTSChunk mHelpPrompt;
-    private TTSChunk mTimeoutPrompt;
+    private ArrayList<TTSChunk> mHelpPrompt;
+    private ArrayList<TTSChunk> mTimeoutPrompt;
     private String mVrHelpTitle;
-    private VrHelpItem mHelpItems;
+    private ArrayList<VrHelpItem> mHelpItems;
     private String mMenuTitle;
     private SdlImage mMenuIcon;
     private KeyboardProperties mKeyboardProperties;
@@ -37,8 +38,8 @@ public class SdlGlobalProperties {
         if(mMenuTitle!=null){
             rpcRequest.setMenuTitle(mMenuTitle);
         }
-        if(mHelpPrompt!=null){
-            rpcRequest.setHelpPrompt(Collections.singletonList(mHelpPrompt));
+        if(mHelpPrompt!=null && !mHelpPrompt.isEmpty()){
+            rpcRequest.setHelpPrompt(mHelpPrompt);
         }
         if(mKeyboardProperties!=null){
             rpcRequest.setKeyboardProperties(mKeyboardProperties);
@@ -52,11 +53,11 @@ public class SdlGlobalProperties {
         if(mVrHelpTitle!=null){
             rpcRequest.setVrHelpTitle(mVrHelpTitle);
         }
-        if(mHelpItems!=null){
-            rpcRequest.setVrHelp(Collections.singletonList(mHelpItems));
+        if(mHelpItems!=null && !mHelpItems.isEmpty()){
+            rpcRequest.setVrHelp(mHelpItems);
         }
-        if(mTimeoutPrompt!=null){
-            rpcRequest.setTimeoutPrompt(Collections.singletonList(mTimeoutPrompt));
+        if(mTimeoutPrompt!=null && !mTimeoutPrompt.isEmpty()){
+            rpcRequest.setTimeoutPrompt(mTimeoutPrompt);
         }
         return rpcRequest;
     }
@@ -113,19 +114,19 @@ public class SdlGlobalProperties {
 
 
     public static class Builder{
-        private TTSChunk mHelpPrompt;
-        private TTSChunk mTimeoutPrompt;
+        private ArrayList<TTSChunk> mHelpPrompt;
+        private ArrayList<TTSChunk> mTimeoutPrompt;
         private String mVrHelpTitle;
-        private VrHelpItem mHelpItems;
+        private ArrayList<VrHelpItem> mHelpItems;
         private String mMenuTitle;
         private SdlImage mMenuIcon;
         private KeyboardProperties mKeyboardProperties;
 
         public Builder(){}
 
-        public Builder setVisibleHelp(String helpTitle, VrHelpItem helpItem){
+        public Builder setVisibleHelp(String helpTitle, Collection<VrHelpItem> helpItem){
             mVrHelpTitle = helpTitle;
-            mHelpItems = helpItem;
+            mHelpItems = new ArrayList<>(helpItem);
             return this;
         }
 
@@ -144,13 +145,13 @@ public class SdlGlobalProperties {
             return this;
         }
 
-        public Builder setHelpPrompt(TTSChunk helpPrompt){
-            mHelpPrompt = helpPrompt;
+        public Builder setHelpPrompt(Collection<TTSChunk> helpPrompt){
+            mHelpPrompt = new ArrayList<>(helpPrompt);
             return this;
         }
 
-        public Builder setTimeoutPrompt(TTSChunk timeoutPrompt){
-            mTimeoutPrompt = timeoutPrompt;
+        public Builder setTimeoutPrompt(Collection<TTSChunk> timeoutPrompt){
+            mTimeoutPrompt = new ArrayList<>(timeoutPrompt);
             return this;
         }
 
