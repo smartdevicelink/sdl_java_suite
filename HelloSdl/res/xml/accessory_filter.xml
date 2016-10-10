@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resource>
-    <usb-accessory
-        manufacturer="SDL"
-        model="Core"
-        version="1.0"/>
-</resource>
