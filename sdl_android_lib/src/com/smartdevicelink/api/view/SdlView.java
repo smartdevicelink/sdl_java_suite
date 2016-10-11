@@ -1,7 +1,5 @@
 package com.smartdevicelink.api.view;
 
-import android.util.Log;
-
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
@@ -37,7 +35,6 @@ public abstract class SdlView {
     }
 
     public void setSdlContext(SdlContext sdlContext){
-        Log.d(this.getClass().getSimpleName(), "Set SdlContext to " + sdlContext);
         mSdlContext = sdlContext;
     }
 
@@ -52,7 +49,6 @@ public abstract class SdlView {
     }
 
     public void setIsVisible(boolean isVisible){
-        Log.d(this.getClass().getSimpleName(), "isVisible set to " + isVisible);
         this.isVisible = isVisible;
     }
 

@@ -65,7 +65,6 @@ public class SdlGraphicView extends SdlView {
 
     @Override
     void decorate(Show show) {
-        Log.i(TAG, "Decorate called.");
         if(mSdlImage == null){
             Image image = new Image();
             image.setImageType(ImageType.DYNAMIC);

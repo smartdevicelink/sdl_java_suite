@@ -196,7 +196,7 @@ public class SdlTemplateView extends SdlView {
 
     private TemplateStatus createTemplate(LayoutTemplate template, SdlView mainView,
                                           SdlView secondaryView, SdlButtonView buttonView) {
-        Log.d(TAG, "Looking for template: " + template.name());
+        Log.d(TAG, "Desired template for view: " + template.name());
         if(mAvailableTemplateSet.contains(template)) {
             mLeftView = mainView;
             if(mLeftView != null){
@@ -218,8 +218,9 @@ public class SdlTemplateView extends SdlView {
             }
             isLayoutDifferent = template != mTemplate;
             mTemplate = template;
-            Log.d(TAG, "My Template is: " + mTemplate.name());
+            Log.d(TAG, "Template " + template.name() + " is supported.");
         } else {
+            Log.d(TAG, "Template " + template.name() + " is not supported.");
             return TemplateStatus.INVALID_TEMPLATE_NOT_SUPPORTED;
         }
         return TemplateStatus.VALID;
@@ -246,26 +247,18 @@ public class SdlTemplateView extends SdlView {
 
     @Override
     public void setSdlContext(SdlContext sdlContext) {
-        Log.i(TAG, "SdlTemplateView setSdlContext called.");
-        if(sdlContext == null) Log.w(TAG, "SdlContext is null!");
         mSdlContext = sdlContext;
         if(mLeftView != null){
             mLeftView.setSdlViewManager(mViewManager);
             mLeftView.setSdlContext(mSdlContext);
-        } else {
-            Log.w(TAG, "mLeftView is null!");
         }
         if(mRightView != null){
             mRightView.setSdlViewManager(mViewManager);
             mRightView.setSdlContext(mSdlContext);
-        } else {
-            Log.w(TAG, "mRightView is null!");
         }
         if(mSdlButtonView != null){
             mSdlButtonView.setSdlViewManager(mViewManager);
             mRightView.setSdlContext(mSdlContext);
-        } else {
-            Log.w(TAG, "mButtonView is null!");
         }
     }
 
