@@ -1,7 +1,5 @@
 package com.smartdevicelink.api.view;
 
-import android.util.Log;
-
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.Show;
@@ -21,7 +19,6 @@ public class SdlViewManager {
     }
 
     public void setRootView(SdlView view){
-        Log.i(TAG, "Setting root view on SdlViewManager.");
         mRootView = view;
         mRootView.setSdlViewManager(this);
         mRootView.setSdlContext(mSdlContext);
