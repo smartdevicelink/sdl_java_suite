@@ -59,7 +59,14 @@ public enum DisplayType {
      * GEN-3, 8 inch display.    
      */
 
-    GEN3_8_INCH("GEN3_8-INCH");
+    GEN3_8_INCH("GEN3_8-INCH"),
+    
+    /**
+     * SDL_GENERIC display type. Used for most SDL integrations.
+     */
+    SDL_GENERIC("SDL_GENERIC"),
+    
+    ;
 
     private final String INTERNAL_NAME;
 
