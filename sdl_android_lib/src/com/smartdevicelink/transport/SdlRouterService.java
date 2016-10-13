@@ -114,7 +114,7 @@ public class SdlRouterService extends Service{
     private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
     private Runnable versionCheckRunable, altTransportTimerRunnable;
     private LocalRouterService localCompareTo = null;
-    private final static int VERSION_TIMEOUT_RUNNABLE = 2000;
+    private final static int VERSION_TIMEOUT_RUNNABLE = 1500;
     private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
 	
     private boolean wrongProcess = false;
