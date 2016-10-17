@@ -35,6 +35,8 @@ Thumbs.db
 ##############################
 bin/
 gen/
+build/
+/captures
 
 ##############################
 # Local configuration file
@@ -58,4 +60,7 @@ proguard/
 *.iml
 *.ipr
 *.iws
-.idea/
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
