@@ -47,7 +47,7 @@ import android.util.Log;
 public class MultiplexBluetoothTransport {
     //finals
 	private static final String TAG = "Bluetooth Transport";
-    private static final UUID SERVER_UUID= new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
+    private static final UUID SERVER_UUID= new UUID(0xCD6A760D4539441CL, 0xB04235FEB02E2765L);
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE =" SdlRouterService";
     
