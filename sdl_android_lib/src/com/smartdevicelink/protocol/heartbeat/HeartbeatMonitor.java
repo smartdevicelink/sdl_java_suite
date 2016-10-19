@@ -26,6 +26,11 @@ public class HeartbeatMonitor implements IHeartbeatMonitor {
     public HeartbeatMonitor() {
     }
 
+    // Methods used to retrieve values for unit testing only.
+    // See com/smartdevicelink/tests/protocol/heartbeat/HeartbeatMonitorTests.
+    public Runnable getHeartbeatRunnable () { return heartbeatTimeoutRunnable; }
+    public boolean isHeartbeatReceived () { return isHeartbeatReceived; }
+    
     private Runnable heartbeatTimeoutRunnable = new Runnable() {
 
         @Override

@@ -1,0 +1,21 @@
+{
+  "request":{
+    "name":"GetDTCs",
+    "correlationID":127,
+    "parameters":{
+    	"dtcMask":4356,
+    	"ecuName":4567
+    }
+  },
+  "response":{
+    "name":"GetDTCsResponse",
+    "correlationID":128,
+    "parameters":{
+    	"dtc":[
+    		"item1",
+    		"item2",
+    		"item3"
+    	]
+    }
+  }
+}

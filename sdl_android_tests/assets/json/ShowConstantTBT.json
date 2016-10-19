@@ -1,0 +1,52 @@
+{
+  "request":{
+    "name":"ShowConstantTbt",
+    "correlationID":196,
+    "parameters":{      
+      "navigationText1":"text1",
+      "navigationText2":"text2",
+      "eta":"10 minutes",
+      "totalDistance":"10km",
+      "distanceToManeuver":10.00,
+      "distanceToManeuverScale":1.00,
+      "turnIcon":{
+          "value":"turn.png",
+          "imageType":"STATIC"
+        },
+      "nextTurnIcon":{
+          "value":"nextTurn.png",
+          "imageType":"STATIC"
+        },
+      "maneuverComplete":true,
+      "softButtons":[
+        {
+          "isHighlighted":true,
+          "softButtonID":6,
+          "systemAction":"STEAL_FOCUS",
+          "text":"Button 1",
+          "type":"IMAGE",
+          "image":{
+            "value":"image.png",
+            "imageType":"STATIC"
+          }
+        },
+        {
+          "isHighlighted":false,
+          "softButtonID":3,
+          "systemAction":"DEFAULT_ACTION",
+          "text":"Button 2",
+          "type":"BOTH",
+          "image":{
+            "value":"image.png",
+            "imageType":"DYNAMIC"
+          }
+        }
+      ],
+      "timeToDestination":"52 minutes",
+    }
+  },
+  "response":{
+    "name":"ShowConstantTbtResponse",
+    "correlationID":197
+  }
+}

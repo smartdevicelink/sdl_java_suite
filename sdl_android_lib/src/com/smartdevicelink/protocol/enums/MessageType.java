@@ -1,5 +1,6 @@
 package com.smartdevicelink.protocol.enums;
 
+
 public enum MessageType {
 //	START_SESSION,
 //	START_SESSION_ACK,
@@ -7,5 +8,13 @@ public enum MessageType {
 //	END_SESSION,
 	UNDEFINED,
 	BULK,
-	RPC
+	RPC;
+	
+	public static MessageType valueForString (String value) {
+        try{
+            return valueOf(value);
+        } catch(Exception e) {
+            return null;
+        }
+    }
 }

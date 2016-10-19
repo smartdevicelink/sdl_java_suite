@@ -73,7 +73,6 @@ public class RPCRequestFactory {
 		return msg;
 	}	
 	
-	
 	public static SystemRequest buildSystemRequestLegacy(
 			Vector<String> data, Integer correlationID) {
 		
@@ -84,7 +83,6 @@ public class RPCRequestFactory {
 		msg.setLegacyData(data);
 		return msg;
 	}	
-	
 
 	public static AddCommand buildAddCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
@@ -109,7 +107,8 @@ public class RPCRequestFactory {
 	
 	public static AddCommand buildAddCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) {
+			Vector<String> vrCommands, String IconValue, ImageType IconType, 
+			Integer correlationID) {
 		AddCommand msg = new AddCommand();
 		msg.setCorrelationID(correlationID);
 		msg.setCmdID(commandID);
@@ -137,7 +136,6 @@ public class RPCRequestFactory {
 		
 		return msg;
 	}
-
 		
 	public static AddCommand buildAddCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
@@ -190,11 +188,10 @@ public class RPCRequestFactory {
 		msg.setPosition(position);
 
 		return msg;
-	}
-	
+	}	
 
-	public static Alert buildAlert(String ttsText, Boolean playTone, Vector<SoftButton> softButtons,
-			Integer correlationID) {
+	public static Alert buildAlert(String ttsText, Boolean playTone, 
+			Vector<SoftButton> softButtons, Integer correlationID) {
 		Vector<TTSChunk> chunks = TTSChunkFactory
 				.createSimpleTTSChunks(ttsText);
 		Alert msg = buildAlert(chunks, null, null, null, playTone, null, softButtons,
@@ -202,32 +199,34 @@ public class RPCRequestFactory {
 		return msg;
 	}
 	
-	public static Alert buildAlert(String alertText1, String alertText2, String alertText3,
-			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) {
-		Alert msg = buildAlert((Vector<TTSChunk>) null, alertText1, alertText2, alertText3,
-				null, duration, softButtons, correlationID);
+	public static Alert buildAlert(String alertText1, String alertText2, 
+			String alertText3, Integer duration, Vector<SoftButton> softButtons,
+			Integer correlationID) {
+		Alert msg = buildAlert((Vector<TTSChunk>) null, alertText1, alertText2, 
+				alertText3, null, duration, softButtons, correlationID);
 		return msg;
 	}
 	
 	public static Alert buildAlert(String ttsText, String alertText1,
-			String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
-			Integer correlationID) {
+			String alertText2, String alertText3, Boolean playTone, 
+			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) {
 		Vector<TTSChunk> chunks = TTSChunkFactory
 				.createSimpleTTSChunks(ttsText);
-		Alert msg = buildAlert(chunks, alertText1, alertText2, alertText3, playTone, 
-				duration, softButtons, correlationID);
+		Alert msg = buildAlert(chunks, alertText1, alertText2, alertText3, 
+				playTone, duration, softButtons, correlationID);
 		return msg;
 	}
 	
-	public static Alert buildAlert(Vector<TTSChunk> chunks, Boolean playTone, Vector<SoftButton> softButtons,
-			Integer correlationID) {
+	public static Alert buildAlert(Vector<TTSChunk> chunks, Boolean playTone, 
+			Vector<SoftButton> softButtons, Integer correlationID) {
 		Alert msg = buildAlert(chunks, null, null, null, playTone, null, softButtons, correlationID);
 		return msg;
 	}
 	
 	public static Alert buildAlert(Vector<TTSChunk> ttsChunks,
-			String alertText1, String alertText2, String alertText3, Boolean playTone,
-			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) {
+			String alertText1, String alertText2, String alertText3, 
+			Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
+			Integer correlationID) {
 		Alert msg = new Alert();
 		msg.setCorrelationID(correlationID);
 		msg.setAlertText1(alertText1);
@@ -239,9 +238,7 @@ public class RPCRequestFactory {
 		msg.setSoftButtons(softButtons);
 
 		return msg;
-	}
-
-	
+	}	
 	
 	public static Alert buildAlert(String ttsText, Boolean playTone,
 			Integer correlationID) {
@@ -339,14 +336,13 @@ public class RPCRequestFactory {
 		listFiles.setCorrelationID(correlationID);
 		return listFiles;
 	}
-
 	
 	public static PerformInteraction buildPerformInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
 			Vector<Integer> interactionChoiceSetIDList,
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) {
+			InteractionMode interactionMode, Integer timeout, 
+			Vector<VrHelpItem> vrHelp, Integer correlationID) {
 		PerformInteraction msg = new PerformInteraction();
 		msg.setInitialPrompt(initChunks);
 		msg.setInitialText(displayText);
@@ -400,8 +396,7 @@ public class RPCRequestFactory {
 		return buildPerformInteraction(initPrompt, displayText, 
 				interactionChoiceSetID, null, null,
 				InteractionMode.BOTH, null, vrHelp, correlationID);
-	}
-	
+	}	
 	
 	public static PerformInteraction buildPerformInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
@@ -672,7 +667,6 @@ public class RPCRequestFactory {
 
 		return req;
 	}
-
 	
 	public static SetGlobalProperties buildSetGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, 
@@ -681,7 +675,6 @@ public class RPCRequestFactory {
 				.createSimpleTTSChunks(helpPrompt), TTSChunkFactory
 				.createSimpleTTSChunks(timeoutPrompt), vrHelpTitle, vrHelp, correlationID);
 	}
-
 
 	public static SetGlobalProperties buildSetGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, 
@@ -903,8 +896,7 @@ public class RPCRequestFactory {
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
 		msg.setCorrelationID(correlationID);
-		
-		
+				
 		return msg;
 	}	
 	

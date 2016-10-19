@@ -9,10 +9,18 @@ public class NativeLogTool {
 	static private boolean logToSystemEnabled = true;
 	private static final int ChunkSize = 4000;
 	
-	private enum LogTarget {
+	public enum LogTarget {
 		Info
 		,Warning
-		,Error
+		,Error;
+		
+		public static LogTarget valueForString (String value) {
+			try{
+				return valueOf(value);
+			} catch(Exception e) {
+				return null;
+			}
+		}
 	}
 
 	public static void setEnableState(boolean en) {

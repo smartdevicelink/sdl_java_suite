@@ -1,0 +1,66 @@
+{
+  "request":{
+    "name":"SetGlobalProperties",
+    "correlationID":151,
+    "parameters":{
+      "vrHelpTitle":"Help Title",
+      "menuTitle":"Menu Title",
+      "menuIcon":{
+        "value":"imageMenu.png",
+        "imageType":"STATIC"
+      },
+      "keyboardProperties":{
+        "keypressMode":"SINGLE_KEYPRESS",
+        "keyboardLayout":"QWERTY",
+        "limitedCharacterList":[
+          "a",
+          "b"
+        ],
+        "autoCompleteText":"something goes here",
+        "language":"EN-US",
+      },
+      "helpPrompt":[
+        {
+          "text":"Phrase 1",
+          "type":"TEXT"
+        },
+        {
+          "text":"Phrase 2",
+          "type":"TEXT"
+        }
+      ],
+      "timeoutPrompt":[
+        {
+          "text":"Phrase 1",
+          "type":"TEXT"
+        },
+        {
+          "text":"Phrase 2",
+          "type":"TEXT"
+        }
+      ],
+      "vrHelp":[
+        {
+          "position":2,
+          "text":"Text 1",
+          "image":{
+            "value":"image.png",
+            "imageType":"STATIC"
+          }
+        },
+        {
+          "position":5,
+          "text":"Text 2",
+          "image":{
+            "value":"image2.png",
+            "imageType":"DYNAMIC"
+          }
+        }
+      ]
+    }
+  },
+  "response":{
+    "name":"SetGlobalPropertiesResponse",
+    "correlationID":152
+  }
+}

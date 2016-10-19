@@ -1,0 +1,16 @@
+{
+  "request":{
+    "name":"DeleteFile",
+    "correlationID":117,
+    "parameters":{
+      "syncFileName":"fileName.file"
+		}
+  },
+  "response":{
+    "name":"DeleteFileResponse",
+    "correlationID":118,
+    "parameters":{
+      "spaceAvailable":2345678
+    }
+  }
+}

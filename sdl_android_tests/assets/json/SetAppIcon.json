@@ -1,0 +1,13 @@
+{
+  "request":{
+    "name":"SetAppIcon",
+    "correlationID":147,
+    "parameters":{
+      "syncFileName":"filename.txt"
+    }
+  },
+  "response":{
+    "name":"SetAppIconResponse",
+    "correlationID":148
+  }
+}

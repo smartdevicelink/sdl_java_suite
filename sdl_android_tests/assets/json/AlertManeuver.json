@@ -1,0 +1,46 @@
+{
+  "request":{
+    "name":"AlertManeuver",
+    "correlationID":194,
+    "parameters":{
+      "ttsChunks":[
+        {
+          "text":"Phrase 1",
+          "type":"TEXT"
+        },
+        {
+          "text":"Phrase 2",
+          "type":"TEXT"
+        }
+      ],
+      "softButtons":[
+        {
+          "isHighlighted":true,
+          "softButtonID":6,
+          "systemAction":"STEAL_FOCUS",
+          "text":"Button 1",
+          "type":"IMAGE",
+          "image":{
+            "value":"image.png",
+            "imageType":"STATIC"
+          }
+        },
+        {
+          "isHighlighted":false,
+          "softButtonID":3,
+          "systemAction":"DEFAULT_ACTION",
+          "text":"Button 2",
+          "type":"BOTH",
+          "image":{
+            "value":"image.png",
+            "imageType":"DYNAMIC"
+          }
+        }
+      ]
+    }
+  },
+  "response":{
+    "name":"AlertManeuverResponse",
+    "correlationID":195
+  }
+}
