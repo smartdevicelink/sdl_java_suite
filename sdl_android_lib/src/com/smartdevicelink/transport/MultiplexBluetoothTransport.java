@@ -236,10 +236,10 @@ public class MultiplexBluetoothTransport {
         	mConnectedWriteThread = null;
         }
         // Cancel the accept thread because we only want to connect to one device
-        if (getBluetoothSerialServerInstance().mSecureAcceptThread != null) {
-        	getBluetoothSerialServerInstance().mSecureAcceptThread.cancel();
-            getBluetoothSerialServerInstance().mSecureAcceptThread = null;
-        }
+//        if (getBluetoothSerialServerInstance().mSecureAcceptThread != null) {
+//        	getBluetoothSerialServerInstance().mSecureAcceptThread.cancel();
+//            getBluetoothSerialServerInstance().mSecureAcceptThread = null;
+//        }
 
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket);
