@@ -2,7 +2,8 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 public enum WayPointType {
     ALL,
-    DESTINATION;
+    DESTINATION,
+    ;
 
     public static WayPointType valueForString(String value) {
         try{
