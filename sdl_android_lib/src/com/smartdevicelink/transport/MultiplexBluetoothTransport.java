@@ -90,7 +90,7 @@ public class MultiplexBluetoothTransport {
     //private BluetoothServerSocket serverSocket= null;
 
 
-	static boolean listening = false;
+	static boolean listening = false, keepSocketAlive = true;
     
     
     /**
@@ -117,11 +117,17 @@ public class MultiplexBluetoothTransport {
      * Let's use this method from now on to get bluetooth service
      */
     public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler){
+    	return getBluetoothSerialServerInstance(handler,true);
+    }
+	/*
+     * Let's use this method from now on to get bluetooth service
+     */
+    public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler, boolean keepSocketAlive){
 
         if(serverInstance==null){
         	serverInstance = new MultiplexBluetoothTransport(handler);
         }
-       
+        MultiplexBluetoothTransport.keepSocketAlive = keepSocketAlive;
     	return serverInstance;
     }
     public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(){
@@ -159,6 +165,10 @@ public class MultiplexBluetoothTransport {
         return mState;
     }
 
+    public void setKeepSocketAlive(boolean keepSocketAlive){
+    	MultiplexBluetoothTransport.keepSocketAlive = keepSocketAlive;
+    }
+    
     /**
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
@@ -236,7 +246,7 @@ public class MultiplexBluetoothTransport {
         	mConnectedWriteThread = null;
         }
         // Cancel the accept thread because we only want to connect to one device
-        if (getBluetoothSerialServerInstance().mSecureAcceptThread != null) {
+        if (!keepSocketAlive && getBluetoothSerialServerInstance().mSecureAcceptThread != null) {
         	getBluetoothSerialServerInstance().mSecureAcceptThread.cancel();
             getBluetoothSerialServerInstance().mSecureAcceptThread = null;
         }
