@@ -9,6 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
@@ -35,14 +36,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
-import android.os.Build;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcel;
@@ -80,7 +82,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 1;	
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 2;	
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -112,7 +114,7 @@ public class SdlRouterService extends Service{
     private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
     private Runnable versionCheckRunable, altTransportTimerRunnable;
     private LocalRouterService localCompareTo = null;
-    private final static int VERSION_TIMEOUT_RUNNABLE = 750;
+    private final static int VERSION_TIMEOUT_RUNNABLE = 1500;
     private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
 	
     private boolean wrongProcess = false;
@@ -217,20 +219,34 @@ public class SdlRouterService extends Service{
 						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
 						synchronized(COMPARE_LOCK){
 							//Let's make sure we are on the same version.
-							if(tempService != null && (localCompareTo == null || localCompareTo.isNewer(tempService))){
-								LocalRouterService self = getLocalRouterService();
-								if(!self.isEqual(tempService)){ //We want to ignore self
-									Log.i(TAG, "Newer service received than previously stored service - " + tempService.launchIntent.getAction());
-									localCompareTo = tempService;
-								}else{
-									Log.i(TAG, "Ignoring self local router service");
+							if(tempService!=null){
+								if(tempService.name!=null){
+									sdlMultiList.remove(tempService.name.getPackageName());
+								}
+								if((localCompareTo == null || localCompareTo.isNewer(tempService))){
+									LocalRouterService self = getLocalRouterService();
+									if(!self.isEqual(tempService)){ //We want to ignore self
+										Log.i(TAG, "Newer service received than previously stored service - " + tempService.launchIntent.getAction());
+										localCompareTo = tempService;
+									}else{
+										Log.i(TAG, "Ignoring self local router service");
+									}
+								}
+								if(sdlMultiList.isEmpty()){
+									Log.d(TAG, "All router services have been accounted more. We can start the version check now");
+									if(versionCheckTimeOutHandler!=null){
+										versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);
+										
+										versionCheckRunable.run();
+										
+										
+									}
 								}
 							}
 						}
-						if(intent!=null && intent.getBooleanExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, false)){
+						/*if(intent!=null && intent.getBooleanExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, false)){
 							Log.w(TAG, "Another serivce has been started, let's resend our version info to make sure they know about us too");
-							//notifyStartedService(context);
-						}
+						}*/
 
 					}
 					@SuppressWarnings("unused")
@@ -771,8 +787,19 @@ public class SdlRouterService extends Service{
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
-	
+	HashMap<String,ResolveInfo> sdlMultiList ;
 	public void startVersionCheck(){
+		Intent intent = new Intent(START_SERVICE_ACTION);
+		List<ResolveInfo> infos = getPackageManager().queryBroadcastReceivers(intent, 0);
+		sdlMultiList = new HashMap<String,ResolveInfo>();
+		for(ResolveInfo info: infos){
+			//Log.d(TAG, "Sdl enabled app: " + info.activityInfo.packageName);
+			if(getPackageName().equals(info.activityInfo.applicationInfo.packageName)){
+				//Log.d(TAG, "Ignoring my own package");
+				continue;
+			}
+			sdlMultiList.put(info.activityInfo.packageName, info);
+		}
 		registerReceiver(registerAnInstanceOfSerialServer, new IntentFilter(REGISTER_NEWER_SERVER_INSTANCE_ACTION));
 		newestServiceCheck(currentContext);
 	}
@@ -1575,7 +1602,7 @@ public class SdlRouterService extends Service{
             	//Log.v(TAG, "Self service info " + self);
             	//Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
             	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
-            		Log.d(TAG, "There is a newer version of the Router Service, starting it up");
+            		Log.d(TAG, "There is a newer version "+newestServiceReceived.version+" of the Router Service, starting it up");
                 	closing = true;
 					closeBluetoothSerialServer();
 					Intent serviceIntent = newestServiceReceived.launchIntent;
@@ -1584,6 +1611,8 @@ public class SdlRouterService extends Service{
 					}
 					if(newestServiceReceived.launchIntent == null){
 						Log.e(TAG, "Service didn't include launch intent");
+						startUpSequence();
+						return;
 					}
 					context.startService(newestServiceReceived.launchIntent);
 					notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
@@ -1594,7 +1623,7 @@ public class SdlRouterService extends Service{
 					}
             	}
             	else{			//Let's start up like normal
-            		Log.d(TAG, "No newer services found. Starting up bluetooth transport");
+            		Log.d(TAG, "No newer services than " + ROUTER_SERVICE_VERSION_NUMBER +" found. Starting up bluetooth transport");
                 	startUpSequence();
             	}
             }
