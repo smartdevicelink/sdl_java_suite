@@ -16,12 +16,12 @@ public class Coordinate extends RPCStruct{
         super(hash);
     }
 
-    public Double getLatitudeDegrees() {
+    public Float getLatitudeDegrees() {
         Object value = store.get(KEY_LATITUDE_DEGREES);
-        return SdlDataTypeConverter.objectToDouble(value);
+        return SdlDataTypeConverter.objectToFloat(value);
     }
 
-    public void setLatitudeDegrees(Double latitudeDegrees) {
+    public void setLatitudeDegrees(Float latitudeDegrees) {
         if (latitudeDegrees != null) {
             store.put(KEY_LATITUDE_DEGREES, latitudeDegrees);
         } else {
@@ -29,12 +29,12 @@ public class Coordinate extends RPCStruct{
         }
     }
 
-    public Double getLongitudeDegrees() {
+    public Float getLongitudeDegrees() {
         Object value = store.get(KEY_LONGITUDE_DEGREES);
-        return SdlDataTypeConverter.objectToDouble(value);
+        return SdlDataTypeConverter.objectToFloat(value);
     }
 
-    public void setLongitudeDegrees(Double longitudeDegrees) {
+    public void setLongitudeDegrees(Float longitudeDegrees) {
         if (longitudeDegrees != null) {
             store.put(KEY_LONGITUDE_DEGREES, longitudeDegrees);
         } else {
