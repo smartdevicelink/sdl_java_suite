@@ -23,6 +23,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
@@ -322,6 +323,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public final Language getConnectedLanguage() {
         return getSdlApplicationContext().getConnectedLanguage();
+    }
+
+    @Override
+    public DriverDistractionState getCurrentDDState() {
+        return getSdlApplicationContext().getCurrentDDState();
     }
 
     public class SuperNotCalledException extends RuntimeException{
