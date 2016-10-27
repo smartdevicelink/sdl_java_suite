@@ -69,6 +69,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 			Log.e(TAG, "Can't process request, param error");
 			if(cb!=null){
 				cb.httpFailure(-1);
+				cb = null;
 			}
 			return "Error";
 		}
@@ -98,6 +99,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 					// Nothing to do.
 					if(cb!=null){
 						cb.httpCallComplete(null);
+						cb = null;
 					}
 					return null;
 				}
@@ -110,6 +112,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 					// Stream was empty. No point in parsing.
 					if(cb!=null){
 						cb.httpCallComplete(null);
+						cb = null;
 					}
 					return null;
 				}
@@ -119,17 +122,19 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 				//send to post execute
 				if(cb!=null){
 					cb.httpCallComplete(response);
+					cb = null;
 				}
 				return response;
 			}else{
 				if(cb!=null){
 					cb.httpFailure(responseCode);
+					cb = null;
 				}
 				Log.e(TAG, "Failed to download file - " + responseCode);
 				return null;
 			}
 
-
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
