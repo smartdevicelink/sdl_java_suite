@@ -4,6 +4,8 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.smartdevicelink.util.AndroidTools;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
@@ -182,7 +184,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	    	//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
-	    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME)) {
+	    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service)) {
 	    		
 	    		runningBluetoothServicePackage.add(service.service);	//Store which instance is running
 	            if(pingService){
