@@ -3,7 +3,8 @@ package com.smartdevicelink.proxy.rpc.enums;
 public enum DeliveryMode {
 	PROMPT,
     DESTINATION,
-    QUEUE;
+    QUEUE,
+    ;
 
     public static DeliveryMode valueForString(String value) {
         try{
