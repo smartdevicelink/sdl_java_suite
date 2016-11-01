@@ -1817,16 +1817,15 @@ public class SdlRouterService extends Service{
 		if (request.getBulkData() != null) 
 			pm.setBulkData(request.getBulkData());
 		byte[] data = null;
-		if (version > 1) {
+		if(version > 1) { //If greater than v1 we need to include a binary frame header in the data before all the JSON starts
 			data = new byte[12 + pm.getJsonSize()];
-		} else {
+			BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
+			binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(pm.getRPCType(), pm.getFunctionID(), pm.getCorrID(), pm.getJsonSize());
+			System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
+			System.arraycopy(pm.getData(), 0, data, 12, pm.getJsonSize());
+		}else {
 			data = pm.getData();
 		}
-		BinaryFrameHeader binFrameHeader = new BinaryFrameHeader();
-		binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(pm.getRPCType(), pm.getFunctionID(), pm.getCorrID(), pm.getJsonSize());
-		
-		System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
-		System.arraycopy(pm.getData(), 0, data, 12, pm.getJsonSize());
 
 		SdlPacket packet = new SdlPacket(version,false,SdlPacket.FRAME_TYPE_SINGLE,SdlPacket.SERVICE_TYPE_RPC,0,sessionId,data.length,data.length+100,data);
 		return packet.constructPacket();
