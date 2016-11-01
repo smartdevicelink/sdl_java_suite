@@ -4,6 +4,8 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
@@ -225,37 +227,37 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}
 		if(isRouterServiceRunning(context,false) && !runningBluetoothServicePackage.isEmpty()){	//So there is a service up, let's see if it's connected
 			final ConcurrentLinkedQueue<ComponentName> list = new ConcurrentLinkedQueue<ComponentName>(runningBluetoothServicePackage);
-			if(runningBluetoothServicePackage.size()>0){ //TODO for testing do this for all cases
-				final SdlRouterStatusProvider.ConnectedStatusCallback sdlBrCallback = new SdlRouterStatusProvider.ConnectedStatusCallback() {	
-					
-					@Override
-					public void onConnectionStatusUpdate(boolean connected, ComponentName service,Context context) {
-						if(!connected && !list.isEmpty()){
-							SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(), this);
-							if(triggerRouterServicePing){provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);	}
-							provider.checkIsConnected();
-						}else{
-							Log.d(TAG, service.getPackageName() + " is connected = " + connected);
-							if(callback!=null){
-								callback.onConnectionStatusUpdate(connected, service,context);
-							}
-							list.clear();
-						}
+			final SdlRouterStatusProvider.ConnectedStatusCallback sdlBrCallback = new SdlRouterStatusProvider.ConnectedStatusCallback() {	
 
+				@Override
+				public void onConnectionStatusUpdate(boolean connected, ComponentName service,Context context) {
+					if(!connected && !list.isEmpty()){
+						SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(), this);
+						if(triggerRouterServicePing){provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);	}
+						provider.checkIsConnected();
+					}else{
+						Log.d(TAG, service.getPackageName() + " is connected = " + connected);
+						if(callback!=null){
+							callback.onConnectionStatusUpdate(connected, service,context);
+						}
+						list.clear();
 					}
-				};
-				SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(),sdlBrCallback);
-				if(triggerRouterServicePing){
-					provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);
+
 				}
-				provider.checkIsConnected();
-			}else{ //If only one service is running, just check that
-				SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,runningBluetoothServicePackage.get(0),callback);
-				if(triggerRouterServicePing){
-					provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);
-				}
-				provider.checkIsConnected();
+			};
+			final SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(),sdlBrCallback);
+			if(triggerRouterServicePing){
+				provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);
 			}
+			//Lets ensure we have a current list of trusted router services
+			RouterServiceValidator.createTrustedListRequest(context, false, new TrustedListCallback(){
+				@Override
+				public void onListObtained(boolean successful) {
+					//This will kick off our check of router services
+					provider.checkIsConnected();
+				}
+			});
+				
 		}else{
 			Log.w(TAG, "Router service isn't running, returning false.");
 			if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
