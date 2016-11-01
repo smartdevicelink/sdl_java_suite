@@ -72,18 +72,27 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
 				if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
 					String packageName = intent.getStringExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE);
-					ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
+					final ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
 					if(componentName!=null){
-						//Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
-						RouterServiceValidator vlad = new RouterServiceValidator(context,componentName);
-						if(vlad.validate()){
-							//Log.d(TAG, "Router service trusted!");
-							queuedService = componentName;
-							intent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
-							onSdlEnabled(context, intent);
-						}else{
-							Log.w(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
-						}
+						final Intent finalIntent = intent;
+						final Context finalContext = context;
+						RouterServiceValidator.createTrustedListRequest(context, false, new TrustedListCallback(){
+							@Override
+							public void onListObtained(boolean successful) {
+								//Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
+								RouterServiceValidator vlad = new RouterServiceValidator(finalContext,componentName);
+								if(vlad.validate()){
+									//Log.d(TAG, "Router service trusted!");
+									queuedService = componentName;
+									finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
+									onSdlEnabled(finalContext, finalIntent);
+								}else{
+									Log.w(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
+								}
+							}
+							
+						});
+						
 						
 					}
 					
