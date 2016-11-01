@@ -2638,6 +2638,54 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     } else {
                         _proxyListener.onGetVehicleDataResponse((GetVehicleDataResponse)msg);
                         onRPCResponseReceived(msg);   
+                    }
+            } else if (functionName.equals(FunctionID.SUBSCRIBE_WAY_POINTS.toString())) {
+            	// SubscribeWayPoints
+                final SubscribeWayPointsResponse msg = new SubscribeWayPointsResponse(hash);
+                if (_callbackToUIThread) {
+                    // Run in UI thread
+                    _mainUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            _proxyListener.onSubscribeWayPointsResponse((SubscribeWayPointsResponse)msg);
+							onRPCResponseReceived(msg);
+                        }
+                    });
+                } else {
+                    _proxyListener.onSubscribeWayPointsResponse((SubscribeWayPointsResponse)msg);
+					onRPCResponseReceived(msg);
+                }
+            } else if (functionName.equals(FunctionID.UNSUBSCRIBE_WAY_POINTS.toString())) {
+            	// UnsubscribeWayPoints
+                final UnsubscribeWayPointsResponse msg = new UnsubscribeWayPointsResponse(hash);
+                if (_callbackToUIThread) {
+                    // Run in UI thread
+                    _mainUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            _proxyListener.onUnsubscribeWayPointsResponse((UnsubscribeWayPointsResponse)msg);
+							onRPCResponseReceived(msg);
+                        }
+                    });
+                } else {
+                    _proxyListener.onUnsubscribeWayPointsResponse((UnsubscribeWayPointsResponse)msg);
+					onRPCResponseReceived(msg);
+                }
+            } else if (functionName.equals(FunctionID.GET_WAY_POINTS.toString())) {
+           		// GetWayPoints
+                final GetWayPointsResponse msg = new GetWayPointsResponse(hash);
+                if (_callbackToUIThread) {
+                    // Run in UI thread
+                    _mainUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                           _proxyListener.onGetWayPointsResponse((GetWayPointsResponse)msg);
+							onRPCResponseReceived(msg);
+                        }
+                     });
+                    } else {
+                        _proxyListener.onGetWayPointsResponse((GetWayPointsResponse)msg);
+                        onRPCResponseReceived(msg);   
                     }            	               
             } else if (functionName.equals(FunctionID.READ_DID.toString())) {
                 final ReadDIDResponse msg = new ReadDIDResponse(hash);
@@ -3159,6 +3207,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onOnTouchEvent((OnTouchEvent)msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ON_WAY_POINT_CHANGE.toString())) {
+				final OnWayPointChange msg = new OnWayPointChange(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnWayPointChange((OnWayPointChange)msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnWayPointChange((OnWayPointChange)msg);
 					onRPCNotificationReceived(msg);
 				}
 			}
