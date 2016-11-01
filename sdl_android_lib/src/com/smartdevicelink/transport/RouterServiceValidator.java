@@ -128,13 +128,6 @@ public class RouterServiceValidator {
 			}
 		}//No running service found. Might need to attempt to start one
 		//TODO spin up a known good router service
-		
-		if(context.getPackageName().equalsIgnoreCase(packageName)){
-			Log.d(TAG, "It's our router service running, so time to shut it down");
-			Intent intent = new Intent();
-			intent.setComponent(service);
-			try{context.stopService(intent);}catch(Exception e){}
-		}
 		wakeUpRouterServices();
 		return false;
 	}
