@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.DeliveryMode;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
 
@@ -23,6 +25,9 @@ public class SendLocation extends RPCRequest{
     public static final String KEY_PHONE_NUMBER         = "phoneNumber";
     public static final String KEY_ADDRESS_LINES        = "addressLines";
     public static final String KEY_LOCATION_IMAGE       = "locationImage";
+    public static final String KEY_DELIVERY_MODE		= "deliveryMode";
+    public static final String KEY_TIME_STAMP			= "timeStamp";
+    public static final String KEY_ADDRESS		        = "address";
 
     /**
      * Constructs a new SendLocation object
@@ -221,4 +226,67 @@ public class SendLocation extends RPCRequest{
         }
     }
 
+	public DeliveryMode getDeliveryMode() {
+		Object obj = parameters.get(KEY_DELIVERY_MODE);
+		if (obj instanceof DeliveryMode) {
+			return (DeliveryMode) obj;
+		} else if (obj instanceof String) {
+			return DeliveryMode.valueForString((String) obj);
+		}
+		return null;
+	}
+
+	public void setDeliveryMode(DeliveryMode deliveryMode) {
+		if (deliveryMode != null) {
+			parameters.put(KEY_DELIVERY_MODE, deliveryMode);
+		} else {
+			parameters.remove(KEY_DELIVERY_MODE);
+		}
+	}
+
+    @SuppressWarnings("unchecked")
+	public DateTime getTimeStamp() {
+		Object obj = parameters.get(KEY_TIME_STAMP);
+		if (obj instanceof DateTime) {
+			return (DateTime) obj;
+		} else if (obj instanceof Hashtable) {
+			try {
+				return new DateTime((Hashtable<String, Object>) obj);
+			} catch (Exception e) {
+				DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIME_STAMP, e);
+			}
+		}
+		return null;
+	}
+
+	public void setTimeStamp(DateTime timeStamp) {
+		if (timeStamp != null) {
+			parameters.put(KEY_TIME_STAMP, timeStamp);
+		} else {
+			parameters.remove(KEY_TIME_STAMP);
+		}
+	}
+
+    @SuppressWarnings("unchecked")
+	public OasisAddress getAddress() {
+		Object obj = parameters.get(KEY_ADDRESS);
+		if (obj instanceof OasisAddress) {
+			return (OasisAddress) obj;
+		} else if (obj instanceof Hashtable) {
+			try {
+				return new OasisAddress((Hashtable<String, Object>) obj);
+			} catch (Exception e) {
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ADDRESS, e);
+			}
+		}
+		return null;
+	}
+
+	public void setAddress(OasisAddress address) {
+		if (address != null) {
+			parameters.put(KEY_ADDRESS, address);
+		} else {
+			parameters.remove(KEY_ADDRESS);
+		}
+	}
 }
