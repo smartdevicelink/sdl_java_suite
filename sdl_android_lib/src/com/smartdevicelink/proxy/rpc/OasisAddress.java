@@ -31,7 +31,7 @@ public class OasisAddress extends RPCStruct{
     /**
 	* Gets the localized Name of the country associated with the OasisAddress class.
 	* 
-	* @return String - The time zone offset in minutes with regard to UTC associated with this OasisAddress class 
+	* @return String - The localized Name of the country associated with the OasisAddress class.
 	* 
     */
     public String getCountryName() {
