@@ -960,7 +960,14 @@ public class SdlRouterService extends Service{
         builder.setContentText("Connected to " + this.getConnectedDeviceName());
        
        //We should use icon from library resources if available
-        builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
+        int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
+
+		if ( resourcesIncluded != 0 ) {  //No additional pylons required
+			 builder.setSmallIcon(trayId);
+		}
+		else {  
+			 builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
+		}
         builder.setLargeIcon(icon);
         builder.setOngoing(true);
         
