@@ -109,8 +109,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}
 		
 	    if (intent.getAction().contains("android.bluetooth.adapter.action.STATE_CHANGED")){
-	      
-	    	int state = intent.getExtras().getInt("android.bluetooth.adapter.extra.STATE");
+	    	int state = intent.getIntExtra("android.bluetooth.adapter.extra.STATE",-1);
 	    		if (state == BluetoothAdapter.STATE_OFF || 
 	    			state == BluetoothAdapter.STATE_TURNING_OFF ){
 	    			//onProtocolDisabled(context);
