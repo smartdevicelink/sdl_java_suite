@@ -139,6 +139,7 @@ public class TransportBroker {
         	TransportBroker broker = provider.get();
         	if(broker == null){
         		Log.e(TAG, "Broker object null, unable to process message");
+        		return;
         	}
         	Bundle bundle = msg.getData();
 
