@@ -36,7 +36,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -67,6 +70,7 @@ import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
 
 /**
@@ -223,7 +227,7 @@ public class SdlRouterService extends Service{
 								if(tempService.name!=null){
 									sdlMultiList.remove(tempService.name.getPackageName());
 								}
-								if((localCompareTo == null || localCompareTo.isNewer(tempService))){
+								if((localCompareTo == null || localCompareTo.isNewer(tempService)) && AndroidTools.isServiceExported(context, tempService.name)){
 									LocalRouterService self = getLocalRouterService();
 									if(!self.isEqual(tempService)){ //We want to ignore self
 										Log.i(TAG, "Newer service received than previously stored service - " + tempService.launchIntent.getAction());
@@ -759,7 +763,7 @@ public class SdlRouterService extends Service{
 		return false;
 
 	}
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -767,6 +771,11 @@ public class SdlRouterService extends Service{
 		if(!processCheck()){
 			Log.e(TAG, "Not using correct process. Shutting down");
 			wrongProcess = true;
+			stopSelf();
+			return;
+		}
+		if(!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))){ //We want to check to see if our service is actually exported
+			Log.e(TAG, "Service isn't exported. Shutting down");
 			stopSelf();
 			return;
 		}

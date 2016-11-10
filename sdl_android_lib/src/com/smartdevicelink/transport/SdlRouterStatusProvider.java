@@ -2,11 +2,16 @@ package com.smartdevicelink.transport;
 
 import java.lang.ref.WeakReference;
 
+import com.smartdevicelink.util.AndroidTools;
+
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -70,7 +75,7 @@ public class SdlRouterStatusProvider {
 		this.flags = flags;
 	}
 	public void checkIsConnected(){
-		if(!bindToService()){
+		if(!AndroidTools.isServiceExported(context,routerService) || !bindToService()){
 			//We are unable to bind to service
 			cb.onConnectionStatusUpdate(false, routerService, context);
 			unBindFromService();
@@ -86,6 +91,9 @@ public class SdlRouterStatusProvider {
 	private boolean bindToService(){
 		if(isBound){
 			return true;
+		}
+		if(clientMessenger == null){
+			return false;
 		}
 		Intent bindingIntent = new Intent();
 		bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
