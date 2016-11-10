@@ -5,6 +5,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -80,18 +81,27 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
 				if(intent.getBooleanExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, false)){
 					String packageName = intent.getStringExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE);
-					ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
+					final ComponentName componentName = intent.getParcelableExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME);
 					if(componentName!=null){
-						//Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
-						RouterServiceValidator vlad = new RouterServiceValidator(context,componentName);
-						if(vlad.validate()){
-							//Log.d(TAG, "Router service trusted!");
-							queuedService = componentName;
-							intent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
-							onSdlEnabled(context, intent);
-						}else{
-							Log.w(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
-						}
+						final Intent finalIntent = intent;
+						final Context finalContext = context;
+						RouterServiceValidator.createTrustedListRequest(context, false, new TrustedListCallback(){
+							@Override
+							public void onListObtained(boolean successful) {
+								//Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
+								RouterServiceValidator vlad = new RouterServiceValidator(finalContext,componentName);
+								if(vlad.validate()){
+									//Log.d(TAG, "Router service trusted!");
+									queuedService = componentName;
+									finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
+									onSdlEnabled(finalContext, finalIntent);
+								}else{
+									Log.w(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
+								}
+							}
+							
+						});
+						
 						
 					}
 					
@@ -234,37 +244,37 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}
 		if(isRouterServiceRunning(context,false) && !runningBluetoothServicePackage.isEmpty()){	//So there is a service up, let's see if it's connected
 			final ConcurrentLinkedQueue<ComponentName> list = new ConcurrentLinkedQueue<ComponentName>(runningBluetoothServicePackage);
-			if(runningBluetoothServicePackage.size()>0){ //TODO for testing do this for all cases
-				final SdlRouterStatusProvider.ConnectedStatusCallback sdlBrCallback = new SdlRouterStatusProvider.ConnectedStatusCallback() {	
-					
-					@Override
-					public void onConnectionStatusUpdate(boolean connected, ComponentName service,Context context) {
-						if(!connected && !list.isEmpty()){
-							SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(), this);
-							if(triggerRouterServicePing){provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);	}
-							provider.checkIsConnected();
-						}else{
-							Log.d(TAG, service.getPackageName() + " is connected = " + connected);
-							if(callback!=null){
-								callback.onConnectionStatusUpdate(connected, service,context);
-							}
-							list.clear();
-						}
+			final SdlRouterStatusProvider.ConnectedStatusCallback sdlBrCallback = new SdlRouterStatusProvider.ConnectedStatusCallback() {	
 
+				@Override
+				public void onConnectionStatusUpdate(boolean connected, ComponentName service,Context context) {
+					if(!connected && !list.isEmpty()){
+						SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(), this);
+						if(triggerRouterServicePing){provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);	}
+						provider.checkIsConnected();
+					}else{
+						Log.d(TAG, service.getPackageName() + " is connected = " + connected);
+						if(callback!=null){
+							callback.onConnectionStatusUpdate(connected, service,context);
+						}
+						list.clear();
 					}
-				};
-				SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(),sdlBrCallback);
-				if(triggerRouterServicePing){
-					provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);
+
 				}
-				provider.checkIsConnected();
-			}else{ //If only one service is running, just check that
-				SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,runningBluetoothServicePackage.get(0),callback);
-				if(triggerRouterServicePing){
-					provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);
-				}
-				provider.checkIsConnected();
+			};
+			final SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(),sdlBrCallback);
+			if(triggerRouterServicePing){
+				provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);
 			}
+			//Lets ensure we have a current list of trusted router services
+			RouterServiceValidator.createTrustedListRequest(context, false, new TrustedListCallback(){
+				@Override
+				public void onListObtained(boolean successful) {
+					//This will kick off our check of router services
+					provider.checkIsConnected();
+				}
+			});
+				
 		}else{
 			Log.w(TAG, "Router service isn't running, returning false.");
 			if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){

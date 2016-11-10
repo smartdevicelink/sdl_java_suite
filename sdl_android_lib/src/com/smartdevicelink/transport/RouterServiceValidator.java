@@ -128,13 +128,6 @@ public class RouterServiceValidator {
 			}
 		}//No running service found. Might need to attempt to start one
 		//TODO spin up a known good router service
-		
-		if(context.getPackageName().equalsIgnoreCase(packageName)){
-			Log.d(TAG, "It's our router service running, so time to shut it down");
-			Intent intent = new Intent();
-			intent.setComponent(service);
-			try{context.stopService(intent);}catch(Exception e){}
-		}
 		wakeUpRouterServices();
 		return false;
 	}
@@ -352,10 +345,18 @@ public class RouterServiceValidator {
 	 * @param context
 	 */
 	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh){
-		return createTrustedListRequest(context,forceRefresh,null);
+		return createTrustedListRequest(context,forceRefresh,null,null);
+	}
+	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback){Log.d(TAG,"Checking to make sure we have a list");
+		return createTrustedListRequest(context,forceRefresh,null,listCallback);
 	}
 	
+	@Deprecated
 	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb ){
+		return createTrustedListRequest(context,forceRefresh,cb,null);
+	}
+	
+	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback ){
 		if(context == null){
 			return false;
 		}
@@ -363,6 +364,9 @@ public class RouterServiceValidator {
 		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ 
 			//Our list should still be ok for now so we will skip the request
 			pendingListRefresh = false;
+			if(listCallback!=null){
+				listCallback.onListObtained(true);
+			}
 			return false;
 		}
 		
@@ -400,6 +404,7 @@ public class RouterServiceValidator {
 					//Log.d(TAG, "APPS! " + response);
 					setTrustedList(context, response);
 					pendingListRefresh = false;
+					if(listCallback!=null){listCallback.onListObtained(true);}
 				}
 
 				@Override
@@ -407,6 +412,7 @@ public class RouterServiceValidator {
 					Log.e(TAG, "Error while requesting trusted app list: "
 							+ statusCode);
 					pendingListRefresh = false;
+					if(listCallback!=null){listCallback.onListObtained(false);}
 				}
 			};
 		}
@@ -565,7 +571,12 @@ public class RouterServiceValidator {
 		}
 		
 	}
-	
-	
+	/**
+	 * This interface is used as a callback to know when we have either obtained a list or at least returned from our attempt.
+	 *
+	 */
+	public static interface TrustedListCallback{
+		public void onListObtained(boolean successful);
+	}
 
 }
