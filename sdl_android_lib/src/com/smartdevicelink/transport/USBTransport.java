@@ -20,9 +20,6 @@ import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.transport.ITransportListener;
-import com.smartdevicelink.transport.SdlTransport;
-import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
@@ -37,7 +34,10 @@ import com.smartdevicelink.util.DebugTool;
  */
 @SuppressLint("NewApi")
 public class USBTransport extends SdlTransport {
-    /**
+
+	// Boolean to monitor if the transport is in a disconnecting state
+	private boolean _disconnecting = false;
+	/**
      * Broadcast action: sent when a USB accessory is attached.
      *
      * UsbManager.EXTRA_ACCESSORY extra contains UsbAccessory object that has
@@ -279,7 +279,6 @@ public class USBTransport extends SdlTransport {
                     filter.addAction(ACTION_USB_PERMISSION);
                     getContext().registerReceiver(mUSBReceiver, filter);
 
-                    initializeAccessory();
                 } catch (Exception e) {
                     String msg = "Couldn't start opening connection";
                     logE(msg, e);
@@ -352,7 +351,15 @@ public class USBTransport extends SdlTransport {
      * @param msg Disconnect reason message, if any
      * @param ex  Disconnect exception, if any
      */
-    private void disconnect(String msg, Exception ex) {
+    private synchronized void disconnect(String msg, Exception ex) {
+	    
+		// If already disconnecting, return
+        if (_disconnecting) {
+            // No need to recursively call
+            return;
+        }
+        _disconnecting = true;
+
         final State state = getState();
         switch (state) {
             case LISTENING:
@@ -372,6 +379,7 @@ public class USBTransport extends SdlTransport {
                         if (mOutputStream != null) {
                             try {
                                 mOutputStream.close();
+                                mOutputStream = null;
                             } catch (IOException e) {
                                 logW("Can't close output stream", e);
                                 mOutputStream = null;
@@ -380,6 +388,7 @@ public class USBTransport extends SdlTransport {
                         if (mInputStream != null) {
                             try {
                                 mInputStream.close();
+                                mInputStream = null;
                             } catch (IOException e) {
                                 logW("Can't close input stream", e);
                                 mInputStream = null;
@@ -388,6 +397,7 @@ public class USBTransport extends SdlTransport {
                         if (mParcelFD != null) {
                             try {
                                 mParcelFD.close();
+                                mParcelFD = null;
                             } catch (IOException e) {
                                 logW("Can't close file descriptor", e);
                                 mParcelFD = null;
@@ -428,6 +438,7 @@ public class USBTransport extends SdlTransport {
                         "; doing nothing");
                 break;
         }
+        _disconnecting = false;
     }
 
     /**
@@ -439,32 +450,6 @@ public class USBTransport extends SdlTransport {
     @Override
     public TransportType getTransportType() {
         return TransportType.USB;
-    }
-
-    /**
-     * Looks for an already connected compatible accessory and connect to it.
-     */
-    private void initializeAccessory() {
-        logI("Looking for connected accessories");
-        UsbAccessory acc =  mConfig.getUsbAccessory();
-        if(acc == null || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
-        	UsbManager usbManager = getUsbManager();
-        	UsbAccessory[] accessories = usbManager.getAccessoryList();
-        	if (accessories != null) {
-        		logD("Found total " + accessories.length + " accessories");
-        		for (UsbAccessory accessory : accessories) {
-        			if (isAccessorySupported(accessory)) {
-        				acc = accessory;
-        				break;
-        			}
-        		}
-        	} else {
-        		logI("No connected accessories found");
-        		return;
-        	}
-        }
-        
-        connectToAccessory(acc);
     }
 
     /**

@@ -19,6 +19,17 @@ public class USBTransportConfig extends BaseTransportConfig {
 		this.usbAccessory = usbAccessory;
 	}
 	
+	public USBTransportConfig (Context mainActivity, boolean shareConnection) {
+		this.mainActivity = mainActivity;
+		super.shareConnection = shareConnection;
+	}
+	
+	public USBTransportConfig (Context mainActivity, UsbAccessory usbAccessory, boolean shareConnection) {
+		this.mainActivity = mainActivity;
+		this.usbAccessory = usbAccessory;
+		super.shareConnection = shareConnection;
+	}
+	
 	public Context getUSBContext () {
 		return mainActivity;
 	}
