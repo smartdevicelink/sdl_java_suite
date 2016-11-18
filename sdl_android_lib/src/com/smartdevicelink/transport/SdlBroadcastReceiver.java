@@ -253,7 +253,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						if(triggerRouterServicePing){provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);	}
 						provider.checkIsConnected();
 					}else{
-						Log.d(TAG, service.getPackageName() + " is connected = " + connected);
+						if(service!=null){
+							Log.d(TAG, service.getPackageName() + " is connected = " + connected);
+						}else{
+							Log.d(TAG,"No service is connected/running");
+						}
 						if(callback!=null){
 							callback.onConnectionStatusUpdate(connected, service,context);
 						}
