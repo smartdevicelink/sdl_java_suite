@@ -37,6 +37,8 @@ public class USBTransport extends SdlTransport {
 
 	// Boolean to monitor if the transport is in a disconnecting state
 	private boolean _disconnecting = false;
+	// Boolean to keep track of the initial connection used in initializeAccessory
+	private static boolean firstConnect = true;
 	/**
      * Broadcast action: sent when a USB accessory is attached.
      *
@@ -278,7 +280,7 @@ public class USBTransport extends SdlTransport {
                     filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
                     filter.addAction(ACTION_USB_PERMISSION);
                     getContext().registerReceiver(mUSBReceiver, filter);
-
+                    initializeAccessory();
                 } catch (Exception e) {
                     String msg = "Couldn't start opening connection";
                     logE(msg, e);
@@ -351,7 +353,7 @@ public class USBTransport extends SdlTransport {
      * @param msg Disconnect reason message, if any
      * @param ex  Disconnect exception, if any
      */
-    private synchronized void disconnect(String msg, Exception ex) {
+    private void disconnect(String msg, Exception ex) {
 	    
 		// If already disconnecting, return
         if (_disconnecting) {
@@ -450,6 +452,33 @@ public class USBTransport extends SdlTransport {
     @Override
     public TransportType getTransportType() {
         return TransportType.USB;
+    }
+	
+    /**
+     * Looks for an already connected compatible accessory and connect to it.
+     */
+    private void initializeAccessory() {
+	    if (!firstConnect) return;
+        
+		logI("Looking for connected accessories");
+        UsbAccessory acc =  mConfig.getUsbAccessory();
+        if(acc == null || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
+			UsbManager usbManager = getUsbManager();
+         	UsbAccessory[] accessories = usbManager.getAccessoryList();
+         	if (accessories != null) {
+         		logD("Found total " + accessories.length + " accessories");
+         		for (UsbAccessory accessory : accessories) {
+         			if (isAccessorySupported(accessory)) {
+         				acc = accessory;
+         				break;
+         			}
+         		}
+         	} else {
+         		logI("No connected accessories found");
+         		return;
+         	}
+         }         
+         connectToAccessory(acc);
     }
 
     /**
@@ -632,7 +661,7 @@ public class USBTransport extends SdlTransport {
      * Internal task that connects to and reads data from a USB accessory.
      *
      * Since the class has to have access to the parent class' variables,
-     * sdlhronization must be taken in consideration! For now, all access
+     * synchronization must be taken in consideration! For now, all access
      * to variables of USBTransport must be surrounded with
      * synchronized (USBTransport.this) { … }
      */
@@ -713,8 +742,9 @@ public class USBTransport extends SdlTransport {
                     }
 
                     logI("Accessory opened!");
-
-                    synchronized (USBTransport.this) {
+					firstConnect = false;
+                    
+					synchronized (USBTransport.this) {
                         setState(State.CONNECTED);
                         handleTransportConnected();
                     }
