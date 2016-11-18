@@ -128,7 +128,7 @@ public class TransportBroker {
      */
 	static class ClientHandler extends Handler {
         ClassLoader loader;
-        WeakReference<TransportBroker> provider;
+        final WeakReference<TransportBroker> provider;
 
 		 public ClientHandler(TransportBroker provider){
 			 this.provider = new WeakReference<TransportBroker>(provider);
