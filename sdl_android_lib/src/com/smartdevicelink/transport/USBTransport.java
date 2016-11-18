@@ -773,7 +773,10 @@ public class USBTransport extends SdlTransport {
             // read loop
             while (!isInterrupted()) {
                 try {
-                	bytesRead = mInputStream.read(buffer);
+                    if (mInputStream == null)
+                        continue;
+
+                    bytesRead = mInputStream.read(buffer);
                     if (bytesRead == -1) {
                         if (isInterrupted()) {
                             logI("EOF reached, and thread is interrupted");
