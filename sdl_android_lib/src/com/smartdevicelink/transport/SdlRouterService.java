@@ -320,7 +320,7 @@ public class SdlRouterService extends Service{
 	     * Handler of incoming messages from clients.
 	     */
 	    static class RouterHandler extends Handler {
-	    	WeakReference<SdlRouterService> provider;
+	    	final WeakReference<SdlRouterService> provider;
 
 	    	public RouterHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
@@ -328,7 +328,7 @@ public class SdlRouterService extends Service{
 	    	
 	        @Override
 	        public void handleMessage(Message msg) {
-	        	if(this.provider == null || this.provider.get() == null){
+	        	if(this.provider.get() == null){
 	        		return;
 	        	}
 	        	final Bundle receivedBundle = msg.getData();
@@ -546,7 +546,7 @@ public class SdlRouterService extends Service{
 	     */
 	    static class AltTransportHandler extends Handler {
 	    	ClassLoader loader; 
-	    	WeakReference<SdlRouterService> provider;
+	    	final WeakReference<SdlRouterService> provider;
 
 	    	public AltTransportHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
@@ -555,7 +555,7 @@ public class SdlRouterService extends Service{
 
 	        @Override
 	        public void handleMessage(Message msg) {
-	        	if(this.provider == null || this.provider.get() == null){
+	        	if(this.provider.get() == null){
 	        		return;
 	        	}
 	        	SdlRouterService service = this.provider.get();
@@ -632,7 +632,7 @@ public class SdlRouterService extends Service{
 	     * Handler of incoming messages from an alternative transport (USB).
 	     */
 	    static class RouterStatusHandler extends Handler {
-	    	 WeakReference<SdlRouterService> provider;
+	    	 final WeakReference<SdlRouterService> provider;
 
 	    	 public RouterStatusHandler(SdlRouterService provider){
 				 this.provider = new WeakReference<SdlRouterService>(provider);
@@ -640,7 +640,7 @@ public class SdlRouterService extends Service{
 
 	        @Override
 	        public void handleMessage(Message msg) {
-	        	if(this.provider == null || this.provider.get() == null){
+	        	if(this.provider.get() == null){
 	        		return;
 	        	}
 	        	SdlRouterService service = this.provider.get();

@@ -125,7 +125,7 @@ public class SdlRouterStatusProvider {
 	}
 	
 	static class ClientHandler extends Handler {
-		 WeakReference<SdlRouterStatusProvider> provider;
+		final WeakReference<SdlRouterStatusProvider> provider;
 
 		 public ClientHandler(SdlRouterStatusProvider provider){
 			 this.provider = new WeakReference<SdlRouterStatusProvider>(provider);
@@ -133,7 +133,7 @@ public class SdlRouterStatusProvider {
 		 
     	@Override
         public void handleMessage(Message msg) {
-    		if(provider == null || provider.get()==null){
+    		if(provider.get()==null){
     			return; 
     		}
     		  switch (msg.what) {
