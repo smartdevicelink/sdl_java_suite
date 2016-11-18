@@ -86,7 +86,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 2;	
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 3;	
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -328,6 +328,9 @@ public class SdlRouterService extends Service{
 	    	
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	if(this.provider == null || this.provider.get() == null){
+	        		return;
+	        	}
 	        	final Bundle receivedBundle = msg.getData();
 	        	Bundle returnBundle;
 	        	final SdlRouterService service = this.provider.get();
@@ -552,6 +555,9 @@ public class SdlRouterService extends Service{
 
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	if(this.provider == null || this.provider.get() == null){
+	        		return;
+	        	}
 	        	SdlRouterService service = this.provider.get();
 	        	Bundle receivedBundle = msg.getData();
 	        	switch(msg.what){
@@ -634,6 +640,9 @@ public class SdlRouterService extends Service{
 
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	if(this.provider == null || this.provider.get() == null){
+	        		return;
+	        	}
 	        	SdlRouterService service = this.provider.get();
 	        	switch(msg.what){
 	        	case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
