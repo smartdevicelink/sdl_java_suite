@@ -133,6 +133,9 @@ public class SdlRouterStatusProvider {
 		 
     	@Override
         public void handleMessage(Message msg) {
+    		if(provider == null || provider.get()==null){
+    			return; 
+    		}
     		  switch (msg.what) {
     		  case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE:
     			  provider.get().handleRouterStatusConnectedResponse(msg.arg1);
