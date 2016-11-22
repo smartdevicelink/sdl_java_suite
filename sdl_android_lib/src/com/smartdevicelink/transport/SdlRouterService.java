@@ -86,7 +86,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 2;	
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 3;	
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -320,7 +320,7 @@ public class SdlRouterService extends Service{
 	     * Handler of incoming messages from clients.
 	     */
 	    static class RouterHandler extends Handler {
-	    	WeakReference<SdlRouterService> provider;
+	    	final WeakReference<SdlRouterService> provider;
 
 	    	public RouterHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
@@ -328,6 +328,9 @@ public class SdlRouterService extends Service{
 	    	
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	if(this.provider.get() == null){
+	        		return;
+	        	}
 	        	final Bundle receivedBundle = msg.getData();
 	        	Bundle returnBundle;
 	        	final SdlRouterService service = this.provider.get();
@@ -543,7 +546,7 @@ public class SdlRouterService extends Service{
 	     */
 	    static class AltTransportHandler extends Handler {
 	    	ClassLoader loader; 
-	    	WeakReference<SdlRouterService> provider;
+	    	final WeakReference<SdlRouterService> provider;
 
 	    	public AltTransportHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
@@ -552,6 +555,9 @@ public class SdlRouterService extends Service{
 
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	if(this.provider.get() == null){
+	        		return;
+	        	}
 	        	SdlRouterService service = this.provider.get();
 	        	Bundle receivedBundle = msg.getData();
 	        	switch(msg.what){
@@ -626,7 +632,7 @@ public class SdlRouterService extends Service{
 	     * Handler of incoming messages from an alternative transport (USB).
 	     */
 	    static class RouterStatusHandler extends Handler {
-	    	 WeakReference<SdlRouterService> provider;
+	    	 final WeakReference<SdlRouterService> provider;
 
 	    	 public RouterStatusHandler(SdlRouterService provider){
 				 this.provider = new WeakReference<SdlRouterService>(provider);
@@ -634,6 +640,9 @@ public class SdlRouterService extends Service{
 
 	        @Override
 	        public void handleMessage(Message msg) {
+	        	if(this.provider.get() == null){
+	        		return;
+	        	}
 	        	SdlRouterService service = this.provider.get();
 	        	switch(msg.what){
 	        	case TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
