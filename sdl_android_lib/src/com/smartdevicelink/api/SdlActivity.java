@@ -9,8 +9,8 @@ import android.util.Log;
 import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.menu.SdlMenuManager;
-import com.smartdevicelink.api.menu.SdlMenuOption;
 import com.smartdevicelink.api.menu.SdlMenuTransaction;
+import com.smartdevicelink.api.menu.SelectListener;
 import com.smartdevicelink.api.permission.SdlPermissionManager;
 import com.smartdevicelink.api.view.SdlAudioPassThruDialog;
 import com.smartdevicelink.api.view.SdlButton;
@@ -251,7 +251,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public final void registerMenuCallback(int id, SdlMenuOption.SelectListener listener) {
+    public final void registerMenuCallback(int id, SelectListener listener) {
         getSdlApplicationContext().registerMenuCallback(id, listener);
     }
 
