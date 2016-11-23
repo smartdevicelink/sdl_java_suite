@@ -44,33 +44,33 @@ public class SdlMenu extends SdlMenuItem {
     void addMenuItem(SdlMenuItem item){
         if(!mEntryMap.containsKey(item.getName())){
             String itemName = item.getName();
-            Log.d(TAG, mName + ": adding item name " + itemName);
+            Log.d(TAG, getName() + ": adding item name " + itemName);
             mEntryKeyList.add(itemName);
             mEntryMap.put(itemName, item);
             mPendingAdditions.add(itemName);
         } else {
             throw new IllegalArgumentException(String.format("Menu named '%s' already contains item " +
-                    "named '%s", mName, item.mName));
+                    "named '%s", getName(), item.getName()));
         }
     }
 
     void addMenuItem(int index, SdlMenuItem item){
         if(!mEntryMap.containsKey(item.getName())){
             String itemName = item.getName();
-            Log.d(TAG, mName + ": adding item name " + itemName);
+            Log.d(TAG, getName() + ": adding item name " + itemName);
             mEntryKeyList.add(index, itemName);
             mEntryMap.put(itemName, item);
             mPendingAdditions.add(itemName);
         } else {
             throw new IllegalArgumentException(String.format("Menu named '%s' already contains item " +
-                    "named '%s", mName, item.mName));
+                    "named '%s", getName(), item.getName()));
         }
     }
 
     void removeMenuItem(SdlMenuItem menuItem){
         String name = menuItem.getName();
         if(mEntryMap.containsKey(name)){
-            Log.d(TAG, mName + ": removing item name " + name);
+            Log.d(TAG, getName() + ": removing item name " + name);
             SdlMenuItem item = mEntryMap.remove(name);
             removeEntryKey(name);
             if(item != null){
@@ -114,7 +114,7 @@ public class SdlMenu extends SdlMenuItem {
             SdlMenuItem item = mEntryMap.get(key);
             if(item != null){
                 item.update(sdlContext,
-                        isRootMenu ? -1: mId);
+                        isRootMenu ? -1: getId());
             }
         }
         mPendingAdditions.clear();
@@ -167,14 +167,14 @@ public class SdlMenu extends SdlMenuItem {
     private void sendAddSubMenu(SdlContext sdlContext) {
         AddSubMenu asm = new AddSubMenu();
         if(mIndex > 0) asm.setPosition(mIndex);
-        asm.setMenuID(mId);
-        asm.setMenuName(mName);
+        asm.setMenuID(getId());
+        asm.setMenuName(getName());
         sdlContext.sendRpc(asm);
     }
 
     private void sendDeleteSubMenu(SdlContext sdlContext) {
         DeleteSubMenu dsm = new DeleteSubMenu();
-        dsm.setMenuID(mId);
+        dsm.setMenuID(getId());
         sdlContext.sendRpc(dsm);
     }
 
