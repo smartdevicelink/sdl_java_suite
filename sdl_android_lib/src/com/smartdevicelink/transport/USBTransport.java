@@ -456,10 +456,13 @@ public class USBTransport extends SdlTransport {
      * Looks for an already connected compatible accessory and connect to it.
      */
     private void initializeAccessory() {
-        
+    	if (!mConfig.getQueryUsbAcc()){
+    		logI("Query for accessory is disabled.");
+    		return;
+    	}
 		logI("Looking for connected accessories");
         UsbAccessory acc =  mConfig.getUsbAccessory();
-        if( (acc == null && mConfig.getQueryUsbAcc()) || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
+        if( acc == null || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
 			UsbManager usbManager = getUsbManager();
          	UsbAccessory[] accessories = usbManager.getAccessoryList();
          	if (accessories != null) {
