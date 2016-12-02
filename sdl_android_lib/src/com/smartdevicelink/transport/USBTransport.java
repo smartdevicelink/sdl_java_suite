@@ -37,8 +37,6 @@ public class USBTransport extends SdlTransport {
 
 	// Boolean to monitor if the transport is in a disconnecting state
 	private boolean _disconnecting = false;
-	// Boolean to keep track of the initial connection used in initializeAccessory
-	private static boolean firstConnect = true;
 	/**
      * Broadcast action: sent when a USB accessory is attached.
      *
@@ -458,11 +456,10 @@ public class USBTransport extends SdlTransport {
      * Looks for an already connected compatible accessory and connect to it.
      */
     private void initializeAccessory() {
-	    if (!firstConnect) return;
         
 		logI("Looking for connected accessories");
         UsbAccessory acc =  mConfig.getUsbAccessory();
-        if(acc == null || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
+        if( (acc == null && mConfig.getQueryUsbAcc()) || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
 			UsbManager usbManager = getUsbManager();
          	UsbAccessory[] accessories = usbManager.getAccessoryList();
          	if (accessories != null) {
@@ -742,7 +739,6 @@ public class USBTransport extends SdlTransport {
                     }
 
                     logI("Accessory opened!");
-					firstConnect = false;
                     
 					synchronized (USBTransport.this) {
                         setState(State.CONNECTED);
