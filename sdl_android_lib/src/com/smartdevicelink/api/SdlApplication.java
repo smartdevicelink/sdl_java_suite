@@ -560,18 +560,21 @@ public class SdlApplication extends SdlContextAbsImpl {
                         try {
                             if(mApplicationConfig.languageIsSupported(mSdlProxyALM.getSdlLanguage())){
                                  mConnectedLanguage = mSdlProxyALM.getSdlLanguage();
-                                Log.d(TAG,"Config indicates the app supports the lang the module requested");
+                                Log.v(TAG,"Config indicates the app supports the lang the module requested");
                             }else {
                                 mConnectedLanguage = mApplicationConfig.getDefaultLanguage();
-                                Log.d(TAG,"Config indicates the app does not support the lang the module requested, going to default");
+                                Log.v(TAG,"Config indicates the app does not support the lang the module requested, going to default");
 
                             }
+                            Log.v(TAG,"Connected Lang: "+ mConnectedLanguage.toString()+ " "+"Module Lang: "+ mSdlProxyALM.getSdlLanguage().toString());
                         } catch (SdlException e) {
                             e.printStackTrace();
                             Log.e(TAG, "Language could not be grabbed from proxy object");
                             mConnectedLanguage = mApplicationConfig.getDefaultLanguage();
                         }
-                        changeRegistrationTask().run();
+                        if(mConnectedLanguage!=mApplicationConfig.getDefaultLanguage()){
+                            changeRegistrationTask().run();
+                        }
                         mConnectionStatus = Status.CONNECTED;
                         onConnect();
                         mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTED);
