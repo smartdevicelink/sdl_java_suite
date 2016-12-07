@@ -110,7 +110,8 @@ public class SdlApplication extends SdlContextAbsImpl {
     public enum Status {
         CONNECTING,
         CONNECTED,
-        DISCONNECTED
+        DISCONNECTED,
+        RECONNECTING
     }
 
     private HandlerThread mExecutionThread;
@@ -603,8 +604,8 @@ public class SdlApplication extends SdlContextAbsImpl {
                         isFirstHmiReceived = false;
                         isFirstHmiNotNoneReceived = false;
                         createItemManagers();
-                        mConnectionStatus = Status.CONNECTING;
-                        mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.CONNECTING);
+                        mConnectionStatus = Status.RECONNECTING;
+                        mApplicationStatusListener.onStatusChange(mApplicationConfig.getAppId(), Status.RECONNECTING);
                     }
                 }
             });
