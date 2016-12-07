@@ -1,6 +1,8 @@
 package com.smartdevicelink.transport;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,7 +58,9 @@ public class RouterServiceValidator {
 	private static final String SDL = "sdl";
 	private static final String SDL_PACKAGE_LIST = "sdl_package_list";
 	private static final String SDL_PACKAGE_LIST_TIMESTAMP = "sdl_package_list_timestamp";
+	private static final String SDL_LAST_REQUEST = "sdl_last_request";
 
+	
 	//Flags to aid in debugging and production checks
 	public static final int FLAG_DEBUG_NONE 				= 0x00;
 	public static final int FLAG_DEBUG_PACKAGE_CHECK 		= 0x01;
@@ -320,6 +324,13 @@ public class RouterServiceValidator {
 		Intent intent = new Intent();
 		intent.setAction("sdl.router.startservice");
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
+		//We want to sort our list so that we know it's the same everytime
+		Collections.sort(infoList,new Comparator<ResolveInfo>() {
+	        @Override
+	        public int compare(ResolveInfo lhs, ResolveInfo rhs) {
+	            return lhs.activityInfo.packageName.compareTo(rhs.activityInfo.packageName);
+	        }
+	    });
 		if(infoList!=null){
 			String packageName;
 			for(ResolveInfo info : infoList){
@@ -361,15 +372,6 @@ public class RouterServiceValidator {
 			return false;
 		}
 		
-		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ 
-			//Our list should still be ok for now so we will skip the request
-			pendingListRefresh = false;
-			if(listCallback!=null){
-				listCallback.onListObtained(true);
-			}
-			return false;
-		}
-		
 		pendingListRefresh = true;
 		//Might want to store a flag letting this class know a request is currently pending
 		StringBuilder builder = new StringBuilder();
@@ -377,7 +379,7 @@ public class RouterServiceValidator {
 		
 		List<SdlApp> apps = findAllSdlApps(context);
 		
-		JSONObject object = new JSONObject();
+		final JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject jsonApp;
 		
@@ -395,6 +397,19 @@ public class RouterServiceValidator {
 		
 		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
 		
+		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ 
+			if(object.toString().equals(getLastRequest(context))){
+			//Our list should still be ok for now so we will skip the request
+				pendingListRefresh = false;
+				if(listCallback!=null){
+					listCallback.onListObtained(true);
+				}
+				return false;
+			}else{
+				Log.d(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
+			}
+		}
+		
 		if (cb == null) {
 			cb = new HttpRequestTaskCallback() {
 
@@ -403,6 +418,7 @@ public class RouterServiceValidator {
 					// Might want to check if this list is ok
 					//Log.d(TAG, "APPS! " + response);
 					setTrustedList(context, response);
+					setLastRequest(context, object.toString()); //Save our last request 
 					pendingListRefresh = false;
 					if(listCallback!=null){listCallback.onListObtained(true);}
 				}
@@ -522,8 +538,28 @@ public class RouterServiceValidator {
 		return -1L;
 	}
 
+	protected static boolean setLastRequest(Context context, String request){
+		if(context!=null){
+			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+			SharedPreferences.Editor prefAdd = pref.edit();
+			prefAdd.putString(SDL_LAST_REQUEST, request);
+			return prefAdd.commit();
+		}
+		return false;
+	}
 	
-	
+	/**
+	 * Gets the last request JSON object we sent to the RSVP server. It basically contains a list of sdl enabled apps
+	 * @param context
+	 * @return
+	 */
+	protected static String getLastRequest(Context context){
+		if(context!=null){
+			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+			return pref.getString(SDL_LAST_REQUEST, null);
+		}
+		return null;
+	}
 	/**
 	 * Class that holds all the info we want to send/receive from the validation server
 	 */
