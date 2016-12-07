@@ -87,15 +87,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							@Override
 							public void onListObtained(boolean successful) {
 								//Log.v(TAG, "SDL enabled by router service from " + packageName + " compnent package " + componentName.getPackageName()  + " - " + componentName.getClassName());
+								//List obtained. Let's start our service
+								queuedService = componentName;
+								finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
+								//Validate the router service so the service knows if this is a trusted router service
 								RouterServiceValidator vlad = new RouterServiceValidator(finalContext,componentName);
-								if(vlad.validate()){
-									//Log.d(TAG, "Router service trusted!");
-									queuedService = componentName;
-									finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
-									onSdlEnabled(finalContext, finalIntent);
-								}else{
-									Log.w(TAG, "RouterService was not trusted. Ignoring intent from : "+ componentName.getClassName());
-								}
+								finalIntent.putExtra(TransportConstants.ROUTER_SERVICE_VALIDATED, vlad.validate());
+								onSdlEnabled(finalContext, finalIntent);
 							}
 							
 						});
