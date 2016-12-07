@@ -100,6 +100,8 @@ public class SdlConnectionService extends Service {
             Log.i(TAG, "AppID: " + appId + " is " + status.name());
             synchronized (MAP_LOCK){
                 switch (status){
+                    case RECONNECTING:
+                        mConnectedApplications.remove(appId);
                     case CONNECTING:
                         if(mConnectedApplications.size() == 0){
                             cancelTimer();
