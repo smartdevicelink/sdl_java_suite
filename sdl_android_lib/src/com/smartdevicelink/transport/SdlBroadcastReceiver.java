@@ -22,7 +22,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 	private static final String BOOT_COMPLETE = "android.intent.action.BOOT_COMPLETED";
 	private static final String ACL_CONNECTED = "android.bluetooth.device.action.ACL_CONNECTED";
-	private static final String STATE_CHANGED = "android.bluetooth.adapter.action.STATE_CHANGED" ;
 	
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 	
@@ -58,7 +57,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		
         if(!(action.equalsIgnoreCase(BOOT_COMPLETE)
         		|| action.equalsIgnoreCase(ACL_CONNECTED)
-        		|| action.equalsIgnoreCase(STATE_CHANGED)
         		|| action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)
         		|| action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION))){
         	//We don't want anything else here if the child class called super and has different intent filters
@@ -120,20 +118,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 		}
 		
-	    if (intent.getAction().contains("android.bluetooth.adapter.action.STATE_CHANGED")){
-	    	int state = intent.getIntExtra("android.bluetooth.adapter.extra.STATE",-1);
-	    		if (state == BluetoothAdapter.STATE_OFF || 
-	    			state == BluetoothAdapter.STATE_TURNING_OFF ){
-	    			//onProtocolDisabled(context);
-	    			//Let's let the service that is running manage what to do for this
-	    			//If we were to do it here, for every instance of this BR it would send
-	    			//an intent to stop service, where it's only one that is needed.
-	    			return;
-	    		}else if(state == BluetoothAdapter.STATE_TURNING_ON){
-	    			//We started bluetooth, we should check for a new valid router list
-	    			RouterServiceValidator.createTrustedListRequest(context,true);
-	    		}
-	    }
 
 	    if(localRouterClass!=null){ //If there is a supplied router service lets run some logic regarding starting one
 	    	
