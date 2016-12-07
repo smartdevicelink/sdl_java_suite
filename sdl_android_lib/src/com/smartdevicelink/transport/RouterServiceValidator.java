@@ -51,7 +51,7 @@ public class RouterServiceValidator {
 	private static final String JSON_APP_VERSION_TAG = "version";
 
 	
-	private static final long REFRESH_TRUSTED_APP_LIST_TIME 	= 3600000 * 24; // 24 hours in ms
+	private static final long REFRESH_TRUSTED_APP_LIST_TIME 	= 3600000 * 24 * 7; // A week in ms
 	
 	private static final String SDL = "sdl";
 	private static final String SDL_PACKAGE_LIST = "sdl_package_list";
