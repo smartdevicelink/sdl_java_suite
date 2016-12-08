@@ -556,12 +556,19 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if(cachedMultiConfig!=null){
 				//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
 				ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
-				cachedMultiConfig.setService(tempCompName);
-				//We are not connected yet so we should be able to close down
-				_transport.disconnect(); //This will force us into the 
+				RouterServiceValidator vlad = new RouterServiceValidator(cachedMultiConfig.getContext(),tempCompName);
+				if(vlad.validate()){
+					cachedMultiConfig.setService(tempCompName);
+					//We are not connected yet so we should be able to close down
+					_transport.disconnect(); //This will force us into the 
+				}else{
+					//Log.d(TAG, "Router service not trusted during force connect. Ignoring.");
+					return;
+				}
 			}else{
-				Log.i(TAG, "No cached multiplexing config, transport error being called");
-				_transport.disconnect();
+				//Log.i(TAG, "No cached multiplexing config, ignoring");
+				//_transport.disconnect();
+				return;
 			}
 			Log.w(TAG, "Using own transport, but not connected. Attempting to join multiplexing");		
 		}else{
