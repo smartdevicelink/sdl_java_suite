@@ -118,7 +118,18 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 		}
 		
-
+	    if (intent.getAction().contains("android.bluetooth.adapter.action.STATE_CHANGED")){
+	    	int state = intent.getIntExtra("android.bluetooth.adapter.extra.STATE",-1);
+	    		if (state == BluetoothAdapter.STATE_OFF || 
+	    			state == BluetoothAdapter.STATE_TURNING_OFF){
+	    			//onProtocolDisabled(context);
+	    			//Let's let the service that is running manage what to do for this
+	    			//If we were to do it here, for every instance of this BR it would send
+	    			//an intent to stop service, where it's only one that is needed.
+	    			return;
+	    		}
+	    }
+	    
 	    if(localRouterClass!=null){ //If there is a supplied router service lets run some logic regarding starting one
 	    	
 	    	if(!didStart){
