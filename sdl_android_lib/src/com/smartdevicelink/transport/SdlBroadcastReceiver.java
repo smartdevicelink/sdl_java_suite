@@ -22,6 +22,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 	private static final String BOOT_COMPLETE = "android.intent.action.BOOT_COMPLETED";
 	private static final String ACL_CONNECTED = "android.bluetooth.device.action.ACL_CONNECTED";
+	private static final String STATE_CHANGED = "android.bluetooth.adapter.action.STATE_CHANGED" ;
 	
 	protected static final String SDL_ROUTER_SERVICE_CLASS_NAME 			= "sdlrouterservice";
 	
@@ -57,6 +58,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		
         if(!(action.equalsIgnoreCase(BOOT_COMPLETE)
         		|| action.equalsIgnoreCase(ACL_CONNECTED)
+        		|| action.equalsIgnoreCase(STATE_CHANGED)
         		|| action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)
         		|| action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION))){
         	//We don't want anything else here if the child class called super and has different intent filters
