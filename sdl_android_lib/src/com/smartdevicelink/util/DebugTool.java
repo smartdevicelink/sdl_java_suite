@@ -20,30 +20,19 @@ import com.smartdevicelink.transport.SiphonServer;
 
 public class DebugTool {
 	
-
 	public static final String TAG = "SdlProxy";
-
-	private static boolean isErrorEnabled = false;
-	private static boolean isWarningEnabled = false;
-	private static boolean isInfoEnabled = false;
+	private static boolean isEnabled = false;
 	
 	public static void enableDebugTool() {
-		isErrorEnabled = true;
-		isWarningEnabled = true;
-		isInfoEnabled = true;
+		isEnabled = true;
 	}
 
 	public static void disableDebugTool() {
-		isErrorEnabled = true;
-		isWarningEnabled = false;
-		isInfoEnabled = false;
+		isEnabled = false;
 	}
 	
-	public static boolean isDebugEnabled() 
-	{
-		if (isWarningEnabled && isInfoEnabled) return true;
-		
-		return false;		
+	public static boolean isDebugEnabled() {
+		return isEnabled;	
 	}
 	
 	private static String prependProxyVersionNumberToString(String string) {
@@ -62,7 +51,7 @@ public class DebugTool {
 		
 		wasWritten = logToSiphon(msg);
 		
-		if (isErrorEnabled && !wasWritten) {
+		if (!wasWritten) {
 			NativeLogTool.logError(TAG, msg);
 		}
 	}
@@ -78,7 +67,7 @@ public class DebugTool {
 			wasWritten = logToSiphon(msg);
 		}
 		
-		if (isErrorEnabled && !wasWritten) {
+		if (!wasWritten) {
 			NativeLogTool.logError(TAG, msg, ex);
 		}
 	}
@@ -90,7 +79,7 @@ public class DebugTool {
 		
 		wasWritten = logToSiphon(msg);
 		
-		if (isWarningEnabled && !wasWritten) {
+		if (isEnabled && !wasWritten) {
 			NativeLogTool.logWarning(TAG, msg);
 		}
 	}
@@ -102,7 +91,7 @@ public class DebugTool {
 		
 		wasWritten = logToSiphon(msg);
 		
-		if (isInfoEnabled && !wasWritten) {
+		if (isEnabled && !wasWritten) {
 			NativeLogTool.logInfo(TAG, msg);
 		}
 	}
@@ -114,7 +103,7 @@ public class DebugTool {
 		
 		wasWritten = logToSiphon(msg);
 		
-		if (isInfoEnabled && !wasWritten) {
+		if (isEnabled && !wasWritten) {
 			NativeLogTool.logInfo(TAG, msg);
 		}
 	}
@@ -149,11 +138,7 @@ public class DebugTool {
 		return toPrint;
 	}
 
-
 	protected static Vector<IConsole> consoleListenerList = new Vector<IConsole>();
-
-	protected final static boolean isTransportEnabled = false;
-	protected final static boolean isRPCEnabled = false;
 
 	public static void addConsole(IConsole console) {
 		synchronized(consoleListenerList) {
@@ -174,21 +159,21 @@ public class DebugTool {
 	}
 	
 	public static void logTransport(String msg) {
-		if (isTransportEnabled) {
+		if (isEnabled) {
 			Log.d(TAG, msg);
 			logInfoToConsole(msg);
 		}
 	}
 
 	public static void logRPCSend(String rpcMsg) {
-		if (isRPCEnabled) {
+		if (isEnabled) {
 			Log.d(TAG, "Sending RPC message: " + rpcMsg);
 			logRPCSendToConsole(rpcMsg);
 		}
 	}
 
 	public static void logRPCReceive(String rpcMsg) {
-		if (isRPCEnabled) {
+		if (isEnabled) {
 			Log.d(TAG, "Received RPC message: " + rpcMsg);
 			logRPCSendToConsole(rpcMsg);
 		}
