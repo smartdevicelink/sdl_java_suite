@@ -1254,31 +1254,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    updateBroadcastIntent(sendIntent, "COMMENT1", sSiphonPortNumber);
 		    sendBroadcastIntent(sendIntent);
 		}
-	}
-
-	
-	
-	/**
-	 *  Public method to enable the Debug Tool
-	 */
-	public static void enableDebugTool() {
-		DebugTool.enableDebugTool();
-	}
-	
-	/**
-	 *  Public method to disable the Debug Tool
-	 */
-	public static void disableDebugTool() {
-		DebugTool.disableDebugTool();
 	}	
-
-	/**
-	* Public method to determine Debug Tool enabled
-	*/
-	public static boolean isDebugEnabled() {
-		return DebugTool.isDebugEnabled();
-	}	
-	
 	
 	@Deprecated
 	public void close() throws SdlException {
@@ -1884,11 +1860,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					String sVersionInfo = "SDL Proxy Version: " + _proxyVersionInfo;
 													
-					if (!isDebugEnabled()) 
+					if (!DebugTool.isDebugEnabled()) 
 					{
-						enableDebugTool();
+						DebugTool.enableDebugTool();
 						DebugTool.logInfo(sVersionInfo, false);
-						disableDebugTool();
+						DebugTool.disableDebugTool();
 					}					
 					else
 						DebugTool.logInfo(sVersionInfo, false);
@@ -2037,11 +2013,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				_diagModes = msg.getSupportedDiagModes();				
 				
-				if (!isDebugEnabled()) 
+				if (!DebugTool.isDebugEnabled()) 
 				{
-					enableDebugTool();
+					DebugTool.enableDebugTool();
 					DebugTool.logInfo("SDL Proxy Version: " + _proxyVersionInfo);
-					disableDebugTool();
+					DebugTool.disableDebugTool();
 				}					
 				else
 					DebugTool.logInfo("SDL Proxy Version: " + _proxyVersionInfo);				
