@@ -3,6 +3,8 @@ package com.smartdevicelink.transport;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -93,7 +95,7 @@ public class RSVTestCase extends AndroidTestCase {
 		assertFalse(RouterServiceValidator.setTrustedList(mContext,null));
 		assertFalse(RouterServiceValidator.setTrustedList(null,"test"));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,"test"));
-		String test= "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
+		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,test+test+test+test+test));
 		StringBuilder builder = new StringBuilder();
@@ -104,7 +106,7 @@ public class RSVTestCase extends AndroidTestCase {
 	}
 	
 	public void testTrustedListSetAndGet(){
-		String test= "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] } }}"; 
+		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
 		String retVal = RouterServiceValidator.getTrustedList(mContext);
 		assertNotNull(retVal);
@@ -201,6 +203,42 @@ public class RSVTestCase extends AndroidTestCase {
 		}
 		
 		
+	}
+	
+	/**
+	 * Test to check that we can save our last request which actually houses all the previous known sdl enabled apps
+	 */
+	public void testRequestChange(){
+		assertNull(RouterServiceValidator.getLastRequest(mContext));
+		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+		JSONObject object = null;
+		try {
+			object = new JSONObject(test);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		assertNotNull(object);
+		assertFalse(object.equals(RouterServiceValidator.getLastRequest(mContext)));
+		
+		assertTrue(RouterServiceValidator.setLastRequest(mContext, object.toString()));
+		
+		String oldRequest = RouterServiceValidator.getLastRequest(mContext);
+		assertNotNull(oldRequest);
+		assertTrue(object.toString().equals(oldRequest));
+		
+		//Now test a new list
+		test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.test.test\" : { \"versionBlacklist\":[] },\"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+		object = null;
+		try {
+			object = new JSONObject(test);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		assertNotNull(object);
+		assertFalse(object.equals(RouterServiceValidator.getLastRequest(mContext)));
+		//Clear it for next test
+		RouterServiceValidator.setLastRequest(mContext, null);
+
 	}
 	
 	 

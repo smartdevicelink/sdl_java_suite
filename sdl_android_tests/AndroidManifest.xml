@@ -15,7 +15,7 @@
     
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="com.smartdevicelink" />
+        android:targetPackage="com.smartdevicelink.test" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
  <application
