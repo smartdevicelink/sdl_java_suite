@@ -77,7 +77,7 @@ public class SdlConnectionService extends Service {
                     }
                     mRunningApplications.clear();
                     mConnectedApplications.clear();
-                    mSdlManager.sdlDisconnected();
+                    mSdlManager.disconnect();
                     Log.w(TAG, "SDL connection attempts timed out.");
                 }
             }
@@ -123,7 +123,7 @@ public class SdlConnectionService extends Service {
                         mRunningApplications.remove(appId);
                         if(mRunningApplications.size() == 0){
                             Log.i(TAG, "All applications disconnected.");
-                            mSdlManager.sdlDisconnected();
+                            mSdlManager.disconnect();
                         }
                         break;
                 }
