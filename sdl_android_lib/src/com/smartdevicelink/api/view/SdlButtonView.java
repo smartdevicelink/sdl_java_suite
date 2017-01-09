@@ -123,6 +123,7 @@ public class SdlButtonView extends SdlView {
             softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
             SoftButtonType type = SoftButtonType.SBT_TEXT;
             softButton.setText(button.getText());
+            softButton.setIsHighlighted(button.isHighlighted());
 
             SdlImage sdlImage = button.getSdlImage();
             if(sdlImage != null) {

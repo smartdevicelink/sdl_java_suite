@@ -9,6 +9,7 @@ public class SdlButton {
     private int mId;
     private SdlImage mSdlImage;
     private boolean isGraphicOnly;
+    private boolean isHighlighted;
 
     public SdlButton(String text, OnPressListener listener){
         mText = text;
@@ -52,4 +53,8 @@ public class SdlButton {
     public void setGraphicOnly(boolean graphicOnly) {
         isGraphicOnly = graphicOnly;
     }
+
+    public boolean isHighlighted() { return isHighlighted; }
+
+    public void setHighlighted(boolean highlighted) {isHighlighted = highlighted;}
 }
