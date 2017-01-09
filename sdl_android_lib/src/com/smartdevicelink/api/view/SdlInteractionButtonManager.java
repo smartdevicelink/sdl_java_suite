@@ -38,7 +38,7 @@ class SdlInteractionButtonManager {
                     softButtonFromSdlButton.setText(button.getText());
                     softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
                 }
-                softButtonFromSdlButton.setIsHighlighted(false);
+                softButtonFromSdlButton.setIsHighlighted(button.isHighlighted());
                 softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
                 if(button.getSdlImage()!=null){
                     if(context.getSdlFileManager().isFileOnModule(button.getSdlImage().getSdlName())){
