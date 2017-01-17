@@ -9,6 +9,7 @@ public class USBTransportConfig extends BaseTransportConfig {
 	
 	private Context mainActivity = null;
 	private UsbAccessory usbAccessory = null;
+	private Boolean queryUsbAcc = true;
 	
 	public USBTransportConfig (Context mainActivity) {
 		this.mainActivity = mainActivity;
@@ -17,6 +18,23 @@ public class USBTransportConfig extends BaseTransportConfig {
 	public USBTransportConfig (Context mainActivity, UsbAccessory usbAccessory) {
 		this.mainActivity = mainActivity;
 		this.usbAccessory = usbAccessory;
+	}
+	
+	public USBTransportConfig (Context mainActivity, boolean shareConnection, boolean queryUsbAcc) {
+		this.mainActivity = mainActivity;
+		this.queryUsbAcc = queryUsbAcc;
+		super.shareConnection = shareConnection;
+	}
+	
+	public USBTransportConfig (Context mainActivity, UsbAccessory usbAccessory, boolean shareConnection, boolean queryUsbAcc) {
+		this.mainActivity = mainActivity;
+		this.queryUsbAcc = queryUsbAcc;
+		this.usbAccessory = usbAccessory;
+		super.shareConnection = shareConnection;
+	}
+	
+	public Boolean getQueryUsbAcc () {
+		return queryUsbAcc;
 	}
 	
 	public Context getUSBContext () {
