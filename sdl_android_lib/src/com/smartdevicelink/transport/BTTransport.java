@@ -30,7 +30,9 @@ public class BTTransport extends SdlTransport {
 	private final static UUID SDL_V4_MOBILE_APPLICATION_SVC_CLASS = new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
 
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
+
+	private static final int READ_BUFFER_SIZE = 4096;
+
 	private BluetoothAdapter _adapter = null;
 	private BluetoothSocket _activeSocket = null;
 	private UUID _listeningServiceUUID = SDL_V4_MOBILE_APPLICATION_SVC_CLASS;
@@ -324,16 +326,18 @@ public class BTTransport extends SdlTransport {
 	
 	private class TransportReaderThread extends Thread {
 		private Boolean isHalted = false;
-	    SdlPsm psm;
-        byte byteRead = -1;
-        boolean stateProgress = false;
-        
-    	private InputStream _input = null;
+		SdlPsm psm;
+		int bytesRead = 0;
+		byte[] buffer = new byte[READ_BUFFER_SIZE];
+		byte currentByte = -1;
+		boolean stateProgress = false;
 
-        
-	    public TransportReaderThread(){
-	    	psm = new SdlPsm();
-	    }
+		private InputStream _input = null;
+
+
+		public TransportReaderThread(){
+			psm = new SdlPsm();
+		}
 		public void halt() {
 			isHalted = true;
 		}
@@ -387,7 +391,7 @@ public class BTTransport extends SdlTransport {
 		private void readFromTransport() {
 			try {
 				try {
-					byteRead = (byte)_input.read();
+					bytesRead = _input.read(buffer);
 				} catch (Exception e) {
 					if (!isHalted) {
 						// Only call disconnect if the thread has not been halted
@@ -402,34 +406,37 @@ public class BTTransport extends SdlTransport {
 					return;
 				} // end-catch
 
-				stateProgress = psm.handleByte(byteRead); 
-				if(!stateProgress){//We are trying to weed through the bad packet info until we get something
-					//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
-					psm.reset();
-					if(byteRead == -1){ //If we read a -1 and the psm didn't move forward, then there is a problem
-						if (!isHalted) {
-							// Only call disconnect if the thread has not been halted
-							DebugTool.logError("End of stream reached!");
-							disconnect("End of stream reached.", null);
+				for (int i = 0; i < bytesRead; i++) {
+					currentByte = buffer[i];
+					stateProgress = psm.handleByte(currentByte);
+					if(!stateProgress){//We are trying to weed through the bad packet info until we get something
+						//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+						psm.reset();
+						if(currentByte == -1){ //If we read a -1 and the psm didn't move forward, then there is a problem
+							if (!isHalted) {
+								// Only call disconnect if the thread has not been halted
+								DebugTool.logError("End of stream reached!");
+								disconnect("End of stream reached.", null);
+							}
 						}
 					}
-				}
-				if(psm.getState() == SdlPsm.FINISHED_STATE){
-					//Log.d(TAG, "Packet formed, sending off");
-					handleReceivedPacket((SdlPacket)psm.getFormedPacket());
-					//We put a trace statement in the message read so we can avoid all the extra bytes
-					psm.reset();
+					if(psm.getState() == SdlPsm.FINISHED_STATE){
+						//Log.d(TAG, "Packet formed, sending off");
+						handleReceivedPacket((SdlPacket)psm.getFormedPacket());
+						//We put a trace statement in the message read so we can avoid all the extra bytes
+						psm.reset();
+					}
 				}
 
 			} catch (Exception excp) {
-			if (!isHalted) {
-				// Only call disconnect if the thread has not been halted
-				clearInputStream();
-				String errString = "Failure in BTTransport reader thread: " + excp.toString();
-				DebugTool.logError(errString, excp);
-				disconnect(errString, excp);
-			}
-			return;
+				if (!isHalted) {
+					// Only call disconnect if the thread has not been halted
+					clearInputStream();
+					String errString = "Failure in BTTransport reader thread: " + excp.toString();
+					DebugTool.logError(errString, excp);
+					disconnect(errString, excp);
+				}
+				return;
 			} // end-catch
 		} // end-method
 		

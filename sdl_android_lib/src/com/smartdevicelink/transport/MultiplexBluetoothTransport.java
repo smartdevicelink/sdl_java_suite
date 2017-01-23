@@ -83,7 +83,9 @@ public class MultiplexBluetoothTransport {
     Handler timeOutHandler;
     Runnable socketRunable;
     private static final long msTillTimeout = 2500;
-    
+
+    private static final int READ_BUFFER_SIZE = 4096;
+
     public static String currentlyConnectedDevice = null;
     public static String currentlyConnectedDeviceAddress = null;
     private static MultiplexBluetoothTransport serverInstance = null;
@@ -779,8 +781,10 @@ public class MultiplexBluetoothTransport {
         
 		@SuppressLint("NewApi")
 		public void run() {
-        	Log.d(TAG, "Running the Connected Thread");
+            Log.d(TAG, "Running the Connected Thread");
             byte input = 0;
+            int bytesRead = 0;
+            byte[] buffer = new byte[READ_BUFFER_SIZE];
             MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
             MultiplexBluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
             // Keep listening to the InputStream while connected
@@ -790,25 +794,29 @@ public class MultiplexBluetoothTransport {
            
             while (true) {
                 try {
-                    input = (byte)mmInStream.read();
-                    // Send the response of what we received
-                    stateProgress = psm.handleByte(input); 
-                    if(!stateProgress){//We are trying to weed through the bad packet info until we get something	
-                    	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
-                    	psm.reset();
-                    	continue;
-                    }
-                    
-                    if(psm.getState() == SdlPsm.FINISHED_STATE){
-                    	//Log.d(TAG, "Packet formed, sending off");
-                    	mHandler.obtainMessage(SdlRouterService.MESSAGE_READ, psm.getFormedPacket()).sendToTarget();
-                    	psm.reset(); 
+                    bytesRead = mmInStream.read(buffer);
+                    Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
+                    for (int i = 0; i < bytesRead; i++) {
+                        input = buffer[i];
 
+                        // Send the response of what we received
+                        stateProgress = psm.handleByte(input);
+                        if (!stateProgress) { //We are trying to weed through the bad packet info until we get something
+                            //Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                            psm.reset();
+                            continue;
+                        }
+
+                        if (psm.getState() == SdlPsm.FINISHED_STATE) {
+                            //Log.d(TAG, "Packet formed, sending off");
+                            mHandler.obtainMessage(SdlRouterService.MESSAGE_READ, psm.getFormedPacket()).sendToTarget();
+                            psm.reset();
+                        }
                     }
                 }catch (IOException e){
-                	Log.e(TAG, "Lost connection in the Connected Thread");
-                	e.printStackTrace();
-                	connectionLost();                    
+                    Log.e(TAG, "Lost connection in the Connected Thread");
+                    e.printStackTrace();
+                    connectionLost();
                     break;
                 }
             }
