@@ -439,7 +439,7 @@ public class MultiplexBluetoothTransport {
                 	}
                 } catch (IOException e) {
                     Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
-					getBluetoothSerialServerInstance().stop(STATE_ERROR);
+                    getBluetoothSerialServerInstance().stop(STATE_ERROR);
                     return;
                 }
 
