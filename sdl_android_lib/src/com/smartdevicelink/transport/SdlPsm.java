@@ -153,7 +153,11 @@ public class SdlPsm{
 					if(dataLength==0){
 						return FINISHED_STATE; //We are done if we don't have any payload
 					}
-					payload = new byte[dataLength];
+					try{
+						payload = new byte[dataLength];
+					}catch(OutOfMemoryError oom){
+						return ERROR_STATE;
+					}
 					dumpSize = dataLength;
 					return DATA_PUMP_STATE;
 				}
