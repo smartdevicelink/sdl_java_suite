@@ -805,7 +805,7 @@ public class MultiplexBluetoothTransport {
                     	psm.reset(); 
 
                     }
-                }catch (IOException e){
+                } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
                 	Log.e(TAG, "Lost connection in the Connected Thread");
                 	e.printStackTrace();
                 	connectionLost();                    
@@ -825,9 +825,9 @@ public class MultiplexBluetoothTransport {
                 	mmSocket.close();
                 }
                 
-            } catch (IOException e) {
-            	//Log.trace(TAG, "Read Thread: " + e.getMessage());
-
+            } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
+            	// Log.trace(TAG, "Read Thread: " + e.getMessage());
+                // Socket or stream is already closed
             }
         }
     }
