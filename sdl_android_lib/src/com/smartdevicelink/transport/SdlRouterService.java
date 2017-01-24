@@ -762,9 +762,11 @@ public class SdlRouterService extends Service{
 	private boolean processCheck(){
 		int myPid = android.os.Process.myPid();
 		ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
+		if(am.getRunningAppProcesses() == null)
+			return false; // No RunningAppProcesses, let's close out
 		for (RunningAppProcessInfo processInfo : am.getRunningAppProcesses())
 		{
-			if (processInfo.pid == myPid)
+			if (processInfo != null && processInfo.pid == myPid)
 			{
 				return ROUTER_SERVICE_PROCESS.equals(processInfo.processName);
 			}
