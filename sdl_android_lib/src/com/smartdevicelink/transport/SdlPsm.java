@@ -25,6 +25,7 @@ public class SdlPsm{
 
 	
 	private static final byte FIRST_FRAME_DATA_SIZE 			= 0x08;
+	private static final int  V1_V2_MTU_SIZE 					= 1500;
 	
 	private static final int VERSION_MASK 						= 0xF0; //4 highest bits
 	private static final int COMPRESSION_MASK 					= 0x08; //4th lowest bit
@@ -153,9 +154,9 @@ public class SdlPsm{
 					if(dataLength==0){
 						return FINISHED_STATE; //We are done if we don't have any payload
 					}
-					try{
+					if(dataLength <= V1_V2_MTU_SIZE){ // size from protocol/WiProProtocol.java
 						payload = new byte[dataLength];
-					}catch(OutOfMemoryError oom){
+					}else{
 						return ERROR_STATE;
 					}
 					dumpSize = dataLength;
@@ -174,7 +175,11 @@ public class SdlPsm{
 				if(dataLength == 0){
 					return FINISHED_STATE; //We are done if we don't have any payload
 				}
-				payload = new byte[dataLength];
+				try {
+					payload = new byte[dataLength];
+				}catch(OutOfMemoryError e){
+					return ERROR_STATE;
+				}
 				dumpSize = dataLength;
 				return DATA_PUMP_STATE;
 			}else{
