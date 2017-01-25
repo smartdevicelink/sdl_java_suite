@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -53,6 +54,7 @@ import android.os.Messenger;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -780,6 +782,11 @@ public class SdlRouterService extends Service{
 		if(!processCheck()){
 			Log.e(TAG, "Not using correct process. Shutting down");
 			wrongProcess = true;
+			stopSelf();
+			return;
+		}
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
+			Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
 			stopSelf();
 			return;
 		}
