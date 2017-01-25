@@ -94,8 +94,8 @@ public class TransportBroker {
     			} catch (RemoteException|NullPointerException e) { // NPE is STRICTLY for case that routerServiceMessenger is null
     				e.printStackTrace();
     				//Let's check to see if we should retry
-    				if(e instanceof TransactionTooLargeException 
-    						|| (retryCount<5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder())){ //We probably just failed on a small transaction =\
+    				if(!(e instanceof NullPointerException) && (e instanceof TransactionTooLargeException
+    						|| (retryCount<5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder()))){ //We probably just failed on a small transaction =\
     					try {
     						Thread.sleep(100);
     					} catch (InterruptedException e1) {
@@ -103,7 +103,7 @@ public class TransportBroker {
     					}
     					return sendMessageToRouterService(message, retryCount++);
     				}else{
-    					//DeadObject, time to kill our connection
+    					//DeadObject or routerServiceMessenger is null, time to kill our connection
     					Log.d(TAG, "Dead object while attempting to send packet");
     					routerServiceMessenger = null;
     					registeredWithRouterService = false;
