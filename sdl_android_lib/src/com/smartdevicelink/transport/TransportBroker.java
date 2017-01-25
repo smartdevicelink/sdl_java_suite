@@ -91,7 +91,7 @@ public class TransportBroker {
     			try {
     				routerServiceMessenger.send(message);
     				return true;
-    			} catch (RemoteException e) {
+    			} catch (RemoteException|NullPointerException e) { // NPE is STRICTLY for case that routerServiceMessenger is null
     				e.printStackTrace();
     				//Let's check to see if we should retry
     				if(e instanceof TransactionTooLargeException 
