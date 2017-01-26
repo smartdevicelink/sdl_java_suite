@@ -261,7 +261,12 @@ public class WiProProtocol extends AbstractProtocol {
 			hasFirstFrame = true;
 			totalSize = BitConverter.intFromByteArray(packet.payload, 0) - HEADER_SIZE;
 			framesRemaining = BitConverter.intFromByteArray(packet.payload, 4);
-			accumulator = new ByteArrayOutputStream(totalSize);
+			try {
+				accumulator = new ByteArrayOutputStream(totalSize);
+			}catch(OutOfMemoryError e){
+				DebugTool.logError("OutOfMemory error", e); //Garbled bits were received
+				accumulator = null;
+			}
 		}
 		
 		protected void handleRemainingFrame(SdlPacket packet) {
@@ -309,7 +314,8 @@ public class WiProProtocol extends AbstractProtocol {
 				handleFirstDataFrame(packet);
 			}
 			else{
-				handleRemainingFrame(packet);
+				if(accumulator != null)
+					handleRemainingFrame(packet);
 			}
 				
 		} // end-method
