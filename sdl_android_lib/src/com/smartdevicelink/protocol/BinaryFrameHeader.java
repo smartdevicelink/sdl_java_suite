@@ -1,5 +1,7 @@
 package com.smartdevicelink.protocol;
 
+import android.util.Log;
+
 import com.smartdevicelink.util.BitConverter;
 
 public class BinaryFrameHeader {
@@ -41,6 +43,7 @@ public class BinaryFrameHeader {
 				msg.setBulkData(_bulkData);
 			}
 		} catch (OutOfMemoryError e){
+			Log.e("SdlProtocol", "OOM error due to junk data in BinaryFrameHeader");
 			msg.setJsonSize(0);
 			msg.setJsonData(null);
 			msg.setBulkData(null);
