@@ -203,7 +203,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	            	Intent intent = new Intent();
 	            	intent.setClassName(service.service.getPackageName(), service.service.getClassName());
 	            	intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, pingService);
-	            	context.startService(intent);
+	            	try {
+						context.startService(intent);
+					}catch (SecurityException e){
+						Log.e(TAG, "Process is bad");
+						android.os.Process.killProcess(android.os.Process.myPid()); // Let's exit, we can't start our service
+					}
 	            }
 	        }
 	    }
