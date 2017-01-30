@@ -19,7 +19,7 @@ public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 
-	private static final int V1_V2_MTU_SIZE = 1500;
+	public static final int V1_V2_MTU_SIZE = 1500;
 	private static final int V3_V4_MTU_SIZE = 131072;
 	private static int HEADER_SIZE = 8;
 	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;

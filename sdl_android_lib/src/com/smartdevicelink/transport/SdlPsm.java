@@ -2,6 +2,8 @@ package com.smartdevicelink.transport;
 
 import com.smartdevicelink.protocol.SdlPacket;
 
+import static com.smartdevicelink.protocol.WiProProtocol.V1_V2_MTU_SIZE;
+
 
 public class SdlPsm{
 	//private static final String TAG = "Sdl PSM";
@@ -25,7 +27,6 @@ public class SdlPsm{
 
 	
 	private static final byte FIRST_FRAME_DATA_SIZE 			= 0x08;
-	private static final int  V1_V2_MTU_SIZE 					= 1500;
 	
 	private static final int VERSION_MASK 						= 0xF0; //4 highest bits
 	private static final int COMPRESSION_MASK 					= 0x08; //4th lowest bit
