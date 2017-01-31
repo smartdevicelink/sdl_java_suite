@@ -2022,8 +2022,16 @@ public class SdlRouterService extends Service{
 		public LocalRouterService(Parcel p) {
 			this.version = p.readInt();
 			this.timestamp = p.readLong();
-			this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
-			this.name = p.readParcelable(ComponentName.class.getClassLoader());
+			try {
+				this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
+			}catch (Exception e){ // catch DexException
+				this.launchIntent = null;
+			}
+			try {
+				this.name = p.readParcelable(ComponentName.class.getClassLoader());
+			}catch (Exception e){ // catch DexException
+				this.name = null;
+			}
 		}
 		
 		@Override
