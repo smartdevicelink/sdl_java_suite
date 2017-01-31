@@ -1024,9 +1024,14 @@ public class SdlRouterService extends Service{
 	 * @return
 	 */
 	private boolean bluetoothAvailable(){
-		boolean retVal = (!(BluetoothAdapter.getDefaultAdapter()==null) && BluetoothAdapter.getDefaultAdapter().isEnabled());
-		//Log.d(TAG, "Bluetooth Available? - " + retVal);
-		return retVal;
+		try {
+			boolean retVal = (!(BluetoothAdapter.getDefaultAdapter() == null) && BluetoothAdapter.getDefaultAdapter().isEnabled());
+			//Log.d(TAG, "Bluetooth Available? - " + retVal);
+			return retVal;
+		}catch(NullPointerException e){ // only for BluetoothAdapter.getDefaultAdapter().isEnabled() call
+			Log.e(TAG, "NPE when checking for BT");
+			return false;
+		}
 	}
 
 	/**
