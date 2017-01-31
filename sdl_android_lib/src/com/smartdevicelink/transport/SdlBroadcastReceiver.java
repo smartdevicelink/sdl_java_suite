@@ -158,12 +158,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
     		if(altTransportWake){
     			serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
     		}
-            try {
-                context.startService(serviceIntent);
-            }catch (SecurityException e){
-                Log.e(TAG, "Process is bad");
-                android.os.Process.killProcess(android.os.Process.myPid()); // Let's exit, we can't start our service
-            }
+            	try {
+                	context.startService(serviceIntent);
+            	}catch (SecurityException e){
+                	Log.e(TAG, "Process is bad");
+                	android.os.Process.killProcess(android.os.Process.myPid()); // Let's exit, we can't start our service
+            	}
     		return true;
     	}else{
     		if(altTransportWake &&  runningBluetoothServicePackage!=null && runningBluetoothServicePackage.size()>0){
