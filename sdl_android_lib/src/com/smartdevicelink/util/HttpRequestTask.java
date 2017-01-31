@@ -137,6 +137,9 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (NullPointerException e){ // Only to catch error in urlConnection.getOutputStream() - when servers are down
+			e.printStackTrace();
+			urlConnection = null;
 		}
 		finally {
 			if (urlConnection != null) {
