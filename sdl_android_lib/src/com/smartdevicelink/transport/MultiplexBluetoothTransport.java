@@ -90,7 +90,7 @@ public class MultiplexBluetoothTransport {
     //private BluetoothServerSocket serverSocket= null;
 
 
-	static boolean listening = false, keepSocketAlive = true;
+	static boolean keepSocketAlive = true;
     
     
     /**
@@ -184,8 +184,7 @@ public class MultiplexBluetoothTransport {
        
 
         // Start the thread to listen on a BluetoothServerSocket
-        if (getBluetoothSerialServerInstance().getAcceptThread() == null 
-        		//&& !listening
+        if (getBluetoothSerialServerInstance().getAcceptThread() == null
         		&& serverInstance.mAdapter != null
         		&&  serverInstance.mAdapter.isEnabled()) {
         	//Log.d(TAG, "Secure thread was null, attempting to create new");
@@ -338,7 +337,6 @@ public class MultiplexBluetoothTransport {
      * Indicate that the connection was lost and notify the UI Activity.
      */
     private void connectionLost() {
-    	listening = false;
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
@@ -379,7 +377,6 @@ public class MultiplexBluetoothTransport {
         @SuppressLint("NewApi")
 		public AcceptThread(boolean secure) {
         	synchronized(threadLock){
-            	listening = false;
             	//Log.d(TAG, "Creating an Accept Thread");
             	BluetoothServerSocket tmp = null;
             	mSocketType = secure ? "Secure":"Insecure";
@@ -387,15 +384,12 @@ public class MultiplexBluetoothTransport {
             	try {
                 	if (secure) {
                 		tmp = getBluetoothSerialServerInstance().mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE, SERVER_UUID);
-                		listening = true;
                 	}
             	} catch (IOException e) {
-            		listening = false;
                 	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
                 	 //Let's try to shut down this thead
             	}catch(SecurityException e2){
             		//Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
-            		listening = false;
             		interrupt();
             	}
             	mmServerSocket = tmp;
@@ -438,9 +432,8 @@ public class MultiplexBluetoothTransport {
                 		return;
                 	}
                 } catch (IOException e) {
-                	listening = false;
-                    Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
-					interrupt(); 
+                    Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed");
+                    getBluetoothSerialServerInstance().stop(STATE_ERROR);
                     return;
                 }
 
@@ -475,7 +468,6 @@ public class MultiplexBluetoothTransport {
         }
 
         public synchronized void cancel() {
-        	listening = false;
         	Log.d(TAG, mState + " Socket Type " + mSocketType + " cancel ");
             try {
             	if(mmServerSocket != null){
