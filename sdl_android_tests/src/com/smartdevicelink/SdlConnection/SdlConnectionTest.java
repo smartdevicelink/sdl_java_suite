@@ -1,7 +1,6 @@
 package com.smartdevicelink.SdlConnection;
 
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BTTransportConfig;
@@ -57,15 +56,14 @@ public class SdlConnectionTest extends AndroidTestCase {
 		MultiplexTransportConfig null_service_config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
 		null_service_config.setService(null);
 		SdlConnectionTestClass null_service_connection = new SdlConnectionTestClass(null_service_config, null);
+		Exception exception = null;
 		try{
 			null_service_connection.forceHardwareConnectEvent(TransportType.MULTIPLEX);
-			
-			assertFalse(null_service_connection.connected);
 		}catch(NullPointerException e){
-			Log.d("SdlConnectionTest", e.toString());
-			
-			assertNotNull(null); // Failed, unhandled NPE
+			exception = e;
 		}
+		
+		assertNull(exception); // Failed, unhandled NPE
 	}
 	
 	public void testMultiplexConstructor(){
