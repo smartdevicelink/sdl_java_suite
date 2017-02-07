@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.SdlPsm;
+import com.smartdevicelink.protocol.WiProProtocol;
 
 import android.util.Log;
 import junit.framework.TestCase;
@@ -16,7 +17,7 @@ import junit.framework.TestCase;
  */
 public class SdlPsmTests extends TestCase {
 	private static final String TAG = "SdlPsmTests";
-	private static final int V1_V2_MTU_SIZE = 1500;
+	private static final int MAX_DATA_LENGTH = WiProProtocol.V1_V2_MTU_SIZE - WiProProtocol.V1_HEADER_SIZE;
 	SdlPsm sdlPsm;
 	Field frameType, dataLength, version, controlFrameInfo;
 	Method transitionOnInput;
@@ -50,7 +51,7 @@ public class SdlPsmTests extends TestCase {
 			controlFrameInfo.set(sdlPsm, SdlPacket.FRAME_INFO_START_SERVICE);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_CONTROL);
 			
-			dataLength.set(sdlPsm, V1_V2_MTU_SIZE + 1);
+			dataLength.set(sdlPsm, MAX_DATA_LENGTH + 1);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_4_STATE);
 			
 			assertEquals(Test.MATCH, SdlPsm.ERROR_STATE, STATE);
@@ -66,7 +67,7 @@ public class SdlPsmTests extends TestCase {
 			controlFrameInfo.set(sdlPsm, SdlPacket.FRAME_INFO_START_SERVICE);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_CONTROL);
 			
-			dataLength.set(sdlPsm, V1_V2_MTU_SIZE);
+			dataLength.set(sdlPsm, MAX_DATA_LENGTH);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_4_STATE);
 			
 			assertEquals(Test.MATCH, SdlPsm.DATA_PUMP_STATE, STATE);
