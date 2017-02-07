@@ -54,7 +54,6 @@ import android.os.Messenger;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -74,7 +73,6 @@ import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
-
 /**
  * <b>This class should not be modified by anyone outside of the approved contributors of the SmartDeviceLink project.</b>
  * This service is a central point of communication between hardware and the registered clients. It will multiplex a single transport
@@ -775,27 +773,47 @@ public class SdlRouterService extends Service{
 
 	}
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		
+	// Runs several checks. Returns false if any fail, true if all pass.
+	private boolean initCheck(){
 		if(!processCheck()){
 			Log.e(TAG, "Not using correct process. Shutting down");
 			wrongProcess = true;
-			stopSelf();
-			return;
+			return false;
 		}
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
-			Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
-			stopSelf();
-			return;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+			if(getApplicationContext().checkSelfPermission(Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
+				Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
+				return false;
+			}
+		}else{
+			try{
+				if (false){ // Placeholder for android.support.v4.content.ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
+					Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
+					return false;
+				}
+			}catch(Exception e) {
+				Log.e(TAG, "Android Support Library not available, not checking for BT permission.");
+			}
 		}
 		if(!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))){ //We want to check to see if our service is actually exported
 			Log.e(TAG, "Service isn't exported. Shutting down");
+			return false;
+		} else {
+			Log.d(TAG, "We are in the correct process");
+		}
+		return true;
+	}
+
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+
+		if(!initCheck()){ // Run checks on process and permissions
 			stopSelf();
 			return;
 		}
-		else{Log.d(TAG, "We are in the correct process");}
+
 		synchronized(REGISTERED_APPS_LOCK){
 			registeredApps = new HashMap<Long,RegisteredApp>();
 		}
