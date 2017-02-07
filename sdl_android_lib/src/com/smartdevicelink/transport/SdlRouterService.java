@@ -772,34 +772,31 @@ public class SdlRouterService extends Service{
 		return false;
 
 	}
+	
+	private boolean permissionCheck(String permissionToCheck){
+		if(permissionToCheck == null){
+			throw new IllegalArgumentException("permission is null");
+		}
+		return PackageManager.PERMISSION_GRANTED == getBaseContext().checkPermission(permissionToCheck, android.os.Process.myPid(), android.os.Process.myUid());
+	}
 
-	// Runs several checks. Returns false if any fail, true if all pass.
+	/**
+	 * Runs several checks to ensure this router service has the correct conditions to run properly 
+	 * @return true if this service is set up correctly
+	 */
 	private boolean initCheck(){
 		if(!processCheck()){
 			Log.e(TAG, "Not using correct process. Shutting down");
 			wrongProcess = true;
 			return false;
 		}
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-			if(getApplicationContext().checkSelfPermission(Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
-				Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
-				return false;
-			}
-		}else{
-			try{
-				if (false){ // Placeholder for android.support.v4.content.ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
-					Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
-					return false;
-				}
-			}catch(Exception e) {
-				Log.e(TAG, "Android Support Library not available, not checking for BT permission.");
-			}
+		if(!permissionCheck(Manifest.permission.BLUETOOTH)){
+			Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
+			return false;
 		}
 		if(!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))){ //We want to check to see if our service is actually exported
 			Log.e(TAG, "Service isn't exported. Shutting down");
 			return false;
-		} else {
-			Log.d(TAG, "We are in the correct process");
 		}
 		return true;
 	}
