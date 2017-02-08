@@ -12,7 +12,6 @@ class SdlGlobalPropertiesManager {
     private ArrayList<SdlGlobalProperties> mPropertyTransactions = new ArrayList<>();
     private EnumSet<GlobalProperty> removalProperties = EnumSet.noneOf(GlobalProperty.class);
     private ArrayList<SdlGlobalProperties> mPropertyAdditions = new ArrayList<>();
-    private SdlGlobalProperties mPriorProperties = null;
 
     void addSetProperty(SdlGlobalProperties properties){
         mPropertyAdditions.add(properties);
@@ -21,25 +20,36 @@ class SdlGlobalPropertiesManager {
 
     void removeSetProperty(SdlGlobalProperties properties){
         mPropertyTransactions.remove(properties);
-        mPriorProperties = squashOrderedProperties(mPropertyTransactions);
-        EnumSet<GlobalProperty> removingProperties = properties.propertiesSet();
-        removingProperties.removeAll(mPriorProperties.propertiesSet());
-        removalProperties.addAll(removingProperties);
+        removalProperties.addAll(properties.propertiesSet());
     }
 
     void update(SdlContext context){
+
+        SdlGlobalProperties priorProperties = null;
         if(!removalProperties.isEmpty()){
-            ResetGlobalProperties resetCommand = new ResetGlobalProperties();
-            resetCommand.setProperties(new ArrayList<>(removalProperties));
-            context.sendRpc(resetCommand);
-            removalProperties.clear();
+
+            // figuring out the previous set properties
+            // if they contain all the enums we are removing then we don't need to do a reset
+            priorProperties = squashOrderedProperties(mPropertyTransactions);
+
+            // if none of the prior properties contains the removal properties, then we
+            // don't need to send the prior set properties
+            if(!removalProperties.removeAll(priorProperties.propertiesSet())){
+                priorProperties = null;
+            }
+
+            if(!removalProperties.isEmpty()){
+                ResetGlobalProperties resetCommand = new ResetGlobalProperties();
+                resetCommand.setProperties(new ArrayList<>(removalProperties));
+                context.sendRpc(resetCommand);
+                removalProperties.clear();
+            }
         }
 
-        if(mPriorProperties != null || !mPropertyAdditions.isEmpty()){
+        if(priorProperties != null || !mPropertyAdditions.isEmpty()){
             SdlGlobalProperties setProperties = new SdlGlobalProperties.Builder().build();
-            if(mPriorProperties != null){
-                setProperties.updateWithLaterProperties(mPriorProperties);
-                mPriorProperties = null;
+            if(priorProperties != null){
+                setProperties.updateWithLaterProperties(priorProperties);
             }
             if(!mPropertyAdditions.isEmpty()){
                 setProperties.updateWithLaterProperties(squashOrderedProperties(mPropertyAdditions));
