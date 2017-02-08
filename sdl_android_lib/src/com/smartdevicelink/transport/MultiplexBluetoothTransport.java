@@ -723,7 +723,7 @@ public class MultiplexBluetoothTransport {
             	//This would be a good spot to log out all bytes received
             	mmOutStream.write(buffer, offset, count);
             	//Log.w(TAG, "Wrote out to device: bytes = "+ count);
-            } catch (IOException e) {
+            } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write
             	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
             	Log.e(TAG, "Error sending bytes to connected device!");
