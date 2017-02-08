@@ -161,8 +161,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
             	try {
                 	context.startService(serviceIntent);
             	}catch (SecurityException e){
-                	Log.e(TAG, "Process is bad");
-                	android.os.Process.killProcess(android.os.Process.myPid()); // Let's exit, we can't start our service
+                    Log.e(TAG, "Security exception, process is bad");
+                    return false; // Let's exit, we can't start the service
             	}
     		return true;
     	}else{
