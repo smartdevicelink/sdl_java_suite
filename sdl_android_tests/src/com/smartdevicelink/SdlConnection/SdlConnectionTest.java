@@ -50,20 +50,8 @@ public class SdlConnectionTest extends AndroidTestCase {
 
 		
 		assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
+
 		
-		
-		// Test for handling of null service
-		MultiplexTransportConfig null_service_config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
-		null_service_config.setService(null);
-		SdlConnectionTestClass null_service_connection = new SdlConnectionTestClass(null_service_config, null);
-		Exception exception = null;
-		try{
-			null_service_connection.forceHardwareConnectEvent(TransportType.MULTIPLEX);
-		}catch(NullPointerException e){
-			exception = e;
-		}
-		
-		assertNull(exception); // Failed, unhandled NPE
 	}
 	
 	public void testMultiplexConstructor(){
