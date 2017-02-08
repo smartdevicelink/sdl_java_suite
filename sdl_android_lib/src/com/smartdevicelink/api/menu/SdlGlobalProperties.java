@@ -33,7 +33,7 @@ public class SdlGlobalProperties {
         mKeyboardProperties = builder.mKeyboardProperties;
     }
 
-    public SetGlobalProperties constructRequest(){
+    SetGlobalProperties constructRequest(){
         SetGlobalProperties rpcRequest = new SetGlobalProperties();
         if(mMenuTitle!=null){
             rpcRequest.setMenuTitle(mMenuTitle);
@@ -62,7 +62,7 @@ public class SdlGlobalProperties {
         return rpcRequest;
     }
 
-    public EnumSet<GlobalProperty> propertiesSet(){
+    EnumSet<GlobalProperty> propertiesSet(){
         EnumSet<GlobalProperty> properties = EnumSet.noneOf(GlobalProperty.class);
         if(mMenuTitle!=null){
             properties.add(GlobalProperty.MENUNAME);
