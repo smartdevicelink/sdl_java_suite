@@ -122,7 +122,8 @@ public class SdlRouterService extends Service{
     private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
 	
     private boolean wrongProcess = false;
-	
+	private boolean initPassed = false;
+
     private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
 	private SparseArray<Long> sessionMap;
@@ -810,6 +811,7 @@ public class SdlRouterService extends Service{
 			stopSelf();
 			return;
 		}
+		initPassed = true;
 
 		synchronized(REGISTERED_APPS_LOCK){
 			registeredApps = new HashMap<Long,RegisteredApp>();
@@ -873,6 +875,8 @@ public class SdlRouterService extends Service{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		if(!initPassed)
+			return super.onStartCommand(intent, flags, startId);
 		if(registeredApps == null){
 			synchronized(REGISTERED_APPS_LOCK){
 				registeredApps = new HashMap<Long,RegisteredApp>();
