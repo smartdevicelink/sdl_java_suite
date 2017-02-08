@@ -1316,10 +1316,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 			
-			if(rpcResponseListeners != null)
+			if(rpcResponseListeners != null){
 				rpcResponseListeners.clear();
-			if(rpcNotificationListeners != null)
+			}
+			if(rpcNotificationListeners != null){
 				rpcNotificationListeners.clear(); //TODO make sure we want to clear this
+			}
 			
 			// Clean up SDL Connection
 			synchronized(CONNECTION_REFERENCE_LOCK) {
