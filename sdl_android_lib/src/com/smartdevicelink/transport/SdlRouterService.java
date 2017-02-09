@@ -875,8 +875,9 @@ public class SdlRouterService extends Service{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if(!initPassed)
+		if(!initPassed) {
 			return super.onStartCommand(intent, flags, startId);
+		}
 		if(registeredApps == null){
 			synchronized(REGISTERED_APPS_LOCK){
 				registeredApps = new HashMap<Long,RegisteredApp>();
