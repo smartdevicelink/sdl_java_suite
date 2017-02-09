@@ -3,7 +3,6 @@ package com.smartdevicelink.protocol;
 import java.io.ByteArrayOutputStream;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
-import com.smartdevicelink.protocol.IProtocolListener;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.WiProProtocol;
@@ -15,7 +14,6 @@ import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
 
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
