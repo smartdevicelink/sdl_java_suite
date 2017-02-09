@@ -200,10 +200,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    		
 	    		runningBluetoothServicePackage.add(service.service);	//Store which instance is running
 	            if(pingService){
-	            	Intent intent = new Intent();
-	            	intent.setClassName(service.service.getPackageName(), service.service.getClassName());
-	            	intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, pingService);
-	            	context.startService(intent);
+					pingRouterService(context, service.service.getPackageName(), service.service.getClassName());
 	            }
 	        }
 	    }
@@ -212,6 +209,27 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		
 	}
 
+	/**
+	 * Attempts to ping a running router service
+	 * @param context A context to access Android system services through.
+	 * @param packageName Package name for service to ping
+	 * @param className Class name for service to ping
+	 */
+	protected static void pingRouterService(Context context, String packageName, String className){
+		if(context == null || packageName == null || className == null){
+			return;
+		}
+		try{
+			Intent intent = new Intent();
+			intent.setClassName(packageName, className);
+			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
+			context.startService(intent);
+		}catch(SecurityException e){
+			Log.e(TAG, "Security exception, process is bad");
+			// This service could not be started
+		}
+	}
+	
 	/**
 	 * This call will reach out to all SDL related router services to check if they're connected. If a the router service is connected, it will react by pinging all clients. This receiver will then
 	 * receive that ping and if the router service is trusted, the onSdlEnabled method will be called. 
