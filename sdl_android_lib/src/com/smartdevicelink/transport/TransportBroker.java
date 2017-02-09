@@ -1,10 +1,5 @@
 package com.smartdevicelink.transport;
 
-import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -26,6 +21,11 @@ import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
+
+import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class TransportBroker {
@@ -91,11 +91,11 @@ public class TransportBroker {
     			try {
     				routerServiceMessenger.send(message);
     				return true;
-    			} catch (RemoteException|NullPointerException e) { // NPE is STRICTLY for case that routerServiceMessenger is null
+    			} catch (RemoteException e) {
     				e.printStackTrace();
     				//Let's check to see if we should retry
-    				if(!(e instanceof NullPointerException) && (e instanceof TransactionTooLargeException
-    						|| (retryCount<5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder()))){ //We probably just failed on a small transaction =\
+    				if(e instanceof TransactionTooLargeException
+    						|| (retryCount<5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder())){ //We probably just failed on a small transaction =\
     					try {
     						Thread.sleep(100);
     					} catch (InterruptedException e1) {
@@ -103,7 +103,7 @@ public class TransportBroker {
     					}
     					return sendMessageToRouterService(message, retryCount++);
     				}else{
-    					//DeadObject or routerServiceMessenger is null, time to kill our connection
+    					//DeadObject, time to kill our connection
     					Log.d(TAG, "Dead object while attempting to send packet");
     					routerServiceMessenger = null;
     					registeredWithRouterService = false;
@@ -111,7 +111,14 @@ public class TransportBroker {
     					onHardwareDisconnected(null);
     					return false;
     				}
-    			}
+    			} catch (NullPointerException e){
+					Log.d(TAG, "Null messenger while attempting to send packet"); // NPE, routerServiceMessenger is null
+					routerServiceMessenger = null;
+					registeredWithRouterService = false;
+					isBound = false;
+					onHardwareDisconnected(null);
+					return false;
+				}
     		}else{
     			Log.e(TAG, "Unable to send message to router service. Not registered.");
     			return false;
