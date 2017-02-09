@@ -169,7 +169,7 @@ public class MultiplexTransport extends SdlTransport{
 		}
 
 		@SuppressLint("NewApi")
-		public void cancel(){
+		public synchronized void cancel(){
 				if(broker!=null){
 					broker.stop();
 					broker = null;
