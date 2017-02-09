@@ -5,7 +5,7 @@ import android.util.Log;
 import com.smartdevicelink.util.BitConverter;
 
 public class BinaryFrameHeader {
-	private static final String TAG = "Binary Frame Header";
+	private static final String TAG = "BinaryFrameHeader";
 
 	private byte _rpcType;
 	private int _functionID;
