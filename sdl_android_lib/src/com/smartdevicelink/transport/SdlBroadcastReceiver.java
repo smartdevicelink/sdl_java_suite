@@ -1,6 +1,5 @@
 package com.smartdevicelink.transport;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -202,8 +201,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			Log.e(TAG, "Can't get list of running services");
 			return false;
 		}
-	    for (Iterator<RunningServiceInfo> i = runningServices.iterator(); i.hasNext();) {
-			RunningServiceInfo service = i.next();
+	    for (RunningServiceInfo service : runningServices) {
 			//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
 	    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service)) {
