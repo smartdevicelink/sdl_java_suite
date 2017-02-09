@@ -5,6 +5,8 @@ import android.util.Log;
 import com.smartdevicelink.util.BitConverter;
 
 public class BinaryFrameHeader {
+	private static final String TAG = "Binary Frame Header";
+
 	private byte _rpcType;
 	private int _functionID;
 	private int _correlationID;
@@ -43,7 +45,7 @@ public class BinaryFrameHeader {
 				msg.setBulkData(_bulkData);
 			}
 		} catch (OutOfMemoryError e){
-			Log.e("SdlProtocol", "OOM error due to junk data in BinaryFrameHeader");
+			Log.e(TAG, "Unable to process data to form header");
 			msg.setJsonSize(0);
 			msg.setJsonData(null);
 			msg.setBulkData(null);
