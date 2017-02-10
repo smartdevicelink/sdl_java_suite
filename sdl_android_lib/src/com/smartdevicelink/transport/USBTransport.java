@@ -360,6 +360,8 @@ public class USBTransport extends SdlTransport {
         }
         _disconnecting = true;
 
+        mConfig.setUsbAccessory(null);
+
         final State state = getState();
         switch (state) {
             case LISTENING:
@@ -456,12 +458,14 @@ public class USBTransport extends SdlTransport {
      * Looks for an already connected compatible accessory and connect to it.
      */
     private void initializeAccessory() {
-    	if (!mConfig.getQueryUsbAcc()){
-    		logI("Query for accessory is disabled.");
+        UsbAccessory acc =  mConfig.getUsbAccessory();
+
+    	if (!mConfig.getQueryUsbAcc()  && acc == null){
+    		logI("Query for accessory is disabled and accessory in config was null.");
     		return;
     	}
 		logI("Looking for connected accessories");
-        UsbAccessory acc =  mConfig.getUsbAccessory();
+
         if( acc == null || !isAccessorySupported(acc)){ //Check to see if our config included an accessory and that it is supported. If not, see if there are any other accessories connected.
 			UsbManager usbManager = getUsbManager();
          	UsbAccessory[] accessories = usbManager.getAccessoryList();
@@ -487,7 +491,7 @@ public class USBTransport extends SdlTransport {
      * @param accessory Accessory to check
      * @return true if the accessory is right
      */
-    private boolean isAccessorySupported(UsbAccessory accessory) {
+    public static boolean isAccessorySupported(UsbAccessory accessory) {
         boolean manufacturerMatches =
                 ACCESSORY_MANUFACTURER.equals(accessory.getManufacturer());
         boolean modelMatches = ACCESSORY_MODEL.equals(accessory.getModel());

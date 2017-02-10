@@ -44,7 +44,9 @@ public class USBTransportConfig extends BaseTransportConfig {
 	public UsbAccessory getUsbAccessory () {
 		return usbAccessory;
 	}
-	
+
+	public void setUsbAccessory (UsbAccessory value) { usbAccessory = value; }
+
 	public TransportType getTransportType() {
 		return TransportType.USB;
 	}
