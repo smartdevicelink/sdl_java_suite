@@ -36,10 +36,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -1363,7 +1360,7 @@ public class SdlRouterService extends Service{
 	    						this.sessionHashIdMap.remove(session);
 	    					}
 	    				}
-	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId))).constructPacket();
+	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId))).toByteArray();
 						manuallyWriteBytes(stopService,0,stopService.length);
 	    				return false;
 	    			}
@@ -1462,7 +1459,7 @@ public class SdlRouterService extends Service{
 					this.sessionHashIdMap.remove(session);
 				}
 			}
-			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,BitConverter.intToByteArray(hashId))).constructPacket();
+			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,BitConverter.intToByteArray(hashId))).toByteArray();
 			manuallyWriteBytes(stopService,0,stopService.length);
 		}
 		
@@ -1486,7 +1483,7 @@ public class SdlRouterService extends Service{
 							hashId = this.sessionHashIdMap.get(sessionId); 
 						}
 					}
-					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version,BitConverter.intToByteArray(hashId))).constructPacket();
+					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version,BitConverter.intToByteArray(hashId))).toByteArray();
 					
 					manuallyWriteBytes(stopService,0,stopService.length);
 					synchronized(SESSION_LOCK){
@@ -1859,7 +1856,7 @@ public class SdlRouterService extends Service{
 		}
 
 		SdlPacket packet = new SdlPacket(version,false,SdlPacket.FRAME_TYPE_SINGLE,SdlPacket.SERVICE_TYPE_RPC,0,sessionId,data.length,data.length+100,data);
-		return packet.constructPacket();
+		return packet.toByteArray();
 	}
 	
 	

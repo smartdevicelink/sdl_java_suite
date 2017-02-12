@@ -206,7 +206,7 @@ public class USBTransport extends SdlTransport {
      */
     @Override
     protected boolean sendBytesOverTransport(SdlPacket packet) {
-    	byte[] msgBytes = packet.constructPacket();
+    	byte[] msgBytes = packet.toByteArray();
         logD("SendBytes: array size " + msgBytes.length + ", offset " + 0 +
                 ", length " + msgBytes.length);
 
