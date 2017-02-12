@@ -53,20 +53,23 @@ public class SdlPacket implements Parcelable {
     public static final int FRAME_INFO_RESERVED = 0x00;
 
 
-    private int version;
+    /**
+     * package scope
+     */
+    int version;
     /**
      * Compression Flag, which only available in Protocol Version 1
      * or Encryption Flag, which only available in Protocol Version 2
      */
-    private boolean encryption;
-    private int frameType;
-    private int serviceType;
-    private int frameInfo;
-    private int sessionId;
-    private int dataSize;
-    private int messageId;
-    private int priorityCoefficient;
-    private byte[] payload = null;
+    boolean encryption;
+    int frameType;
+    int serviceType;
+    int frameInfo;
+    int sessionId;
+    int dataSize;
+    int messageId;
+    int priorityCoefficient;
+    byte[] payload = null;
 
     /**
      * This constructor is available as a protected method. A few defaults have been set,
@@ -320,7 +323,6 @@ public class SdlPacket implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
         dest.writeInt(version);
         dest.writeInt(encryption ? 1 : 0);
         dest.writeInt(frameType);
@@ -334,7 +336,6 @@ public class SdlPacket implements Parcelable {
             dest.writeByteArray(payload);
         }
         dest.writeInt(priorityCoefficient);
-
     }
 
     public static final Parcelable.Creator<SdlPacket> CREATOR = new Parcelable.Creator<SdlPacket>() {
