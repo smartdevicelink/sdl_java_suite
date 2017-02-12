@@ -461,11 +461,11 @@ public class WiProProtocol extends AbstractProtocol {
 		
 	}
 
-	@Override
-	public void SetHeartbeatSendInterval(int heartbeatSendInterval_ms) {
-		_heartbeatSendInterval_ms = heartbeatSendInterval_ms;
-		
-	}
+//	@Override
+//	public void SetHeartbeatSendInterval(int heartbeatSendInterval_ms) {
+//		_heartbeatSendInterval_ms = heartbeatSendInterval_ms;
+//
+//	}
 
 	@Override
 	public void SetHeartbeatReceiveInterval(int heartbeatReceiveInterval_ms) {
