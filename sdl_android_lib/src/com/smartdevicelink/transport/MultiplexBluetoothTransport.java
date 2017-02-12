@@ -95,7 +95,6 @@ public class MultiplexBluetoothTransport {
     
     /**
      * Constructor. Prepares a new BluetoothChat session.
-     * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
     private MultiplexBluetoothTransport(Handler handler) {
@@ -723,7 +722,12 @@ public class MultiplexBluetoothTransport {
             	//This would be a good spot to log out all bytes received
             	mmOutStream.write(buffer, offset, count);
             	//Log.w(TAG, "Wrote out to device: bytes = "+ count);
-            } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
+            } catch (IOException e) { // STRICTLY to catch mmOutStream NPE
+                // Exception during write
+            	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
+            	Log.e(TAG, "Error sending bytes to connected device!");
+            	getBluetoothSerialServerInstance().connectionLost();
+            } catch (NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write
             	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
             	Log.e(TAG, "Error sending bytes to connected device!");
@@ -797,10 +801,15 @@ public class MultiplexBluetoothTransport {
                     	psm.reset(); 
 
                     }
-                } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
+                } catch (IOException e) { // NPE is ONLY to catch error on mmInStream
                 	Log.e(TAG, "Lost connection in the Connected Thread");
                 	e.printStackTrace();
-                	connectionLost();                    
+                	connectionLost();
+                    break;
+                } catch (NullPointerException e) { // NPE is ONLY to catch error on mmInStream
+                	Log.e(TAG, "Lost connection in the Connected Thread");
+                	e.printStackTrace();
+                	connectionLost();
                     break;
                 }
             }
@@ -817,7 +826,10 @@ public class MultiplexBluetoothTransport {
                 	mmSocket.close();
                 }
                 
-            } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
+            } catch (IOException e) { // NPE is ONLY to catch error on mmInStream
+            	// Log.trace(TAG, "Read Thread: " + e.getMessage());
+                // Socket or stream is already closed
+            } catch (NullPointerException e) { // NPE is ONLY to catch error on mmInStream
             	// Log.trace(TAG, "Read Thread: " + e.getMessage());
                 // Socket or stream is already closed
             }
