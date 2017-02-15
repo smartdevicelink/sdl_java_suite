@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -72,7 +73,6 @@ import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
-
 /**
  * <b>This class should not be modified by anyone outside of the approved contributors of the SmartDeviceLink project.</b>
  * This service is a central point of communication between hardware and the registered clients. It will multiplex a single transport
@@ -122,7 +122,8 @@ public class SdlRouterService extends Service{
     private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
 	
     private boolean wrongProcess = false;
-	
+	private boolean initPassed = false;
+
     private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
 	private SparseArray<Long> sessionMap;
@@ -774,23 +775,46 @@ public class SdlRouterService extends Service{
 		return false;
 
 	}
+	
+	private boolean permissionCheck(String permissionToCheck){
+		if(permissionToCheck == null){
+			throw new IllegalArgumentException("permission is null");
+		}
+		return PackageManager.PERMISSION_GRANTED == getBaseContext().checkPermission(permissionToCheck, android.os.Process.myPid(), android.os.Process.myUid());
+	}
+
+	/**
+	 * Runs several checks to ensure this router service has the correct conditions to run properly 
+	 * @return true if this service is set up correctly
+	 */
+	private boolean initCheck(){
+		if(!processCheck()){
+			Log.e(TAG, "Not using correct process. Shutting down");
+			wrongProcess = true;
+			return false;
+		}
+		if(!permissionCheck(Manifest.permission.BLUETOOTH)){
+			Log.e(TAG, "Bluetooth Permission is not granted. Shutting down");
+			return false;
+		}
+		if(!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))){ //We want to check to see if our service is actually exported
+			Log.e(TAG, "Service isn't exported. Shutting down");
+			return false;
+		}
+		return true;
+	}
+
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
-		if(!processCheck()){
-			Log.e(TAG, "Not using correct process. Shutting down");
-			wrongProcess = true;
+
+		if(!initCheck()){ // Run checks on process and permissions
 			stopSelf();
 			return;
 		}
-		if(!AndroidTools.isServiceExported(this, new ComponentName(this, this.getClass()))){ //We want to check to see if our service is actually exported
-			Log.e(TAG, "Service isn't exported. Shutting down");
-			stopSelf();
-			return;
-		}
-		else{Log.d(TAG, "We are in the correct process");}
+		initPassed = true;
+
 		synchronized(REGISTERED_APPS_LOCK){
 			registeredApps = new HashMap<Long,RegisteredApp>();
 		}
@@ -853,6 +877,9 @@ public class SdlRouterService extends Service{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		if(!initPassed) {
+			return super.onStartCommand(intent, flags, startId);
+		}
 		if(registeredApps == null){
 			synchronized(REGISTERED_APPS_LOCK){
 				registeredApps = new HashMap<Long,RegisteredApp>();
