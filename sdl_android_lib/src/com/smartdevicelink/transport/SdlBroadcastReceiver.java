@@ -1,5 +1,6 @@
 package com.smartdevicelink.transport;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -193,8 +194,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}else{
 			runningBluetoothServicePackage.clear();
 		}
-	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	    	//We will check to see if it contains this name, should be pretty specific
+		List<RunningServiceInfo> runningServices = null;
+		try{
+			runningServices = manager.getRunningServices(Integer.MAX_VALUE);
+		}catch(NullPointerException e){
+			Log.e(TAG, "Can't get list of running services");
+			return false;
+		}
+	    for (RunningServiceInfo service : runningServices) {
+			//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
 	    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service)) {
 	    		
