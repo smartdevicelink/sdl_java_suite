@@ -51,6 +51,14 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	} // end-ctor
 	
+	/**
+	 * Retrieves the max payload size for a packet to be sent to the module
+	 * @return the max transfer unit 
+	 */
+	public int getMtu(){
+		return MAX_DATA_SIZE;
+	}
+	
 	public byte getVersion() {
 		return this._version;
 	}
