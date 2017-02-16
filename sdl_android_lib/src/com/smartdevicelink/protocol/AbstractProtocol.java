@@ -30,6 +30,7 @@ public abstract class AbstractProtocol {
 	// over which to send the message, etc.
 	public abstract void SendMessage(ProtocolMessage msg);
 
+	public abstract int getMtu();
 	
 	public abstract void handlePacketReceived(SdlPacket packet);
 	
