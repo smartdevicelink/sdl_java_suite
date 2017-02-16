@@ -20,17 +20,17 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isServiceProtected = false;
-    private int bufferSize = BUFF_READ_SIZE;
     
 	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
 		super(streamListener, is, sType, rpcSessionID, session);
         mPauseLock = new Object();
         mPaused = false;
         isServiceProtected = _session.isServiceProtected(_serviceType);
-		if(!isServiceProtected){ //If our service is encrypted we can only use 1024 as the max buffer size. If it's not, we can use the default MTU for the current session
-			bufferSize = _session.getMtu();
+		if(isServiceProtected){ //If our service is encrypted we can only use 1024 as the max buffer size. 
+			bufferSize = BUFF_READ_SIZE;
+			buffer = new byte[bufferSize];
 		}
-		buffer = new byte[bufferSize];
+		
 	}
 
 	public void start() throws IOException {
