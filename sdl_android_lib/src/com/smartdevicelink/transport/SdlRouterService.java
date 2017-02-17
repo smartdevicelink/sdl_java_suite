@@ -2024,13 +2024,9 @@ public class SdlRouterService extends Service{
 			this.timestamp = p.readLong();
 			try {
 				this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
-			}catch (Exception e){ // catch DexException
-				this.launchIntent = null;
-			}
-			try {
 				this.name = p.readParcelable(ComponentName.class.getClassLoader());
-			}catch (Exception e){ // catch DexException
-				this.name = null;
+			}catch (Exception e){
+				// catch DexException
 			}
 		}
 		
