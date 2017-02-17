@@ -59,12 +59,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		//Let's check if we can even do multiplexing
 		if(transportConfig.getTransportType() == TransportType.MULTIPLEX){
 			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+			MultiplexTransportConfig multiConfig = (MultiplexTransportConfig)transportConfig;
 			if(tempCompName!=null){
-				vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext(),tempCompName);
+				vlad =new RouterServiceValidator(multiConfig.getContext(),tempCompName);
 			}else{
-				vlad =new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
+				vlad =new RouterServiceValidator(multiConfig.getContext());
 			}
 			//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
+			vlad.setSecurityLevel(multiConfig.getSecurityLevel());
 		}
 		constructor(transportConfig,vlad);
 	}

@@ -79,7 +79,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.securityLevel = securityLevel;
 	}
 	
-	protected int getSecurityLevel(){
+	public int getSecurityLevel(){
 		return securityLevel;
 	}
 	
