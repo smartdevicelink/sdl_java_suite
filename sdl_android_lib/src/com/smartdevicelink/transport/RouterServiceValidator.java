@@ -170,7 +170,7 @@ public class RouterServiceValidator {
 	}
 	
 	private boolean shouldOverrideInstalledFrom(){
-		return this.securityLevel< MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH 
+		return securityLevel< MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH 
 				|| (this.inDebugMode && ((this.flags & FLAG_DEBUG_INSTALLED_FROM_CHECK) != FLAG_DEBUG_INSTALLED_FROM_CHECK));
 	}
 	
