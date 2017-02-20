@@ -46,9 +46,7 @@ public class BinaryFrameHeader {
 			}
 		} catch (OutOfMemoryError e){
 			Log.e(TAG, "Unable to process data to form header");
-			msg.setJsonSize(0);
-			msg.setJsonData(null);
-			msg.setBulkData(null);
+			return null;
 		}
 		
 		return msg;
