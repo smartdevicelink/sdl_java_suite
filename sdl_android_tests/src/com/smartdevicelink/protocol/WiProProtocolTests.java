@@ -16,94 +16,76 @@ import com.smartdevicelink.test.SampleRpc;
 import com.smartdevicelink.util.DebugTool;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 public class WiProProtocolTests extends AndroidTestCase {
 	
 	IProtocolListener defaultListener = new IProtocolListener(){
-
 		@Override
-		public void onProtocolMessageBytesToSend(SdlPacket packet) {
-			// TODO Auto-generated method stub
-			
+		public void onProtocolMessageBytesToSend(SdlPacket packet) {}
+		@Override
+		public void onProtocolMessageReceived(ProtocolMessage msg) {}
+		@Override
+		public void onProtocolSessionStarted(SessionType sessionType,byte sessionID, byte version, String correlationID, int hashID,boolean isEncrypted){}
+		@Override
+		public void onProtocolSessionNACKed(SessionType sessionType,byte sessionID, byte version, String correlationID) {}
+		@Override
+		public void onProtocolSessionEnded(SessionType sessionType,byte sessionID, String correlationID) {}
+		@Override
+		public void onProtocolSessionEndedNACKed(SessionType sessionType,byte sessionID, String correlationID) {}
+		@Override
+		public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {}
+		@Override
+		public void onProtocolHeartbeatACK(SessionType sessionType,byte sessionID) {}
+		@Override
+		public void onProtocolServiceDataACK(SessionType sessionType,int dataSize, byte sessionID) {}
+		@Override
+		public void onResetOutgoingHeartbeat(SessionType sessionType,byte sessionID) {}
+		@Override
+		public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
+		@Override
+		public void onProtocolError(String info, Exception e) {}
+	};
+	public static class DidReceiveListener implements IProtocolListener{
+		boolean didReceive = false;
+		
+		public void reset(){
+			didReceive = false;
 		}
-
+		public boolean didReceive(){
+			return didReceive;
+		}
+		@Override
+		public void onProtocolMessageBytesToSend(SdlPacket packet) {}
 		@Override
 		public void onProtocolMessageReceived(ProtocolMessage msg) {
-			// TODO Auto-generated method stub
-			
+			didReceive = true;
+			Log.d("DidReceiveListener", "RPC Type: " + msg.getRPCType());
+			Log.d("DidReceiveListener", "Function Id: " + msg.getFunctionID());
+			Log.d("DidReceiveListener", "JSON Size: " + msg.getJsonSize());
 		}
-
 		@Override
-		public void onProtocolSessionStarted(SessionType sessionType,
-				byte sessionID, byte version, String correlationID, int hashID,
-				boolean isEncrypted) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolSessionStarted(SessionType sessionType,byte sessionID, byte version, String correlationID, int hashID,boolean isEncrypted){}
 		@Override
-		public void onProtocolSessionNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolSessionNACKed(SessionType sessionType,byte sessionID, byte version, String correlationID) {}
 		@Override
-		public void onProtocolSessionEnded(SessionType sessionType,
-				byte sessionID, String correlationID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolSessionEnded(SessionType sessionType,byte sessionID, String correlationID) {}
 		@Override
-		public void onProtocolSessionEndedNACKed(SessionType sessionType,
-				byte sessionID, String correlationID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolSessionEndedNACKed(SessionType sessionType,byte sessionID, String correlationID) {}
 		@Override
-		public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {}
 		@Override
-		public void onProtocolHeartbeatACK(SessionType sessionType,
-				byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolHeartbeatACK(SessionType sessionType,byte sessionID) {}
 		@Override
-		public void onProtocolServiceDataACK(SessionType sessionType,
-				int dataSize, byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onProtocolServiceDataACK(SessionType sessionType,int dataSize, byte sessionID) {}
 		@Override
-		public void onResetOutgoingHeartbeat(SessionType sessionType,
-				byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onResetOutgoingHeartbeat(SessionType sessionType,byte sessionID) {}
 		@Override
-		public void onResetIncomingHeartbeat(SessionType sessionType,
-				byte sessionID) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
 		@Override
-		public void onProtocolError(String info, Exception e) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+		public void onProtocolError(String info, Exception e) {}
 	};
-	
+	DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
 	
 	public void testBase(){
 		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
@@ -221,18 +203,27 @@ public class WiProProtocolTests extends AndroidTestCase {
 		
 		//Create a corrupted header
 		BinaryFrameHeader header = sampleRpc.getBinaryFrameHeader(true);
-		header.setJsonSize(Integer.MAX_VALUE);
+		header.setJsonSize(5);
+		header.setJsonData(new byte[5]);
+		header.setJsonSize(Integer.MAX_VALUE);	
 		sampleRpc.setBinaryFrameHeader(header);
-		
-		assertEquals(Integer.MAX_VALUE,sampleRpc.getBinaryFrameHeader(false).getJsonSize());
+			
 		SdlPacket packet = sampleRpc.toSdlPacket();
+				
+		BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.payload);
+		assertNull(binFrameHeader);
 		
-		assertEquals(SdlPacket.SERVICE_TYPE_RPC,packet.serviceType);
+		WiProProtocol wiProProtocol = new WiProProtocol(onProtocolMessageReceivedListener);
 		
 		
-		WiProProtocol wiProProtocol = new WiProProtocol(defaultListener);
-		MessageFrameAssembler assembler = wiProProtocol.new MessageFrameAssembler();
-
+		wiProProtocol.handlePacketReceived(packet);
+		assertFalse(onProtocolMessageReceivedListener.didReceive());
+		
+		onProtocolMessageReceivedListener.reset();
+		MessageFrameAssembler assembler =wiProProtocol.getFrameAssemblerForFrame(packet);// wiProProtocol.new MessageFrameAssembler();
+		assertNotNull(assembler);
+		assembler.handleFrame(packet);
+		assertFalse(onProtocolMessageReceivedListener.didReceive());
 		
 		try{
 			Method  method = assembler.getClass().getDeclaredMethod("handleSingleFrameMessageFrame", SdlPacket.class);

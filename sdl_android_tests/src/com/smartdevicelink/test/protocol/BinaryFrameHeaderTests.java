@@ -7,6 +7,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.test.SampleRpc;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 public class BinaryFrameHeaderTests extends AndroidTestCase {
 	
@@ -68,7 +69,16 @@ public class BinaryFrameHeaderTests extends AndroidTestCase {
 		byte[] bfhBytes = bfh.assembleHeaderBytes();
 		
 		assertNull(safeParse(bfhBytes));
-		//TODO change bytes in the array manually
+
+		//Change bytes in the array manually
+		int size = bfhBytes.length;
+		for(int i =0; i<size;i++){
+			bfhBytes[i] = (byte) 0x99;
+		}
+
+		assertNull(safeParse(bfhBytes));
+		BinaryFrameHeader head = BinaryFrameHeader.parseBinaryHeader(bfhBytes);
+		assertNull(head);
 	}
 	
 	public void testJsonSetException(){
