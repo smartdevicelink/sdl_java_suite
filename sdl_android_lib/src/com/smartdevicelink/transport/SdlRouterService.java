@@ -224,10 +224,8 @@ public class SdlRouterService extends Service{
 						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
 						synchronized(COMPARE_LOCK){
 							//Let's make sure we are on the same version.
-							if(tempService!=null){
-								if(tempService.name!=null){
-									sdlMultiList.remove(tempService.name.getPackageName());
-								}
+							if(tempService!=null && tempService.name!=null){
+								sdlMultiList.remove(tempService.name.getPackageName());
 								if((localCompareTo == null || localCompareTo.isNewer(tempService)) && AndroidTools.isServiceExported(context, tempService.name)){
 									LocalRouterService self = getLocalRouterService();
 									if(!self.isEqual(tempService)){ //We want to ignore self
@@ -2055,8 +2053,12 @@ public class SdlRouterService extends Service{
 		public LocalRouterService(Parcel p) {
 			this.version = p.readInt();
 			this.timestamp = p.readLong();
-			this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
-			this.name = p.readParcelable(ComponentName.class.getClassLoader());
+			try {
+				this.launchIntent = p.readParcelable(Intent.class.getClassLoader());
+				this.name = p.readParcelable(ComponentName.class.getClassLoader());
+			}catch (Exception e){
+				// catch DexException
+			}
 		}
 		
 		@Override
