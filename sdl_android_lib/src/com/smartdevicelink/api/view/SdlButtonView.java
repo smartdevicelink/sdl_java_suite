@@ -149,6 +149,7 @@ public class SdlButtonView extends SdlView {
 
     @Override
     public void clear() {
+        containsBackButton = false;
         mSdlButtons.clear();
     }
 
