@@ -2,8 +2,6 @@ package com.smartdevicelink.api.permission;
 
 import android.support.annotation.NonNull;
 
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-
 import java.util.EnumSet;
 
 public class SdlPermissionEvent {
@@ -28,7 +26,7 @@ public class SdlPermissionEvent {
      * @return EnumSet of {@link SdlPermission} that are available
      */
     @NonNull
-    public final EnumSet<SdlPermission> getPermissions(){
+    public EnumSet<SdlPermission> getPermissions(){
         return mPermissions;
     }
 
@@ -39,7 +37,7 @@ public class SdlPermissionEvent {
      * if all, some or none of the {@link SdlPermission} from the {@link SdlPermissionFilter} are present
      */
     @NonNull
-    public final PermissionLevel getPermissionLevel(){
+    public PermissionLevel getPermissionLevel(){
         return  mPermissionLevel;
     }
 
