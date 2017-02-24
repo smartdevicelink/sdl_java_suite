@@ -309,7 +309,7 @@ public class BTTransport extends SdlTransport {
 	public boolean sendBytesOverTransport(SdlPacket packet) {
 		boolean sendResult = false;
 		try {
-			byte[] msgBytes = packet.constructPacket();
+			byte[] msgBytes = packet.toByteArray();
 			_output.write(msgBytes, 0, msgBytes.length);
 			sendResult = true;
 		} catch (Exception ex) {

@@ -110,7 +110,7 @@ public class TCPTransport extends SdlTransport {
     @Override
     protected boolean sendBytesOverTransport(SdlPacket packet) {
         TCPTransportState currentState = getCurrentState();
-        byte[] msgBytes = packet.constructPacket();
+        byte[] msgBytes = packet.toByteArray();
         logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Size: %d, Offset: %d, Length: %d, Current state is: %s"
                 , msgBytes.length, 0, msgBytes.length, currentState.name()));
 

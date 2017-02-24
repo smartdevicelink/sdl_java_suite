@@ -442,7 +442,7 @@ public class TransportBroker {
 				Log.w(TAG,whereToReply + "incorrect params supplied");
 				return false;
 			}
-			byte[] bytes = packet.constructPacket();
+			byte[] bytes = packet.toByteArray();
 			if(bytes.length<ByteArrayMessageSpliter.MAX_BINDER_SIZE){//Determine if this is under the packet length.
 				Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
 				message.what = TransportConstants.ROUTER_SEND_PACKET;
@@ -452,14 +452,14 @@ public class TransportBroker {
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytes.length);
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
-				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPrioirtyCoefficient());
+				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPriorityCoefficient());
 				message.setData(bundle);
 				
 				sendMessageToRouterService(message);
 				return true;
 			}else{ //Message is too big for IPC transaction 
 				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
-				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPrioirtyCoefficient() );				
+				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPriorityCoefficient() );
 				while(splitter.isActive()){
 					sendMessageToRouterService(splitter.nextMessage());
 				}

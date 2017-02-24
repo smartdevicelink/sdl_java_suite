@@ -13,7 +13,7 @@ public abstract class SdlTransport {
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	private Boolean isConnected = false;
 	
-	private String _sendLockObj = "lock";
+	private final Object _sendLockObj = new Object();
 	
 	
 	// Get status of transport connection
@@ -61,7 +61,7 @@ public abstract class SdlTransport {
     // This method is called by whomever has reference to transport to have bytes
     // sent out over transport.
     public boolean sendBytes(SdlPacket packet) {
-        boolean bytesWereSent = false;
+        boolean bytesWereSent;
         synchronized (_sendLockObj) {
         	bytesWereSent = sendBytesOverTransport(packet);//message, offset, length);
         } // end-lock
