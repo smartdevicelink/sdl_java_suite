@@ -1,0 +1,146 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+    }
+}
+apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'com.android.library'
+    apply plugin: 'com.github.dcendents.android-maven'
+}
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion "23.0.3"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        // Move the tests to tests/java, tests/res, etc...
+        instrumentTest.setRoot('tests')
+
+        // Move the build types to build-types/<type>
+        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
+        // This moves them out of them default location under src/<type>/... which would
+        // conflict with src/ being used by the main source set.
+        // Adding new build types or product flavors should be accompanied
+        // by a similar customization.
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            //applicationIdSuffix ".debug"
+        }
+
+        /**
+         * The 'initWith' property allows you to copy configurations from other build types,
+         * so you don't have to configure one from the beginning. You can then configure
+         * just the settings you want to change. The following line initializes
+         * 'jnidebug' using the debug build type, and changes only the
+         * applicationIdSuffix and versionNameSuffix settings.
+         */
+
+        jnidebug {
+
+            // This copies the debuggable attribute and debug signing configurations.
+            initWith debug
+
+            //applicationIdSuffix ".jnidebug"
+            jniDebuggable true
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+install {
+    repositories.mavenDeployer {
+        pom.project {
+            name 'SmartDeviceLink Android Library '
+            description 'Android implementation of SmartDeviceLink Library '
+            url 'https://github.com/smartdevicelink/sdl_android '
+            inceptionYear '2013'
+
+            packaging 'aar'
+            groupId 'smartdevicelink'
+            artifactId 'bintray-smartdevicelink-maven'
+            version '4.0.1-DEPLOY-TEST'
+
+            licenses {
+                license {
+                    name 'BSD 3-Clause License '
+                    url 'https://github.com/smartdevicelink/sdl_android/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'https://github.com/smartdevicelink/sdl_android .git'
+                url 'https://github.com/smartdevicelink/sdl_android '
+
+            }
+            developers {
+                developer {
+                    name 'Joey Grover'
+                    id 'joeygrover'
+                }
+            }
+            repositories {
+                repository(url: 'https://api.bintray.com/maven/smartdevicelink/maven/sdl_android/;publish=1') {
+                    authentication(userName: properties.getProperty("bintray.user"), password: properties.getProperty("bintray.apikey"))
+                }
+            }
+
+        }
+    }
+}
+
+
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    pkg {
+        repo = 'maven'
+        name = 'sdl_android'
+        userOrg = 'smartdevicelink'
+        licenses = ['BSD 3-Clause']
+        vcsUrl = 'https://github.com/smartdevicelink/sdl_android.git'
+        version {
+            name = 'distribution-test'
+            desc = 'Testing Bintray distribution'
+            released  = new Date()
+            vcsTag = '4.0.1'
+        }
+    }
+}
