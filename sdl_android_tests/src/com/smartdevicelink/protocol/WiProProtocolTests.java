@@ -32,7 +32,52 @@ public class WiProProtocolTests extends AndroidTestCase {
 		protocol = new WiProProtocol(connection);
 	}
 	
+	public void testNormalCase(){
+		setUp();
+		payload = new byte[]{0x00,0x02,0x05,0x01,0x01,0x01,0x05,0x00};
+		byte sessionID = 1, version = 1;
+		int messageID = 1;
+		boolean encrypted = false;
+		SdlPacket sdlPacket = SdlPacketFactory.createMultiSendDataFirst(SessionType.RPC, sessionID, messageID, version, payload, encrypted);
+		MessageFrameAssembler assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
+		
+		assertNotNull(assembler);
+		
+		OutOfMemoryError oom_error = null;
+		NullPointerException np_exception = null;
+		try{
+			assembler.handleMultiFrameMessageFrame(sdlPacket);
+		}catch(OutOfMemoryError e){
+			oom_error = e;
+		}catch(NullPointerException z){
+			np_exception = z;
+		}catch(Exception e){
+			e.printStackTrace();
+			assertNotNull(null);
+		}
+		
+		assertNull(np_exception);
+		assertNull(oom_error);
+		
+		payload = new byte[23534];
+		sdlPacket = SdlPacketFactory.createMultiSendDataRest(SessionType.RPC, sessionID, payload.length, (byte) 3, messageID, version, payload, 0, 1500, encrypted);
+		assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
+		try{
+			assembler.handleMultiFrameMessageFrame(sdlPacket);
+		}catch(OutOfMemoryError e){
+			oom_error = e;
+		}catch(NullPointerException z){
+			np_exception = z;
+		}catch(Exception e){
+			assertNotNull(null);
+		}
+		
+		assertNull(np_exception);
+		assertNull(oom_error);
+	}
+	
 	public void testOverallocatingAccumulator(){
+		setUp();
 		ByteArrayOutputStream builder = new ByteArrayOutputStream();
 		for(int i = 0; i < 8; i++){
 			builder.write(0x0F);
@@ -58,6 +103,24 @@ public class WiProProtocolTests extends AndroidTestCase {
 		
 		assertNull(np_exception);
 		assertNull(oom_error);
+
+		payload = new byte[23534];
+		sdlPacket = SdlPacketFactory.createMultiSendDataRest(SessionType.RPC, sessionID, payload.length, (byte) 3, messageID, version, payload, 0, 1500, encrypted);
+		assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
+		
+		try{
+			assembler.handleMultiFrameMessageFrame(sdlPacket);
+		}catch(OutOfMemoryError e){
+			oom_error = e;
+		}catch(NullPointerException z){
+			np_exception = z;
+		}catch(Exception e){
+			assertNotNull(null);
+		}
+		
+		assertNull(np_exception);
+		assertNull(oom_error);
+		
 	}
 	
 	protected class SdlConnectionTestClass extends SdlConnection{
