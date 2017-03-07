@@ -26,6 +26,11 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
         mPauseLock = new Object();
         mPaused = false;
         isServiceProtected = _session.isServiceProtected(_serviceType);
+		if(isServiceProtected){ //If our service is encrypted we can only use 1024 as the max buffer size. 
+			bufferSize = BUFF_READ_SIZE;
+			buffer = new byte[bufferSize];
+		}
+		
 	}
 
 	public void start() throws IOException {
@@ -63,7 +68,7 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
                     }
                 }
 
-				length = is.read(buffer, 0, BUFF_READ_SIZE);
+				length = is.read(buffer, 0, bufferSize);
 				
 				if (length >= 0) 
 				{
