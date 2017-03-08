@@ -603,7 +603,7 @@ public class RouterServiceValidator {
 	protected static int getSecurityLevel(Context context){
 		if(context!=null){
 			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
-			return pref.getInt(SDL_LAST_REQUEST, MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED);
+			return pref.getInt(SDL_RSVP_SECURITY_LEVEL, MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED);
 		}
 		return MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED;
 	}
