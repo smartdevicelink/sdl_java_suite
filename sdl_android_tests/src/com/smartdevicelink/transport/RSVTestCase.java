@@ -108,6 +108,8 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		
 	}
 	
 	public void testMediumSecurity(){
@@ -118,6 +120,8 @@ public class RSVTestCase extends AndroidTestCase {
 		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
+		
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
 		
 	}
 	
@@ -130,6 +134,8 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_MONTH);
 		
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		
 	}
 	
 	public void testNoSecurity(){
@@ -140,6 +146,8 @@ public class RSVTestCase extends AndroidTestCase {
 		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
+		
+		assertFalse(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
 		
 		//This should always return true
 		assertTrue(rsvp.validate());

@@ -400,6 +400,12 @@ public class RouterServiceValidator {
 		if(context == null){
 			return false;
 		}
+		else if(getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF){ //If security is off, we can just return now
+			if(listCallback!=null){
+				listCallback.onListObtained(true);
+			}
+			return false;
+		}
 		
 		pendingListRefresh = true;
 		//Might want to store a flag letting this class know a request is currently pending
