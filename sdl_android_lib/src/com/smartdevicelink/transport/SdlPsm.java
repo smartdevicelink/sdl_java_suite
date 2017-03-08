@@ -2,6 +2,9 @@ package com.smartdevicelink.transport;
 
 import com.smartdevicelink.protocol.SdlPacket;
 
+import static com.smartdevicelink.protocol.WiProProtocol.V1_HEADER_SIZE;
+import static com.smartdevicelink.protocol.WiProProtocol.V1_V2_MTU_SIZE;
+
 
 public class SdlPsm{
 	//private static final String TAG = "Sdl PSM";
@@ -153,7 +156,11 @@ public class SdlPsm{
 					if(dataLength==0){
 						return FINISHED_STATE; //We are done if we don't have any payload
 					}
-					payload = new byte[dataLength];
+					if(dataLength <= V1_V2_MTU_SIZE - V1_HEADER_SIZE){ // sizes from protocol/WiProProtocol.java
+						payload = new byte[dataLength];
+					}else{
+						return ERROR_STATE;
+					}
 					dumpSize = dataLength;
 					return DATA_PUMP_STATE;
 				}
@@ -170,7 +177,11 @@ public class SdlPsm{
 				if(dataLength == 0){
 					return FINISHED_STATE; //We are done if we don't have any payload
 				}
-				payload = new byte[dataLength];
+				if(dataLength <= V1_V2_MTU_SIZE - V1_HEADER_SIZE){ // sizes from protocol/WiProProtocol.java
+					payload = new byte[dataLength];
+				}else{
+					return ERROR_STATE;
+				}
 				dumpSize = dataLength;
 				return DATA_PUMP_STATE;
 			}else{
