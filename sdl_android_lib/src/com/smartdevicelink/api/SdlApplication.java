@@ -335,7 +335,7 @@ public class SdlApplication extends SdlContextAbsImpl {
             if (listenerRecordList != null) {
                 // This will match any record created previously with this listener.
                 int listenerIndex = listenerRecordList.indexOf(new RPCNotificationListenerRecord(rpcNotificationListener));
-                listenerRecordList.remove(listenerIndex).isValid = false;
+                if(listenerIndex >= 0) listenerRecordList.remove(listenerIndex).isValid = false;
                 if (listenerRecordList.isEmpty() && mSdlProxyALM != null) {
                     mSdlProxyALM.removeOnRPCNotificationListener(functionID);
                     mNotificationListeners.put(id, null);
