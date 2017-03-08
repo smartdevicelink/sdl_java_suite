@@ -177,9 +177,9 @@ public class SdlPsm{
 				if(dataLength == 0){
 					return FINISHED_STATE; //We are done if we don't have any payload
 				}
-				try {
+				if(dataLength <= V1_V2_MTU_SIZE - V1_HEADER_SIZE){ // sizes from protocol/WiProProtocol.java
 					payload = new byte[dataLength];
-				}catch(OutOfMemoryError e){
+				}else{
 					return ERROR_STATE;
 				}
 				dumpSize = dataLength;
