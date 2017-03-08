@@ -53,7 +53,7 @@ public class RouterServiceValidator {
 	private static final String JSON_APP_VERSION_TAG = "version";
 
 	
-	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A week in ms
+	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms
 	
 	private static final String SDL = "sdl";
 	private static final String SDL_PACKAGE_LIST = "sdl_package_list";
@@ -197,9 +197,9 @@ public class RouterServiceValidator {
 	
 	protected static long getRefreshRate(){
 		switch(securityLevel){
-		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH:
-			return 30 * REFRESH_TRUSTED_APP_LIST_TIME_DAY; 
 		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW:
+			return 30 * REFRESH_TRUSTED_APP_LIST_TIME_DAY; 
+		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH:
 		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED:
 		default:
 			return 7 * REFRESH_TRUSTED_APP_LIST_TIME_DAY; 
