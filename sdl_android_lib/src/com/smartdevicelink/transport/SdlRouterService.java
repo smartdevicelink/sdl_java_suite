@@ -38,9 +38,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -124,7 +122,6 @@ public class SdlRouterService extends Service{
     private boolean wrongProcess = false;
 	private boolean initPassed = false;
 
-    private Intent lastReceivedStartIntent = null;
 	public static HashMap<Long,RegisteredApp> registeredApps;
 	private SparseArray<Long> sessionMap;
 	private SparseArray<Integer> sessionHashIdMap;
@@ -239,10 +236,7 @@ public class SdlRouterService extends Service{
 									Log.d(TAG, "All router services have been accounted more. We can start the version check now");
 									if(versionCheckTimeOutHandler!=null){
 										versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);
-										
-										versionCheckRunable.run();
-										
-										
+										versionCheckTimeOutHandler.post(versionCheckRunable);
 									}
 								}
 							}
@@ -899,7 +893,10 @@ public class SdlRouterService extends Service{
 	@Override
 	public void onDestroy(){
 		stopClientPings();
-		if(versionCheckTimeOutHandler!=null){versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);}
+		if(versionCheckTimeOutHandler!=null){
+			versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);
+			versionCheckTimeOutHandler = null;
+		}
 		if(altTransportTimerHandler!=null){
 			altTransportTimerHandler.removeCallbacks(versionCheckRunable);
 			altTransportTimerHandler = null;
@@ -1658,18 +1655,21 @@ public class SdlRouterService extends Service{
             	//Log.v(TAG, "Self service info " + self);
             	//Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
             	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
+            		if(SdlRouterService.mSerialService.isConnected()){ //We are currently connected. Wait for next connection 
+            			return;
+            		}
             		Log.d(TAG, "There is a newer version "+newestServiceReceived.version+" of the Router Service, starting it up");
+					if(newestServiceReceived.launchIntent == null){
+						if(newestServiceReceived.name!=null){
+							newestServiceReceived.launchIntent = new Intent().setComponent(newestServiceReceived.name);
+						}else{
+							Log.w(TAG, "Service didn't include launch intent or component name");
+							startUpSequence();
+							return;
+						}
+					}
                 	closing = true;
 					closeBluetoothSerialServer();
-					Intent serviceIntent = newestServiceReceived.launchIntent;
-					if(getLastReceivedStartIntent()!=null){
-						serviceIntent.putExtras(getLastReceivedStartIntent());
-					}
-					if(newestServiceReceived.launchIntent == null){
-						Log.e(TAG, "Service didn't include launch intent");
-						startUpSequence();
-						return;
-					}
 					context.startService(newestServiceReceived.launchIntent);
 					notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
 					if(getBaseContext()!=null){
@@ -1701,10 +1701,6 @@ public class SdlRouterService extends Service{
             }
         };
         altTransportTimerHandler.postDelayed(altTransportTimerRunnable, ALT_TRANSPORT_TIMEOUT_RUNNABLE); 
-	}
-	
-	private Intent getLastReceivedStartIntent(){	
-		return lastReceivedStartIntent;
 	}
 
 	/**
