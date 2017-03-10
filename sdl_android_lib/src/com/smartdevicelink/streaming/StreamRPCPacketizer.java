@@ -26,7 +26,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
 	private Integer iInitialCorrID = 0;
-	private final static int BUFF_READ_SIZE = 1000000;
 	private Hashtable<Integer, OnStreamRPC> notificationList = new Hashtable<Integer, OnStreamRPC>();
 	private Thread thread = null;
 	private long lFileSize = 0;
@@ -192,7 +191,7 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
                     }
                 }
 
-				length = is.read(buffer, 0, BUFF_READ_SIZE);				
+				length = is.read(buffer, 0, bufferSize);				
 				
 				if (length == -1)
 					stop();

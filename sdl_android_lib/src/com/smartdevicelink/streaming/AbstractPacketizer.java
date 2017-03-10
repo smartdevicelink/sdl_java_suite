@@ -10,13 +10,13 @@ import com.smartdevicelink.proxy.RPCRequest;
 abstract public class AbstractPacketizer {
 
 	protected IStreamListener _streamListener = null;
-	private final static int BUFF_READ_SIZE = 1000000;
 	protected byte _rpcSessionID = 0;
 	
 	protected SessionType _serviceType = null;
 	protected SdlSession _session = null;
 	protected InputStream is = null;
-	protected byte[] buffer = new byte[BUFF_READ_SIZE];
+	protected int bufferSize;
+	protected byte[] buffer;
 	protected boolean upts = false;
 	protected RPCRequest _request = null;
 	protected byte _wiproVersion = 1;
@@ -30,6 +30,8 @@ abstract public class AbstractPacketizer {
 		_rpcSessionID = rpcSessionID;
 		_serviceType = sType;
 		this._session = session;
+		bufferSize = this._session.getMtu();
+		buffer = new byte[bufferSize];
 	}
 	
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException {
@@ -40,6 +42,8 @@ abstract public class AbstractPacketizer {
 		_request = request;
 		_wiproVersion = wiproVersion;
 		this._session = session;
+		bufferSize = this._session.getMtu();
+		buffer = new byte[bufferSize];
 	}	
 
 	public abstract void start() throws IOException;

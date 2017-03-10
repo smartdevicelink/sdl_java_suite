@@ -19,8 +19,10 @@ public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 
-	private static final int V1_V2_MTU_SIZE = 1500;
-	private static final int V3_V4_MTU_SIZE = 131072;
+	public static final int V1_V2_MTU_SIZE = 1500;
+	public static final int V3_V4_MTU_SIZE = 131072;
+	public static final int V1_HEADER_SIZE = 8;
+	public static final int V2_HEADER_SIZE = 12;
 	private static int HEADER_SIZE = 8;
 	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;
 
@@ -50,6 +52,14 @@ public class WiProProtocol extends AbstractProtocol {
 			sdlconn = (SdlConnection) protocolListener;
 		}
 	} // end-ctor
+	
+	/**
+	 * Retrieves the max payload size for a packet to be sent to the module
+	 * @return the max transfer unit 
+	 */
+	public int getMtu(){
+		return MAX_DATA_SIZE;
+	}
 	
 	public byte getVersion() {
 		return this._version;
@@ -261,7 +271,12 @@ public class WiProProtocol extends AbstractProtocol {
 			hasFirstFrame = true;
 			totalSize = BitConverter.intFromByteArray(packet.payload, 0) - HEADER_SIZE;
 			framesRemaining = BitConverter.intFromByteArray(packet.payload, 4);
-			accumulator = new ByteArrayOutputStream(totalSize);
+			try {
+				accumulator = new ByteArrayOutputStream(totalSize);
+			}catch(OutOfMemoryError e){
+				DebugTool.logError("OutOfMemory error", e); //Garbled bits were received
+				accumulator = null;
+			}
 		}
 		
 		protected void handleRemainingFrame(SdlPacket packet) {
@@ -312,7 +327,8 @@ public class WiProProtocol extends AbstractProtocol {
 				handleFirstDataFrame(packet);
 			}
 			else{
-				handleRemainingFrame(packet);
+				if(accumulator != null)
+					handleRemainingFrame(packet);
 			}
 				
 		} // end-method

@@ -1,5 +1,6 @@
 package com.smartdevicelink.transport;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -158,7 +159,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
     		if(altTransportWake){
     			serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
     		}
-    		context.startService(serviceIntent);
+            	try {
+                	context.startService(serviceIntent);
+            	}catch (SecurityException e){
+                    Log.e(TAG, "Security exception, process is bad");
+                    return false; // Let's exit, we can't start the service
+            	}
     		return true;
     	}else{
     		if(altTransportWake &&  runningBluetoothServicePackage!=null && runningBluetoothServicePackage.size()>0){
@@ -193,17 +199,21 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}else{
 			runningBluetoothServicePackage.clear();
 		}
-	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	    	//We will check to see if it contains this name, should be pretty specific
+		List<RunningServiceInfo> runningServices = null;
+		try{
+			runningServices = manager.getRunningServices(Integer.MAX_VALUE);
+		}catch(NullPointerException e){
+			Log.e(TAG, "Can't get list of running services");
+			return false;
+		}
+	    for (RunningServiceInfo service : runningServices) {
+			//We will check to see if it contains this name, should be pretty specific
 	    	//Log.d(TAG, "Found Service: "+ service.service.getClassName());
 	    	if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SDL_ROUTER_SERVICE_CLASS_NAME) && AndroidTools.isServiceExported(context, service.service)) {
 	    		
 	    		runningBluetoothServicePackage.add(service.service);	//Store which instance is running
 	            if(pingService){
-	            	Intent intent = new Intent();
-	            	intent.setClassName(service.service.getPackageName(), service.service.getClassName());
-	            	intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, pingService);
-	            	context.startService(intent);
+					pingRouterService(context, service.service.getPackageName(), service.service.getClassName());
 	            }
 	        }
 	    }
@@ -212,6 +222,27 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		
 	}
 
+	/**
+	 * Attempts to ping a running router service
+	 * @param context A context to access Android system services through.
+	 * @param packageName Package name for service to ping
+	 * @param className Class name for service to ping
+	 */
+	protected static void pingRouterService(Context context, String packageName, String className){
+		if(context == null || packageName == null || className == null){
+			return;
+		}
+		try{
+			Intent intent = new Intent();
+			intent.setClassName(packageName, className);
+			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
+			context.startService(intent);
+		}catch(SecurityException e){
+			Log.e(TAG, "Security exception, process is bad");
+			// This service could not be started
+		}
+	}
+	
 	/**
 	 * This call will reach out to all SDL related router services to check if they're connected. If a the router service is connected, it will react by pinging all clients. This receiver will then
 	 * receive that ping and if the router service is trusted, the onSdlEnabled method will be called. 

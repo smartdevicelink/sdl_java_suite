@@ -527,7 +527,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			MultiplexTransport multi = ((MultiplexTransport)_transport);
 			MultiplexTransportConfig config = multi.getConfig();
 			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
-			if(config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
+			if(config.getService() != null && config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
 				if(!multi.getIsConnected() && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
 					_transport = new MultiplexTransport(config,this);
 					try {
