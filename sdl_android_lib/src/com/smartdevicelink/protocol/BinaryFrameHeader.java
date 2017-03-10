@@ -1,8 +1,12 @@
 package com.smartdevicelink.protocol;
 
+import android.util.Log;
+
 import com.smartdevicelink.util.BitConverter;
 
 public class BinaryFrameHeader {
+	private static final String TAG = "BinaryFrameHeader";
+
 	private byte _rpcType;
 	private int _functionID;
 	private int _correlationID;
@@ -27,18 +31,23 @@ public class BinaryFrameHeader {
 		
 		int _jsonSize = BitConverter.intFromByteArray(binHeader, 8);
 		msg.setJsonSize(_jsonSize);
-		
-		if (_jsonSize > 0) {
-			byte[] _jsonData = new byte[_jsonSize];
-			System.arraycopy(binHeader, 12, _jsonData, 0, _jsonSize);
-			msg.setJsonData(_jsonData);
+
+		try {
+			if (_jsonSize > 0) {
+				byte[] _jsonData = new byte[_jsonSize];
+				System.arraycopy(binHeader, 12, _jsonData, 0, _jsonSize);
+				msg.setJsonData(_jsonData);
+			}
+
+			if (binHeader.length - _jsonSize - 12 > 0) {
+				byte[] _bulkData = new byte[binHeader.length - _jsonSize - 12];
+				System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length);
+				msg.setBulkData(_bulkData);
+			}
+		} catch (OutOfMemoryError e){
+			Log.e(TAG, "Unable to process data to form header");
+			return null;
 		}
-		
-		if (binHeader.length - _jsonSize - 12 > 0) {
-			byte[] _bulkData = new byte[binHeader.length - _jsonSize - 12];
-			System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length);
-			msg.setBulkData(_bulkData);
-		}		
 		
 		return msg;
 	}

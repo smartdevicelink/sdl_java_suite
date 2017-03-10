@@ -1,8 +1,5 @@
 package com.smartdevicelink.protocol;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Hashtable;
-
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -14,6 +11,9 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Hashtable;
 
 public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
@@ -296,6 +296,9 @@ public class WiProProtocol extends AbstractProtocol {
 				if (_version > 1) {
 					BinaryFrameHeader binFrameHeader = BinaryFrameHeader.
 							parseBinaryHeader(accumulator.toByteArray());
+					if(binFrameHeader == null) {
+						return;
+					}
 					message.setVersion(_version);
 					message.setRPCType(binFrameHeader.getRPCType());
 					message.setFunctionID(binFrameHeader.getFunctionID());
@@ -445,6 +448,9 @@ public class WiProProtocol extends AbstractProtocol {
 			if (_version > 1&& !isControlService) {
 				BinaryFrameHeader binFrameHeader = BinaryFrameHeader.
 						parseBinaryHeader(packet.payload);
+				if(binFrameHeader == null) {
+					return;
+				}
 				message.setVersion(_version);
 				message.setRPCType(binFrameHeader.getRPCType());
 				message.setFunctionID(binFrameHeader.getFunctionID());

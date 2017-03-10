@@ -1,8 +1,5 @@
 package com.smartdevicelink.util;
 
-import java.util.Hashtable;
-import java.util.Vector;
-
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -17,6 +14,9 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.transport.SiphonServer;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 public class DebugTool {
 	
@@ -306,6 +306,9 @@ public class DebugTool {
 		if (version > 1) {
 			BinaryFrameHeader binFrameHeader = BinaryFrameHeader.
 					parseBinaryHeader(packet.getPayload());
+			if(binFrameHeader == null) {
+				return null;
+			}
 			message.setVersion((byte) version);
 			message.setRPCType(binFrameHeader.getRPCType());
 			message.setFunctionID(binFrameHeader.getFunctionID());
