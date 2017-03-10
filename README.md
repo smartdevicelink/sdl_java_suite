@@ -9,6 +9,8 @@ SmartDeviceLink (SDL) is a standard set of protocols and messages that connect a
 
 Pull Requests Welcome!
 
+To understand if a contribution should be entered as an Android Pull Request (or issue), or an SDL Evolution Proposal, please reference [this document](https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals_versus_issues.md).
+
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=AzdQdSCS24M" target="_blank"><img src="http://i.imgur.com/nm8UujD.png?1" alt="SmartDeviceLink" border="10" /></a>
 
 ##Mobile Proxy
