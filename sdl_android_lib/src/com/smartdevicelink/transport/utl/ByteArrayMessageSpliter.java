@@ -3,6 +3,7 @@ package com.smartdevicelink.transport.utl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import com.smartdevicelink.transport.TransportBroker;
 import com.smartdevicelink.transport.TransportConstants;
 
 import android.os.Bundle;
@@ -19,13 +20,14 @@ public class ByteArrayMessageSpliter {
 	ByteArrayInputStream stream;
 	int bytesRead; 
 	int what;
-	Long appId;
+	String appId;
 	byte[] buffer;
 	int orginalSize;
 	int priorityCoef;
+	int routerServiceVersion = 1;
 	
 	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes, int priorityCoef){
-		this.appId = Long.valueOf(appId);
+		this.appId = appId;
 		this.what = what;
 		stream = new ByteArrayInputStream(bytes);
 		orginalSize  = stream.available();
@@ -34,14 +36,19 @@ public class ByteArrayMessageSpliter {
 		this.priorityCoef = priorityCoef;
 	}
 	
+	@Deprecated
 	public ByteArrayMessageSpliter(Long appId,int what, byte[] bytes, int priorityCoef){
-		this.appId = appId;
+		this.appId = appId+"";
 		this.what = what;
 		stream = new ByteArrayInputStream(bytes);
 		orginalSize  = stream.available();
 		bytesRead = 0; 
 		firstPacket = true;
 		this.priorityCoef = priorityCoef;
+	}
+	
+	public void setRouterServiceVersion(int version){
+		this.routerServiceVersion = version;
 	}
 	
 	public boolean isActive(){
@@ -99,7 +106,10 @@ public class ByteArrayMessageSpliter {
 			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_CONT);
 		}
 		
-		bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
+		if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+			bundle.putLong(TransportConstants.APP_ID_EXTRA,TransportBroker.convertAppId(appId));
+		}
+		bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 		message.setData(bundle);
 		Log.i(TAG, ((100 - ((stream.available()*100)/orginalSize) ))+ " percent complete.");
 		return message;

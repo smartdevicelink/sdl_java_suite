@@ -32,7 +32,7 @@ public class TransportBroker {
 	
 	private static final String TAG = "SdlTransportBroker";
 	private final String WHERE_TO_REPLY_PREFIX	 = "com.sdl.android.";
-	private Long appId = null;
+	private String appId = null;
 	private String whereToReply = null;
 	private Context currentContext = null;
 	
@@ -52,6 +52,7 @@ public class TransportBroker {
 	private ByteAraryMessageAssembler bufferedPayloadAssembler = null;
 	
 	private ServiceConnection routerConnection;
+	private int routerServiceVersion = 1;
 	
 	private void initRouterConnection(){
 		routerConnection= new ServiceConnection() {
@@ -177,9 +178,9 @@ public class TransportBroker {
             					}
             					broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
             				}
-            				/*if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
-            					//Keep track if we actually get this
-            				}*/
+            				if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
+            					broker.routerServiceVersion = bundle.getInt(TransportConstants.ROUTER_SERVICE_VERSION);
+            				}
             			}
             			break;
             		case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
@@ -304,7 +305,7 @@ public class TransportBroker {
 						whereToReply = WHERE_TO_REPLY_PREFIX + appId +"."+ timeStamp; 
 					}
 				}
-				this.appId = Long.valueOf(appId.concat(timeStamp));
+				this.appId = appId.concat(timeStamp);
 				queuedOnTransportConnect = null;
 				currentContext = context;
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
@@ -447,7 +448,10 @@ public class TransportBroker {
 				Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
 				message.what = TransportConstants.ROUTER_SEND_PACKET;
 				Bundle bundle = new Bundle();
-				bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
+				if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+					bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
+				}
+				bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 				bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, bytes); //Do we just change this to the args and objs
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytes.length);
@@ -459,7 +463,8 @@ public class TransportBroker {
 				return true;
 			}else{ //Message is too big for IPC transaction 
 				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
-				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPrioirtyCoefficient() );				
+				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPrioirtyCoefficient() );	
+				splitter.setRouterServiceVersion(routerServiceVersion);
 				while(splitter.isActive()){
 					sendMessageToRouterService(splitter.nextMessage());
 				}
@@ -521,7 +526,8 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REGISTER_CLIENT;
 			msg.replyTo = this.clientMessenger;
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
+			bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId)); //We send this no matter what due to us not knowing what router version we are connecting to
+			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 			msg.setData(bundle);
 			sendMessageToRouterService(msg);
 		}
@@ -533,7 +539,10 @@ public class TransportBroker {
 				msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;
 				msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 				Bundle bundle = new Bundle();
-				bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
+				if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+					bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
+				}
+				bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 				msg.setData(bundle);
 				sendMessageToRouterService(msg);
 			}else{
@@ -554,6 +563,17 @@ public class TransportBroker {
 			return currentContext;
 		}
 		
+		
+		public static Long convertAppId(String appId){
+			if(appId == null){
+				return -1L;
+			}
+			try{
+				return Long.valueOf(appId);
+			}catch(NumberFormatException e){
+				return -1L;
+			}
+		}
 		/***************************************************************************************************************************************
 		***********************************************  LEGACY  *******************************************************************************
 		****************************************************************************************************************************************/	
@@ -597,7 +617,10 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
+			if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+				bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
+			}
+			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}
@@ -607,7 +630,10 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REMOVE_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA, appId);
+			if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+				bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
+			}
+			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 			bundle.putLong(TransportConstants.SESSION_ID_EXTRA, sessionId);
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
