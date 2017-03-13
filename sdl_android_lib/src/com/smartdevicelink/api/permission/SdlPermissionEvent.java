@@ -6,8 +6,9 @@ import java.util.EnumSet;
 
 public class SdlPermissionEvent {
 
-    final EnumSet<SdlPermission> mPermissions;
-    final PermissionLevel mPermissionLevel;
+    private final EnumSet<SdlPermission> mAllowedPermissions;
+    private final EnumSet<SdlPermission> mUserDisallowedPermissions;
+    private final EnumSet<SdlPermission> mDisallowedPermissions;
 
     public enum PermissionLevel{
         ALL,
@@ -15,9 +16,12 @@ public class SdlPermissionEvent {
         NONE
     }
 
-    SdlPermissionEvent(@NonNull EnumSet<SdlPermission> permission, @NonNull PermissionLevel permissionLevel){
-        mPermissionLevel = permissionLevel;
-        mPermissions = permission;
+    SdlPermissionEvent(@NonNull EnumSet<SdlPermission> allowedPermission,
+                       @NonNull EnumSet<SdlPermission> userDisallowedPermission,
+                       @NonNull EnumSet<SdlPermission> disallowedPermission){
+        mAllowedPermissions = allowedPermission;
+        mUserDisallowedPermissions = userDisallowedPermission;
+        mDisallowedPermissions = disallowedPermission;
     }
 
     /**
@@ -26,8 +30,18 @@ public class SdlPermissionEvent {
      * @return EnumSet of {@link SdlPermission} that are available
      */
     @NonNull
-    public EnumSet<SdlPermission> getPermissions(){
-        return mPermissions;
+    public EnumSet<SdlPermission> getAllowedPermissions(){
+        return mAllowedPermissions;
+    }
+
+    @NonNull
+    public EnumSet<SdlPermission> getUserDisallowedPermissions(){return mUserDisallowedPermissions;}
+
+    @NonNull
+    public EnumSet<SdlPermission> getDisallowedPermissions(){return mDisallowedPermissions;}
+
+    public boolean isPermissionAvailable(@NonNull SdlPermission permission){
+        return mAllowedPermissions.contains(permission);
     }
 
     /**
@@ -38,9 +52,14 @@ public class SdlPermissionEvent {
      */
     @NonNull
     public PermissionLevel getPermissionLevel(){
-        return  mPermissionLevel;
+        if(!mAllowedPermissions.isEmpty()){
+            if( !mUserDisallowedPermissions.isEmpty() || !mDisallowedPermissions.isEmpty() ){
+                return PermissionLevel.SOME;
+            } else {
+                return PermissionLevel.ALL;
+            }
+        } else {
+            return PermissionLevel.NONE;
+        }
     }
-
-
-
 }
