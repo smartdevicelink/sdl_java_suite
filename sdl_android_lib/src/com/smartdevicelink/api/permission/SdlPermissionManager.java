@@ -165,10 +165,12 @@ public class SdlPermissionManager {
                 List<HMILevel> hmiUserDisallowLevels = pi.getHMIPermissions().getUserDisallowed();
 
                 if(hmiAllowedLevels != null) {
-                    populatePermissionSet(pi, newAllowedPermissions, permission, hmiAllowedLevels);
+                    populatePermissionSet(pi.getParameterPermissions().getAllowed(),
+                            newAllowedPermissions, permission, hmiAllowedLevels);
                 }
                 if(hmiUserDisallowLevels != null){
-                    populatePermissionSet(pi, userDisallowPermissions, permission, hmiUserDisallowLevels);
+                    populatePermissionSet(pi.getParameterPermissions().getUserDisallowed(),
+                            userDisallowPermissions, permission, hmiUserDisallowLevels);
                 }
             }
 
@@ -206,10 +208,9 @@ public class SdlPermissionManager {
         }
     }
 
-    private void addVdataRpcPermission(String prefix, PermissionItem pi,
+    private void addVdataRpcPermission(String prefix, List<String> parameters,
                                        HMILevel hmi, SdlPermissionSet permissionSet){
-        List<String> allowedRpcs = pi.getParameterPermissions().getAllowed();
-        for(String vdataRpc: allowedRpcs){
+        for(String vdataRpc: parameters){
             char[] chars = vdataRpc.toCharArray();
             chars[0] = Character.toUpperCase(chars[0]);
             String permissionName = prefix + new String(chars);
@@ -255,7 +256,7 @@ public class SdlPermissionManager {
         return listener;
     }
 
-    private void populatePermissionSet(PermissionItem item, SdlPermissionSet permissionSet,
+    private void populatePermissionSet(List<String> parameters, SdlPermissionSet permissionSet,
                                        SdlPermission permission, List<HMILevel> hmiLevels){
 
         for (HMILevel level : hmiLevels) {
@@ -263,16 +264,16 @@ public class SdlPermissionManager {
 
             switch (permission) {
                 case GetVehicleData:
-                    addVdataRpcPermission("Get", item, level, permissionSet);
+                    addVdataRpcPermission("Get", parameters, level, permissionSet);
                     break;
                 case SubscribeVehicleData:
-                    addVdataRpcPermission("Subscribe", item, level, permissionSet);
+                    addVdataRpcPermission("Subscribe", parameters, level, permissionSet);
                     break;
                 case OnVehicleData:
-                    addVdataRpcPermission("On", item, level, permissionSet);
+                    addVdataRpcPermission("On", parameters, level, permissionSet);
                     break;
                 case UnsubscribeVehicleData:
-                    addVdataRpcPermission("Unsubscribe", item, level, permissionSet);
+                    addVdataRpcPermission("Unsubscribe", parameters, level, permissionSet);
                     break;
                 default:
                     break;
