@@ -163,14 +163,32 @@ public class SdlPermissionManager {
                 }
                 List<HMILevel> hmiAllowedLevels = pi.getHMIPermissions().getAllowed();
                 List<HMILevel> hmiUserDisallowLevels = pi.getHMIPermissions().getUserDisallowed();
+                List<String> allowedParams = pi.getParameterPermissions().getAllowed();
+                List<String> userDisallowedParams = pi.getParameterPermissions().getUserDisallowed();
 
                 if(hmiAllowedLevels != null) {
-                    populatePermissionSet(pi.getParameterPermissions().getAllowed(),
-                            newAllowedPermissions, permission, hmiAllowedLevels);
+                    for (HMILevel level : hmiAllowedLevels) {
+                        newAllowedPermissions.permissions.get(level.ordinal()).add(permission);
+                        if(allowedParams != null) {
+                            parsePermissionParameters(permission,
+                                    allowedParams, level, newAllowedPermissions);
+                        }
+                        if(userDisallowedParams != null){
+                            parsePermissionParameters(permission,
+                                    userDisallowedParams, level, userDisallowPermissions);
+                        }
+                    }
+
                 }
+
                 if(hmiUserDisallowLevels != null){
-                    populatePermissionSet(pi.getParameterPermissions().getUserDisallowed(),
-                            userDisallowPermissions, permission, hmiUserDisallowLevels);
+                    for (HMILevel level : hmiUserDisallowLevels) {
+                        userDisallowPermissions.permissions.get(level.ordinal()).add(permission);
+                        if(userDisallowedParams != null){
+                            parsePermissionParameters(permission,
+                                    userDisallowedParams, level, userDisallowPermissions);
+                        }
+                    }
                 }
             }
 
@@ -256,28 +274,22 @@ public class SdlPermissionManager {
         return listener;
     }
 
-    private void populatePermissionSet(List<String> parameters, SdlPermissionSet permissionSet,
-                                       SdlPermission permission, List<HMILevel> hmiLevels){
-
-        for (HMILevel level : hmiLevels) {
-            permissionSet.permissions.get(level.ordinal()).add(permission);
-
-            switch (permission) {
-                case GetVehicleData:
-                    addVdataRpcPermission("Get", parameters, level, permissionSet);
-                    break;
-                case SubscribeVehicleData:
-                    addVdataRpcPermission("Subscribe", parameters, level, permissionSet);
-                    break;
-                case OnVehicleData:
-                    addVdataRpcPermission("On", parameters, level, permissionSet);
-                    break;
-                case UnsubscribeVehicleData:
-                    addVdataRpcPermission("Unsubscribe", parameters, level, permissionSet);
-                    break;
-                default:
-                    break;
-            }
+    private void parsePermissionParameters(SdlPermission permission, List<String> parameters, HMILevel level, SdlPermissionSet permissionSet){
+        switch (permission) {
+            case GetVehicleData:
+                addVdataRpcPermission("Get", parameters, level, permissionSet);
+                break;
+            case SubscribeVehicleData:
+                addVdataRpcPermission("Subscribe", parameters, level, permissionSet);
+                break;
+            case OnVehicleData:
+                addVdataRpcPermission("On", parameters, level, permissionSet);
+                break;
+            case UnsubscribeVehicleData:
+                addVdataRpcPermission("Unsubscribe", parameters, level, permissionSet);
+                break;
+            default:
+                break;
         }
     }
 
