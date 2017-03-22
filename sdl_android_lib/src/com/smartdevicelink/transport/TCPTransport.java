@@ -383,12 +383,14 @@ public class TCPTransport extends SdlTransport {
                 }
 
                 byte input;
+                byte[] buffer = new byte[READ_BUFFER_SIZE];
+                int bytesRead;
                 boolean stateProgress = false;
                 while (!isHalted) {
-                    logInfo("TCPTransport.run: Waiting for data...");
+                    //logInfo("TCPTransport.run: Waiting for data...");
                     try {
-                    	input = (byte) mInputStream.read();
-                        //bytesRead = mInputStream.read(buffer);
+                        //input = (byte) mInputStream.read();
+                        bytesRead = mInputStream.read(buffer);
                     } catch (IOException e) {
                         internalHandleStreamReadError();
                         break;
@@ -400,27 +402,28 @@ public class TCPTransport extends SdlTransport {
                             break;
                         }
                     }
-
-                    logInfo("TCPTransport.run: Got new data");
+                    for (int i = 0; i < bytesRead; i++) {
+                        //logInfo("TCPTransport.run: Got new data");
                         // Send the response of what we received
-                        stateProgress = psm.handleByte(input); 
-                        if(!stateProgress){//We are trying to weed through the bad packet info until we get something
-                        	
-                        	//Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
-                        	psm.reset();
+                        input = buffer[i];
+                        stateProgress = psm.handleByte(input);
+                        if (!stateProgress) {//We are trying to weed through the bad packet info until we get something
+
+                            //Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                            psm.reset();
                         }
-                        
-                        if(psm.getState() == SdlPsm.FINISHED_STATE)
+
+                        if (psm.getState() == SdlPsm.FINISHED_STATE)
                         {
-                        	synchronized (TCPTransport.this) {
-                        		//Log.d(TAG, "Packet formed, sending off");
-                        		handleReceivedPacket((SdlPacket)psm.getFormedPacket());
-                        	}
-                        	//We put a trace statement in the message read so we can avoid all the extra bytes
-                        	psm.reset();
+                            synchronized (TCPTransport.this) {
+                                //Log.d(TAG, "Packet formed, sending off");
+                                handleReceivedPacket((SdlPacket) psm.getFormedPacket());
+                            }
+                            //We put a trace statement in the message read so we can avoid all the extra bytes
+                            psm.reset();
                         }
                         //FIXME logInfo(String.format("TCPTransport.run: Received %d bytes", bytesRead));
-                        
+                    }
                 }
             }
 
