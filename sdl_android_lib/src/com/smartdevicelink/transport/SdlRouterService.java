@@ -1655,7 +1655,7 @@ public class SdlRouterService extends Service{
             	//Log.v(TAG, "Self service info " + self);
             	//Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
             	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
-            		if(SdlRouterService.mSerialService.isConnected()){ //We are currently connected. Wait for next connection 
+            		if(SdlRouterService.mSerialService!=null && SdlRouterService.mSerialService.isConnected()){ //We are currently connected. Wait for next connection 
             			return;
             		}
             		Log.d(TAG, "There is a newer version "+newestServiceReceived.version+" of the Router Service, starting it up");
