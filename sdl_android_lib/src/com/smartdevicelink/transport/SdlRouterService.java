@@ -86,7 +86,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 3;	
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 4;	
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -125,8 +125,8 @@ public class SdlRouterService extends Service{
 	private boolean initPassed = false;
 
     private Intent lastReceivedStartIntent = null;
-	public static HashMap<Long,RegisteredApp> registeredApps;
-	private SparseArray<Long> sessionMap;
+	public static HashMap<String,RegisteredApp> registeredApps;
+	private SparseArray<String> sessionMap;
 	private SparseArray<Integer> sessionHashIdMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
 	
@@ -352,8 +352,11 @@ public class SdlRouterService extends Service{
 	                	Message message = Message.obtain();
 	                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
             			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_SUCESS;
-	                	long appId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
-	                	if(appId<0 || msg.replyTo == null){
+	                	String appId = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
+	                	if(appId == null){
+	                		appId = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	}
+	                	if(appId == null || appId.length()<=0 || msg.replyTo == null){
 	                		Log.w(TAG, "Unable to register app as no id or messenger was included");
 	                		if(msg.replyTo!=null){
 	                			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
@@ -410,7 +413,10 @@ public class SdlRouterService extends Service{
 	            		}
 	                    break;
 	                case TransportConstants.ROUTER_UNREGISTER_CLIENT:
-	                	long appIdToUnregister = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	String appIdToUnregister = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
+	                	if(appIdToUnregister == null){
+	                		appIdToUnregister = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	}
 	                	Log.i(TAG, "Unregistering client: " + appIdToUnregister);
 	                	RegisteredApp unregisteredApp = null;
 	                	synchronized(service.REGISTERED_APPS_LOCK){
@@ -443,8 +449,10 @@ public class SdlRouterService extends Service{
 	                			@Override
 	                			public void run() {
 	                				if(receivedBundle!=null){
-
-	                					Long buffAppId = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA);
+	                					String buffAppId = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
+	            	                	if(buffAppId == null){
+	            	                		buffAppId = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	            	                	}
 	                					RegisteredApp buffApp = null;
 	                					if(buffAppId!=null){
 	                						synchronized(service.REGISTERED_APPS_LOCK){
@@ -466,10 +474,13 @@ public class SdlRouterService extends Service{
 	                	}
 	                    break;
 	                case TransportConstants.ROUTER_REQUEST_NEW_SESSION:
-	                	long appIdRequesting = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1); Log.i(TAG, "App requesting new session: " + appIdRequesting);
+	                	String appIdRequesting = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
+	                	if(appIdRequesting == null){
+	                		appIdRequesting = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	}
 	                	Message extraSessionResponse = Message.obtain();
 	                	extraSessionResponse.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE;
-	                	if(appIdRequesting>0){
+	                	if(appIdRequesting!=null && appIdRequesting.length()>0){
 							synchronized(service.REGISTERED_APPS_LOCK){
 								if(registeredApps!=null){
 									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
@@ -493,12 +504,15 @@ public class SdlRouterService extends Service{
 	                	}
 	                	break;
 	                case  TransportConstants.ROUTER_REMOVE_SESSION:
-	                	long appIdWithSession = receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	String appIdWithSession = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
+	                	if(appIdWithSession == null){
+	                		appIdWithSession = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
+	                	}
 	                	long sessionId = receivedBundle.getLong(TransportConstants.SESSION_ID_EXTRA, -1);
 	                	service.removeSessionFromMap((int)sessionId);
 	                	Message removeSessionResponse = Message.obtain();
 	                	removeSessionResponse.what = TransportConstants.ROUTER_REMOVE_SESSION_RESPONSE;
-	                	if(appIdWithSession>0){
+	                	if(appIdWithSession != null && appIdWithSession.length()>0){
 	                		if(sessionId>=0){
 	                			synchronized(service.REGISTERED_APPS_LOCK){
 	                				if(registeredApps!=null){
@@ -814,7 +828,7 @@ public class SdlRouterService extends Service{
 		initPassed = true;
 
 		synchronized(REGISTERED_APPS_LOCK){
-			registeredApps = new HashMap<Long,RegisteredApp>();
+			registeredApps = new HashMap<String,RegisteredApp>();
 		}
 		closing = false;
 		currentContext = getBaseContext();
@@ -824,7 +838,7 @@ public class SdlRouterService extends Service{
 		
 		
 		synchronized(SESSION_LOCK){
-			this.sessionMap = new SparseArray<Long>();
+			this.sessionMap = new SparseArray<String>();
 			this.sessionHashIdMap = new SparseArray<Integer>();
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
@@ -880,7 +894,7 @@ public class SdlRouterService extends Service{
 		}
 		if(registeredApps == null){
 			synchronized(REGISTERED_APPS_LOCK){
-				registeredApps = new HashMap<Long,RegisteredApp>();
+				registeredApps = new HashMap<String,RegisteredApp>();
 			}
 		}
 		if(intent != null ){
@@ -1370,8 +1384,8 @@ public class SdlRouterService extends Service{
 			if(registeredApps!=null && (registeredApps.size()>0)){
 				int session = packet.getSessionId();
 				boolean shouldAssertNewSession = packet.getFrameType() == FrameType.Control && (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_NAK);
-	    		Long appid = getAppIDForSession(session, shouldAssertNewSession); //Find where this packet should go
-	    		if(appid!=null){
+	    		String appid = getAppIDForSession(session, shouldAssertNewSession); //Find where this packet should go
+	    		if(appid!=null && appid.length()>0){
 	    			RegisteredApp app = null;
 	    			synchronized(REGISTERED_APPS_LOCK){
 	    				 app = registeredApps.get(appid);
@@ -1432,7 +1446,7 @@ public class SdlRouterService extends Service{
 		    				return false;
 		    			}
 	    				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  packet.getDataSize());
-	    				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appid,TransportConstants.ROUTER_RECEIVED_PACKET,bytes,0);				
+	    				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appid,TransportConstants.ROUTER_RECEIVED_PACKET,bytes,0);
 	    				while(splitter.isActive()){
 	    					if(!sendPacketMessageToClient(app,splitter.nextMessage(),version)){
 	    						Log.w(TAG, "Error sending first message of split packet to client " + app.appId);
@@ -1725,15 +1739,15 @@ public class SdlRouterService extends Service{
 	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB) 
-	private boolean removeAllSessionsWithAppId(long appId){
+	private boolean removeAllSessionsWithAppId(String appId){
 		synchronized(SESSION_LOCK){
 			if(sessionMap!=null){
-				SparseArray<Long> iter = sessionMap.clone();
+				SparseArray<String> iter = sessionMap.clone();
 				int size = iter.size();
 				for(int i = 0; i<size; i++){
 					//Log.d(TAG, "Investigating session " +iter.keyAt(i));
 					//Log.d(TAG, "App id is: " + iter.valueAt(i));
-					if(((Long)iter.valueAt(i)).compareTo(appId) == 0){
+					if(((String)iter.valueAt(i)).compareTo(appId) == 0){
 						sessionHashIdMap.remove(iter.keyAt(i));
 						sessionMap.removeAt(i);	
 					}
@@ -1772,14 +1786,14 @@ public class SdlRouterService extends Service{
     	return false;
     }
 	
-	private Long getAppIDForSession(int sessionId, boolean shouldAssertNewSession){
+	private String getAppIDForSession(int sessionId, boolean shouldAssertNewSession){
 		synchronized(SESSION_LOCK){
 			//Log.d(TAG, "Looking for session: " + sessionId);
 			if(sessionMap == null){ 
 				Log.w(TAG, "Session map was null during look up. Creating one on the fly");
-				sessionMap = new SparseArray<Long>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
+				sessionMap = new SparseArray<String>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
 			}
-			Long appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
+			String appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
 			if(appId==null && shouldAssertNewSession){
 				int pos;
 				synchronized(REGISTERED_APPS_LOCK){
@@ -2105,7 +2119,7 @@ public class SdlRouterService extends Service{
 		
 		protected static final int PAUSE_TIME_FOR_QUEUE 							= 1500;
 		
-		long appId;
+		String appId;
 		Messenger messenger;
 		Vector<Long> sessionIds;
 		ByteAraryMessageAssembler buffer;
@@ -2122,7 +2136,7 @@ public class SdlRouterService extends Service{
 		 * @param appId
 		 * @param messenger
 		 */
-		public RegisteredApp(long appId, Messenger messenger){			
+		public RegisteredApp(String appId, Messenger messenger){			
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
@@ -2130,6 +2144,15 @@ public class SdlRouterService extends Service{
 			queueWaitHandler = new Handler();
 			setDeathNote();
 		}
+		
+		/*public RegisteredApp(long appId, Messenger messenger){			
+			this.appId = appId;
+			this.messenger = messenger;
+			this.sessionIds = new Vector<Long>();
+			this.queue = new PacketWriteTaskBlockingQueue();
+			queueWaitHandler = new Handler();
+			setDeathNote();
+		}*/
 		
 		/**
 		 * Closes this app properly. 
@@ -2149,10 +2172,13 @@ public class SdlRouterService extends Service{
 			}
 		}
 		
-		public long getAppId() {
+		public String getAppId() {
 			return appId;
 		}
 
+		/*public long getAppId() {
+			return appId;
+		}*/
 		/**
 		 * This is a convenience variable and may not be used or useful in different protocols
 		 * @return
