@@ -1,5 +1,8 @@
 package com.smartdevicelink.transport;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -16,6 +19,11 @@ import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
 public class RSVTestCase extends AndroidTestCase {
 	private static final String TAG = "RSVTestCase";
+	
+	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms
+	private static final long REFRESH_TRUSTED_APP_LIST_TIME_WEEK 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 7; // A week in ms
+	private static final long REFRESH_TRUSTED_APP_LIST_TIME_MONTH 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 30; // A ~month in ms
+	
 	RouterServiceValidator rsvp;
 	/**
 	 * Set this boolean if you want to test the actual validation of router service
@@ -72,6 +80,96 @@ public class RSVTestCase extends AndroidTestCase {
 			rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_PERFORM_ALL_CHECKS);
 			assertTrue(rsvp.validate());
 		}
+	}
+	
+	public void testSecuritySetting(){
+		
+		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
+		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		
+		try{
+			Field securityLevelField =  RouterServiceValidator.class.getDeclaredField("securityLevel");
+			securityLevelField.setAccessible(true);
+			assertEquals(securityLevelField.get(rsvp),MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		}catch(NoSuchFieldException e1){
+			fail(e1.getMessage());
+		}catch( IllegalAccessException e2){
+			fail(e2.getMessage());
+		}
+		assertEquals(RouterServiceValidator.getSecurityLevel(mContext), MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+	}
+	
+	public void testHighSecurity(){
+		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
+		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
+		
+		assertTrue(checkShouldOverrideInstalledFrom(rsvp,false));
+		
+		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
+		
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		
+	}
+	
+	public void testMediumSecurity(){
+		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
+		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED);
+		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
+		
+		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
+		
+		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
+		
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		
+	}
+	
+	public void testLowSecurity(){
+		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
+		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW);
+		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
+		
+		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
+		
+		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_MONTH);
+		
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		
+	}
+	
+	public void testNoSecurity(){
+		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
+		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
+		
+		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
+		
+		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
+		
+		assertFalse(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		
+		//This should always return true
+		assertTrue(rsvp.validate());
+		
+	}
+	
+	public boolean checkShouldOverrideInstalledFrom(RouterServiceValidator rsvp, boolean shouldOverride){
+		try{
+			Method shouldOverrideInstalledFrom = RouterServiceValidator.class.getDeclaredMethod("shouldOverrideInstalledFrom");
+			shouldOverrideInstalledFrom.setAccessible(true);
+			boolean should = (Boolean)shouldOverrideInstalledFrom.invoke(rsvp);
+			
+			return shouldOverride == should;
+		
+		}catch(NoSuchMethodException e1){
+			fail(e1.getMessage());
+		}catch( IllegalAccessException e2){
+			fail(e2.getMessage());
+		}catch( InvocationTargetException e3){
+			fail(e3.getMessage());
+		}
+		return false;
 	}
 	
 	public void testJsonRecovery(){
@@ -136,6 +234,7 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		rsvp = new RouterServiceValidator(this.mContext);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
+		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		
 		PackageManager packageManager = mContext.getPackageManager();
 		List<PackageInfo> packages = packageManager.getInstalledPackages(0);
@@ -209,6 +308,7 @@ public class RSVTestCase extends AndroidTestCase {
 	 * Test to check that we can save our last request which actually houses all the previous known sdl enabled apps
 	 */
 	public void testRequestChange(){
+		RouterServiceValidator.setLastRequest(mContext, null);
 		assertNull(RouterServiceValidator.getLastRequest(mContext));
 		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
 		JSONObject object = null;

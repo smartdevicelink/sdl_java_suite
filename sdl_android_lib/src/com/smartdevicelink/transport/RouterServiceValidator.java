@@ -53,12 +53,13 @@ public class RouterServiceValidator {
 	private static final String JSON_APP_VERSION_TAG = "version";
 
 	
-	private static final long REFRESH_TRUSTED_APP_LIST_TIME 	= 3600000 * 24 * 7; // A week in ms
+	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms
 	
 	private static final String SDL = "sdl";
 	private static final String SDL_PACKAGE_LIST = "sdl_package_list";
 	private static final String SDL_PACKAGE_LIST_TIMESTAMP = "sdl_package_list_timestamp";
 	private static final String SDL_LAST_REQUEST = "sdl_last_request";
+	private static final String SDL_RSVP_SECURITY_LEVEL = "sdl_rsvp_security_level";
 
 	
 	//Flags to aid in debugging and production checks
@@ -84,6 +85,7 @@ public class RouterServiceValidator {
 	
 	private ComponentName service;//This is how we can save different routers over another in a waterfall method if we choose to.
 
+	private static int securityLevel = -1;
 	
 	public RouterServiceValidator(Context context){
 		this.context = context;
@@ -100,6 +102,15 @@ public class RouterServiceValidator {
 	 * @return whether or not the currently running router service can be trusted.
 	 */
 	public boolean validate(){
+		
+		if(securityLevel == -1){
+			securityLevel = getSecurityLevel(context);
+		}
+		
+		if(securityLevel == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF){ //If security isn't an issue, just return true;
+			return true;
+		}
+		
 		PackageManager pm = context.getPackageManager();
 		//Grab the package for the currently running router service. We need this call regardless of if we are in debug mode or not.
 		String packageName = null;
@@ -159,7 +170,8 @@ public class RouterServiceValidator {
 	}
 	
 	private boolean shouldOverrideInstalledFrom(){
-		return (this.inDebugMode && ((this.flags & FLAG_DEBUG_INSTALLED_FROM_CHECK) != FLAG_DEBUG_INSTALLED_FROM_CHECK));
+		return securityLevel< MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH 
+				|| (this.inDebugMode && ((this.flags & FLAG_DEBUG_INSTALLED_FROM_CHECK) != FLAG_DEBUG_INSTALLED_FROM_CHECK));
 	}
 	
 	@SuppressWarnings("unused")
@@ -176,6 +188,23 @@ public class RouterServiceValidator {
 	 */
 	public void setFlags(int flags){
 		this.flags = flags;
+	}
+	
+	public void setSecurityLevel(int securityLevel){
+		RouterServiceValidator.securityLevel = securityLevel;
+		cacheSecurityLevel(this.context,securityLevel);
+	}
+	
+	protected static long getRefreshRate(){
+		switch(securityLevel){
+		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW:
+			return 30 * REFRESH_TRUSTED_APP_LIST_TIME_DAY; 
+		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH:
+		case MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED:
+		default:
+			return 7 * REFRESH_TRUSTED_APP_LIST_TIME_DAY; 
+		
+		}
 	}
 	
 	/**
@@ -371,6 +400,12 @@ public class RouterServiceValidator {
 		if(context == null){
 			return false;
 		}
+		else if(getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF){ //If security is off, we can just return now
+			if(listCallback!=null){
+				listCallback.onListObtained(true);
+			}
+			return false;
+		}
 		
 		pendingListRefresh = true;
 		//Might want to store a flag letting this class know a request is currently pending
@@ -397,7 +432,7 @@ public class RouterServiceValidator {
 		
 		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
 		
-		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<REFRESH_TRUSTED_APP_LIST_TIME){ 
+		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<getRefreshRate()){ 
 			if(object.toString().equals(getLastRequest(context))){
 			//Our list should still be ok for now so we will skip the request
 				pendingListRefresh = false;
@@ -560,6 +595,25 @@ public class RouterServiceValidator {
 		}
 		return null;
 	}
+	
+	protected static boolean cacheSecurityLevel(Context context, int securityLevel){
+		if(context!=null){
+			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+			SharedPreferences.Editor prefAdd = pref.edit();
+			prefAdd.putInt(SDL_RSVP_SECURITY_LEVEL, securityLevel);
+			return prefAdd.commit();
+		}
+		return false;
+	}
+	
+	protected static int getSecurityLevel(Context context){
+		if(context!=null){
+			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+			return pref.getInt(SDL_RSVP_SECURITY_LEVEL, MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED);
+		}
+		return MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED;
+	}
+	
 	/**
 	 * Class that holds all the info we want to send/receive from the validation server
 	 */
