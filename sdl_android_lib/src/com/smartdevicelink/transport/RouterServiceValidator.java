@@ -24,6 +24,7 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.util.Log;
 
+import com.livio.securedprefslib.SecuredPreferences;
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
@@ -518,7 +519,7 @@ public class RouterServiceValidator {
 		if(context == null){
 			return false;
 		}
-		SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+		SharedPreferences pref = new SecuredPreferences(context, context.getSharedPreferences(SDL, Context.MODE_PRIVATE));
 		// Write the new prefs
 		SharedPreferences.Editor prefAdd = pref.edit();
 		prefAdd.putLong(SDL_PACKAGE_LIST_TIMESTAMP, 0); //This will be the last time we updated
@@ -537,7 +538,7 @@ public class RouterServiceValidator {
 	 */
 	protected static boolean setTrustedList(Context context, String jsonString){
 		if(jsonString!=null && context!=null){
-			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+			SharedPreferences pref = new SecuredPreferences(context, context.getSharedPreferences(SDL, Context.MODE_PRIVATE));
 			// Write the new prefs
     		SharedPreferences.Editor prefAdd = pref.edit();
     		prefAdd.putString(SDL_PACKAGE_LIST, jsonString);
@@ -554,7 +555,7 @@ public class RouterServiceValidator {
 	 */
 	protected static String getTrustedList(Context context){
 			if(context!=null){
-				SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+				SharedPreferences pref = new SecuredPreferences(context, context.getSharedPreferences(SDL, Context.MODE_PRIVATE));
 				return pref.getString(SDL_PACKAGE_LIST, DEFAULT_APP_LIST);
 			}
 			return null;
@@ -567,7 +568,7 @@ public class RouterServiceValidator {
 	 */
 	protected static Long getTrustedAppListTimeStamp(Context context){
 		if(context!=null){
-			SharedPreferences pref = context.getSharedPreferences(SDL, Context.MODE_PRIVATE);
+			SharedPreferences pref = new SecuredPreferences(context, context.getSharedPreferences(SDL, Context.MODE_PRIVATE));
 			return pref.getLong(SDL_PACKAGE_LIST_TIMESTAMP, 0);
 		}
 		return -1L;
