@@ -1,0 +1,19 @@
+<manifest package="com.smartdevicelink" xmlns:android="http://schemas.android.com/apk/res/android">
+	<uses-sdk android:minSdkVersion="8"/>
+        <uses-permission android:name="android.permission.BLUETOOTH" />
+    <!-- Required to pair Bluetooth devices -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required to check if WiFi is enabled -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <instrumentation
+    android:name="android.test.InstrumentationTestRunner"
+    android:targetPackage="com.smartdevicelink.test" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    
+    <application android:debuggable="true">
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+</manifest>
