@@ -3004,6 +3004,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnButtonPress
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
+				if(_sdlMsgVersion!=null 
+				&& _sdlMsgVersion.getMajorVersion() < 4 && _sdlMsgVersion.getMinorVersion() < 3 //For now this is a placeholder, before merge we need to check if this is correct version (4.3)
+				&& msg.getButtonName() == ButtonName.OK){ //If we are an older generation of module that didn't implement play_pause we need to swap out to the "OK" button to "Play_Pause"
+					msg.setButtonName(ButtonName.PLAY_PAUSE);
+				}
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
