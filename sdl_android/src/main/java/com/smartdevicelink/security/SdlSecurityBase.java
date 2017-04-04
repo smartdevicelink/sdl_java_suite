@@ -44,7 +44,8 @@ public abstract class SdlSecurityBase {
     
     public void handleInitResult(boolean val) {
     	setInitSuccess(val);
-    	session.onSecurityInitialized();
+		if (session != null)
+			session.onSecurityInitialized();
     }
     
     public void handleSdlSession(SdlSession val) {
