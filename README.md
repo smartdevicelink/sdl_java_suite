@@ -9,13 +9,15 @@ SmartDeviceLink (SDL) is a standard set of protocols and messages that connect a
 
 Pull Requests Welcome!
 
+To understand if a contribution should be entered as an Android Pull Request (or issue), or an SDL Evolution Proposal, please reference [this document](https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals_versus_issues.md).
+
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=AzdQdSCS24M" target="_blank"><img src="http://i.imgur.com/nm8UujD.png?1" alt="SmartDeviceLink" border="10" /></a>
 
-##Mobile Proxy
+## Mobile Proxy
 
 The mobile library component of SDL is meant to run on the end user’s smart-device from within SDL enabled apps. The library allows the apps to connect to SDL enabled head-units and hardware through bluetooth, USB, and TCP. Once the library establishes a connection between the smart device and head-unit through the preferred method of transport, the two components are able to communicate using the SDL defined protocol. The app integrating this library project is then able to expose its functionality to the head-unit through text, media, and other interactive elements.
 
-##SmartDeviceLink Android
+## SmartDeviceLink Android
 
 We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://github.com/smartdevicelink/sdl_core/blob/master/README.md) and [here](http://projects.genivi.org/smartdevicelink/about).
 
