@@ -2265,19 +2265,20 @@ public class SdlRouterService extends Service{
 			}
 			if(buffer == null){
 				Log.e(TAG, "Unable to assemble message as buffer was null/not started");
-			}
-			if(!buffer.handleMessage(flags, packet)){ //If this returns false
-				Log.e(TAG, "Error handling bytes");
-			}
-			if(buffer.isFinished()){ //We are finished building the buffer so we should write the bytes out
-				byte[] bytes = buffer.getBytes();
-				if(queue!=null){
-					queue.add(new PacketWriteTask(bytes, 0, bytes.length,this.prioirtyForBuffingMessage));
-					if(packetWriteTaskMaster!=null){
-						packetWriteTaskMaster.alert();
-					}
+			}else {
+				if (!buffer.handleMessage(flags, packet)) { //If this returns false
+					Log.e(TAG, "Error handling bytes");
 				}
-				buffer.close();
+				if (buffer.isFinished()) { //We are finished building the buffer so we should write the bytes out
+					byte[] bytes = buffer.getBytes();
+					if (queue != null) {
+						queue.add(new PacketWriteTask(bytes, 0, bytes.length, this.prioirtyForBuffingMessage));
+						if (packetWriteTaskMaster != null) {
+							packetWriteTaskMaster.alert();
+						}
+					}
+					buffer.close();
+				}
 			}
 		}
 		
