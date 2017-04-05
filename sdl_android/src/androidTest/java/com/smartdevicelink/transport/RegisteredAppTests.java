@@ -54,7 +54,7 @@ public class RegisteredAppTests extends AndroidTestCase {
                 // Call Handle Message - Making sure it doesn't init buffer
                 app.handleMessage(TransportConstants.BYTES_TO_SEND_FLAG_NONE,bytes);
 
-                // Insure that the buffer is not null, if it is the test will fail
+                // Insure that the buffer is null. and no NPE
                 assertNull(app.buffer);
 
             }
