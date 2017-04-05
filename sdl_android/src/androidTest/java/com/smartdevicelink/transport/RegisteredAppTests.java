@@ -7,30 +7,32 @@ import android.test.AndroidTestCase;
 
 
 /**
- * Created by brett on 4/4/17.
+ * Created by brettywhite on 4/4/17.
  */
 
 public class RegisteredAppTests extends AndroidTestCase {
 
     private static final String APP_ID = "123451123";
-
+    private static final Messenger messenger = null;
+    private static byte[] bytes = new byte[1];
 
     public void testHandleMessage() {
 
-
+        // Run Test in Main Thread
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
 
+                // Instantiate SdlRouterService and Registered App class
                 SdlRouterService router = new SdlRouterService();
-
-                Messenger messenger = null;
-
                 SdlRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, messenger);
 
-                byte[] bytes = new byte[1];
+                // Call Handle Message
                 app.handleMessage(TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START,bytes);
+
+                // Insure that the buffer is not null, if it is the test will fail
                 assertNotNull(app.buffer);
+
             }
         });
     }
