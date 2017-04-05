@@ -36,5 +36,29 @@ public class RegisteredAppTests extends AndroidTestCase {
             }
         });
     }
+
+    public void testNullBuffer() {
+
+        // Run Test in Main Thread
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+
+                // Instantiate SdlRouterService and Registered App class
+                SdlRouterService router = new SdlRouterService();
+                SdlRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, messenger);
+
+                // Force Null Buffer
+                app.buffer = null;
+
+                // Call Handle Message - Making sure it doesn't init buffer
+                app.handleMessage(TransportConstants.BYTES_TO_SEND_FLAG_NONE,bytes);
+
+                // Insure that the buffer is not null, if it is the test will fail
+                assertNull(app.buffer);
+
+            }
+        });
+    }
 }
 

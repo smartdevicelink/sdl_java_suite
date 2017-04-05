@@ -2263,9 +2263,7 @@ public class SdlRouterService extends Service{
 				buffer = new ByteAraryMessageAssembler();
 				buffer.init();
 			}
-			if(buffer == null){
-				Log.e(TAG, "Unable to assemble message as buffer was null/not started");
-			}else {
+			if(buffer != null){
 				if (!buffer.handleMessage(flags, packet)) { //If this returns false
 					Log.e(TAG, "Error handling bytes");
 				}
