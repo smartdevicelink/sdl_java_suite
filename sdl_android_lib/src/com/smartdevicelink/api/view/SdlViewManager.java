@@ -3,6 +3,9 @@ package com.smartdevicelink.api.view;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.SoftButton;
+
+import java.util.ArrayList;
 
 public class SdlViewManager {
 
@@ -10,12 +13,10 @@ public class SdlViewManager {
 
     private SdlView mRootView;
     private SdlContext mSdlContext;
-    private Show mShow;
     private String mTemplateName = "";
 
     public SdlViewManager (SdlContext sdlContext){
         mSdlContext = sdlContext;
-        mShow = new Show();
     }
 
     public void setRootView(SdlView view){
@@ -44,8 +45,14 @@ public class SdlViewManager {
             setDisplayLayout.setDisplayLayout(templateName);
             mSdlContext.sendRpc(setDisplayLayout);
         }
-        mRootView.decorate(mShow);
-        mSdlContext.sendRpc(mShow);
+        Show newShow = new Show();
+        newShow.setMainField1("");
+        newShow.setMainField2("");
+        newShow.setMainField3("");
+        newShow.setMainField4("");
+        newShow.setSoftButtons(new ArrayList<SoftButton>());
+        mRootView.decorate(newShow);
+        mSdlContext.sendRpc(newShow);
     }
 
     int registerButtonCallback(SdlButton.OnPressListener listener){
