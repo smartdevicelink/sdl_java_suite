@@ -10,14 +10,16 @@ import com.smartdevicelink.api.file.SdlFileManager;
 import com.smartdevicelink.api.interfaces.SdlButtonListener;
 import com.smartdevicelink.api.interfaces.SdlContext;
 import com.smartdevicelink.api.menu.SdlMenuManager;
-import com.smartdevicelink.api.menu.SdlMenuOption;
 import com.smartdevicelink.api.menu.SdlMenuTransaction;
+import com.smartdevicelink.api.menu.SelectListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
+import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 public abstract class SdlActivity extends SdlContextAbsImpl {
@@ -27,6 +29,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     public static final int FLAG_DEFAULT = 0;
     public static final int FLAG_CLEAR_HISTORY = 1;
     public static final int FLAG_CLEAR_TOP = 2;
+    public static final int FLAG_PULL_TO_TOP = 3;
 
     enum SdlActivityState{
         PRE_CREATE,
@@ -201,7 +204,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
-    public final void registerMenuCallback(int id, SdlMenuOption.SelectListener listener) {
+    public final void registerMenuCallback(int id, SelectListener listener) {
         getSdlApplicationContext().registerMenuCallback(id, listener);
     }
 
@@ -263,6 +266,16 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     @Override
     public final SdlMsgVersion getSdlMessageVersion() {
         return getSdlApplicationContext().getSdlMessageVersion();
+    }
+
+    @Override
+    public final Language getConnectedLanguage() {
+        return getSdlApplicationContext().getConnectedLanguage();
+    }
+
+    @Override
+    public DriverDistractionState getCurrentDDState() {
+        return getSdlApplicationContext().getCurrentDDState();
     }
 
     public class SuperNotCalledException extends RuntimeException{

@@ -86,9 +86,10 @@ public class SdlManager {
         }
     }
 
-    void sdlDisconnected(){
-        Log.i(TAG, "SDL disconnected.");
+    void disconnect(){
         synchronized (SYNC_LOCK){
+            if(mSdlService!=null)
+                Log.i(TAG, "SDL disconnected.");
             if(isBound){
                 mAndroidContext.unbindService(mSdlServiceConnection);
                 isBound = false;
@@ -119,11 +120,15 @@ public class SdlManager {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             synchronized (SYNC_LOCK) {
-                Log.i(TAG, "ConnectionService bound.");
-                mSdlService = ((SdlConnectionService.SdlConnectionBinder) service).getSdlConnectionService();
-                mSdlService.setSdlManager(mInstance);
-                mSdlService.setPersistentNotification(mPersistentNotification);
-                mSdlService.startSdlApplication(mApplicationConfigRegistry);
+                if(service instanceof SdlConnectionService.SdlConnectionBinder){
+                    Log.i(TAG, "ConnectionService bound.");
+                    mSdlService = ((SdlConnectionService.SdlConnectionBinder) service).getSdlConnectionService();
+                    mSdlService.setSdlManager(mInstance);
+                    mSdlService.setPersistentNotification(mPersistentNotification);
+                    mSdlService.startSdlApplication(mApplicationConfigRegistry);
+                } else {
+                    disconnect();
+                }
             }
         }
 

@@ -76,11 +76,11 @@ public class SdlConnectionService extends Service {
             public void run() {
                 synchronized (MAP_LOCK) {
                     for (Map.Entry<String, SdlApplication> entry : mRunningApplications.entrySet()) {
-                        entry.getValue().closeConnection(false);
+                        entry.getValue().closeConnection(false, true, true);
                     }
                     mRunningApplications.clear();
                     mConnectedApplications.clear();
-                    mSdlManager.sdlDisconnected();
+                    mSdlManager.disconnect();
                     Log.w(TAG, "SDL connection attempts timed out.");
                 }
             }
@@ -103,6 +103,8 @@ public class SdlConnectionService extends Service {
             Log.i(TAG, "AppID: " + appId + " is " + status.name());
             synchronized (MAP_LOCK){
                 switch (status){
+                    case RECONNECTING:
+                        mConnectedApplications.remove(appId);
                     case CONNECTING:
                         if(mConnectedApplications.size() == 0){
                             cancelTimer();
@@ -124,7 +126,7 @@ public class SdlConnectionService extends Service {
                         mRunningApplications.remove(appId);
                         if(mRunningApplications.size() == 0){
                             Log.i(TAG, "All applications disconnected.");
-                            mSdlManager.sdlDisconnected();
+                            mSdlManager.disconnect();
                         }
                         break;
                 }

@@ -153,7 +153,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     private void handlePendingRequests(){
         while(!mPendingRequests.isEmpty()){
             ImageTaskObject taskObject = mPendingRequests.removeFirst();
-            if(mFileSet.contains(taskObject.image.getSdlName())){
+            if(mFileSet.contains(taskObject.image.getSdlName()) && taskObject.listener != null){
                 taskObject.listener.onFileReady(taskObject.image);
             } else {
                 new LoadImageTask().execute(taskObject);
