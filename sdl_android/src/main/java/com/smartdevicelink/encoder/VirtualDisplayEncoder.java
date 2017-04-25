@@ -26,13 +26,11 @@ import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -47,7 +45,7 @@ public class VirtualDisplayEncoder {
     private static int video_width = 800;
     private static int video_height = 480;
     private static int frame_rate = 24;
-    private static int bitrate = 500 * 1024;
+    private static int bitrate = 512000;
     private static int interval = 5;
     private DisplayManager mDisplayManager;
     private volatile MediaCodec mVideoEncoder = null;
@@ -59,12 +57,12 @@ public class VirtualDisplayEncoder {
     private VideoStreamWriterThread streamWriterThread = null;
     private Context mContext;
     private OutputStream sdlOutStream = null;
-    private HMILevel hmiLevel = HMILevel.HMI_NONE;
+    private Handler UI_handler = new Handler(Looper.getMainLooper());
 
     public void init(Context context, OutputStream videoStream, Class<? extends SdlPresentation> presentationClass, ScreenParams screenParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < 21) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
-            return;
+            throw new Exception("API level of 21 required");
         }
 
         mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
@@ -110,15 +108,14 @@ public class VirtualDisplayEncoder {
                 Log.d(TAG, "Created virtualDisplay.");
 
                 startEncoder();
-                Log.d(TAG, "Start encoder.");
+                Log.d(TAG, "Starting encoder.");
 
                 displayPresentation();
                 Log.d(TAG, "Displaying presentation.");
-
             } catch (Exception ex) {
                 Log.w(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
-            } finally {}
+            }
         }
     }
 
@@ -203,7 +200,7 @@ public class VirtualDisplayEncoder {
             mVideoEncoder.setCallback(new MediaCodec.Callback() {
                 @Override
                 public void onInputBufferAvailable(MediaCodec codec, int index) {
-
+                    // nothing to do here
                 }
 
                 @Override
@@ -238,7 +235,7 @@ public class VirtualDisplayEncoder {
 
                 @Override
                 public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
-
+                    // nothing to do here
                 }
             });
 
@@ -249,8 +246,6 @@ public class VirtualDisplayEncoder {
         }
         return null;
     }
-
-    Handler UI_handler = new Handler(Looper.getMainLooper());
 
     /* handle TouchEvent */
     public void handleTouchEvent(OnTouchEvent touchEvent)
@@ -310,24 +305,17 @@ public class VirtualDisplayEncoder {
         return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
     }
 
-    public void updateHmiLevel(HMILevel hmi){
-        hmiLevel = hmi;
-    }
-
     private void onStreamDataAvailable(byte[] data, int size) {
         Log.d(TAG, "onStreamDataAvailable");
         if (sdlOutStream != null) {
             try {
-                if (hmiLevel != HMILevel.HMI_NONE) {
-                    if (streamWriterThread.getOutputStream() == null) {
-                        streamWriterThread.setOutputStream(sdlOutStream);
-                        Log.d(TAG, "Setting output stream.");
-                    }
+                if (streamWriterThread.getOutputStream() == null) {
+                    streamWriterThread.setOutputStream(sdlOutStream);
+                    Log.d(TAG, "Setting output stream.");
+                }
 
-                    Log.d(TAG, "Transmitting data.");
-                    streamWriterThread.setByteBuffer(data, size);
-                } else
-                    Log.d(TAG, "Cannot stream in HMI_NONE state.");
+                Log.d(TAG, "Transmitting data.");
+                streamWriterThread.setByteBuffer(data, size);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -401,54 +389,46 @@ public class VirtualDisplayEncoder {
         }
         @Override
         public Boolean call() {
-            try {
-                UI_handler.post(new Runnable() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-                    @Override
-                    public void run() {
-                        // Want to create presentation on UI thread so it finds the right Looper
-                        // when setting up the Dialog.
-                        if ((presentation == null) && (mDisplay != null))
-                        {
-                            Constructor constructor = null;
-                            try {
-                                constructor = presentationClass.getConstructor(Context.class, Display.class);
-                            } catch (NoSuchMethodException e) {
-                                e.printStackTrace();
-                                Log.e(TAG, "Unable to create Presentation Class");
-                            }
-                            try {
-                                presentation = (SdlPresentation) constructor.newInstance(mContext, mDisplay);
-                            } catch (InstantiationException e) {
-                                e.printStackTrace();
-                                Log.e(TAG, "Unable to create Presentation Class");
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                                Log.e(TAG, "Unable to create Presentation Class");
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace();
-                                Log.e(TAG, "Unable to create Presentation Class");
-                            }
 
-                            try {
-                                Log.i(TAG, "Show presentation");
-                                presentation.show();
-                            } catch (WindowManager.InvalidDisplayException ex) {
-                                Log.w(TAG, "Couldn't show presentation! Shouldn't have happened. Display was removed in "
-                                        + "the meantime.", ex);
-                                presentation = null;
-                                bPresentationShowError = true;
-                            }
+            UI_handler.post(new Runnable() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+                @Override
+                public void run() {
+                    // Want to create presentation on UI thread so it finds the right Looper
+                    // when setting up the Dialog.
+                    if ((presentation == null) && (mDisplay != null))
+                    {
+                        Constructor constructor = null;
+                        try {
+                            constructor = presentationClass.getConstructor(Context.class, Display.class);
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Unable to create Presentation Class");
+                            bPresentationShowError = true;
+                            return;
+                        }
+
+                        try {
+                            presentation = (SdlPresentation) constructor.newInstance(mContext, mDisplay);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "Unable to create Presentation Class");
+                            bPresentationShowError = true;
+                            return;
+                        }
+
+                        try {
+                            Log.i(TAG, "Showing presentation");
+                            presentation.show();
+                        } catch (WindowManager.InvalidDisplayException ex) {
+                            Log.w(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
+                            presentation = null;
+                            bPresentationShowError = true;
+                            return;
                         }
                     }
-                });
-
-            } catch (Exception ex) {
-                Log.w(TAG, "Couldn't show presentation");
-                ex.printStackTrace();
-                presentation = null;
-                bPresentationShowError = true;
-            }
+                }
+            });
 
             return bPresentationShowError;
         }
