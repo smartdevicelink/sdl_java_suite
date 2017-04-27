@@ -14,7 +14,14 @@ public class StreamPacketizer extends AbstractPacketizer implements Runnable{
 
 	private Thread t = null;
 
-	private final static int BUFF_READ_SIZE = 1024;
+
+	private final static int TLS_MAX_RECORD_SIZE = 16384;
+	private final static int TLS_RECORD_HEADER_SIZE = 5;
+	private final static int TLS_RECORD_MES_AUTH_CDE_SIZE = 32;
+	private final static int TLS_MAX_RECORD_PADDING_SIZE = 256;
+
+
+	private final static int BUFF_READ_SIZE = TLS_MAX_RECORD_SIZE - TLS_RECORD_HEADER_SIZE - TLS_RECORD_MES_AUTH_CDE_SIZE - TLS_MAX_RECORD_PADDING_SIZE;
 
 	public SdlConnection sdlConnection = null;
     private Object mPauseLock;
