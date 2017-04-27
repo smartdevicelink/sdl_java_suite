@@ -25,6 +25,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public static final int V2_HEADER_SIZE = 12;
 	private static int HEADER_SIZE = 8;
 	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;
+	private static int TLS_MAX_RECORD_SIZE = 16384;
 
 	int hashID = 0;
 	int messageID = 0;
@@ -147,7 +148,7 @@ public class WiProProtocol extends AbstractProtocol {
 				if (session == null)
 					return;
 				
-				byte[] dataToRead = new byte[4096];
+				byte[] dataToRead = new byte[TLS_MAX_RECORD_SIZE];
 				SdlSecurityBase sdlSec = session.getSdlSecurity();
 				if (sdlSec == null) 
 					return;
