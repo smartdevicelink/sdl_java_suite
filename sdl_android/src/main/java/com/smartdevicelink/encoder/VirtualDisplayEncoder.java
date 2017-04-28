@@ -69,7 +69,7 @@ public class VirtualDisplayEncoder {
             // empty
         }
 
-        public void setParams(int displayDensity, int videoWidth, int videoHeight, int frameRate, int bitrate, int interval) {
+        public StreamingParameters(int displayDensity, int videoWidth, int videoHeight, int frameRate, int bitrate, int interval) {
             this.displayDensity = displayDensity;
             this.videoWidth = videoWidth;
             this.videoHeight = videoHeight;
@@ -169,6 +169,10 @@ public class VirtualDisplayEncoder {
 
     public StreamingParameters getStreamingParams(){
         return this.streamingParams;
+    }
+
+    public void setStreamingParams(int displayDensity, int videoWidth, int videoHeight, int frameRate, int bitrate, int interval){
+        this.streamingParams = new StreamingParameters(displayDensity, videoWidth, videoHeight, frameRate, bitrate, interval);
     }
 
     /**
