@@ -345,35 +345,34 @@ public class RouterServiceValidator {
 	/**
 	 * Using the knowledge that all SDL enabled apps have an SDL Broadcast Receiver that has an intent filter that includes a specific 
 	 * intent. 
-	 * @return 
+	 * @return the list of SDL enabled apps if any app is found; null otherwise
 	 */
-	private static List<SdlApp> findAllSdlApps(Context context){
-		List<SdlApp> apps = new ArrayList<SdlApp>();
+	private static List<SdlApp> findAllSdlApps(Context context) {
+		List<SdlApp> apps = new ArrayList<>();
 		PackageManager packageManager = context.getPackageManager();
 		Intent intent = new Intent();
-		intent.setAction("sdl.router.startservice");
+		intent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
-		//We want to sort our list so that we know it's the same everytime
-		Collections.sort(infoList,new Comparator<ResolveInfo>() {
-	        @Override
-	        public int compare(ResolveInfo lhs, ResolveInfo rhs) {
-	            return lhs.activityInfo.packageName.compareTo(rhs.activityInfo.packageName);
-	        }
-	    });
-		if(infoList!=null){
+		if (infoList!=null) {
+			//We want to sort our list so that we know it's the same every time
+			Collections.sort(infoList,new Comparator<ResolveInfo>() {
+				@Override
+				public int compare(ResolveInfo lhs, ResolveInfo rhs) {
+					return lhs.activityInfo.packageName.compareTo(rhs.activityInfo.packageName);
+				}
+			});
 			String packageName;
-			for(ResolveInfo info : infoList){
+			for (ResolveInfo info : infoList) {
 				//Log.i(TAG, "SDL apps: " + info.activityInfo.packageName);
 				packageName = info.activityInfo.packageName;
 				try {
-					apps.add(new SdlApp(packageName,packageManager.getPackageInfo(packageName,0).versionCode));
+					apps.add(new SdlApp(packageName, packageManager.getPackageInfo(packageName, 0).versionCode));
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
-			
 			return apps;
-		}else{
+		} else {
 			Log.i(TAG, "No SDL apps, list was null");
 			return null;
 		}
@@ -417,16 +416,17 @@ public class RouterServiceValidator {
 		final JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject jsonApp;
-		
-		for(SdlApp app: apps){	//Format all the apps into a JSON object and add it to the JSON array
-			try{
-				jsonApp = new JSONObject();
-				jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
-				jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
-				array.put(jsonApp);
-			}catch(JSONException e){
-				e.printStackTrace();
-				continue;
+		if (apps != null) {
+			for (SdlApp app : apps) {    //Format all the apps into a JSON object and add it to the JSON array
+				try {
+					jsonApp = new JSONObject();
+					jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
+					jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
+					array.put(jsonApp);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					continue;
+				}
 			}
 		}
 		
