@@ -8,6 +8,7 @@ import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -141,7 +142,7 @@ public class VirtualDisplayEncoder {
      * @throws Exception
      */
     public void init(Context context, OutputStream videoStream, Class<? extends SdlPresentation> presentationClass, ScreenParams screenParams) throws Exception {
-        if (android.os.Build.VERSION.SDK_INT < 21) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
             throw new Exception("API level of 21 required");
         }
@@ -259,8 +260,9 @@ public class VirtualDisplayEncoder {
 
     private Surface prepareVideoEncoder() {
 
-        if (mVideoBufferInfo == null)
+        if (mVideoBufferInfo == null) {
             mVideoBufferInfo = new MediaCodec.BufferInfo();
+        }
 
         MediaFormat format = MediaFormat.createVideoFormat(videoMimeType, streamingParams.videoWidth, streamingParams.videoHeight);
 
@@ -348,22 +350,22 @@ public class VirtualDisplayEncoder {
         if (eventList == null || eventList.size() == 0) return null;
 
         TouchType touchType = touchEvent.getType();
-        if (touchType == null) return null;
+        if (touchType == null){ return null;}
 
         float x;
         float y;
 
         TouchEvent event = eventList.get(eventList.size() - 1);
         List<TouchCoord> coordList = event.getTouchCoordinates();
-        if (coordList == null || coordList.size() == 0) return null;
+        if (coordList == null || coordList.size() == 0){ return null;}
 
         TouchCoord coord = coordList.get(coordList.size() - 1);
-        if (coord == null) return null;
+        if (coord == null){ return null;}
 
         x = coord.getX();
         y = coord.getY();
 
-        if (x == 0 && y == 0) return null;
+        if (x == 0 && y == 0){ return null;}
 
         int eventAction = MotionEvent.ACTION_DOWN;
         long downTime = 0;
@@ -374,13 +376,15 @@ public class VirtualDisplayEncoder {
         }
 
         long eventTime = SystemClock.uptimeMillis();
-        if (downTime == 0) downTime = eventTime - 100;
+        if (downTime == 0){ downTime = eventTime - 100;}
 
-        if (touchType == TouchType.MOVE)
+        if (touchType == TouchType.MOVE) {
             eventAction = MotionEvent.ACTION_MOVE;
+        }
 
-        if (touchType == TouchType.END)
+        if (touchType == TouchType.END) {
             eventAction = MotionEvent.ACTION_UP;
+        }
 
         return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
     }
