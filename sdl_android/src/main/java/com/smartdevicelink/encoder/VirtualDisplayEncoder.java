@@ -8,7 +8,6 @@ import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,29 +35,111 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-
+@TargetApi(21)
 public class VirtualDisplayEncoder {
     private static final String TAG = "VirtualDisplayEncoder";
-    private static final int DENSITY = DisplayMetrics.DENSITY_HIGH;
-    private static final String VIDEO_MIME_TYPE = "video/avc";
-    private static int refresh_rate_ms = 100;
-    private static int video_width = 800;
-    private static int video_height = 480;
-    private static int frame_rate = 24;
-    private static int bitrate = 512000;
-    private static int interval = 5;
+    private final String videoMimeType = "video/avc";
+    private StreamingParameters streamingParams = new StreamingParameters();
     private DisplayManager mDisplayManager;
     private volatile MediaCodec mVideoEncoder = null;
     private volatile MediaCodec.BufferInfo mVideoBufferInfo = null;
-    volatile Surface inputSurface = null;
-    volatile VirtualDisplay virtualDisplay = null;
+    private volatile Surface inputSurface = null;
+    private volatile VirtualDisplay virtualDisplay = null;
     private volatile SdlPresentation presentation = null;
     private Class<? extends SdlPresentation> presentationClass = null;
     private VideoStreamWriterThread streamWriterThread = null;
     private Context mContext;
     private OutputStream sdlOutStream = null;
-    private Handler UI_handler = new Handler(Looper.getMainLooper());
+    private Boolean initPassed = false;
+    private Handler uiHandler = new Handler(Looper.getMainLooper());
+    private final static int REFRESH_RATE_MS = 100;
+    private final static Object CLOSE_VID_SESSION_LOCK = new Object();
+    private final static Object START_DISP_LOCK = new Object();
+    private final static Object STREAMING_LOCK = new Object();
 
+    public class StreamingParameters {
+        protected int displayDensity = DisplayMetrics.DENSITY_HIGH;
+        protected int videoWidth = 800;
+        protected int videoHeight = 480;
+        protected int frameRate = 24;
+        protected int bitrate = 512000;
+        protected int interval = 5;
+
+        public StreamingParameters(){
+            // empty
+        }
+
+        public void setParams(int displayDensity, int videoWidth, int videoHeight, int frameRate, int bitrate, int interval) {
+            this.displayDensity = displayDensity;
+            this.videoWidth = videoWidth;
+            this.videoHeight = videoHeight;
+            this.frameRate = frameRate;
+            this.bitrate = bitrate;
+            this.interval = interval;
+        }
+
+        /**
+         * Set displayDensity to a value from DisplayMetrics
+         * @param displayDensity
+         */
+        public void setDisplayDensity(int displayDensity) {
+            this.displayDensity = displayDensity;
+        }
+
+        public int getDisplayDensity() {
+            return displayDensity;
+        }
+
+        public void setVideoWidth(int videoWidth) {
+            this.videoWidth = videoWidth;
+        }
+
+        public int getVideoWidth() {
+            return videoWidth;
+        }
+
+        public void setVideoHeight(int videoHeight) {
+            this.videoHeight = videoHeight;
+        }
+
+        public int getVideoHeight() {
+            return videoHeight;
+        }
+
+        public void setFrameRate(int frameRate) {
+            this.frameRate = frameRate;
+        }
+
+        public int getFrameRate() {
+            return frameRate;
+        }
+
+        public void setBitrate(int bitrate) {
+            this.bitrate = bitrate;
+        }
+
+        public int getBitrate() {
+            return bitrate;
+        }
+
+        public void setInterval(int interval) {
+            this.interval = interval;
+        }
+
+        public int getInterval() {
+            return interval;
+        }
+    }
+
+    /**
+     * Initialization method for VirtualDisplayEncoder object. MUST be called before start() or shutdown()
+     * Will overwrite previously set videoWeight and videoHeight
+     * @param context
+     * @param videoStream
+     * @param presentationClass
+     * @param screenParams
+     * @throws Exception
+     */
     public void init(Context context, OutputStream videoStream, Class<? extends SdlPresentation> presentationClass, ScreenParams screenParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < 21) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
@@ -70,11 +151,11 @@ public class VirtualDisplayEncoder {
         mContext = context;
 
         if(screenParams.getImageResolution().getResolutionHeight() != null){
-            video_height = screenParams.getImageResolution().getResolutionHeight();
+            streamingParams.videoHeight = screenParams.getImageResolution().getResolutionHeight();
         }
 
         if(screenParams.getImageResolution().getResolutionWidth() != null){
-            video_width = screenParams.getImageResolution().getResolutionWidth();
+            streamingParams.videoWidth = screenParams.getImageResolution().getResolutionWidth();
         }
 
         sdlOutStream = videoStream;
@@ -82,46 +163,49 @@ public class VirtualDisplayEncoder {
         this.presentationClass = presentationClass;
 
         setupVideoStreamWriter();
+
+        initPassed = true;
     }
 
-    public void setStreamParams(int frameRate, int bitrate, int interval, int refresh_rate){
-        this.frame_rate = frameRate;
-        this.bitrate = bitrate;
-        this.interval = interval;
-        this.refresh_rate_ms = refresh_rate;
+    public StreamingParameters getStreamingParams(){
+        return this.streamingParams;
     }
 
-    private final static Object lock = new Object();
     /**
+     * NOTE: Must call init() without error before calling this method.
      * Prepares the encoder and virtual display.
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void start() throws Exception {
-        synchronized (lock) {
+        if(!initPassed){
+            Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
+            return;
+        }
+
+        synchronized (STREAMING_LOCK) {
 
             try {
                 inputSurface = prepareVideoEncoder();
 
                 // Create a virtual display that will output to our encoder.
                 virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                        video_width, video_height, DENSITY, inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
-                Log.d(TAG, "Created virtualDisplay.");
+                        streamingParams.videoWidth, streamingParams.videoHeight, streamingParams.displayDensity, inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
 
                 startEncoder();
-                Log.d(TAG, "Starting encoder.");
 
                 displayPresentation();
-                Log.d(TAG, "Displaying presentation.");
             } catch (Exception ex) {
-                Log.w(TAG, "Unable to create Virtual Display.");
+                Log.e(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
             }
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void shutDown()
     {
+        if(!initPassed){
+            Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
+            return;
+        }
         try {
 
             closeVideoSession();
@@ -148,15 +232,12 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    private final static Object closeVideoSessionLock = new Object();
-
     private void closeVideoSession() {
 
-        synchronized (closeVideoSessionLock) {
+        synchronized (CLOSE_VID_SESSION_LOCK) {
             if (sdlOutStream != null) {
 
                 try {
-                    Log.d(TAG, "Closing sdlOutStream.");
                     sdlOutStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -165,37 +246,31 @@ public class VirtualDisplayEncoder {
                 sdlOutStream = null;
 
                 if (streamWriterThread != null) {
-                    Log.d(TAG, "Clearing output stream.");
                     streamWriterThread.clearOutputStream();
-
-                    Log.d(TAG, "Clearing byte buffer.");
                     streamWriterThread.clearByteBuffer();
                 }
             }
         }
     }
 
-    @TargetApi(21)
     private Surface prepareVideoEncoder() {
-        Log.d(TAG, "prepareVideoEncoder");
 
         if (mVideoBufferInfo == null)
             mVideoBufferInfo = new MediaCodec.BufferInfo();
 
-        MediaFormat format = MediaFormat.createVideoFormat(VIDEO_MIME_TYPE, video_width, video_height);
+        MediaFormat format = MediaFormat.createVideoFormat(videoMimeType, streamingParams.videoWidth, streamingParams.videoHeight);
 
         // Set some required properties. The media codec may fail if these aren't defined.
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
-        format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, frame_rate);
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, interval); // seconds between I-frames
+        format.setInteger(MediaFormat.KEY_BIT_RATE, streamingParams.bitrate);
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, streamingParams.frameRate);
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, streamingParams.interval); // seconds between I-frames
 
         // Create a MediaCodec encoder and configure it. Get a Surface we can use for recording into.
         try {
-            mVideoEncoder = MediaCodec.createEncoderByType(VIDEO_MIME_TYPE);
+            mVideoEncoder = MediaCodec.createEncoderByType(videoMimeType);
             mVideoEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             Surface surf = mVideoEncoder.createInputSurface();
-            Log.d(TAG, "Input surface Created");
 
             mVideoEncoder.setCallback(new MediaCodec.Callback() {
                 @Override
@@ -206,7 +281,6 @@ public class VirtualDisplayEncoder {
                 @Override
                 public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
                     try {
-                        Log.e(TAG, "onOutputBufferAvailable");
                         ByteBuffer encodedData = codec.getOutputBuffer(index);
 
                         encodedData.position(info.offset);
@@ -247,14 +321,16 @@ public class VirtualDisplayEncoder {
         return null;
     }
 
-    /* handle TouchEvent */
+    /**
+     * Forward an OnTouchEvent object to the current presentation
+     * @param touchEvent
+     */
     public void handleTouchEvent(OnTouchEvent touchEvent)
     {
         final MotionEvent motionEvent = convertTouchEvent(touchEvent);
         if (motionEvent != null && presentation.mainView != null) {
-            Log.d(TAG, "Sending touch event!");
 
-            UI_handler.post(new Runnable() {
+            uiHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     presentation.mainView.dispatchTouchEvent(motionEvent);
@@ -306,15 +382,12 @@ public class VirtualDisplayEncoder {
     }
 
     private void onStreamDataAvailable(byte[] data, int size) {
-        Log.d(TAG, "onStreamDataAvailable");
         if (sdlOutStream != null) {
             try {
                 if (streamWriterThread.getOutputStream() == null) {
                     streamWriterThread.setOutputStream(sdlOutStream);
-                    Log.d(TAG, "Setting output stream.");
                 }
 
-                Log.d(TAG, "Transmitting data.");
                 streamWriterThread.setByteBuffer(data, size);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -324,20 +397,15 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void startEncoder()
     {
         if (mVideoEncoder != null) {
             mVideoEncoder.start();
-            Log.d(TAG, "Starting video encoder.");
         }
     }
 
-    private final static Object startDisplayingLock = new Object();
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static class SdlPresentation extends Presentation{
-        Window w;
+        protected Window w;
         protected View mainView;
         protected Handler handler = new Handler();
 
@@ -356,12 +424,10 @@ public class VirtualDisplayEncoder {
             startRefreshTask();
 
             w.setType(WindowManager.LayoutParams.TYPE_PRIVATE_PRESENTATION);
-
-            Log.d(TAG, "Sdl Presentation created.");
         }
 
         protected void startRefreshTask() {
-            handler.postDelayed(mStartRefreshTaskCallback, refresh_rate_ms);
+            handler.postDelayed(mStartRefreshTaskCallback, REFRESH_RATE_MS);
         }
 
         protected void stopRefreshTask() {
@@ -375,7 +441,7 @@ public class VirtualDisplayEncoder {
                     mainView.invalidate();
                 }
 
-                handler.postDelayed(this, refresh_rate_ms);
+                handler.postDelayed(this, REFRESH_RATE_MS);
             }
         };
     }
@@ -390,8 +456,7 @@ public class VirtualDisplayEncoder {
         @Override
         public Boolean call() {
 
-            UI_handler.post(new Runnable() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+            uiHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     // Want to create presentation on UI thread so it finds the right Looper
@@ -401,14 +466,6 @@ public class VirtualDisplayEncoder {
                         Constructor constructor = null;
                         try {
                             constructor = presentationClass.getConstructor(Context.class, Display.class);
-                        } catch (NoSuchMethodException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "Unable to create Presentation Class");
-                            bPresentationShowError = true;
-                            return;
-                        }
-
-                        try {
                             presentation = (SdlPresentation) constructor.newInstance(mContext, mDisplay);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -418,10 +475,9 @@ public class VirtualDisplayEncoder {
                         }
 
                         try {
-                            Log.i(TAG, "Showing presentation");
                             presentation.show();
                         } catch (WindowManager.InvalidDisplayException ex) {
-                            Log.w(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
+                            Log.e(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
                             presentation = null;
                             bPresentationShowError = true;
                             return;
@@ -434,10 +490,9 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void displayPresentation() {
 
-        synchronized (startDisplayingLock) {
+        synchronized (START_DISP_LOCK) {
             try {
                 final Display disp = virtualDisplay.getDisplay();
 
@@ -464,7 +519,7 @@ public class VirtualDisplayEncoder {
     }
 
     private void dismissPresentation() {
-        UI_handler.post(new Runnable() {
+        uiHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (presentation != null) {
@@ -519,16 +574,14 @@ public class VirtualDisplayEncoder {
         }
 
         public void setOutputStream(OutputStream os) {
-            Log.d(TAG, "setOutputStream");
-            synchronized (lock) {
+            synchronized (STREAMING_LOCK) {
                 clearOutputStream();
                 this.os = os;
             }
         }
 
         public void setByteBuffer(byte[] buf, Integer size) {
-            Log.d(TAG, "setByteBuffer");
-            synchronized (lock) {
+            synchronized (STREAMING_LOCK) {
                 clearByteBuffer();
                 this.buf = buf;
                 this.size = size;
@@ -536,7 +589,7 @@ public class VirtualDisplayEncoder {
         }
 
         private void clearOutputStream() {
-            synchronized (lock) {
+            synchronized (STREAMING_LOCK) {
                 try {
                     if (os != null) {
                         os.close();
@@ -549,7 +602,7 @@ public class VirtualDisplayEncoder {
         }
 
         private void clearByteBuffer() {
-            synchronized (lock) {
+            synchronized (STREAMING_LOCK) {
                 try {
                     if (buf != null) {
                         buf = null;
@@ -561,7 +614,7 @@ public class VirtualDisplayEncoder {
         }
 
         private void writeToStream() {
-            synchronized (lock) {
+            synchronized (STREAMING_LOCK) {
                 if (buf == null || os == null)
                     return;
 
