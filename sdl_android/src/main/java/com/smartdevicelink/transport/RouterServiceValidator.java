@@ -209,7 +209,7 @@ public class RouterServiceValidator {
 	
 	/**
 	 * This method will find which router service is running. Use that info to find out more about that app and service.
-	 * It will store the found service for later use and return the package name if found. 
+	 * It will store the found service for later use and return the package name if found.
 	 * @param context
 	 * @return
 	 */
@@ -345,9 +345,9 @@ public class RouterServiceValidator {
 	/**
 	 * Using the knowledge that all SDL enabled apps have an SDL Broadcast Receiver that has an intent filter that includes a specific 
 	 * intent. 
-	 * @return the list of SDL enabled apps if any app is found; null otherwise
+	 * @return the list of SDL enabled apps if any app is found; null or empty list otherwise
 	 */
-	private static List<SdlApp> findAllSdlApps(Context context) {
+	protected static List<SdlApp> findAllSdlApps(Context context) {
 		List<SdlApp> apps = new ArrayList<>();
 		PackageManager packageManager = context.getPackageManager();
 		Intent intent = new Intent();
@@ -405,7 +405,6 @@ public class RouterServiceValidator {
 			}
 			return false;
 		}
-		
 		pendingListRefresh = true;
 		//Might want to store a flag letting this class know a request is currently pending
 		StringBuilder builder = new StringBuilder();
