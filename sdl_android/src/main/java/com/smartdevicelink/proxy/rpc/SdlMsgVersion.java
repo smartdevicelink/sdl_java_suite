@@ -42,6 +42,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 public class SdlMsgVersion extends RPCStruct {
 	public static final String KEY_MAJOR_VERSION = "majorVersion";
 	public static final String KEY_MINOR_VERSION = "minorVersion";
+    public static final String KEY_PATCH_VERSION = "patchVersion";
 
 	/**
 	 * Constructs a newly allocated SdlMsgVersion object
@@ -106,4 +107,32 @@ public class SdlMsgVersion extends RPCStruct {
         	store.remove(KEY_MINOR_VERSION);
         }
     }
+
+    /**
+     * Get patch version
+     * 					<ul>
+     * 					<li>minvalue="0"</li>
+     * 				    <li>maxvalue="1000"</li>
+     *					</ul>
+     * @return the patch version
+     */
+    public Integer getPatchVersion() {
+        return (Integer) store.get( KEY_PATCH_VERSION );
+    }
+    /**
+     * Set patch version
+     * 					<ul>
+     * 					<li>minvalue="0"</li>
+     * 				    <li>maxvalue="1000"</li>
+     *					</ul>
+     * @param patchVersion min: 0; max: 1000
+     */
+    public void setPatchVersion( Integer patchVersion ) {
+        if (patchVersion != null) {
+            store.put(KEY_PATCH_VERSION, patchVersion );
+        } else {
+            store.remove(KEY_PATCH_VERSION);
+        }
+    }
+
 }
