@@ -54,9 +54,9 @@ public class VirtualDisplayEncoder {
     private Boolean initPassed = false;
     private Handler uiHandler = new Handler(Looper.getMainLooper());
     private final static int REFRESH_RATE_MS = 100;
-    private final static Object CLOSE_VID_SESSION_LOCK = new Object();
-    private final static Object START_DISP_LOCK = new Object();
-    private final static Object STREAMING_LOCK = new Object();
+    private final Object CLOSE_VID_SESSION_LOCK = new Object();
+    private final Object START_DISP_LOCK = new Object();
+    private final Object STREAMING_LOCK = new Object();
 
     public class StreamingParameters {
         protected int displayDensity = DisplayMetrics.DENSITY_HIGH;
@@ -145,6 +145,11 @@ public class VirtualDisplayEncoder {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
             throw new Exception("API level of 21 required");
+        }
+
+        if (context == null || videoStream == null || presentationClass == null || screenParams == null) {
+            Log.e(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
+            throw new Exception("init parameters cannot be null");
         }
 
         mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
@@ -392,11 +397,17 @@ public class VirtualDisplayEncoder {
     private void onStreamDataAvailable(byte[] data, int size) {
         if (sdlOutStream != null) {
             try {
-                if (streamWriterThread.getOutputStream() == null) {
-                    streamWriterThread.setOutputStream(sdlOutStream);
-                }
+                synchronized (streamWriterThread.BUFFER_LOCK) {
+                    streamWriterThread.isWaiting = true;
+                    streamWriterThread.BUFFER_LOCK.wait();
+                    streamWriterThread.isWaiting = false;
 
-                streamWriterThread.setByteBuffer(data, size);
+                    if (streamWriterThread.getOutputStream() == null) {
+                        streamWriterThread.setOutputStream(sdlOutStream);
+                    }
+
+                    streamWriterThread.setByteBuffer(data, size);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -505,13 +516,11 @@ public class VirtualDisplayEncoder {
                 final Display disp = virtualDisplay.getDisplay();
 
                 if (disp == null){
-                    Log.i(TAG, "Display is null");
                     return;
                 }
 
                 // Dismiss the current presentation if the display has changed.
                 if (presentation != null && presentation.getDisplay() != disp) {
-                    Log.i(TAG, "Dismissing current presentation display.");
                     dismissPresentation();
                 }
 
@@ -519,9 +528,8 @@ public class VirtualDisplayEncoder {
                 Thread showPresentation = new Thread(fTask);
 
                 showPresentation.start();
-                Log.i(TAG, "displayPresentation");
             } catch (Exception ex) {
-                Log.w(TAG, "Unable to create Virtual Display.");
+                Log.e(TAG, "Unable to create Virtual Display.");
             }
         }
     }
@@ -532,7 +540,6 @@ public class VirtualDisplayEncoder {
             public void run() {
                 if (presentation != null) {
                     presentation.dismiss();
-                    Log.i(TAG, "Dismiss Presentation.");
                     presentation = null;
                 }
             }
@@ -569,9 +576,11 @@ public class VirtualDisplayEncoder {
 
     private class VideoStreamWriterThread extends Thread {
         private Boolean isHalted = false;
+        private Boolean isWaiting = false;
         private byte[] buf = null;
         private Integer size = 0;
         private OutputStream os = null;
+        protected final Object BUFFER_LOCK = new Object();
 
         public OutputStream getOutputStream() {
             return os;
@@ -638,6 +647,11 @@ public class VirtualDisplayEncoder {
         public void run() {
             while (!isHalted) {
                 writeToStream();
+                if(isWaiting){
+                    synchronized(BUFFER_LOCK){
+                        BUFFER_LOCK.notify();
+                    }
+                }
             }
         }
 
