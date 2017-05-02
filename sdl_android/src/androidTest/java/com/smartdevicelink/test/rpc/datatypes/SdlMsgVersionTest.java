@@ -25,6 +25,7 @@ public class SdlMsgVersionTest extends TestCase {
 
 		msg.setMajorVersion(Test.GENERAL_INT);
 		msg.setMinorVersion(Test.GENERAL_INT);
+		msg.setPatchVersion(Test.GENERAL_INT);
 	}
 
     /**
@@ -34,17 +35,20 @@ public class SdlMsgVersionTest extends TestCase {
     	// Test Values
 		Integer major = msg.getMajorVersion();
 		Integer minor = msg.getMinorVersion();
-		
+		Integer patch = msg.getPatchVersion();
+
 		// Valid Tests
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, major);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, minor);
-		
+		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, patch);
+
 		// Invalid/Null Tests
 		SdlMsgVersion msg = new SdlMsgVersion();
 		assertNotNull(Test.NOT_NULL, msg);
 
 		assertNull(Test.NULL, msg.getMajorVersion());
 		assertNull(Test.NULL, msg.getMinorVersion());
+		assertNull(Test.NULL, msg.getPatchVersion());
 	}
 
 	public void testJson() {
@@ -53,6 +57,7 @@ public class SdlMsgVersionTest extends TestCase {
 		try {
 			reference.put(SdlMsgVersion.KEY_MAJOR_VERSION, Test.GENERAL_INT);
 			reference.put(SdlMsgVersion.KEY_MINOR_VERSION, Test.GENERAL_INT);
+			reference.put(SdlMsgVersion.KEY_PATCH_VERSION, Test.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
