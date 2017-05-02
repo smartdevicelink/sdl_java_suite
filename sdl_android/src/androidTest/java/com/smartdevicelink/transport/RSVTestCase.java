@@ -9,12 +9,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
+import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
 public class RSVTestCase extends AndroidTestCase {
@@ -339,6 +341,82 @@ public class RSVTestCase extends AndroidTestCase {
 		//Clear it for next test
 		RouterServiceValidator.setLastRequest(mContext, null);
 
+	}
+
+	/**
+	 * Test if we can handle a null list returned from findAllSdlApps
+	 */
+	public void testNullSdlAppsList() {
+		String trustedListBefore = RouterServiceValidatorTest.getTrustedList(mContext);
+		RouterServiceValidatorTest trsvp = new RouterServiceValidatorTest(this.mContext);
+		trsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW);
+		//Test null SdlApps list handling
+		assertTrue(RouterServiceValidatorTest.createTrustedListRequest(mContext, true, null, null));
+		//Verify that trusted list is unchanged afterwards
+		assertEquals(trustedListBefore, RouterServiceValidatorTest.getTrustedList(mContext));
+	}
+
+	/**
+	 * Helper class that extends RouterServiceValidator for testing purpose
+	 */
+	protected static class RouterServiceValidatorTest extends RouterServiceValidator {
+		private static final String TAG = "RSVP_TEST";
+		private static final String JSON_APP_PACKAGE_TAG = "packageName";
+		private static final String JSON_APP_VERSION_TAG = "version";
+
+		protected RouterServiceValidatorTest(Context context){
+			super(context);
+		}
+
+		/**
+		 * Return null for testing purpose, hiding the parent's static method findAllSdlApps
+		 * @param context
+		 * @return null
+		 */
+		protected static List<SdlApp> findAllSdlApps(Context context) {
+			return null;
+		}
+
+		protected static boolean createTrustedListRequest (final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback) {
+			if (context == null) {
+				return false;
+			}
+			else if (getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF) { //If security is off, we can just return now
+				if (listCallback!=null) {
+					listCallback.onListObtained(true);
+				}
+				return false;
+			}
+			List<SdlApp> apps = findAllSdlApps(context);
+			final JSONObject object = new JSONObject();
+			JSONArray array = new JSONArray();
+			JSONObject jsonApp;
+			if (apps != null) {
+				for (SdlApp app : apps) {    //Format all the apps into a JSON object and add it to the JSON array
+					try {
+						jsonApp = new JSONObject();
+						jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
+						jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
+						array.put(jsonApp);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						continue;
+					}
+				}
+			}
+			if (!forceRefresh && (System.currentTimeMillis() - getTrustedAppListTimeStamp(context)) < getRefreshRate()) {
+				if (object.toString().equals(getLastRequest(context))) {
+					//Our list should still be ok for now so we will skip the request
+					if (listCallback!=null) {
+						listCallback.onListObtained(true);
+					}
+					return false;
+				} else {
+					Log.d(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
+				}
+			}
+			return true;
+		}
 	}
 	
 	 
