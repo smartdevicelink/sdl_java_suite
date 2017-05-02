@@ -42,8 +42,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 public class SdlMsgVersion extends RPCStruct {
 	public static final String KEY_MAJOR_VERSION = "majorVersion";
 	public static final String KEY_MINOR_VERSION = "minorVersion";
-    public static final String KEY_PATCH_VERSION = "patchVersion";
-    
+	public static final String KEY_PATCH_VERSION = "patchVersion";
+
 	/**
 	 * Constructs a newly allocated SdlMsgVersion object
 	 */
