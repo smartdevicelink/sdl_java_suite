@@ -17,6 +17,9 @@ android:
     - sys-img-armeabi-v7a-android-21
     # - sys-img-x86-android-17
 
+    # Android Support License
+    - extra-android-support
+
 licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
