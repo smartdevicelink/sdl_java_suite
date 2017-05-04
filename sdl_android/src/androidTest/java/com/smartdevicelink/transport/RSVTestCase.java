@@ -204,7 +204,7 @@ public class RSVTestCase extends AndroidTestCase {
 	}
 	
 	public void testTrustedListSetAndGet(){
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
 		String retVal = RouterServiceValidator.getTrustedList(mContext);
 		assertNotNull(retVal);
