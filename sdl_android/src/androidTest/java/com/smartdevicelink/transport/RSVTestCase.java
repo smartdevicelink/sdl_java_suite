@@ -345,13 +345,19 @@ public class RSVTestCase extends AndroidTestCase {
 
 	/**
 	 * Test if we can handle a null list returned from findAllSdlApps
+	 * @see RouterServiceValidatorTest#findAllSdlApps(Context)
+	 * @see RouterServiceValidatorTest#createTrustedListRequest(Context, boolean, HttpRequestTaskCallback, RouterServiceValidator.TrustedListCallback)
 	 */
 	public void testNullSdlAppsList() {
+		String testList = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
+		RouterServiceValidatorTest.setTrustedList(mContext, testList);
 		String trustedListBefore = RouterServiceValidatorTest.getTrustedList(mContext);
+		assertNotNull(trustedListBefore);
+		//Set security level so we get to call findAllSdlApps
 		RouterServiceValidatorTest trsvp = new RouterServiceValidatorTest(this.mContext);
 		trsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW);
 		//Test null SdlApps list handling
-		assertTrue(RouterServiceValidatorTest.createTrustedListRequest(mContext, true, null, null));
+		assertFalse(RouterServiceValidatorTest.createTrustedListRequest(mContext, true, null, null));
 		//Verify that trusted list is unchanged afterwards
 		assertEquals(trustedListBefore, RouterServiceValidatorTest.getTrustedList(mContext));
 	}
@@ -363,6 +369,8 @@ public class RSVTestCase extends AndroidTestCase {
 		private static final String TAG = "RSVP_TEST";
 		private static final String JSON_APP_PACKAGE_TAG = "packageName";
 		private static final String JSON_APP_VERSION_TAG = "version";
+		private static final String JSON_PUT_ARRAY_TAG = "installedApps";
+		private static final String REQUEST_PREFIX = "https://woprjr.smartdevicelink.com/api/1/applications/queryTrustedRouters";
 
 		protected RouterServiceValidatorTest(Context context){
 			super(context);
@@ -377,17 +385,22 @@ public class RSVTestCase extends AndroidTestCase {
 			return null;
 		}
 
-		protected static boolean createTrustedListRequest (final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback) {
+		protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback) {
 			if (context == null) {
 				return false;
 			}
 			else if (getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF) { //If security is off, we can just return now
-				if (listCallback!=null) {
+				if (listCallback != null) {
 					listCallback.onListObtained(true);
 				}
 				return false;
 			}
+			//Might want to store a flag letting this class know a request is currently pending
+			StringBuilder builder = new StringBuilder();
+			builder.append(REQUEST_PREFIX);
+
 			List<SdlApp> apps = findAllSdlApps(context);
+
 			final JSONObject object = new JSONObject();
 			JSONArray array = new JSONArray();
 			JSONObject jsonApp;
@@ -403,11 +416,23 @@ public class RSVTestCase extends AndroidTestCase {
 						continue;
 					}
 				}
+			} else {	//Return here and do not bother to make request since there's no app to send
+				if (listCallback != null) {
+					listCallback.onListObtained(true);
+				}
+				return false;
 			}
+
+			try {
+				object.put(JSON_PUT_ARRAY_TAG, array);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
 			if (!forceRefresh && (System.currentTimeMillis() - getTrustedAppListTimeStamp(context)) < getRefreshRate()) {
 				if (object.toString().equals(getLastRequest(context))) {
 					//Our list should still be ok for now so we will skip the request
-					if (listCallback!=null) {
+					if (listCallback != null) {
 						listCallback.onListObtained(true);
 					}
 					return false;
@@ -415,8 +440,36 @@ public class RSVTestCase extends AndroidTestCase {
 					Log.d(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
 				}
 			}
+
+			if (cb == null) {
+				cb = new HttpRequestTaskCallback() {
+
+					@Override
+					public void httpCallComplete(String response) {
+						// Might want to check if this list is ok
+						//Log.d(TAG, "APPS! " + response);
+						setTrustedList(context, response);
+						setLastRequest(context, object.toString()); //Save our last request
+						if (listCallback != null) {
+							listCallback.onListObtained(true);
+						}
+					}
+
+					@Override
+					public void httpFailure(int statusCode) {
+						Log.e(TAG, "Error while requesting trusted app list: " + statusCode);
+						if (listCallback != null) {
+							listCallback.onListObtained(false);
+						}
+					}
+				};
+			}
+
+			new HttpRequestTask(cb).execute(REQUEST_PREFIX, HttpRequestTask.REQUEST_TYPE_POST, object.toString(), "application/json", "application/json");
+
 			return true;
 		}
+	}
 	}
 	
 	 
