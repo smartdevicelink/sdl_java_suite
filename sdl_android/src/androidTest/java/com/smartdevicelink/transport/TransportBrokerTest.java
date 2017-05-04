@@ -28,85 +28,88 @@ public class TransportBrokerTest extends AndroidTestCase {
 	}
 	
 	public void testStart(){
-		new Handler(Looper.getMainLooper()).post(new Runnable() {
-			@Override
-			public void run() {
-				TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-				assertTrue(broker.start());
-				broker.stop();
-			}
-		});
+		if (Looper.myLooper() == null)
+		{
+			Looper.prepare();
+		}
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		assertTrue(broker.start());
+		broker.stop();
+
 	}
 	
 	public void testSendPacket(){
-		new Handler(Looper.getMainLooper()).post(new Runnable() {
-			@Override
-			public void run() {
-				TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-				Handler handler = new Handler();
-				assertTrue(broker.start());
-				BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-				assertNotNull(adapter);
-				assertTrue(adapter.isEnabled());
-				broker.routerServiceMessenger = new Messenger(handler);
-				assertNotNull(broker.routerServiceMessenger);
+		if (Looper.myLooper() == null)
+		{
+			Looper.prepare();
+		}
+
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		Handler handler = new Handler();
+		assertTrue(broker.start());
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		assertNotNull(adapter);
+		assertTrue(adapter.isEnabled());
+		//Not ideal, but not implementing callbacks just for unit tests
+		int count = 0;
+		while(broker.routerServiceMessenger == null && count<10){
+			sleep();
+			count++;
+		}
+		assertNotNull(broker.routerServiceMessenger);
 
 
-				//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
-				//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
-				//assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
-				//assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
 
-				broker.stop();
-			}
-		});
+		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
+		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
+		//assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
+		//assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
+
+		broker.stop();
+
 	}
 	
 	public void testOnPacketReceived(){
-		// Run Test in Main Thread
-		new Handler(Looper.getMainLooper()).post(new Runnable() {
-			@Override
-			public void run() {
-				TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-				assertTrue(broker.start());
-			}
-		});
+		if (Looper.myLooper() == null)
+		{
+			Looper.prepare();
+		}
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertTrue(broker.start());
+
 	}
 	
 	public void testSendMessageToRouterService(){
-		// Run Test in Main Thread
-		new Handler(Looper.getMainLooper()).post(new Runnable() {
-			@Override
-			public void run() {
+		if (Looper.myLooper() == null)
+		{
+			Looper.prepare();
+		}
 
-				TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-				Handler handler = new Handler();
-				Message message = new Message();
-				broker.routerServiceMessenger = null;
-				broker.isBound = true;
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		Handler handler = new Handler();
+		Message message = new Message();
+		broker.routerServiceMessenger = null;
+		broker.isBound = true;
 
-				assertFalse(broker.sendMessageToRouterService(message));
+		assertFalse(broker.sendMessageToRouterService(message));
 
-				broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
+		broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
 
-				broker.isBound = false;
+		broker.isBound = false;
 
-				assertFalse(broker.sendMessageToRouterService(message));
+		assertFalse(broker.sendMessageToRouterService(message));
 
-				broker.isBound = true;
-				broker.registeredWithRouterService = true;
+		broker.isBound = true;
+		broker.registeredWithRouterService = true;
 
-				message = null;
+		message = null;
 
-				assertFalse(broker.sendMessageToRouterService(message));
+		assertFalse(broker.sendMessageToRouterService(message));
 
-				message = new Message();
+		message = new Message();
 
-				assertTrue(broker.sendMessageToRouterService(message));
+		assertTrue(broker.sendMessageToRouterService(message));
 
-			}
-
-		});
 	}
 
 }
