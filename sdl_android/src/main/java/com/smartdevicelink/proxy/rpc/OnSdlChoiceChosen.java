@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+
+import java.util.Hashtable;
+import java.util.List;
 
 public class OnSdlChoiceChosen extends RPCNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
@@ -85,42 +85,12 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		}
 	}
 	
-	public class SdlChoice {
-		
-		private Choice _choice = null;
-		
-		// Constructor
-		public SdlChoice(Choice choice) {
-			_choice = choice;
-		}
-		
-		public Choice getChoice() {
-			return _choice;
-		}
-		
-		public Integer getChoiceID() {
-			return _choice.getChoiceID();
-		}
-		
-		public String getMenuName() {
-			return _choice.getMenuName();
-		}
-		
-		public List<String> getVrCommands() {
-			return _choice.getVrCommands();
-		}
-		
-		public String toString() {
-			return _choice.getMenuName();
-		}
-	}
-	
 	public class SdlChoiceSet {
 		private Integer _choiceSetID = null;
-		private List<SdlChoice> _choiceSet = null;
+		private List<Choice> _choiceSet = null;
 		
 		// Constructor
-		SdlChoiceSet(Integer choiceSetID, List<SdlChoice> choiceSet) {
+		SdlChoiceSet(Integer choiceSetID, List<Choice> choiceSet) {
 			_choiceSetID = choiceSetID;
 			_choiceSet = choiceSet;
 		}
@@ -129,7 +99,7 @@ public class OnSdlChoiceChosen extends RPCNotification {
 			return _choiceSetID;
 		}
 		
-		public List<SdlChoice> getChoiceSet() {
+		public List<Choice> getChoiceSet() {
 			return _choiceSet;
 		}
 	}
@@ -143,10 +113,10 @@ public class OnSdlChoiceChosen extends RPCNotification {
 	public OnSdlChoiceChosen(Hashtable<String, Object> hash){
 		super(hash);
 	}
-    public SdlChoice getSdlChoice() {
-    	return (SdlChoice) parameters.get(KEY_SDL_CHOICE);
+    public Choice getSdlChoice() {
+    	return (Choice) parameters.get(KEY_SDL_CHOICE);
     }
-    public void setSdlChoice(SdlChoice sdlChoice) {
+    public void setSdlChoice(Choice sdlChoice) {
     	if (sdlChoice != null) {
     		parameters.put(KEY_SDL_CHOICE, sdlChoice);
     	} else {
