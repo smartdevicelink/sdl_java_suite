@@ -209,16 +209,16 @@ public class RSVTestCase extends AndroidTestCase {
 		String retVal = RouterServiceValidator.getTrustedList(mContext);
 		assertNotNull(retVal);
 		assertTrue(test.equals(retVal));
-		
-		retVal = null;
+
+		String retValNew;
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<1000; i++){
 			builder.append(test);
 		}
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
-		retVal = RouterServiceValidator.getTrustedList(mContext);
-		assertNotNull(retVal);
-		assertTrue(builder.toString().equals(retVal));
+		retValNew = RouterServiceValidator.getTrustedList(mContext);
+		assertNotNull(retValNew);
+		assertTrue(builder.toString().equals(retValNew));
 	}
 	
 	public void testInvalidationSequence(){
