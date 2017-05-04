@@ -41,16 +41,14 @@ public class SdlConnectionTest extends AndroidTestCase {
 		
 		assertNotNull(SdlConnectionTestClass.cachedMultiConfig);
 		
-		
-		
 		connection.forceHardwareConnectEvent(TransportType.MULTIPLEX);
 		assertFalse(connection.connected);
+
+		SdlConnectionTestClass.cachedMultiConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		
 		assertNotNull(SdlConnectionTestClass.cachedMultiConfig.getService());
 
-		
 		assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
-		
 		
 		// Test for handling of null service
 		MultiplexTransportConfig null_service_config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
