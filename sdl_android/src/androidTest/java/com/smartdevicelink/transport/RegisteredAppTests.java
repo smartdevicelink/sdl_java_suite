@@ -18,8 +18,7 @@ public class RegisteredAppTests extends AndroidTestCase {
 
     public void testHandleMessage() {
 
-        if (Looper.myLooper() == null)
-        {
+        if (Looper.myLooper() == null) {
             Looper.prepare();
         }
 
@@ -38,8 +37,7 @@ public class RegisteredAppTests extends AndroidTestCase {
 
     public void testNullBuffer() {
 
-        if (Looper.myLooper() == null)
-        {
+        if (Looper.myLooper() == null) {
             Looper.prepare();
         }
 
