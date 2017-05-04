@@ -1,11 +1,11 @@
 package com.smartdevicelink.test.util;
 
-import java.util.Arrays;
+import com.smartdevicelink.test.Test;
+import com.smartdevicelink.util.BitConverter;
 
 import junit.framework.TestCase;
 
-import com.smartdevicelink.test.Test;
-import com.smartdevicelink.util.BitConverter;
+import java.util.Arrays;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -61,7 +61,7 @@ public class BitConverterTests extends TestCase {
 		assertTrue(Test.ARRAY, Arrays.equals(expectedBytes, actualBytes));
 		
 		// Invalid/Null Tests
-		assertEquals(Test.MATCH, (int) 0, actualNullBytes);
+		assertEquals(Test.MATCH, (int) -1, actualNullBytes);
 	}
 	
 	/**
@@ -83,6 +83,6 @@ public class BitConverterTests extends TestCase {
 		assertTrue(Test.ARRAY, Arrays.equals(expectedBytes, actualBytes));
 		
 		// Invalid/Null Tests
-		assertEquals(Test.MATCH, (short) 0, actualNullBytes);
+		assertEquals(Test.MATCH, (short) -1, actualNullBytes);
 	}		
 }

@@ -1,10 +1,19 @@
 package com.smartdevicelink.util;
 
 public class BitConverter {
+	/**
+	 * @param bytes passing in a null byte array returns a null object
+	 * @return
+	 */
 	public static String bytesToHex(byte [] bytes) {
+		if (bytes == null) { return null; }
 		return bytesToHex(bytes, 0, bytes.length);
 	} // end-method
 
+	/**
+	 * @param bytes passing in a null byte array returns a null object
+	 * @return
+	 */
 	public static String bytesToHex(byte[] bytes, int offset, int length) {
 		if (bytes == null) { return null; }
 		final char[] HexDigits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -24,6 +33,10 @@ public class BitConverter {
 		return new String(hexChars);
 	} // end-method
 
+	/**
+	 * @param hexString passing in a null String returns a null array
+	 * @return
+	 */
 	public static byte [] hexToBytes(String hexString) {
 		if (hexString == null) { return null; }
 		if (hexString.length() % 2 != 0) {
@@ -45,8 +58,13 @@ public class BitConverter {
 				(byte)(value >>> 8),
 				(byte)value};
 	}
-	
+
+	/**
+	 * @param sizeBuf passing in a null byte array returns -1 (error)
+	 * @return
+	 */
 	public static int intFromByteArray(byte[] sizeBuf, int offset) {
+		if (sizeBuf == null) { return -1; }
     	int ret = 0;
     	for (int i = offset; i < offset + 4; i++) {
     		ret <<= 8;
@@ -60,8 +78,13 @@ public class BitConverter {
 				(byte)(value >>> 8),
 				(byte)value};
 	}
-	
+
+	/**
+	 * @param sizeBuf passing in a null byte array returns -1 (error)
+	 * @return
+	 */
 	public static short shortFromByteArray(byte[] sizeBuf, int offset) {
+		if (sizeBuf == null) { return -1; }
     	short ret = 0;
     	for (int i = offset; i < offset + 2; i++) {
     		ret <<= 8;
@@ -72,11 +95,12 @@ public class BitConverter {
 	
 	/**
 	 * Converts the byte array into a string of hex values.
-	 * @param bytes
+	 * @param bytes passing in a null byte array returns a null object
 	 * @param end EXCLUSIVE so if it it receives 10 it will print 0-9
 	 * @return
 	 */
 	public static String bytesToHex(byte[] bytes,int end){
+		if (bytes == null) { return null; }
 		if(bytes.length<end){
 			end = bytes.length;
 		}
