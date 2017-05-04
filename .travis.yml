@@ -4,6 +4,7 @@ sudo: false
 android:
   components:
     # use the latest revision of Android SDK Tools
+    - tools
     - platform-tools
     - tools
   
@@ -16,6 +17,15 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-21
     # - sys-img-x86-android-17
+
+    # Android Support Repos
+    - extra-android-m2repository
+    - extra-google-m2repository
+
+licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
 env:
   global:
