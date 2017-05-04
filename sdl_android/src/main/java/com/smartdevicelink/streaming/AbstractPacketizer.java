@@ -30,8 +30,10 @@ abstract public class AbstractPacketizer {
 		_rpcSessionID = rpcSessionID;
 		_serviceType = sType;
 		this._session = session;
-		bufferSize = this._session.getMtu();
-		buffer = new byte[bufferSize];
+		if (this._session != null) {
+			bufferSize = this._session.getMtu();
+			buffer = new byte[bufferSize];
+		}
 	}
 	
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException {
@@ -42,8 +44,10 @@ abstract public class AbstractPacketizer {
 		_request = request;
 		_wiproVersion = wiproVersion;
 		this._session = session;
-		bufferSize = this._session.getMtu();
-		buffer = new byte[bufferSize];
+		if (this._session != null) {
+			bufferSize = this._session.getMtu();
+			buffer = new byte[bufferSize];
+		}
 	}	
 
 	public abstract void start() throws IOException;
