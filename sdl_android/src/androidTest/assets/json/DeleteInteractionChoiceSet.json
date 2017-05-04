@@ -3,7 +3,7 @@
     "name":"DeleteInteractionChoiceSet",
     "correlationID":119,
     "parameters":{
-      "interactionChoiceSetID":56,
+      "interactionChoiceSetID":56
     }
   },
   "response":{
