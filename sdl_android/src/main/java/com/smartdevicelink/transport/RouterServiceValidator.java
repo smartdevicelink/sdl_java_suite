@@ -353,7 +353,7 @@ public class RouterServiceValidator {
 		Intent intent = new Intent();
 		intent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
-		if (infoList!=null) {
+		if (infoList != null) {
 			//We want to sort our list so that we know it's the same every time
 			Collections.sort(infoList,new Comparator<ResolveInfo>() {
 				@Override
@@ -383,24 +383,25 @@ public class RouterServiceValidator {
 	 * When it receives a list back from the server it will store it for later use.
 	 * @param context
 	 */
-	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh){
-		return createTrustedListRequest(context,forceRefresh,null,null);
+	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh) {
+		return createTrustedListRequest(context, forceRefresh, null, null);
 	}
-	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback){Log.d(TAG,"Checking to make sure we have a list");
-		return createTrustedListRequest(context,forceRefresh,null,listCallback);
+	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback) {
+		Log.d(TAG,"Checking to make sure we have a list");
+		return createTrustedListRequest(context, forceRefresh, null, listCallback);
 	}
 	
 	@Deprecated
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb ){
-		return createTrustedListRequest(context,forceRefresh,cb,null);
+	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb) {
+		return createTrustedListRequest(context, forceRefresh, cb, null);
 	}
 	
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback ){
-		if(context == null){
+	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback) {
+		if (context == null) {
 			return false;
 		}
-		else if(getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF){ //If security is off, we can just return now
-			if(listCallback!=null){
+		else if (getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF) { //If security is off, we can just return now
+			if (listCallback != null) {
 				listCallback.onListObtained(true);
 			}
 			return false;
@@ -415,7 +416,7 @@ public class RouterServiceValidator {
 		final JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject jsonApp;
-		if (apps != null) {
+		if (apps != null && apps.size() > 0) {
 			for (SdlApp app : apps) {    //Format all the apps into a JSON object and add it to the JSON array
 				try {
 					jsonApp = new JSONObject();
@@ -427,19 +428,28 @@ public class RouterServiceValidator {
 					continue;
 				}
 			}
+		} else { //Return here and do not bother to make request since there's no app to send
+			if (listCallback != null) {
+				listCallback.onListObtained(true);
+			}
+			return false;
 		}
 		
-		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
+		try {
+			object.put(JSON_PUT_ARRAY_TAG, array);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		
-		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<getRefreshRate()){ 
-			if(object.toString().equals(getLastRequest(context))){
-			//Our list should still be ok for now so we will skip the request
+		if (!forceRefresh && (System.currentTimeMillis() - getTrustedAppListTimeStamp(context)) < getRefreshRate()) {
+			if (object.toString().equals(getLastRequest(context))) {
+				//Our list should still be ok for now so we will skip the request
 				pendingListRefresh = false;
-				if(listCallback!=null){
+				if (listCallback != null) {
 					listCallback.onListObtained(true);
 				}
 				return false;
-			}else{
+			} else {
 				Log.d(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
 			}
 		}
@@ -454,20 +464,23 @@ public class RouterServiceValidator {
 					setTrustedList(context, response);
 					setLastRequest(context, object.toString()); //Save our last request 
 					pendingListRefresh = false;
-					if(listCallback!=null){listCallback.onListObtained(true);}
+					if (listCallback != null) {
+						listCallback.onListObtained(true);
+					}
 				}
 
 				@Override
 				public void httpFailure(int statusCode) {
-					Log.e(TAG, "Error while requesting trusted app list: "
-							+ statusCode);
+					Log.e(TAG, "Error while requesting trusted app list: " + statusCode);
 					pendingListRefresh = false;
-					if(listCallback!=null){listCallback.onListObtained(false);}
+					if (listCallback != null) {
+						listCallback.onListObtained(false);
+					}
 				}
 			};
 		}
 
-		new HttpRequestTask(cb).execute(REQUEST_PREFIX,HttpRequestTask.REQUEST_TYPE_POST,object.toString(),"application/json","application/json");
+		new HttpRequestTask(cb).execute(REQUEST_PREFIX, HttpRequestTask.REQUEST_TYPE_POST, object.toString(), "application/json", "application/json");
 		
 		return true;
 	}
