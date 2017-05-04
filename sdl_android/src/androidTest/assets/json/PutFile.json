@@ -20,7 +20,7 @@
     "name":"PutFileResponse",
     "correlationID":138,
     "parameters":{
-      "spaceAvailable":43567543,
+      "spaceAvailable":43567543
     }
   }
 }

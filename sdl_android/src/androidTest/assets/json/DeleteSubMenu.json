@@ -3,7 +3,7 @@
     "name":"DeleteSubMenu",
     "correlationID":121,
     "parameters":{
-      "menuID":765,
+      "menuID":765
     }
   },
   "response":{
