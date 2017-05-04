@@ -28,8 +28,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 	}
 	
 	public void testStart(){
-		if (Looper.myLooper() == null)
-		{
+		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
@@ -39,8 +38,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 	}
 	
 	public void testSendPacket(){
-		if (Looper.myLooper() == null)
-		{
+		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
 
@@ -70,8 +68,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 	}
 	
 	public void testOnPacketReceived(){
-		if (Looper.myLooper() == null)
-		{
+		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
@@ -80,8 +77,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 	}
 	
 	public void testSendMessageToRouterService(){
-		if (Looper.myLooper() == null)
-		{
+		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
 
