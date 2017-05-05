@@ -1,4 +1,6 @@
 <manifest package="com.smartdevicelink" xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk android:minSdkVersion="8"/>
-    <application android:debuggable="true"/>
+    <application android:debuggable="true">
+    <service android:name="com.smartdevicelink.transport.SdlRouterService"/>
+    </application>
 </manifest>
