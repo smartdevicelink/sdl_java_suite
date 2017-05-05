@@ -1,42 +1,20 @@
 package com.smartdevicelink.transport;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ServiceTestRule;
+import android.os.Looper;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
-import org.junit.Rule;
+import junit.framework.Assert;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.TimeoutException;
+import java.lang.reflect.Method;
 
 public class SdlRouterServiceTests extends AndroidTestCase {
-
-    private static final String TAG = "SdlRouterServiceTests";
-    private SdlRouterService mService;
-    @Rule
-    private final ServiceTestRule mServiceRule = new ServiceTestRule();
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        //Bind to SdlRouterService and get an instance to use for subsequent test cases
-        //The service is automatically unbound when all tests are completed
-        Intent i = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-        i.setAction(TransportConstants.ROUTER_SERVICE_TEST_INTENT_ACTION);
-        try {
-            IBinder binder = mServiceRule.bindService(i);
-            if (binder != null) {
-                mService = ((SdlRouterService.LocalBinder) binder).getService();
-            }
-        } catch (TimeoutException e) {
-            Log.v(TAG, "Timeout exception while setting up SdlRouterServiceTests");
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -51,37 +29,38 @@ public class SdlRouterServiceTests extends AndroidTestCase {
      * @see SdlRouterService#writeBytesToTransport(Bundle)
      */
     public void testWriteBytesToTransport() {
-        //Sending a null bundle
-        assertFalse(mService.writeBytesToTransport(null));
-
-        //Sending a non-null bundle with null byte array
-        //First, set mSerialService to the correct state so we get to test packets being null
-        MultiplexBluetoothTransport transport = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(null);
-        transport.setStateManually(MultiplexBluetoothTransport.STATE_CONNECTED);
+        Looper.prepare();
+        Method method;
         Field field = null;
+        Object sdlRouterService = null;
         try {
+            sdlRouterService = Class.forName("com.smartdevicelink.transport.SdlRouterService").newInstance();
+            //Send a null bundle
+            method = SdlRouterService.class.getDeclaredMethod("writeBytesToTransport", Bundle.class);
+            Bundle bundle = null;
+            method.invoke(sdlRouterService, bundle);
+
+            //Send a non-null bundle with a null bytes array
+            //First, set mSerialService to the correct state so we get to test packet being null
+            MultiplexBluetoothTransport transport = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(null);
+            transport.setStateManually(MultiplexBluetoothTransport.STATE_CONNECTED);
             field = SdlRouterService.class.getDeclaredField("mSerialService");
             field.setAccessible(true);
-            field.set(mService, transport);
-        } catch (NoSuchFieldException e) {
-            Log.v(TAG, "No such field: mSerialService in SdlRouterService class");
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            Log.v(TAG, "Error setting mSerialService field");
-            e.printStackTrace();
+            field.set(sdlRouterService, transport);
+            bundle = new Bundle();
+            bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, null);
+            method.invoke(sdlRouterService, bundle);
+        } catch (Exception e) {
+            Assert.fail("Exception in testWriteBytesToTransport, " + e);
         }
-        Bundle bundle = new Bundle();
-        bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, null);
-        assertFalse(mService.writeBytesToTransport(bundle));
 
         //Return mSerialService to previous state
-        try {
-            if (field != null) {
-                field.set(mService, null);
+        if (field != null && sdlRouterService != null) {
+            try {
+                field.set(sdlRouterService, null);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
-        } catch (IllegalAccessException e) {
-            Log.v(TAG, "Error resetting mSerialService field");
-            e.printStackTrace();
         }
     }
 }

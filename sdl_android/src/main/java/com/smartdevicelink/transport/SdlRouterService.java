@@ -41,7 +41,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -217,7 +216,7 @@ public class SdlRouterService extends Service{
 		BroadcastReceiver registerAnInstanceOfSerialServer = new BroadcastReceiver() {
 			final Object COMPARE_LOCK = new Object();
 					@Override
-					public void onReceive(Context context, Intent intent) 
+					public void onReceive(Context context, Intent intent)
 					{
 						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
 						synchronized(COMPARE_LOCK){
@@ -683,14 +682,6 @@ public class SdlRouterService extends Service{
 ***********************************************  Life Cycle **************************************************************
 ****************************************************************************************************************************************/
 
-
-	private final IBinder mBinder = new LocalBinder();
-	public class LocalBinder extends Binder {
-		public SdlRouterService getService() {
-			return SdlRouterService.this;
-		}
-	}
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		//Check intent to send back the correct binder (client binding vs alt transport)
@@ -708,9 +699,6 @@ public class SdlRouterService extends Service{
 				return this.routerMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
 				return this.routerStatusMessenger.getBinder();
-			}else if(TransportConstants.ROUTER_SERVICE_TEST_INTENT_ACTION.equals(requestType)){
-				//This case is for testing purpose only
-				return mBinder;
 			}else{
 				Log.w(TAG, "Uknown bind request type");
 			}
