@@ -9,15 +9,15 @@ import junit.framework.TestCase;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.DisplayType}
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.proxy.rpc.enums.DisplayType}
  */
 public class DisplayTypeTests extends TestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
-	public void testValidEnums () {	
+	public void testValidEnums () {
 		String example = "CID";
 		DisplayType enumCid = DisplayType.valueForString(example);
 		example = "TYPE2";
@@ -38,6 +38,8 @@ public class DisplayTypeTests extends TestCase {
 		DisplayType enumMfd5 = DisplayType.valueForString(example);
 		example = "GEN3_8-INCH";
 		DisplayType enumGen3_8Inch = DisplayType.valueForString(example);
+		example = "SDL_GENERIC";
+		DisplayType enumGeneric = DisplayType.valueForString(example);
 
 		assertNotNull("CID returned null", enumCid);
 		assertNotNull("TYPE2 returned null", enumType2);
@@ -49,6 +51,7 @@ public class DisplayTypeTests extends TestCase {
 		assertNotNull("MFD4 returned null", enumMfd4);
 		assertNotNull("MFD5 returned null", enumMfd5);
 		assertNotNull("GEN3_8-INCH returned null", enumGen3_8Inch);
+		assertNotNull("SDL_GENERIC returned null", enumGeneric);
 	}
 
 	/**
@@ -57,11 +60,11 @@ public class DisplayTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		String example = "cId";
 		try {
-		    DisplayType temp = DisplayType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+			DisplayType temp = DisplayType.valueForString(example);
+			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+			fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 
@@ -71,19 +74,19 @@ public class DisplayTypeTests extends TestCase {
 	public void testNullEnum () {
 		String example = null;
 		try {
-		    DisplayType temp = DisplayType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+			DisplayType temp = DisplayType.valueForString(example);
+			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+			fail("Null string throws NullPointerException.");
 		}
 	}
-	
+
 	/**
 	 * Verifies the possible enum values of DisplayType.
 	 */
 	public void testListEnum() {
- 		List<DisplayType> enumValueList = Arrays.asList(DisplayType.values());
+		List<DisplayType> enumValueList = Arrays.asList(DisplayType.values());
 
 		List<DisplayType> enumTestList = new ArrayList<DisplayType>();
 		enumTestList.add(DisplayType.CID);
@@ -91,13 +94,14 @@ public class DisplayTypeTests extends TestCase {
 		enumTestList.add(DisplayType.TYPE5);
 		enumTestList.add(DisplayType.NGN);
 		enumTestList.add(DisplayType.GEN2_8_DMA);
-		enumTestList.add(DisplayType.GEN2_6_DMA);		
+		enumTestList.add(DisplayType.GEN2_6_DMA);
 		enumTestList.add(DisplayType.MFD3);
-		enumTestList.add(DisplayType.MFD4);	
+		enumTestList.add(DisplayType.MFD4);
 		enumTestList.add(DisplayType.MFD5);
-		enumTestList.add(DisplayType.GEN3_8_INCH);	
+		enumTestList.add(DisplayType.GEN3_8_INCH);
+		enumTestList.add(DisplayType.SDL_GENERIC);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}	
+	}
 }
