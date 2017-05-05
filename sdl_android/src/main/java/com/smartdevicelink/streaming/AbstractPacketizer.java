@@ -25,29 +25,35 @@ abstract public class AbstractPacketizer {
 	protected long intervalBetweenReports = 5000, delta = 0;
 
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
-        this._streamListener = streamListener;
-		this.is = is;
-		_rpcSessionID = rpcSessionID;
-		_serviceType = sType;
-		this._session = session;
-		if (this._session != null) {
+		try {
+			this._streamListener = streamListener;
+			this.is = is;
+			_rpcSessionID = rpcSessionID;
+			_serviceType = sType;
+			this._session = session;
 			bufferSize = this._session.getMtu();
 			buffer = new byte[bufferSize];
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 	}
 	
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException {
-        this._streamListener = streamListener;
-		this.is = is;
-		_rpcSessionID = rpcSessionID;
-		_serviceType = sType;
-		_request = request;
-		_wiproVersion = wiproVersion;
-		this._session = session;
-		if (this._session != null) {
+		try {
+			this._streamListener = streamListener;
+			this.is = is;
+			_rpcSessionID = rpcSessionID;
+			_serviceType = sType;
+			_request = request;
+			_wiproVersion = wiproVersion;
+			this._session = session;
 			bufferSize = this._session.getMtu();
 			buffer = new byte[bufferSize];
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 	}	
 
 	public abstract void start() throws IOException;
