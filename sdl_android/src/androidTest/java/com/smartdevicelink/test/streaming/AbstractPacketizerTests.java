@@ -42,7 +42,6 @@ public class AbstractPacketizerTests extends TestCase {
 		MockPacketizer  testPacketizer1  = null;
 		MockPacketizer  testPacketizer2  = null;
 		MockPacketizer  testPacketizer3  = null;
-		MockPacketizer  testPacketizer4  = null;
 		IStreamListener testListener     = new MockStreamListener();
 		
 		try {
