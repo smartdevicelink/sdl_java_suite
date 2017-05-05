@@ -53,6 +53,8 @@ public class TransportConstants {
 
 	
 	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
+
+	public static final String ROUTER_SERVICE_TEST_INTENT_ACTION				= "router_service_test_intent_action";
 	
 	/**
 	 * This class houses all important router service versions

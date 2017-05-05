@@ -41,6 +41,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -94,7 +95,7 @@ public class SdlRouterService extends Service{
 	
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
-	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
+	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register";
 	
 	/** Message types sent from the BluetoothReadService Handler */
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -167,7 +168,7 @@ public class SdlRouterService extends Service{
 		{				
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
 			String action =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
-			sendBroadcast(prepareRegistrationIntent(action));	
+			sendBroadcast(prepareRegistrationIntent(action));
 		}
 	};
 	
@@ -303,7 +304,7 @@ public class SdlRouterService extends Service{
 		*********************************************** Handlers for bound clients **************************************************************
 		****************************************************************************************************************************************/
 
-		
+
 	    /**
 	     * Target we publish for clients to send messages to RouterHandler.
 	     */
@@ -318,7 +319,7 @@ public class SdlRouterService extends Service{
 	    	public RouterHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
 	    	}
-	    	
+
 	        @Override
 	        public void handleMessage(Message msg) {
 	        	if(this.provider.get() == null){
@@ -682,6 +683,14 @@ public class SdlRouterService extends Service{
 ***********************************************  Life Cycle **************************************************************
 ****************************************************************************************************************************************/
 
+
+	private final IBinder mBinder = new LocalBinder();
+	public class LocalBinder extends Binder {
+		public SdlRouterService getService() {
+			return SdlRouterService.this;
+		}
+	}
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		//Check intent to send back the correct binder (client binding vs alt transport)
@@ -699,6 +708,9 @@ public class SdlRouterService extends Service{
 				return this.routerMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
 				return this.routerStatusMessenger.getBinder();
+			}else if(TransportConstants.ROUTER_SERVICE_TEST_INTENT_ACTION.equals(requestType)){
+				//This case is for testing purpose only
+				return mBinder;
 			}else{
 				Log.w(TAG, "Uknown bind request type");
 			}
@@ -1997,6 +2009,25 @@ public class SdlRouterService extends Service{
 		}
 		pingIntent = null;
 	}
+
+
+	/****************************************************************************************************************************************
+	 * Testing purposes
+	 *****************************************************************************************************************************************
+	 /
+
+	/**
+	 * Mock mSerialService
+	 * @param serialService mock to be set as mSerialService
+	 */
+	public static void setSerialService(MultiplexBluetoothTransport serialService) {
+		mSerialService = serialService;
+	}
+
+	/****************************************************************************************************************************************
+	 * End testing purposes
+	 *****************************************************************************************************************************************
+	 /
 	
 	/* ****************************************************************************************************************************************
 	// **********************************************************   TINY CLASSES   ************************************************************
