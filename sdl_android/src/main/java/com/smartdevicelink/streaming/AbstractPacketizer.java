@@ -11,7 +11,7 @@ abstract public class AbstractPacketizer {
 
 	protected IStreamListener _streamListener = null;
 	protected byte _rpcSessionID = 0;
-	
+
 	protected SessionType _serviceType = null;
 	protected SdlSession _session = null;
 	protected InputStream is = null;
@@ -20,41 +20,39 @@ abstract public class AbstractPacketizer {
 	protected boolean upts = false;
 	protected RPCRequest _request = null;
 	protected byte _wiproVersion = 1;
-	
+
 	//protected long ts = 0, intervalBetweenReports = 5000, delta = 0;
 	protected long intervalBetweenReports = 5000, delta = 0;
 
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
-		try {
-			this._streamListener = streamListener;
-			this.is = is;
-			_rpcSessionID = rpcSessionID;
-			_serviceType = sType;
-			this._session = session;
+		this._streamListener = streamListener;
+		this.is = is;
+		_rpcSessionID = rpcSessionID;
+		_serviceType = sType;
+		this._session = session;
+		if (this._session != null) {
 			bufferSize = this._session.getMtu();
 			buffer = new byte[bufferSize];
-		} catch (Exception e) {
-			e.printStackTrace();
+		}else{
+			throw new IOException("Session variable is null");
 		}
-
 	}
-	
+
 	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException {
-		try {
-			this._streamListener = streamListener;
-			this.is = is;
-			_rpcSessionID = rpcSessionID;
-			_serviceType = sType;
-			_request = request;
-			_wiproVersion = wiproVersion;
-			this._session = session;
+		this._streamListener = streamListener;
+		this.is = is;
+		_rpcSessionID = rpcSessionID;
+		_serviceType = sType;
+		_request = request;
+		_wiproVersion = wiproVersion;
+		this._session = session;
+		if (this._session != null) {
 			bufferSize = this._session.getMtu();
 			buffer = new byte[bufferSize];
-		} catch (Exception e) {
-			e.printStackTrace();
+		}else{
+			throw new IOException("Session variable is null");
 		}
-
-	}	
+	}
 
 	public abstract void start() throws IOException;
 
