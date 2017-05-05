@@ -43,7 +43,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 		}
 
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-		Handler handler = new Handler();
+
 		assertTrue(broker.start());
 		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 		assertNotNull(adapter);
@@ -55,8 +55,6 @@ public class TransportBrokerTest extends AndroidTestCase {
 			count++;
 		}
 		assertNotNull(broker.routerServiceMessenger);
-
-
 
 		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
 		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
