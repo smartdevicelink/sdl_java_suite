@@ -23,7 +23,7 @@ public class RSVTestCase extends AndroidTestCase {
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_WEEK 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 7; // A week in ms
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_MONTH 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 30; // A ~month in ms
-	
+	private static final String TEST =  "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 	RouterServiceValidator rsvp;
 	/**
 	 * Set this boolean if you want to test the actual validation of router service
@@ -193,27 +193,24 @@ public class RSVTestCase extends AndroidTestCase {
 		assertFalse(RouterServiceValidator.setTrustedList(mContext,null));
 		assertFalse(RouterServiceValidator.setTrustedList(null,"test"));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,"test"));
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,test+test+test+test+test));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST+TEST+TEST+TEST+TEST));
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<1000; i++){
-			builder.append(test);
+			builder.append(TEST);
 		}
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
 	}
 	
 	public void testTrustedListSetAndGet(){
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST));
 		String retVal = RouterServiceValidator.getTrustedList(mContext);
 		assertNotNull(retVal);
-		assertTrue(test.equals(retVal));
-		
-		retVal = null;
+		assertTrue(TEST.equals(retVal));
+
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<1000; i++){
-			builder.append(test);
+			builder.append(TEST);
 		}
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
 		retVal = RouterServiceValidator.getTrustedList(mContext);
@@ -310,10 +307,10 @@ public class RSVTestCase extends AndroidTestCase {
 	public void testRequestChange(){
 		RouterServiceValidator.setLastRequest(mContext, null);
 		assertNull(RouterServiceValidator.getLastRequest(mContext));
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+
 		JSONObject object = null;
 		try {
-			object = new JSONObject(test);
+			object = new JSONObject(TEST);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -327,7 +324,7 @@ public class RSVTestCase extends AndroidTestCase {
 		assertTrue(object.toString().equals(oldRequest));
 		
 		//Now test a new list
-		test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.test.test\" : { \"versionBlacklist\":[] },\"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.test.test\" : { \"versionBlacklist\":[] },\"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 		object = null;
 		try {
 			object = new JSONObject(test);
