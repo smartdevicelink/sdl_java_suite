@@ -34,7 +34,7 @@ abstract public class AbstractPacketizer {
 			bufferSize = this._session.getMtu();
 			buffer = new byte[bufferSize];
 		}else{
-			throw new IOException("Session variable is null");
+			throw new IllegalArgumentException("Session variable is null");
 		}
 	}
 
@@ -50,7 +50,7 @@ abstract public class AbstractPacketizer {
 			bufferSize = this._session.getMtu();
 			buffer = new byte[bufferSize];
 		}else{
-			throw new IOException("Session variable is null");
+			throw new IllegalArgumentException("Session variable is null");
 		}
 	}
 
