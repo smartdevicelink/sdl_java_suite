@@ -60,13 +60,11 @@ public class AbstractPacketizerTests extends TestCase {
 			testPacketizer2 = new MockPacketizer(null, null, null, testSessionId, testSdlSession);
 			testPacketizer3 = new MockPacketizer(testListener, testInputStream, testRpcRequest, testSessionType, testSessionId, testWiproVersion, testSdlSession);
 
-			try
-			{
+			try {
 				new MockPacketizer(null, null, null, null, testSessionId, testWiproVersion, null);
 				fail("Exception should be thrown");
 			}
-			catch(IOException e)
-			{
+			catch(IOException e) {
 				//success, its supposed to throw an exception
 			}
 
