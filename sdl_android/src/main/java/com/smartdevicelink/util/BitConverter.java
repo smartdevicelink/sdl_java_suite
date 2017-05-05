@@ -2,8 +2,8 @@ package com.smartdevicelink.util;
 
 public class BitConverter {
 	/**
-	 * @param bytes passing in a null byte array returns a null object
-	 * @return
+	 * @param bytes byte array that will be converted to hex
+	 * @return the String containing converted hex values or null if byte array is null
 	 */
 	public static String bytesToHex(byte [] bytes) {
 		if (bytes == null) { return null; }
@@ -11,8 +11,10 @@ public class BitConverter {
 	} // end-method
 
 	/**
-	 * @param bytes passing in a null byte array returns a null object
-	 * @return
+	 * @param bytes byte array that will be converted to hex
+	 * @param offset int representing the offset to begin conversion at
+	 * @param length int representing number of bytes in array to convert
+	 * @return the String containing converted hex values or null if byte array is null
 	 */
 	public static String bytesToHex(byte[] bytes, int offset, int length) {
 		if (bytes == null) { return null; }
@@ -34,8 +36,8 @@ public class BitConverter {
 	} // end-method
 
 	/**
-	 * @param hexString passing in a null String returns a null array
-	 * @return
+	 * @param hexString the String containing converted hex values
+	 * @return byte array converted from input String or null if String is null
 	 */
 	public static byte [] hexToBytes(String hexString) {
 		if (hexString == null) { return null; }
@@ -60,8 +62,8 @@ public class BitConverter {
 	}
 
 	/**
-	 * @param sizeBuf passing in a null byte array returns -1 (error)
-	 * @return
+	 * @param sizeBuf byte array that will be converted to int
+	 * @return int converted from byte array or -1 if byte array is null
 	 */
 	public static int intFromByteArray(byte[] sizeBuf, int offset) {
 		if (sizeBuf == null) { return -1; }
@@ -80,8 +82,8 @@ public class BitConverter {
 	}
 
 	/**
-	 * @param sizeBuf passing in a null byte array returns -1 (error)
-	 * @return
+	 * @param sizeBuf byte array that will be converted to short
+	 * @return short converted from byte array or -1 if byte array is null
 	 */
 	public static short shortFromByteArray(byte[] sizeBuf, int offset) {
 		if (sizeBuf == null) { return -1; }
@@ -95,9 +97,9 @@ public class BitConverter {
 	
 	/**
 	 * Converts the byte array into a string of hex values.
-	 * @param bytes passing in a null byte array returns a null object
+	 * @param bytes byte array that will be converted to hex
 	 * @param end EXCLUSIVE so if it it receives 10 it will print 0-9
-	 * @return
+	 * @return the String containing converted hex values or null if byte array is null
 	 */
 	public static String bytesToHex(byte[] bytes,int end){
 		if (bytes == null) { return null; }
