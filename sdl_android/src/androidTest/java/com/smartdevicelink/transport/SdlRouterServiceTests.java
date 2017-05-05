@@ -11,6 +11,7 @@ import android.util.Log;
 
 import org.junit.Rule;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeoutException;
 
 public class SdlRouterServiceTests extends AndroidTestCase {
@@ -54,15 +55,33 @@ public class SdlRouterServiceTests extends AndroidTestCase {
         assertFalse(mService.writeBytesToTransport(null));
 
         //Sending a non-null bundle with null byte array
-        //First, set serialService to the correct state so we get to test packets being null
+        //First, set mSerialService to the correct state so we get to test packets being null
         MultiplexBluetoothTransport transport = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(null);
         transport.setStateManually(MultiplexBluetoothTransport.STATE_CONNECTED);
-        SdlRouterService.setSerialService(transport);
+        Field field = null;
+        try {
+            field = SdlRouterService.class.getDeclaredField("mSerialService");
+            field.setAccessible(true);
+            field.set(mService, transport);
+        } catch (NoSuchFieldException e) {
+            Log.v(TAG, "No such field: mSerialService in SdlRouterService class");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            Log.v(TAG, "Error setting mSerialService field");
+            e.printStackTrace();
+        }
         Bundle bundle = new Bundle();
         bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, null);
         assertFalse(mService.writeBytesToTransport(bundle));
 
         //Return mSerialService to previous state
-        SdlRouterService.setSerialService(null);
+        try {
+            if (field != null) {
+                field.set(mService, null);
+            }
+        } catch (IllegalAccessException e) {
+            Log.v(TAG, "Error resetting mSerialService field");
+            e.printStackTrace();
+        }
     }
 }
