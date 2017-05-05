@@ -24,7 +24,7 @@ abstract public class AbstractPacketizer {
 	//protected long ts = 0, intervalBetweenReports = 5000, delta = 0;
 	protected long intervalBetweenReports = 5000, delta = 0;
 
-	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
+	public AbstractPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException, IllegalArgumentException {
 		this._streamListener = streamListener;
 		this.is = is;
 		_rpcSessionID = rpcSessionID;
@@ -38,7 +38,7 @@ abstract public class AbstractPacketizer {
 		}
 	}
 
-	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException {
+	public AbstractPacketizer(IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, SdlSession session) throws IOException, IllegalArgumentException {
 		this._streamListener = streamListener;
 		this.is = is;
 		_rpcSessionID = rpcSessionID;

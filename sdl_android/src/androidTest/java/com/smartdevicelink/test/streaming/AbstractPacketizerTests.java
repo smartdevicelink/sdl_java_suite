@@ -63,8 +63,8 @@ public class AbstractPacketizerTests extends TestCase {
 			try {
 				new MockPacketizer(null, null, null, null, testSessionId, testWiproVersion, null);
 				fail("Exception should be thrown");
-			}catch(IllegalArgumentException e) {
-				//success, its supposed to throw an exception
+			}catch(Exception e) {
+				assertTrue(e instanceof IllegalArgumentException);
 			}
 
 			
