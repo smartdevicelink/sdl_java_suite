@@ -565,7 +565,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			// so we need to fix this, but vulnerability (i.e. two instances of listener) is
 			// likely harmless.
 			if (_traceDeviceInterrogator == null) {
-				_traceDeviceInterrogator = new TraceDeviceInfo(sdlProxyConfigurationResources.getTelephonyManager());
+				_traceDeviceInterrogator = new TraceDeviceInfo(telephonyManager);
 			} // end-if
 			
 		} // end-if
