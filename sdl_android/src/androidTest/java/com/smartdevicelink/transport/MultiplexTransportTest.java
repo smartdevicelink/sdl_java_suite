@@ -6,6 +6,8 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 import android.test.AndroidTestCase;
 
+import junit.framework.Assert;
+
 public class MultiplexTransportTest extends AndroidTestCase {
 
 	private static final int TIMEOUT = 2000;
@@ -69,8 +71,14 @@ public class MultiplexTransportTest extends AndroidTestCase {
 		
 		trans = new MultiplexTransport(config,transportListener);
 		assertTrue(trans.brokerThread.isAlive());
-		
-		
-		
+
+		// Send a null config object in the constructor and expect an IllegalArgumentException
+		try {
+			trans = new MultiplexTransport(null, transportListener);
+		} catch (IllegalArgumentException e) {
+			assertEquals("Null transportConfig in MultiplexTransport constructor", e.getMessage());
+		} catch (NullPointerException e) {
+			Assert.fail("NPE in MultiplexTransport constructor");
+		}
 	}
 }
