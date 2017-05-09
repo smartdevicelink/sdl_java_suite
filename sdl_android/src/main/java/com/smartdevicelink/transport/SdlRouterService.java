@@ -93,6 +93,10 @@ public class SdlRouterService extends Service{
 	private static final long CLIENT_PING_DELAY = 1000;
 	
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
+	/**
+	 * @deprecated use {@link TransportConstants#START_ROUTER_SERVICE_ACTION} instead
+	 */
+	@Deprecated
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
 	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
 	
@@ -839,7 +843,7 @@ public class SdlRouterService extends Service{
 	}
 	HashMap<String,ResolveInfo> sdlMultiList ;
 	public void startVersionCheck(){
-		Intent intent = new Intent(START_SERVICE_ACTION);
+		Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infos = getPackageManager().queryBroadcastReceivers(intent, 0);
 		sdlMultiList = new HashMap<String,ResolveInfo>();
 		for(ResolveInfo info: infos){
@@ -1148,7 +1152,7 @@ public class SdlRouterService extends Service{
 		connectedTransportType = type;
 		
 		Intent startService = new Intent();  
-		startService.setAction(START_SERVICE_ACTION);
+		startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
@@ -1935,7 +1939,7 @@ public class SdlRouterService extends Service{
 	
 	private void initPingIntent(){
 		pingIntent = new Intent();  
-		pingIntent.setAction(START_SERVICE_ACTION);
+		pingIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
 		pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
