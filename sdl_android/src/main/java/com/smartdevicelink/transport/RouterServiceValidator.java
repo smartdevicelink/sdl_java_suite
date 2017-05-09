@@ -488,6 +488,18 @@ public class RouterServiceValidator {
 		    }
 		return false;
 	}
+
+	public boolean isAdditionalSdlBroadcastReceiver(){
+		PackageManager manager = (PackageManager) context.getPackageManager();
+		for(ResolveInfo resolveInfo : manager.queryBroadcastReceivers(new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)){
+			if(resolveInfo.activityInfo.packageName != null && context.getPackageName() != null){
+				if(resolveInfo.activityInfo.packageName != context.getPackageName()){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	
 	/**

@@ -103,7 +103,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 						cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
 						cachedMultiConfig.setService(null);
 					}
-					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
+
+					if(!rsvp.isAdditionalSdlBroadcastReceiver()) { // If there are no other Router Services to wake up
+						enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
+					}
 				}
 			}
 			
