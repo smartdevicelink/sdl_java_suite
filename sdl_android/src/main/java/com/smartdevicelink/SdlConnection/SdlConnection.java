@@ -98,14 +98,16 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					Log.w(TAG, "SDL Router service is valid; attempting to connect");
 					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
 				}else{
-					Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");	
 					if(cachedMultiConfig == null){
 						cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
 						cachedMultiConfig.setService(null);
 					}
 
 					if(!rsvp.isAdditionalSdlBroadcastReceiver()) { // If there are no other Router Services to wake up
+						Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");
 						enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
+					}else{
+						Log.w(TAG, "SDL Router service isn't trusted. Attempting to wake up other router services.");
 					}
 				}
 			}

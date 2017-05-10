@@ -490,10 +490,11 @@ public class RouterServiceValidator {
 	}
 
 	public boolean isAdditionalSdlBroadcastReceiver(){
-		PackageManager manager = (PackageManager) context.getPackageManager();
+		PackageManager manager = context.getPackageManager();
 		for(ResolveInfo resolveInfo : manager.queryBroadcastReceivers(new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)){
-			if(resolveInfo.activityInfo.packageName != null && context.getPackageName() != null){
-				if(resolveInfo.activityInfo.packageName != context.getPackageName()){
+			String packageName = resolveInfo.activityInfo.packageName;
+			if(packageName != null && context.getPackageName() != null){
+				if(packageName != context.getPackageName()){
 					return true;
 				}
 			}
