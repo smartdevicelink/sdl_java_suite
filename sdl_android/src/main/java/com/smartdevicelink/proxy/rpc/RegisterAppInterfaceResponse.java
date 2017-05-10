@@ -36,7 +36,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
     public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
     public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
-
+	public static final String KEY_ICON_RESUMED 				= "iconResumed";
     
 	/**
 	 * Constructs a new RegisterAppInterfaceResponse object
@@ -581,5 +581,9 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 
     public String getSystemSoftwareVersion() {    
     	 return (String) parameters.get(KEY_SYSTEM_SOFTWARE_VERSION);
-    } 
+    }
+
+    public Boolean getIconResumed() {
+		return (Boolean) parameters.get(KEY_ICON_RESUMED);
+	}
 }

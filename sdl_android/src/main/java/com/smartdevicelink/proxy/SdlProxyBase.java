@@ -216,6 +216,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;	
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
+	protected Boolean _iconResumed = false;
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -1871,6 +1872,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_hmiCapabilities = msg.getHmiCapabilities();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
+					_iconResumed = msg.getIconResumed;
 					
 
 
