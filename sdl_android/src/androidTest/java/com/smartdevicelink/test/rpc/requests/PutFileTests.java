@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.Hashtable;
+import java.util.zip.CRC32;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,6 +96,24 @@ public class PutFileTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getLength());
 		assertNull(Test.NULL, msg.getCRC());
 	}
+
+	/**
+	 * Tests the expected values of the CRC checksum.
+	 */
+	public void testByteArrayCheckSum () {
+		// Test Values
+		PutFile msgCRC = new PutFile();
+		msgCRC.setCRC(Test.GENERAL_BYTE_ARRAY);
+		Long testCRCByteArray = msgCRC.getCRC();
+
+		CRC32 crc = new CRC32();
+		crc.update(Test.GENERAL_BYTE_ARRAY);
+		Long crcValue = crc.getValue();
+
+		assertEquals(Test.MATCH, crcValue, testCRCByteArray);
+	}
+
+
 
     /**
      * Tests a valid JSON construction of this RPC message.

@@ -1003,8 +1003,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	putFile.setFileType(FileType.JSON);
 		    	putFile.setCorrelationID(POLICIES_CORRELATION_ID);
 		    	putFile.setSdlFileName("response_data");
-                putFile.setFileData(response.toString().getBytes("UTF-8"));
-                putFile.setCRC(response.toString().getBytes());
+		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
+		    	putFile.setCRC(response.toString().getBytes());
 				updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCRequestPrivate(putFile);

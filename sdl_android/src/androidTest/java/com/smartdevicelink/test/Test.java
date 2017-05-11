@@ -120,6 +120,7 @@ public class Test {
 	public static final String                         GENERAL_STRING                         = "test";
 	public static final Double                         GENERAL_DOUBLE                         = 10.01;
 	public static final boolean                        GENERAL_BOOLEAN                        = true;
+	public static final byte[]                         GENERAL_BYTE_ARRAY                     = new byte[0];
 	public static final TBTState                       GENERAL_TBTSTATE                       = TBTState.NEXT_TURN_REQUEST;
 	public static final FileType                       GENERAL_FILETYPE                       = FileType.BINARY;
 	public static final Language                       GENERAL_LANGUAGE                       = Language.EN_US;
