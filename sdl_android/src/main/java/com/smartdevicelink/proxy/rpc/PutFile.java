@@ -125,8 +125,8 @@ public class PutFile extends RPCRequest {
     public static final String KEY_FILE_TYPE = "fileType";
     public static final String KEY_SDL_FILE_NAME = "syncFileName";
     public static final String KEY_OFFSET = "offset";
-	public static final String KEY_LENGTH = "length";
-	public static final String KEY_CRC = "crc";
+    public static final String KEY_LENGTH = "length";
+    public static final String KEY_CRC = "crc";
 
 
 	/**
