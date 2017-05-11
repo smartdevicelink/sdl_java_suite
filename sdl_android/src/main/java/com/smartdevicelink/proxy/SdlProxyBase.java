@@ -1872,7 +1872,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_hmiCapabilities = msg.getHmiCapabilities();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
-					_iconResumed = msg.getIconResumed;
+					_iconResumed = msg.getIconResumed();
 					
 
 
