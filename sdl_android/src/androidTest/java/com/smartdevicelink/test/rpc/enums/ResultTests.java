@@ -17,7 +17,7 @@ public class ResultTests extends TestCase {
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
-	public void testValidEnums () {	
+	public void testValidEnums () {
 		String example = "SUCCESS";
 		Result enumSuccess = Result.valueForString(example);
 		example = "INVALID_DATA";
@@ -82,7 +82,9 @@ public class ResultTests extends TestCase {
 		Result enumExpiredCert = Result.valueForString(example);
 		example = "RESUME_FAILED";
 		Result enumResumeFailed = Result.valueForString(example);
-		
+		example = "CORRUPT_DATA";
+		Result enumCorruptData = Result.valueForString(example);
+
 		assertNotNull("SUCCESS returned null", enumSuccess);
 		assertNotNull("INVALID_DATA returned null", enumInvalidData);
 		assertNotNull("UNSUPPORTED_REQUEST returned null", enumUnsupportedRequest);
@@ -115,6 +117,7 @@ public class ResultTests extends TestCase {
 		assertNotNull("INVALID_CERT returned null", enumInvalidCert);
 		assertNotNull("EXPIRED_CERT returned null", enumExpiredCert);
 		assertNotNull("RESUME_FAILED returned null", enumResumeFailed);
+		assertNotNull("CORRUPT_DATA", enumCorruptData);
 	}
 
 	/**
@@ -182,8 +185,9 @@ public class ResultTests extends TestCase {
 		enumTestList.add(Result.WARNINGS);
 		enumTestList.add(Result.SAVED);	
 		enumTestList.add(Result.INVALID_CERT);
-		enumTestList.add(Result.EXPIRED_CERT);	
-		enumTestList.add(Result.RESUME_FAILED);	
+		enumTestList.add(Result.EXPIRED_CERT);
+		enumTestList.add(Result.RESUME_FAILED);
+		enumTestList.add(Result.CORRUPTED_DATA);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

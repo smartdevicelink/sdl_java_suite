@@ -30,6 +30,7 @@ public class PutFileTests extends BaseRpcTests {
 		msg.setSystemFile(Test.GENERAL_BOOLEAN);
 		msg.setOffset(Test.GENERAL_LONG);
 		msg.setLength(Test.GENERAL_LONG);
+		msg.setCRC(Test.GENERAL_LONG);
 
 		return msg;
 	}
@@ -53,7 +54,8 @@ public class PutFileTests extends BaseRpcTests {
 			result.put(PutFile.KEY_PERSISTENT_FILE, Test.GENERAL_BOOLEAN);
 			result.put(PutFile.KEY_SYSTEM_FILE, Test.GENERAL_BOOLEAN);
 			result.put(PutFile.KEY_OFFSET, Test.GENERAL_LONG);
-			result.put(PutFile.KEY_LENGTH, Test.GENERAL_LONG);			
+			result.put(PutFile.KEY_LENGTH, Test.GENERAL_LONG);
+			result.put(PutFile.KEY_CRC, Test.GENERAL_LONG);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -71,14 +73,16 @@ public class PutFileTests extends BaseRpcTests {
 		boolean  testSystemFile = ( (PutFile) msg ).getSystemFile();
 		Long     testOffset = ( (PutFile) msg ).getOffset();
 		Long     testLength = ( (PutFile) msg ).getLength();
-		
+		Long     testCRC = ( (PutFile) msg ).getCRC();
+
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, testFileType);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testPersistentFile);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSystemFile);
 		assertEquals(Test.MATCH, Test.GENERAL_LONG, testOffset);
 		assertEquals(Test.MATCH, Test.GENERAL_LONG, testLength);
-	
+		assertEquals(Test.MATCH, Test.GENERAL_LONG, testCRC);
+
 		// Invalid/Null Tests
 		PutFile msg = new PutFile();
 		assertNotNull("Null object creation failed.", msg);
@@ -89,6 +93,7 @@ public class PutFileTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getSystemFile());
 		assertNull(Test.NULL, msg.getOffset());
 		assertNull(Test.NULL, msg.getLength());
+		assertNull(Test.NULL, msg.getCRC());
 	}
 
     /**
@@ -115,7 +120,8 @@ public class PutFileTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
 			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
-			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());		
+			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());
+			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_CRC).longValue(), cmd.getCRC());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	

@@ -168,7 +168,11 @@ public enum Result {
     /**
      * The provided hash ID does not match the hash of the current set of registered data or the core could not resume the previous data.
      */
-    RESUME_FAILED;
+    RESUME_FAILED,
+	/**
+	 * The data sent failed to pass CRC check in receiver end
+	 */
+	CORRUPTED_DATA;
 	 /**
      * Convert String to Result
      * @param value String
