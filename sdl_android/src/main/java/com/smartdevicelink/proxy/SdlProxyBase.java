@@ -1005,7 +1005,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	putFile.setSdlFileName("response_data");
 		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
 		    	putFile.setCRC(response.toString().getBytes());
-				updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
+		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCRequestPrivate(putFile);
 		    	Log.i("sendOnSystemRequestToUrl", "sent to sdl");											
