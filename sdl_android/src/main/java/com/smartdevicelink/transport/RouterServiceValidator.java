@@ -209,7 +209,7 @@ public class RouterServiceValidator {
 	
 	/**
 	 * This method will find which router service is running. Use that info to find out more about that app and service.
-	 * It will store the found service for later use and return the package name if found. 
+	 * It will store the found service for later use and return the package name if found.
 	 * @param context
 	 * @return
 	 */
@@ -345,35 +345,34 @@ public class RouterServiceValidator {
 	/**
 	 * Using the knowledge that all SDL enabled apps have an SDL Broadcast Receiver that has an intent filter that includes a specific 
 	 * intent. 
-	 * @return 
+	 * @return the list of SDL enabled apps if any app is found; null or empty list otherwise
 	 */
-	private static List<SdlApp> findAllSdlApps(Context context){
-		List<SdlApp> apps = new ArrayList<SdlApp>();
+	protected static List<SdlApp> findAllSdlApps(Context context) {
+		List<SdlApp> apps = new ArrayList<>();
 		PackageManager packageManager = context.getPackageManager();
 		Intent intent = new Intent();
-		intent.setAction("sdl.router.startservice");
+		intent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
-		//We want to sort our list so that we know it's the same everytime
-		Collections.sort(infoList,new Comparator<ResolveInfo>() {
-	        @Override
-	        public int compare(ResolveInfo lhs, ResolveInfo rhs) {
-	            return lhs.activityInfo.packageName.compareTo(rhs.activityInfo.packageName);
-	        }
-	    });
-		if(infoList!=null){
+		if (infoList != null) {
+			//We want to sort our list so that we know it's the same every time
+			Collections.sort(infoList,new Comparator<ResolveInfo>() {
+				@Override
+				public int compare(ResolveInfo lhs, ResolveInfo rhs) {
+					return lhs.activityInfo.packageName.compareTo(rhs.activityInfo.packageName);
+				}
+			});
 			String packageName;
-			for(ResolveInfo info : infoList){
+			for (ResolveInfo info : infoList) {
 				//Log.i(TAG, "SDL apps: " + info.activityInfo.packageName);
 				packageName = info.activityInfo.packageName;
 				try {
-					apps.add(new SdlApp(packageName,packageManager.getPackageInfo(packageName,0).versionCode));
+					apps.add(new SdlApp(packageName, packageManager.getPackageInfo(packageName, 0).versionCode));
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
-			
 			return apps;
-		}else{
+		} else {
 			Log.i(TAG, "No SDL apps, list was null");
 			return null;
 		}
@@ -384,29 +383,29 @@ public class RouterServiceValidator {
 	 * When it receives a list back from the server it will store it for later use.
 	 * @param context
 	 */
-	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh){
-		return createTrustedListRequest(context,forceRefresh,null,null);
+	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh) {
+		return createTrustedListRequest(context, forceRefresh, null, null);
 	}
-	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback){Log.d(TAG,"Checking to make sure we have a list");
-		return createTrustedListRequest(context,forceRefresh,null,listCallback);
+	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback) {
+		Log.d(TAG,"Checking to make sure we have a list");
+		return createTrustedListRequest(context, forceRefresh, null, listCallback);
 	}
 	
 	@Deprecated
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb ){
-		return createTrustedListRequest(context,forceRefresh,cb,null);
+	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb) {
+		return createTrustedListRequest(context, forceRefresh, cb, null);
 	}
 	
-	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh,HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback ){
-		if(context == null){
+	protected static boolean createTrustedListRequest(final Context context, boolean forceRefresh, HttpRequestTask.HttpRequestTaskCallback cb, final TrustedListCallback listCallback) {
+		if (context == null) {
 			return false;
 		}
-		else if(getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF){ //If security is off, we can just return now
-			if(listCallback!=null){
+		else if (getSecurityLevel(context) == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF) { //If security is off, we can just return now
+			if (listCallback != null) {
 				listCallback.onListObtained(true);
 			}
 			return false;
 		}
-		
 		pendingListRefresh = true;
 		//Might want to store a flag letting this class know a request is currently pending
 		StringBuilder builder = new StringBuilder();
@@ -417,30 +416,40 @@ public class RouterServiceValidator {
 		final JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject jsonApp;
-		
-		for(SdlApp app: apps){	//Format all the apps into a JSON object and add it to the JSON array
-			try{
-				jsonApp = new JSONObject();
-				jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
-				jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
-				array.put(jsonApp);
-			}catch(JSONException e){
-				e.printStackTrace();
-				continue;
+		if (apps != null && apps.size() > 0) {
+			for (SdlApp app : apps) {    //Format all the apps into a JSON object and add it to the JSON array
+				try {
+					jsonApp = new JSONObject();
+					jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
+					jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
+					array.put(jsonApp);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					continue;
+				}
 			}
+		} else { //Return here and do not bother to make request since there's no app to send
+			if (listCallback != null) {
+				listCallback.onListObtained(true);
+			}
+			return false;
 		}
 		
-		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
+		try {
+			object.put(JSON_PUT_ARRAY_TAG, array);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		
-		if(!forceRefresh && (System.currentTimeMillis()-getTrustedAppListTimeStamp(context))<getRefreshRate()){ 
-			if(object.toString().equals(getLastRequest(context))){
-			//Our list should still be ok for now so we will skip the request
+		if (!forceRefresh && (System.currentTimeMillis() - getTrustedAppListTimeStamp(context)) < getRefreshRate()) {
+			if (object.toString().equals(getLastRequest(context))) {
+				//Our list should still be ok for now so we will skip the request
 				pendingListRefresh = false;
-				if(listCallback!=null){
+				if (listCallback != null) {
 					listCallback.onListObtained(true);
 				}
 				return false;
-			}else{
+			} else {
 				Log.d(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
 			}
 		}
@@ -455,20 +464,23 @@ public class RouterServiceValidator {
 					setTrustedList(context, response);
 					setLastRequest(context, object.toString()); //Save our last request 
 					pendingListRefresh = false;
-					if(listCallback!=null){listCallback.onListObtained(true);}
+					if (listCallback != null) {
+						listCallback.onListObtained(true);
+					}
 				}
 
 				@Override
 				public void httpFailure(int statusCode) {
-					Log.e(TAG, "Error while requesting trusted app list: "
-							+ statusCode);
+					Log.e(TAG, "Error while requesting trusted app list: " + statusCode);
 					pendingListRefresh = false;
-					if(listCallback!=null){listCallback.onListObtained(false);}
+					if (listCallback != null) {
+						listCallback.onListObtained(false);
+					}
 				}
 			};
 		}
 
-		new HttpRequestTask(cb).execute(REQUEST_PREFIX,HttpRequestTask.REQUEST_TYPE_POST,object.toString(),"application/json","application/json");
+		new HttpRequestTask(cb).execute(REQUEST_PREFIX, HttpRequestTask.REQUEST_TYPE_POST, object.toString(), "application/json", "application/json");
 		
 		return true;
 	}
