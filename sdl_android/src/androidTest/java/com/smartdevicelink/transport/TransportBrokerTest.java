@@ -8,6 +8,7 @@ import android.os.Messenger;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
+import com.smartdevicelink.test.util.DeviceUtil;
 
 public class TransportBrokerTest extends AndroidTestCase {
 	RouterServiceValidator rsvp;
@@ -32,7 +33,9 @@ public class TransportBrokerTest extends AndroidTestCase {
 			Looper.prepare();
 		}
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-		assertTrue(broker.start());
+		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertTrue(broker.start());
+		}
 		broker.stop();
 
 	}
@@ -44,17 +47,23 @@ public class TransportBrokerTest extends AndroidTestCase {
 
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 
-		assertTrue(broker.start());
+		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertTrue(broker.start());
+		}
 		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		assertNotNull(adapter);
-		assertTrue(adapter.isEnabled());
+		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
+			assertNotNull(adapter);
+			assertTrue(adapter.isEnabled());
+		}
 		//Not ideal, but not implementing callbacks just for unit tests
 		int count = 0;
 		while(broker.routerServiceMessenger == null && count<10){
 			sleep();
 			count++;
 		}
-		assertNotNull(broker.routerServiceMessenger);
+		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
+			assertNotNull(broker.routerServiceMessenger);
+		}
 
 		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
 		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
@@ -70,7 +79,9 @@ public class TransportBrokerTest extends AndroidTestCase {
 			Looper.prepare();
 		}
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-		assertTrue(broker.start());
+		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertTrue(broker.start());
+		}
 
 	}
 	
