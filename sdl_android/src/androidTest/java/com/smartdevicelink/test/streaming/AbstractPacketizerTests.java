@@ -46,7 +46,7 @@ public class AbstractPacketizerTests extends TestCase {
 		
 		try {
 			
-			URL url = new URL("ftp://mirror.csclub.uwaterloo.ca/index.html");
+			URL url = new URL("https://github.com/smartdevicelink/sdl_android");
 		    URLConnection urlConnection = url.openConnection();
 			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
 			
@@ -90,6 +90,7 @@ public class AbstractPacketizerTests extends TestCase {
 			assertNull(Test.NULL, testPacketizer2.getSessionType());
 			
 		} catch (IOException e) {
+			e.printStackTrace();
 			fail("IOException was thrown.");
 		}
 	}
