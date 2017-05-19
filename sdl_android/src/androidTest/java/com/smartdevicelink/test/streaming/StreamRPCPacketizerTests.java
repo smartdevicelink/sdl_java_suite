@@ -43,7 +43,7 @@ public class StreamRPCPacketizerTests extends TestCase {
 		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
 
 		try {			
-			URL url = new URL("https://github.com/smartdevicelink/sdl_android");
+			URL url = new URL("https://google.com");
 		    URLConnection urlConnection = url.openConnection();
 			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
 			
