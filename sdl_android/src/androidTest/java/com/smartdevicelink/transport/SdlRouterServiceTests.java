@@ -34,7 +34,9 @@ public class SdlRouterServiceTests extends AndroidTestCase {
      * msg.what == TransportConstants.ROUTER_RECEIVED_PACKET
      */
     public void testAlTransportHandlerHandleNullBundle() {
-        Looper.prepare();
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         class AltTransportHandler extends Handler {
             ClassLoader loader;
             final WeakReference<SdlRouterService> provider;
