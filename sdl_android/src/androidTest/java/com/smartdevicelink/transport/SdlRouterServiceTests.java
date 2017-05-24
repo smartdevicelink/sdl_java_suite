@@ -29,7 +29,9 @@ public class SdlRouterServiceTests extends AndroidTestCase {
      * @see SdlRouterService#writeBytesToTransport(Bundle)
      */
     public void testWriteBytesToTransport() {
-        Looper.prepare();
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         Method method;
         Field field = null;
         Object sdlRouterService = null;
