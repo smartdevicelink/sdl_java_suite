@@ -1,14 +1,5 @@
 package com.smartdevicelink.transport;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.test.AndroidTestCase;
@@ -17,13 +8,23 @@ import android.util.Log;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+
 public class RSVTestCase extends AndroidTestCase {
 	private static final String TAG = "RSVTestCase";
 	
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_WEEK 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 7; // A week in ms
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_MONTH 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 30; // A ~month in ms
-	
+	private static final String TEST =  "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 	RouterServiceValidator rsvp;
 	/**
 	 * Set this boolean if you want to test the actual validation of router service
@@ -41,6 +42,27 @@ public class RSVTestCase extends AndroidTestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
+
+	private static final Semaphore TRUSTED_LIST_LOCK = new Semaphore(1);
+
+	private void requestTListLock(){
+		try {
+			TRUSTED_LIST_LOCK.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void releaseTListLock(){
+		TRUSTED_LIST_LOCK.release();
+	}
+
+	private RouterServiceValidator.TrustedListCallback trustedListCallback = new RouterServiceValidator.TrustedListCallback(){
+		@Override
+		public void onListObtained(boolean successful) {
+			releaseTListLock();
+		}
+	};
 	
 /*
  * These tests are a little strange because they don't test the logic behind the validation of each piece.
@@ -100,6 +122,8 @@ public class RSVTestCase extends AndroidTestCase {
 	}
 	
 	public void testHighSecurity(){
+		requestTListLock();
+
 		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
@@ -108,11 +132,13 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
 		
 	}
 	
 	public void testMediumSecurity(){
+		requestTListLock();
+
 		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_MED);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
@@ -121,11 +147,13 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
 		
 	}
 	
 	public void testLowSecurity(){
+		requestTListLock();
+
 		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
@@ -134,11 +162,13 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_MONTH);
 		
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
 		
 	}
 	
 	public void testNoSecurity(){
+		requestTListLock();
+
 		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext); //Use a locally scoped instance
 		rsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
@@ -147,7 +177,7 @@ public class RSVTestCase extends AndroidTestCase {
 		
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 		
-		assertFalse(RouterServiceValidator.createTrustedListRequest(mContext, true, null, null));
+		assertFalse(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
 		
 		//This should always return true
 		assertTrue(rsvp.validate());
@@ -179,51 +209,66 @@ public class RSVTestCase extends AndroidTestCase {
 	}
 	
 	public void testInvalidateList(){
+		requestTListLock();
+
 		assertFalse(RouterServiceValidator.invalidateList(null));
 		assertTrue(RouterServiceValidator.invalidateList(mContext));
+
+		releaseTListLock();
 	}
 	
 	public void testGetTrustedList(){
+		requestTListLock();
+
 		assertNull(RouterServiceValidator.getTrustedList(null));
 		assertNotNull(RouterServiceValidator.getTrustedList(mContext));
+
+		releaseTListLock();
 	}
 	
 	public void testSetTrustedList(){
+		requestTListLock();
+
 		assertFalse(RouterServiceValidator.setTrustedList(null,null));
 		assertFalse(RouterServiceValidator.setTrustedList(mContext,null));
 		assertFalse(RouterServiceValidator.setTrustedList(null,"test"));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,"test"));
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,test+test+test+test+test));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST+TEST+TEST+TEST+TEST));
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<1000; i++){
-			builder.append(test);
+			builder.append(TEST);
 		}
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
+
+		releaseTListLock();
 	}
 	
 	public void testTrustedListSetAndGet(){
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,test));
+		requestTListLock();
+
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST));
 		String retVal = RouterServiceValidator.getTrustedList(mContext);
 		assertNotNull(retVal);
-		assertTrue(test.equals(retVal));
-		
-		retVal = null;
+		assertTrue(TEST.equals(retVal));
+
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<1000; i++){
-			builder.append(test);
+			builder.append(TEST);
 		}
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,builder.toString()));
 		retVal = RouterServiceValidator.getTrustedList(mContext);
 		assertNotNull(retVal);
 		assertTrue(builder.toString().equals(retVal));
+
+		releaseTListLock();
 	}
 	
 	public void testInvalidationSequence(){
+		requestTListLock();
+
 		assertTrue(RouterServiceValidator.invalidateList(mContext));
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext,false));
+		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, false, null, trustedListCallback));
 	}
 	
 	public void testAppStorePackages(){
@@ -267,6 +312,8 @@ public class RSVTestCase extends AndroidTestCase {
 	
 	static boolean didFinish = false;
 	public void  testGetAndCheckList(){
+		requestTListLock();
+
 		final Object REQUEST_LOCK = new Object();
 		didFinish = false;
 		HttpRequestTaskCallback cb = new HttpRequestTaskCallback(){
@@ -279,6 +326,7 @@ public class RSVTestCase extends AndroidTestCase {
 					didFinish = true;
 					REQUEST_LOCK.notify();
 				}
+				releaseTListLock();
 			}
 			@Override
 			public void httpFailure(int statusCode) {
@@ -287,6 +335,7 @@ public class RSVTestCase extends AndroidTestCase {
 					didFinish = true;
 					REQUEST_LOCK.notify();
 				}
+				releaseTListLock();
 			}
 		};
 		
@@ -308,12 +357,14 @@ public class RSVTestCase extends AndroidTestCase {
 	 * Test to check that we can save our last request which actually houses all the previous known sdl enabled apps
 	 */
 	public void testRequestChange(){
+		requestTListLock();
+
 		RouterServiceValidator.setLastRequest(mContext, null);
 		assertNull(RouterServiceValidator.getLastRequest(mContext));
-		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+
 		JSONObject object = null;
 		try {
-			object = new JSONObject(test);
+			object = new JSONObject(TEST);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -327,7 +378,7 @@ public class RSVTestCase extends AndroidTestCase {
 		assertTrue(object.toString().equals(oldRequest));
 		
 		//Now test a new list
-		test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.test.test\" : { \"versionBlacklist\":[] },\"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}"; 
+		String test = "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.test.test\" : { \"versionBlacklist\":[] },\"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 		object = null;
 		try {
 			object = new JSONObject(test);
@@ -339,6 +390,7 @@ public class RSVTestCase extends AndroidTestCase {
 		//Clear it for next test
 		RouterServiceValidator.setLastRequest(mContext, null);
 
+		releaseTListLock();
 	}
 	
 	 

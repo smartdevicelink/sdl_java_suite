@@ -1,10 +1,21 @@
 package com.smartdevicelink.util;
 
 public class BitConverter {
+	/**
+	 * @param bytes byte array that will be converted to hex
+	 * @return the String containing converted hex values or null if byte array is null
+	 */
 	public static String bytesToHex(byte [] bytes) {
+		if (bytes == null) { return null; }
 		return bytesToHex(bytes, 0, bytes.length);
 	} // end-method
 
+	/**
+	 * @param bytes byte array that will be converted to hex
+	 * @param offset int representing the offset to begin conversion at
+	 * @param length int representing number of bytes in array to convert
+	 * @return the String containing converted hex values or null if byte array is null
+	 */
 	public static String bytesToHex(byte[] bytes, int offset, int length) {
 		if (bytes == null) { return null; }
 		final char[] HexDigits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -24,6 +35,10 @@ public class BitConverter {
 		return new String(hexChars);
 	} // end-method
 
+	/**
+	 * @param hexString the String containing converted hex values
+	 * @return byte array converted from input String or null if String is null
+	 */
 	public static byte [] hexToBytes(String hexString) {
 		if (hexString == null) { return null; }
 		if (hexString.length() % 2 != 0) {
@@ -45,8 +60,13 @@ public class BitConverter {
 				(byte)(value >>> 8),
 				(byte)value};
 	}
-	
+
+	/**
+	 * @param sizeBuf byte array that will be converted to int
+	 * @return int converted from byte array or -1 if byte array is null
+	 */
 	public static int intFromByteArray(byte[] sizeBuf, int offset) {
+		if (sizeBuf == null) { return -1; }
     	int ret = 0;
     	for (int i = offset; i < offset + 4; i++) {
     		ret <<= 8;
@@ -60,8 +80,13 @@ public class BitConverter {
 				(byte)(value >>> 8),
 				(byte)value};
 	}
-	
+
+	/**
+	 * @param sizeBuf byte array that will be converted to short
+	 * @return short converted from byte array or -1 if byte array is null
+	 */
 	public static short shortFromByteArray(byte[] sizeBuf, int offset) {
+		if (sizeBuf == null) { return -1; }
     	short ret = 0;
     	for (int i = offset; i < offset + 2; i++) {
     		ret <<= 8;
@@ -72,11 +97,12 @@ public class BitConverter {
 	
 	/**
 	 * Converts the byte array into a string of hex values.
-	 * @param bytes
+	 * @param bytes byte array that will be converted to hex
 	 * @param end EXCLUSIVE so if it it receives 10 it will print 0-9
-	 * @return
+	 * @return the String containing converted hex values or null if byte array is null
 	 */
 	public static String bytesToHex(byte[] bytes,int end){
+		if (bytes == null) { return null; }
 		if(bytes.length<end){
 			end = bytes.length;
 		}

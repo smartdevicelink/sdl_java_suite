@@ -41,11 +41,15 @@ public class LockScreenManager {
 	public synchronized void setHMILevel(HMILevel hmiVal)
 	{		
 		hmiLevel = hmiVal;
-		
-		if ( (hmiVal.equals(HMILevel.HMI_FULL)) || (hmiVal.equals(HMILevel.HMI_LIMITED)) )
-			setUserSelectedStatus(true);
-		else if (hmiVal.equals(HMILevel.HMI_NONE))
-			setUserSelectedStatus(false);				
+
+		if (hmiVal != null) {
+			if ((hmiVal.equals(HMILevel.HMI_FULL)) || (hmiVal.equals(HMILevel.HMI_LIMITED)))
+				setUserSelectedStatus(true);
+			else if (hmiVal.equals(HMILevel.HMI_NONE))
+				setUserSelectedStatus(false);
+		}else{
+			setUserSelectedStatus(false);
+		}
 	}
 	
 	public synchronized OnLockScreenStatus getLockObj(/*int SessionID*/)

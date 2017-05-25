@@ -36,11 +36,11 @@ public class SdlDataTypeConverterTests extends TestCase {
 		// Valid Tests		
 		assertEquals(Test.MATCH, expectedValue, actualDoubleValue);
 		assertEquals(Test.MATCH, expectedValue, actualIntegerValue);
+		assertEquals(Test.MATCH, expectedValue, actualFloatValue);
 		
 		// Null Tests
 		assertNull(Test.NULL, actualNullValue);
 		assertNull(Test.NULL, actualLongValue);
 		assertNull(Test.NULL, actualShortValue);
-		assertNull(Test.NULL, actualFloatValue);
 	}
 }

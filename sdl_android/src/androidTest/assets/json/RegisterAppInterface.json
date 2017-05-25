@@ -50,7 +50,7 @@
         "make":"Chrysler",
         "model":"Crossfire",
         "modelYear":"1820",
-        "trim":"Gold",
+        "trim":"Gold"
       },
       "speechCapabilities":[
         "SAPI_PHONEMES",
