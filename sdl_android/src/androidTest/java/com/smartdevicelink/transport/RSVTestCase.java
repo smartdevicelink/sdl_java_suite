@@ -418,7 +418,7 @@ public class RSVTestCase extends AndroidTestCase {
 		RouterServiceValidatorTest trsvp = new RouterServiceValidatorTest(mContext);
 		trsvp.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_LOW);
 		//Test null SdlApps list handling
-		assertFalse(RouterServiceValidatorTest.createTrustedListRequest(mContext, true, null, null));
+		assertTrue(RouterServiceValidatorTest.createTrustedListRequest(mContext, true, null, null));
 		//Verify that trusted list is unchanged afterwards
 		assertEquals(trustedListBefore, RouterServiceValidatorTest.getTrustedList(mContext));
 
@@ -478,11 +478,6 @@ public class RSVTestCase extends AndroidTestCase {
 						continue;
 					}
 				}
-			} else {	//Return here and do not bother to make request since there's no app to send
-				if (listCallback != null) {
-					listCallback.onListObtained(true);
-				}
-				return false;
 			}
 
 			try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}

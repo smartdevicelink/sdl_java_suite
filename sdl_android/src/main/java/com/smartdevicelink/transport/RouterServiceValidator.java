@@ -429,11 +429,6 @@ public class RouterServiceValidator {
 					continue;
 				}
 			}
-		} else {	//Return here and do not bother to make request since there's no app to send
-			if (listCallback != null) {
-				listCallback.onListObtained(true);
-			}
-			return false;
 		}
 		
 		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
@@ -475,7 +470,7 @@ public class RouterServiceValidator {
 		}
 
 		new HttpRequestTask(cb).execute(REQUEST_PREFIX,HttpRequestTask.REQUEST_TYPE_POST,object.toString(),"application/json","application/json");
-		
+
 		return true;
 	}
 	
