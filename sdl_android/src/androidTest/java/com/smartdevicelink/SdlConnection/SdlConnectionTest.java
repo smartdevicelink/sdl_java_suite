@@ -1,5 +1,6 @@
 package com.smartdevicelink.SdlConnection;
 
+import android.os.Looper;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -18,7 +19,9 @@ public class SdlConnectionTest extends AndroidTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
 	}
 
 	@Override
