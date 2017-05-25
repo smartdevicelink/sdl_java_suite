@@ -1,46 +1,51 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ImageFieldName}
  */
-public class ImageFieldNameTests extends TestCase {
+public class ImageFieldNameTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "softButtonImage";
+		String example = mContext.getString(R.string.soft_button_img_cap);
 		ImageFieldName enumSoftButtonImage = ImageFieldName.valueForString(example);
-		example = "choiceImage";
+		example = mContext.getString(R.string.choice_img);
 		ImageFieldName enumChoiceImage = ImageFieldName.valueForString(example);
-		example = "choiceSecondaryImage";
+		example = mContext.getString(R.string.choice_second_img);
 		ImageFieldName enumSecondaryImage = ImageFieldName.valueForString(example);
-		example = "vrHelpItem";
+		example = mContext.getString(R.string.vrhelpitem);
 		ImageFieldName enumVrHelpItem = ImageFieldName.valueForString(example);
-		example = "turnIcon";
+		example = mContext.getString(R.string.turnicon);
 		ImageFieldName enumTurnIcon = ImageFieldName.valueForString(example);
-		example = "menuIcon";
+		example = mContext.getString(R.string.menuicon);
 		ImageFieldName enumMenuIcon = ImageFieldName.valueForString(example);
-		example = "cmdIcon";
+		example = mContext.getString(R.string.cmdicon);
 		ImageFieldName enumCmdIcon = ImageFieldName.valueForString(example);
-		example = "appIcon";
+		example = mContext.getString(R.string.appicon);
 		ImageFieldName enumAppIcon = ImageFieldName.valueForString(example);
-		example = "graphic";
+		example = mContext.getString(R.string.graphic);
 		ImageFieldName enumGraphicIcon = ImageFieldName.valueForString(example);
-		example = "showConstantTBTIcon";
+		example = mContext.getString(R.string.showconstanttbticon);
 		ImageFieldName enumShowConstantTbtIcon = ImageFieldName.valueForString(example);
-		example = "showConstantTBTNextTurnIcon";
+		example = mContext.getString(R.string.showconstanttbtnextturnicon);
 		ImageFieldName enumShowConstantTbtNextTurnIcon = ImageFieldName.valueForString(example);
-		example = "locationImage";
+		example = mContext.getString(R.string.location_img);
 		ImageFieldName enumLocationImage = ImageFieldName.valueForString(example);
 				
 		assertNotNull("softButtonImage returned null", enumSoftButtonImage);
@@ -61,7 +66,7 @@ public class ImageFieldNameTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "sofTbUtTOnImagE";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    ImageFieldName temp = ImageFieldName.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

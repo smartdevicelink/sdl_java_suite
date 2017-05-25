@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -113,8 +114,8 @@ public class SdlSecurityBaseTest extends AndroidTestCase {
 		List<String> makeList = new ArrayList<String>();
 		MockSdlSecurityBase mockSdlSecurityBase = new MockSdlSecurityBase();
 		
-		String MAKE_1 = "SDL1";
-		String MAKE_2 = "SDL2";
+		String MAKE_1 = mContext.getString(R.string.sdl_one);
+		String MAKE_2 = mContext.getString(R.string.sdl_two);
     	makeList.add(MAKE_1);
     	makeList.add(MAKE_2);
 

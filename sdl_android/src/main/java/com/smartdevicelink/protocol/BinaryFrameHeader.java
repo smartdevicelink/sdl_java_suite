@@ -1,7 +1,11 @@
 package com.smartdevicelink.protocol;
 
+import android.app.Application;
+import android.content.res.Resources;
 import android.util.Log;
 
+import com.smartdevicelink.R;
+import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.util.BitConverter;
 
 public class BinaryFrameHeader {

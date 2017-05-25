@@ -1,36 +1,41 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.GlobalProperty}
  */
-public class GlobalPropertyTests extends TestCase {
+public class GlobalPropertyTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "HELPPROMPT";
+		String example = mContext.getString(R.string.helprompt_caps);
 		GlobalProperty enumHelpPrompt = GlobalProperty.valueForString(example);
-		example = "TIMEOUTPROMPT";
+		example = mContext.getString(R.string.timeoutprompt_caps);
 		GlobalProperty enumTimeoutPrompt = GlobalProperty.valueForString(example);
-		example = "VRHELPTITLE";
+		example = mContext.getString(R.string.vrhelptitle_caps);
 		GlobalProperty enumVrHelpTitle = GlobalProperty.valueForString(example);
-		example = "VRHELPITEMS";
+		example = mContext.getString(R.string.vrhelpitems_caps);
 		GlobalProperty enumVrHelpItems = GlobalProperty.valueForString(example);
-		example = "MENUNAME";
+		example = mContext.getString(R.string.menuname_caps);
 		GlobalProperty enumMenuName = GlobalProperty.valueForString(example);
-		example = "MENUICON";
+		example = mContext.getString(R.string.menuicons_caps);
 		GlobalProperty enumMenuIcon = GlobalProperty.valueForString(example);
-		example = "KEYBOARDPROPERTIES";
+		example = mContext.getString(R.string.keyboardprops_caps);
 		GlobalProperty enumKeyboardProperties = GlobalProperty.valueForString(example);
 		
 		assertNotNull("HELPPROMPT returned null", enumHelpPrompt);
@@ -46,7 +51,7 @@ public class GlobalPropertyTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "heLp_ProMPt";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    GlobalProperty temp = GlobalProperty.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

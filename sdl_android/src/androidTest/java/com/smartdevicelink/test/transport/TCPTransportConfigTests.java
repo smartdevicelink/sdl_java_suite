@@ -1,5 +1,8 @@
 package com.smartdevicelink.test.transport;
 
+import android.test.AndroidTestCase;
+
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -10,7 +13,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.transport.TcpTransportConfig}
  */
-public class TCPTransportConfigTests extends TestCase {
+public class TCPTransportConfigTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following methods : 
@@ -23,15 +26,15 @@ public class TCPTransportConfigTests extends TestCase {
 		
 		// Test Values
 		int     testInt     = 123;
-		String  testString  = "test";
+		String  testString  = mContext.getString(R.string.test);
 		boolean testBoolean = true;
 		TCPTransportConfig testConfig1 = new TCPTransportConfig(testInt, testString, testBoolean);
 		TCPTransportConfig testConfig2 = new TCPTransportConfig(testInt, null, testBoolean);
 		
 		// Comparison Values
 		TransportType expectedTransportType = TransportType.TCP;
-		String        expectedToString1     = "TCPTransportConfig{Port=123, IpAddress='test', AutoReconnect=true}";
-		String        expectedToString2     = "TCPTransportConfig{Port=123, IpAddress='null', AutoReconnect=true}";
+		String        expectedToString1     = mContext.getString(R.string.tcp_transport_test);
+		String        expectedToString2     = mContext.getString(R.string.tcp_transport_null);
 		int           actualPort            = testConfig1.getPort();
 		String        actualIpAddress       = testConfig1.getIPAddress();
 		String        actualToString1       = testConfig1.toString();

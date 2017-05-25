@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -342,7 +343,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			
 			JSONObject underTest = msg.serializeJSON();
 			//go inside underTest and only return the JSONObject inside the parameters key inside the notification key
-			underTest = underTest.getJSONObject("notification").getJSONObject("parameters");
+			underTest = underTest.getJSONObject(mContext.getString(R.string.notification)).getJSONObject(mContext.getString(R.string.parameters));
 			
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
 

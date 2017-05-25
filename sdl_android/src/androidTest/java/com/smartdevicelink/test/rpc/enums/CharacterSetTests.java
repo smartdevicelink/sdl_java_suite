@@ -1,30 +1,36 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.CharacterSet}
  */
-public class CharacterSetTests extends TestCase {
+public class CharacterSetTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "TYPE2SET";
+		String example = mContext.getString(R.string.type_two_set_caps);
 		CharacterSet enumType2Set = CharacterSet.valueForString(example);
-		example = "TYPE5SET";
+		example = mContext.getString(R.string.type_five_set_caps);
 		CharacterSet enumType5Set = CharacterSet.valueForString(example);
-		example = "CID1SET";
+		example = mContext.getString(R.string.cid_one_set_caps);
 		CharacterSet enumCid1Set = CharacterSet.valueForString(example);
-		example = "CID2SET";
+		example = mContext.getString(R.string.cid_two_set_caps);
 		CharacterSet enumCid2Set = CharacterSet.valueForString(example);
 		
 		assertNotNull("TYPE2SET returned null", enumType2Set);
@@ -37,7 +43,7 @@ public class CharacterSetTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "tyPe2SeT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    CharacterSet temp = CharacterSet.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

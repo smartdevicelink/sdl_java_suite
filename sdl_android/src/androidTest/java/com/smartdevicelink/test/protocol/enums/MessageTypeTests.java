@@ -1,21 +1,24 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.MessageType;
 
 import junit.framework.TestCase;
 
-public class MessageTypeTests extends TestCase  {
+public class MessageTypeTests extends AndroidTestCase {
 	
 	public void testValidEnums () {	
-		String example = "UNDEFINED";
+		String example = mContext.getString(R.string.undefined_caps);
 		MessageType enumUndefined = MessageType.valueForString(example);
-		example = "BULK";
+		example = mContext.getString(R.string.bulk_caps);
 		MessageType enumBulk = MessageType.valueForString(example);
-		example = "RPC";
+		example = mContext.getString(R.string.rpc_caps);
 		MessageType enumRpc = MessageType.valueForString(example);
 		
 		assertNotNull("UNDEFINED returned null", enumUndefined);
@@ -24,7 +27,7 @@ public class MessageTypeTests extends TestCase  {
 	}
 	
 	public void testInvalidEnum () {
-		String example = "RpC";
+		String example = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			MessageType temp = MessageType.valueForString(example);

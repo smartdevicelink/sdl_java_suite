@@ -1,34 +1,39 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ComponentVolumeStatus}
  */
-public class ComponentVolumeStatusTests extends TestCase {
+public class ComponentVolumeStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "UNKNOWN";
+		String example = mContext.getString(R.string.unknown_caps);
 		ComponentVolumeStatus enumUnknown = ComponentVolumeStatus.valueForString(example);
-		example = "NORMAL";
+		example = mContext.getString(R.string.normal_caps);
 		ComponentVolumeStatus enumNormal = ComponentVolumeStatus.valueForString(example);
-		example = "LOW";
+		example = mContext.getString(R.string.low_caps);
 		ComponentVolumeStatus enumLow = ComponentVolumeStatus.valueForString(example);
-		example = "FAULT";
+		example = mContext.getString(R.string.fault_caps);
 		ComponentVolumeStatus enumFault = ComponentVolumeStatus.valueForString(example);
-		example = "ALERT";
+		example = mContext.getString(R.string.alert_caps);
 		ComponentVolumeStatus enumAlert = ComponentVolumeStatus.valueForString(example);
-		example = "NOT_SUPPORTED";
+		example = mContext.getString(R.string.not_supported_caps);
 		ComponentVolumeStatus enumNotSupported = ComponentVolumeStatus.valueForString(example);
 		
 		assertNotNull("UNKNOWN returned null", enumUnknown);
@@ -43,7 +48,7 @@ public class ComponentVolumeStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "unKNowN";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    ComponentVolumeStatus temp = ComponentVolumeStatus.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

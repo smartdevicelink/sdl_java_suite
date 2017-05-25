@@ -1,19 +1,24 @@
 package com.smartdevicelink.test.trace.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.trace.enums.InterfaceActivityDirection}
  */
-public class InterfaceActivityDirectionTests extends TestCase {
+public class InterfaceActivityDirectionTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following enum : 
@@ -22,10 +27,10 @@ public class InterfaceActivityDirectionTests extends TestCase {
 	public void testInterfaceActivityDirectionEnum () {
 		
 		// Test Values
-		String testNone     = "None";
-		String testInvalid  = "Invalid";
-		String testReceive  = "Receive";
-		String testTransmit	= "Transmit";
+		String testNone     = mContext.getString(R.string.none);
+		String testInvalid  = mContext.getString(R.string.invalid);
+		String testReceive  = mContext.getString(R.string.recieve);
+		String testTransmit	= mContext.getString(R.string.transmit);
 		
 		try {
 			// Comparison Values

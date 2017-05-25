@@ -3,6 +3,7 @@ package com.smartdevicelink.test.rpc.notifications;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Headers;
@@ -86,8 +87,8 @@ public class OnSystemRequestTests extends BaseRpcTests{
         OnSystemRequest osr = (OnSystemRequest) msg;
         String body = osr.getBody();
         assertNull(Test.NULL, body);
-        
-        String testBody = "123ABC";        
+
+        String testBody = mContext.getString(R.string.test_body);
         osr.setBody(testBody);
         
         String readBody = osr.getBody();
@@ -101,13 +102,13 @@ public class OnSystemRequestTests extends BaseRpcTests{
         testHeaders.setCharset("ASCII");
         testHeaders.setConnectTimeout(1000);
         testHeaders.setContentLength(1024);
-        testHeaders.setContentType("application/json");
+        testHeaders.setContentType(mContext.getString(R.string.app_json));
         testHeaders.setDoInput(false);
         testHeaders.setDoOutput(true);
         testHeaders.setInstanceFollowRedirects(true);
         testHeaders.setReadTimeout(800);
-        testHeaders.setRequestMethod("POST");
-        testHeaders.setUseCaches(false);        
+        testHeaders.setRequestMethod(mContext.getString(R.string.post_caps));
+        testHeaders.setUseCaches(false);
         osr.setHeaders(testHeaders);
         
         Headers readHeaders = osr.getHeader();

@@ -1,24 +1,30 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.AudioType}
  */
-public class AudioTypeTests extends TestCase {
+public class AudioTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "PCM";
+		String example = mContext.getString(R.string.pcm_caps);
 		AudioType enumPcm = AudioType.valueForString(example);
 		
 		assertNotNull("PCM returned null", enumPcm);
@@ -28,7 +34,7 @@ public class AudioTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "pCM";
+		String example = mContext.getString(R.string.pcm_lower_p);
 		try {
 		    AudioType temp = AudioType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

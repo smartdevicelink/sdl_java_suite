@@ -1,26 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.HmiZoneCapabilities}
  */
-public class HmiZoneCapabilitiesTests extends TestCase {
+public class HmiZoneCapabilitiesTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "FRONT";
+		String example = mContext.getString(R.string.front_caps);
 		HmiZoneCapabilities enumFront = HmiZoneCapabilities.valueForString(example);
-		example = "BACK";
+		example = mContext.getString(R.string.back_caps);
 		HmiZoneCapabilities enumBack = HmiZoneCapabilities.valueForString(example);
 		
 		assertNotNull("FRONT returned null", enumFront);
@@ -31,7 +36,7 @@ public class HmiZoneCapabilitiesTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "fROnT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    HmiZoneCapabilities temp = HmiZoneCapabilities.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

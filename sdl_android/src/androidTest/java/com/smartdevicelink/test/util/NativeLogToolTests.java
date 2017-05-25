@@ -1,11 +1,14 @@
 package com.smartdevicelink.test.util;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.util.NativeLogTool;
 
@@ -13,7 +16,7 @@ import com.smartdevicelink.util.NativeLogTool;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.util.NativeLogTool}
  */
-public class NativeLogToolTests extends TestCase {
+public class NativeLogToolTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following enum : 
@@ -22,10 +25,10 @@ public class NativeLogToolTests extends TestCase {
 	public void testLogTargetEnum () {
 		
 		// Test Values
-		String testInfo    = "Info";
-		String testError   = "Error";
-		String testInvalid = "Invalid";
-		String testWarning = "Warning";
+		String testInfo    = mContext.getString(R.string.info);
+		String testError   = mContext.getString(R.string.error);
+		String testInvalid = mContext.getString(R.string.invalid);
+		String testWarning = mContext.getString(R.string.warning);
 		
 		try {
 			// Comparison Values 

@@ -1,74 +1,75 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.VehicleData}
  */
-public class VehicleDataTypeTests extends TestCase {
+public class VehicleDataTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "VEHICLEDATA_GPS";
+		String example = mContext.getString(R.string.vehicle_data_gps_caps);
 		VehicleDataType enumVehicleDataGps = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_SPEED";
+		example = mContext.getString(R.string.vehicle_data_speed_caps);
 		VehicleDataType enumVehicleDataSpeed = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_RPM";
+		example = mContext.getString(R.string.vehicle_data_rpm_caps);
 		VehicleDataType enumVehicleDataRpm = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_FUELLEVEL";
+		example = mContext.getString(R.string.vehicle_data_fuel_level_caps);
 		VehicleDataType enumVehicleDataFuelLevel = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_FUELLEVEL_STATE";
+		example = mContext.getString(R.string.vehicle_data_fuel_level_state_caps);
 		VehicleDataType enumVehicleDataFuelLevelState = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_FUELCONSUMPTION";
+		example = mContext.getString(R.string.vehicle_data_fuel_consumption_caps);
 		VehicleDataType enumVehicleDataFuelConsumption = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_EXTERNTEMP";
+		example = mContext.getString(R.string.vehicle_data_external_temp_caps);
 		VehicleDataType enumVehicleDataExternTemp = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_VIN";
+		example = mContext.getString(R.string.vehicle_data_vin_caps);
 		VehicleDataType enumVehicleDataVin = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_PRNDL";
+		example = mContext.getString(R.string.vehicle_data_prndl_caps);
 		VehicleDataType enumVehicleDataPrndl = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_TIREPRESSURE";
+		example = mContext.getString(R.string.vehicle_data_tire_pressure_caps);
 		VehicleDataType enumVehicleDataTirePressure = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_ODOMETER";
+		example = mContext.getString(R.string.vehicle_data_odometer_caps);
 		VehicleDataType enumVehicleDataOdometer = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_BELTSTATUS";
+		example = mContext.getString(R.string.vehicle_data_belt_status_caps);
 		VehicleDataType enumVehicleDataBeltStatus = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_BODYINFO";
+		example = mContext.getString(R.string.vehicle_data_body_info_caps);
 		VehicleDataType enumVehicleDataBodyInfo = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_DEVICESTATUS";
+		example = mContext.getString(R.string.vehicle_data_device_status_caps);
 		VehicleDataType enumVehicleDataDeviceStatus = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_BRAKING";
+		example = mContext.getString(R.string.vehicle_data_braking_caps);
 		VehicleDataType enumVehicleDataBraking = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_WIPERSTATUS";
+		example = mContext.getString(R.string.vehicle_data_wiper_status_caps);
 		VehicleDataType enumVehicleDataWiperStatus = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_HEADLAMPSTATUS";
+		example = mContext.getString(R.string.vehicle_data_headlamp_status_caps);
 		VehicleDataType enumVehicleDataHeadlampStatus = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_BATTVOLTAGE";
+		example = mContext.getString(R.string.vehicle_data_batt_voltage_caps);
 		VehicleDataType enumVehicleDataBattVoltage = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_ENGINETORQUE";
+		example = mContext.getString(R.string.vehicle_data_engine_torque_caps);
 		VehicleDataType enumVehicleDataEngineTorque = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_ACCPEDAL";
+		example = mContext.getString(R.string.vehicle_data_acc_pedal_caps);
 		VehicleDataType enumVehicleDataAccPedal = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_STEERINGWHEEL";
+		example = mContext.getString(R.string.vehicle_data_steering_wheel_caps);
 		VehicleDataType enumVehicleDataSteeringWheel = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_ECALLINFO";
+		example = mContext.getString(R.string.vehicle_data_ecall_info_caps);
 		VehicleDataType enumVehicleDataECallInfo = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_AIRBAGSTATUS";
+		example = mContext.getString(R.string.vehicle_data_airbag_status_caps);
 		VehicleDataType enumVehicleDataAirbagStatus = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_EMERGENCYEVENT";
+		example = mContext.getString(R.string.vehicle_data_ermergerd_emergency_event_caps);
 		VehicleDataType enumVehicleDataEmergencyEvent = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_CLUSTERMODESTATUS";
+		example = mContext.getString(R.string.vehicle_data_cluster_mode_status_caps);
 		VehicleDataType enumVehicleDataClusterModeStatus = VehicleDataType.valueForString(example);
-		example = "VEHICLEDATA_MYKEY";
+		example = mContext.getString(R.string.vehicle_data_mykey_caps);
 		VehicleDataType enumVehicleDataMyKey = VehicleDataType.valueForString(example);
 		
 		assertNotNull("VEHICLEDATA_GPS returned null", enumVehicleDataGps);
@@ -103,7 +104,7 @@ public class VehicleDataTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "VeHIcLEDatA_GPs";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    VehicleDataType temp = VehicleDataType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

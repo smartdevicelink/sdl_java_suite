@@ -1,26 +1,32 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ButtonEventMode}
  */
-public class ButtonEventModeTests extends TestCase {
+public class ButtonEventModeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "BUTTONUP";
+		String example = mContext.getString(R.string.button_up_caps);
 		ButtonEventMode enumButtonUp = ButtonEventMode.valueForString(example);
-		example = "BUTTONDOWN";
+		example = mContext.getString(R.string.button_down_caps);
 		ButtonEventMode enumButtonDown = ButtonEventMode.valueForString(example);
 		
 		assertNotNull("BUTTONUP returned null", enumButtonUp);
@@ -31,7 +37,7 @@ public class ButtonEventModeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "buTTonUp";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 			ButtonEventMode temp = ButtonEventMode.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);

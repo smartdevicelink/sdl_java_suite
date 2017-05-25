@@ -1,30 +1,36 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.CarModeStatus}
  */
-public class CarModeStatusTests extends TestCase {
+public class CarModeStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "NORMAL";
+		String example = mContext.getString(R.string.normal_caps);
 		CarModeStatus enumNormal = CarModeStatus.valueForString(example);
-		example = "FACTORY";
+		example = mContext.getString(R.string.factory_caps);
 		CarModeStatus enumFactory = CarModeStatus.valueForString(example);
-		example = "TRANSPORT";
+		example = mContext.getString(R.string.transport_caps);
 		CarModeStatus enumTransport = CarModeStatus.valueForString(example);
-		example = "CRASH";
+		example = mContext.getString(R.string.crash_caps);
 		CarModeStatus enumCrash = CarModeStatus.valueForString(example);
 		
 		assertNotNull("NORMAL returned null", enumNormal);
@@ -37,7 +43,7 @@ public class CarModeStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "noRmaL";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    CarModeStatus temp = CarModeStatus.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

@@ -1,26 +1,32 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ButtonPressMode}
  */
-public class ButtonPressModeTests extends TestCase {
+public class ButtonPressModeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "LONG";
+		String example = mContext.getString(R.string.long_caps);
 		ButtonPressMode enumLong = ButtonPressMode.valueForString(example);
-		example = "SHORT";
+		example = mContext.getString(R.string.short_caps);
 		ButtonPressMode enumShort = ButtonPressMode.valueForString(example);
 		
 		assertNotNull("LONG returned null", enumLong);
@@ -31,7 +37,7 @@ public class ButtonPressModeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "lONg";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    ButtonPressMode temp = ButtonPressMode.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

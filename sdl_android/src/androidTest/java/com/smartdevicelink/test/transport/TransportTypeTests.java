@@ -1,9 +1,12 @@
 package com.smartdevicelink.test.transport;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -13,7 +16,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.transport.TransportType}
  */
-public class TransportTypeTests extends TestCase {
+public class TransportTypeTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following enum : 
@@ -22,11 +25,11 @@ public class TransportTypeTests extends TestCase {
 	public void testTransportTypeEnum () {
 		
 		// Test Values
-		String testTcp       	= "TCP";
-		String testUsb       	= "USB";
-		String testInvalid   	= "INVALID";
-		String testBluetooth 	= "BLUETOOTH";
-		String testMultiplexing = "MULTIPLEX";
+		String testTcp       	= mContext.getString(R.string.tcp_caps);
+		String testUsb       	= mContext.getString(R.string.usb_caps);
+		String testInvalid   	= mContext.getString(R.string.invalid_caps);
+		String testBluetooth 	= mContext.getString(R.string.bluetooth_caps);
+		String testMultiplexing = mContext.getString(R.string.multiplex_caps);
 		
 		try {
 			// Comparison Values

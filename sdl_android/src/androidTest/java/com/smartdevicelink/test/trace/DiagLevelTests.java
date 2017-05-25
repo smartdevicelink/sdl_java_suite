@@ -1,5 +1,8 @@
 package com.smartdevicelink.test.trace;
 
+import android.test.AndroidTestCase;
+
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.DiagLevel;
 import com.smartdevicelink.trace.enums.DetailLevel;
@@ -7,11 +10,13 @@ import com.smartdevicelink.trace.enums.Mod;
 
 import junit.framework.TestCase;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.trace.DiagLevel}
  */
-public class DiagLevelTests extends TestCase {
+public class DiagLevelTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following methods : 
@@ -31,10 +36,10 @@ public class DiagLevelTests extends TestCase {
 		Mod testProxy = Mod.proxy;
 		Mod testProto = Mod.proto;
 		
-		String testOffS     = "off";
-		String testTerseS   = "terse";
-		String testVerboseS = "verbose";
-		String testInvalidS = "invalid";
+		String testOffS     = mContext.getString(R.string.off);
+		String testTerseS   = mContext.getString(R.string.terse);
+		String testVerboseS = mContext.getString(R.string.verbose);
+		String testInvalidS = mContext.getString(R.string.invalid);
 		
 		DetailLevel testOff     = DetailLevel.OFF;
 		DetailLevel testTerse   = DetailLevel.TERSE;

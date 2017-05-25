@@ -1,13 +1,16 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.test.Validator;
 
-public class SessionTypeTests extends TestCase {
+public class SessionTypeTests extends AndroidTestCase {
 	
 	private Vector<SessionType> list = SessionType.getList();
 	
@@ -16,19 +19,19 @@ public class SessionTypeTests extends TestCase {
 	public void testValidEnums () {
 		
 		final byte   HEARTBEAT_BYTE   = (byte) 0x00;
-		final String HEARTBEAT_STRING = "CONTROL";
+		final String HEARTBEAT_STRING = mContext.getString(R.string.control_caps);
 		
 		final byte   RPC_BYTE   = (byte) 0x07;
-		final String RPC_STRING = "RPC";
+		final String RPC_STRING = mContext.getString(R.string.rpc_caps);
 		
 		final byte   PCM_BYTE   = (byte) 0x0A;
-		final String PCM_STRING = "PCM";
+		final String PCM_STRING = mContext.getString(R.string.pcm_caps);
 		
 		final byte   NAV_BYTE   = (byte) 0x0B;
-		final String NAV_STRING = "NAV";
+		final String NAV_STRING = mContext.getString(R.string.nav_caps);
 		
 		final byte   BULK_DATA_BYTE   = (byte) 0x0F;
-		final String BULK_DATA_STRING = "BULK_DATA";
+		final String BULK_DATA_STRING = mContext.getString(R.string.bulk_data_caps);
 		
 		try {
 			
@@ -69,7 +72,7 @@ public class SessionTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			

@@ -1,32 +1,35 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.SystemContext}
  */
-public class SystemContextTests extends TestCase {
+public class SystemContextTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "MAIN";
+		String example = mContext.getString(R.string.main_caps);
 		SystemContext enumMain = SystemContext.valueForString(example);
-		example = "VRSESSION";
+		example = mContext.getString(R.string.vr_session_caps);
 		SystemContext enumVrSession = SystemContext.valueForString(example);
-		example = "MENU";
+		example = mContext.getString(R.string.menu_caps);
 		SystemContext enumMenu = SystemContext.valueForString(example);
-		example = "HMI_OBSCURED";
+		example = mContext.getString(R.string.hmi_obscured_caps);
 		SystemContext enumHmiObscured = SystemContext.valueForString(example);
-		example = "ALERT";
+		example = mContext.getString(R.string.alert_caps);
 		SystemContext enumAlert = SystemContext.valueForString(example);
 		
 		assertNotNull("MAIN returned null", enumMain);
@@ -40,7 +43,7 @@ public class SystemContextTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "mAIn";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    SystemContext temp = SystemContext.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

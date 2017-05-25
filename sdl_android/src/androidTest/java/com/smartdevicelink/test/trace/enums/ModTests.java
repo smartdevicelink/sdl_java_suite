@@ -1,11 +1,14 @@
 package com.smartdevicelink.test.trace.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.enums.Mod;
 
@@ -13,7 +16,7 @@ import com.smartdevicelink.trace.enums.Mod;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.trace.enums.Mod}
  */
-public class ModTests extends TestCase {
+public class ModTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following enum : 
@@ -22,13 +25,13 @@ public class ModTests extends TestCase {
 	public void testModEnum () {
 		
 		// TestValues
-		String testApp     = "app";
-		String testRpc     = "rpc";
-		String testMar     = "mar";
-		String testTran    = "tran";
-		String testProto   = "proto";
-		String testProxy   = "proxy";
-		String testInvalid = "invalid";
+		String testApp     = mContext.getString(R.string.app);
+		String testRpc     = mContext.getString(R.string.rpc);
+		String testMar     = mContext.getString(R.string.mar);
+		String testTran    = mContext.getString(R.string.tran);
+		String testProto   = mContext.getString(R.string.proto);
+		String testProxy   = mContext.getString(R.string.proxy);
+		String testInvalid = mContext.getString(R.string.invalid);
 		
 		try {
 			// Comparison Values

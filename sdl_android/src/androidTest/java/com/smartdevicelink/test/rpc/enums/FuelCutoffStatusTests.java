@@ -1,28 +1,33 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.FuelCutoffStatus}
  */
-public class FuelCutoffStatusTests extends TestCase {
+public class FuelCutoffStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "TERMINATE_FUEL";
+		String example = mContext.getString(R.string.term_fuel_caps);
 		FuelCutoffStatus enumTerminateFuel = FuelCutoffStatus.valueForString(example);
-		example = "NORMAL_OPERATION";
+		example = mContext.getString(R.string.norm_op_caps);
 		FuelCutoffStatus enumNormalOperation = FuelCutoffStatus.valueForString(example);
-		example = "FAULT";
+		example = mContext.getString(R.string.fault_caps);
 		FuelCutoffStatus enumFault = FuelCutoffStatus.valueForString(example);
 		
 		assertNotNull("TERMINATE_FUEL returned null", enumTerminateFuel);
@@ -34,7 +39,7 @@ public class FuelCutoffStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "tErmINAte_FueL";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    FuelCutoffStatus temp = FuelCutoffStatus.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

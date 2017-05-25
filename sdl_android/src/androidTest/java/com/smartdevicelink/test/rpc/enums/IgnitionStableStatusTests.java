@@ -1,28 +1,33 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.IgnitionStableStatus}
  */
-public class IgnitionStableStatusTests extends TestCase {
+public class IgnitionStableStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "IGNITION_SWITCH_NOT_STABLE";
+		String example = mContext.getString(R.string.ignite_switch_not_stable_caps);
 		IgnitionStableStatus enumIgnitionSwitchNotStable = IgnitionStableStatus.valueForString(example);
-		example = "IGNITION_SWITCH_STABLE";
+		example = mContext.getString(R.string.ingite_switch_stable_caps);
 		IgnitionStableStatus enumIgnitionSwitchStable = IgnitionStableStatus.valueForString(example);
-		example = "MISSING_FROM_TRANSMITTER";
+		example = mContext.getString(R.string.missing_from_trans_caps);
 		IgnitionStableStatus enumMissingFromTransmitter = IgnitionStableStatus.valueForString(example);
 		
 		assertNotNull("IGNITION_SWITCH_NOT_STABLE returned null", enumIgnitionSwitchNotStable);
@@ -34,7 +39,7 @@ public class IgnitionStableStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "iGnitIoN_SwiTch_NoT_StablE";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    IgnitionStableStatus temp = IgnitionStableStatus.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

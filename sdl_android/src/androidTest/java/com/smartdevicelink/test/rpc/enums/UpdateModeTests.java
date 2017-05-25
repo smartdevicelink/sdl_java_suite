@@ -1,32 +1,35 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.UpdateMode}
  */
-public class UpdateModeTests extends TestCase {
+public class UpdateModeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "COUNTUP";
+		String example = mContext.getString(R.string.countup_caps);
 		UpdateMode enumCountUp = UpdateMode.valueForString(example);
-		example = "COUNTDOWN";
+		example = mContext.getString(R.string.countdown_caps);
 		UpdateMode enumCountDown = UpdateMode.valueForString(example);
-		example = "PAUSE";
+		example = mContext.getString(R.string.pause_caps);
 		UpdateMode enumPause = UpdateMode.valueForString(example);
-		example = "RESUME";
+		example = mContext.getString(R.string.resume_caps);
 		UpdateMode enumResume = UpdateMode.valueForString(example);
-		example = "CLEAR";
+		example = mContext.getString(R.string.clear_caps);
 		UpdateMode enumClear = UpdateMode.valueForString(example);
 		
 		assertNotNull("COUNTUP returned null", enumCountUp);
@@ -40,7 +43,7 @@ public class UpdateModeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "coUnTUp";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    UpdateMode temp = UpdateMode.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

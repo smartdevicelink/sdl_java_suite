@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.*;
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -139,7 +141,7 @@ public abstract class BaseRpcTests extends AndroidTestCase {
                 testJsonArray(array1, array2, key);
             }
             else{
-                assertTrue("JSON object didn't match reference object for key \"" + key + "\".", referenceValue.equals(JsonUtils.readObjectFromJsonObject(underTest, key)));
+                assertTrue(mContext.getString(R.string.json_object_didnt_match) + key + "\".", referenceValue.equals(JsonUtils.readObjectFromJsonObject(underTest, key)));
             }
         }
     }
@@ -156,7 +158,7 @@ public abstract class BaseRpcTests extends AndroidTestCase {
                 testJsonArray((JSONArray) array1Obj, (JSONArray) array2Obj, key);
             }
             else{
-                assertTrue("JSONArray object didn't match reference object for key \"" + key + "\".", array1Obj.equals(array2Obj));
+                assertTrue(mContext.getString(R.string.jsonarray_object_didnt_match) + key + "\".", array1Obj.equals(array2Obj));
             }
         }
     }

@@ -1,28 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.SystemAction}
  */
-public class SystemActionTests extends TestCase {
+public class SystemActionTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "DEFAULT_ACTION";
+		String example = mContext.getString(R.string.default_action_caps);
 		SystemAction enumDefaultAction = SystemAction.valueForString(example);
-		example = "STEAL_FOCUS";
+		example = mContext.getString(R.string.steal_focus_caps);
 		SystemAction enumStealFocus = SystemAction.valueForString(example);
-		example = "KEEP_CONTEXT";
+		example = mContext.getString(R.string.keep_context_caps);
 		SystemAction enumKeepContext = SystemAction.valueForString(example);
 		
 		assertNotNull("DEFAULT_ACTION returned null", enumDefaultAction);
@@ -34,7 +37,7 @@ public class SystemActionTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "deFaulT_ActiON";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    SystemAction temp = SystemAction.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

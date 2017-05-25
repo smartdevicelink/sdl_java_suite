@@ -1,11 +1,14 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 
 
@@ -13,25 +16,25 @@ import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.PrimaryAudioSource}
  */
-public class PrimaryAudioSourceTests extends TestCase {
+public class PrimaryAudioSourceTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "NO_SOURCE_SELECTED";
+		String example = mContext.getString(R.string.no_source_selected_caps);
 		PrimaryAudioSource enumNoSourceSelected = PrimaryAudioSource.valueForString(example);
-		example = "USB";
+		example = mContext.getString(R.string.usb_caps);
 		PrimaryAudioSource enumUsb = PrimaryAudioSource.valueForString(example);
-		example = "USB2";
+		example = mContext.getString(R.string.usb_two_caps);
 		PrimaryAudioSource enumUsb2 = PrimaryAudioSource.valueForString(example);
-		example = "BLUETOOTH_STEREO_BTST";
+		example = mContext.getString(R.string.bt_stereo_btst_caps);
 		PrimaryAudioSource enumBluetoothStereoBtst = PrimaryAudioSource.valueForString(example);
-		example = "LINE_IN";
+		example = mContext.getString(R.string.line_in_caps);
 		PrimaryAudioSource enumLineIn = PrimaryAudioSource.valueForString(example);
-		example = "IPOD";
+		example = mContext.getString(R.string.ipod_caps);
 		PrimaryAudioSource enumIpod = PrimaryAudioSource.valueForString(example);
-		example = "MOBILE_APP";
+		example = mContext.getString(R.string.mobile_app_caps);
 		PrimaryAudioSource enumMobileApp = PrimaryAudioSource.valueForString(example);
 		
 		assertNotNull("NO_SOURCE_SELECTED returned null", enumNoSourceSelected);
@@ -47,7 +50,7 @@ public class PrimaryAudioSourceTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "no_SouRCe_SelEcteD";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    PrimaryAudioSource temp = PrimaryAudioSource.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

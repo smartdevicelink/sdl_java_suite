@@ -1,24 +1,27 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.VrCapabilities}
  */
-public class VrCapabilitiesTests extends TestCase {
+public class VrCapabilitiesTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "Text";
+		String example = mContext.getString(R.string.text);
 		VrCapabilities enumText = VrCapabilities.valueForString(example);
 		
 		assertNotNull("Text returned null", enumText);
@@ -28,7 +31,7 @@ public class VrCapabilitiesTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "tExTx";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    VrCapabilities temp = VrCapabilities.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

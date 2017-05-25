@@ -1,28 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.TriggerSource}
  */
-public class TriggerSourceTests extends TestCase {
+public class TriggerSourceTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "MENU";
+		String example = mContext.getString(R.string.menu_caps);
 		TriggerSource enumMenu = TriggerSource.valueForString(example);
-		example = "VR";
+		example = mContext.getString(R.string.vr_caps);
 		TriggerSource enumVr = TriggerSource.valueForString(example);
-		example = "KEYBOARD";
+		example = mContext.getString(R.string.keyboard_caps);
 		TriggerSource enumKeyboard = TriggerSource.valueForString(example);
 		
 		assertNotNull("MENU returned null", enumMenu);
@@ -34,7 +37,7 @@ public class TriggerSourceTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "meNU";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    TriggerSource temp = TriggerSource.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

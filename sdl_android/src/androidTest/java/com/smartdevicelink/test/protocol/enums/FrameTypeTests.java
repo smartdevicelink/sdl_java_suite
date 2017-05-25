@@ -1,13 +1,18 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 
-public class FrameTypeTests extends TestCase {
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+
+public class FrameTypeTests extends AndroidTestCase {
 	
 	private Vector<FrameType> list = FrameType.getList();
 
@@ -16,16 +21,16 @@ public class FrameTypeTests extends TestCase {
 	public void testValidEnums () {	
 		
 		final byte   CONTROL_BYTE   = (byte) 0x00;
-		final String CONTROL_STRING = "Control";
+		final String CONTROL_STRING = mContext.getString(R.string.control);
 		
 		final byte   SINGLE_BYTE   = (byte) 0x01;
-		final String SINGLE_STRING = "Single";
+		final String SINGLE_STRING = mContext.getString(R.string.single);
 		
 		final byte   FIRST_BYTE   = (byte) 0x02;
-		final String FIRST_STRING = "First";
+		final String FIRST_STRING = mContext.getString(R.string.first);
 		
 		final byte   CONSECUTIVE_BYTE   = (byte) 0x03;
-		final String CONSECUTIVE_STRING = "Consecutive";
+		final String CONSECUTIVE_STRING = mContext.getString(R.string.consecutive);
 		
 		try {
 			
@@ -62,7 +67,7 @@ public class FrameTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			

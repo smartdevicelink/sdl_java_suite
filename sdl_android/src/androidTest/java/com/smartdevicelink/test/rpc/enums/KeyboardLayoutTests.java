@@ -1,28 +1,33 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.KeyboardLayout}
  */
-public class KeyboardLayoutTests extends TestCase {
+public class KeyboardLayoutTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "QWERTY";
+		String example = mContext.getString(R.string.qwerty_caps);
 		KeyboardLayout enumQwerty = KeyboardLayout.valueForString(example);
-		example = "QWERTZ";
+		example = mContext.getString(R.string.qwertz_caps);
 		KeyboardLayout enumQwertz = KeyboardLayout.valueForString(example);
-		example = "AZERTY";
+		example = mContext.getString(R.string.azerty_caps);
 		KeyboardLayout enumAzerty = KeyboardLayout.valueForString(example);
 		
 		assertNotNull("QWERTY returned null", enumQwerty);
@@ -34,7 +39,7 @@ public class KeyboardLayoutTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "qWerTY";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    KeyboardLayout temp = KeyboardLayout.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

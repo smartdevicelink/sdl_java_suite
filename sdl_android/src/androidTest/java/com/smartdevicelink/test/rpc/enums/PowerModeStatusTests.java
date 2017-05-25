@@ -1,40 +1,43 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.PowerModeStatus}
  */
-public class PowerModeStatusTests extends TestCase {
+public class PowerModeStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "KEY_OUT";
+		String example = mContext.getString(R.string.key_out_caps);
 		PowerModeStatus enumKeyOut = PowerModeStatus.valueForString(example);
-		example = "KEY_RECENTLY_OUT";
+		example = mContext.getString(R.string.key_recently_out_caps);
 		PowerModeStatus enumKeyRecentlyOut = PowerModeStatus.valueForString(example);
-		example = "KEY_APPROVED_0";
+		example = mContext.getString(R.string.key_approved_zero_caps);
 		PowerModeStatus enumKeyApproved0 = PowerModeStatus.valueForString(example);
-		example = "POST_ACCESORY_0";
+		example = mContext.getString(R.string.post_accessory_zero_caps);
 		PowerModeStatus enumPostAccessory0 = PowerModeStatus.valueForString(example);
-		example = "ACCESORY_1";
+		example = mContext.getString(R.string.accessory_one_caps);
 		PowerModeStatus enumAccessory1 = PowerModeStatus.valueForString(example);
-		example = "POST_IGNITION_1";
+		example = mContext.getString(R.string.post_iginition_one_caps);
 		PowerModeStatus enumPostIgnition1 = PowerModeStatus.valueForString(example);
-		example = "IGNITION_ON_2";
+		example = mContext.getString(R.string.iginition_on_two_caps);
 		PowerModeStatus enumIgnitionOn2 = PowerModeStatus.valueForString(example);
-		example = "RUNNING_2";
+		example = mContext.getString(R.string.running_two_caps);
 		PowerModeStatus enumRunning2 = PowerModeStatus.valueForString(example);
-		example = "CRANK_3";
+		example = mContext.getString(R.string.crank_three_caps);
 		PowerModeStatus enumCrank3 = PowerModeStatus.valueForString(example);
 		
 		assertNotNull("KEY_OUT returned null", enumKeyOut);
@@ -52,7 +55,7 @@ public class PowerModeStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "key_Out";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    PowerModeStatus temp = PowerModeStatus.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

@@ -1,56 +1,62 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ButtonName}
  */
-public class ButtonNameTests extends TestCase {
+public class ButtonNameTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "OK";
+		String example = mContext.getString(R.string.ok_caps);
 		ButtonName enumOk = ButtonName.valueForString(example);
-		example = "SEEKLEFT";
+		example = mContext.getString(R.string.seek_left_caps);
 		ButtonName enumSeekLeft = ButtonName.valueForString(example);
-		example = "SEEKRIGHT";
+		example = mContext.getString(R.string.seek_right_caps);
 		ButtonName enumSeekRight = ButtonName.valueForString(example);
-		example = "TUNEUP";
+		example = mContext.getString(R.string.tune_up_caps);
 		ButtonName enumTuneUp = ButtonName.valueForString(example);
-		example = "TUNEDOWN";
+		example = mContext.getString(R.string.tune_down_caps);
 		ButtonName enumTuneDown = ButtonName.valueForString(example);
-		example = "PRESET_0";
+		example = mContext.getString(R.string.preset_zero_caps);
 		ButtonName enumPreset0 = ButtonName.valueForString(example);
-		example = "PRESET_1";
+		example = mContext.getString(R.string.preset_one_caps);
 		ButtonName enumPreset1 = ButtonName.valueForString(example);
-		example = "PRESET_2";
+		example = mContext.getString(R.string.preset_two_caps);
 		ButtonName enumPreset2 = ButtonName.valueForString(example);
-		example = "PRESET_3";
+		example = mContext.getString(R.string.preset_three_caps);
 		ButtonName enumPreset3 = ButtonName.valueForString(example);
-		example = "PRESET_4";
+		example = mContext.getString(R.string.preset_four_caps);
 		ButtonName enumPreset4 = ButtonName.valueForString(example);
-		example = "PRESET_5";
+		example = mContext.getString(R.string.preset_five_caps);
 		ButtonName enumPreset5 = ButtonName.valueForString(example);
-		example = "PRESET_6";
+		example = mContext.getString(R.string.preset_six_caps);
 		ButtonName enumPreset6 = ButtonName.valueForString(example);
-		example = "PRESET_7";
+		example = mContext.getString(R.string.preset_seven_caps);
 		ButtonName enumPreset7 = ButtonName.valueForString(example);
-		example = "PRESET_8";
+		example = mContext.getString(R.string.preset_eight_caps);
 		ButtonName enumPreset8 = ButtonName.valueForString(example);
-		example = "PRESET_9";
+		example = mContext.getString(R.string.preset_nine_caps);
 		ButtonName enumPreset9 = ButtonName.valueForString(example);
-		example = "CUSTOM_BUTTON";
+		example = mContext.getString(R.string.custom_button_caps);
 		ButtonName enumCustomButton = ButtonName.valueForString(example);
-		example = "SEARCH";
+		example = mContext.getString(R.string.search_caps);
 		ButtonName enumSearch = ButtonName.valueForString(example);
 		
 		
@@ -77,7 +83,7 @@ public class ButtonNameTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "oK";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    ButtonName temp = ButtonName.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

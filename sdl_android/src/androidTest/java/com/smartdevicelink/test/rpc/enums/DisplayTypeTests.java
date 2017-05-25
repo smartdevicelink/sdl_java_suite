@@ -1,44 +1,49 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.enums.DisplayType}
  */
-public class DisplayTypeTests extends TestCase {
+public class DisplayTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {
-		String example = "CID";
+		String example = mContext.getString(R.string.cid_caps);
 		DisplayType enumCid = DisplayType.valueForString(example);
-		example = "TYPE2";
+		example = mContext.getString(R.string.type_two_caps);
 		DisplayType enumType2 = DisplayType.valueForString(example);
-		example = "TYPE5";
+		example = mContext.getString(R.string.type_five_caps);
 		DisplayType enumType5 = DisplayType.valueForString(example);
-		example = "NGN";
+		example = mContext.getString(R.string.ngn_caps);
 		DisplayType enumNgn = DisplayType.valueForString(example);
-		example = "GEN2_8_DMA";
+		example = mContext.getString(R.string.gen_tewo_eight_dma_caps);
 		DisplayType enumGen2_8Dma = DisplayType.valueForString(example);
-		example = "GEN2_6_DMA";
+		example = mContext.getString(R.string.gen_two_six_dma_caps);
 		DisplayType enumGen2_6Dma = DisplayType.valueForString(example);
-		example = "MFD3";
+		example = mContext.getString(R.string.mfd_three_caps);
 		DisplayType enumMfd3 = DisplayType.valueForString(example);
-		example = "MFD4";
+		example = mContext.getString(R.string.mfd_four_caps);
 		DisplayType enumMfd4 = DisplayType.valueForString(example);
-		example = "MFD5";
+		example = mContext.getString(R.string.mfd_five_caps);
 		DisplayType enumMfd5 = DisplayType.valueForString(example);
-		example = "GEN3_8-INCH";
+		example = mContext.getString(R.string.gen_three_eight_inch_caps);
 		DisplayType enumGen3_8Inch = DisplayType.valueForString(example);
-		example = "SDL_GENERIC";
+		example = mContext.getString(R.string.sdl_generic_caps);
 		DisplayType enumGeneric = DisplayType.valueForString(example);
 
 		assertNotNull("CID returned null", enumCid);
@@ -58,7 +63,7 @@ public class DisplayTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "cId";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 			DisplayType temp = DisplayType.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);

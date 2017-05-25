@@ -1,32 +1,37 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.KeyboardEvent}
  */
-public class KeyboardEventTests extends TestCase {
+public class KeyboardEventTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "KEYPRESS";
+		String example = mContext.getString(R.string.keypress_caps);
 		KeyboardEvent enumKeypress = KeyboardEvent.valueForString(example);
-		example = "ENTRY_SUBMITTED";
+		example = mContext.getString(R.string.entry_submitted_caps);
 		KeyboardEvent enumEntrySubmitted = KeyboardEvent.valueForString(example);
-		example = "ENTRY_CANCELLED";
+		example = mContext.getString(R.string.entry_cancelled_caps);
 		KeyboardEvent enumEntryCancelled = KeyboardEvent.valueForString(example);
-		example = "ENTRY_ABORTED";
+		example = mContext.getString(R.string.entry_aborted_caps);
 		KeyboardEvent enumEntryAborted = KeyboardEvent.valueForString(example);
-		example = "ENTRY_VOICE";
+		example = mContext.getString(R.string.entry_voice_caps);
 		KeyboardEvent enumEntryVoice = KeyboardEvent.valueForString(example);
 		
 		assertNotNull("KEYPRESS returned null", enumKeypress);
@@ -40,7 +45,7 @@ public class KeyboardEventTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "keyPreSS";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    KeyboardEvent temp = KeyboardEvent.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

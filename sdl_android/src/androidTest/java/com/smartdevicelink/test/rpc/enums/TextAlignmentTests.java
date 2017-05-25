@@ -1,28 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.TextAlignment}
  */
-public class TextAlignmentTests extends TestCase {
+public class TextAlignmentTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "LEFT_ALIGNED";
+		String example = mContext.getString(R.string.left_aligned_caps);
 		TextAlignment enumLeftAligned = TextAlignment.valueForString(example);
-		example = "RIGHT_ALIGNED";
+		example = mContext.getString(R.string.right_aligned_caps);
 		TextAlignment enumRightAligned = TextAlignment.valueForString(example);
-		example = "CENTERED";
+		example = mContext.getString(R.string.centered_caps);
 		TextAlignment enumCentered = TextAlignment.valueForString(example);
 		
 		assertNotNull("LEFT_ALIGNED returned null", enumLeftAligned);
@@ -34,7 +37,7 @@ public class TextAlignmentTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "leFT_AliGned";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    TextAlignment temp = TextAlignment.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

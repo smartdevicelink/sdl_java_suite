@@ -1,26 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ImageType}
  */
-public class ImageTypeTests extends TestCase {
+public class ImageTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "STATIC";
+		String example = mContext.getString(R.string.static_caps);
 		ImageType enumStatic = ImageType.valueForString(example);
-		example = "DYNAMIC";
+		example = mContext.getString(R.string.dynamic_caps);
 		ImageType enumDynamic = ImageType.valueForString(example);
 		
 		assertNotNull("STATIC returned null", enumStatic);
@@ -31,7 +36,7 @@ public class ImageTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "sTatIc";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    ImageType temp = ImageType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

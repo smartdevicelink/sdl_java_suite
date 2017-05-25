@@ -1,28 +1,34 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.AudioStreaming}
  */
-public class AudioStreamingStateTests extends TestCase {
+public class AudioStreamingStateTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "AUDIBLE";
+		String example = mContext.getString(R.string.audible_caps);
 		AudioStreamingState enumAudible = AudioStreamingState.valueForString(example);
-		example = "ATTENUATED";
+		example = mContext.getString(R.string.attenuated_caps);
 		AudioStreamingState enumAttentuated = AudioStreamingState.valueForString(example);
-		example = "NOT_AUDIBLE";
+		example = mContext.getString(R.string.not_audible_caps);
 		AudioStreamingState enumNotAudible = AudioStreamingState.valueForString(example);
 
 		
@@ -35,7 +41,7 @@ public class AudioStreamingStateTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "aUDibLE";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    AudioStreamingState temp = AudioStreamingState.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

@@ -1,28 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.SoftButtonType}
  */
-public class SoftButtonTypeTests extends TestCase {
+public class SoftButtonTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "TEXT";
+		String example = mContext.getString(R.string.text_caps);
 		SoftButtonType enumText = SoftButtonType.valueForString(example);
-		example = "IMAGE";
+		example = mContext.getString(R.string.image_caps);
 		SoftButtonType enumImage = SoftButtonType.valueForString(example);
-		example = "BOTH";
+		example = mContext.getString(R.string.both_caps);
 		SoftButtonType enumBoth = SoftButtonType.valueForString(example);
 		
 		assertNotNull("TEXT returned null", enumText);
@@ -35,7 +38,7 @@ public class SoftButtonTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "teXT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    SoftButtonType temp = SoftButtonType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

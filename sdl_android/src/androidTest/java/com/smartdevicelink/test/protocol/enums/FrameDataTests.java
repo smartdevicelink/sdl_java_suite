@@ -1,13 +1,18 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.test.Validator;
 
-public class FrameDataTests extends TestCase {
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+
+public class FrameDataTests extends AndroidTestCase {
 	
 	private Vector<FrameData> list = FrameData.getList();
 	
@@ -16,16 +21,16 @@ public class FrameDataTests extends TestCase {
 	public void testValidEnums () {
 		
 		final byte   START_SESSION_BYTE   = (byte) 0x01;
-		final String START_SESSION_STRING = "StartSession";
+		final String START_SESSION_STRING = mContext.getString(R.string.start_session);
 		
 		final byte   START_SESSION_ACK_BYTE   = (byte) 0x02;
-		final String START_SESSION_ACK_STRING = "StartSessionACK";
+		final String START_SESSION_ACK_STRING = mContext.getString(R.string.startsessionack);
 		
 		final byte   START_SESSION_NACK_BYTE   = (byte) 0x03;
-		final String START_SESSION_NACK_STRING = "StartSessionNACK";
+		final String START_SESSION_NACK_STRING = mContext.getString(R.string.startsessionnack);
 		
 		final byte   END_SESSION_BYTE   = (byte) 0x04;
-		final String END_SESSION_STRING = "EndSession";
+		final String END_SESSION_STRING = mContext.getString(R.string.endsession);
 		
 		try {
 			
@@ -62,7 +67,7 @@ public class FrameDataTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			

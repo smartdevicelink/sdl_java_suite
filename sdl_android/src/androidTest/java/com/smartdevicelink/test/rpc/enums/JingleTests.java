@@ -1,33 +1,38 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.Jingle;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.Jingle}
  */
-public class JingleTests extends TestCase {
+public class JingleTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {
 		
-		String example = "POSITIVE_JINGLE";
+		String example = mContext.getString(R.string.positive_jingle);
 		Jingle enumPositiveJingle = Jingle.valueForString(example);
-		example = "NEGATIVE_JINGLE";
+		example = mContext.getString(R.string.negative_jingle);
 		Jingle enumNegativeJingle = Jingle.valueForString(example);
-		example = "INITIAL_JINGLE";
+		example = mContext.getString(R.string.initial_jingle);
 		Jingle enumInitialJingle = Jingle.valueForString(example);
-		example = "LISTEN_JINGLE";
+		example = mContext.getString(R.string.listen_jingle);
 		Jingle enumListenJingle = Jingle.valueForString(example);
-		example = "HELP_JINGLE";
+		example = mContext.getString(R.string.help_jingle);
 		Jingle enumHelpJingle = Jingle.valueForString(example);
 		
 		assertNotNull("POSITIVE_JINGLE returned null", enumPositiveJingle);
@@ -41,7 +46,7 @@ public class JingleTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "posITive_JiGLE";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 			Jingle temp = Jingle.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);

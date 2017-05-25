@@ -1,26 +1,32 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.BitsPerSample}
  */
-public class BitsPerSampleTests extends TestCase {
+public class BitsPerSampleTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "8_BIT";
+		String example = mContext.getString(R.string.eight_bit);
 		BitsPerSample enum8Bit = BitsPerSample.valueForString(example);
-		example = "16_BIT";
+		example = mContext.getString(R.string.sixteen_bit);
 		BitsPerSample enum16Bit = BitsPerSample.valueForString(example);
 		
 		assertNotNull("8_BIT returned null", enum8Bit);
@@ -31,7 +37,7 @@ public class BitsPerSampleTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "8_biT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    BitsPerSample temp = BitsPerSample.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

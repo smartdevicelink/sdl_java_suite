@@ -3,11 +3,13 @@ package com.smartdevicelink.test.transport;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.SdlPsm;
 import com.smartdevicelink.protocol.WiProProtocol;
 
+import android.test.AndroidTestCase;
 import android.util.Log;
 import junit.framework.TestCase;
 
@@ -15,7 +17,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.transport.SdlPsm}
  */
-public class SdlPsmTests extends TestCase {
+public class SdlPsmTests extends AndroidTestCase {
 	private static final String TAG = "SdlPsmTests";
 	private static final int MAX_DATA_LENGTH = WiProProtocol.V1_V2_MTU_SIZE - WiProProtocol.V1_HEADER_SIZE;
 	SdlPsm sdlPsm;
@@ -26,13 +28,13 @@ public class SdlPsmTests extends TestCase {
 	protected void setUp() throws Exception{
 		super.setUp();
 		sdlPsm = new SdlPsm();
-		transitionOnInput = SdlPsm.class.getDeclaredMethod("transitionOnInput", byte.class, int.class);
+		transitionOnInput = SdlPsm.class.getDeclaredMethod(mContext.getString(R.string.transition_on_imput), byte.class, int.class);
 		transitionOnInput.setAccessible(true);
-		
-		frameType = SdlPsm.class.getDeclaredField("frameType");
-		dataLength = SdlPsm.class.getDeclaredField("dataLength");
-		version = SdlPsm.class.getDeclaredField("version");
-		controlFrameInfo = SdlPsm.class.getDeclaredField("controlFrameInfo");
+
+		frameType = SdlPsm.class.getDeclaredField(mContext.getString(R.string.frameType));
+		dataLength = SdlPsm.class.getDeclaredField(mContext.getString(R.string.data_length));
+		version = SdlPsm.class.getDeclaredField(mContext.getString(R.string.version));
+		controlFrameInfo = SdlPsm.class.getDeclaredField(mContext.getString(R.string.control_frame_info));
 		frameType.setAccessible(true);
 		dataLength.setAccessible(true);
 		version.setAccessible(true);

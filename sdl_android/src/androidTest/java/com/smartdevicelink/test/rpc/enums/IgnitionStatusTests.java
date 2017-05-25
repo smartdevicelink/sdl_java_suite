@@ -1,34 +1,39 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.IgnitionStatus}
  */
-public class IgnitionStatusTests extends TestCase {
+public class IgnitionStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "UNKNOWN";
+		String example = mContext.getString(R.string.unknown_caps);
 		IgnitionStatus enumUnknown = IgnitionStatus.valueForString(example);
-		example = "OFF";
+		example = mContext.getString(R.string.off_caps);
 		IgnitionStatus enumOff = IgnitionStatus.valueForString(example);
-		example = "ACCESSORY";
+		example = mContext.getString(R.string.accessory_caps);
 		IgnitionStatus enumAccessory = IgnitionStatus.valueForString(example);
-		example = "RUN";
+		example = mContext.getString(R.string.run_caps);
 		IgnitionStatus enumRun = IgnitionStatus.valueForString(example);
-		example = "START";
+		example = mContext.getString(R.string.start_caps);
 		IgnitionStatus enumStart = IgnitionStatus.valueForString(example);
-		example = "INVALID";
+		example = mContext.getString(R.string.invalid_caps);
 		IgnitionStatus enumInvalid = IgnitionStatus.valueForString(example);
 		
 		assertNotNull("UNKNOWN returned null", enumUnknown);
@@ -43,7 +48,7 @@ public class IgnitionStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "uNKnowN";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    IgnitionStatus temp = IgnitionStatus.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

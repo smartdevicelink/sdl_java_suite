@@ -1,38 +1,43 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.FileType}
  */
-public class FileTypeTests extends TestCase {
+public class FileTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "GRAPHIC_BMP";
+		String example = mContext.getString(R.string.graphic_bmp_caps);
 		FileType enumGraphicBmp = FileType.valueForString(example);
-		example = "GRAPHIC_JPEG";
+		example = mContext.getString(R.string.graphic_jpeg_caps);
 		FileType enumGraphicJpeg = FileType.valueForString(example);
-		example = "GRAPHIC_PNG";
+		example = mContext.getString(R.string.graphic_png_caps);
 		FileType enumGraphicPng = FileType.valueForString(example);
-		example = "AUDIO_WAVE";
+		example = mContext.getString(R.string.audio_wave_caps);
 		FileType enumAudioWave = FileType.valueForString(example);
-		example = "AUDIO_AAC";
+		example = mContext.getString(R.string.audio_aac_caps);
 		FileType enumAudioAac = FileType.valueForString(example);
-		example = "AUDIO_MP3";
+		example = mContext.getString(R.string.audio_mpthree_caps);
 		FileType enumAudioMp3 = FileType.valueForString(example);
-		example = "BINARY";
+		example = mContext.getString(R.string.binary_caps);
 		FileType enumBinary = FileType.valueForString(example);
-		example = "JSON";
+		example = mContext.getString(R.string.json_caps);
 		FileType enumJson = FileType.valueForString(example);
 		
 		assertNotNull("GRAPHIC_BMP returned null", enumGraphicBmp);
@@ -49,7 +54,7 @@ public class FileTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "uSer_ExiT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    FileType temp = FileType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

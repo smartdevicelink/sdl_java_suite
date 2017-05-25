@@ -1,26 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.DriverDistractionState}
  */
-public class DriverDistractionStateTests extends TestCase {
+public class DriverDistractionStateTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "DD_ON";
+		String example = mContext.getString(R.string.dd_on_caps);
 		DriverDistractionState enumDdOn = DriverDistractionState.valueForString(example);
-		example = "DD_OFF";
+		example = mContext.getString(R.string.dd_off_caps);
 		DriverDistractionState enumDdOff = DriverDistractionState.valueForString(example);
 		
 		assertNotNull("DD_ON returned null", enumDdOn);
@@ -31,7 +36,7 @@ public class DriverDistractionStateTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "dD_oN";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    DriverDistractionState temp = DriverDistractionState.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

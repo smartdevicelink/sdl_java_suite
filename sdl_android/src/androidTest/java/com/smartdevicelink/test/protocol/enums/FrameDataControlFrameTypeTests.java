@@ -1,14 +1,19 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
-public class FrameDataControlFrameTypeTests extends TestCase {
+
+public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 	
 	private Vector<FrameDataControlFrameType> list = FrameDataControlFrameType.getList();
 	
@@ -17,28 +22,28 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 	public void testValidEnums () {
 		
 		final byte   START_SESSION_BYTE   = (byte) 0x01;
-		final String START_SESSION_STRING = "StartSession";
+		final String START_SESSION_STRING = mContext.getString(R.string.start_session);
 		
 		final byte   START_SESSION_ACK_BYTE   = (byte) 0x02;
-		final String START_SESSION_ACK_STRING = "StartSessionACK";
+		final String START_SESSION_ACK_STRING = mContext.getString(R.string.startsessionack);
 		
 		final byte   START_SESSION_NACK_BYTE   = (byte) 0x03;
-		final String START_SESSION_NACK_STRING = "StartSessionNACK";
+		final String START_SESSION_NACK_STRING = mContext.getString(R.string.startsessionnack);
 		
 		final byte   END_SESSION_BYTE   = (byte) 0x04;
-		final String END_SESSION_STRING = "EndSession";
+		final String END_SESSION_STRING = mContext.getString(R.string.endsession);
 		
 		final byte   END_SESSION_ACK_BYTE   = (byte) 0x05;
-		final String END_SESSION_ACK_STRING = "EndSessionACK";
+		final String END_SESSION_ACK_STRING = mContext.getString(R.string.endsessionack);
 		
 		final byte   END_SESSION_NACK_BYTE   = (byte) 0x06;
-		final String END_SESSION_NACK_STRING = "EndSessionNACK";
+		final String END_SESSION_NACK_STRING = mContext.getString(R.string.endsessionnack);
 		
 		final byte   HEARTBEAT_BYTE   = (byte) 0x00;
-		final String HEARTBEAT_STRING = "Heartbeat";
+		final String HEARTBEAT_STRING = mContext.getString(R.string.heartbeat);
 		
 		final byte   HEARTBEAT_ACK_BYTE   = (byte) 0xFF;
-		final String HEARTBEAT_ACK_STRING = "HeartbeatACK";
+		final String HEARTBEAT_ACK_STRING = mContext.getString(R.string.heartbeatack);
 		
 		try {
 			
@@ -91,7 +96,7 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			

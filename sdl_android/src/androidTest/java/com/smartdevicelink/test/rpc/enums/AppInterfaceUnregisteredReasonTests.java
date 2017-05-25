@@ -1,46 +1,52 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.AppInterfaceUregisteredReason}
  */
-public class AppInterfaceUnregisteredReasonTests extends TestCase {
+public class AppInterfaceUnregisteredReasonTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "USER_EXIT";
+		String example = mContext.getString(R.string.user_exit_caps);
 		AppInterfaceUnregisteredReason enumUserExit = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "IGNITION_OFF";
+		example = mContext.getString(R.string.iginition_off_caps);
 		AppInterfaceUnregisteredReason enumIgnitionOff = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "BLUETOOTH_OFF";
+		example = mContext.getString(R.string.bluetooth_off_caps);
 		AppInterfaceUnregisteredReason enumBluetoothOff = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "USB_DISCONNECTED";
+		example = mContext.getString(R.string.usb_disconnected_caps);
 		AppInterfaceUnregisteredReason enumUsbDisconnected = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "REQUEST_WHILE_IN_NONE_HMI_LEVEL";
+		example = mContext.getString(R.string.request_while_in_none_hmi_level_caps);
 		AppInterfaceUnregisteredReason enumRequestWhileInNoneHmiLevel = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "TOO_MANY_REQUESTS";
+		example = mContext.getString(R.string.too_many_requests_caps);
 		AppInterfaceUnregisteredReason enumTooManyRequests = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "DRIVER_DISTRACTION_VIOLATION";
+		example = mContext.getString(R.string.driver_distraction_violation_caps);
 		AppInterfaceUnregisteredReason enumDriverDistractionViolation = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "LANGUAGE_CHANGE";
+		example = mContext.getString(R.string.lang_change_caps);
 		AppInterfaceUnregisteredReason enumLanguageChange = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "MASTER_RESET";
+		example = mContext.getString(R.string.master_reset_caps);
 		AppInterfaceUnregisteredReason enumMasterReset = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "FACTORY_DEFAULTS";
+		example = mContext.getString(R.string.factory_defaults_caps);
 		AppInterfaceUnregisteredReason enumFactoryDefaults = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "APP_UNAUTHORIZED";
+		example = mContext.getString(R.string.app_unauth_caps);
 		AppInterfaceUnregisteredReason enumAppAuthorized = AppInterfaceUnregisteredReason.valueForString(example);
-		example = "PROTOCOL_VIOLATION";
+		example = mContext.getString(R.string.protocol_violation_caps);
 		AppInterfaceUnregisteredReason enumProtocolViolation = AppInterfaceUnregisteredReason.valueForString(example);
 				
 		assertNotNull("USER_EXIT returned null", enumUserExit);
@@ -61,7 +67,7 @@ public class AppInterfaceUnregisteredReasonTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "uSer_ExiT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    AppInterfaceUnregisteredReason temp = AppInterfaceUnregisteredReason.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
