@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.streaming;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,22 +44,14 @@ public class AbstractPacketizerTests extends TestCase {
 		MockPacketizer  testPacketizer2  = null;
 		MockPacketizer  testPacketizer3  = null;
 		IStreamListener testListener     = new MockStreamListener();
-		
 		try {
-			
-			URL url = new URL("https://github.com/smartdevicelink/sdl_android");
-		    URLConnection urlConnection = url.openConnection();
-			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
-			
+			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			MockInterfaceBroker _interfaceBroker = new MockInterfaceBroker();
 			BaseTransportConfig _transportConfig = new BTTransportConfig(true);
-		
 			testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
-			
 			testPacketizer1 = new MockPacketizer(testListener, testInputStream, testSessionType, testSessionId, testSdlSession);
 			testPacketizer2 = new MockPacketizer(null, null, null, testSessionId, testSdlSession);
 			testPacketizer3 = new MockPacketizer(testListener, testInputStream, testRpcRequest, testSessionType, testSessionId, testWiproVersion, testSdlSession);
-
 			try {
 				new MockPacketizer(null, null, null, null, testSessionId, testWiproVersion, null);
 				fail("Exception should be thrown");
