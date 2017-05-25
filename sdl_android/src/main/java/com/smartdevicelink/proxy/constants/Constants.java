@@ -639,13 +639,313 @@ public class Constants {
     public static final String KEY_ADDRESS		        = "address";
 
 //  SetAppIcon
-
     public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
+//  SetDisplayLayout
+    public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
 
+//  SetDisplayLayoutResources
+    public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
+    public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
+    public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
+    public static final String KEY_PRESET_BANK_CAPABILITIES = "presetBankCapabilities";
 
+//  SetGlobalProperties
+    public static final String KEY_VR_HELP_TITLE = "vrHelpTitle";
+    public static final String KEY_MENU_TITLE = "menuTitle";
+    public static final String KEY_MENU_ICON = "menuIcon";
+    public static final String KEY_KEYBOARD_PROPERTIES = "keyboardProperties";
+    public static final String KEY_HELP_PROMPT = "helpPrompt";
+    public static final String KEY_TIMEOUT_PROMPT = "timeoutPrompt";
+    public static final String KEY_VR_HELP = "vrHelp";
 
+//  SetMediaClockTimer
+    public static final String KEY_START_TIME = "startTime";
+    public static final String KEY_END_TIME = "endTime";
+    public static final String KEY_UPDATE_MODE = "updateMode";
 
+//  Show
+    public static final String KEY_GRAPHIC = "graphic";
+    public static final String KEY_CUSTOM_PRESETS = "customPresets";
+    public static final String KEY_MAIN_FIELD_1 = "mainField1";
+    public static final String KEY_MAIN_FIELD_2 = "mainField2";
+    public static final String KEY_MAIN_FIELD_3 = "mainField3";
+    public static final String KEY_MAIN_FIELD_4 = "mainField4";
+    public static final String KEY_STATUS_BAR = "statusBar";
+    public static final String KEY_MEDIA_CLOCK = "mediaClock";
+    public static final String KEY_ALIGNMENT = "alignment";
+    public static final String KEY_MEDIA_TRACK = "mediaTrack";
+    public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
+    public static final String KEY_SOFT_BUTTONS = "softButtons";
 
+//  SHowConstantTbt
+    public static final String KEY_TEXT1                   = "navigationText1";
+    public static final String KEY_TEXT2                   = "navigationText2";
+    public static final String KEY_ETA                     = "eta";
+    public static final String KEY_TOTAL_DISTANCE          = "totalDistance";
+    public static final String KEY_MANEUVER_DISTANCE       = "distanceToManeuver";
+    public static final String KEY_MANEUVER_DISTANCE_SCALE = "distanceToManeuverScale";
+    public static final String KEY_MANEUVER_IMAGE          = "turnIcon";
+    public static final String KEY_NEXT_MANEUVER_IMAGE     = "nextTurnIcon";
+    public static final String KEY_MANEUVER_COMPLETE       = "maneuverComplete";
+    public static final String KEY_SOFT_BUTTONS            = "softButtons";
+    public static final String KEY_TIME_TO_DESTINATION     = "timeToDestination";
 
+//  SingleTireStatus
+    public static final String KEY_STATUS = "status";
+
+//  Slider
+    public static final String KEY_NUM_TICKS = "numTicks";
+    public static final String KEY_SLIDER_HEADER = "sliderHeader";
+    public static final String KEY_SLIDER_FOOTER = "sliderFooter";
+    public static final String KEY_POSITION = "position";
+    public static final String KEY_TIMEOUT = "timeout";
+
+//  SliderResponse
+    public static final String KEY_SLIDER_POSITION = "sliderPosition";
+
+//  SoftButton
+    public static final String KEY_IS_HIGHLIGHTED = "isHighlighted";
+    public static final String KEY_SOFT_BUTTON_ID = "softButtonID";
+    public static final String KEY_SYSTEM_ACTION = "systemAction";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_IMAGE = "image";
+
+//  SoftButtonCapabilities
+    public static final String KEY_IMAGE_SUPPORTED = "imageSupported";
+    public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
+    public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
+    public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
+
+//  Speak
+    public static final String KEY_TTS_CHUNKS = "ttsChunks";
+
+//  StartTime
+    public static final String KEY_MINUTES = "minutes";
+    public static final String KEY_SECONDS = "seconds";
+    public static final String KEY_HOURS = "hours";
+
+//  StreamRCPResponse
+    public static final String KEY_FILENAME = "fileName";
+    public static final String KEY_FILESIZE = "fileSize";
+
+//  SubscribeButton
+    public static final String KEY_BUTTON_NAME = "buttonName";
+
+//  SubscribeVehicleData
+    public static final String KEY_RPM = "rpm";
+    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    public static final String KEY_PRNDL = "prndl";
+    public static final String KEY_TIRE_PRESSURE = "tirePressure";
+    public static final String KEY_ENGINE_TORQUE = "engineTorque";
+    public static final String KEY_ODOMETER = "odometer";
+    public static final String KEY_GPS = "gps";
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+    public static final String KEY_BELT_STATUS = "beltStatus";
+    public static final String KEY_BODY_INFORMATION = "bodyInformation";
+    public static final String KEY_DEVICE_STATUS = "deviceStatus";
+    public static final String KEY_DRIVER_BRAKING = "driverBraking";
+    public static final String KEY_WIPER_STATUS = "wiperStatus";
+    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+    public static final String KEY_E_CALL_INFO = "eCallInfo";
+    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_SPEED = "speed";
+
+//  SubscribeVehicleDataResponse
+    public static final String KEY_SPEED = "speed";
+    public static final String KEY_RPM = "rpm";
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+    public static final String KEY_PRNDL = "prndl";
+    public static final String KEY_TIRE_PRESSURE = "tirePressure";
+    public static final String KEY_ENGINE_TORQUE = "engineTorque";
+    public static final String KEY_ODOMETER = "odometer";
+    public static final String KEY_GPS = "gps";
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+    public static final String KEY_BELT_STATUS = "beltStatus";
+    public static final String KEY_BODY_INFORMATION = "bodyInformation";
+    public static final String KEY_DEVICE_STATUS = "deviceStatus";
+    public static final String KEY_DRIVER_BRAKING = "driverBraking";
+    public static final String KEY_WIPER_STATUS = "wiperStatus";
+    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+    public static final String KEY_E_CALL_INFO = "eCallInfo";
+    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_MY_KEY = "myKey";
+
+//  SystemRequest
+    public static final String KEY_FILE_NAME = "fileName";
+    public static final String KEY_REQUEST_TYPE = "requestType";
+    public static final String KEY_DATA = "data";
+
+//  Test
+    public static final String NULL      = "Value should be null.";
+    public static final String MATCH     = "Values should match.";
+    public static final String ARRAY     = "Array values should match.";
+    public static final String TRUE      = "Value should be true.";
+    public static final String FALSE     = "Value should be false.";
+    public static final String NOT_NULL  = "Value should not be null.";
+    public static final String JSON_FAIL = "Json testing failed.";
+
+//  TextField
+    public static final String KEY_WIDTH = "width";
+    public static final String KEY_CHARACTER_SET = "characterSet";
+    public static final String KEY_ROWS = "rows";
+    public static final String KEY_NAME = "name";
+
+//  TireStatus
+    public static final String KEY_PRESSURE_TELL_TALE = "pressureTellTale";
+    public static final String KEY_LEFT_FRONT = "leftFront";
+    public static final String KEY_RIGHT_FRONT = "rightFront";
+    public static final String KEY_LEFT_REAR = "leftRear";
+    public static final String KEY_INNER_LEFT_REAR = "innerLeftRear";
+    public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
+    public static final String KEY_RIGHT_REAR = "rightRear";
+
+//  TouchCoord
+    public static final String KEY_X = "x";
+    public static final String KEY_Y = "y";
+
+//  TouchEvent
+    public static final String KEY_ID = "id";
+    public static final String KEY_TS = "ts";
+    public static final String KEY_C = "c";
+
+//  TouchEventCapabilities
+    public static final String KEY_PRESS_AVAILABLE = "pressAvailable";
+    public static final String KEY_MULTI_TOUCH_AVAILABLE = "multiTouchAvailable";
+    public static final String KEY_DOUBLE_PRESS_AVAILABLE = "doublePressAvailable";
+
+//  TransportConstants
+    public static final String START_ROUTER_SERVICE_ACTION					="sdl.router.startservice";
+    public static final String BIND_LOCATION_PACKAGE_NAME_EXTRA 			= "BIND_LOCATION_PACKAGE_NAME_EXTRA";
+    public static final String BIND_LOCATION_CLASS_NAME_EXTRA				= "BIND_LOCATION_CLASS_NAME_EXTRA";
+    public static final String 	ALT_TRANSPORT_RECEIVER 						= "com.sdl.android.alttransport";
+    public static final String 	ALT_TRANSPORT_CONNECTION_STATUS_EXTRA		= "connection_status";
+    public static final int 	ALT_TRANSPORT_DISCONNECTED					= 0;
+    public static final int 	ALT_TRANSPORT_CONNECTED						= 1;
+    public static final String 	ALT_TRANSPORT_READ 							= "read";//Read from the alt transport, goes to the app
+    public static final String 	ALT_TRANSPORT_WRITE 						= "write";//Write to the alt transport, comes from the app
+    public static final String 	ALT_TRANSPORT_ADDRESS_EXTRA					= "altTransportAddress";
+    public static final String START_ROUTER_SERVICE_SDL_ENABLED_EXTRA		= "sdl_enabled";
+    public static final String START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE = "package_name";
+    public static final String START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME    = "component_name";
+    public static final String START_ROUTER_SERVICE_SDL_ENABLED_PING		= "ping";
+    public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this.
+    public static final String ROUTER_SERVICE_VALIDATED						= "router_service_validated";
+    public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
+    public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
+    public static final String PACKAGE_NAME_STRING							= "package.name";
+    public static final String APP_ID_EXTRA									= "app.id";//Sent as a Long. This is no longer used
+    public static final String APP_ID_EXTRA_STRING							= "app.id.string";
+    public static final String SESSION_ID_EXTRA								= "session.id";
+    public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
+    public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
+    public static final String HARDWARE_CONNECTED							= "hardware.connected";
+    public static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
+    public static final String SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME 	= "routerintent";
+    public static final String	BIND_REQUEST_TYPE_CLIENT						= "BIND_REQUEST_TYPE_CLIENT";
+    public static final String	BIND_REQUEST_TYPE_ALT_TRANSPORT					= "BIND_REQUEST_TYPE_ALT_TRANSPORT";
+    public static final String	BIND_REQUEST_TYPE_STATUS						= "BIND_REQUEST_TYPE_STATUS";
+    public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
+
+//  TTSChunk
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_TYPE = "type";
+
+//  Turn
+    public static final String KEY_NAVIGATION_TEXT = "navigationText";
+    public static final String KEY_TURN_IMAGE = "turnIcon";
+
+//  UnsubscribeButton
+    public static final String KEY_BUTTON_NAME = "buttonName";
+
+//  UnsubscribeVehicleData
+    public static final String KEY_SPEED = "speed";
+    public static final String KEY_RPM = "rpm";
+    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    public static final String KEY_PRNDL = "prndl";
+    public static final String KEY_TIRE_PRESSURE = "tirePressure";
+    public static final String KEY_ENGINE_TORQUE = "engineTorque";
+    public static final String KEY_ODOMETER = "odometer";
+    public static final String KEY_GPS = "gps";
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+    public static final String KEY_BELT_STATUS = "beltStatus";
+    public static final String KEY_BODY_INFORMATION = "bodyInformation";
+    public static final String KEY_DEVICE_STATUS = "deviceStatus";
+    public static final String KEY_DRIVER_BRAKING = "driverBraking";
+    public static final String KEY_WIPER_STATUS = "wiperStatus";
+    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+    public static final String KEY_E_CALL_INFO = "eCallInfo";
+    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_MY_KEY = "myKey";
+
+//  UnsubscribeVehicleDataResponse
+    public static final String KEY_SPEED = "speed";
+    public static final String KEY_RPM = "rpm";
+    public static final String KEY_FUEL_LEVEL = "fuelLevel";
+    public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
+    public static final String KEY_PRNDL = "prndl";
+    public static final String KEY_TIRE_PRESSURE = "tirePressure";
+    public static final String KEY_ENGINE_TORQUE = "engineTorque";
+    public static final String KEY_ODOMETER = "odometer";
+    public static final String KEY_GPS = "gps";
+    public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
+    public static final String KEY_INSTANT_FUEL_CONSUMPTION = "instantFuelConsumption";
+    public static final String KEY_BELT_STATUS = "beltStatus";
+    public static final String KEY_BODY_INFORMATION = "bodyInformation";
+    public static final String KEY_DEVICE_STATUS = "deviceStatus";
+    public static final String KEY_DRIVER_BRAKING = "driverBraking";
+    public static final String KEY_WIPER_STATUS = "wiperStatus";
+    public static final String KEY_HEAD_LAMP_STATUS = "headLampStatus";
+    public static final String KEY_ACC_PEDAL_POSITION = "accPedalPosition";
+    public static final String KEY_STEERING_WHEEL_ANGLE = "steeringWheelAngle";
+    public static final String KEY_E_CALL_INFO = "eCallInfo";
+    public static final String KEY_AIRBAG_STATUS = "airbagStatus";
+    public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
+    public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+    public static final String KEY_MY_KEY = "myKey";
+
+//  UpdateTurnList
+    public static final String KEY_TURN_LIST = "turnList";
+    public static final String KEY_SOFT_BUTTONS = "softButtons";
+
+//  VehicleDataHelper
+    public static final String VIN = "FIUE4WHR3984579THIRU";
+
+//  VehicleDataResult\
+    public static final String KEY_DATA_TYPE = "dataType";
+    public static final String KEY_RESULT_CODE = "resultCode";
+
+//  VehicleType
+    public static final String KEY_MAKE = "make";
+    public static final String KEY_MODEL = "model";
+    public static final String KEY_MODEL_YEAR = "modelYear";
+    public static final String KEY_TRIM = "trim";
+
+// Version
+    public static final String VERSION = "VERSION-INFO";
+
+//  VrHelpItem
+    public static final String KEY_POSITION = "position";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_IMAGE = "image";
 }
