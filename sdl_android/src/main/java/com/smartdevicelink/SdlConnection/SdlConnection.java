@@ -4,6 +4,8 @@ package com.smartdevicelink.SdlConnection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.ComponentName;
+import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -47,6 +49,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	private static TransportType legacyTransportRequest = null;
 	private final static int BUFF_READ_SIZE = 1000000;
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
+
+	private final Handler WOKEN_RS_HANDLER = new Handler();
 	
 	/**
 	 * Constructor.
@@ -75,7 +79,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		constructor(transportConfig,rsvp);
 	}
 	
-	private void constructor(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
+	private void constructor(BaseTransportConfig transportConfig, final RouterServiceValidator rsvp){
 		_connectionListener = new InternalMsgDispatcher();
 		
 		// Initialize the transport
@@ -104,10 +108,21 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					}
 
 					if(!rsvp.isAdditionalSdlBroadcastReceiver()) { // If there are no other Router Services to wake up
-						Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");
+						Log.w(TAG, "Other SDL Router services aren't trusted. Enabling legacy bluetooth connection.");
 						enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
 					}else{
-						Log.w(TAG, "SDL Router service isn't trusted. Attempting to wake up other router services.");
+						Log.w(TAG, "Other SDL Router services exist on device.");
+						WOKEN_RS_HANDLER.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if(!rsvp.validate()){ // A router service was not woken
+									Log.w(TAG, "SDL Router service was not woken in time.");
+									enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection
+								}else {
+									Log.w(TAG, "SDL Router service awoke - " + rsvp.getService().getPackageName());
+								}
+							}
+						}, 2000); // Wait 2000 ms
 					}
 				}
 			}

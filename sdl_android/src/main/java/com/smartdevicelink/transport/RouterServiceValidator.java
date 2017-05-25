@@ -22,10 +22,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.os.Handler;
 import android.util.Log;
 
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
+
+import static com.smartdevicelink.proxy.constants.Names.appName;
 
 /**
  * This class will tell us if the currently running router service is valid or not.
@@ -84,7 +87,7 @@ public class RouterServiceValidator {
 	private static boolean pendingListRefresh = false;
 	
 	private ComponentName service;//This is how we can save different routers over another in a waterfall method if we choose to.
-	private ComponentName latestClosedService = null;
+	private ComponentName lastClosedService = null;
 
 	private static int securityLevel = -1;
 	
@@ -120,7 +123,7 @@ public class RouterServiceValidator {
 			Log.d(TAG, "Supplied service name of " + this.service.getClassName());
 			if(!isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
-				latestClosedService = service;
+				lastClosedService = service;
 				service = null;
 				Log.w(TAG, "Supplied service is not actually running.");
 			}
@@ -492,16 +495,22 @@ public class RouterServiceValidator {
 	}
 
 	/**
-	 * This method determines whether there are additional Sdl Broadcast Receivers (and therefore Sdl Router Services) other than the latest one that was closed
+	 * This method determines whether is an additional trusted Sdl Broadcast Receiver (and therefore Sdl Router Service) on this device, distinct from the last one that was closed.
 	 * @return
 	 */
 	public boolean isAdditionalSdlBroadcastReceiver(){
 		PackageManager manager = context.getPackageManager();
 		for(ResolveInfo resolveInfo : manager.queryBroadcastReceivers(new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)){
 			String packageName = resolveInfo.activityInfo.packageName;
-			if(packageName != null && latestClosedService != null){
-				if(!packageName.equals(latestClosedService.getPackageName())){
-					return true;
+			if(packageName != null){
+				if(lastClosedService != null){
+					if(isTrustedPackage(packageName, manager) && !lastClosedService.equals(packageName)){
+						return true;
+					}
+				}else{
+					if(isTrustedPackage(packageName, manager)){
+						return true;
+					}
 				}
 			}
 		}
