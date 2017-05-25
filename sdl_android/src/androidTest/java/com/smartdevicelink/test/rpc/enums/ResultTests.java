@@ -1,86 +1,89 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.Result}
  */
-public class ResultTests extends TestCase {
+public class ResultTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "SUCCESS";
+		String example = mContext.getString(R.string.success_caps);
 		Result enumSuccess = Result.valueForString(example);
-		example = "INVALID_DATA";
+		example = mContext.getString(R.string.invalid_data_caps);
 		Result enumInvalidData = Result.valueForString(example);
-		example = "UNSUPPORTED_REQUEST";
+		example = mContext.getString(R.string.unsupported_request_caps);
 		Result enumUnsupportedRequest = Result.valueForString(example);
-		example = "OUT_OF_MEMORY";
+		example = mContext.getString(R.string.out_of_memory_caps);
 		Result enumOutOfMemory = Result.valueForString(example);
-		example = "TOO_MANY_PENDING_REQUESTS";
+		example = mContext.getString(R.string.too_many_pending_requests_caps);
 		Result enumTooManyPendingRequests = Result.valueForString(example);
-		example = "INVALID_ID";
+		example = mContext.getString(R.string.invalid_id_caps);
 		Result enumInvalidId = Result.valueForString(example);
-		example = "DUPLICATE_NAME";
+		example = mContext.getString(R.string.duplicate_name_caps);
 		Result enumDuplicateName = Result.valueForString(example);
-		example = "TOO_MANY_APPLICATIONS";
+		example = mContext.getString(R.string.too_many_applications_caps);
 		Result enumTooManyApplications = Result.valueForString(example);
-		example = "APPLICATION_REGISTERED_ALREADY";
+		example = mContext.getString(R.string.application_registered_already_caps);
 		Result enumApplicationRegisteredAlready = Result.valueForString(example);
-		example = "UNSUPPORTED_VERSION";
+		example = mContext.getString(R.string.unsupported_version_caps);
 		Result enumUnsupportedVersion = Result.valueForString(example);
-		example = "WRONG_LANGUAGE";
+		example = mContext.getString(R.string.wrong_language_caps);
 		Result enumWrongLanguage = Result.valueForString(example);
-		example = "APPLICATION_NOT_REGISTERED";
+		example = mContext.getString(R.string.application_not_registered_caps);
 		Result enumApplicationNotRegistered = Result.valueForString(example);
-		example = "IN_USE";
+		example = mContext.getString(R.string.in_use_caps);
 		Result enumInUse = Result.valueForString(example);
-		example = "VEHICLE_DATA_NOT_ALLOWED";
+		example = mContext.getString(R.string.vehicle_data_not_allowed_caps);
 		Result enumVehicleDataNotAllowed = Result.valueForString(example);
-		example = "VEHICLE_DATA_NOT_AVAILABLE";
+		example = mContext.getString(R.string.vehicle_data_not_available_caps);
 		Result enumVehicleDataNotAvailable = Result.valueForString(example);
-		example = "REJECTED";
+		example = mContext.getString(R.string.rejected_caps);
 		Result enumRejected = Result.valueForString(example);
-		example = "ABORTED";
+		example = mContext.getString(R.string.aborted_caps);
 		Result enumAborted = Result.valueForString(example);
-		example = "IGNORED";
+		example = mContext.getString(R.string.ignored_caps);
 		Result enumIgnored = Result.valueForString(example);
-		example = "UNSUPPORTED_RESOURCE";
+		example = mContext.getString(R.string.unsupported_resource_caps);
 		Result enumUnsupportedResource = Result.valueForString(example);
-		example = "FILE_NOT_FOUND";
+		example = mContext.getString(R.string.file_not_found_caps);
 		Result enumFileNotFound = Result.valueForString(example);
-		example = "GENERIC_ERROR";
+		example = mContext.getString(R.string.generic_error_caps);
 		Result enumGenericError = Result.valueForString(example);
-		example = "DISALLOWED";
+		example = mContext.getString(R.string.disallowed_caps);
 		Result enumDisallowed = Result.valueForString(example);
-		example = "USER_DISALLOWED";
+		example = mContext.getString(R.string.user_disallowed_caps);
 		Result enumUserDisallowed = Result.valueForString(example);
-		example = "TIMED_OUT";
+		example = mContext.getString(R.string.timed_out_caps);
 		Result enumTimedOut = Result.valueForString(example);
-		example = "CANCEL_ROUTE";
+		example = mContext.getString(R.string.cancel_route_caps);
 		Result enumCancelRoute = Result.valueForString(example);
-		example = "TRUNCATED_DATA";
+		example = mContext.getString(R.string.truncated_data_caps);
 		Result enumTruncatedData = Result.valueForString(example);
-		example = "RETRY";
+		example = mContext.getString(R.string.retry_caps);
 		Result enumRetry = Result.valueForString(example);
-		example = "WARNINGS";
+		example = mContext.getString(R.string.warnings_caps);
 		Result enumWarnings = Result.valueForString(example);
-		example = "SAVED";
+		example = mContext.getString(R.string.saved_caps);
 		Result enumSaved = Result.valueForString(example);
-		example = "INVALID_CERT";
+		example = mContext.getString(R.string.invalid_cert_caps);
 		Result enumInvalidCert = Result.valueForString(example);
-		example = "EXPIRED_CERT";
+		example = mContext.getString(R.string.expired_cert_caps);
 		Result enumExpiredCert = Result.valueForString(example);
-		example = "RESUME_FAILED";
+		example = mContext.getString(R.string.resume_failed_caps);
 		Result enumResumeFailed = Result.valueForString(example);
 		
 		assertNotNull("SUCCESS returned null", enumSuccess);
@@ -121,7 +124,7 @@ public class ResultTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "suCcesS";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    Result temp = Result.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

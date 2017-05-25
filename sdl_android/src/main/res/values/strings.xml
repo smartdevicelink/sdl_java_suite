@@ -459,6 +459,22 @@
     <string name="ipod_caps">IPOD</string>
     <string name="mobile_app_caps">MOBILE_APP</string>
 
+    <!--PrndlTests-->
+    <string name="park_caps">PARK</string>
+    <string name="reverse_caps">REVERSE</string>
+    <string name="neutral_caps">NEUTRAL</string>
+    <string name="drive_caps">DRIVE</string>
+    <string name="sport_caps">SPORT</string>
+    <string name="low_gear_caps">LOWGEAR</string>
+    <string name="first_caps">FIRST</string>
+    <string name="second_caps">SECOND</string>
+    <string name="third_caps">THIRD</string>
+    <string name="fourth_caps">FOURTH</string>
+    <string name="fifth_caps">FIFTH</string>
+    <string name="sixth_caps">SIXTH</string>
+    <string name="seventh_caps">SEVENTH</string>
+    <string name="eighth_caps">EIGHTH</string>
+
     <!--RequestTypeTests-->
     <string name="http_caps">HTTP</string>
     <string name="file_resume_caps">FILE_RESUME</string>
@@ -478,6 +494,32 @@
     <string name="vehicle_diagostics_caps">VEHICLE_DIAGNOSTICS</string>
     <string name="emergency_caps">EMERGENCY</string>
     <string name="fota_caps">FOTA</string>
+
+    <!--ResultTests-->
+    <string name="invalid_data_caps">INVALID_DATA</string>
+    <string name="unsupported_request_caps">UNSUPPORTED_REQUEST</string>
+    <string name="out_of_memory_caps">OUT_OF_MEMORY</string>
+    <string name="too_many_pending_requests_caps">TOO_MANY_PENDING_REQUESTS</string>
+    <string name="duplicate_name_caps">DUPLICATE_NAME</string>
+    <string name="too_many_applications_caps">TOO_MANY_APPLICATIONS</string>
+    <string name="application_registered_already_caps">APPLICATION_REGISTERED_ALREADY</string>
+    <string name="unsupported_version_caps">UNSUPPORTED_VERSION</string>
+    <string name="wrong_language_caps">WRONG_LANGUAGE</string>
+    <string name="application_not_registered_caps">APPLICATION_NOT_REGISTERED</string>
+    <string name="in_use_caps">IN_USE</string>
+    <string name="vehicle_data_not_allowed_caps">VEHICLE_DATA_NOT_ALLOWED</string>
+    <string name="rejected_caps">REJECTED</string>
+    <string name="aborted_caps">ABORTED</string>
+    <string name="unsupported_resource_caps">UNSUPPORTED_RESOURCE</string>
+    <string name="file_not_found_caps">FILE_NOT_FOUND</string>
+    <string name="timed_out_caps">TIMED_OUT</string>
+    <string name="cancel_route_caps">CANCEL_ROUTE</string>
+    <string name="retry_caps">RETRY</string>
+    <string name="warnings_caps">WARNINGS</string>
+    <string name="saved_caps">SAVED</string>
+    <string name="invalid_cert_caps">INVALID_CERT</string>
+    <string name="expired_cert_caps">EXPIRED_CERT</string>
+    <string name="resume_failed_caps">RESUME_FAILED</string>
 
     <!--RPCRequestFactoryTests-->
     <string name="menu">menu</string>
@@ -693,7 +735,6 @@
     <string name="courtesy_wipe_caps">COURTESYWIPE</string>
     <string name="auto_adjust_caps">AUTO_ADJUST</string>
     <string name="stalled_caps">STALLED</string>
-
 
 
 

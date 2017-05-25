@@ -535,33 +535,112 @@ public class Constants {
 //  PresetBankCapabilities
     public static final String KEY_ON_SCREEN_PRESETS_AVAILABLE = "OnScreenPresetsAvailable";
 
+//  PutFile
+    public static final String KEY_PERSISTENT_FILE = "persistentFile";
+    public static final String KEY_SYSTEM_FILE = "systemFile";
+    public static final String KEY_FILE_TYPE = "fileType";
+    public static final String KEY_SDL_FILE_NAME = "syncFileName";
+    public static final String KEY_OFFSET = "offset";
+    public static final String KEY_LENGTH = "length";
 
+//  PutFileResponse
+    public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 
+//  ReadDID
+    public static final String KEY_ECU_NAME = "ecuName";
+    public static final String KEY_DID_LOCATION = "didLocation";
 
+//  ReadDIDResponse
+    public static final String KEY_DID_RESULT = "didResult";
 
+//  RegisterAppInterface
+    public static final String KEY_TTS_NAME = "ttsName";
+    public static final String KEY_HMI_DISPLAY_LANGUAGE_DESIRED = "hmiDisplayLanguageDesired";
+    public static final String KEY_APP_HMI_TYPE = "appHMIType";
+    public static final String KEY_APP_ID = "appID";
+    public static final String KEY_LANGUAGE_DESIRED = "languageDesired";
+    public static final String KEY_DEVICE_INFO = "deviceInfo";
+    public static final String KEY_APP_NAME = "appName";
+    public static final String KEY_NGN_MEDIA_SCREEN_APP_NAME = "ngnMediaScreenAppName";
+    public static final String KEY_IS_MEDIA_APPLICATION = "isMediaApplication";
+    public static final String KEY_VR_SYNONYMS = "vrSynonyms";
+    public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
+    public static final String KEY_HASH_ID = "hashID";
 
+//  RegisterAppInterfaceResponse
+    public static final String KEY_VEHICLE_TYPE 				= "vehicleType";
+    public static final String KEY_SPEECH_CAPABILITIES 			= "speechCapabilities";
+    public static final String KEY_VR_CAPABILITIES 				= "vrCapabilities";
+    public static final String KEY_AUDIO_PASS_THRU_CAPABILITIES = "audioPassThruCapabilities";
+    public static final String KEY_HMI_ZONE_CAPABILITIES 		= "hmiZoneCapabilities";
+    public static final String KEY_PRERECORDED_SPEECH 			= "prerecordedSpeech";
+    public static final String KEY_SUPPORTED_DIAG_MODES 		= "supportedDiagModes";
+    public static final String KEY_SDL_MSG_VERSION 				= "syncMsgVersion";
+    public static final String KEY_LANGUAGE 					= "language";
+    public static final String KEY_BUTTON_CAPABILITIES 			= "buttonCapabilities";
+    public static final String KEY_DISPLAY_CAPABILITIES 		= "displayCapabilities";
+    public static final String KEY_HMI_DISPLAY_LANGUAGE 		= "hmiDisplayLanguage";
+    public static final String KEY_SOFT_BUTTON_CAPABILITIES 	= "softButtonCapabilities";
+    public static final String KEY_PRESET_BANK_CAPABILITIES 	= "presetBankCapabilities";
+    public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
+    public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
+    public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
 
+//  ResetGlobalProperties
+    public static final String KEY_PROPERTIES = "properties";
 
+//  RCPMessage
+    public static final String KEY_REQUEST = "request";
+    public static final String KEY_RESPONSE = "response";
+    public static final String KEY_NOTIFICATION = "notification";
+    public static final String KEY_FUNCTION_NAME = "name";
+    public static final String KEY_PARAMETERS = "parameters";
+    public static final String KEY_CORRELATION_ID = "correlationID";
 
+//  RPCResponse
+    public static final String KEY_SUCCESS = "success";
+    public static final String KEY_INFO = "info";
+    public static final String KEY_RESULT_CODE = "resultCode";
 
+//  RPCStruct
+    public static final String KEY_BULK_DATA = "bulkData";
+    public static final String KEY_PROTECTED = "protected";
 
+//  ScreenParams
+    public static final String KEY_RESOLUTION = "resolution";
+    public static final String KEY_TOUCH_EVENT_AVAILABLE = "touchEventAvailable";
 
+//  ScrollableMessage
+    public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
+    public static final String KEY_TIMEOUT = "timeout";
+    public static final String KEY_SOFT_BUTTONS = "softButtons";
 
+//  SdlBroadcastReceiver
+    public static final String LOCAL_ROUTER_SERVICE_EXTRA					= "router_service";
+    public static final String LOCAL_ROUTER_SERVICE_DID_START_OWN			= "did_start";
+    public static final String TRANSPORT_GLOBAL_PREFS 						= "SdlTransportPrefs";
+    public static final String IS_TRANSPORT_CONNECTED						= "isTransportConnected";
 
+//  SdlMsgVersion
+    public static final String KEY_MAJOR_VERSION = "majorVersion";
+    public static final String KEY_MINOR_VERSION = "minorVersion";
+    public static final String KEY_PATCH_VERSION = "patchVersion";
 
+//  SendLocation
+    public static final String KEY_LAT_DEGREES          = "latitudeDegrees";
+    public static final String KEY_LON_DEGREES          = "longitudeDegrees";
+    public static final String KEY_LOCATION_NAME        = "locationName";
+    public static final String KEY_LOCATION_DESCRIPTION = "locationDescription";
+    public static final String KEY_PHONE_NUMBER         = "phoneNumber";
+    public static final String KEY_ADDRESS_LINES        = "addressLines";
+    public static final String KEY_LOCATION_IMAGE       = "locationImage";
+    public static final String KEY_DELIVERY_MODE		= "deliveryMode";
+    public static final String KEY_TIME_STAMP			= "timeStamp";
+    public static final String KEY_ADDRESS		        = "address";
 
+//  SetAppIcon
 
-
-
-
-
-
-
-
-
-
-
-
+    public static final String KEY_SDL_FILE_NAME = "syncFileName";
 
 
 
