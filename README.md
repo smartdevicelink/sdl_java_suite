@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/smartdevicelink/sdl_android.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_android)
 [![Slack Status](http://sdlslack.herokuapp.com/badge.svg)](http://slack.smartdevicelink.com)
 # SmartDeviceLink (SDL)
 
