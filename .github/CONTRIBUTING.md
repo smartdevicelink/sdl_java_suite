@@ -22,7 +22,3 @@ We use <a href="http://nvie.com/posts/a-successful-git-branching-model/">Gitflow
 
 ### Contributor's License Agreement (CLA)
 In order to accept Pull Requests from contributors, you must first sign [the Contributor's License Agreement](https://docs.google.com/forms/d/1VNR8EUd5b46cQ7uNbCq1fJmnu0askNpUp5dudLKRGpU/viewform). If you need to make a change to information that you entered, [please contact us](mailto:justin@livio.io).
-
-### Repository Specific Guidelines
-  * <a href="https://github.com/smartdevicelink/sdl_ios/wiki/Objective-C-Style-Guide" target="blank">iOS Style Guide</a>
-  * Please document all code written using [Objective-C style documentation](http://nshipster.com/documentation/) for methods (we use [VVDocumenter](https://github.com/onevcat/VVDocumenter-Xcode) for methods and use inline code comments where it makes sense, i.e. for non-obvious code chunks.
