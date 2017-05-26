@@ -18,7 +18,12 @@ We use <a href="http://nvie.com/posts/a-successful-git-branching-model/">Gitflow
 * All commits should separated into logical units, i.e. unrelated changes should be in different commits within a pull request.
 * Work in progress pull requests should have "[WIP]" in front of the Pull Request title. When you believe the pull request is ready to merge, remove this tag and @mention the appropriate SDL team to schedule a review.
 * All new code *must* include unit tests. Bug fixes should have a test that fails previously and now passes. All new features should be covered. If your code does not have tests, or regresses old tests, it will be rejected.
-* A great example of a <a href="https://github.com/smartdevicelink/SmartDeviceLink-iOS/pull/45" target="_blank">pull request can be found here</a>.
+* A great example of a <a href="https://github.com/smartdevicelink/SmartDeviceLink-iOS/pull/45" "_target>pull request can be found here</a>.
 
 ### Contributor's License Agreement (CLA)
-In order to accept Pull Requests from contributors, you must first sign [the Contributor's License Agreement](https://docs.google.com/forms/d/1VNR8EUd5b46cQ7uNbCq1fJmnu0askNpUp5dudLKRGpU/viewform). If you need to make a change to information that you entered, [please contact us](mailto:justin@livio.io).
+In order to accept Pull Requests from contributors, you must first sign [the Contributor's License Agreement](https://docs.google.com/forms/d/1VNR8EUd5b46cQ7uNbCq1fJmnu0askNpUp5dudLKRGpU/viewform). If you need to make a change to information that you entered, [please contact us](mailto:theresa@livio.io).
+
+### Repository Specific Guidelines
+  * <a href="https://github.com/smartdevicelink/sdl_android/wiki/Style-Guide" target="blank">Android Style Guide</a>
+  * Please document all code written. Write [JavaDoc style documentation](http://www.oracle.com/technetwork/articles/java/index-137868.html) for methods, and use inline code comments where it makes sense, i.e. for non-obvious code chunks.
+
