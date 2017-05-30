@@ -1,20 +1,13 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
-
-import javax.annotation.Resource;
-
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -27,21 +20,21 @@ public class AmbientLightStatusTests extends AndroidTestCase {
 	 */
 	public void testValidEnums () {	
 		
-		String example = mContext.getString(R.string.day);
+		String example = mContext.getString(R.string.day_caps);
 		AmbientLightStatus enumDay = AmbientLightStatus.valueForString(example);
-		example = mContext.getString(R.string.night);
+		example = mContext.getString(R.string.night_caps);
 		AmbientLightStatus enumNight = AmbientLightStatus.valueForString(example);
 		example = mContext.getString(R.string.unknown);
 		AmbientLightStatus enumUnknown = AmbientLightStatus.valueForString(example);
 		example = mContext.getString(R.string.invalid_caps);
 		AmbientLightStatus enumInvalid = AmbientLightStatus.valueForString(example);
-		example = mContext.getString(R.string.twilight_1);
+		example = mContext.getString(R.string.twilight_one_caps);
 		AmbientLightStatus enumTwilight1 = AmbientLightStatus.valueForString(example);
-		example = mContext.getString(R.string.twilight_2);
+		example = mContext.getString(R.string.twilight_two_caps);
 		AmbientLightStatus enumTwilight2 = AmbientLightStatus.valueForString(example);
-		example = mContext.getString(R.string.twilight_3);
+		example = mContext.getString(R.string.twilight_three_caps);
 		AmbientLightStatus enumTwilight3 = AmbientLightStatus.valueForString(example);
-		example = mContext.getString(R.string.twilight_4);
+		example = mContext.getString(R.string.twilight_four_caps);
 		AmbientLightStatus enumTwilight4 = AmbientLightStatus.valueForString(example);
 			
 		assertNotNull("DAY returned null", enumDay);

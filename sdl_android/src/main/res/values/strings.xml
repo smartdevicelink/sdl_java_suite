@@ -55,30 +55,86 @@
     <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\          /////////////////////////////////////-->
     <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\        //////////////////////////////////////-->
 
+
+    <!--=============================Multiple Locations=================================-->
+    <string name="alert_caps">ALERT</string>
+    <string name="bluetooth_off_caps">BLUETOOTH_OFF</string>
+    <string name="both_caps">BOTH</string>
+    <string name="default_caps">DEFAULT</string>
+    <string name="disallowed_caps">DISALLOWED</string>
+    <string name="driver_distraction_violation_caps">DRIVER_DISTRACTION_VIOLATION</string>
+    <string name="endsession">EndSession</string>
+    <string name="factory_defaults_caps">FACTORY_DEFAULTS</string>
+    <string name="fault_caps">FAULT</string>
+    <string name="generic_error_caps">GENERIC_ERROR</string>
+    <string name="help_jingle_caps">HELP_JINGLE</string>
+    <string name="ignition_off_caps">IGNITION_OFF</string>
+    <string name="ignored_caps">IGNORED</string>
+    <string name="initial_jingle_caps">INITIAL_JINGLE</string>
+    <string name="invalid">invalid</string>
+    <string name="invalid_caps">INVALID</string>
     <string name="invalid_enum">totally a invalid enum</string>
+    <string name="invalid_id_caps">INVALID_ID</string>
+    <string name="keyboard_caps">KEYBOARD</string>
+    <string name="lang_change_caps">LANGUAGE_CHANGE</string>
+    <string name="listen_jingle_caps">LISTEN_JINGLE</string>
+    <string name="master_reset_caps">MASTER_RESET</string>
+    <string name="media_caps">MEDIA</string>
+    <string name="menu_caps">MENU</string>
+    <string name="name">name</string>
+    <string name="navigation_caps">NAVIGATION</string>
+    <string name="negative_jingle_caps">NEGATIVE_JINGLE</string>
+    <string name="no_data_exists_caps">NO_DATA_EXISTS</string>
+    <string name="no_event_caps">NO_EVENT</string>
+    <string name="normal_caps">NORMAL</string>
+    <string name="not_supported_caps">NOT_SUPPORTED</string>
+    <string name="not_used_caps">NOT_USED</string>
+    <string name="off_caps">OFF</string>
+    <string name="on_caps">ON</string>
+    <string name="pcm_caps">PCM</string>
+    <string name="positive_jingle_caps">POSITIVE_JINGLE</string>
+    <string name="request_while_in_none_hmi_level_caps">REQUEST_WHILE_IN_NONE_HMI_LEVEL</string>
+    <string name="rpc_caps">RPC</string>
+    <string name="sdl_android_github_link">https://github.com/smartdevicelink/sdl_android</string>
+    <string name="start_session">StartSession</string>
+    <string name="startsessionack">StartSessionACK</string>
+    <string name="startsessionnack">StartSessionNACK</string>
+    <string name="success_caps">SUCCESS</string>
+    <string name="test">test</string>
+    <string name="test_a">Test A</string>
+    <string name="test_b">Test B</string>
+    <string name="test_one">test_1</string>
+    <string name="test_two">test_2</string>
+    <string name="text">text</string>
+    <string name="text_caps">TEXT</string>
+    <string name="timeout">timeout</string>
+    <string name="too_many_requests_caps">TOO_MANY_REQUESTS</string>
+    <string name="truncated_data_caps">TRUNCATED_DATA</string>
+    <string name="unknown_caps">UNKNOWN</string>
+    <string name="usb_caps">USB</string>
+    <string name="usb_disconnected_caps">USB_DISCONNECTED</string>
+    <string name="user_disallowed_caps">USER_DISALLOWED</string>
+    <string name="user_exit_caps">USER_EXIT</string>
+    <string name="value">value</string>
+    <string name="vehicle_data_not_available_caps">VEHICLE_DATA_NOT_AVAILABLE</string>
+
 
     <!--AbstractPacketizerTests-->
-    <string name="test">test</string>
-    <string name="sdl_android_github_link">https://github.com/smartdevicelink/sdl_android</string>
 
     <!--AmbientLightStatusTests-->
-    <string name="day">DAY</string>
-    <string name="night">NIGHT</string>
-    <string name="unknown">UNKNOWN</string>
-    <string name="twilight_1">TWILIGHT_1</string>
-    <string name="twilight_2">TWILIGHT_2</string>
-    <string name="twilight_3">TWILIGHT_3</string>
-    <string name="twilight_4">TWILIGHT_4</string>
+    <string name="day_caps">DAY</string>
+    <string name="night_caps">NIGHT</string>
+    <string name="twilight_one_caps">TWILIGHT_1</string>
+    <string name="twilight_two_caps">TWILIGHT_2</string>
+    <string name="twilight_three_caps">TWILIGHT_3</string>
+    <string name="twilight_four_caps">TWILIGHT_4</string>
 
     <!--AndroidTopolTests-->
     <string name="exception_during_normal_tests">Exception during normal test:</string>
 
     <!--AppHMITypeTests-->
-    <string name="default_caps">DEFAULT</string>
     <string name="communication_caps">COMMUNICATION</string>
-    <string name="media_caps">MEDIA</string>
     <string name="messaging_caps">MESSAGING</string>
-    <string name="navigation_caps">NAVIGATION</string>
     <string name="information_caps">INFORMATION</string>
     <string name="social_caps">SOCIAL</string>
     <string name="background_process_caps">BACKGROUND_PROCESS</string>
@@ -86,16 +142,6 @@
     <string name="system_caps">SYSTEM</string>
 
     <!--AppInterfaceUnregisteredReasonsTests-->
-    <string name="user_exit_caps">USER_EXIT</string>
-    <string name="iginition_off_caps">IGNITION_OFF</string>
-    <string name="bluetooth_off_caps">BLUETOOTH_OFF</string>
-    <string name="usb_disconnected_caps">USB_DISCONNECTED</string>
-    <string name="request_while_in_none_hmi_level_caps">REQUEST_WHILE_IN_NONE_HMI_LEVEL</string>
-    <string name="too_many_requests_caps">TOO_MANY_REQUESTS</string>
-    <string name="driver_distraction_violation_caps">DRIVER_DISTRACTION_VIOLATION</string>
-    <string name="lang_change_caps">LANGUAGE_CHANGE</string>
-    <string name="master_reset_caps">MASTER_RESET</string>
-    <string name="factory_defaults_caps">FACTORY_DEFAULTS</string>
     <string name="app_unauth_caps">APP_UNAUTHORIZED</string>
     <string name="protocol_violation_caps">PROTOCOL_VIOLATION</string>
 
@@ -105,8 +151,6 @@
     <string name="not_audible_caps">NOT_AUDIBLE</string>
 
     <!--AudioTypeTests-->
-    <string name="pcm_caps">PCM</string>
-    <string name="pcm_lower_p">pCM</string>
 
     <!--BaseRpcTests-->
     <string name="json_object_didnt_match">JSON object didn\'t match reference object for key \"</string>
@@ -144,11 +188,8 @@
     <string name="short_caps">SHORT</string>
 
     <!--ByteEnumerTests-->
-    <string name="test_one">test_1</string>
-    <string name="test_two">test_2</string>
 
     <!--CarModeStatusTests-->
-    <string name="normal_caps">NORMAL</string>
     <string name="factory_caps">FACTORY</string>
     <string name="transport_caps">TRANSPORT</string>
     <string name="crash_caps">CRASH</string>
@@ -170,14 +211,8 @@
     <string name="northeast_caps">NORTHEAST</string>
 
     <!--ComponentVolumeStatusTests-->
-    <string name="unknown_caps">UNKNOWN</string>
     <string name="low_caps">LOW</string>
-    <string name="fault_caps">FAULT</string>
-    <string name="alert_caps">ALERT</string>
-    <string name="not_supported_caps">NOT_SUPPORTED</string>
-    <string name="off_caps">OFF</string>
     <string name="terse_caps">TERSE</string>
-    <string name="invalid_caps">INVALID</string>
     <string name="verbose_caps">VERBOSE</string>
 
     <!--DeviceLevelStatusTests-->
@@ -192,7 +227,6 @@
     <string name="off">off</string>
     <string name="terse">terse</string>
     <string name="verbose">verbose</string>
-    <string name="invalid">invalid</string>
 
     <!--DimensionTests-->
     <string name="no_fix_caps">NO_FIX</string>
@@ -225,7 +259,6 @@
     <string name="call_comp_dtmf_to_caps">CALL_COMPLETE_DTMF_TIMEOUT</string>
 
     <!--EmergencyEventTypeTests-->
-    <string name="no_event_caps">NO_EVENT</string>
     <string name="frontal_caps">FRONTAL</string>
     <string name="side_caps">SIDE</string>
     <string name="rear_caps">REAR</string>
@@ -242,10 +275,6 @@
     <string name="json_caps">JSON</string>
 
     <!--FrameDataControlFrameTypeTests-->
-    <string name="start_session">StartSession</string>
-    <string name="startsessionack">StartSessionACK</string>
-    <string name="startsessionnack">StartSessionNACK</string>
-    <string name="endsession">EndSession</string>
     <string name="endsessionack">EndSessionACK</string>
     <string name="endsessionnack">EndSessionNACK</string>
     <string name="heartbeat">Heartbeat</string>
@@ -308,7 +337,6 @@
     <!--InteractionModeTests-->
     <string name="manual_only_caps">MANUAL_ONLY</string>
     <string name="vr_only_caps">VR_ONLY</string>
-    <string name="both_caps">BOTH</string>
 
     <!--interfaceActivityDirectionTests-->
     <string name="none">None</string>
@@ -322,11 +350,6 @@
     <string name="on_proxy_closed">OnProxyClosed</string>
 
     <!--JingleTests-->
-    <string name="positive_jingle">POSITIVE_JINGLE</string>
-    <string name="negative_jingle">NEGATIVE_JINGLE</string>
-    <string name="initial_jingle">INITIAL_JINGLE</string>
-    <string name="listen_jingle">LISTEN_JINGLE</string>
-    <string name="help_jingle">HELP_JINGLE</string>
 
     <!--KeyboardEventsTests-->
     <string name="keypress_caps">KEYPRESS</string>
@@ -376,7 +399,6 @@
     <string name="icon_with_search_caps">ICON_WITH_SEARCH</string>
     <string name="lists_only_caps">LIST_ONLY</string>
     <string name="list_w_search_caps">LIST_WITH_SEARCH</string>
-    <string name="keyboard_caps">KEYBOARD</string>
     <string name="required_caps">REQUIRED</string>
     <string name="optional_caps">OPTIONAL</string>
 
@@ -392,7 +414,6 @@
     <!--MessageTypeTests-->
     <string name="undefined_caps">UNDEFINED</string>
     <string name="bulk_caps">BULK</string>
-    <string name="rpc_caps">RPC</string>
 
     <!--MimeTests-->
     <string name="us_ascii_caps">US-ASCII</string>
@@ -417,8 +438,6 @@
     <!--OnSystemRequestTests-->
     <string name="app_json">application/json</string>
     <string name="url_caps">URL</string>
-    <string name="test_a">Test A</string>
-    <string name="test_b">Test B</string>
     <string name="test_c">Test C</string>
     <string name="post_caps">POST</string>
 
@@ -444,15 +463,9 @@
     <string name="crank_three_caps">CRANK_3</string>
 
     <!--PrerecorderSpeechTests-->
-    <string name="help_jungle_caps">HELP_JINGLE</string>
-    <string name="initial_jingle_caps">INITIAL_JINGLE</string>
-    <string name="listen_jingle_caps">LISTEN_JINGLE</string>
-    <string name="positive_jingle_caps">POSITIVE_JINGLE</string>
-    <string name="neg_jingle_caps">NEGATIVE_JINGLE</string>
 
     <!--PrimaryAudioSourcesTests-->
     <string name="no_source_selected_caps">NO_SOURCE_SELECTED</string>
-    <string name="usb_caps">USB</string>
     <string name="usb_two_caps">USB2</string>
     <string name="bt_stereo_btst_caps">BLUETOOTH_STEREO_BTST</string>
     <string name="line_in_caps">LINE_IN</string>
@@ -525,14 +538,10 @@
     <string name="menu">menu</string>
     <string name="image">image</string>
     <string name="icon">icon</string>
-    <string name="name">name</string>
     <string name="simple_test">simple test</string>
     <string name="test_three">test 3</string>
     <string name="init_chunks">init chunks</string>
     <string name="help_items">help items</string>
-    <string name="timeout">timeout</string>
-    <string name="text">text</string>
-    <string name="value">value</string>
     <string name="ngn">ngn</string>
     <string name="id">id</string>
     <string name="examine">examine</string>
@@ -565,7 +574,6 @@
     <string name="bt_adapter_error">BLUETOOTH_ADAPTER_ERROR</string>
     <string name="sdl_reg_error_caps">SDL_REGISTRATION_ERROR</string>
     <string name="app_interface_unreg_caps">APP_INTERFACE_UNREG</string>
-    <string name="generic_error_caps">GENERIC_ERROR</string>
     <string name="legacy_bt_mode_enabled_caps">LEGACY_BLUETOOTH_MODE_ENABLED</string>
     <string name="rpc_session_ended_caps">RPC_SESSION_ENDED</string>
 
@@ -584,7 +592,6 @@
     <string name="control_caps">CONTROL</string>
     <string name="nav_caps">NAV</string>
     <string name="bulk_data_caps">BULK_DATA</string>
-    <string name="text_caps">TEXT</string>
     <string name="image_caps">IMAGE</string>
 
     <!--SystemActionTests-->
@@ -599,7 +606,6 @@
     <string name="keep_context_caps">KEEP_CONTEXT</string>
     <string name="main_caps">MAIN</string>
     <string name="vr_session_caps">VRSESSION</string>
-    <string name="menu_caps">MENU</string>
     <string name="hmi_obscured_caps">HMI_OBSCURED</string>
 
     <!--TbtStateTests-->
@@ -677,18 +683,8 @@
 
     <!--VehicleDataNotificationStatusTests-->
     <string name="active_caps">ACTIVE</string>
-    <string name="not_used_caps">NOT_USED</string>
-    <string name="success_caps">SUCCESS</string>
-    <string name="truncated_data_caps">TRUNCATED_DATA</string>
-    <string name="disallowed_caps">DISALLOWED</string>
-    <string name="user_disallowed_caps">USER_DISALLOWED</string>
-    <string name="invalid_id_caps">INVALID_ID</string>
-    <string name="vehicle_data_not_available_caps">VEHICLE_DATA_NOT_AVAILABLE</string>
     <string name="data_already_subscribed">DATA_ALREADY_SUBSCRIBED</string>
     <string name="data_not_subscribed">DATA_NOT_SUBSCRIBED</string>
-    <string name="ignored_caps">IGNORED</string>
-    <string name="no_data_exists_caps">NO_DATA_EXISTS</string>
-    <string name="on_caps">ON</string>
 
     <!--VehicleDataTypeTests-->
     <string name="vehicle_data_gps_caps">VEHICLEDATA_GPS</string>

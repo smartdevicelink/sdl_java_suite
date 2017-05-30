@@ -34,7 +34,7 @@ public class AudioTypeTests extends AndroidTestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = mContext.getString(R.string.pcm_lower_p);
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    AudioType temp = AudioType.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);

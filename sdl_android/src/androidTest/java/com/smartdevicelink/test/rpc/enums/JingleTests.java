@@ -24,15 +24,15 @@ public class JingleTests extends AndroidTestCase {
 	 */
 	public void testValidEnums () {
 		
-		String example = mContext.getString(R.string.positive_jingle);
+		String example = mContext.getString(R.string.positive_jingle_caps);
 		Jingle enumPositiveJingle = Jingle.valueForString(example);
-		example = mContext.getString(R.string.negative_jingle);
+		example = mContext.getString(R.string.negative_jingle_caps);
 		Jingle enumNegativeJingle = Jingle.valueForString(example);
-		example = mContext.getString(R.string.initial_jingle);
+		example = mContext.getString(R.string.initial_jingle_caps);
 		Jingle enumInitialJingle = Jingle.valueForString(example);
-		example = mContext.getString(R.string.listen_jingle);
+		example = mContext.getString(R.string.listen_jingle_caps);
 		Jingle enumListenJingle = Jingle.valueForString(example);
-		example = mContext.getString(R.string.help_jingle);
+		example = mContext.getString(R.string.help_jingle_caps);
 		Jingle enumHelpJingle = Jingle.valueForString(example);
 		
 		assertNotNull("POSITIVE_JINGLE returned null", enumPositiveJingle);

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
@@ -25,7 +23,7 @@ public class SdlDisconnectedReasonTests extends AndroidTestCase {
 	public void testValidEnums () {	
 		String example = mContext.getString(R.string.user_exit_caps);
 		SdlDisconnectedReason enumUserExit = SdlDisconnectedReason.valueForString(example);
-		example = mContext.getString(R.string.iginition_off_caps);
+		example = mContext.getString(R.string.ignition_off_caps);
 		SdlDisconnectedReason enumIgnitionOff = SdlDisconnectedReason.valueForString(example);
 		example = mContext.getString(R.string.bluetooth_off_caps);
 		SdlDisconnectedReason enumBluetoothOff = SdlDisconnectedReason.valueForString(example);

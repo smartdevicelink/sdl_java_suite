@@ -1,18 +1,13 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
-
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -26,7 +21,7 @@ public class AppInterfaceUnregisteredReasonTests extends AndroidTestCase {
 	public void testValidEnums () {	
 		String example = mContext.getString(R.string.user_exit_caps);
 		AppInterfaceUnregisteredReason enumUserExit = AppInterfaceUnregisteredReason.valueForString(example);
-		example = mContext.getString(R.string.iginition_off_caps);
+		example = mContext.getString(R.string.ignition_off_caps);
 		AppInterfaceUnregisteredReason enumIgnitionOff = AppInterfaceUnregisteredReason.valueForString(example);
 		example = mContext.getString(R.string.bluetooth_off_caps);
 		AppInterfaceUnregisteredReason enumBluetoothOff = AppInterfaceUnregisteredReason.valueForString(example);

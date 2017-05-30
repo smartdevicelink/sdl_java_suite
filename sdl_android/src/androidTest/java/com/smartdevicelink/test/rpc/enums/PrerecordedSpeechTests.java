@@ -19,7 +19,7 @@ public class PrerecordedSpeechTests extends AndroidTestCase {
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = mContext.getString(R.string.help_jungle_caps);
+		String example = mContext.getString(R.string.help_jingle_caps);
 		PrerecordedSpeech enumHelpJingle = PrerecordedSpeech.valueForString(example);
 		example = mContext.getString(R.string.initial_jingle_caps);
 		PrerecordedSpeech enumInitialJingle = PrerecordedSpeech.valueForString(example);
@@ -27,7 +27,7 @@ public class PrerecordedSpeechTests extends AndroidTestCase {
 		PrerecordedSpeech enumListenJingle = PrerecordedSpeech.valueForString(example);
 		example = mContext.getString(R.string.positive_jingle_caps);
 		PrerecordedSpeech enumPositiveJingle = PrerecordedSpeech.valueForString(example);
-		example = mContext.getString(R.string.neg_jingle_caps);
+		example = mContext.getString(R.string.negative_jingle_caps);
 		PrerecordedSpeech enumNegativeJingle = PrerecordedSpeech.valueForString(example);
 
 		assertNotNull("HELP_JINGLE returned null", enumHelpJingle);
