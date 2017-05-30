@@ -76,6 +76,8 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
+import junit.framework.Assert;
+
 import java.util.Vector;
 
 public class SdlProxyBaseTests extends AndroidTestCase{
@@ -113,6 +115,17 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             proxy = builder.build();
         } catch (Exception e) {
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
+            Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
+        }
+
+        //Construct with a non-null SdlProxyConfigurationResources and a null TelephonyManager
+        config.setTelephonyManager(null);
+        builder.setSdlProxyConfigurationResources(config);
+        try {
+            proxy = builder.build();
+        } catch (Exception e) {
+            Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
+            Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
         }
     }
 
