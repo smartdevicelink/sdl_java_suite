@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
@@ -76,10 +74,10 @@ public class WiperStatusTests extends AndroidTestCase {
 		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    WiperStatus temp = WiperStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -90,10 +88,10 @@ public class WiperStatusTests extends AndroidTestCase {
 		String example = null;
 		try {
 		    WiperStatus temp = WiperStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 	
@@ -120,7 +118,7 @@ public class WiperStatusTests extends AndroidTestCase {
 		enumTestList.add(WiperStatus.STALLED);
 		enumTestList.add(WiperStatus.NO_DATA_EXISTS);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

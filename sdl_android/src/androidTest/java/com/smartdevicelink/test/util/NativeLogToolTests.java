@@ -58,9 +58,9 @@ public class NativeLogToolTests extends AndroidTestCase {
 			assertNull(Test.NULL, actualNullEnum);
 		
 		} catch (NullPointerException e) {
-			fail("Could not retrieve value for null string, should return null.");
+			fail(mContext.getString(R.string.could_not_retrieve_value_for_null_string));
 		} catch (IllegalArgumentException e) {
-			fail("Could not retrieve value for invalid string, should return null.");
+			fail(mContext.getString(R.string.could_not_retrieve_value_for_invalid_string));
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class NativeLogToolTests extends AndroidTestCase {
 		NativeLogTool.setEnableState(false);
 		assertFalse("Value should be false.", NativeLogTool.isEnabled());		
 		NativeLogTool.setEnableState(true);
-		assertTrue("Valueshould be true.", NativeLogTool.isEnabled());
+		assertTrue("Value should be true.", NativeLogTool.isEnabled());
 	}
 	
 	// NOTE : No testing can currently be done for the logging methods.

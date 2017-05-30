@@ -6,12 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
-
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -57,10 +53,10 @@ public class CompassDirectionTests extends AndroidTestCase {
 		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    CompassDirection temp = CompassDirection.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -71,10 +67,10 @@ public class CompassDirectionTests extends AndroidTestCase {
 		String example = null;
 		try {
 		    CompassDirection temp = CompassDirection.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -94,7 +90,7 @@ public class CompassDirectionTests extends AndroidTestCase {
 		enumTestList.add(CompassDirection.EAST);
 		enumTestList.add(CompassDirection.NORTHEAST);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

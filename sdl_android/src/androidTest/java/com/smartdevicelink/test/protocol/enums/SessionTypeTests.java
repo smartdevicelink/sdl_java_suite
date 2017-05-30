@@ -4,8 +4,6 @@ import android.test.AndroidTestCase;
 
 import java.util.Vector;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.test.Validator;
@@ -64,7 +62,7 @@ public class SessionTypeTests extends AndroidTestCase {
 			assertNotNull("Consecutive string match returned null",   enumBulkData);
 			
 		} catch (NullPointerException exception) {
-            fail("Null enum list throws NullPointerException.");
+            fail(mContext.getString(R.string.null_enum_list_throws_null_pointer_exception));
 		}		
 	}
 		
@@ -78,14 +76,14 @@ public class SessionTypeTests extends AndroidTestCase {
 			
 			// Check the byte value
 			SessionType enumInvalid = (SessionType) SessionType.get(list, INVALID_BYTE);
-			assertNull("Invalid byte match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_byte_match_didnt_return_null), enumInvalid);
 			
 			// Check the string value
 			enumInvalid = (SessionType) SessionType.get(list, INVALID_STRING);
-			assertNull("Invalid string match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_string_match_didnt_return_null), enumInvalid);
 			
 		} catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -95,10 +93,10 @@ public class SessionTypeTests extends AndroidTestCase {
 			
 			// Check null string lookup
 			SessionType enumNull = (SessionType) SessionType.get(list, null);
-			assertNull("Null lookup returns a value", enumNull);
+			assertNull(mContext.getString(R.string.null_lookup_returns_a_value), enumNull);
 			
 		} catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -112,7 +110,7 @@ public class SessionTypeTests extends AndroidTestCase {
 		enumTestList.add(SessionType.BULK_DATA);
 		enumTestList.add(SessionType.CONTROL);
 		
-		assertTrue("List does not match enum test list.",
+		assertTrue(mContext.getString(R.string.list_does_not_match_enum_test_list),
 					list.containsAll(enumTestList) &&
 					enumTestList.containsAll(list));
 		
@@ -122,7 +120,7 @@ public class SessionTypeTests extends AndroidTestCase {
 									    SessionType.NAV, SessionType.BULK_DATA,
 									    SessionType.CONTROL };
 		
-		assertTrue("Array does not match enum values array.",
+		assertTrue(mContext.getString(R.string.array_does_not_match_enum_values_array),
 					Validator.validateSessionTypeArray(enumValueArray, enumTestArray));
 	}
 }

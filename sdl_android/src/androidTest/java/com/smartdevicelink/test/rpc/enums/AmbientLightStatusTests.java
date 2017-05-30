@@ -24,7 +24,7 @@ public class AmbientLightStatusTests extends AndroidTestCase {
 		AmbientLightStatus enumDay = AmbientLightStatus.valueForString(example);
 		example = mContext.getString(R.string.night_caps);
 		AmbientLightStatus enumNight = AmbientLightStatus.valueForString(example);
-		example = mContext.getString(R.string.unknown);
+		example = mContext.getString(R.string.unknown_caps);
 		AmbientLightStatus enumUnknown = AmbientLightStatus.valueForString(example);
 		example = mContext.getString(R.string.invalid_caps);
 		AmbientLightStatus enumInvalid = AmbientLightStatus.valueForString(example);
@@ -54,10 +54,10 @@ public class AmbientLightStatusTests extends AndroidTestCase {
 		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    AmbientLightStatus temp = AmbientLightStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -68,10 +68,10 @@ public class AmbientLightStatusTests extends AndroidTestCase {
 		String example = null;
 		try {
 		    AmbientLightStatus temp = AmbientLightStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	

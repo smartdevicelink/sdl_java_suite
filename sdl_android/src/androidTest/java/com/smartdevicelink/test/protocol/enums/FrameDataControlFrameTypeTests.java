@@ -8,10 +8,6 @@ import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.test.Validator;
 
-import junit.framework.TestCase;
-
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-
 
 public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 	
@@ -88,7 +84,7 @@ public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 			assertNotNull("Heartbeat ack string match returned null",      enumHACK);
 			
 		} catch (NullPointerException exception) {
-            fail("Null enum list throws NullPointerException.");
+            fail(mContext.getString(R.string.null_enum_list_throws_null_pointer_exception));
 		}		
 	}
 	
@@ -102,14 +98,14 @@ public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 			
 			// Check the byte value
 			FrameDataControlFrameType enumInvalid = (FrameDataControlFrameType) FrameDataControlFrameType.get(list, INVALID_BYTE);
-			assertNull("Invalid byte match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_byte_match_didnt_return_null), enumInvalid);
 			
 			// Check the string value
 			enumInvalid = (FrameDataControlFrameType) FrameDataControlFrameType.get(list, INVALID_STRING);
-			assertNull("Invalid string match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_string_match_didnt_return_null), enumInvalid);
 			
 		} catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -119,10 +115,10 @@ public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 			
 			// Check null string lookup
 			FrameDataControlFrameType enumNull = (FrameDataControlFrameType) FrameDataControlFrameType.get(list, null);
-			assertNull("Null lookup returns a value", enumNull);
+			assertNull(mContext.getString(R.string.null_lookup_returns_a_value), enumNull);
 			
 		} catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -140,7 +136,7 @@ public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 		enumTestList.add(FrameDataControlFrameType.ServiceDataACK);
 		enumTestList.add(FrameDataControlFrameType.HeartbeatACK);
 		
-		assertTrue("List does not match enum test list.",
+		assertTrue(mContext.getString(R.string.list_does_not_match_enum_test_list),
 					list.containsAll(enumTestList) &&
 					enumTestList.containsAll(list));
 		
@@ -153,7 +149,7 @@ public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 				FrameDataControlFrameType.EndSessionNACK,  FrameDataControlFrameType.ServiceDataACK,
 				FrameDataControlFrameType.HeartbeatACK, };
 		
-		assertTrue("Array does not match enum values array.",
+		assertTrue(mContext.getString(R.string.array_does_not_match_enum_values_array),
 					Validator.validateFrameDataControlFrameTypeArray(enumValueArray, enumTestArray));
 	}
 

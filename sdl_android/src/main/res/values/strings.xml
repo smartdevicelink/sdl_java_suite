@@ -3,47 +3,14 @@
 
     <!--//////////////////////////////////        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
     <!--/////////////////////////////////          \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
-    <!--////////////////////////////////            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
-    <!--///////////////////////////////   App Files  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--////////////////////////////////     Lib    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--///////////////////////////////     Files    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
     <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\              ///////////////////////////////////-->
     <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\            ////////////////////////////////////-->
     <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\          /////////////////////////////////////-->
     <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\        //////////////////////////////////////-->
 
     <string name="unable_to_process_data">Unable to process data to form header</string>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <!--//////////////////////////////////        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
@@ -64,6 +31,7 @@
     <string name="disallowed_caps">DISALLOWED</string>
     <string name="driver_distraction_violation_caps">DRIVER_DISTRACTION_VIOLATION</string>
     <string name="endsession">EndSession</string>
+    <string name="enum_value_list_does_not_match_enum_class_list">Enum value list does not match enum class list</string>
     <string name="factory_defaults_caps">FACTORY_DEFAULTS</string>
     <string name="fault_caps">FAULT</string>
     <string name="generic_error_caps">GENERIC_ERROR</string>
@@ -74,6 +42,7 @@
     <string name="invalid">invalid</string>
     <string name="invalid_caps">INVALID</string>
     <string name="invalid_enum">totally a invalid enum</string>
+    <string name="invalid_enum_throws_illegal_argument_exception">Invalid enum throws IllegalArgumentException.</string>
     <string name="invalid_id_caps">INVALID_ID</string>
     <string name="keyboard_caps">KEYBOARD</string>
     <string name="lang_change_caps">LANGUAGE_CHANGE</string>
@@ -89,11 +58,13 @@
     <string name="normal_caps">NORMAL</string>
     <string name="not_supported_caps">NOT_SUPPORTED</string>
     <string name="not_used_caps">NOT_USED</string>
+    <string name="null_enum_list_throws_null_pointer_exception">Null enum list throws NullPointerException.</string>
     <string name="off_caps">OFF</string>
     <string name="on_caps">ON</string>
     <string name="pcm_caps">PCM</string>
     <string name="positive_jingle_caps">POSITIVE_JINGLE</string>
     <string name="request_while_in_none_hmi_level_caps">REQUEST_WHILE_IN_NONE_HMI_LEVEL</string>
+    <string name="result_of_valuestring_should_be_null">Result of valueForString should be null.</string>
     <string name="rpc_caps">RPC</string>
     <string name="sdl_android_github_link">https://github.com/smartdevicelink/sdl_android</string>
     <string name="start_session">StartSession</string>
@@ -731,7 +702,13 @@
     <string name="courtesy_wipe_caps">COURTESYWIPE</string>
     <string name="auto_adjust_caps">AUTO_ADJUST</string>
     <string name="stalled_caps">STALLED</string>
-
+    <string name="invalid_byte_match_didnt_return_null">Invalid byte match didn\'t return null</string>
+    <string name="invalid_string_match_didnt_return_null">Invalid string match didn\'t return null</string>
+    <string name="null_lookup_returns_a_value">Null lookup returns a value</string>
+    <string name="could_not_retrieve_value_for_null_string">Could not retrieve value for null string, should return null.</string>
+    <string name="could_not_retrieve_value_for_invalid_string">Could not retrieve value for invalid string, should return null.</string>
+    <string name="list_does_not_match_enum_test_list">List does not match enum test list.</string>
+    <string name="array_does_not_match_enum_values_array">Array does not match enum values array.</string>
 
 
 </resources>
