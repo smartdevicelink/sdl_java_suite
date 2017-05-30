@@ -257,9 +257,6 @@ public class WiProProtocolTests extends AndroidTestCase {
 		config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
 		connection = new SdlConnectionTestClass(config, null);
 		protocol = new WiProProtocol(connection);
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
 	}
 	
 	public void testNormalCase(){

@@ -1,6 +1,5 @@
 package com.smartdevicelink.SdlConnection;
 
-import android.os.Looper;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -12,6 +11,8 @@ import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
+import static com.smartdevicelink.SdlConnection.SdlConnection.RSERVICE_WAIT_MS;
+
 public class SdlConnectionTest extends AndroidTestCase {
 	
 	private static final String TAG = "SdlConnection Tests";
@@ -19,9 +20,6 @@ public class SdlConnectionTest extends AndroidTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
 	}
 
 	@Override
@@ -92,8 +90,12 @@ public class SdlConnectionTest extends AndroidTestCase {
 		if(didValidate){
 			assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
 		}else{
+			try {
+				wait(RSERVICE_WAIT_MS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			assertEquals(TransportType.BLUETOOTH, connection.getCurrentTransportType());
-
 		}
 	}
 	
