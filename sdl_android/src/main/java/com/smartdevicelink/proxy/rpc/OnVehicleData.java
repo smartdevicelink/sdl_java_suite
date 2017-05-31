@@ -10,6 +10,9 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import static com.smartdevicelink.proxy.constants.Names.timeout;
+
 /**
  *Individual requested DID result and data.
  *
@@ -277,11 +280,7 @@ public class OnVehicleData extends RPCNotification {
         super(hash);
     }
     public void setGps(GPSData gps) {
-    	if (gps != null) {
-    		parameters.put(KEY_GPS, gps);
-    	} else {
-    		parameters.remove(KEY_GPS);
-    	}
+        setParameters(KEY_GPS, gps);
     }
     @SuppressWarnings("unchecked")
     public GPSData getGps() {
@@ -300,32 +299,20 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setSpeed(Double speed) {
-    	if (speed != null) {
-    		parameters.put(KEY_SPEED, speed);
-    	} else {
-    		parameters.remove(KEY_SPEED);
-    	}
+        setParameters(KEY_SPEED, speed);
     }
     public Double getSpeed() {
     	Object object = parameters.get(KEY_SPEED);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setRpm(Integer rpm) {
-    	if (rpm != null) {
-    		parameters.put(KEY_RPM, rpm);
-    	} else {
-    		parameters.remove(KEY_RPM);
-    	}
+        setParameters(KEY_RPM, rpm);
     }
     public Integer getRpm() {
     	return (Integer) parameters.get(KEY_RPM);
     }
     public void setFuelLevel(Double fuelLevel) {
-    	if (fuelLevel != null) {
-    		parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-    	} else {
-    		parameters.remove(KEY_FUEL_LEVEL);
-    	}
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     public Double getFuelLevel() {
     	Object object = parameters.get(KEY_FUEL_LEVEL);
@@ -340,11 +327,7 @@ public class OnVehicleData extends RPCNotification {
         return getFuelLevelState();
     }
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
-        if (fuelLevelState != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     public ComponentVolumeStatus getFuelLevelState() {
         Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
@@ -362,43 +345,27 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setInstantFuelConsumption(Double instantFuelConsumption) {
-    	if (instantFuelConsumption != null) {
-    		parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-    	} else {
-    		parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-    	}
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     public Double getInstantFuelConsumption() {
     	Object object = parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setExternalTemperature(Double externalTemperature) {
-    	if (externalTemperature != null) {
-    		parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-    	} else {
-    		parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-    	}
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     public Double getExternalTemperature() {
     	Object object = parameters.get(KEY_EXTERNAL_TEMPERATURE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setVin(String vin) {
-    	if (vin != null) {
-    		parameters.put(KEY_VIN, vin);
-    	} else {
-    		parameters.remove(KEY_VIN);
-    	}
+        setParameters(KEY_VIN, vin);
     }
     public String getVin() {
     	return (String) parameters.get(KEY_VIN);
     }
     public void setPrndl(PRNDL prndl) {
-    	if (prndl != null) {
-    		parameters.put(KEY_PRNDL, prndl);
-    	} else {
-    		parameters.remove(KEY_PRNDL);
-    	}
+        setParameters(KEY_PRNDL, prndl);
     }
     public PRNDL getPrndl() {
         Object obj = parameters.get(KEY_PRNDL);
@@ -410,11 +377,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setTirePressure(TireStatus tirePressure) {
-    	if (tirePressure != null) {
-    		parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-    	} else {
-    		parameters.remove(KEY_TIRE_PRESSURE);
-    	}
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
@@ -431,21 +394,13 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setOdometer(Integer odometer) {
-    	if (odometer != null) {
-    		parameters.put(KEY_ODOMETER, odometer);
-    	} else {
-    		parameters.remove(KEY_ODOMETER);
-    	}
+        setParameters(KEY_ODOMETER, odometer);
     }
     public Integer getOdometer() {
     	return (Integer) parameters.get(KEY_ODOMETER);
     }
     public void setBeltStatus(BeltStatus beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        setParameters(KEY_BELT_STATUS, beltStatus);
     }
     @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
@@ -462,11 +417,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setBodyInformation(BodyInformation bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
@@ -483,11 +434,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setDeviceStatus(DeviceStatus deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
@@ -504,11 +451,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setDriverBraking(VehicleDataEventStatus driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     public VehicleDataEventStatus getDriverBraking() {
         Object obj = parameters.get(KEY_DRIVER_BRAKING);
@@ -520,11 +463,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setWiperStatus(WiperStatus wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     public WiperStatus getWiperStatus() {
         Object obj = parameters.get(KEY_WIPER_STATUS);
@@ -536,11 +475,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setHeadLampStatus(HeadLampStatus headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
@@ -557,44 +492,28 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setEngineTorque(Double engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     public Double getEngineTorque() {
     	Object object = parameters.get(KEY_ENGINE_TORQUE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setAccPedalPosition(Double accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     public Double getAccPedalPosition() {
     	Object object = parameters.get(KEY_ACC_PEDAL_POSITION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Double getSteeringWheelAngle() {
     	Object object = parameters.get(KEY_STEERING_WHEEL_ANGLE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setECallInfo(ECallInfo eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
@@ -611,11 +530,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setAirbagStatus(AirbagStatus airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
@@ -632,11 +547,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
     @SuppressWarnings("unchecked")
     public EmergencyEvent getEmergencyEvent() {
@@ -653,11 +564,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
     @SuppressWarnings("unchecked")
     public ClusterModeStatus getClusterModeStatus() {
@@ -674,11 +581,7 @@ public class OnVehicleData extends RPCNotification {
         return null;
     }
     public void setMyKey(MyKey myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
+        setParameters(KEY_MY_KEY, myKey);
     }
     @SuppressWarnings("unchecked")
     public MyKey getMyKey() {

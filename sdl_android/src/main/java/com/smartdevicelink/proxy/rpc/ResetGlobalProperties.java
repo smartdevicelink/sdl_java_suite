@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -118,10 +118,6 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
     public void setProperties( List<GlobalProperty> properties ) {
-        if (properties != null) {
-            parameters.put(KEY_PROPERTIES, properties );
-        } else {
-        	parameters.remove(KEY_PROPERTIES);
-        }
+		setParameters(KEY_PROPERTIES, properties);
     }
 }

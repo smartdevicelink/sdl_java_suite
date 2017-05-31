@@ -13,33 +13,21 @@ public class OnStreamRPC extends RPCNotification {
 	}
 		
 	public void setFileName(String fileName) {
-    	if (fileName != null) {
-    		parameters.put(KEY_FILENAME, fileName);
-    	} else {
-    		parameters.remove(KEY_FILENAME);
-    	}
+		setParameters(KEY_FILENAME, fileName);
 	}
 	public String getFileName() {
 		return (String) parameters.get(KEY_FILENAME);
 	}	
 	
 	public void setBytesComplete(Long bytesComplete) {
-    	if (bytesComplete != null) {
-    		parameters.put(KEY_BYTESCOMPLETE, bytesComplete);
-    	} else {
-    		parameters.remove(KEY_BYTESCOMPLETE);
-    	}
+		setParameters(KEY_BYTESCOMPLETE, bytesComplete);
 	}
 	public Long getBytesComplete() {
 		return (Long) parameters.get(KEY_BYTESCOMPLETE);
 	}
 
 	public void setFileSize(Long fileSize) {
-    	if (fileSize != null) {
-    		parameters.put(KEY_FILESIZE, fileSize);
-    	} else {
-    		parameters.remove(KEY_FILESIZE);
-    	}
+		setParameters(KEY_FILESIZE, fileSize);
 	}
 	public Long getFileSize() {
 		return (Long) parameters.get(KEY_FILESIZE);

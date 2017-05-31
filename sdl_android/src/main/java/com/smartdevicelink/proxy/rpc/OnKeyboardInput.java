@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
+
+import java.util.Hashtable;
 
 /**
  * On-screen keyboard event. Can be full string or individual keypresses depending on keyboard mode.
@@ -75,19 +75,11 @@ public class OnKeyboardInput extends RPCNotification {
     }
 
     public void setEvent(KeyboardEvent event) {
-        if (event != null) {
-            parameters.put(KEY_EVENT, event);
-        } else {
-            parameters.remove(KEY_EVENT);
-        }
+        setParameters(KEY_EVENT, event);
     }
 
     public void setData(String data) {
-        if (data != null) {
-            parameters.put(KEY_DATA, data);
-        } else {
-            parameters.remove(KEY_DATA);
-        }
+        setParameters(KEY_DATA, data);
     }
     public String getData() {
         Object obj = parameters.get(KEY_DATA);

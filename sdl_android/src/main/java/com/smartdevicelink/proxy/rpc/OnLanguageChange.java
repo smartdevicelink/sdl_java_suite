@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.Hashtable;
 
 /**
  * Provides information to what language the Sdl HMI language was changed
@@ -77,11 +77,7 @@ public class OnLanguageChange extends RPCNotification {
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
     public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-        	parameters.remove(KEY_LANGUAGE);
-        }
+        setParameters(KEY_LANGUAGE, language);
     }
     /**
      * <p>Returns language that current SDL voice engine(VR+TTS) use</p>
@@ -101,11 +97,7 @@ public class OnLanguageChange extends RPCNotification {
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
     /**
      * <p>Returns language that current  display use</p>

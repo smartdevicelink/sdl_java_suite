@@ -18,11 +18,7 @@ public class GetWayPointsResponse extends RPCResponse {
     }
 
     public void setWayPoints(List<LocationDetails> wayPoints) {
-    	if (wayPoints != null) {
-    		parameters.put(KEY_WAY_POINTS, wayPoints);
-    	} else {
-    		parameters.remove(KEY_WAY_POINTS);
-    	}
+		setParameters(KEY_WAY_POINTS, wayPoints);
     }
     @SuppressWarnings("unchecked")
     public List<LocationDetails> getWayPoints() {

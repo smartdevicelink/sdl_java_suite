@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+
+import java.util.Hashtable;
 
 /**
  * <p>
@@ -127,11 +127,7 @@ public class OnButtonPress extends RPCNotification {
      * @param buttonName name of the button
      */    
     public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
-        }
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
      * @return ButtonPressMode whether this is a long or short button press event
@@ -150,18 +146,10 @@ public class OnButtonPress extends RPCNotification {
      * @param buttonPressMode indicates whether this is a short or long press
      */    
     public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
-        if (buttonPressMode != null) {
-            parameters.put(KEY_BUTTON_PRESS_MODE, buttonPressMode );
-        } else {
-            parameters.remove(KEY_BUTTON_PRESS_MODE);
-        }
+        setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
     }
     public void setCustomButtonName(Integer customButtonID) {
-    	if (customButtonID != null) {
-    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    	} else {
-    		parameters.remove(KEY_CUSTOM_BUTTON_ID);
-    	}
+        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
     public Integer getCustomButtonName() {
     	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);

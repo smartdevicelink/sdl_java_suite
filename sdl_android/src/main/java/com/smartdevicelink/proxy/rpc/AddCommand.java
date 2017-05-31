@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
 * 
@@ -133,11 +133,7 @@ public class AddCommand extends RPCRequest {
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */
     public void setCmdID(Integer cmdID) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID);
-        } else {
-            parameters.remove(KEY_CMD_ID);
-        }
+		setParameters(KEY_CMD_ID, cmdID);
     }
 	/**
 	 * <p>
@@ -175,11 +171,7 @@ public class AddCommand extends RPCRequest {
 	 *            a menuParams object
 	 */    
     public void setMenuParams(MenuParams menuParams) {
-        if (menuParams != null) {
-            parameters.put(KEY_MENU_PARAMS, menuParams);
-        } else {
-            parameters.remove(KEY_MENU_PARAMS);
-        }
+        setParameters(KEY_MENU_PARAMS, menuParams);
     }
 	/**
 	 * <p>
@@ -219,11 +211,7 @@ public class AddCommand extends RPCRequest {
 	 *            not zero-length, not whitespace only) element</p>
 	 */
     public void setVrCommands( List<String> vrCommands ) {
-        if (vrCommands != null) {
-            parameters.put(KEY_VR_COMMANDS, vrCommands );
-        } else {
-            parameters.remove(KEY_VR_COMMANDS);
-        }
+		setParameters(KEY_VR_COMMANDS, vrCommands);
     }
 
 	/**
@@ -259,10 +247,6 @@ public class AddCommand extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCmdIcon(Image cmdIcon) {
-        if (cmdIcon != null) {
-            parameters.put(KEY_CMD_ICON, cmdIcon);
-        } else {
-            parameters.remove(KEY_CMD_ICON);
-        }
+        setParameters(KEY_CMD_ICON, cmdIcon);
     }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
+import static com.smartdevicelink.proxy.constants.Names.timeout;
+
 /**
  * Creates a full screen overlay containing a large block of formatted text that
  * can be scrolled with up to 8 SoftButtons defined
@@ -101,11 +103,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setScrollableMessageBody(String scrollableMessageBody) {
-        if (scrollableMessageBody != null) {
-            parameters.put(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
-        } else {
-        	parameters.remove(KEY_SCROLLABLE_MESSAGE_BODY);
-        }
+		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
     }
 
 	/**
@@ -127,11 +125,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
 	 */
     public void setTimeout(Integer timeout) {
-        if (timeout != null) {
-            parameters.put(KEY_TIMEOUT, timeout);
-        } else {
-        	parameters.remove(KEY_TIMEOUT);
-        }
+		setParameters(KEY_TIMEOUT, timeout);
     }
 
 	/**
@@ -154,11 +148,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTONS);
-        }
+		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 	/**

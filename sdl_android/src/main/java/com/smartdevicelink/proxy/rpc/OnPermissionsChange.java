@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
 
 /**
  * Provides update to app of which sets of functions are available
@@ -89,10 +89,6 @@ public class OnPermissionsChange extends RPCNotification {
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
 	public void setPermissionItem(List<PermissionItem> permissionItem) {
-		if (permissionItem != null) {
-			parameters.put(KEY_PERMISSION_ITEM, permissionItem);
-		} else {
-			parameters.remove(KEY_PERMISSION_ITEM);
-        }
+		setParameters(KEY_PERMISSION_ITEM, permissionItem);
 	}
 }

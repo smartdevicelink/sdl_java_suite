@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.DeliveryMode;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import java.util.Hashtable;
+import java.util.List;
 
 
 /**
@@ -68,12 +68,7 @@ public class SendLocation extends RPCRequest{
      * @param longitudeDegrees
      */
     public void setLongitudeDegrees(Double longitudeDegrees){
-        if(longitudeDegrees != null){
-            parameters.put(KEY_LON_DEGREES, longitudeDegrees);
-        }
-        else{
-            parameters.remove(KEY_LON_DEGREES);
-        }
+        setParameters(KEY_LON_DEGREES, longitudeDegrees);
     }
 
     /**
@@ -96,12 +91,7 @@ public class SendLocation extends RPCRequest{
      * @param latitudeDegrees
      */
     public void setLatitudeDegrees(Double latitudeDegrees){
-        if(latitudeDegrees != null){
-            parameters.put(KEY_LAT_DEGREES, latitudeDegrees);
-        }
-        else{
-            parameters.remove(KEY_LAT_DEGREES);
-        }
+        setParameters(KEY_LAT_DEGREES, latitudeDegrees);
     }
 
     /**
@@ -117,12 +107,7 @@ public class SendLocation extends RPCRequest{
      * @param locationName The name of the location
      */
     public void setLocationName(String locationName){
-        if(locationName != null){
-            parameters.put(KEY_LOCATION_NAME, locationName);
-        }
-        else{
-            parameters.remove(KEY_LOCATION_NAME);
-        }
+        setParameters(KEY_LOCATION_NAME, locationName);
     }
 
     /**
@@ -138,12 +123,7 @@ public class SendLocation extends RPCRequest{
      * @param locationDescription The description of the location
      */
     public void setLocationDescription(String locationDescription){
-        if(locationDescription != null){
-            parameters.put(KEY_LOCATION_DESCRIPTION, locationDescription);
-        }
-        else{
-            parameters.remove(KEY_LOCATION_DESCRIPTION);
-        }
+        setParameters(KEY_LOCATION_DESCRIPTION, locationDescription);
     }
 
     /**
@@ -159,12 +139,7 @@ public class SendLocation extends RPCRequest{
      * @param phoneNumber The phone number of the location
      */
     public void setPhoneNumber(String phoneNumber){
-        if(phoneNumber != null){
-            parameters.put(KEY_PHONE_NUMBER, phoneNumber);
-        }
-        else{
-            parameters.remove(KEY_PHONE_NUMBER);
-        }
+        setParameters(KEY_PHONE_NUMBER, phoneNumber);
     }
 
     /**
@@ -190,12 +165,7 @@ public class SendLocation extends RPCRequest{
      * @param addressLines The address lines of the location
      */
     public void setAddressLines(List<String> addressLines){
-        if(addressLines != null){
-            parameters.put(KEY_ADDRESS_LINES, addressLines);
-        }
-        else{
-            parameters.remove(KEY_ADDRESS_LINES);
-        }
+        setParameters(KEY_ADDRESS_LINES, addressLines);
     }
 
     /**
@@ -218,12 +188,7 @@ public class SendLocation extends RPCRequest{
      * @param locationImage The image of the location to send
      */
     public void setLocationImage(Image locationImage){
-        if(locationImage != null){
-            parameters.put(KEY_LOCATION_IMAGE, locationImage);
-        }
-        else{
-            parameters.remove(KEY_LOCATION_IMAGE);
-        }
+        setParameters(KEY_LOCATION_IMAGE, locationImage);
     }
 
 	public DeliveryMode getDeliveryMode() {
@@ -237,11 +202,7 @@ public class SendLocation extends RPCRequest{
 	}
 
 	public void setDeliveryMode(DeliveryMode deliveryMode) {
-		if (deliveryMode != null) {
-			parameters.put(KEY_DELIVERY_MODE, deliveryMode);
-		} else {
-			parameters.remove(KEY_DELIVERY_MODE);
-		}
+        setParameters(KEY_DELIVERY_MODE, deliveryMode);
 	}
 
     @SuppressWarnings("unchecked")
@@ -260,11 +221,7 @@ public class SendLocation extends RPCRequest{
 	}
 
 	public void setTimeStamp(DateTime timeStamp) {
-		if (timeStamp != null) {
-			parameters.put(KEY_TIME_STAMP, timeStamp);
-		} else {
-			parameters.remove(KEY_TIME_STAMP);
-		}
+        setParameters(KEY_TIME_STAMP, timeStamp);
 	}
 
     @SuppressWarnings("unchecked")
@@ -283,10 +240,6 @@ public class SendLocation extends RPCRequest{
 	}
 
 	public void setAddress(OasisAddress address) {
-		if (address != null) {
-			parameters.put(KEY_ADDRESS, address);
-		} else {
-			parameters.remove(KEY_ADDRESS);
-		}
+        setParameters(KEY_ADDRESS, address);
 	}
 }

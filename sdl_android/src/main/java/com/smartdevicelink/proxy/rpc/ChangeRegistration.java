@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * If the app recognizes during the app registration that the SDL HMI language
@@ -132,11 +132,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a language value
 	 */
     public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-        	parameters.remove(KEY_LANGUAGE);
-        }
+        setParameters(KEY_LANGUAGE, language);
     }
 
 	/**
@@ -161,11 +157,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a Language value
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
 	/**
@@ -189,12 +181,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param appName App name to set
      */
     public void setAppName(String appName){
-        if(appName != null){
-            parameters.put(KEY_APP_NAME, appName);
-        }
-        else{
-            parameters.remove(KEY_APP_NAME);
-        }
+        setParameters(KEY_APP_NAME, appName);
     }
     
     /**
@@ -212,12 +199,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param ngnAppName The NGN app name
      */
     public void setNgnMediaScreenAppName(String ngnAppName){
-        if(ngnAppName != null){
-            parameters.put(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
-        }
-        else{
-            parameters.remove(KEY_NGN_MEDIA_SCREEN_NAME);
-        }
+        setParameters(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
     }
     
     /**
@@ -235,12 +217,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param ttsName The TTS name to set
      */
     public void setTtsName(List<TTSChunk> ttsName){
-        if(ttsName != null){
-            parameters.put(KEY_TTS_NAME, ttsName);
-        }
-        else{
-            parameters.remove(KEY_TTS_NAME);
-        }
+        setParameters(KEY_TTS_NAME, ttsName);
     }
     
     /**
@@ -308,10 +285,6 @@ public class ChangeRegistration extends RPCRequest {
      *            </ul>
      */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        if (vrSynonyms != null) {
-            parameters.put(KEY_VR_SYNONYMS, vrSynonyms);
-        } else {
-            parameters.remove(KEY_VR_SYNONYMS);
-        }
+        setParameters(KEY_VR_SYNONYMS, vrSynonyms);
     }
 }

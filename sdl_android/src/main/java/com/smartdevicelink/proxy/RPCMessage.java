@@ -1,6 +1,9 @@
 package com.smartdevicelink.proxy;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public class RPCMessage extends RPCStruct  {
     public static final String KEY_REQUEST = "request";
@@ -70,6 +73,8 @@ public class RPCMessage extends RPCStruct  {
 		}
 		return null;
 	}
+
+	// Generalized Getters and Setters
 	
 	public void setParameters(String functionName, Object value) {
 		if (value != null) {
@@ -78,9 +83,56 @@ public class RPCMessage extends RPCStruct  {
 			parameters.remove(functionName);
 		}
 	}
-	
-	public Object getParameters(String functionName) {
-		return parameters.get(functionName);
+
+	public Object getParameters(String key) {
+		return parameters.get(key);
 	}
 
+	public Object getParameterArray(Class tClass, String key){
+		Object obj = parameters.get(key);
+		if (obj instanceof Hashtable) {
+			try {
+				Constructor constructor = tClass.getConstructor(Hashtable.class);
+				return constructor.newInstance((Hashtable<String, Object>) obj);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else if (obj instanceof List<?>) {
+			List<?> list = (List<?>)parameters.get(key);
+			if (list != null && list.size() > 0) {
+				Object item = list.get(0);
+				if (tClass.isInstance(item)) {
+					return list;
+				} else if (item instanceof Hashtable) {
+					List<Object> newList = new ArrayList<Object>();
+					for (Object hashObj : list) {
+						try {
+							Constructor constructor = tClass.getConstructor(Hashtable.class);
+							newList.add(constructor.newInstance((Hashtable<String, Object>)hashObj));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					return newList;
+				}
+			}
+		}
+		return null;
+	}
+
+	// Common Object Getters
+
+	public String getString(String key) {
+		return (String) getParameters(key);
+	}
+
+	public Integer getInteger(String key) {
+		return (Integer) getParameters(key);
+	}
+
+	public Double getDouble(String key) {
+		return (Double) getParameters(key);
+	}
+
+	public Boolean getBoolean(String key) { return (Boolean) getParameters(key); }
 }

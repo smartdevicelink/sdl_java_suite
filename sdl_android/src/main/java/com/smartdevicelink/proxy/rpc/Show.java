@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Updates the application's display text area, regardless of whether or not
@@ -211,11 +211,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField1(String mainField1) {
-        if (mainField1 != null) {
-            parameters.put(KEY_MAIN_FIELD_1, mainField1);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_1);
-        }
+		setParameters(KEY_MAIN_FIELD_1, mainField1);
     }
 	/**
 	 * Gets the text displayed on the second display line of a two-line display
@@ -245,11 +241,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField2(String mainField2) {
-        if (mainField2 != null) {
-            parameters.put(KEY_MAIN_FIELD_2, mainField2);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_2);
-        }
+		setParameters(KEY_MAIN_FIELD_2, mainField2);
     }
 
 	/**
@@ -283,11 +275,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField3(String mainField3) {
-        if (mainField3 != null) {
-            parameters.put(KEY_MAIN_FIELD_3, mainField3);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_3);
-        }
+		setParameters(KEY_MAIN_FIELD_3, mainField3);
     }
 
 	/**
@@ -321,11 +309,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField4(String mainField4) {
-        if (mainField4 != null) {
-            parameters.put(KEY_MAIN_FIELD_4, mainField4);
-        } else {
-        	parameters.remove(KEY_MAIN_FIELD_4);
-        }
+		setParameters(KEY_MAIN_FIELD_4, mainField4);
     }
 	/**
 	 * Gets the alignment that Specifies how mainField1 and mainField2 text
@@ -359,11 +343,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlignment(TextAlignment alignment) {
-        if (alignment != null) {
-            parameters.put(KEY_ALIGNMENT, alignment);
-        } else {
-        	parameters.remove(KEY_ALIGNMENT);
-        }
+		setParameters(KEY_ALIGNMENT, alignment);
     }
 	/**
 	 * Gets text in the Status Bar
@@ -392,11 +372,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setStatusBar(String statusBar) {
-        if (statusBar != null) {
-            parameters.put(KEY_STATUS_BAR, statusBar);
-        } else {
-        	parameters.remove(KEY_STATUS_BAR);
-        }
+		setParameters(KEY_STATUS_BAR, statusBar);
     }
 	/**
 	 * Gets the String value of the MediaClock
@@ -425,11 +401,7 @@ public class Show extends RPCRequest {
 	 */
 	@Deprecated
     public void setMediaClock(String mediaClock) {
-        if (mediaClock != null) {
-            parameters.put(KEY_MEDIA_CLOCK, mediaClock);
-        } else {
-        	parameters.remove(KEY_MEDIA_CLOCK);
-        }
+		setParameters(KEY_MEDIA_CLOCK, mediaClock);
     }
 	/**
 	 * Gets the text in the track field
@@ -453,11 +425,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMediaTrack(String mediaTrack) {
-        if (mediaTrack != null) {
-            parameters.put(KEY_MEDIA_TRACK, mediaTrack);
-        } else {
-        	parameters.remove(KEY_MEDIA_TRACK);
-        }
+		setParameters(KEY_MEDIA_TRACK, mediaTrack);
     }
 
 	/**
@@ -471,11 +439,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setGraphic(Image graphic) {
-        if (graphic != null) {
-            parameters.put(KEY_GRAPHIC, graphic);
-        } else {
-        	parameters.remove(KEY_GRAPHIC);
-        }
+		setParameters(KEY_GRAPHIC, graphic);
     }
 
 	/**
@@ -502,11 +466,7 @@ public class Show extends RPCRequest {
 
     
     public void setSecondaryGraphic(Image secondaryGraphic) {
-        if (secondaryGraphic != null) {
-            parameters.put(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
-        } else {
-        	parameters.remove(KEY_SECONDARY_GRAPHIC);
-        }
+		setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
     }
 
 
@@ -571,11 +531,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTONS);
-        }
+		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 	/**
@@ -614,10 +570,6 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCustomPresets(List<String> customPresets) {
-        if (customPresets != null) {
-            parameters.put(KEY_CUSTOM_PRESETS, customPresets);
-        } else {
-        	parameters.remove(KEY_CUSTOM_PRESETS);
-        }
+		setParameters(KEY_CUSTOM_PRESETS, customPresets);
     }
 }

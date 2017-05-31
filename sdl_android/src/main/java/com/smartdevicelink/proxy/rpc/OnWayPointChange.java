@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import static com.smartdevicelink.proxy.constants.Names.state;
+
 public class OnWayPointChange extends RPCNotification {
 	public static final String KEY_WAY_POINTS = "wayPoints";
 
@@ -39,10 +41,6 @@ public class OnWayPointChange extends RPCNotification {
 	}
 
 	public void setWayPoints(List<LocationDetails> wayPoints) {
-		if (wayPoints != null) {
-			parameters.put(KEY_WAY_POINTS, wayPoints);
-		} else {
-			parameters.remove(KEY_WAY_POINTS);
-        }
+		setParameters(KEY_WAY_POINTS, wayPoints);
 	}
 }

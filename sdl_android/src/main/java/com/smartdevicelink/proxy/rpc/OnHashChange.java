@@ -1,9 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+
+import java.util.Hashtable;
+
 /**
  * 	Notification containing an updated hashID which can be used over connection cycles (i.e. loss of connection, ignition cycles, etc.).
  * Sent after initial registration and subsequently after any change in the calculated hash of all persisted app data.
@@ -58,11 +59,7 @@ public class OnHashChange extends RPCNotification {
     }
    
     public void setHashID(String hashID) {
-        if (hashID != null) {
-            parameters.put(KEY_HASH_ID, hashID);
-        } else {
-        	parameters.remove(KEY_HASH_ID);
-        }
+        setParameters(KEY_HASH_ID, hashID);
     }   
     
 }

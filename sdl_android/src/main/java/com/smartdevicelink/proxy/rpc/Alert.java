@@ -1,11 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
@@ -149,7 +148,7 @@ public class Alert extends RPCRequest {
 	 *         in the first field during the Alert
 	 */    
     public String getAlertText1() {
-        return (String) parameters.get(KEY_ALERT_TEXT_1);
+        return getString(KEY_ALERT_TEXT_1);
     }
 	/**
 	 * Sets the String to be displayed in the first field of the display during
@@ -167,11 +166,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlertText1(String alertText1) {
-        if (alertText1 != null) {
-            parameters.put(KEY_ALERT_TEXT_1, alertText1);
-        } else {
-            parameters.remove(KEY_ALERT_TEXT_1);
-        }
+		setParameters(KEY_ALERT_TEXT_1, alertText1);
     }
 	/**
 	 * Gets the text which is displayed in the second field of the display
@@ -181,7 +176,7 @@ public class Alert extends RPCRequest {
 	 *         in the second field during the Alert
 	 */    
     public String getAlertText2() {
-        return (String) parameters.get(KEY_ALERT_TEXT_2);
+		return getString(KEY_ALERT_TEXT_2);
     }
 	/**
 	 * Sets the String to be displayed in the second field of the display during
@@ -200,11 +195,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlertText2(String alertText2) {
-        if (alertText2 != null) {
-            parameters.put(KEY_ALERT_TEXT_2, alertText2);
-        } else {
-            parameters.remove(KEY_ALERT_TEXT_2);
-        }
+		setParameters(KEY_ALERT_TEXT_2, alertText2);
     }
 
 	/**
@@ -217,7 +208,7 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getAlertText3() {
-        return (String) parameters.get(KEY_ALERT_TEXT_3);
+		return getString(KEY_ALERT_TEXT_3);
     }
 
 	/**
@@ -239,11 +230,7 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAlertText3(String alertText3) {
-        if (alertText3 != null) {
-            parameters.put(KEY_ALERT_TEXT_3, alertText3);
-        } else {
-            parameters.remove(KEY_ALERT_TEXT_3);
-        }
+		setParameters(KEY_ALERT_TEXT_3, alertText3);
     }
 	/**
 	 * Gets TTSChunk[], the Array of type TTSChunk which, taken together,
@@ -254,22 +241,7 @@ public class Alert extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsChunks() {
-        if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<TTSChunk>) getParameterArray(TTSChunk.class, KEY_TTS_CHUNKS);
     }
 	/**
 	 * Sets array of type TTSChunk which, taken together, specify what is to be
@@ -280,11 +252,7 @@ public class Alert extends RPCRequest {
 	 *           <p> <b>Notes: </b>Array must have a least one element</p>
 	 */    
     public void setTtsChunks(List<TTSChunk> ttsChunks) {
-        if (ttsChunks != null) {
-            parameters.put(KEY_TTS_CHUNKS, ttsChunks);
-        } else {
-            parameters.remove(KEY_TTS_CHUNKS);
-        }
+		setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 	/**
 	 * Gets the duration of the displayed portion of the alert, in milliseconds
@@ -293,7 +261,7 @@ public class Alert extends RPCRequest {
 	 *         displayed portion of the alert, in milliseconds
 	 */    
     public Integer getDuration() {
-        return (Integer) parameters.get(KEY_DURATION);
+		return getInteger(KEY_DURATION);
     }
 	/**
 	 * <p>Sets the duration of the displayed portion of the alert, in milliseconds.
@@ -313,11 +281,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setDuration(Integer duration) {
-        if (duration != null) {
-            parameters.put(KEY_DURATION, duration);
-        } else {
-            parameters.remove(KEY_DURATION);
-        }
+		setParameters(KEY_DURATION, duration);
     }
 	/**
 	 * Gets a Boolean value representing the alert tone
@@ -326,7 +290,7 @@ public class Alert extends RPCRequest {
 	 *         TTS (if any) is spoken
 	 */    
     public Boolean getPlayTone() {
-        return (Boolean) parameters.get(KEY_PLAY_TONE);
+		return getBoolean(KEY_PLAY_TONE);
     }
 	/**
 	 * Sets whether the alert tone should be played before the TTS (if any) is
@@ -339,11 +303,7 @@ public class Alert extends RPCRequest {
 	 *           <p> <b>Notes: </b>If omitted, default is true</p>
 	 */    
     public void setPlayTone(Boolean playTone) {
-        if (playTone != null) {
-            parameters.put(KEY_PLAY_TONE, playTone);
-        } else {
-            parameters.remove(KEY_PLAY_TONE);
-        }
+		setParameters(KEY_PLAY_TONE, playTone);
     }
 
 	/**
@@ -355,22 +315,7 @@ public class Alert extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<SoftButton>) getParameterArray(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
 	/**
@@ -390,24 +335,12 @@ public class Alert extends RPCRequest {
 	 */
     
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
     public Boolean getProgressIndicator() {
-        final Object obj = parameters.get(KEY_PROGRESS_INDICATOR);
-        if (obj instanceof Boolean) {
-            return (Boolean) obj;
-        }
-        return null;
+        return getBoolean(KEY_PROGRESS_INDICATOR);
     }
     public void setProgressIndicator(Boolean progressIndicator) {
-        if (progressIndicator != null) {
-            parameters.put(KEY_PROGRESS_INDICATOR, progressIndicator);
-        } else {
-            parameters.remove(KEY_PROGRESS_INDICATOR);
-        }
-    }    
+        setParameters(KEY_PROGRESS_INDICATOR, progressIndicator);
+    }
 }

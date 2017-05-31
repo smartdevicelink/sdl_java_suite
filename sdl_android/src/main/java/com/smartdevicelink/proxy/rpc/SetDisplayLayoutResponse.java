@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCResponse;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import static com.smartdevicelink.proxy.constants.Names.displayCapabilities;
 
 /**
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
@@ -49,11 +51,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-        if (displayCapabilities != null) {
-            parameters.put(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
-        } else {
-            parameters.remove(KEY_DISPLAY_CAPABILITIES);
-        }
+        setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -77,11 +75,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
-            parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
-        } else {
-            parameters.remove(KEY_BUTTON_CAPABILITIES);
-        }
+        setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -105,11 +99,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
-            parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
-        } else {
-            parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);
-        }
+        setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,11 +114,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-        if (presetBankCapabilities != null) {
-            parameters.put(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
-        } else {
-            parameters.remove(KEY_PRESET_BANK_CAPABILITIES);
-        }
+        setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
     }
     
 }

@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+
+import java.util.Hashtable;
 
 /**
  * Slider Response is sent, when Slider has been called
@@ -36,11 +36,7 @@ public class SliderResponse extends RPCResponse {
      * @param sliderPosition
      */
     public void setSliderPosition(Integer sliderPosition) {
-    	if (sliderPosition != null) {
-    		parameters.put(KEY_SLIDER_POSITION, sliderPosition);
-    	} else {
-    		parameters.remove(KEY_SLIDER_POSITION);
-    	}
+		setParameters(KEY_SLIDER_POSITION, sliderPosition);
     }
     /**
      * Gets an Initial position of slider control

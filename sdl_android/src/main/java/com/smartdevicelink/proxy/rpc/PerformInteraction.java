@@ -1,13 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * Performs an application-initiated interaction in which the user can select a
  * {@linkplain Choice} from among the specified Choice Sets. For instance, an
@@ -156,11 +157,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            a String value that Displayed when the interaction begins
 	 */    
     public void setInitialText(String initialText) {
-        if (initialText != null) {
-            parameters.put(KEY_INITIAL_TEXT, initialText);
-        } else {
-        	parameters.remove(KEY_INITIAL_TEXT);
-        }
+		setParameters(KEY_INITIAL_TEXT, initialText);
     }
 	/**
 	 * Gets an An array of one or more TTSChunks that, taken together, specify
@@ -197,11 +194,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            user at the start of an interaction
 	 */    
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-        if (initialPrompt != null) {
-            parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
-        } else {
-        	parameters.remove(KEY_INITIAL_PROMPT);
-        }
+		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
     }
 	/**
 	 * Gets the Indicates mode that indicate how user selects interaction
@@ -230,11 +223,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            MANUAL_ONLY or BOTH)
 	 */    
     public void setInteractionMode(InteractionMode interactionMode) {
-        if (interactionMode != null) {
-            parameters.put(KEY_INTERACTION_MODE, interactionMode);
-        } else {
-        	parameters.remove(KEY_INTERACTION_MODE);
-        }
+		setParameters(KEY_INTERACTION_MODE, interactionMode);
     }
 	/**
 	 * Gets a List<Integer> value representing an Array of one or more Choice
@@ -269,11 +258,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */    
     public void setInteractionChoiceSetIDList(List<Integer> interactionChoiceSetIDList) {
-        if (interactionChoiceSetIDList != null) {
-            parameters.put(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
-        } else {
-        	parameters.remove(KEY_INTERACTION_CHOICE_SET_ID_LIST);
-        }
+		setParameters(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
     }
 	/**
 	 * Gets a List<TTSChunk> which taken together, specify the help phrase to
@@ -319,11 +304,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            session
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-        if (helpPrompt != null) {
-            parameters.put(KEY_HELP_PROMPT, helpPrompt);
-        } else {
-        	parameters.remove(KEY_HELP_PROMPT);
-        }
+		setParameters(KEY_HELP_PROMPT, helpPrompt);
     }
 	/**
 	 * Gets An array of TTSChunks which, taken together, specify the phrase to
@@ -363,11 +344,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            listen times out during the VR session
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-        if (timeoutPrompt != null) {
-            parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
-        } else {
-        	parameters.remove(KEY_TIMEOUT_PROMPT);
-        }
+		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
     }
 	/**
 	 * Gets a Integer value representing the amount of time, in milliseconds,
@@ -397,11 +374,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 5000; Max Value: 100000
 	 */    
     public void setTimeout(Integer timeout) {
-        if (timeout != null) {
-            parameters.put(KEY_TIMEOUT, timeout);
-        } else {
-        	parameters.remove(KEY_TIMEOUT);
-        }
+		setParameters(KEY_TIMEOUT, timeout);
     }
 
 	/**
@@ -444,11 +417,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-        if (vrHelp != null) {
-            parameters.put(KEY_VR_HELP, vrHelp);
-        } else {
-        	parameters.remove(KEY_VR_HELP);
-        }
+		setParameters(KEY_VR_HELP, vrHelp);
     }
     
     public LayoutMode getInteractionLayout() {
@@ -462,11 +431,6 @@ public class PerformInteraction extends RPCRequest {
     }
   
     public void setInteractionLayout( LayoutMode interactionLayout ) {
-        if (interactionLayout != null) {
-        	parameters.put(KEY_INTERACTION_LAYOUT, interactionLayout );
-        }
-        else {
-        	parameters.remove(KEY_INTERACTION_LAYOUT);
-        }
+		setParameters(KEY_INTERACTION_LAYOUT, interactionLayout);
     }    
 }

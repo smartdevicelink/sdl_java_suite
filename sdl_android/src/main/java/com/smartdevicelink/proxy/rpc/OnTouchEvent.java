@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * 
@@ -69,11 +69,7 @@ public class OnTouchEvent extends RPCNotification {
     }
     
     public void setType(TouchType type) {
-    	if (type != null) {
-    		parameters.put(KEY_TYPE, type);
-    	} else {
-    		parameters.remove(KEY_TYPE);
-    	}
+		setParameters(KEY_TYPE, type);
     }
     
     public TouchType getType() {
@@ -87,11 +83,7 @@ public class OnTouchEvent extends RPCNotification {
     }
     
     public void setEvent(List<TouchEvent> event) {
-        if (event != null) {
-            parameters.put(KEY_EVENT, event);
-        } else {
-        	parameters.remove(KEY_EVENT);
-        }
+		setParameters(KEY_EVENT, event);
     }
     
     @SuppressWarnings("unchecked")

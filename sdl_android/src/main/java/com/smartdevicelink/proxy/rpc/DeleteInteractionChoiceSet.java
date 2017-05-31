@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
 
 /**
  * Deletes an existing Choice Set identified by the parameter
@@ -91,10 +91,6 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-        if (interactionChoiceSetID != null) {
-            parameters.put(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID );
-        } else {
-            parameters.remove(KEY_INTERACTION_CHOICE_SET_ID);
-        }
+		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 }

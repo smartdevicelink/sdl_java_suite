@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /** An asynchronous request from the device; binary data can be included in hybrid part of message for some requests (such as HTTP, Proprietary, or Authentication requests)
  * 
  * <p><b>Parameter List</b></p>
@@ -77,11 +78,7 @@ public class SystemRequest extends RPCRequest {
     }
  
     public void setLegacyData( List<String> data ) {
-    	if ( data!= null) {
-    		parameters.put(KEY_DATA, data );
-    	} else {
-            parameters.remove(KEY_DATA);
-        }
+        setParameters(KEY_DATA, data);
     }    
             
     public String getFileName() {
@@ -89,11 +86,7 @@ public class SystemRequest extends RPCRequest {
     }
     
     public void setFileName(String fileName) {
-        if (fileName != null) {
-            parameters.put(KEY_FILE_NAME, fileName);
-        } else {
-        	parameters.remove(KEY_FILE_NAME);
-        }
+        setParameters(KEY_FILE_NAME, fileName);
     }    
 
     public RequestType getRequestType() {
@@ -107,10 +100,6 @@ public class SystemRequest extends RPCRequest {
     }
 
     public void setRequestType(RequestType requestType) {
-        if (requestType != null) {
-            parameters.put(KEY_REQUEST_TYPE, requestType);
-        } else {
-            parameters.remove(KEY_REQUEST_TYPE);
-        }
+        setParameters(KEY_REQUEST_TYPE, requestType);
     }
 }

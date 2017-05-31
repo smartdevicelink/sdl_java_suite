@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import java.util.Hashtable;
 
 /**
  * Notifies application that user has depressed or released a button to which
@@ -122,11 +122,7 @@ public class OnButtonEvent extends RPCNotification {
      * @param buttonName name of the button
      */    
     public void setButtonName(ButtonName buttonName) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName);
-        } else {
-        	parameters.remove(KEY_BUTTON_NAME);
-        }
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
     /**
      * <p>Return <i>{@linkplain ButtonEventMode} indicates the button was depressed or released</i></p>
@@ -147,18 +143,10 @@ public class OnButtonEvent extends RPCNotification {
      * @see ButtonEventMode
      */    
     public void setButtonEventMode(ButtonEventMode buttonEventMode) {
-        if (buttonEventMode != null) {
-            parameters.put(KEY_BUTTON_EVENT_MODE, buttonEventMode);
-        } else {
-    		parameters.remove(KEY_BUTTON_EVENT_MODE);
-    	}
+        setParameters(KEY_BUTTON_EVENT_MODE, buttonEventMode);
     }
     public void setCustomButtonID(Integer customButtonID) {
-    	if (customButtonID != null) {
-    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    	} else {
-    		parameters.remove(KEY_CUSTOM_BUTTON_ID);
-    	}
+        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
     public Integer getCustomButtonID() {
     	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);

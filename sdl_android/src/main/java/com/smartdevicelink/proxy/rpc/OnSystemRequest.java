@@ -1,11 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -14,6 +8,13 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud. Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
  * 
@@ -238,11 +239,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setRequestType(RequestType requestType) {
-        if (requestType != null) {
-            parameters.put(KEY_REQUEST_TYPE, requestType);
-        } else {
-            parameters.remove(KEY_REQUEST_TYPE);
-        }
+        setParameters(KEY_REQUEST_TYPE, requestType);
     }
 
     public String getUrl() {
@@ -262,11 +259,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setUrl(String url) {
-        if (url != null) {
-            parameters.put(KEY_URL, url);
-        } else {
-            parameters.remove(KEY_URL);
-        }
+        setParameters(KEY_URL, url);
     }
 
     public FileType getFileType() {
@@ -281,11 +274,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setFileType(FileType fileType) {
-        if (fileType != null) {
-            parameters.put(KEY_FILE_TYPE, fileType);
-        } else {
-            parameters.remove(KEY_FILE_TYPE);
-        }
+        setParameters(KEY_FILE_TYPE, fileType);
     }
 
     /**
@@ -316,11 +305,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setOffset(Long offset) {
-        if (offset != null) {
-            parameters.put(KEY_OFFSET, offset);
-        } else {
-            parameters.remove(KEY_OFFSET);
-        }
+        setParameters(KEY_OFFSET, offset);
     }
     
     public Integer getTimeout() {
@@ -338,11 +323,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setTimeout(Integer timeout) {
-        if (timeout != null) {
-            parameters.put(KEY_TIMEOUT, timeout);
-        } else {
-            parameters.remove(KEY_TIMEOUT);
-        }
+        setParameters(KEY_TIMEOUT, timeout);
     }    
     
     public Long getLength() {
@@ -372,10 +353,6 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public void setLength(Long length) {
-        if (length != null) {
-            parameters.put(KEY_LENGTH, length);
-        } else {
-            parameters.remove(KEY_LENGTH);
-        }
+        setParameters(KEY_LENGTH, length);
     }
 }
