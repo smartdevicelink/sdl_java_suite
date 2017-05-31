@@ -24,6 +24,7 @@ public class MultiplexTransport extends SdlTransport{
 		super(transportListener);
 		if(transportConfig == null){
 			this.handleTransportError("Transport config was null", null);
+			throw new IllegalArgumentException("Null transportConfig in MultiplexTransport constructor");
 		}
 		this.transportConfig = transportConfig;
 		brokerThread = new TransportBrokerThread(transportConfig.context, transportConfig.appId, transportConfig.service);
