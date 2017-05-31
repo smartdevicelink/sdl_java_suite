@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
 
 /**
  * Deletes a submenu from the Command Menu.
@@ -81,10 +81,6 @@ public class DeleteSubMenu extends RPCRequest {
      * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
      */    
     public void setMenuID( Integer menuID ) {
-        if (menuID != null) {
-            parameters.put(KEY_MENU_ID, menuID );
-        } else {
-            parameters.remove(KEY_MENU_ID);
-        }
+        setParameters(KEY_MENU_ID, menuID);
     }
 }

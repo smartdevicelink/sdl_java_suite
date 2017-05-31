@@ -4,6 +4,15 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import static android.provider.Contacts.SettingsColumns.KEY;
+import static com.smartdevicelink.proxy.constants.Names.choiceSet;
+import static com.smartdevicelink.proxy.constants.Names.externalTemperature;
+import static com.smartdevicelink.proxy.constants.Names.instantFuelConsumption;
+import static com.smartdevicelink.proxy.constants.Names.prndl;
+import static com.smartdevicelink.proxy.constants.Names.vin;
+import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOICE_SET;
+
 /**
  * Non periodic vehicle data read request.
  * 
@@ -195,7 +204,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * <p> USER_DISALLOWED</p>
  * 
  * @see SubscribeVehicleData
- * @see UnSubscribeVehicleData
+ * @see UnsubscribeVehicleData
  * @since SmartDeviceLink 2.0
  * 
  *
@@ -247,41 +256,25 @@ public class GetVehicleData extends RPCRequest {
         super(hash);
     }
     public void setGps(Boolean gps) {
-        if (gps != null) {
-            parameters.put(KEY_GPS, gps);
-        } else {
-        	parameters.remove(KEY_GPS);
-        }
+        setParameters(KEY_GPS, gps);
     }
     public Boolean getGps() {
         return (Boolean) parameters.get(KEY_GPS);
     }
     public void setSpeed(Boolean speed) {
-        if (speed != null) {
-            parameters.put(KEY_SPEED, speed);
-        } else {
-        	parameters.remove(KEY_SPEED);
-        }
+        setParameters(KEY_SPEED, speed);
     }
     public Boolean getSpeed() {
         return (Boolean) parameters.get(KEY_SPEED);
     }
     public void setRpm(Boolean rpm) {
-        if (rpm != null) {
-            parameters.put(KEY_RPM, rpm);
-        } else {
-        	parameters.remove(KEY_RPM);
-        }
+        setParameters(KEY_RPM, rpm);
     }
     public Boolean getRpm() {
         return (Boolean) parameters.get(KEY_RPM);
     }
     public void setFuelLevel(Boolean fuelLevel) {
-        if (fuelLevel != null) {
-            parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-        } else {
-        	parameters.remove(KEY_FUEL_LEVEL);
-        }
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     public Boolean getFuelLevel() {
         return (Boolean) parameters.get(KEY_FUEL_LEVEL);
@@ -295,174 +288,106 @@ public class GetVehicleData extends RPCRequest {
         return getFuelLevelState();
     }
     public void setFuelLevelState(Boolean fuelLevelState) {
-        if (fuelLevelState != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     public Boolean getFuelLevelState() {
         return (Boolean) parameters.get(KEY_FUEL_LEVEL_STATE);
     }
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
-        if (instantFuelConsumption != null) {
-            parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-        } else {
-        	parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-        }
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     public Boolean getInstantFuelConsumption() {
         return (Boolean) parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
     }
     public void setExternalTemperature(Boolean externalTemperature) {
-        if (externalTemperature != null) {
-            parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-        } else {
-        	parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-        }
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     public Boolean getExternalTemperature() {
         return (Boolean) parameters.get(KEY_EXTERNAL_TEMPERATURE);
     }
     
     public void setVin(Boolean vin) {
-        if (vin != null) {
-            parameters.put(KEY_VIN, vin);
-        } else {
-        	parameters.remove(KEY_VIN);
-        }
+        setParameters(KEY_VIN, vin);
     }
     public Boolean getVin() {
         return (Boolean) parameters.get(KEY_VIN);
     }
     
     public void setPrndl(Boolean prndl) {
-        if (prndl != null) {
-            parameters.put(KEY_PRNDL, prndl);
-        } else {
-        	parameters.remove(KEY_PRNDL);
-        }
+        setParameters(KEY_PRNDL, prndl);
     }
     public Boolean getPrndl() {
         return (Boolean) parameters.get(KEY_PRNDL);
     }
     public void setTirePressure(Boolean tirePressure) {
-        if (tirePressure != null) {
-            parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-        } else {
-        	parameters.remove(KEY_TIRE_PRESSURE);
-        }
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     public Boolean getTirePressure() {
         return (Boolean) parameters.get(KEY_TIRE_PRESSURE);
     }
     public void setOdometer(Boolean odometer) {
-        if (odometer != null) {
-            parameters.put(KEY_ODOMETER, odometer);
-        } else {
-        	parameters.remove(KEY_ODOMETER);
-        }
+        setParameters(KEY_ODOMETER, odometer);
     }
     public Boolean getOdometer() {
         return (Boolean) parameters.get(KEY_ODOMETER);
     }
     public void setBeltStatus(Boolean beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        setParameters(KEY_BELT_STATUS, beltStatus);
     }
     public Boolean getBeltStatus() {
         return (Boolean) parameters.get(KEY_BELT_STATUS);
     }
     public void setBodyInformation(Boolean bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     public Boolean getBodyInformation() {
         return (Boolean) parameters.get(KEY_BODY_INFORMATION);
     }
     public void setDeviceStatus(Boolean deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     public Boolean getDeviceStatus() {
         return (Boolean) parameters.get(KEY_DEVICE_STATUS);
     }
     public void setDriverBraking(Boolean driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     public Boolean getDriverBraking() {
         return (Boolean) parameters.get(KEY_DRIVER_BRAKING);
     }
     public void setWiperStatus(Boolean wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     public Boolean getWiperStatus() {
         return (Boolean) parameters.get(KEY_WIPER_STATUS);
     }
     public void setHeadLampStatus(Boolean headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     public Boolean getHeadLampStatus() {
         return (Boolean) parameters.get(KEY_HEAD_LAMP_STATUS);
     }
     public void setEngineTorque(Boolean engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     public Boolean getEngineTorque() {
         return (Boolean) parameters.get(KEY_ENGINE_TORQUE);
     }
     public void setAccPedalPosition(Boolean accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     public Boolean getAccPedalPosition() {
         return (Boolean) parameters.get(KEY_ACC_PEDAL_POSITION);
     }
         
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Boolean getSteeringWheelAngle() {
         return (Boolean) parameters.get(KEY_STEERING_WHEEL_ANGLE);
     }                
     public void setECallInfo(Boolean eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     public Boolean getECallInfo() {
         return (Boolean) parameters.get(KEY_E_CALL_INFO);
@@ -470,41 +395,25 @@ public class GetVehicleData extends RPCRequest {
     
     
     public void setAirbagStatus(Boolean airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     public Boolean getAirbagStatus() {
         return (Boolean) parameters.get(KEY_AIRBAG_STATUS);
     }
     public void setEmergencyEvent(Boolean emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
     public Boolean getEmergencyEvent() {
         return (Boolean) parameters.get(KEY_EMERGENCY_EVENT);
     }
     public void setClusterModeStatus(Boolean clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
     public Boolean getClusterModeStatus() {
         return (Boolean) parameters.get(KEY_CLUSTER_MODE_STATUS);
     }
     public void setMyKey(Boolean myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
+        setParameters(KEY_MY_KEY, myKey);
     }
     public Boolean getMyKey() {
         return (Boolean) parameters.get(KEY_MY_KEY);

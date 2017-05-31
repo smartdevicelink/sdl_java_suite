@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
 
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
@@ -86,11 +86,7 @@ public class GetDTCs extends RPCRequest {
 	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-    	if (ecuName != null) {
-    		parameters.put(KEY_ECU_NAME, ecuName);
-    	} else {
-    		parameters.remove(KEY_ECU_NAME);
-    	}
+		setParameters(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -103,11 +99,7 @@ public class GetDTCs extends RPCRequest {
     	return (Integer) parameters.get(KEY_ECU_NAME);
     }
     public void setDtcMask(Integer dtcMask) {
-    	if (dtcMask != null) {
-    		parameters.put(KEY_DTC_MASK, dtcMask);
-    	} else {
-    		parameters.remove(KEY_DTC_MASK);
-    	}
+		setParameters(KEY_DTC_MASK, dtcMask);
     }
     public Integer getDtcMask() {
     	return (Integer) parameters.get(KEY_DTC_MASK);

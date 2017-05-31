@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.Hashtable;
 
 /**
  * Subscribe Vehicle Data Response is sent, when SubscribeVehicleData has been called
@@ -60,11 +60,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param gps
      */
     public void setGps(VehicleDataResult gps) {
-        if (gps != null) {
-            parameters.put(KEY_GPS, gps);
-        } else {
-        	parameters.remove(KEY_GPS);
-        }
+        setParameters(KEY_GPS, gps);
     }
     /**
      * Gets gps
@@ -89,11 +85,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param speed
      */
     public void setSpeed(VehicleDataResult speed) {
-        if (speed != null) {
-            parameters.put(KEY_SPEED, speed);
-        } else {
-        	parameters.remove(KEY_SPEED);
-        }
+        setParameters(KEY_SPEED, speed);
     }
     /**
      * Gets speed
@@ -118,11 +110,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param rpm
      */
     public void setRpm(VehicleDataResult rpm) {
-        if (rpm != null) {
-            parameters.put(KEY_RPM, rpm);
-        } else {
-        	parameters.remove(KEY_RPM);
-        }
+        setParameters(KEY_RPM, rpm);
     }
     /**
      * Gets rpm
@@ -147,11 +135,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param fuelLevel
      */
     public void setFuelLevel(VehicleDataResult fuelLevel) {
-        if (fuelLevel != null) {
-            parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-        } else {
-        	parameters.remove(KEY_FUEL_LEVEL);
-        }
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
      * Gets Fuel Level
@@ -192,11 +176,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param fuelLevelState
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
-        if (fuelLevelState != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     /**
      * Gets Fuel Level State
@@ -217,11 +197,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param instantFuelConsumption
      */
     public void setInstantFuelConsumption(VehicleDataResult instantFuelConsumption) {
-        if (instantFuelConsumption != null) {
-            parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-        } else {
-        	parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-        }
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     /**
      * Gets Instant Fuel Consumption
@@ -246,11 +222,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param externalTemperature
      */
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
-        if (externalTemperature != null) {
-            parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-        } else {
-        	parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-        }
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     /**
      * Gets External Temperature
@@ -275,11 +247,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param prndl
      */
     public void setPrndl(VehicleDataResult prndl) {
-        if (prndl != null) {
-            parameters.put(KEY_PRNDL, prndl);
-        } else {
-        	parameters.remove(KEY_PRNDL);
-        }
+        setParameters(KEY_PRNDL, prndl);
     }
     /**
      * Gets currently selected gear data
@@ -304,11 +272,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param tirePressure
      */
     public void setTirePressure(VehicleDataResult tirePressure) {
-        if (tirePressure != null) {
-            parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-        } else {
-        	parameters.remove(KEY_TIRE_PRESSURE);
-        }
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     /**
      * Gets Tire Pressure
@@ -333,11 +297,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param odometer
      */
     public void setOdometer(VehicleDataResult odometer) {
-        if (odometer != null) {
-            parameters.put(KEY_ODOMETER, odometer);
-        } else {
-        	parameters.remove(KEY_ODOMETER);
-        }
+        setParameters(KEY_ODOMETER, odometer);
     }
     /**
      * Gets Odometer
@@ -362,11 +322,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param beltStatus
      */
     public void setBeltStatus(VehicleDataResult beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        setParameters(KEY_BELT_STATUS, beltStatus);
     }
     /**
      * Gets Belt Status
@@ -391,11 +347,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param bodyInformation
      */
     public void setBodyInformation(VehicleDataResult bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     /**
      * Gets Body Information
@@ -420,11 +372,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param deviceStatus
      */
     public void setDeviceStatus(VehicleDataResult deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     /**
      * Gets Device Status
@@ -449,11 +397,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param driverBraking
      */
     public void setDriverBraking(VehicleDataResult driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     /**
      * Gets Driver Barking
@@ -478,11 +422,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param wiperStatus
      */
     public void setWiperStatus(VehicleDataResult wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     /**
      * Gets Wiper Status
@@ -507,11 +447,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param headLampStatus
      */
     public void setHeadLampStatus(VehicleDataResult headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     /**
      * Gets Head Lamp Status
@@ -536,11 +472,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param engineTorque
      */
     public void setEngineTorque(VehicleDataResult engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     /**
      * Gets Engine Torque
@@ -565,11 +497,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @param accPedalPosition
      */
     public void setAccPedalPosition(VehicleDataResult accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     /**
      * Gets AccPedal Position
@@ -591,11 +519,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
 
     @SuppressWarnings("unchecked")
@@ -614,11 +538,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
     
     public void setECallInfo(VehicleDataResult eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getECallInfo() {
@@ -635,11 +555,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return null;
     }
     public void setAirbagStatus(VehicleDataResult airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAirbagStatus() {
@@ -656,11 +572,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return null;
     }
     public void setEmergencyEvent(VehicleDataResult emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getEmergencyEvent() {
@@ -677,11 +589,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return null;
     }
     public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getClusterModeStatus() {
@@ -698,11 +606,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return null;
     }
     public void setMyKey(VehicleDataResult myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
+        setParameters(KEY_MY_KEY, myKey);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {

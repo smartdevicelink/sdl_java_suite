@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
 
 /**
  * <p>This will bring up an alert with information related to the next navigation maneuver including potential voice
@@ -86,12 +86,7 @@ public class AlertManeuver extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        if(softButtons != null){
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        }
-        else{
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
     /**
@@ -128,12 +123,7 @@ public class AlertManeuver extends RPCRequest{
      *            <b>Notes: </b></p>Array must have a least one element
      */
     public void setTtsChunks(List<TTSChunk> ttsChunks){
-        if(ttsChunks != null){
-            parameters.put(KEY_TTS_CHUNKS, ttsChunks);
-        }
-        else{
-            parameters.remove(KEY_TTS_CHUNKS);
-        }
+        setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 
 }

@@ -1,14 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * This will open an audio pass thru session. By doing so the app can receive
@@ -141,11 +141,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            </ul>
 	 */
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-    	if (initialPrompt != null) {
-    		parameters.put(KEY_INITIAL_PROMPT, initialPrompt);
-    	} else {
-    		parameters.remove(KEY_INITIAL_PROMPT);
-    	}
+		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
     }
 
 	/**
@@ -186,11 +182,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setAudioPassThruDisplayText1(String audioPassThruDisplayText1) {
-    	if (audioPassThruDisplayText1 != null) {
-    		parameters.put(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
-    	} else {
-    		parameters.remove(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1);
-    	}
+		setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
     }
 
 	/**
@@ -213,11 +205,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setAudioPassThruDisplayText2(String audioPassThruDisplayText2) {
-    	if (audioPassThruDisplayText2 != null) {
-    		parameters.put(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
-    	} else {
-    		parameters.remove(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2);
-    	}
+		setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
     }
 
 	/**
@@ -237,11 +225,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a SamplingRate value representing a 8 or 16 or 22 or 24 khz
 	 */
     public void setSamplingRate(SamplingRate samplingRate) {
-    	if (samplingRate != null) {
-    		parameters.put(KEY_SAMPLING_RATE, samplingRate);
-    	} else {
-    		parameters.remove(KEY_SAMPLING_RATE);
-    	}
+		setParameters(KEY_SAMPLING_RATE, samplingRate);
     }
 
 	/**
@@ -269,11 +253,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue:1; Maxvalue:1000000
 	 */
     public void setMaxDuration(Integer maxDuration) {
-    	if (maxDuration != null) {
-    		parameters.put(KEY_MAX_DURATION, maxDuration);
-    	} else {
-    		parameters.remove(KEY_MAX_DURATION);
-    	}
+		setParameters(KEY_MAX_DURATION, maxDuration);
     }
 
 	/**
@@ -293,11 +273,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a BitsPerSample value representing 8 bit or 16 bit
 	 */
     public void setBitsPerSample(BitsPerSample audioQuality) {
-    	if (audioQuality != null) {
-    		parameters.put(KEY_BITS_PER_SAMPLE, audioQuality);
-    	} else {
-    		parameters.remove(KEY_BITS_PER_SAMPLE);
-    	}
+		setParameters(KEY_BITS_PER_SAMPLE, audioQuality);
     }
 
 	/**
@@ -322,11 +298,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            an audioType
 	 */
     public void setAudioType(AudioType audioType) {
-    	if (audioType != null) {
-    		parameters.put(KEY_AUDIO_TYPE, audioType);
-    	} else {
-    		parameters.remove(KEY_AUDIO_TYPE);
-    	}
+		setParameters(KEY_AUDIO_TYPE, audioType);
     }
 
 	/**
@@ -368,10 +340,6 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            should be muted during the APT session
 	 */
     public void setMuteAudio(Boolean muteAudio) {
-    	if (muteAudio != null) {
-    		parameters.put(KEY_MUTE_AUDIO, muteAudio);
-    	} else {
-    		parameters.remove(KEY_MUTE_AUDIO);
-    	}
+		setParameters(KEY_MUTE_AUDIO, muteAudio);
     }    
 }

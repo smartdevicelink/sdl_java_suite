@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+
+import java.util.Hashtable;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -146,11 +146,7 @@ public class PutFile extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
-        if (sdlFileName != null) {
-            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
-        } else {
-        	parameters.remove(KEY_SDL_FILE_NAME);
-        }
+        setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -169,11 +165,7 @@ public class PutFile extends RPCRequest {
 	 *            a FileType value representing a selected file type
 	 */
     public void setFileType(FileType fileType) {
-        if (fileType != null) {
-            parameters.put(KEY_FILE_TYPE, fileType);
-        } else {
-        	parameters.remove(KEY_FILE_TYPE);
-        }
+        setParameters(KEY_FILE_TYPE, fileType);
     }
 
 	/**
@@ -205,11 +197,7 @@ public class PutFile extends RPCRequest {
 	 *            a Boolean value
 	 */
     public void setPersistentFile(Boolean persistentFile) {
-        if (persistentFile != null) {
-            parameters.put(KEY_PERSISTENT_FILE, persistentFile);
-        } else {
-        	parameters.remove(KEY_PERSISTENT_FILE);
-        }
+        setParameters(KEY_PERSISTENT_FILE, persistentFile);
     }
 
 	/**
@@ -242,11 +230,7 @@ public class PutFile extends RPCRequest {
     }
     
     public void setOffset(Long offset) {
-        if (offset != null) {
-            parameters.put(KEY_OFFSET, offset);
-        } else {
-            parameters.remove(KEY_OFFSET);
-        }
+        setParameters(KEY_OFFSET, offset);
     }
 
     public Long getOffset() {
@@ -277,11 +261,7 @@ public class PutFile extends RPCRequest {
     }
     
     public void setLength(Long length) {
-        if (length != null) {
-            parameters.put(KEY_LENGTH, length);
-        } else {
-            parameters.remove(KEY_LENGTH);
-        }
+        setParameters(KEY_LENGTH, length);
     }
 
     public Long getLength() {
@@ -299,11 +279,7 @@ public class PutFile extends RPCRequest {
     }
 
     public void setSystemFile(Boolean systemFile) {
-        if (systemFile != null) {
-            parameters.put(KEY_SYSTEM_FILE, systemFile);
-        } else {
-            parameters.remove(KEY_SYSTEM_FILE);
-        }
+        setParameters(KEY_SYSTEM_FILE, systemFile);
     }
 
     public Boolean getSystemFile() {

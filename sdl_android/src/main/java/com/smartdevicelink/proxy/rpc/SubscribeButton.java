@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import java.util.Hashtable;
+
 /**
  *<p> Establishes a subscription to button notifications for HMI buttons. Buttons
  * are not necessarily physical buttons, but can also be "soft" buttons on a
@@ -111,10 +112,6 @@ public class SubscribeButton extends RPCRequest {
 	 * @param buttonName a <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i> value
 	 */    
     public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
-        }
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
 }

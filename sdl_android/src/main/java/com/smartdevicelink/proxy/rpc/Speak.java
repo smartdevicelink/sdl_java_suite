@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
+import static com.smartdevicelink.proxy.constants.Names.timeout;
 
 /**
  * Speaks a phrase over the vehicle audio system using SDL's TTS
@@ -169,10 +171,6 @@ public class Speak extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setTtsChunks( List<TTSChunk> ttsChunks ) {
-        if (ttsChunks != null) {
-            parameters.put(KEY_TTS_CHUNKS, ttsChunks );
-        } else {
-            parameters.remove(KEY_TTS_CHUNKS);
-        }
+		setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 }

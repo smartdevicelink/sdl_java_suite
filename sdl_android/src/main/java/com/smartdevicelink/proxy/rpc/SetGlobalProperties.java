@@ -1,12 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 /**
  * Sets value(s) for the specified global property(ies)
  * 
@@ -173,11 +173,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-        if (helpPrompt != null) {
-            parameters.put(KEY_HELP_PROMPT, helpPrompt);
-        } else {
-            parameters.remove(KEY_HELP_PROMPT);
-        }
+		setParameters(KEY_HELP_PROMPT, helpPrompt);
     }
 	/**
 	 * Gets a List<TTSChunk> for Timeout Prompt representing Array of one or
@@ -213,11 +209,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-        if (timeoutPrompt != null) {
-            parameters.put(KEY_TIMEOUT_PROMPT, timeoutPrompt);
-        } else {
-            parameters.remove(KEY_TIMEOUT_PROMPT);
-        }
+		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
     }
 
 	/**
@@ -248,11 +240,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelpTitle(String vrHelpTitle) {
-        if (vrHelpTitle != null) {
-            parameters.put(KEY_VR_HELP_TITLE, vrHelpTitle);
-        } else {
-        	parameters.remove(KEY_VR_HELP_TITLE);
-        }
+		setParameters(KEY_VR_HELP_TITLE, vrHelpTitle);
     }
 
 	/**
@@ -305,11 +293,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-        if (vrHelp != null) {
-            parameters.put(KEY_VR_HELP, vrHelp);
-        } else {
-        	parameters.remove(KEY_VR_HELP);
-        }
+		setParameters(KEY_VR_HELP, vrHelp);
     }
     
     public String getMenuTitle() {
@@ -317,19 +301,11 @@ public class SetGlobalProperties extends RPCRequest {
     }
 
     public void setMenuTitle(String menuTitle) {
-        if (menuTitle != null) {
-            parameters.put(KEY_MENU_TITLE, menuTitle);
-        } else {
-        	parameters.remove(KEY_MENU_TITLE);
-        }
+		setParameters(KEY_MENU_TITLE, menuTitle);
     }
 
     public void setMenuIcon(Image menuIcon) {
-        if (menuIcon != null) {
-            parameters.put(KEY_MENU_ICON, menuIcon);
-        } else {
-        	parameters.remove(KEY_MENU_ICON);
-        }
+		setParameters(KEY_MENU_ICON, menuIcon);
     }
 
     @SuppressWarnings("unchecked")
@@ -348,11 +324,7 @@ public class SetGlobalProperties extends RPCRequest {
     }
     
     public void setKeyboardProperties(KeyboardProperties keyboardProperties) {
-        if (keyboardProperties != null) {
-            parameters.put(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
-        } else {
-        	parameters.remove(KEY_KEYBOARD_PROPERTIES);
-        }
+		setParameters(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,13 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 /**
  * Registers the application's interface with SDL&reg;, declaring properties of
  * the registration, including the messaging interface version, the app name,
@@ -280,11 +280,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            request) is ignored by SDL&reg;
 	 */    
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-        if (sdlMsgVersion != null) {
-            parameters.put(KEY_SDL_MSG_VERSION, sdlMsgVersion);
-        } else {
-        	parameters.remove(KEY_SDL_MSG_VERSION);
-        }
+        setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
     }
     
     @SuppressWarnings("unchecked")
@@ -299,11 +295,7 @@ public class RegisterAppInterface extends RPCRequest {
     }    
     
     public void setDeviceInfo(DeviceInfo deviceInfo) {
-        if (deviceInfo != null) {
-            parameters.put(KEY_DEVICE_INFO, deviceInfo);
-        } else {
-        	parameters.remove(KEY_DEVICE_INFO);
-        }
+		setParameters(KEY_DEVICE_INFO, deviceInfo);
     }    
 	/**
 	 * Gets Mobile Application's Name
@@ -330,11 +322,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAppName(String appName) {
-        if (appName != null) {
-            parameters.put(KEY_APP_NAME, appName);
-        } else {
-        	parameters.remove(KEY_APP_NAME);
-        }
+		setParameters(KEY_APP_NAME, appName);
     }
 
 	/**
@@ -382,11 +370,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setTtsName(List<TTSChunk> ttsName) {
-        if (ttsName != null) {
-            parameters.put(KEY_TTS_NAME, ttsName);
-        } else {
-        	parameters.remove(KEY_TTS_NAME);
-        }
+		setParameters(KEY_TTS_NAME, ttsName);
     }
 	/**
 	 * Gets a String representing an abbreviated version of the mobile
@@ -416,11 +400,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
-        if (ngnMediaScreenAppName != null) {
-            parameters.put(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
-        } else {
-        	parameters.remove(KEY_NGN_MEDIA_SCREEN_APP_NAME);
-        }
+		setParameters(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
     }
 	/**
 	 * Gets the List<String> representing the an array of 1-100 elements, each
@@ -461,11 +441,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        if (vrSynonyms != null) {
-            parameters.put(KEY_VR_SYNONYMS, vrSynonyms);
-        } else {
-        	parameters.remove(KEY_VR_SYNONYMS);
-        }
+		setParameters(KEY_VR_SYNONYMS, vrSynonyms);
     }
 	/**
 	 * Gets a Boolean representing MediaApplication
@@ -484,11 +460,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a Boolean value
 	 */    
     public void setIsMediaApplication(Boolean isMediaApplication) {
-        if (isMediaApplication != null) {
-            parameters.put(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
-        } else {
-        	parameters.remove(KEY_IS_MEDIA_APPLICATION);
-        }
+		setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
     }
 	/**
 	 * Gets a Language enumeration indicating what language the application
@@ -515,11 +487,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 */    
     public void setLanguageDesired(Language languageDesired) {
-        if (languageDesired != null) {
-            parameters.put(KEY_LANGUAGE_DESIRED, languageDesired);
-        } else {
-        	parameters.remove(KEY_LANGUAGE_DESIRED);
-        }
+		setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
     }
 
 	/**
@@ -549,11 +517,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
-        if (hmiDisplayLanguageDesired != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE_DESIRED);
-        }
+		setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
     }
 
 	/**
@@ -606,11 +570,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppHMIType(List<AppHMIType> appHMIType) {
-        if (appHMIType != null) {
-            parameters.put(KEY_APP_HMI_TYPE, appHMIType);
-        } else {
-        	parameters.remove(KEY_APP_HMI_TYPE);
-        }
+		setParameters(KEY_APP_HMI_TYPE, appHMIType);
     }
     
     public String getHashID() {
@@ -618,11 +578,7 @@ public class RegisterAppInterface extends RPCRequest {
     }
    
     public void setHashID(String hashID) {
-        if (hashID != null) {
-            parameters.put(KEY_HASH_ID, hashID);
-        } else {
-        	parameters.remove(KEY_HASH_ID);
-        }
+		setParameters(KEY_HASH_ID, hashID);
     }        
     
 	/**
@@ -647,10 +603,6 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppID(String appID) {
-        if (appID != null) {
-            parameters.put(KEY_APP_ID, appID);
-        } else {
-        	parameters.remove(KEY_APP_ID);
-        }
+		setParameters(KEY_APP_ID, appID);
     }
 }

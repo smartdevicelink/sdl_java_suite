@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
 
 /**
  * Creates a Choice Set which can be used in subsequent <i>
@@ -111,11 +111,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-        if (interactionChoiceSetID != null) {
-            parameters.put(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID );
-        } else {
-        	parameters.remove(KEY_INTERACTION_CHOICE_SET_ID);
-        }
+		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 	/**
 	 * Gets Choice Set Array of one or more elements
@@ -152,10 +148,6 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
     public void setChoiceSet( List<Choice> choiceSet ) {
-        if (choiceSet != null) {
-            parameters.put(KEY_CHOICE_SET, choiceSet );
-        } else {
-        	parameters.remove(KEY_CHOICE_SET);
-        }
+		setParameters(KEY_CHOICE_SET, choiceSet);
     }
 }

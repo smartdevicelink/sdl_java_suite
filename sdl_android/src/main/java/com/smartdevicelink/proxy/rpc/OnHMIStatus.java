@@ -1,12 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+
+import java.util.Hashtable;
+
 /**
  * <p>Notifies an application that HMI conditions have changed for the application. This indicates whether the application 
  * can speak phrases, display text, perform interactions, receive button presses and events, stream audio, etc. This 
@@ -99,11 +100,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param hmiLevel the HMILevel to set
      */    
     public void setHmiLevel( HMILevel hmiLevel ) {
-        if (hmiLevel != null) {
-            parameters.put(KEY_HMI_LEVEL, hmiLevel );
-        } else {
-            parameters.remove(KEY_HMI_LEVEL);
-        }
+        setParameters(KEY_HMI_LEVEL, hmiLevel);
     }
     /**
      * <p>Get current state of audio streaming for the application</p>
@@ -123,11 +120,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param audioStreamingState the state of audio streaming of the application
      */    
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
-        if (audioStreamingState != null) {
-            parameters.put(KEY_AUDIO_STREAMING_STATE, audioStreamingState );
-        } else {
-            parameters.remove(KEY_AUDIO_STREAMING_STATE);
-        }
+        setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
     }
     /**
      * <p>Get the System Context</p>
@@ -148,11 +141,7 @@ public class OnHMIStatus extends RPCNotification {
      * (VRSESSION or MENU), or not (MAIN)
      */    
     public void setSystemContext( SystemContext systemContext ) {
-        if (systemContext != null) {
-            parameters.put(KEY_SYSTEM_CONTEXT, systemContext );
-        } else {
-            parameters.remove(KEY_SYSTEM_CONTEXT);
-        }
+        setParameters(KEY_SYSTEM_CONTEXT, systemContext);
     }
     /**
      * <p>Query whether it's the first run</p>

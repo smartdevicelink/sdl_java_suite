@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * List Files Response is sent, when ListFiles has been called
@@ -25,11 +25,7 @@ public class ListFilesResponse extends RPCResponse {
         super(hash);
     }
     public void setFilenames(List<String> filenames) {
-        if (filenames != null) {
-            parameters.put(KEY_FILENAMES, filenames);
-        } else {
-        	parameters.remove(KEY_FILENAMES);
-        }
+        setParameters(KEY_FILENAMES, filenames);
     }
     @SuppressWarnings("unchecked")
     public List<String> getFilenames() {
@@ -45,11 +41,7 @@ public class ListFilesResponse extends RPCResponse {
     	return null;
     }
     public void setSpaceAvailable(Integer spaceAvailable) {
-        if (spaceAvailable != null) {
-            parameters.put(KEY_SPACE_AVAILABLE, spaceAvailable);
-        } else {
-        	parameters.remove(KEY_SPACE_AVAILABLE);
-        }
+        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
         return (Integer) parameters.get(KEY_SPACE_AVAILABLE);

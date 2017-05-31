@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+
+import java.util.Hashtable;
+
+import static com.smartdevicelink.proxy.constants.Names.timeout;
 
 public class StreamRPCResponse extends RPCResponse {
 	public static final String KEY_FILENAME = "fileName";
@@ -17,22 +19,14 @@ public class StreamRPCResponse extends RPCResponse {
     }
     
 	public void setFileName(String fileName) {
-    	if (fileName != null) {
-    		parameters.put(KEY_FILENAME, fileName);
-    	} else {
-    		parameters.remove(KEY_FILENAME);
-    	}
+		setParameters(KEY_FILENAME, fileName);
 	}
 	public String getFileName() {
 		return (String) parameters.get(KEY_FILENAME);
 	}
 	
 	public void setFileSize(Long fileSize) {
-    	if (fileSize != null) {
-    		parameters.put(KEY_FILESIZE, fileSize);
-    	} else {
-    		parameters.remove(KEY_FILESIZE);
-    	}
+		setParameters(KEY_FILESIZE, fileSize);
 	}
 	public Long getFileSize() {
 		return (Long) parameters.get(KEY_FILESIZE);

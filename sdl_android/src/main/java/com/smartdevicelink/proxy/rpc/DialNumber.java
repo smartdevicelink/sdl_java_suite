@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
 
 /**
  * Dials a phone number and switches to phone application.
@@ -34,10 +34,8 @@ public class DialNumber extends RPCRequest {
     public void setNumber(String number) {
         if (number != null) {
         	number = number.replaceAll("[^0-9*#,;+]", ""); //This will sanitize the input
-            parameters.put(KEY_NUMBER, number);
-        } else {
-        	parameters.remove(KEY_NUMBER);
         }
+		setParameters(KEY_NUMBER, number);
     }
 
 	/**

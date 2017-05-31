@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
 
 /**
  * Updates the list of next maneuvers, which can be requested by the user pressing the softbutton "Turns" on the
@@ -52,12 +52,7 @@ public class UpdateTurnList extends RPCRequest{
      *            <b>Notes: </b>Minsize=1; Maxsize=100</p>
      */
     public void setTurnList(List<Turn> turnList){
-        if(turnList != null){
-            parameters.put(KEY_TURN_LIST, turnList);
-        }
-        else{
-            parameters.remove(KEY_TURN_LIST);
-        }
+        setParameters(KEY_TURN_LIST, turnList);
     }
     
     /**
@@ -129,12 +124,7 @@ public class UpdateTurnList extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        if(softButtons != null){
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        }
-        else{
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 }
