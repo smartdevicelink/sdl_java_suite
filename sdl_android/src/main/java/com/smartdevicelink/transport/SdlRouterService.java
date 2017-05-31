@@ -613,20 +613,20 @@ public class SdlRouterService extends Service{
 	        	case TransportConstants.ROUTER_RECEIVED_PACKET:
 	        		if(receivedBundle!=null){
 	        			receivedBundle.setClassLoader(loader);//We do this because loading a custom parceable object isn't possible without it
-						if(receivedBundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
-							SdlPacket packet = receivedBundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
-							if(packet!=null){
-								service.onPacketRead(packet);
-							}else{
-								Log.w(TAG, "Received null packet from alt transport service");
-							}
+					if(receivedBundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
+						SdlPacket packet = receivedBundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
+						if(packet!=null){
+							service.onPacketRead(packet);
 						}else{
-							Log.w(TAG, "Flase positive packet reception");
+							Log.w(TAG, "Received null packet from alt transport service");
 						}
-	            	}else{
-	            		Log.e(TAG, "Bundle was null while sending packet to router service from alt transport");
-	            	}
-            		break; 
+					}else{
+						Log.w(TAG, "Flase positive packet reception");
+					}
+	            		}else{
+	            			Log.e(TAG, "Bundle was null while sending packet to router service from alt transport");
+	            		}
+            			break; 
 	        	default:
 	        		super.handleMessage(msg);
 	        	}
