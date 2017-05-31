@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
 /** Non periodic vehicle diagnostic request.
  * 
  * <p><b>Parameter List</b></p>
@@ -81,11 +82,7 @@ public class DiagnosticMessage extends RPCRequest {
     
 
     public void setTargetID(Integer targetID) {
-    	if (targetID != null) {
-    		parameters.put(KEY_TARGET_ID, targetID);
-    	} else {
-    		parameters.remove(KEY_TARGET_ID);
-    	}
+		setParameters(KEY_TARGET_ID, targetID);
     }
     /**
 	 * <p>
@@ -100,11 +97,7 @@ public class DiagnosticMessage extends RPCRequest {
     }    
 
     public void setMessageLength(Integer messageLength) {
-    	if (messageLength != null) {
-    		parameters.put(KEY_MESSAGE_LENGTH, messageLength);
-    	} else {
-    		parameters.remove(KEY_MESSAGE_LENGTH);
-    	}
+		setParameters(KEY_MESSAGE_LENGTH, messageLength);
     }
     public Integer getMessageLength() {
     	return (Integer) parameters.get(KEY_MESSAGE_LENGTH);
@@ -125,10 +118,6 @@ public class DiagnosticMessage extends RPCRequest {
     }
     
     public void setMessageData(List<Integer> messageData) {
-        if (messageData != null) {
-            parameters.put(KEY_MESSAGE_DATA, messageData);
-        } else {
-        	parameters.remove(KEY_MESSAGE_DATA);
-        }
+		setParameters(KEY_MESSAGE_DATA, messageData);
     }    
 }

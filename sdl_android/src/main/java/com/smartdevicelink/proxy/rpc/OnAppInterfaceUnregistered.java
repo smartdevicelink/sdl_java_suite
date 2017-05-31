@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+
+import java.util.Hashtable;
 
 /**
  * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources 
@@ -72,10 +72,6 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      * @param reason The reason application's interface registration was terminated
      */    
     public void setReason( AppInterfaceUnregisteredReason reason ) {
-        if (reason != null) {
-            parameters.put(KEY_REASON, reason );
-        } else {
-            parameters.remove(KEY_REASON);
-        }
+        setParameters(KEY_REASON, reason);
     }
 }

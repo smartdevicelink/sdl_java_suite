@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
+
+import java.util.Hashtable;
 
 /**
  * <p>Notifies the application of the current TBT client status on the module.</p>
@@ -71,10 +71,6 @@ public class OnTBTClientState extends RPCNotification {
      * @param state current state of TBT client
      */    
     public void setState( TBTState state ) {
-        if (state != null) {
-            parameters.put(KEY_STATE, state );
-        } else {
-        	parameters.remove(KEY_STATE);
-        }
+        setParameters(KEY_STATE, state);
     }
 } // end-class

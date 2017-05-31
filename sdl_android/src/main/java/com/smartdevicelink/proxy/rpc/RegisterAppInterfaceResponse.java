@@ -1,9 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.Version;
@@ -12,6 +8,10 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -94,11 +94,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 *            request) is ignored by SDL&reg;
 	 */
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-        if (sdlMsgVersion != null) {
-            parameters.put(KEY_SDL_MSG_VERSION, sdlMsgVersion);
-        } else {
-            parameters.remove(KEY_SDL_MSG_VERSION);
-        }
+		setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
     }
 
 	/**
@@ -127,11 +123,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 */
     public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-            parameters.remove(KEY_LANGUAGE);
-        }
+		setParameters(KEY_LANGUAGE, language);
     }
 
 	/**
@@ -161,11 +153,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+		setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
 	/**
@@ -188,11 +176,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param displayCapabilities
      */
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-        if (displayCapabilities != null) {
-            parameters.put(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
-        } else {
-        	parameters.remove(KEY_DISPLAY_CAPABILITIES);
-        }
+		setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
     }
 
 	/**
@@ -224,11 +208,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param buttonCapabilities
      */
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
-            parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
-        } else {
-        	parameters.remove(KEY_BUTTON_CAPABILITIES);
-        }
+		setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
     }
     /**
 	 * Gets getSoftButtonCapabilities set when application interface is registered.
@@ -259,11 +239,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param softButtonCapabilities
      */
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
-            parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);
-        }
+		setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
     }
 
 	/**
@@ -286,11 +262,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param	presetBankCapabilities
      */
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-        if (presetBankCapabilities != null) {
-            parameters.put(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
-        } else {
-        	parameters.remove(KEY_PRESET_BANK_CAPABILITIES);
-        }
+		setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
     }
 	
 	/**
@@ -326,11 +298,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param hmiZoneCapabilities
      */
     public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
-        if (hmiZoneCapabilities != null) {
-            parameters.put(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
-        } else {
-        	parameters.remove(KEY_HMI_ZONE_CAPABILITIES);
-        }
+		setParameters(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
     }
 	
 	/**
@@ -366,11 +334,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param speechCapabilities
      */
     public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
-        if (speechCapabilities != null) {
-            parameters.put(KEY_SPEECH_CAPABILITIES, speechCapabilities);
-        } else {
-        	parameters.remove(KEY_SPEECH_CAPABILITIES);
-        }
+		setParameters(KEY_SPEECH_CAPABILITIES, speechCapabilities);
     }
 
     
@@ -399,11 +363,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
 
     public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
-        if (prerecordedSpeech != null) {
-            parameters.put(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
-        } else {
-        	parameters.remove(KEY_PRERECORDED_SPEECH);
-        }
+		setParameters(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
     }
  
     
@@ -440,11 +400,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param vrCapabilities
      */
     public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
-        if (vrCapabilities != null) {
-            parameters.put(KEY_VR_CAPABILITIES, vrCapabilities);
-        } else {
-        	parameters.remove(KEY_VR_CAPABILITIES);
-        }
+		setParameters(KEY_VR_CAPABILITIES, vrCapabilities);
     }
 	
 	/**
@@ -467,11 +423,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param vehicleType
      */
     public void setVehicleType(VehicleType vehicleType) {
-        if (vehicleType != null) {
-            parameters.put(KEY_VEHICLE_TYPE, vehicleType);
-        } else {
-        	parameters.remove(KEY_VEHICLE_TYPE);
-        }
+		setParameters(KEY_VEHICLE_TYPE, vehicleType);
     }
 	
 	/**
@@ -503,11 +455,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param audioPassThruCapabilities
      */
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
-        if (audioPassThruCapabilities != null) {
-            parameters.put(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
-        } else {
-        	parameters.remove(KEY_AUDIO_PASS_THRU_CAPABILITIES);
-        }
+		setParameters(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
     }
     public String getProxyVersionInfo() {
 		if (Version.VERSION != null)
@@ -516,13 +464,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		return null;
     }
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
-        if (supportedDiagModes != null) {
-        	parameters.put(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
-        }
-        else
-        {
-        	parameters.remove(KEY_SUPPORTED_DIAG_MODES);
-        }
+		setParameters(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
     }
 
     @SuppressWarnings("unchecked")
@@ -541,11 +483,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
     
     public void setHmiCapabilities(HMICapabilities hmiCapabilities) {
-        if (hmiCapabilities != null) {
-        	parameters.put(KEY_HMI_CAPABILITIES, hmiCapabilities);
-        }else{
-        	parameters.remove(KEY_HMI_CAPABILITIES);
-        }
+		setParameters(KEY_HMI_CAPABILITIES, hmiCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -560,11 +498,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }  
     
     public void setSdlVersion(String sdlVersion) {
-        if (sdlVersion != null) {
-        	parameters.put(KEY_SDL_VERSION, sdlVersion);
-        }else{
-        	parameters.remove(KEY_SDL_VERSION);
-        }
+		setParameters(KEY_SDL_VERSION, sdlVersion);
     }
 
     public String getSdlVersion() {    
@@ -572,11 +506,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     } 
     
     public void setSystemSoftwareVersion(String systemSoftwareVersion) {
-        if (systemSoftwareVersion != null) {
-        	parameters.put(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
-        }else{
-        	parameters.remove(KEY_SYSTEM_SOFTWARE_VERSION);
-        }
+		setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
     }
 
     public String getSystemSoftwareVersion() {    

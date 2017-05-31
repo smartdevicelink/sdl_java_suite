@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCRequest;
 
 /**
  * <p>This RPC is used to update the user with navigation information for the constantly shown screen (base screen), but
@@ -61,12 +61,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText1(String navigationText1){
-        if(navigationText1 != null){
-            parameters.put(KEY_TEXT1, navigationText1);
-        }
-        else{
-            parameters.remove(KEY_TEXT1);
-        }
+        setParameters(KEY_TEXT1, navigationText1);
     }
 
     /**
@@ -87,12 +82,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText2(String navigationText2){
-        if(navigationText2 != null){
-            parameters.put(KEY_TEXT2, navigationText2);
-        }
-        else{
-            parameters.remove(KEY_TEXT2);
-        }
+        setParameters(KEY_TEXT2, navigationText2);
     }
 
     /**
@@ -113,12 +103,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setEta(String eta){
-        if(eta != null){
-            parameters.put(KEY_ETA, eta);
-        }
-        else{
-            parameters.remove(KEY_ETA);
-        }
+        setParameters(KEY_ETA, eta);
     }
 
     /**
@@ -139,12 +124,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setTotalDistance(String totalDistance){
-        if(totalDistance != null){
-            parameters.put(KEY_TOTAL_DISTANCE, totalDistance);
-        }
-        else{
-            parameters.remove(KEY_TOTAL_DISTANCE);
-        }
+        setParameters(KEY_TOTAL_DISTANCE, totalDistance);
     }
 
     /**
@@ -163,12 +143,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            an Image value
      */
     public void setTurnIcon(Image turnIcon){
-        if(turnIcon != null){
-            parameters.put(KEY_MANEUVER_IMAGE, turnIcon);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_IMAGE);
-        }
+        setParameters(KEY_MANEUVER_IMAGE, turnIcon);
     }
 
     /**
@@ -194,12 +169,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            an Image value
      */
     public void setNextTurnIcon(Image nextTurnIcon){
-        if(nextTurnIcon != null){
-            parameters.put(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
-        }
-        else{
-            parameters.remove(KEY_NEXT_MANEUVER_IMAGE);
-        }
+        setParameters(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
     }
 
     /**
@@ -227,12 +197,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuver(Double distanceToManeuver){
-        if(distanceToManeuver != null){
-            parameters.put(KEY_MANEUVER_DISTANCE, distanceToManeuver);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_DISTANCE);
-        }
+        setParameters(KEY_MANEUVER_DISTANCE, distanceToManeuver);
     }
 
     /**
@@ -253,12 +218,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuverScale(Double distanceToManeuverScale){
-        if(distanceToManeuverScale != null){
-            parameters.put(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_DISTANCE_SCALE);
-        }
+        setParameters(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
     }
 
     /**
@@ -280,12 +240,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            a Boolean value
      */
     public void setManeuverComplete(Boolean maneuverComplete){
-        if(maneuverComplete != null){
-            parameters.put(KEY_MANEUVER_COMPLETE, maneuverComplete);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_COMPLETE);
-        }
+        setParameters(KEY_MANEUVER_COMPLETE, maneuverComplete);
     }
 
     /**
@@ -307,12 +262,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            a List<SoftButton> value
      */
     public void setSoftButtons(List<SoftButton> softButtons){
-        if(softButtons != null){
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        }
-        else{
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
     /**
@@ -342,12 +292,7 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     public void setTimeToDestination(String timeToDestination){
-        if(timeToDestination != null){
-            parameters.put(KEY_TIME_TO_DESTINATION, timeToDestination);
-        }
-        else{
-            parameters.remove(KEY_TIME_TO_DESTINATION);
-        }
+        setParameters(KEY_TIME_TO_DESTINATION, timeToDestination);
     }
 
     public String getTimeToDestination(){

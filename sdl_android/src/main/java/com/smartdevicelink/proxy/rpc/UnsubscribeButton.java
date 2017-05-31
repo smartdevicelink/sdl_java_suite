@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import java.util.Hashtable;
 
 /**
  * Deletes a subscription to button notifications for the specified button. For
@@ -92,10 +92,6 @@ public class UnsubscribeButton extends RPCRequest {
 	 *            {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
-        }
+		setParameters(KEY_BUTTON_NAME, buttonName);
     }
 }

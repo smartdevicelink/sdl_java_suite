@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCResponse;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
 
 /**
  * Read DID Response is sent, when ReadDID has been called
@@ -22,11 +22,7 @@ public class ReadDIDResponse extends RPCResponse {
         super(hash);
     }
     public void setDidResult(List<DIDResult> didResult) {
-    	if (didResult != null) {
-    		parameters.put(KEY_DID_RESULT, didResult);
-    	} else {
-    		parameters.remove(KEY_DID_RESULT);
-    	}
+		setParameters(KEY_DID_RESULT, didResult);
     }
     @SuppressWarnings("unchecked")
     public List<DIDResult> getDidResult() {

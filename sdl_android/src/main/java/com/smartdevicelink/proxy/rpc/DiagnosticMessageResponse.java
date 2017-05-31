@@ -1,10 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCResponse;
+
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
 /**
  * Diagnostic Message Response is sent, when DiagnosticMessage has been called.
  * 
@@ -37,10 +38,6 @@ public class DiagnosticMessageResponse extends RPCResponse {
     }
     
     public void setMessageDataResult(List<Integer> messageDataResult) {
-        if (messageDataResult != null) {
-            parameters.put(KEY_MESSAGE_DATA_RESULT, messageDataResult);
-        } else {
-        	parameters.remove(KEY_MESSAGE_DATA_RESULT);
-        }
+        setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
     }
 }

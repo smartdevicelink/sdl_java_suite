@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCResponse;
+
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import static com.smartdevicelink.proxy.constants.Names.choiceSet;
 
 /**
  * Get DTCs Response is sent, when GetDTCs has been called
@@ -39,12 +41,7 @@ public class GetDTCsResponse extends RPCResponse{
     }
 
     public void setDtc(List<String> dtc){
-        if(dtc != null){
-            parameters.put(KEY_DTC, dtc);
-        }
-        else{
-            parameters.remove(KEY_DTC);
-        }
+        setParameters(KEY_DTC, dtc);
     }
     
     public Integer getEcuHeader(){
@@ -52,11 +49,6 @@ public class GetDTCsResponse extends RPCResponse{
     }
     
     public void setEcuHeader(Integer ecuHeader){
-        if(ecuHeader != null){
-            parameters.put(KEY_ECU_HEADER, ecuHeader);
-        }
-        else{
-            parameters.remove(KEY_ECU_HEADER);
-        }
+        setParameters(KEY_ECU_HEADER, ecuHeader);
     }
 }

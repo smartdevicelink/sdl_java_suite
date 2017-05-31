@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+
+import java.util.Hashtable;
 
 /**
  * This is called when a command was selected via VR after pressing the PTT button, or selected from the menu after 
@@ -79,11 +79,7 @@ public class OnCommand extends RPCNotification {
      * @param cmdID an integer object representing a Command ID
      */    
     public void setCmdID( Integer cmdID ) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID );
-        } else {
-            parameters.remove(KEY_CMD_ID);
-        }
+        setParameters(KEY_CMD_ID, cmdID);
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
@@ -104,10 +100,6 @@ public class OnCommand extends RPCNotification {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        if (triggerSource != null) {
-            parameters.put(KEY_TRIGGER_SOURCE, triggerSource );
-        } else {
-            parameters.remove(KEY_TRIGGER_SOURCE);
-        }
+        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
     }
 }

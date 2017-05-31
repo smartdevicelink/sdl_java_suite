@@ -28,10 +28,6 @@ public class GetWayPoints extends RPCRequest {
     }
 
     public void setWayPointType(WayPointType wayPointType) {
-        if (wayPointType != null) {
-            parameters.put(KEY_WAY_POINT_TYPE, wayPointType);
-        } else {
-            parameters.remove(KEY_WAY_POINT_TYPE);
-        }
+        setParameters(KEY_WAY_POINT_TYPE, wayPointType);
     }
 }
