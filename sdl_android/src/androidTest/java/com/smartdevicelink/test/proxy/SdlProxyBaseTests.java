@@ -5,13 +5,14 @@ import android.telephony.TelephonyManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.SdlProxyALM;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
@@ -53,7 +54,6 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
@@ -72,13 +72,10 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
-import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
-import com.smartdevicelink.transport.BaseTransportConfig;
 
 import junit.framework.Assert;
 
-import java.util.Vector;
 
 public class SdlProxyBaseTests extends AndroidTestCase{
     public static final String TAG = "SdlProxyBaseTests";
@@ -107,6 +104,9 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             proxy = builder.build();
         } catch (Exception e) {
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing non null SdlProxyConfigurationResources");
+            if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
+                Assert.fail("Exception in testNullSdlProxyConfigurationResources");
+            }
         }
 
         //Construct with a null SdlProxyConfigurationResources
@@ -115,7 +115,9 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             proxy = builder.build();
         } catch (Exception e) {
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
-            Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
+            if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
+                Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
+            }
         }
 
         //Construct with a non-null SdlProxyConfigurationResources and a null TelephonyManager
@@ -125,7 +127,9 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             proxy = builder.build();
         } catch (Exception e) {
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
-            Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
+            if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
+                Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
+            }
         }
     }
 
