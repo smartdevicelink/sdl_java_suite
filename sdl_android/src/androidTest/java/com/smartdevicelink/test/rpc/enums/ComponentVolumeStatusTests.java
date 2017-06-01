@@ -1,34 +1,35 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.ComponentVolumeStatus}
  */
-public class ComponentVolumeStatusTests extends TestCase {
+public class ComponentVolumeStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "UNKNOWN";
+		String example = mContext.getString(R.string.unknown_caps);
 		ComponentVolumeStatus enumUnknown = ComponentVolumeStatus.valueForString(example);
-		example = "NORMAL";
+		example = mContext.getString(R.string.normal_caps);
 		ComponentVolumeStatus enumNormal = ComponentVolumeStatus.valueForString(example);
-		example = "LOW";
+		example = mContext.getString(R.string.low_caps);
 		ComponentVolumeStatus enumLow = ComponentVolumeStatus.valueForString(example);
-		example = "FAULT";
+		example = mContext.getString(R.string.fault_caps);
 		ComponentVolumeStatus enumFault = ComponentVolumeStatus.valueForString(example);
-		example = "ALERT";
+		example = mContext.getString(R.string.alert_caps);
 		ComponentVolumeStatus enumAlert = ComponentVolumeStatus.valueForString(example);
-		example = "NOT_SUPPORTED";
+		example = mContext.getString(R.string.not_supported_caps);
 		ComponentVolumeStatus enumNotSupported = ComponentVolumeStatus.valueForString(example);
 		
 		assertNotNull("UNKNOWN returned null", enumUnknown);
@@ -43,13 +44,13 @@ public class ComponentVolumeStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "unKNowN";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    ComponentVolumeStatus temp = ComponentVolumeStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -60,10 +61,10 @@ public class ComponentVolumeStatusTests extends TestCase {
 		String example = null;
 		try {
 		    ComponentVolumeStatus temp = ComponentVolumeStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -81,7 +82,7 @@ public class ComponentVolumeStatusTests extends TestCase {
 		enumTestList.add(ComponentVolumeStatus.ALERT);
 		enumTestList.add(ComponentVolumeStatus.NOT_SUPPORTED);		
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

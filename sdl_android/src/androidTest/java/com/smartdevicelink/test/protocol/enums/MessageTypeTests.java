@@ -1,21 +1,22 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.MessageType;
 
-import junit.framework.TestCase;
-
-public class MessageTypeTests extends TestCase  {
+public class MessageTypeTests extends AndroidTestCase {
 	
 	public void testValidEnums () {	
-		String example = "UNDEFINED";
+		String example = mContext.getString(R.string.undefined_caps);
 		MessageType enumUndefined = MessageType.valueForString(example);
-		example = "BULK";
+		example = mContext.getString(R.string.bulk_caps);
 		MessageType enumBulk = MessageType.valueForString(example);
-		example = "RPC";
+		example = mContext.getString(R.string.rpc_caps);
 		MessageType enumRpc = MessageType.valueForString(example);
 		
 		assertNotNull("UNDEFINED returned null", enumUndefined);
@@ -24,11 +25,11 @@ public class MessageTypeTests extends TestCase  {
 	}
 	
 	public void testInvalidEnum () {
-		String example = "RpC";
+		String example = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			MessageType temp = MessageType.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
+			assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		} catch (IllegalArgumentException exception) {
 			fail("Invalid enum throws IllegalArgumentException");
 		}
@@ -39,10 +40,10 @@ public class MessageTypeTests extends TestCase  {
 		
 		try {
 			MessageType temp = MessageType.valueForString(example);
-			assertNull("Result of valueForString should be null.", temp);
+			assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -54,7 +55,7 @@ public class MessageTypeTests extends TestCase  {
 		enumTestList.add(MessageType.BULK);
 		enumTestList.add(MessageType.RPC);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 					enumValueList.containsAll(enumTestList) &&
 					enumTestList.containsAll(enumValueList));
 	}

@@ -1,13 +1,14 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.test.Validator;
 
-public class FrameDataTests extends TestCase {
+public class FrameDataTests extends AndroidTestCase {
 	
 	private Vector<FrameData> list = FrameData.getList();
 	
@@ -16,16 +17,16 @@ public class FrameDataTests extends TestCase {
 	public void testValidEnums () {
 		
 		final byte   START_SESSION_BYTE   = (byte) 0x01;
-		final String START_SESSION_STRING = "StartSession";
+		final String START_SESSION_STRING = mContext.getString(R.string.start_session);
 		
 		final byte   START_SESSION_ACK_BYTE   = (byte) 0x02;
-		final String START_SESSION_ACK_STRING = "StartSessionACK";
+		final String START_SESSION_ACK_STRING = mContext.getString(R.string.startsessionack);
 		
 		final byte   START_SESSION_NACK_BYTE   = (byte) 0x03;
-		final String START_SESSION_NACK_STRING = "StartSessionNACK";
+		final String START_SESSION_NACK_STRING = mContext.getString(R.string.startsessionnack);
 		
 		final byte   END_SESSION_BYTE   = (byte) 0x04;
-		final String END_SESSION_STRING = "EndSession";
+		final String END_SESSION_STRING = mContext.getString(R.string.endsession);
 		
 		try {
 			
@@ -54,7 +55,7 @@ public class FrameDataTests extends TestCase {
 			assertNotNull("Consecutive string match returned null",   enumES);
 			
 		} catch (NullPointerException exception) {
-            fail("Null enum list throws NullPointerException.");
+            fail(mContext.getString(R.string.null_enum_list_throws_null_pointer_exception));
 		}		
 	}
 	
@@ -62,20 +63,20 @@ public class FrameDataTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			
 			// Check the byte value
 			FrameData enumInvalid = (FrameData) FrameData.get(list, INVALID_BYTE);
-			assertNull("Invalid byte match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_byte_match_didnt_return_null), enumInvalid);
 			
 			// Check the string value
 			enumInvalid = (FrameData) FrameData.get(list, INVALID_STRING);
-			assertNull("Invalid string match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_string_match_didnt_return_null), enumInvalid);
 			
 		} catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -85,10 +86,10 @@ public class FrameDataTests extends TestCase {
 			
 			// Check null string lookup
 			FrameData enumNull = (FrameData) FrameData.get(list, null);
-			assertNull("Null lookup returns a value", enumNull);
+			assertNull(mContext.getString(R.string.null_lookup_returns_a_value), enumNull);
 			
 		} catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -101,7 +102,7 @@ public class FrameDataTests extends TestCase {
 		enumTestList.add(FrameData.StartSessionNACK);
 		enumTestList.add(FrameData.EndSession);
 		
-		assertTrue("List does not match enum test list.",
+		assertTrue(mContext.getString(R.string.list_does_not_match_enum_test_list),
 					list.containsAll(enumTestList) &&
 					enumTestList.containsAll(list));
 		
@@ -110,7 +111,7 @@ public class FrameDataTests extends TestCase {
 		FrameData[] enumTestArray = { FrameData.StartSession,     FrameData.StartSessionACK, 
 									  FrameData.StartSessionNACK, FrameData.EndSession };
 		
-		assertTrue("Array does not match enum values array.",
+		assertTrue(mContext.getString(R.string.array_does_not_match_enum_values_array),
 					Validator.validateFrameDataArray(enumValueArray, enumTestArray));
 	}
 }

@@ -1,5 +1,8 @@
 package com.smartdevicelink.test.streaming;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +11,7 @@ import java.net.URLConnection;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -19,11 +23,15 @@ import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
+import javax.annotation.Resource;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
+
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.streaming.AbstractPacketizer}
  */
-public class AbstractPacketizerTests extends TestCase {
+public class AbstractPacketizerTests extends AndroidTestCase {
 		
 	/**
 	 * This is a unit test for the following methods : 
@@ -35,7 +43,7 @@ public class AbstractPacketizerTests extends TestCase {
 		// Test Values
 		byte            testSessionId    = (byte) 0x0A;
 		byte            testWiproVersion = (byte) 0x0B;
-		RPCRequest      testRpcRequest   = new RPCRequest("test");
+		RPCRequest      testRpcRequest   = new RPCRequest((mContext.getString(R.string.test)));
 		SessionType     testSessionType  = SessionType.RPC;
 		SdlSession      testSdlSession  = null;
 		InputStream     testInputStream  = null;
@@ -46,7 +54,7 @@ public class AbstractPacketizerTests extends TestCase {
 		
 		try {
 			
-			URL url = new URL("https://github.com/smartdevicelink/sdl_android");
+			URL url = new URL(mContext.getString(R.string.sdl_android_github_link));
 		    URLConnection urlConnection = url.openConnection();
 			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
 			

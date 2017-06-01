@@ -1,17 +1,23 @@
 package com.smartdevicelink.test.util;
 
+import android.content.res.Resources;
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.util.ByteEnumer;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.util.ByteEnumer}
  */
-public class ByteEnumerTests extends TestCase {
+public class ByteEnumerTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following methods :
@@ -25,7 +31,7 @@ public class ByteEnumerTests extends TestCase {
 		
 		// Test Values
 		byte           testByte   = (byte) 0x01;
-		String         testString = "test";
+		String         testString = mContext.getString(R.string.test);
 		MockByteEnumer testObject = new MockByteEnumer(testByte, null);
 		
 		// Comparison Values
@@ -58,8 +64,8 @@ public class ByteEnumerTests extends TestCase {
 		// Test Values
 		byte               testByte1       = (byte) 0x01;
 		byte               testByte2       = (byte) 0x02;
-		String             testString1     = "test_1";
-		String             testString2     = "test_2";
+		String             testString1     = mContext.getString(R.string.test_one);
+		String             testString2     = mContext.getString(R.string.test_two);
 		Vector<ByteEnumer> testList        = new Vector<ByteEnumer>();
 		Vector<String>     testInvalidList = new Vector<String>();
 		

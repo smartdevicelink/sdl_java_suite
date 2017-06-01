@@ -1,7 +1,10 @@
 package com.smartdevicelink.test.trace;
 
+import android.test.AndroidTestCase;
+
 import java.io.UnsupportedEncodingException;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.Mime;
 
@@ -11,7 +14,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.trace.Mime}
  */
-public class MimeTests extends TestCase {
+public class MimeTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following methods : 
@@ -23,11 +26,11 @@ public class MimeTests extends TestCase {
 		
 		try {
 			// Test Values
-			String testString  = "test";
-			byte[] testBytes   = testString.getBytes("US-ASCII");
+			String testString  = mContext.getString(R.string.test);
+			byte[] testBytes   = testString.getBytes(mContext.getString(R.string.us_ascii_caps));
 			
 			// Comparison Values
-			String expectedEncodedString = "dGVzdA==";
+			String expectedEncodedString = mContext.getString(R.string.dgvzda);
 			String actualNullResult1    = Mime.base64Encode((byte[]) null);
 			String actualNullResult2    = Mime.base64Encode((String) null);	
 			String actualNullResult3    = Mime.base64Encode(null, 0, 0); 

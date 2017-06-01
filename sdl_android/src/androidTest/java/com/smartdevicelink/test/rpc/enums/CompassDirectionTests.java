@@ -1,38 +1,39 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.CompassDirection}
  */
-public class CompassDirectionTests extends TestCase {
+public class CompassDirectionTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "NORTH";
+		String example = mContext.getString(R.string.north_caps);
 		CompassDirection enumNorth = CompassDirection.valueForString(example);
-		example = "NORTHWEST";
+		example = mContext.getString(R.string.northwest_caps);
 		CompassDirection enumNorthWest = CompassDirection.valueForString(example);
-		example = "WEST";
+		example = mContext.getString(R.string.west_caps);
 		CompassDirection enumWest = CompassDirection.valueForString(example);
-		example = "SOUTHWEST";
+		example = mContext.getString(R.string.southwest_caps);
 		CompassDirection enumSouthWest = CompassDirection.valueForString(example);
-		example = "SOUTH";
+		example = mContext.getString(R.string.south_caps);
 		CompassDirection enumSouth = CompassDirection.valueForString(example);
-		example = "SOUTHEAST";
+		example = mContext.getString(R.string.southeast_caps);
 		CompassDirection enumSouthEast = CompassDirection.valueForString(example);
-		example = "EAST";
+		example = mContext.getString(R.string.east_caps);
 		CompassDirection enumEast = CompassDirection.valueForString(example);
-		example = "NORTHEAST";
+		example = mContext.getString(R.string.northeast_caps);
 		CompassDirection enumNorthEast = CompassDirection.valueForString(example);
 		
 		assertNotNull("NORTH returned null", enumNorth);
@@ -49,13 +50,13 @@ public class CompassDirectionTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "noRTh";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    CompassDirection temp = CompassDirection.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -66,10 +67,10 @@ public class CompassDirectionTests extends TestCase {
 		String example = null;
 		try {
 		    CompassDirection temp = CompassDirection.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -89,7 +90,7 @@ public class CompassDirectionTests extends TestCase {
 		enumTestList.add(CompassDirection.EAST);
 		enumTestList.add(CompassDirection.NORTHEAST);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

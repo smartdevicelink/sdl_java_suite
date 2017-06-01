@@ -1,36 +1,37 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.GlobalProperty}
  */
-public class GlobalPropertyTests extends TestCase {
+public class GlobalPropertyTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "HELPPROMPT";
+		String example = mContext.getString(R.string.helprompt_caps);
 		GlobalProperty enumHelpPrompt = GlobalProperty.valueForString(example);
-		example = "TIMEOUTPROMPT";
+		example = mContext.getString(R.string.timeoutprompt_caps);
 		GlobalProperty enumTimeoutPrompt = GlobalProperty.valueForString(example);
-		example = "VRHELPTITLE";
+		example = mContext.getString(R.string.vrhelptitle_caps);
 		GlobalProperty enumVrHelpTitle = GlobalProperty.valueForString(example);
-		example = "VRHELPITEMS";
+		example = mContext.getString(R.string.vrhelpitems_caps);
 		GlobalProperty enumVrHelpItems = GlobalProperty.valueForString(example);
-		example = "MENUNAME";
+		example = mContext.getString(R.string.menuname_caps);
 		GlobalProperty enumMenuName = GlobalProperty.valueForString(example);
-		example = "MENUICON";
+		example = mContext.getString(R.string.menuicons_caps);
 		GlobalProperty enumMenuIcon = GlobalProperty.valueForString(example);
-		example = "KEYBOARDPROPERTIES";
+		example = mContext.getString(R.string.keyboardprops_caps);
 		GlobalProperty enumKeyboardProperties = GlobalProperty.valueForString(example);
 		
 		assertNotNull("HELPPROMPT returned null", enumHelpPrompt);
@@ -46,13 +47,13 @@ public class GlobalPropertyTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "heLp_ProMPt";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    GlobalProperty temp = GlobalProperty.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -63,10 +64,10 @@ public class GlobalPropertyTests extends TestCase {
 		String example = null;
 		try {
 		    GlobalProperty temp = GlobalProperty.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -85,7 +86,7 @@ public class GlobalPropertyTests extends TestCase {
 		enumTestList.add(GlobalProperty.MENUICON);		
 		enumTestList.add(GlobalProperty.KEYBOARDPROPERTIES);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

@@ -1,52 +1,53 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.WiperStatis}
  */
-public class WiperStatusTests extends TestCase {
+public class WiperStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "OFF";
+		String example = mContext.getString(R.string.off_caps);
 		WiperStatus enumOff = WiperStatus.valueForString(example);
-		example = "AUTO_OFF";
+		example = mContext.getString(R.string.auto_off_caps);
 		WiperStatus enumAutoOff = WiperStatus.valueForString(example);
-		example = "OFF_MOVING";
+		example = mContext.getString(R.string.off_moving_caps);
 		WiperStatus enumOffMoving = WiperStatus.valueForString(example);
-		example = "MAN_INT_OFF";
+		example = mContext.getString(R.string.man_int_off_caps);
 		WiperStatus enumManIntOff = WiperStatus.valueForString(example);
-		example = "MAN_INT_ON";
+		example = mContext.getString(R.string.man_int_on_caps);
 		WiperStatus enumManIntOn = WiperStatus.valueForString(example);
-		example = "MAN_LOW";
+		example = mContext.getString(R.string.man_low_caps);
 		WiperStatus enumManLow = WiperStatus.valueForString(example);
-		example = "MAN_HIGH";
+		example = mContext.getString(R.string.man_high_caps);
 		WiperStatus enumManHigh = WiperStatus.valueForString(example);
-		example = "MAN_FLICK";
+		example = mContext.getString(R.string.man_flick_caps);
 		WiperStatus enumManFlick = WiperStatus.valueForString(example);
-		example = "WASH";
+		example = mContext.getString(R.string.wash_caps);
 		WiperStatus enumWash = WiperStatus.valueForString(example);
-		example = "AUTO_LOW";
+		example = mContext.getString(R.string.auto_low_caps);
 		WiperStatus enumAutoLow = WiperStatus.valueForString(example);
-		example = "AUTO_HIGH";
+		example = mContext.getString(R.string.auto_high_caps);
 		WiperStatus enumAutoHigh = WiperStatus.valueForString(example);
-		example = "COURTESYWIPE";
+		example = mContext.getString(R.string.courtesy_wipe_caps);
 		WiperStatus enumCourtesyWipe = WiperStatus.valueForString(example);
-		example = "AUTO_ADJUST";
+		example = mContext.getString(R.string.auto_adjust_caps);
 		WiperStatus enumAutoAdjust = WiperStatus.valueForString(example);
-		example = "STALLED";
+		example = mContext.getString(R.string.stalled_caps);
 		WiperStatus enumStalled = WiperStatus.valueForString(example);
-		example = "NO_DATA_EXISTS";
+		example = mContext.getString(R.string.no_data_exists_caps);
 		WiperStatus enumNoDataExists = WiperStatus.valueForString(example);
 		
 		assertNotNull("OFF returned null", enumOff);
@@ -70,13 +71,13 @@ public class WiperStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "OFf";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    WiperStatus temp = WiperStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -87,10 +88,10 @@ public class WiperStatusTests extends TestCase {
 		String example = null;
 		try {
 		    WiperStatus temp = WiperStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 	
@@ -117,7 +118,7 @@ public class WiperStatusTests extends TestCase {
 		enumTestList.add(WiperStatus.STALLED);
 		enumTestList.add(WiperStatus.NO_DATA_EXISTS);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

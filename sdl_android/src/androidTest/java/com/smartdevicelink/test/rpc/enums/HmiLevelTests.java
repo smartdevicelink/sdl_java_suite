@@ -1,30 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-
-import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.HmiLevel}
  */
-public class HmiLevelTests extends TestCase {
+public class HmiLevelTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "FULL";
+		String example = mContext.getString(R.string.full_caps);
 		HMILevel enumFull = HMILevel.valueForString(example);
-		example = "LIMITED";
+		example = mContext.getString(R.string.limited_caps);
 		HMILevel enumLimited = HMILevel.valueForString(example);
-		example = "BACKGROUND";
+		example = mContext.getString(R.string.background_caps);
 		HMILevel enumBackground = HMILevel.valueForString(example);
-		example = "NONE";
+		example = mContext.getString(R.string.none_caps);
 		HMILevel enumNone = HMILevel.valueForString(example);
 		
 		assertNotNull("FULL returned null", enumFull);
@@ -37,13 +38,13 @@ public class HmiLevelTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "fUlL";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    HMILevel temp = HMILevel.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -54,10 +55,10 @@ public class HmiLevelTests extends TestCase {
 		String example = null;
 		try {
 		    HMILevel temp = HMILevel.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -73,7 +74,7 @@ public class HmiLevelTests extends TestCase {
 		enumTestList.add(HMILevel.HMI_BACKGROUND);
 		enumTestList.add(HMILevel.HMI_NONE);
 		
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

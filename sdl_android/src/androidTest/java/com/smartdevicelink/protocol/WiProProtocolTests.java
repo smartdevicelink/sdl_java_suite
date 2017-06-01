@@ -171,7 +171,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 			assertEquals(mtu, 1500-12);
 			
 		}catch(Exception e){
-			Assert.fail("Exceptin during reflection");
+			Assert.fail("Exception during reflection");
 		}
 
 	}
@@ -183,7 +183,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 		try{
 			assembler.handleFrame(sampleRpc.toSdlPacket());
 		}catch(Exception e){
-			Assert.fail("Exceptin during handleFrame - " + e.toString());
+			Assert.fail("Exception during handleFrame - " + e.toString());
 		}
 	}
 	public void testHandleFrameCorrupt(){
@@ -196,7 +196,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 		try{
 			assembler.handleFrame(sampleRpc.toSdlPacket());
 		}catch(Exception e){
-			Assert.fail("Exceptin during handleFrame - " + e.toString());
+			Assert.fail("Exception during handleFrame - " + e.toString());
 		}
 	}
 	
@@ -211,7 +211,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 			method.setAccessible(true);	
 			method.invoke (assembler, sampleRpc.toSdlPacket());	
 		}catch(Exception e){
-			Assert.fail("Exceptin during handleSingleFrameMessageFrame - " + e.toString());
+			Assert.fail("Exception during handleSingleFrameMessageFrame - " + e.toString());
 		}	
 	}
 	
@@ -247,7 +247,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 			method.setAccessible(true);	
 			method.invoke (assembler, sampleRpc.toSdlPacket());	
 		}catch(Exception e){
-			Assert.fail("Exceptin during handleSingleFrameMessageFrame - " + e.toString());
+			Assert.fail("Exception during handleSingleFrameMessageFrame - " + e.toString());
 		}	
 	}
 	

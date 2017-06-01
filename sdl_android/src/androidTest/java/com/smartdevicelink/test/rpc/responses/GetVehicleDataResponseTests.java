@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -264,7 +265,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject tirePressureReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject tirePressureTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateTireStatus(
 									new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tirePressureReference)),
 									new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tirePressureTest))));
@@ -274,7 +275,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject GPSObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject GPSObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateGpsData(
 									new GPSData(JsonRPCMarshaller.deserializeJSONObject(GPSObjReference)),
 									new GPSData(JsonRPCMarshaller.deserializeJSONObject(GPSObjTest))));
@@ -283,7 +284,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject beltObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject beltObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateBeltStatus(
 									new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltObjReference)),
 									new BeltStatus(JsonRPCMarshaller.deserializeJSONObject(beltObjTest))));
@@ -292,7 +293,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject bodyInfoObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject bodyInfoObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateBodyInformation(
 									new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInfoObjReference)),
 									new BodyInformation(JsonRPCMarshaller.deserializeJSONObject(bodyInfoObjTest))));
@@ -301,7 +302,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject deviceObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject deviceObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateDeviceStatus(
 									new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceObjReference)),
 									new DeviceStatus(JsonRPCMarshaller.deserializeJSONObject(deviceObjTest))));
@@ -310,7 +311,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject headLampObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject headLampObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateHeadLampStatus(
 									new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampObjReference)),
 									new HeadLampStatus(JsonRPCMarshaller.deserializeJSONObject(headLampObjTest))));
@@ -319,7 +320,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject callInfoObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject callInfoObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateECallInfo(
 									new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(callInfoObjReference)),
 									new ECallInfo(JsonRPCMarshaller.deserializeJSONObject(callInfoObjTest))));
@@ -328,7 +329,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject airbagObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject airbagObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateAirbagStatus(
 									new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagObjReference)),
 									new AirbagStatus(JsonRPCMarshaller.deserializeJSONObject(airbagObjTest))));
@@ -337,7 +338,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject emergencyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject emergencyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateEmergencyEvent(
 									new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyObjReference)),
 									new EmergencyEvent(JsonRPCMarshaller.deserializeJSONObject(emergencyObjTest))));
@@ -346,7 +347,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject clusterModeObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject clusterModeObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateClusterModeStatus(
 									new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeObjReference)),
 									new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeObjTest))));
@@ -355,13 +356,13 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
 					JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 					
-					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+					assertTrue(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							Validator.validateMyKey(
 									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
 				}
 				else {
-					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
+					assertEquals(mContext.getString(R.string.json_value_didnt_match) + key + "\".",
 							JsonUtils.readObjectFromJsonObject(reference, key),
 							JsonUtils.readObjectFromJsonObject(underTest, key));
 	            }

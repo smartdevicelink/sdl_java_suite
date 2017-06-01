@@ -1,11 +1,12 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 
 
@@ -13,43 +14,43 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.Prndl}
  */
-public class PrndlTests extends TestCase {
+public class PrndlTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "PARK";
+		String example = mContext.getString(R.string.park_caps);
 		PRNDL enumPark = PRNDL.valueForString(example);
-		example = "REVERSE";
+		example = mContext.getString(R.string.reverse_caps);
 		PRNDL enumReverse = PRNDL.valueForString(example);
-		example = "NEUTRAL";
+		example = mContext.getString(R.string.neutral_caps);
 		PRNDL enumNeutral = PRNDL.valueForString(example);
-		example = "DRIVE";
+		example = mContext.getString(R.string.drive_caps);
 		PRNDL enumDrive = PRNDL.valueForString(example);
-		example = "SPORT";
+		example = mContext.getString(R.string.sport_caps);
 		PRNDL enumSport = PRNDL.valueForString(example);
-		example = "LOWGEAR";
+		example = mContext.getString(R.string.low_gear_caps);
 		PRNDL enumLowGear = PRNDL.valueForString(example);
-		example = "FIRST";
+		example = mContext.getString(R.string.first_caps);
 		PRNDL enumFirst = PRNDL.valueForString(example);
-		example = "SECOND";
+		example = mContext.getString(R.string.second_caps);
 		PRNDL enumSecond = PRNDL.valueForString(example);
-		example = "THIRD";
+		example = mContext.getString(R.string.third_caps);
 		PRNDL enumThird = PRNDL.valueForString(example);
-		example = "FOURTH";
+		example = mContext.getString(R.string.fourth_caps);
 		PRNDL enumFourth = PRNDL.valueForString(example);
-		example = "FIFTH";
+		example = mContext.getString(R.string.fifth_caps);
 		PRNDL enumFifth = PRNDL.valueForString(example);
-		example = "SIXTH";
+		example = mContext.getString(R.string.sixth_caps);
 		PRNDL enumSixth = PRNDL.valueForString(example);
-		example = "SEVENTH";
+		example = mContext.getString(R.string.seventh_caps);
 		PRNDL enumSeventh = PRNDL.valueForString(example);
-		example = "EIGHTH";
+		example = mContext.getString(R.string.eighth_caps);
 		PRNDL enumEighth = PRNDL.valueForString(example);
-		example = "UNKNOWN";
+		example = mContext.getString(R.string.unknown_caps);
 		PRNDL enumUnknown = PRNDL.valueForString(example);
-		example = "FAULT";
+		example = mContext.getString(R.string.fault_caps);
 		PRNDL enumFault = PRNDL.valueForString(example);
 		
 		assertNotNull("PARK returned null", enumPark);
@@ -74,13 +75,13 @@ public class PrndlTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "pARk";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    PRNDL temp = PRNDL.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -91,10 +92,10 @@ public class PrndlTests extends TestCase {
 		String example = null;
 		try {
 		    PRNDL temp = PRNDL.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -122,7 +123,7 @@ public class PrndlTests extends TestCase {
 		enumTestList.add(PRNDL.UNKNOWN);	
 		enumTestList.add(PRNDL.FAULT);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

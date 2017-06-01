@@ -1,40 +1,41 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.VehicleDataResultCode}
  */
-public class VehicleDataResultCodeTests extends TestCase {
+public class VehicleDataResultCodeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "SUCCESS";
+		String example = mContext.getString(R.string.success_caps);
 		VehicleDataResultCode enumSuccess = VehicleDataResultCode.valueForString(example);
-		example = "TRUNCATED_DATA";
+		example = mContext.getString(R.string.truncated_data_caps);
 		VehicleDataResultCode enumTruncData = VehicleDataResultCode.valueForString(example);
-		example = "DISALLOWED";
+		example = mContext.getString(R.string.disallowed_caps);
 		VehicleDataResultCode enumDisallowed = VehicleDataResultCode.valueForString(example);
-		example = "USER_DISALLOWED";
+		example = mContext.getString(R.string.user_disallowed_caps);
 		VehicleDataResultCode enumUserDisallowed = VehicleDataResultCode.valueForString(example);
-		example = "INVALID_ID";
+		example = mContext.getString(R.string.invalid_id_caps);
 		VehicleDataResultCode enumInvalidId = VehicleDataResultCode.valueForString(example);
-		example = "VEHICLE_DATA_NOT_AVAILABLE";
+		example = mContext.getString(R.string.vehicle_data_not_available_caps);
 		VehicleDataResultCode enumVehicleDataNotAvailable = VehicleDataResultCode.valueForString(example);
-		example = "DATA_ALREADY_SUBSCRIBED";
+		example = mContext.getString(R.string.data_already_subscribed);
 		VehicleDataResultCode enumDataAlreadySubscribed = VehicleDataResultCode.valueForString(example);
-		example = "DATA_NOT_SUBSCRIBED";
+		example = mContext.getString(R.string.data_not_subscribed);
 		VehicleDataResultCode enumDataNotSubscribed = VehicleDataResultCode.valueForString(example);
-		example = "IGNORED";
+		example = mContext.getString(R.string.ignored_caps);
 		VehicleDataResultCode enumIgnored = VehicleDataResultCode.valueForString(example);
 		
 		assertNotNull("SUCCESS returned null", enumSuccess);
@@ -52,13 +53,13 @@ public class VehicleDataResultCodeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "suCcesS";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    VehicleDataResultCode temp = VehicleDataResultCode.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -69,10 +70,10 @@ public class VehicleDataResultCodeTests extends TestCase {
 		String example = null;
 		try {
 		    VehicleDataResultCode temp = VehicleDataResultCode.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 	
@@ -93,7 +94,7 @@ public class VehicleDataResultCodeTests extends TestCase {
 		enumTestList.add(VehicleDataResultCode.DATA_NOT_SUBSCRIBED);
 		enumTestList.add(VehicleDataResultCode.IGNORED);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

@@ -1,11 +1,12 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.test.Test;
@@ -14,55 +15,55 @@ import com.smartdevicelink.test.Test;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.SdlDisconnectedReason}
  */
-public class SdlDisconnectedReasonTests extends TestCase {
+public class SdlDisconnectedReasonTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "USER_EXIT";
+		String example = mContext.getString(R.string.user_exit_caps);
 		SdlDisconnectedReason enumUserExit = SdlDisconnectedReason.valueForString(example);
-		example = "IGNITION_OFF";
+		example = mContext.getString(R.string.ignition_off_caps);
 		SdlDisconnectedReason enumIgnitionOff = SdlDisconnectedReason.valueForString(example);
-		example = "BLUETOOTH_OFF";
+		example = mContext.getString(R.string.bluetooth_off_caps);
 		SdlDisconnectedReason enumBluetoothOff = SdlDisconnectedReason.valueForString(example);
-		example = "USB_DISCONNECTED";
+		example = mContext.getString(R.string.usb_disconnected_caps);
 		SdlDisconnectedReason enumUsbDisconnected = SdlDisconnectedReason.valueForString(example);
-		example = "REQUEST_WHILE_IN_NONE_HMI_LEVEL";
+		example = mContext.getString(R.string.request_while_in_none_hmi_level_caps);
 		SdlDisconnectedReason enumRequestWhileInNoneHmiLevel = SdlDisconnectedReason.valueForString(example);
-		example = "TOO_MANY_REQUESTS";
+		example = mContext.getString(R.string.too_many_requests_caps);
 		SdlDisconnectedReason enumTooManyRequests = SdlDisconnectedReason.valueForString(example);
-		example = "DRIVER_DISTRACTION_VIOLATION";
+		example = mContext.getString(R.string.driver_distraction_violation_caps);
 		SdlDisconnectedReason enumDriverDistractionViolation = SdlDisconnectedReason.valueForString(example);
-		example = "LANGUAGE_CHANGE";
+		example = mContext.getString(R.string.lang_change_caps);
 		SdlDisconnectedReason enumLanuguageChange = SdlDisconnectedReason.valueForString(example);
-		example = "MASTER_RESET";
+		example = mContext.getString(R.string.master_reset_caps);
 		SdlDisconnectedReason enumMasterReset = SdlDisconnectedReason.valueForString(example);
-		example = "FACTORY_DEFAULTS";
+		example = mContext.getString(R.string.factory_defaults_caps);
 		SdlDisconnectedReason enumFactoryDefaults = SdlDisconnectedReason.valueForString(example);
-		example = "TRANSPORT_ERROR";
+		example = mContext.getString(R.string.transport_error);
 		SdlDisconnectedReason enumTransportError = SdlDisconnectedReason.valueForString(example);
-		example = "APPLICATION_REQUESTED_DISCONNECT";
+		example = mContext.getString(R.string.app_req_disconnect_caps);
 		SdlDisconnectedReason enumApplicationRequestedDisconnect = SdlDisconnectedReason.valueForString(example);
-		example = "DEFAULT";
+		example = mContext.getString(R.string.default_caps);
 		SdlDisconnectedReason enumDefault = SdlDisconnectedReason.valueForString(example);
-		example = "TRANSPORT_DISCONNECT";
+		example = mContext.getString(R.string.trNSPORT_DISCONNECT_CAPS);
 		SdlDisconnectedReason enumTransportDisconnect = SdlDisconnectedReason.valueForString(example);
-		example = "HB_TIMEOUT";
+		example = mContext.getString(R.string.hb_timeout);
 		SdlDisconnectedReason enumHbTimeout = SdlDisconnectedReason.valueForString(example);
-		example = "BLUETOOTH_DISABLED";
+		example = mContext.getString(R.string.bt_disabled_caps);
 		SdlDisconnectedReason enumBluetoothDisabled = SdlDisconnectedReason.valueForString(example);
-		example = "BLUETOOTH_ADAPTER_ERROR";
+		example = mContext.getString(R.string.bt_adapter_error);
 		SdlDisconnectedReason enumBluetoothAdapterError = SdlDisconnectedReason.valueForString(example);
-		example = "SDL_REGISTRATION_ERROR";
+		example = mContext.getString(R.string.sdl_reg_error_caps);
 		SdlDisconnectedReason enumSdlRegistrationError = SdlDisconnectedReason.valueForString(example);
-		example = "APP_INTERFACE_UNREG";
+		example = mContext.getString(R.string.app_interface_unreg_caps);
 		SdlDisconnectedReason enumAppInterfaceUnreg = SdlDisconnectedReason.valueForString(example);
-		example = "GENERIC_ERROR";
+		example = mContext.getString(R.string.generic_error_caps);
 		SdlDisconnectedReason enumGenericError = SdlDisconnectedReason.valueForString(example);
-		example = "LEGACY_BLUETOOTH_MODE_ENABLED";
+		example = mContext.getString(R.string.legacy_bt_mode_enabled_caps);
 		SdlDisconnectedReason enumLegacyMode = SdlDisconnectedReason.valueForString(example);
-		example = "RPC_SESSION_ENDED";
+		example = mContext.getString(R.string.rpc_session_ended_caps);
 		SdlDisconnectedReason enumRpcSessionEnded = SdlDisconnectedReason.valueForString(example);
 		
 		assertNotNull("USER_EXIT returned null", enumUserExit);
@@ -93,13 +94,13 @@ public class SdlDisconnectedReasonTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "uSer_ExiT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    SdlDisconnectedReason temp = SdlDisconnectedReason.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -110,10 +111,10 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		String example = null;
 		try {
 		    SdlDisconnectedReason temp = SdlDisconnectedReason.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}		
 
@@ -147,7 +148,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		enumTestList.add(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
 		enumTestList.add(SdlDisconnectedReason.RPC_SESSION_ENDED);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
 	

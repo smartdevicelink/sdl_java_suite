@@ -1,11 +1,12 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.Test;
 
@@ -13,67 +14,67 @@ import com.smartdevicelink.test.Test;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.TextFieldName}
  */
-public class TextFieldNameTests extends TestCase {
+public class TextFieldNameTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "mainField1";
+		String example = mContext.getString(R.string.main_field_one);
 		TextFieldName enumMainField1 = TextFieldName.valueForString(example);
-		example = "mainField2";
+		example = mContext.getString(R.string.main_field_two);
 		TextFieldName enumMainField2 = TextFieldName.valueForString(example);
-		example = "mainField3";
+		example = mContext.getString(R.string.main_field_three);
 		TextFieldName enumMainField3 = TextFieldName.valueForString(example);
-		example = "mainField4";
+		example = mContext.getString(R.string.main_field_four);
 		TextFieldName enumMainField4 = TextFieldName.valueForString(example);
-		example = "statusBar";
+		example = mContext.getString(R.string.status_bar);
 		TextFieldName enumStatusBar = TextFieldName.valueForString(example);
-		example = "mediaClock";
+		example = mContext.getString(R.string.media_clock);
 		TextFieldName enumMediaClock = TextFieldName.valueForString(example);
-		example = "mediaTrack";
+		example = mContext.getString(R.string.media_track);
 		TextFieldName enumMediaTrack = TextFieldName.valueForString(example);
-		example = "alertText1";
+		example = mContext.getString(R.string.alert_text_one);
 		TextFieldName enumAlertText1 = TextFieldName.valueForString(example);
-		example = "alertText2";
+		example = mContext.getString(R.string.alert_text_two);
 		TextFieldName enumAlertText2 = TextFieldName.valueForString(example);
-		example = "alertText3";
+		example = mContext.getString(R.string.alert_text_three);
 		TextFieldName enumAlertText3 = TextFieldName.valueForString(example);
-		example = "scrollableMessageBody";
+		example = mContext.getString(R.string.scrollable_message_body);
 		TextFieldName enumScrollableMessageBody = TextFieldName.valueForString(example);
-		example = "initialInteractionText";
+		example = mContext.getString(R.string.initial_interaction_text);
 		TextFieldName enumInitialInteractionText = TextFieldName.valueForString(example);
-		example = "navigationText1";
+		example = mContext.getString(R.string.navigation_text_one);
 		TextFieldName enumNavigationText1 = TextFieldName.valueForString(example);
-		example = "navigationText2";
+		example = mContext.getString(R.string.navigation_text_two);
 		TextFieldName enumNavigationText2 = TextFieldName.valueForString(example);
-		example = "ETA";
+		example = mContext.getString(R.string.eta_caps);
 		TextFieldName enumEta = TextFieldName.valueForString(example);
-		example = "totalDistance";
+		example = mContext.getString(R.string.total_distance);
 		TextFieldName enumTotalDistance = TextFieldName.valueForString(example);
-		example = "audioPassThruDisplayText1";
+		example = mContext.getString(R.string.audio_pass_through_display_text_one);
 		TextFieldName enumAudioPassThruDisplayText1 = TextFieldName.valueForString(example);
-		example = "audioPassThruDisplayText2";
+		example = mContext.getString(R.string.audio_pass_through_display_text_two);
 		TextFieldName enumAudioPassThruDisplayText2 = TextFieldName.valueForString(example);
-		example = "sliderHeader";
+		example = mContext.getString(R.string.slider_header);
 		TextFieldName enumSliderHeader = TextFieldName.valueForString(example);
-		example = "sliderFooter";
+		example = mContext.getString(R.string.slider_footer);
 		TextFieldName enumSliderFooter = TextFieldName.valueForString(example);
-		example = "menuName";
+		example = mContext.getString(R.string.menu_name);
 		TextFieldName enumMenuName = TextFieldName.valueForString(example);
-		example = "secondaryText";
+		example = mContext.getString(R.string.secondary_text);
 		TextFieldName enumSecondaryText = TextFieldName.valueForString(example);
-		example = "tertiaryText";
+		example = mContext.getString(R.string.tertiary_text);
 		TextFieldName enumTertiaryText = TextFieldName.valueForString(example);
-		example = "menuTitle";
+		example = mContext.getString(R.string.menu_title);
 		TextFieldName enumMenuTitle = TextFieldName.valueForString(example);
-		example = "locationName";
+		example = mContext.getString(R.string.location_name);
 		TextFieldName enumLocName = TextFieldName.valueForString(example);
-		example = "locationDescription";
+		example = mContext.getString(R.string.location_description);
 		TextFieldName enumLocDesc = TextFieldName.valueForString(example);
-		example = "addressLines";
+		example = mContext.getString(R.string.address_lines);
 		TextFieldName enumAddLines = TextFieldName.valueForString(example);
-		example = "phoneNumber";
+		example = mContext.getString(R.string.phone_number);
 		TextFieldName enumPhone = TextFieldName.valueForString(example);
 		
 		assertNotNull("mainField1 returned null", enumMainField1);
@@ -111,13 +112,13 @@ public class TextFieldNameTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "mAinField1";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    TextFieldName temp = TextFieldName.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -128,10 +129,10 @@ public class TextFieldNameTests extends TestCase {
 		String example = null;
 		try {
 		    TextFieldName temp = TextFieldName.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -172,7 +173,7 @@ public class TextFieldNameTests extends TestCase {
 		enumTestList.add(TextFieldName.addressLines);	
 		enumTestList.add(TextFieldName.phoneNumber);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

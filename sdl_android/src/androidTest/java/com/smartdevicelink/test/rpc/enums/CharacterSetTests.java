@@ -1,30 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.CharacterSet}
  */
-public class CharacterSetTests extends TestCase {
+public class CharacterSetTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "TYPE2SET";
+		String example = mContext.getString(R.string.type_two_set_caps);
 		CharacterSet enumType2Set = CharacterSet.valueForString(example);
-		example = "TYPE5SET";
+		example = mContext.getString(R.string.type_five_set_caps);
 		CharacterSet enumType5Set = CharacterSet.valueForString(example);
-		example = "CID1SET";
+		example = mContext.getString(R.string.cid_one_set_caps);
 		CharacterSet enumCid1Set = CharacterSet.valueForString(example);
-		example = "CID2SET";
+		example = mContext.getString(R.string.cid_two_set_caps);
 		CharacterSet enumCid2Set = CharacterSet.valueForString(example);
 		
 		assertNotNull("TYPE2SET returned null", enumType2Set);
@@ -37,13 +38,13 @@ public class CharacterSetTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "tyPe2SeT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    CharacterSet temp = CharacterSet.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -54,10 +55,10 @@ public class CharacterSetTests extends TestCase {
 		String example = null;
 		try {
 		    CharacterSet temp = CharacterSet.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -73,7 +74,7 @@ public class CharacterSetTests extends TestCase {
 		enumTestList.add(CharacterSet.CID1SET);
 		enumTestList.add(CharacterSet.CID2SET);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

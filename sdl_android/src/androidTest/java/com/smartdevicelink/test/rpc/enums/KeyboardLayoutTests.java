@@ -1,28 +1,29 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.KeyboardLayout}
  */
-public class KeyboardLayoutTests extends TestCase {
+public class KeyboardLayoutTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "QWERTY";
+		String example = mContext.getString(R.string.qwerty_caps);
 		KeyboardLayout enumQwerty = KeyboardLayout.valueForString(example);
-		example = "QWERTZ";
+		example = mContext.getString(R.string.qwertz_caps);
 		KeyboardLayout enumQwertz = KeyboardLayout.valueForString(example);
-		example = "AZERTY";
+		example = mContext.getString(R.string.azerty_caps);
 		KeyboardLayout enumAzerty = KeyboardLayout.valueForString(example);
 		
 		assertNotNull("QWERTY returned null", enumQwerty);
@@ -34,13 +35,13 @@ public class KeyboardLayoutTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "qWerTY";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    KeyboardLayout temp = KeyboardLayout.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -51,10 +52,10 @@ public class KeyboardLayoutTests extends TestCase {
 		String example = null;
 		try {
 		    KeyboardLayout temp = KeyboardLayout.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -69,7 +70,7 @@ public class KeyboardLayoutTests extends TestCase {
 		enumTestList.add(KeyboardLayout.QWERTZ);
 		enumTestList.add(KeyboardLayout.AZERTY);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

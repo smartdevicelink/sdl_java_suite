@@ -121,6 +121,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
             } else if (transportConfig.getTransportType() == TransportType.USB) {
                 _transport = new USBTransport((USBTransportConfig) transportConfig, this);
             }
+
 		}
 		
 		// Initialize the protocol

@@ -1,14 +1,15 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.test.Validator;
 
-import junit.framework.TestCase;
 
-
-public class FrameDataControlFrameTypeTests extends TestCase {
+public class FrameDataControlFrameTypeTests extends AndroidTestCase {
 	
 	private Vector<FrameDataControlFrameType> list = FrameDataControlFrameType.getList();
 	
@@ -17,28 +18,28 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 	public void testValidEnums () {
 		
 		final byte   START_SESSION_BYTE   = (byte) 0x01;
-		final String START_SESSION_STRING = "StartSession";
+		final String START_SESSION_STRING = mContext.getString(R.string.start_session);
 		
 		final byte   START_SESSION_ACK_BYTE   = (byte) 0x02;
-		final String START_SESSION_ACK_STRING = "StartSessionACK";
+		final String START_SESSION_ACK_STRING = mContext.getString(R.string.startsessionack);
 		
 		final byte   START_SESSION_NACK_BYTE   = (byte) 0x03;
-		final String START_SESSION_NACK_STRING = "StartSessionNACK";
+		final String START_SESSION_NACK_STRING = mContext.getString(R.string.startsessionnack);
 		
 		final byte   END_SESSION_BYTE   = (byte) 0x04;
-		final String END_SESSION_STRING = "EndSession";
+		final String END_SESSION_STRING = mContext.getString(R.string.endsession);
 		
 		final byte   END_SESSION_ACK_BYTE   = (byte) 0x05;
-		final String END_SESSION_ACK_STRING = "EndSessionACK";
+		final String END_SESSION_ACK_STRING = mContext.getString(R.string.endsessionack);
 		
 		final byte   END_SESSION_NACK_BYTE   = (byte) 0x06;
-		final String END_SESSION_NACK_STRING = "EndSessionNACK";
+		final String END_SESSION_NACK_STRING = mContext.getString(R.string.endsessionnack);
 		
 		final byte   HEARTBEAT_BYTE   = (byte) 0x00;
-		final String HEARTBEAT_STRING = "Heartbeat";
+		final String HEARTBEAT_STRING = mContext.getString(R.string.heartbeat);
 		
 		final byte   HEARTBEAT_ACK_BYTE   = (byte) 0xFF;
-		final String HEARTBEAT_ACK_STRING = "HeartbeatACK";
+		final String HEARTBEAT_ACK_STRING = mContext.getString(R.string.heartbeatack);
 		
 		try {
 			
@@ -83,7 +84,7 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 			assertNotNull("Heartbeat ack string match returned null",      enumHACK);
 			
 		} catch (NullPointerException exception) {
-            fail("Null enum list throws NullPointerException.");
+            fail(mContext.getString(R.string.null_enum_list_throws_null_pointer_exception));
 		}		
 	}
 	
@@ -91,20 +92,20 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			
 			// Check the byte value
 			FrameDataControlFrameType enumInvalid = (FrameDataControlFrameType) FrameDataControlFrameType.get(list, INVALID_BYTE);
-			assertNull("Invalid byte match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_byte_match_didnt_return_null), enumInvalid);
 			
 			// Check the string value
 			enumInvalid = (FrameDataControlFrameType) FrameDataControlFrameType.get(list, INVALID_STRING);
-			assertNull("Invalid string match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_string_match_didnt_return_null), enumInvalid);
 			
 		} catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -114,10 +115,10 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 			
 			// Check null string lookup
 			FrameDataControlFrameType enumNull = (FrameDataControlFrameType) FrameDataControlFrameType.get(list, null);
-			assertNull("Null lookup returns a value", enumNull);
+			assertNull(mContext.getString(R.string.null_lookup_returns_a_value), enumNull);
 			
 		} catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -135,7 +136,7 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 		enumTestList.add(FrameDataControlFrameType.ServiceDataACK);
 		enumTestList.add(FrameDataControlFrameType.HeartbeatACK);
 		
-		assertTrue("List does not match enum test list.",
+		assertTrue(mContext.getString(R.string.list_does_not_match_enum_test_list),
 					list.containsAll(enumTestList) &&
 					enumTestList.containsAll(list));
 		
@@ -148,7 +149,7 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 				FrameDataControlFrameType.EndSessionNACK,  FrameDataControlFrameType.ServiceDataACK,
 				FrameDataControlFrameType.HeartbeatACK, };
 		
-		assertTrue("Array does not match enum values array.",
+		assertTrue(mContext.getString(R.string.array_does_not_match_enum_values_array),
 					Validator.validateFrameDataControlFrameTypeArray(enumValueArray, enumTestArray));
 	}
 

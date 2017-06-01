@@ -1,70 +1,71 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.Language}
  */
-public class LanguageTests extends TestCase {
+public class LanguageTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "EN-US";
+		String example = mContext.getString(R.string.en_us);
 		Language enumEnUs = Language.valueForString(example);
-		example = "ES-MX";
+		example = mContext.getString(R.string.es_mx);
 		Language enumEsMx = Language.valueForString(example);
-		example = "FR-CA";
+		example = mContext.getString(R.string.fr_ca);
 		Language enumFrCa = Language.valueForString(example);
-		example = "DE-DE";
+		example = mContext.getString(R.string.de_de);
 		Language enumDeDe = Language.valueForString(example);
-		example = "ES-ES";
+		example = mContext.getString(R.string.es_es);
 		Language enumEsEs = Language.valueForString(example);
-		example = "EN-GB";
+		example = mContext.getString(R.string.en_gb);
 		Language enumEnGb = Language.valueForString(example);
-		example = "RU-RU";
+		example = mContext.getString(R.string.ru_ru);
 		Language enumRuRu = Language.valueForString(example);
-		example = "TR-TR";
+		example = mContext.getString(R.string.tr_tr);
 		Language enumTrTr = Language.valueForString(example);
-		example = "PL-PL";
+		example = mContext.getString(R.string.pl_pl);
 		Language enumPlPl = Language.valueForString(example);
-		example = "FR-FR";
+		example = mContext.getString(R.string.fr_fr);
 		Language enumFrFr = Language.valueForString(example);
-		example = "IT-IT";
+		example = mContext.getString(R.string.it_it);
 		Language enumItIt = Language.valueForString(example);
-		example = "SV-SE";
+		example = mContext.getString(R.string.sv_se);
 		Language enumSvSe = Language.valueForString(example);
-		example = "PT-PT";
+		example = mContext.getString(R.string.pt_pt);
 		Language enumPtPt = Language.valueForString(example);
-		example = "NL-NL";
+		example = mContext.getString(R.string.nl_nl);
 		Language enumNlNl = Language.valueForString(example);
-		example = "EN-AU";
+		example = mContext.getString(R.string.en_au);
 		Language enumEnAu = Language.valueForString(example);
-		example = "ZH-CN";
+		example = mContext.getString(R.string.zh_cn);
 		Language enumZhCn = Language.valueForString(example);
-		example = "ZH-TW";
+		example = mContext.getString(R.string.zh_tw);
 		Language enumZhTw = Language.valueForString(example);
-		example = "JA-JP";
+		example = mContext.getString(R.string.ja_jp);
 		Language enumJaJp = Language.valueForString(example);
-		example = "AR-SA";
+		example = mContext.getString(R.string.ar_sa);
 		Language enumArSa = Language.valueForString(example);
-		example = "KO-KR";
+		example = mContext.getString(R.string.ko_kr);
 		Language enumKoKr = Language.valueForString(example);
-		example = "PT-BR";
+		example = mContext.getString(R.string.pt_br);
 		Language enumPtBr = Language.valueForString(example);
-		example = "CS-CZ";
+		example = mContext.getString(R.string.cs_cz);
 		Language enumCsCz = Language.valueForString(example);
-		example = "DA-DK";
+		example = mContext.getString(R.string.da_dk);
 		Language enumDaDk = Language.valueForString(example);
-		example = "NO-NO";
+		example = mContext.getString(R.string.no_no);
 		Language enumNoNo = Language.valueForString(example);
 		
 		assertNotNull("EN-US returned null", enumEnUs);
@@ -97,13 +98,13 @@ public class LanguageTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "eN-Us";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    Language temp = Language.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -114,10 +115,10 @@ public class LanguageTests extends TestCase {
 		String example = null;
 		try {
 		    Language temp = Language.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -154,7 +155,7 @@ public class LanguageTests extends TestCase {
 		enumTestList.add(Language.DA_DK);
 		enumTestList.add(Language.NO_NO);
 		
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

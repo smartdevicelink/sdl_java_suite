@@ -1,42 +1,43 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.AppHmiType}
  */
-public class AppHmiTypeTests extends TestCase {
+public class AppHmiTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "DEFAULT";
+		String example = mContext.getString(R.string.default_caps);
 		AppHMIType enumDefault = AppHMIType.valueForString(example);
-		example = "COMMUNICATION";
+		example = mContext.getString(R.string.communication_caps);
 		AppHMIType enumCommunication = AppHMIType.valueForString(example);
-		example = "MEDIA";
+		example = mContext.getString(R.string.media_caps);
 		AppHMIType enumMedia = AppHMIType.valueForString(example);
-		example = "MESSAGING";
+		example = mContext.getString(R.string.messaging_caps);
 		AppHMIType enumMessaging = AppHMIType.valueForString(example);
-		example = "NAVIGATION";
+		example = mContext.getString(R.string.navigation_caps);
 		AppHMIType enumNavigation = AppHMIType.valueForString(example);
-		example = "INFORMATION";
+		example = mContext.getString(R.string.information_caps);
 		AppHMIType enumInformation = AppHMIType.valueForString(example);
-		example = "SOCIAL";
+		example = mContext.getString(R.string.social_caps);
 		AppHMIType enumSocial = AppHMIType.valueForString(example);
-		example = "BACKGROUND_PROCESS";
+		example = mContext.getString(R.string.background_process_caps);
 		AppHMIType enumBackgroundProcess = AppHMIType.valueForString(example);
-		example = "TESTING";
+		example = mContext.getString(R.string.testing_caps);
 		AppHMIType enumTesting = AppHMIType.valueForString(example);
-		example = "SYSTEM";
+		example = mContext.getString(R.string.system_caps);
 		AppHMIType enumSystem = AppHMIType.valueForString(example);
 		
 		assertNotNull("DEFAULT returned null", enumDefault);
@@ -55,13 +56,13 @@ public class AppHmiTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "deFaUlt";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    AppHMIType temp = AppHMIType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -72,10 +73,10 @@ public class AppHmiTypeTests extends TestCase {
 		String example = null;
 		try {
 		    AppHMIType temp = AppHMIType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 	
@@ -97,7 +98,7 @@ public class AppHmiTypeTests extends TestCase {
 		enumTestList.add(AppHMIType.TESTING);
 		enumTestList.add(AppHMIType.SYSTEM);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
 }

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;

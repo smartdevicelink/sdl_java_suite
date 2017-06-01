@@ -1,11 +1,14 @@
 package com.smartdevicelink.test.streaming;
 
+import android.test.AndroidTestCase;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -21,7 +24,7 @@ import junit.framework.TestCase;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.streaming.StreamRpcPacketizer}
  */
-public class StreamRPCPacketizerTests extends TestCase {
+public class StreamRPCPacketizerTests extends AndroidTestCase {
 		
 	/**
 	 * This is a unit test for the following methods : 
@@ -32,7 +35,7 @@ public class StreamRPCPacketizerTests extends TestCase {
 		// Test Values
 		byte testSessionId           = (byte) 0x0A;
 		byte testWV                  = (byte) 0x0B;
-		RPCRequest  testRequest      = new RPCRequest("test");
+		RPCRequest  testRequest      = new RPCRequest(mContext.getString(R.string.test));
 		SessionType testSessionType  = SessionType.RPC;
 		InputStream testInputStream  = null;
 		IStreamListener testListener = new MockStreamListener();
@@ -43,7 +46,7 @@ public class StreamRPCPacketizerTests extends TestCase {
 		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
 
 		try {			
-			URL url = new URL("https://github.com/smartdevicelink/sdl_android");
+			URL url = new URL(mContext.getString(R.string.sdl_android_github_link));
 		    URLConnection urlConnection = url.openConnection();
 			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
 			

@@ -1,39 +1,40 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.AmbientLightStatus}
  */
-public class AmbientLightStatusTests extends TestCase {
+public class AmbientLightStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
 		
-		String example = "DAY";
+		String example = mContext.getString(R.string.day_caps);
 		AmbientLightStatus enumDay = AmbientLightStatus.valueForString(example);
-		example = "NIGHT";
+		example = mContext.getString(R.string.night_caps);
 		AmbientLightStatus enumNight = AmbientLightStatus.valueForString(example);
-		example = "UNKNOWN";
+		example = mContext.getString(R.string.unknown_caps);
 		AmbientLightStatus enumUnknown = AmbientLightStatus.valueForString(example);
-		example = "INVALID";
+		example = mContext.getString(R.string.invalid_caps);
 		AmbientLightStatus enumInvalid = AmbientLightStatus.valueForString(example);
-		example = "TWILIGHT_1";
+		example = mContext.getString(R.string.twilight_one_caps);
 		AmbientLightStatus enumTwilight1 = AmbientLightStatus.valueForString(example);
-		example = "TWILIGHT_2";
+		example = mContext.getString(R.string.twilight_two_caps);
 		AmbientLightStatus enumTwilight2 = AmbientLightStatus.valueForString(example);
-		example = "TWILIGHT_3";
+		example = mContext.getString(R.string.twilight_three_caps);
 		AmbientLightStatus enumTwilight3 = AmbientLightStatus.valueForString(example);
-		example = "TWILIGHT_4";
+		example = mContext.getString(R.string.twilight_four_caps);
 		AmbientLightStatus enumTwilight4 = AmbientLightStatus.valueForString(example);
 			
 		assertNotNull("DAY returned null", enumDay);
@@ -50,13 +51,13 @@ public class AmbientLightStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "niGHt";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    AmbientLightStatus temp = AmbientLightStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -67,10 +68,10 @@ public class AmbientLightStatusTests extends TestCase {
 		String example = null;
 		try {
 		    AmbientLightStatus temp = AmbientLightStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	

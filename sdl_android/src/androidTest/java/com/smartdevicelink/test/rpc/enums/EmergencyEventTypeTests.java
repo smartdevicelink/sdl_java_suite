@@ -1,36 +1,37 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.EmergencyEventType}
  */
-public class EmergencyEventTypeTests extends TestCase {
+public class EmergencyEventTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "NO_EVENT";
+		String example = mContext.getString(R.string.no_event_caps);
 		EmergencyEventType enumEventType = EmergencyEventType.valueForString(example);
-		example = "FRONTAL";
+		example = mContext.getString(R.string.frontal_caps);
 		EmergencyEventType enumFrontal = EmergencyEventType.valueForString(example);
-		example = "SIDE";
+		example = mContext.getString(R.string.side_caps);
 		EmergencyEventType enumSide = EmergencyEventType.valueForString(example);
-		example = "REAR";
+		example = mContext.getString(R.string.rear_caps);
 		EmergencyEventType enumRear = EmergencyEventType.valueForString(example);
-		example = "ROLLOVER";
+		example = mContext.getString(R.string.rollover_caps);
 		EmergencyEventType enumRollover = EmergencyEventType.valueForString(example);
-		example = "NOT_SUPPORTED";
+		example = mContext.getString(R.string.not_supported_caps);
 		EmergencyEventType enumNotSupported = EmergencyEventType.valueForString(example);
-		example = "FAULT";
+		example = mContext.getString(R.string.fault_caps);
 		EmergencyEventType enumFault = EmergencyEventType.valueForString(example);
 		
 		assertNotNull("NO_EVENT returned null", enumEventType);
@@ -46,13 +47,13 @@ public class EmergencyEventTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "nO_EvenT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    EmergencyEventType temp = EmergencyEventType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -63,10 +64,10 @@ public class EmergencyEventTypeTests extends TestCase {
 		String example = null;
 		try {
 		    EmergencyEventType temp = EmergencyEventType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -85,7 +86,7 @@ public class EmergencyEventTypeTests extends TestCase {
 		enumTestList.add(EmergencyEventType.NOT_SUPPORTED);		
 		enumTestList.add(EmergencyEventType.FAULT);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

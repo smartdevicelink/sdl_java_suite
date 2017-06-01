@@ -1,13 +1,14 @@
 package com.smartdevicelink.test.protocol.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.Vector;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.test.Validator;
 
-public class SessionTypeTests extends TestCase {
+public class SessionTypeTests extends AndroidTestCase {
 	
 	private Vector<SessionType> list = SessionType.getList();
 	
@@ -16,19 +17,19 @@ public class SessionTypeTests extends TestCase {
 	public void testValidEnums () {
 		
 		final byte   HEARTBEAT_BYTE   = (byte) 0x00;
-		final String HEARTBEAT_STRING = "CONTROL";
+		final String HEARTBEAT_STRING = mContext.getString(R.string.control_caps);
 		
 		final byte   RPC_BYTE   = (byte) 0x07;
-		final String RPC_STRING = "RPC";
+		final String RPC_STRING = mContext.getString(R.string.rpc_caps);
 		
 		final byte   PCM_BYTE   = (byte) 0x0A;
-		final String PCM_STRING = "PCM";
+		final String PCM_STRING = mContext.getString(R.string.pcm_caps);
 		
 		final byte   NAV_BYTE   = (byte) 0x0B;
-		final String NAV_STRING = "NAV";
+		final String NAV_STRING = mContext.getString(R.string.nav_caps);
 		
 		final byte   BULK_DATA_BYTE   = (byte) 0x0F;
-		final String BULK_DATA_STRING = "BULK_DATA";
+		final String BULK_DATA_STRING = mContext.getString(R.string.bulk_data_caps);
 		
 		try {
 			
@@ -61,7 +62,7 @@ public class SessionTypeTests extends TestCase {
 			assertNotNull("Consecutive string match returned null",   enumBulkData);
 			
 		} catch (NullPointerException exception) {
-            fail("Null enum list throws NullPointerException.");
+            fail(mContext.getString(R.string.null_enum_list_throws_null_pointer_exception));
 		}		
 	}
 		
@@ -69,20 +70,20 @@ public class SessionTypeTests extends TestCase {
 	public void testInvalidEnum () {
 		
 		final byte   INVALID_BYTE   = (byte) 0xAB;
-		final String INVALID_STRING = "Invalid";
+		final String INVALID_STRING = mContext.getString(R.string.invalid_enum);
 		
 		try {
 			
 			// Check the byte value
 			SessionType enumInvalid = (SessionType) SessionType.get(list, INVALID_BYTE);
-			assertNull("Invalid byte match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_byte_match_didnt_return_null), enumInvalid);
 			
 			// Check the string value
 			enumInvalid = (SessionType) SessionType.get(list, INVALID_STRING);
-			assertNull("Invalid string match didn't return null", enumInvalid);
+			assertNull(mContext.getString(R.string.invalid_string_match_didnt_return_null), enumInvalid);
 			
 		} catch (IllegalArgumentException exception) {
-			fail("Invalid enum throws IllegalArgumentException.");
+			fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -92,10 +93,10 @@ public class SessionTypeTests extends TestCase {
 			
 			// Check null string lookup
 			SessionType enumNull = (SessionType) SessionType.get(list, null);
-			assertNull("Null lookup returns a value", enumNull);
+			assertNull(mContext.getString(R.string.null_lookup_returns_a_value), enumNull);
 			
 		} catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -109,7 +110,7 @@ public class SessionTypeTests extends TestCase {
 		enumTestList.add(SessionType.BULK_DATA);
 		enumTestList.add(SessionType.CONTROL);
 		
-		assertTrue("List does not match enum test list.",
+		assertTrue(mContext.getString(R.string.list_does_not_match_enum_test_list),
 					list.containsAll(enumTestList) &&
 					enumTestList.containsAll(list));
 		
@@ -119,7 +120,7 @@ public class SessionTypeTests extends TestCase {
 									    SessionType.NAV, SessionType.BULK_DATA,
 									    SessionType.CONTROL };
 		
-		assertTrue("Array does not match enum values array.",
+		assertTrue(mContext.getString(R.string.array_does_not_match_enum_values_array),
 					Validator.validateSessionTypeArray(enumValueArray, enumTestArray));
 	}
 }

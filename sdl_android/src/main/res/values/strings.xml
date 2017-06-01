@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--//////////////////////////////////        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--/////////////////////////////////          \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--////////////////////////////////     Lib    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--///////////////////////////////     Files    \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\              ///////////////////////////////////-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\            ////////////////////////////////////-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\          /////////////////////////////////////-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\        //////////////////////////////////////-->
+
+    <string name="unable_to_process_data">Unable to process data to form header</string>
+
+
+    <!--//////////////////////////////////        \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--/////////////////////////////////          \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--////////////////////////////////            \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--///////////////////////////////     Test     \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\     Files    ///////////////////////////////////-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\            ////////////////////////////////////-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\          /////////////////////////////////////-->
+    <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\        //////////////////////////////////////-->
+
+
+    <!--=============================Multiple Locations=================================-->
+    <string name="alert_caps">ALERT</string>
+    <string name="bluetooth_off_caps">BLUETOOTH_OFF</string>
+    <string name="both_caps">BOTH</string>
+    <string name="default_caps">DEFAULT</string>
+    <string name="disallowed_caps">DISALLOWED</string>
+    <string name="driver_distraction_violation_caps">DRIVER_DISTRACTION_VIOLATION</string>
+    <string name="endsession">EndSession</string>
+    <string name="enum_value_list_does_not_match_enum_class_list">Enum value list does not match enum class list</string>
+    <string name="factory_defaults_caps">FACTORY_DEFAULTS</string>
+    <string name="fault_caps">FAULT</string>
+    <string name="generic_error_caps">GENERIC_ERROR</string>
+    <string name="help_jingle_caps">HELP_JINGLE</string>
+    <string name="ignition_off_caps">IGNITION_OFF</string>
+    <string name="ignored_caps">IGNORED</string>
+    <string name="initial_jingle_caps">INITIAL_JINGLE</string>
+    <string name="invalid">invalid</string>
+    <string name="invalid_caps">INVALID</string>
+    <string name="invalid_enum">totally a invalid enum</string>
+    <string name="invalid_enum_throws_illegal_argument_exception">Invalid enum throws IllegalArgumentException.</string>
+    <string name="invalid_id_caps">INVALID_ID</string>
+    <string name="keyboard_caps">KEYBOARD</string>
+    <string name="lang_change_caps">LANGUAGE_CHANGE</string>
+    <string name="listen_jingle_caps">LISTEN_JINGLE</string>
+    <string name="master_reset_caps">MASTER_RESET</string>
+    <string name="media_caps">MEDIA</string>
+    <string name="menu_caps">MENU</string>
+    <string name="name">name</string>
+    <string name="navigation_caps">NAVIGATION</string>
+    <string name="negative_jingle_caps">NEGATIVE_JINGLE</string>
+    <string name="no_data_exists_caps">NO_DATA_EXISTS</string>
+    <string name="no_event_caps">NO_EVENT</string>
+    <string name="normal_caps">NORMAL</string>
+    <string name="not_supported_caps">NOT_SUPPORTED</string>
+    <string name="not_used_caps">NOT_USED</string>
+    <string name="null_enum_list_throws_null_pointer_exception">Null enum list throws NullPointerException.</string>
+    <string name="off_caps">OFF</string>
+    <string name="on_caps">ON</string>
+    <string name="pcm_caps">PCM</string>
+    <string name="positive_jingle_caps">POSITIVE_JINGLE</string>
+    <string name="request_while_in_none_hmi_level_caps">REQUEST_WHILE_IN_NONE_HMI_LEVEL</string>
+    <string name="result_of_valuestring_should_be_null">Result of valueForString should be null.</string>
+    <string name="rpc_caps">RPC</string>
+    <string name="sdl_android_github_link">https://github.com/smartdevicelink/sdl_android</string>
+    <string name="start_session">StartSession</string>
+    <string name="startsessionack">StartSessionACK</string>
+    <string name="startsessionnack">StartSessionNACK</string>
+    <string name="success_caps">SUCCESS</string>
+    <string name="test">test</string>
+    <string name="test_a">Test A</string>
+    <string name="test_b">Test B</string>
+    <string name="test_one">test_1</string>
+    <string name="test_two">test_2</string>
+    <string name="text">text</string>
+    <string name="text_caps">TEXT</string>
+    <string name="timeout">timeout</string>
+    <string name="too_many_requests_caps">TOO_MANY_REQUESTS</string>
+    <string name="truncated_data_caps">TRUNCATED_DATA</string>
+    <string name="unknown_caps">UNKNOWN</string>
+    <string name="usb_caps">USB</string>
+    <string name="usb_disconnected_caps">USB_DISCONNECTED</string>
+    <string name="user_disallowed_caps">USER_DISALLOWED</string>
+    <string name="user_exit_caps">USER_EXIT</string>
+    <string name="value">value</string>
+    <string name="vehicle_data_not_available_caps">VEHICLE_DATA_NOT_AVAILABLE</string>
+
+
+    <!--AbstractPacketizerTests-->
+
+    <!--AmbientLightStatusTests-->
+    <string name="day_caps">DAY</string>
+    <string name="night_caps">NIGHT</string>
+    <string name="twilight_one_caps">TWILIGHT_1</string>
+    <string name="twilight_two_caps">TWILIGHT_2</string>
+    <string name="twilight_three_caps">TWILIGHT_3</string>
+    <string name="twilight_four_caps">TWILIGHT_4</string>
+
+    <!--AndroidTopolTests-->
+    <string name="exception_during_normal_tests">Exception during normal test:</string>
+
+    <!--AppHMITypeTests-->
+    <string name="communication_caps">COMMUNICATION</string>
+    <string name="messaging_caps">MESSAGING</string>
+    <string name="information_caps">INFORMATION</string>
+    <string name="social_caps">SOCIAL</string>
+    <string name="background_process_caps">BACKGROUND_PROCESS</string>
+    <string name="testing_caps">TESTING</string>
+    <string name="system_caps">SYSTEM</string>
+
+    <!--AppInterfaceUnregisteredReasonsTests-->
+    <string name="app_unauth_caps">APP_UNAUTHORIZED</string>
+    <string name="protocol_violation_caps">PROTOCOL_VIOLATION</string>
+
+    <!--AudioStreamingStateTests-->
+    <string name="audible_caps">AUDIBLE</string>
+    <string name="attenuated_caps">ATTENUATED</string>
+    <string name="not_audible_caps">NOT_AUDIBLE</string>
+
+    <!--AudioTypeTests-->
+
+    <!--BaseRpcTests-->
+    <string name="json_object_didnt_match">JSON object didn\'t match reference object for key \"</string>
+    <string name="jsonarray_object_didnt_match">JSONArray object didn\'t match reference object for key \"</string>
+
+    <!--BitsPerSampleTests-->
+    <string name="eight_bit">8_BIT</string>
+    <string name="sixteen_bit">16_BIT</string>
+
+    <!--ButtonEventModeTests-->
+    <string name="button_up_caps">BUTTONUP</string>
+    <string name="button_down_caps">BUTTONDOWN</string>
+
+    <!--ButtonNameTests-->
+    <string name="ok_caps">OK</string>
+    <string name="seek_left_caps">SEEKLEFT</string>
+    <string name="seek_right_caps">SEEKRIGHT</string>
+    <string name="tune_up_caps">TUNEUP</string>
+    <string name="tune_down_caps">TUNEDOWN</string>
+    <string name="preset_zero_caps">PRESET_0</string>
+    <string name="preset_one_caps">PRESET_1</string>
+    <string name="preset_two_caps">PRESET_2</string>
+    <string name="preset_three_caps">PRESET_3</string>
+    <string name="preset_four_caps">PRESET_4</string>
+    <string name="preset_five_caps">PRESET_5</string>
+    <string name="preset_six_caps">PRESET_6</string>
+    <string name="preset_seven_caps">PRESET_7</string>
+    <string name="preset_eight_caps">PRESET_8</string>
+    <string name="preset_nine_caps">PRESET_9</string>
+    <string name="custom_button_caps">CUSTOM_BUTTON</string>
+    <string name="search_caps">SEARCH</string>
+
+    <!--ButtonPressModeTests-->
+    <string name="long_caps">LONG</string>
+    <string name="short_caps">SHORT</string>
+
+    <!--ByteEnumerTests-->
+
+    <!--CarModeStatusTests-->
+    <string name="factory_caps">FACTORY</string>
+    <string name="transport_caps">TRANSPORT</string>
+    <string name="crash_caps">CRASH</string>
+
+    <!--CharacterSetsTests-->
+    <string name="type_two_set_caps">TYPE2SET</string>
+    <string name="type_five_set_caps">TYPE5SET</string>
+    <string name="cid_one_set_caps">CID1SET</string>
+    <string name="cid_two_set_caps">CID2SET</string>
+
+    <!--CompassDirectionTests-->
+    <string name="north_caps">NORTH</string>
+    <string name="northwest_caps">NORTHWEST</string>
+    <string name="west_caps">WEST</string>
+    <string name="southwest_caps">SOUTHWEST</string>
+    <string name="south_caps">SOUTH</string>
+    <string name="southeast_caps">SOUTHEAST</string>
+    <string name="east_caps">EAST</string>
+    <string name="northeast_caps">NORTHEAST</string>
+
+    <!--ComponentVolumeStatusTests-->
+    <string name="low_caps">LOW</string>
+    <string name="terse_caps">TERSE</string>
+    <string name="verbose_caps">VERBOSE</string>
+
+    <!--DeviceLevelStatusTests-->
+    <string name="zero_level_bars_caps">ZERO_LEVEL_BARS</string>
+    <string name="one_level_bars_caps">ONE_LEVEL_BARS</string>
+    <string name="two_lvl_bars_caps">TWO_LEVEL_BARS</string>
+    <string name="three_lvl_bars_caps">THREE_LEVEL_BARS</string>
+    <string name="four_lvl_bars_caps">FOUR_LEVEL_BARS</string>
+    <string name="not_prov_caps">NOT_PROVIDED</string>
+
+    <!--DiagLevelTests-->
+    <string name="off">off</string>
+    <string name="terse">terse</string>
+    <string name="verbose">verbose</string>
+
+    <!--DimensionTests-->
+    <string name="no_fix_caps">NO_FIX</string>
+    <string name="two_d_caps">2D</string>
+    <string name="three_d_caps">3D</string>
+
+    <!--DisplayTypeTests-->
+    <string name="cid_caps">CID</string>
+    <string name="type_two_caps">TYPE2</string>
+    <string name="type_five_caps">TYPE5</string>
+    <string name="ngn_caps">NGN</string>
+    <string name="gen_tewo_eight_dma_caps">GEN2_8_DMA</string>
+    <string name="gen_two_six_dma_caps">GEN2_6_DMA</string>
+    <string name="mfd_three_caps">MFD3</string>
+    <string name="mfd_four_caps">MFD4</string>
+    <string name="mfd_five_caps">MFD5</string>
+    <string name="gen_three_eight_inch_caps">GEN3_8-INCH</string>
+    <string name="sdl_generic_caps">SDL_GENERIC</string>
+
+    <!--DriverDistractionTests-->
+    <string name="dd_on_caps">DD_ON</string>
+    <string name="dd_off_caps">DD_OFF</string>
+
+    <!--EcallComfirmationStatusTests-->
+    <string name="call_in_prog_caps">CALL_IN_PROGRESS</string>
+    <string name="call_canc_caps">CALL_CANCELLED</string>
+    <string name="call_comp_caps">CALL_COMPLETED</string>
+    <string name="call_unsucc_caps">CALL_UNSUCCESSFUL</string>
+    <string name="ecall_config_off_caps">ECALL_CONFIGURED_OFF</string>
+    <string name="call_comp_dtmf_to_caps">CALL_COMPLETE_DTMF_TIMEOUT</string>
+
+    <!--EmergencyEventTypeTests-->
+    <string name="frontal_caps">FRONTAL</string>
+    <string name="side_caps">SIDE</string>
+    <string name="rear_caps">REAR</string>
+    <string name="rollover_caps">ROLLOVER</string>
+
+    <!--FileTypeTests-->
+    <string name="graphic_bmp_caps">GRAPHIC_BMP</string>
+    <string name="graphic_jpeg_caps">GRAPHIC_JPEG</string>
+    <string name="graphic_png_caps">GRAPHIC_PNG</string>
+    <string name="audio_wave_caps">AUDIO_WAVE</string>
+    <string name="audio_aac_caps">AUDIO_AAC</string>
+    <string name="audio_mpthree_caps">AUDIO_MP3</string>
+    <string name="binary_caps">BINARY</string>
+    <string name="json_caps">JSON</string>
+
+    <!--FrameDataControlFrameTypeTests-->
+    <string name="endsessionack">EndSessionACK</string>
+    <string name="endsessionnack">EndSessionNACK</string>
+    <string name="heartbeat">Heartbeat</string>
+    <string name="heartbeatack">HeartbeatACK</string>
+
+    <!--FrameTypeTests-->
+    <string name="control">Control</string>
+    <string name="single">Single</string>
+    <string name="first">First</string>
+    <string name="consecutive">Consecutive</string>
+
+    <!--FuelCutOffStatusTests-->
+    <string name="term_fuel_caps">TERMINATE_FUEL</string>
+    <string name="norm_op_caps">NORMAL_OPERATION</string>
+    <string name="json_value_didnt_match">JSON value didn\'t match expected value for key \"</string>
+    <string name="helprompt_caps">HELPPROMPT</string>
+    <string name="timeoutprompt_caps">TIMEOUTPROMPT</string>
+    <string name="vrhelptitle_caps">VRHELPTITLE</string>
+    <string name="vrhelpitems_caps">VRHELPITEMS</string>
+    <string name="menuname_caps">MENUNAME</string>
+    <string name="menuicons_caps">MENUICON</string>
+    <string name="keyboardprops_caps">KEYBOARDPROPERTIES</string>
+
+    <!--HmiZoneCapabilitiesTests-->
+    <string name="full_caps">FULL</string>
+    <string name="limited_caps">LIMITED</string>
+    <string name="background_caps">BACKGROUND</string>
+    <string name="none_caps">NONE</string>
+    <string name="front_caps">FRONT</string>
+    <string name="back_caps">BACK</string>
+
+    <!--IgnitionStableStatusTests-->
+    <string name="ignite_switch_not_stable_caps">IGNITION_SWITCH_NOT_STABLE</string>
+    <string name="ingite_switch_stable_caps">IGNITION_SWITCH_STABLE</string>
+    <string name="missing_from_trans_caps">MISSING_FROM_TRANSMITTER</string>
+
+    <!--IgnitionStatusTests-->
+    <string name="accessory_caps">ACCESSORY</string>
+    <string name="run_caps">RUN</string>
+    <string name="start_caps">START</string>
+
+    <!--ImageFieldNameTests-->
+    <string name="soft_button_img_cap">softButtonImage</string>
+    <string name="choice_img">choiceImage</string>
+    <string name="choice_second_img">choiceSecondaryImage</string>
+    <string name="vrhelpitem">vrHelpItem</string>
+    <string name="turnicon">turnIcon</string>
+    <string name="menuicon">menuIcon</string>
+    <string name="cmdicon">cmdIcon</string>
+    <string name="appicon">appIcon</string>
+    <string name="graphic">graphic</string>
+    <string name="showconstanttbticon">showConstantTBTIcon</string>
+    <string name="showconstanttbtnextturnicon">showConstantTBTNextTurnIcon</string>
+    <string name="location_img">locationImage</string>
+
+    <!--ImageTypeTests-->
+    <string name="static_caps">STATIC</string>
+    <string name="dynamic_caps">DYNAMIC</string>
+
+    <!--InteractionModeTests-->
+    <string name="manual_only_caps">MANUAL_ONLY</string>
+    <string name="vr_only_caps">VR_ONLY</string>
+
+    <!--interfaceActivityDirectionTests-->
+    <string name="none">None</string>
+    <string name="recieve">Receive</string>
+    <string name="transmit">Transmit</string>
+
+    <!--InternalProxyMessageTests-->
+    <string name="function_name">functionName</string>
+    <string name="on_proxy_error">OnProxyError</string>
+    <string name="on_proxy_opened">OnProxyOpened</string>
+    <string name="on_proxy_closed">OnProxyClosed</string>
+
+    <!--JingleTests-->
+
+    <!--KeyboardEventsTests-->
+    <string name="keypress_caps">KEYPRESS</string>
+    <string name="entry_submitted_caps">ENTRY_SUBMITTED</string>
+    <string name="entry_cancelled_caps">ENTRY_CANCELLED</string>
+    <string name="entry_aborted_caps">ENTRY_ABORTED</string>
+    <string name="entry_voice_caps">ENTRY_VOICE</string>
+
+    <!--KeyboardLayoutsTests-->
+    <string name="qwerty_caps">QWERTY</string>
+    <string name="qwertz_caps">QWERTZ</string>
+    <string name="azerty_caps">AZERTY</string>
+
+    <!--KeypressModeTests-->
+    <string name="single_keypress_caps">SINGLE_KEYPRESS</string>
+    <string name="queue_keypress_caps">QUEUE_KEYPRESSES</string>
+    <string name="resend_current_entry_caps">RESEND_CURRENT_ENTRY</string>
+
+    <!--LanguageTests-->
+    <string name="en_us">EN-US</string>
+    <string name="es_mx">ES-MX</string>
+    <string name="fr_ca">FR-CA</string>
+    <string name="de_de">DE-DE</string>
+    <string name="es_es">ES-ES</string>
+    <string name="en_gb">EN-GB</string>
+    <string name="ru_ru">RU-RU</string>
+    <string name="tr_tr">TR-TR</string>
+    <string name="pl_pl">PL-PL</string>
+    <string name="fr_fr">FR-FR</string>
+    <string name="it_it">IT-IT</string>
+    <string name="sv_se">SV-SE</string>
+    <string name="pt_pt">PT-PT</string>
+    <string name="nl_nl">NL-NL</string>
+    <string name="en_au">EN-AU</string>
+    <string name="zh_cn">ZH-CN</string>
+    <string name="zh_tw">ZH-TW</string>
+    <string name="ja_jp">JA-JP</string>
+    <string name="ar_sa">AR-SA</string>
+    <string name="ko_kr">KO-KR</string>
+    <string name="pt_br">PT-BR</string>
+    <string name="cs_cz">CS-CZ</string>
+    <string name="da_dk">DA-DK</string>
+    <string name="no_no">NO-NO</string>
+
+    <!--LayoutModeTests-->
+    <string name="icon_only_caps">ICON_ONLY</string>
+    <string name="icon_with_search_caps">ICON_WITH_SEARCH</string>
+    <string name="lists_only_caps">LIST_ONLY</string>
+    <string name="list_w_search_caps">LIST_WITH_SEARCH</string>
+    <string name="required_caps">REQUIRED</string>
+    <string name="optional_caps">OPTIONAL</string>
+
+    <!--MediaClockFormatTests-->
+    <string name="clockone_caps">CLOCK1</string>
+    <string name="clocktwo_caps">CLOCK2</string>
+    <string name="clockthree_caps">CLOCK3</string>
+    <string name="clocktextone_caps">CLOCKTEXT1</string>
+    <string name="clocktexttwo_caps">CLOCKTEXT2</string>
+    <string name="clocktextthree_caps">CLOCKTEXT3</string>
+    <string name="clocktextfour_caps">CLOCKTEXT4</string>
+
+    <!--MessageTypeTests-->
+    <string name="undefined_caps">UNDEFINED</string>
+    <string name="bulk_caps">BULK</string>
+
+    <!--MimeTests-->
+    <string name="us_ascii_caps">US-ASCII</string>
+    <string name="dgvzda">dGVzdA==</string>
+
+    <!--ModTests-->
+    <string name="app">app</string>
+    <string name="rpc">rpc</string>
+    <string name="mar">mar</string>
+    <string name="tran">tran</string>
+    <string name="proto">proto</string>
+    <string name="proxy">proxy</string>
+
+    <!--NativeLogToolTests-->
+    <string name="info">Info</string>
+    <string name="error">Error</string>
+    <string name="warning">Warning</string>
+
+    <!--OnHashChangeTests-->
+    <string name="test_body">123ABC</string>
+
+    <!--OnSystemRequestTests-->
+    <string name="app_json">application/json</string>
+    <string name="url_caps">URL</string>
+    <string name="test_c">Test C</string>
+    <string name="post_caps">POST</string>
+
+    <!--OnVehicleDataTests-->
+    <string name="notification">notification</string>
+    <string name="parameters">parameters</string>
+
+    <!--PowerModeQualificationsTests-->
+    <string name="power_mode_undef_caps">POWER_MODE_UNDEFINED</string>
+    <string name="power_mode_eval_caps">POWER_MODE_EVALUATION_IN_PROGRESS</string>
+    <string name="not_defined_caps">NOT_DEFINED</string>
+    <string name="power_mode_on_caps">POWER_MODE_OK</string>
+
+    <!--PowerModeStatusTests-->
+    <string name="key_out_caps">KEY_OUT</string>
+    <string name="key_recently_out_caps">KEY_RECENTLY_OUT</string>
+    <string name="key_approved_zero_caps">KEY_APPROVED_0</string>
+    <string name="post_accessory_zero_caps">POST_ACCESORY_0</string>
+    <string name="accessory_one_caps">ACCESORY_1</string>
+    <string name="post_iginition_one_caps">POST_IGNITION_1</string>
+    <string name="iginition_on_two_caps">IGNITION_ON_2</string>
+    <string name="running_two_caps">RUNNING_2</string>
+    <string name="crank_three_caps">CRANK_3</string>
+
+    <!--PrerecorderSpeechTests-->
+
+    <!--PrimaryAudioSourcesTests-->
+    <string name="no_source_selected_caps">NO_SOURCE_SELECTED</string>
+    <string name="usb_two_caps">USB2</string>
+    <string name="bt_stereo_btst_caps">BLUETOOTH_STEREO_BTST</string>
+    <string name="line_in_caps">LINE_IN</string>
+    <string name="ipod_caps">IPOD</string>
+    <string name="mobile_app_caps">MOBILE_APP</string>
+
+    <!--PrndlTests-->
+    <string name="park_caps">PARK</string>
+    <string name="reverse_caps">REVERSE</string>
+    <string name="neutral_caps">NEUTRAL</string>
+    <string name="drive_caps">DRIVE</string>
+    <string name="sport_caps">SPORT</string>
+    <string name="low_gear_caps">LOWGEAR</string>
+    <string name="first_caps">FIRST</string>
+    <string name="second_caps">SECOND</string>
+    <string name="third_caps">THIRD</string>
+    <string name="fourth_caps">FOURTH</string>
+    <string name="fifth_caps">FIFTH</string>
+    <string name="sixth_caps">SIXTH</string>
+    <string name="seventh_caps">SEVENTH</string>
+    <string name="eighth_caps">EIGHTH</string>
+
+    <!--RequestTypeTests-->
+    <string name="http_caps">HTTP</string>
+    <string name="file_resume_caps">FILE_RESUME</string>
+    <string name="auth_request_caps">AUTH_REQUEST</string>
+    <string name="auth_callenge_caps">AUTH_CHALLENGE</string>
+    <string name="auth_ack_caps">AUTH_ACK</string>
+    <string name="porprietary_caps">PROPRIETARY</string>
+    <string name="query_apps_caps">QUERY_APPS</string>
+    <string name="launch_app_caps">LAUNCH_APP</string>
+    <string name="lock_screen_icon_url_caps">LOCK_SCREEN_ICON_URL</string>
+    <string name="traffic_message_channel_caps">TRAFFIC_MESSAGE_CHANNEL</string>
+    <string name="driver_profile_caps">DRIVER_PROFILE</string>
+    <string name="voicer_search_caps">VOICE_SEARCH</string>
+    <string name="phone_caps">PHONE</string>
+    <string name="climate_caps">CLIMATE</string>
+    <string name="settings_caps">SETTINGS</string>
+    <string name="vehicle_diagostics_caps">VEHICLE_DIAGNOSTICS</string>
+    <string name="emergency_caps">EMERGENCY</string>
+    <string name="fota_caps">FOTA</string>
+
+    <!--ResultTests-->
+    <string name="invalid_data_caps">INVALID_DATA</string>
+    <string name="unsupported_request_caps">UNSUPPORTED_REQUEST</string>
+    <string name="out_of_memory_caps">OUT_OF_MEMORY</string>
+    <string name="too_many_pending_requests_caps">TOO_MANY_PENDING_REQUESTS</string>
+    <string name="duplicate_name_caps">DUPLICATE_NAME</string>
+    <string name="too_many_applications_caps">TOO_MANY_APPLICATIONS</string>
+    <string name="application_registered_already_caps">APPLICATION_REGISTERED_ALREADY</string>
+    <string name="unsupported_version_caps">UNSUPPORTED_VERSION</string>
+    <string name="wrong_language_caps">WRONG_LANGUAGE</string>
+    <string name="application_not_registered_caps">APPLICATION_NOT_REGISTERED</string>
+    <string name="in_use_caps">IN_USE</string>
+    <string name="vehicle_data_not_allowed_caps">VEHICLE_DATA_NOT_ALLOWED</string>
+    <string name="rejected_caps">REJECTED</string>
+    <string name="aborted_caps">ABORTED</string>
+    <string name="unsupported_resource_caps">UNSUPPORTED_RESOURCE</string>
+    <string name="file_not_found_caps">FILE_NOT_FOUND</string>
+    <string name="timed_out_caps">TIMED_OUT</string>
+    <string name="cancel_route_caps">CANCEL_ROUTE</string>
+    <string name="retry_caps">RETRY</string>
+    <string name="warnings_caps">WARNINGS</string>
+    <string name="saved_caps">SAVED</string>
+    <string name="invalid_cert_caps">INVALID_CERT</string>
+    <string name="expired_cert_caps">EXPIRED_CERT</string>
+    <string name="resume_failed_caps">RESUME_FAILED</string>
+
+    <!--RPCRequestFactoryTests-->
+    <string name="menu">menu</string>
+    <string name="image">image</string>
+    <string name="icon">icon</string>
+    <string name="simple_test">simple test</string>
+    <string name="test_three">test 3</string>
+    <string name="init_chunks">init chunks</string>
+    <string name="help_items">help items</string>
+    <string name="ngn">ngn</string>
+    <string name="id">id</string>
+    <string name="examine">examine</string>
+    <string name="help">help</string>
+    <string name="testone">test1</string>
+    <string name="testtwo">test2</string>
+    <string name="testthree">test3</string>
+    <string name="testfour">test4</string>
+    <string name="status">status</string>
+    <string name="media">media</string>
+    <string name="track">track</string>
+    <string name="header">header</string>
+    <string name="footer">footer</string>
+    <string name="layout">layout</string>
+    <string name="audio">audio</string>
+    <string name="pass">pass</string>
+
+    <!--SamplingRatesTests-->
+    <string name="eight_khz">8KHZ</string>
+    <string name="sixteen_khz">16KHZ</string>
+    <string name="twentytwo_khz">22KHZ</string>
+    <string name="fourtyfour_khz">44KHZ</string>
+
+    <!--SdlDisconnectedReasonTests-->
+    <string name="transport_error">TRANSPORT_ERROR</string>
+    <string name="app_req_disconnect_caps">APPLICATION_REQUESTED_DISCONNECT</string>
+    <string name="trNSPORT_DISCONNECT_CAPS">TRANSPORT_DISCONNECT</string>
+    <string name="hb_timeout">HB_TIMEOUT</string>
+    <string name="bt_disabled_caps">BLUETOOTH_DISABLED</string>
+    <string name="bt_adapter_error">BLUETOOTH_ADAPTER_ERROR</string>
+    <string name="sdl_reg_error_caps">SDL_REGISTRATION_ERROR</string>
+    <string name="app_interface_unreg_caps">APP_INTERFACE_UNREG</string>
+    <string name="legacy_bt_mode_enabled_caps">LEGACY_BLUETOOTH_MODE_ENABLED</string>
+    <string name="rpc_session_ended_caps">RPC_SESSION_ENDED</string>
+
+    <!--SdlPsmTests-->
+    <string name="transition_on_imput">transitionOnInput</string>
+    <string name="frameType">frameType</string>
+    <string name="data_length">dataLength</string>
+    <string name="version">version</string>
+    <string name="control_frame_info">controlFrameInfo</string>
+
+    <!--SdlSecurityBaseTests-->
+    <string name="sdl_one">SDL1</string>
+    <string name="sdl_two">SDL2</string>
+
+    <!--SessionTypesTests-->
+    <string name="control_caps">CONTROL</string>
+    <string name="nav_caps">NAV</string>
+    <string name="bulk_data_caps">BULK_DATA</string>
+    <string name="image_caps">IMAGE</string>
+
+    <!--SystemActionTests-->
+    <string name="sapi_phonemes_caps">SAPI_PHONEMES</string>
+    <string name="lhplus_phonemes_caps">LHPLUS_PHONEMES</string>
+    <string name="pre_recorded_caps">PRE_RECORDED</string>
+    <string name="silence_caps">SILENCE</string>
+    <string name="default_action_caps">DEFAULT_ACTION</string>
+
+    <!--SystemContextTests-->
+    <string name="steal_focus_caps">STEAL_FOCUS</string>
+    <string name="keep_context_caps">KEEP_CONTEXT</string>
+    <string name="main_caps">MAIN</string>
+    <string name="vr_session_caps">VRSESSION</string>
+    <string name="hmi_obscured_caps">HMI_OBSCURED</string>
+
+    <!--TbtStateTests-->
+    <string name="route_update_request_caps">ROUTE_UPDATE_REQUEST</string>
+    <string name="route_accepted_caps">ROUTE_ACCEPTED</string>
+    <string name="route_refused_caps">ROUTE_REFUSED</string>
+    <string name="route_cancelled_caps">ROUTE_CANCELLED</string>
+    <string name="eta_request_caps">ETA_REQUEST</string>
+    <string name="next_turn_request_caps">NEXT_TURN_REQUEST</string>
+    <string name="route_status_request_caps">ROUTE_STATUS_REQUEST</string>
+    <string name="route_summary_request_caps">ROUTE_SUMMARY_REQUEST</string>
+    <string name="trip_status_request_caps">TRIP_STATUS_REQUEST</string>
+    <string name="route_update_request_timeout_caps">ROUTE_UPDATE_REQUEST_TIMEOUT</string>
+
+    <!--TCPTransportConfigTests-->
+    <string name="tcp_transport_test">TCPTransportConfig{Port=123, IpAddress=\'test\', AutoReconnect=true}</string>
+    <string name="tcp_transport_null">TCPTransportConfig{Port=123, IpAddress=\'null\', AutoReconnect=true}</string>
+
+    <!--TextAlignmentTests-->
+    <string name="left_aligned_caps">LEFT_ALIGNED</string>
+    <string name="right_aligned_caps">RIGHT_ALIGNED</string>
+    <string name="centered_caps">CENTERED</string>
+
+    <!--TextFieldNameTests-->
+    <string name="main_field_one">mainField1</string>
+    <string name="main_field_two">mainField2</string>
+    <string name="main_field_three">mainField3</string>
+    <string name="main_field_four">mainField4</string>
+    <string name="status_bar">statusBar</string>
+    <string name="media_clock">mediaClock</string>
+    <string name="media_track">mediaTrack</string>
+    <string name="alert_text_one">alertText1</string>
+    <string name="alert_text_two">alertText2</string>
+    <string name="alert_text_three">alertText3</string>
+    <string name="scrollable_message_body">scrollableMessageBody</string>
+    <string name="initial_interaction_text">initialInteractionText</string>
+    <string name="navigation_text_one">navigationText1</string>
+    <string name="navigation_text_two">navigationText2</string>
+    <string name="eta_caps">ETA</string>
+    <string name="total_distance">totalDistance</string>
+    <string name="audio_pass_through_display_text_one">audioPassThruDisplayText1</string>
+    <string name="audio_pass_through_display_text_two">audioPassThruDisplayText2</string>
+    <string name="slider_header">sliderHeader</string>
+    <string name="slider_footer">sliderFooter</string>
+    <string name="menu_name">menuName</string>
+    <string name="secondary_text">secondaryText</string>
+    <string name="tertiary_text">tertiaryText</string>
+    <string name="menu_title">menuTitle</string>
+    <string name="location_name">locationName</string>
+    <string name="location_description">locationDescription</string>
+    <string name="address_lines">addressLines</string>
+    <string name="phone_number">phoneNumber</string>
+
+    <!--TouchTypeTests-->
+    <string name="begin_caps">BEGIN</string>
+    <string name="move_caps">MOVE</string>
+    <string name="end_caps">END</string>
+
+    <!--TransportTypeTests-->
+    <string name="tcp_caps">TCP</string>
+    <string name="bluetooth_caps">BLUETOOTH</string>
+    <string name="multiplex_caps">MULTIPLEX</string>
+    <string name="vr_caps">VR</string>
+
+    <!--UpdateModeTests-->
+    <string name="countup_caps">COUNTUP</string>
+    <string name="countdown_caps">COUNTDOWN</string>
+    <string name="pause_caps">PAUSE</string>
+    <string name="resume_caps">RESUME</string>
+    <string name="clear_caps">CLEAR</string>
+
+    <!--VehicleDataEventStatusTests-->
+    <string name="no_caps">NO</string>
+    <string name="yes_caps">YES</string>
+
+    <!--VehicleDataNotificationStatusTests-->
+    <string name="active_caps">ACTIVE</string>
+    <string name="data_already_subscribed">DATA_ALREADY_SUBSCRIBED</string>
+    <string name="data_not_subscribed">DATA_NOT_SUBSCRIBED</string>
+
+    <!--VehicleDataTypeTests-->
+    <string name="vehicle_data_gps_caps">VEHICLEDATA_GPS</string>
+    <string name="vehicle_data_speed_caps">VEHICLEDATA_SPEED</string>
+    <string name="vehicle_data_rpm_caps">VEHICLEDATA_RPM</string>
+    <string name="vehicle_data_fuel_level_caps">VEHICLEDATA_FUELLEVEL</string>
+    <string name="vehicle_data_fuel_level_state_caps">VEHICLEDATA_FUELLEVEL_STATE</string>
+    <string name="vehicle_data_fuel_consumption_caps">VEHICLEDATA_FUELCONSUMPTION</string>
+    <string name="vehicle_data_external_temp_caps">VEHICLEDATA_EXTERNTEMP</string>
+    <string name="vehicle_data_vin_caps">VEHICLEDATA_VIN</string>
+    <string name="vehicle_data_prndl_caps">VEHICLEDATA_PRNDL</string>
+    <string name="vehicle_data_tire_pressure_caps">VEHICLEDATA_TIREPRESSURE</string>
+    <string name="vehicle_data_odometer_caps">VEHICLEDATA_ODOMETER</string>
+    <string name="vehicle_data_belt_status_caps">VEHICLEDATA_BELTSTATUS</string>
+    <string name="vehicle_data_body_info_caps">VEHICLEDATA_BODYINFO</string>
+    <string name="vehicle_data_device_status_caps">VEHICLEDATA_DEVICESTATUS</string>
+    <string name="vehicle_data_braking_caps">VEHICLEDATA_BRAKING</string>
+    <string name="vehicle_data_wiper_status_caps">VEHICLEDATA_WIPERSTATUS</string>
+    <string name="vehicle_data_headlamp_status_caps">VEHICLEDATA_HEADLAMPSTATUS</string>
+    <string name="vehicle_data_batt_voltage_caps">VEHICLEDATA_BATTVOLTAGE</string>
+    <string name="vehicle_data_engine_torque_caps">VEHICLEDATA_ENGINETORQUE</string>
+    <string name="vehicle_data_acc_pedal_caps">VEHICLEDATA_ACCPEDAL</string>
+    <string name="vehicle_data_steering_wheel_caps">VEHICLEDATA_STEERINGWHEEL</string>
+    <string name="vehicle_data_ecall_info_caps">VEHICLEDATA_ECALLINFO</string>
+    <string name="vehicle_data_airbag_status_caps">VEHICLEDATA_AIRBAGSTATUS</string>
+    <string name="vehicle_data_ermergerd_emergency_event_caps">VEHICLEDATA_EMERGENCYEVENT</string>
+    <string name="vehicle_data_cluster_mode_status_caps">VEHICLEDATA_CLUSTERMODESTATUS</string>
+    <string name="vehicle_data_mykey_caps">VEHICLEDATA_MYKEY</string>
+
+    <!--WarningLightStatusTests-->
+    <string name="flash_caps">FLASH</string>
+
+    <!--WiperStatusTests-->
+    <string name="auto_off_caps">AUTO_OFF</string>
+    <string name="off_moving_caps">OFF_MOVING</string>
+    <string name="man_int_off_caps">MAN_INT_OFF</string>
+    <string name="man_int_on_caps">MAN_INT_ON</string>
+    <string name="man_low_caps">MAN_LOW</string>
+    <string name="man_high_caps">MAN_HIGH</string>
+    <string name="man_flick_caps">MAN_FLICK</string>
+    <string name="wash_caps">WASH</string>
+    <string name="auto_low_caps">AUTO_LOW</string>
+    <string name="auto_high_caps">AUTO_HIGH</string>
+    <string name="courtesy_wipe_caps">COURTESYWIPE</string>
+    <string name="auto_adjust_caps">AUTO_ADJUST</string>
+    <string name="stalled_caps">STALLED</string>
+    <string name="invalid_byte_match_didnt_return_null">Invalid byte match didn\'t return null</string>
+    <string name="invalid_string_match_didnt_return_null">Invalid string match didn\'t return null</string>
+    <string name="null_lookup_returns_a_value">Null lookup returns a value</string>
+    <string name="could_not_retrieve_value_for_null_string">Could not retrieve value for null string, should return null.</string>
+    <string name="could_not_retrieve_value_for_invalid_string">Could not retrieve value for invalid string, should return null.</string>
+    <string name="list_does_not_match_enum_test_list">List does not match enum test list.</string>
+    <string name="array_does_not_match_enum_values_array">Array does not match enum values array.</string>
+
+
+</resources>

@@ -1,42 +1,43 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.TbtState}
  */
-public class TbtStateTests extends TestCase {
+public class TbtStateTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "ROUTE_UPDATE_REQUEST";
+		String example = mContext.getString(R.string.route_update_request_caps);
 		TBTState enumRouteUpdateRequest = TBTState.valueForString(example);
-		example = "ROUTE_ACCEPTED";
+		example = mContext.getString(R.string.route_accepted_caps);
 		TBTState enumRouteAccepted = TBTState.valueForString(example);
-		example = "ROUTE_REFUSED";
+		example = mContext.getString(R.string.route_refused_caps);
 		TBTState enumRouteRefused = TBTState.valueForString(example);
-		example = "ROUTE_CANCELLED";
+		example = mContext.getString(R.string.route_cancelled_caps);
 		TBTState enumRouteCancelled = TBTState.valueForString(example);
-		example = "ETA_REQUEST";
+		example = mContext.getString(R.string.eta_request_caps);
 		TBTState enumEtaEquest = TBTState.valueForString(example);
-		example = "NEXT_TURN_REQUEST";
+		example = mContext.getString(R.string.next_turn_request_caps);
 		TBTState enumNextTurnRequest = TBTState.valueForString(example);
-		example = "ROUTE_STATUS_REQUEST";
+		example = mContext.getString(R.string.route_status_request_caps);
 		TBTState enumRouteStatusRequest = TBTState.valueForString(example);
-		example = "ROUTE_SUMMARY_REQUEST";
+		example = mContext.getString(R.string.route_summary_request_caps);
 		TBTState enumRouteSummaryRequest = TBTState.valueForString(example);
-		example = "TRIP_STATUS_REQUEST";
+		example = mContext.getString(R.string.trip_status_request_caps);
 		TBTState enumTripStatusRequest = TBTState.valueForString(example);
-		example = "ROUTE_UPDATE_REQUEST_TIMEOUT";
+		example = mContext.getString(R.string.route_update_request_timeout_caps);
 		TBTState enumRouteUpdateRequestTimeout = TBTState.valueForString(example);
 		
 		assertNotNull("ROUTE_UPDATE_REQUEST returned null", enumRouteUpdateRequest);
@@ -55,13 +56,13 @@ public class TbtStateTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "rOUte_UpDAte_reQuesT";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    TBTState temp = TBTState.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -72,10 +73,10 @@ public class TbtStateTests extends TestCase {
 		String example = null;
 		try {
 		    TBTState temp = TBTState.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -97,7 +98,7 @@ public class TbtStateTests extends TestCase {
 		enumTestList.add(TBTState.TRIP_STATUS_REQUEST);
 		enumTestList.add(TBTState.ROUTE_UPDATE_REQUEST_TIMEOUT);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
 }

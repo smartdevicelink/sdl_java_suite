@@ -1,19 +1,24 @@
 package com.smartdevicelink.test.trace.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.enums.DetailLevel;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.trace.enums.DetailLevel}
  */
-public class DetailLevelTests extends TestCase {
+public class DetailLevelTests extends AndroidTestCase {
 	
 	/**
 	 * This is a unit test for the following enum : 
@@ -22,10 +27,10 @@ public class DetailLevelTests extends TestCase {
 	public void testDetailLevelEnum () {
 		
 		// Test Values
-		String testOff     = "OFF";
-		String testTerse   = "TERSE";
-		String testInvalid = "INVALID";
-		String testVerbose = "VERBOSE";
+		String testOff     = mContext.getString(R.string.off_caps);
+		String testTerse   = mContext.getString(R.string.terse_caps);
+		String testInvalid = mContext.getString(R.string.invalid_caps);
+		String testVerbose = mContext.getString(R.string.verbose_caps);
 		
 		try {
 			// Comparison Values
@@ -55,9 +60,9 @@ public class DetailLevelTests extends TestCase {
 			assertNull(Test.NULL, actualNullEnum);
 			
 		}catch (NullPointerException e) {
-			fail("Could not retrieve value for null string, should return null.");
+			fail(mContext.getString(R.string.could_not_retrieve_value_for_null_string));
 		} catch (IllegalArgumentException e) {
-			fail("Could not retrieve value for invalid string, should return null.");
+			fail(mContext.getString(R.string.could_not_retrieve_value_for_invalid_string));
 		}
 	}
 }

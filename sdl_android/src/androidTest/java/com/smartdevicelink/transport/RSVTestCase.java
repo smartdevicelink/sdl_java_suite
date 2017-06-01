@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
@@ -231,8 +232,8 @@ public class RSVTestCase extends AndroidTestCase {
 
 		assertFalse(RouterServiceValidator.setTrustedList(null,null));
 		assertFalse(RouterServiceValidator.setTrustedList(mContext,null));
-		assertFalse(RouterServiceValidator.setTrustedList(null,"test"));
-		assertTrue(RouterServiceValidator.setTrustedList(mContext,"test"));
+		assertFalse(RouterServiceValidator.setTrustedList(null,mContext.getString(R.string.test)));
+		assertTrue(RouterServiceValidator.setTrustedList(mContext,mContext.getString(R.string.test)));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST));
 		assertTrue(RouterServiceValidator.setTrustedList(mContext,TEST+TEST+TEST+TEST+TEST));
 		StringBuilder builder = new StringBuilder();
@@ -274,7 +275,7 @@ public class RSVTestCase extends AndroidTestCase {
 	public void testAppStorePackages(){
 		assertTrue(TrustedAppStore.isTrustedStore(TrustedAppStore.PLAY_STORE.packageString));
 		assertTrue(TrustedAppStore.isTrustedStore("com.xiaomi.market"));
-		assertFalse(TrustedAppStore.isTrustedStore("test"));
+		assertFalse(TrustedAppStore.isTrustedStore(mContext.getString(R.string.test)));
 		assertFalse(TrustedAppStore.isTrustedStore(null));
 		
 		rsvp = new RouterServiceValidator(this.mContext);

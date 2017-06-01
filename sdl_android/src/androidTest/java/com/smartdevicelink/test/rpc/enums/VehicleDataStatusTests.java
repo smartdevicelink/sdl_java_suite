@@ -1,28 +1,29 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.VehicleDataStatus}
  */
-public class VehicleDataStatusTests extends TestCase {
+public class VehicleDataStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "NO_DATA_EXISTS";
+		String example = mContext.getString(R.string.no_data_exists_caps);
 		VehicleDataStatus enumNoDataExists = VehicleDataStatus.valueForString(example);
-		example = "OFF";
+		example = mContext.getString(R.string.off_caps);
 		VehicleDataStatus enumOff = VehicleDataStatus.valueForString(example);
-		example = "ON";
+		example = mContext.getString(R.string.on_caps);
 		VehicleDataStatus enumOn = VehicleDataStatus.valueForString(example);
 		
 		assertNotNull("NO_DATA_EXISTS returned null", enumNoDataExists);
@@ -34,13 +35,13 @@ public class VehicleDataStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "No_DatA_ExiSTs";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    VehicleDataStatus temp = VehicleDataStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 	
@@ -51,10 +52,10 @@ public class VehicleDataStatusTests extends TestCase {
 		String example = null;
 		try {
 		    VehicleDataStatus temp = VehicleDataStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 	
@@ -69,7 +70,7 @@ public class VehicleDataStatusTests extends TestCase {
 		enumTestList.add(VehicleDataStatus.OFF);
 		enumTestList.add(VehicleDataStatus.ON);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

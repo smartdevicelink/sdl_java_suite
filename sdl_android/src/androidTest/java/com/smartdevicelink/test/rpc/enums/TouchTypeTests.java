@@ -1,28 +1,29 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.TouchType}
  */
-public class TouchTypeTests extends TestCase {
+public class TouchTypeTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "BEGIN";
+		String example = mContext.getString(R.string.begin_caps);
 		TouchType enumBegin = TouchType.valueForString(example);
-		example = "MOVE";
+		example = mContext.getString(R.string.move_caps);
 		TouchType enumMove = TouchType.valueForString(example);
-		example = "END";
+		example = mContext.getString(R.string.end_caps);
 		TouchType enumEnd = TouchType.valueForString(example);
 		
 		assertNotNull("BEGIN returned null", enumBegin);
@@ -34,13 +35,13 @@ public class TouchTypeTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "bEgIn";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    TouchType temp = TouchType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -51,10 +52,10 @@ public class TouchTypeTests extends TestCase {
 		String example = null;
 		try {
 		    TouchType temp = TouchType.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 	
@@ -70,7 +71,7 @@ public class TouchTypeTests extends TestCase {
 		enumTestList.add(TouchType.MOVE);
 		enumTestList.add(TouchType.END);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

@@ -4,7 +4,9 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 import android.telephony.TelephonyManager;
+import android.test.AndroidTestCase;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AddCommand;
@@ -63,7 +65,7 @@ import com.smartdevicelink.test.Validator;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.proxy.RPCRequestFactory}
  */
-public class RPCRequestFactoryTests extends TestCase {
+public class RPCRequestFactoryTests extends AndroidTestCase {
 
 	public void testBuildSystemRequest () {
 		
@@ -73,7 +75,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		Vector<String> testVData;
 		
 		// Test -- buildSystemRequest(String data, Integer correlationID)
-		testData = "test";
+		testData = mContext.getString(R.string.test);
 		testInt  = 0;
 		testBSR  = RPCRequestFactory.buildSystemRequest(testData, testInt);
 		assertNotNull(Test.NOT_NULL, testBSR.getBulkData());
@@ -87,9 +89,9 @@ public class RPCRequestFactoryTests extends TestCase {
 				
 		// Test -- buildSystemRequestLegacy(Vector<String> data, Integer correlationID)
 		testVData = new Vector<String>();
-		testVData.add("Test A");
-		testVData.add("Test B");
-		testVData.add("Test C");
+		testVData.add(mContext.getString(R.string.test_a));
+		testVData.add(mContext.getString(R.string.test_b));
+		testVData.add(mContext.getString(R.string.test_c));
 		testBSR   = RPCRequestFactory.buildSystemRequestLegacy(testVData, testInt);
 		assertEquals(Test.MATCH, testVData, new Vector<String>(testBSR.getLegacyData()));
 		assertEquals(Test.MATCH, testInt, testBSR.getCorrelationID());
@@ -121,16 +123,16 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position,Vector<String> vrCommands, Image cmdIcon, Integer correlationID)
 		testImage         = new Image();
-		testMenuText      = "menu";
+		testMenuText      = mContext.getString(R.string.menu);
 		testPosition      = 1;
 		testParentID      = 2;
 		testCommandID     = 3;
 		testCorrelationID = 4;
 		testVrCommands    = new Vector<String>();
 		testImage.setImageType(ImageType.STATIC);
-		testImage.setValue("image");
-		testVrCommands.add("Test A");
-		testVrCommands.add("Test B");
+		testImage.setValue(mContext.getString(R.string.image));
+		testVrCommands.add(mContext.getString(R.string.test_a));
+		testVrCommands.add(mContext.getString(R.string.test_b));
 		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testParentID, testPosition, testVrCommands, testImage, testCorrelationID);
 		assertEquals(Test.MATCH, testCommandID, testBAC.getCmdID());
 		assertEquals(Test.MATCH, testMenuText, testBAC.getMenuParams().getMenuName());
@@ -148,7 +150,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position, Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
-		testIconValue = "icon";
+		testIconValue = mContext.getString(R.string.icon);
 		testIconType  = ImageType.STATIC;
 		testImage     = new Image();
 		testImage.setValue(testIconValue);
@@ -219,7 +221,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		// ^ Calls another build method.
 		// Test -- buildAddSubMenu(Integer menuID, String menuName, Integer position, Integer correlationID)
 		testMenuID        = 0;
-		testMenuName      = "name";
+		testMenuName      = mContext.getString(R.string.name);
 		testPosition      = 1;
 		testCorrelationID = 2;
 		testBASM = RPCRequestFactory.buildAddSubMenu(testMenuID, testMenuName, testPosition, testCorrelationID);
@@ -245,14 +247,14 @@ public class RPCRequestFactoryTests extends TestCase {
 		Vector<TTSChunk>   testTtsChunks;
 				
 		// Test -- buildAlert(String ttsText, Boolean playTone, Vector<SoftButton> softButtons, Integer correlationID)
-		testTTSText       = "simple test";
+		testTTSText       = mContext.getString(R.string.simple_test);
 		testCorrelationID = 0;
 		testPlayTone      = true;
 		testSoftButtons   = new Vector<SoftButton>();
 		SoftButton test1  = new SoftButton();
-		test1.setText("test 1");
+		test1.setText(mContext.getString(R.string.test_one));
 		SoftButton test2  = new SoftButton();
-		test2.setText("test 2");
+		test2.setText(mContext.getString(R.string.test_two));
 		testSoftButtons.add(test1);
 		testSoftButtons.add(test2);		
 		testAlert = RPCRequestFactory.buildAlert(testTTSText, testPlayTone, testSoftButtons, testCorrelationID);
@@ -260,9 +262,9 @@ public class RPCRequestFactoryTests extends TestCase {
 		// ^ Calls another build method.
 		
 		// Test -- buildAlert(String alertText1, String alertText2, String alertText3, Integer duration, Vector<SoftButton> softButtons, Integer correlationID)
-		testAlertText1 = "test 1";
-		testAlertText2 = "test 2";
-		testAlertText3 = "test 3";
+		testAlertText1 = mContext.getString(R.string.test_one);
+		testAlertText2 = mContext.getString(R.string.test_two);
+		testAlertText3 = mContext.getString(R.string.test_three);
 		testDuration   = 1;	
 		// ^ Calls another build method.
 		
@@ -375,7 +377,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		// Test --buildDeleteFile(String sdlFileName, Integer correlationID)
 		testCorrelationID = 0;
-		testFileName = "test";
+		testFileName = mContext.getString(R.string.test);
 		testDF = RPCRequestFactory.buildDeleteFile(testFileName, testCorrelationID);
 		assertEquals(Test.MATCH, testCorrelationID, testDF.getCorrelationID());
 		assertEquals(Test.MATCH, testFileName, testDF.getSdlFileName());
@@ -436,7 +438,7 @@ public class RPCRequestFactoryTests extends TestCase {
 	@SuppressWarnings("deprecation")
 	public void testBuildPerformInteraction () {
 		
-		String testDisplayText = "test";
+		String testDisplayText = mContext.getString(R.string.test);
 		Integer testTimeout = 1, testCorrelationID = 0;
 		InteractionMode testIM = InteractionMode.BOTH;
 		Vector<TTSChunk> testInitChunks, testHelpChunks, testTimeoutChunks;
@@ -445,15 +447,15 @@ public class RPCRequestFactoryTests extends TestCase {
 		PerformInteraction testPI;
 		
 		// Test -- buildPerformInteraction(Vector<TTSChunk> initChunks, String displayText, Vector<Integer> interactionChoiceSetIDList, Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp, Integer correlationID)
-		testInitChunks    = TTSChunkFactory.createSimpleTTSChunks("init chunks");
-		testHelpChunks    = TTSChunkFactory.createSimpleTTSChunks("help items");
-		testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks("timeout");
+		testInitChunks    = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.init_chunks));
+		testHelpChunks    = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.help_items));
+		testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.timeout));
 		testVrHelpItems = new Vector<VrHelpItem>();
 		VrHelpItem testItem = new VrHelpItem();
 		testItem.setPosition(0);
-		testItem.setText("text");
+		testItem.setText(mContext.getString(R.string.text));
 		Image image = new Image();
-		image.setValue("value");
+		image.setValue(mContext.getString(R.string.value));
 		image.setImageType(ImageType.DYNAMIC);
 		testItem.setImage(image);
 		testVrHelpItems.add(testItem);
@@ -546,7 +548,7 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildPutFiles () {
 		
-		String testFileName = "test";
+		String testFileName = mContext.getString(R.string.test);
 		Boolean testPFile = true, testSystemFile = true;
 		Integer testCorrelationID = 0;
 		Long testOffset = 1L, testLength = 2L;
@@ -602,10 +604,10 @@ public class RPCRequestFactoryTests extends TestCase {
 		SdlMsgVersion testSMV = new SdlMsgVersion();
 		testSMV.setMajorVersion(1);
 		testSMV.setMinorVersion(0);
-		String testAppName = "test", testNGN = "ngn", testAppID = "id";
-		Vector<TTSChunk> testTTSName = TTSChunkFactory.createSimpleTTSChunks("name");
+		String testAppName = mContext.getString(R.string.test), testNGN = mContext.getString(R.string.ngn), testAppID = mContext.getString(R.string.id);
+		Vector<TTSChunk> testTTSName = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.name));
 		Vector<String> testSynonyms = new Vector<String>();
-		testSynonyms.add("examine");
+		testSynonyms.add(mContext.getString(R.string.examine));
 		Boolean testIMA = false;
 		Integer testCorrelationID = 0;
 		Language testLang = Language.EN_US, testHMILang = Language.EN_GB;
@@ -654,7 +656,7 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildSetAppIcon () {
 		
-		String testFileName = "test";
+		String testFileName = mContext.getString(R.string.test);
 		Integer testCorrelationID = 0;
 		SetAppIcon testSAI;
 		
@@ -671,19 +673,19 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildSetGlobalProperties () {
 		
-		Vector<TTSChunk> testHelpChunks = TTSChunkFactory.createSimpleTTSChunks("test"),
-				testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks("timeout");
+		Vector<TTSChunk> testHelpChunks = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.test)),
+				testTimeoutChunks = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.timeout));
 		Vector<VrHelpItem> testVrHelp = new Vector<VrHelpItem>();
 		VrHelpItem testItem = new VrHelpItem();
 		testItem.setPosition(0);
-		testItem.setText("text");
+		testItem.setText(mContext.getString(R.string.test));
 		Image image = new Image();
-		image.setValue("value");
+		image.setValue(mContext.getString(R.string.value));
 		image.setImageType(ImageType.DYNAMIC);
 		testItem.setImage(image);
 		testVrHelp.add(testItem);
 		Integer testCorrelationID = 0;
-		String testHelpTitle = "help";
+		String testHelpTitle = mContext.getString(R.string.help);
 		SetGlobalProperties testSBP;
 		
 		// Test -- buildSetGlobalProperties(String helpPrompt, String timeoutPrompt, Integer correlationID)
@@ -747,12 +749,12 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		Image testGraphic = new Image();
 		testGraphic.setImageType(ImageType.STATIC);
-		testGraphic.setValue("test");
-		String testText1 = "test1", testText2 = "test2", testText3 = "test3", testText4 = "test4", testStatusBar = "status", testMediaClock = "media", testMediaTrack = "track";
+		testGraphic.setValue(mContext.getString(R.string.test));
+		String testText1 = mContext.getString(R.string.testone), testText2 = mContext.getString(R.string.testtwo), testText3 = mContext.getString(R.string.testthree), testText4 = mContext.getString(R.string.testfour), testStatusBar = mContext.getString(R.string.status), testMediaClock = mContext.getString(R.string.media), testMediaTrack = mContext.getString(R.string.track);
 		Vector<SoftButton> testSoftButtons = new Vector<SoftButton>();
 		testSoftButtons.add(new SoftButton());
 		Vector<String> testCustomPresets = new Vector<String>();
-		testCustomPresets.add("Test");
+		testCustomPresets.add(mContext.getString(R.string.testone));
 		TextAlignment testAlignment = TextAlignment.CENTERED;
 		Integer testCorrelationID = 0;
 		Show testShow;
@@ -813,7 +815,7 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildSpeak () {
 		
-		String testTTSText = "test";
+		String testTTSText = mContext.getString(R.string.test);
 		Integer testCorrelationID = 0;
 		Vector<TTSChunk> testTTSChunks = TTSChunkFactory.createSimpleTTSChunks(testTTSText);
 		Speak testSpeak;
@@ -971,7 +973,7 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildScrollableMessage () {
 		
-		String testSMB = "test";
+		String testSMB = mContext.getString(R.string.test);
 		Integer testTimeout = 1, testCorrelationID = 0;
 		Vector<SoftButton> testSoftButtons = new Vector<SoftButton>();
 		testSoftButtons.add(new SoftButton());
@@ -994,9 +996,9 @@ public class RPCRequestFactoryTests extends TestCase {
 	public void testBuildSlider () {
 		
 		Integer testTicks = 1, testPosition = 2, testTimeout = 3, testCorrelationID = 0;
-		String testHeader = "header";
+		String testHeader = mContext.getString(R.string.header);
 		Vector<String> testFooter = new Vector<String>();
-		testFooter.add("footer");
+		testFooter.add(mContext.getString(R.string.footer));
 		Slider testSlider;
 		
 		// Test -- BuildSlider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID)
@@ -1036,7 +1038,7 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildSetDisplayLayout () {
 		
-		String testDL = "layout";
+		String testDL = mContext.getString(R.string.layout);
 		Integer testCorrelationID = 0;
 		SetDisplayLayout testSDL;
 		
@@ -1052,8 +1054,8 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildPerformAudioPassThru () {
 		
-		Vector<TTSChunk> testInitialPrompt = TTSChunkFactory.createSimpleTTSChunks("test");
-		String testAPTDT1 = "audio", testAPTDT2 = "pass";
+		Vector<TTSChunk> testInitialPrompt = TTSChunkFactory.createSimpleTTSChunks(mContext.getString(R.string.test));
+		String testAPTDT1 = mContext.getString(R.string.audio), testAPTDT2 = mContext.getString(R.string.pass);
 		SamplingRate testSR = SamplingRate._16KHZ;
 		Integer testMaxDuration = 1, testCorrelationID = 0;
 		BitsPerSample testBits = BitsPerSample._16_BIT;

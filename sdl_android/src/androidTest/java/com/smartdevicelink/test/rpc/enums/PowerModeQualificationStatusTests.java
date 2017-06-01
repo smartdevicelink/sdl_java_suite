@@ -1,30 +1,31 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.PowerModeQualificationStatus}
  */
-public class PowerModeQualificationStatusTests extends TestCase {
+public class PowerModeQualificationStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "POWER_MODE_UNDEFINED";
+		String example = mContext.getString(R.string.power_mode_undef_caps);
 		PowerModeQualificationStatus enumPowerModeUndefined = PowerModeQualificationStatus.valueForString(example);
-		example = "POWER_MODE_EVALUATION_IN_PROGRESS";
+		example = mContext.getString(R.string.power_mode_eval_caps);
 		PowerModeQualificationStatus enumPowerModeEvaluationInProgress = PowerModeQualificationStatus.valueForString(example);
-		example = "NOT_DEFINED";
+		example = mContext.getString(R.string.not_defined_caps);
 		PowerModeQualificationStatus enumNotDefined = PowerModeQualificationStatus.valueForString(example);
-		example = "POWER_MODE_OK";
+		example = mContext.getString(R.string.power_mode_on_caps);
 		PowerModeQualificationStatus enumPowerModeOk = PowerModeQualificationStatus.valueForString(example);
 		
 		assertNotNull("POWER_MODE_UNDEFINED returned null", enumPowerModeUndefined);
@@ -37,13 +38,13 @@ public class PowerModeQualificationStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "poweR_moDE_UndEfiNEd";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    PowerModeQualificationStatus temp = PowerModeQualificationStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -54,10 +55,10 @@ public class PowerModeQualificationStatusTests extends TestCase {
 		String example = null;
 		try {
 		    PowerModeQualificationStatus temp = PowerModeQualificationStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -73,7 +74,7 @@ public class PowerModeQualificationStatusTests extends TestCase {
 		enumTestList.add(PowerModeQualificationStatus.NOT_DEFINED);
 		enumTestList.add(PowerModeQualificationStatus.POWER_MODE_OK);	
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }

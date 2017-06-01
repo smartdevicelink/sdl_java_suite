@@ -1,28 +1,29 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import android.test.AndroidTestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import com.smartdevicelink.R;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.rpc.enums.IgnitionStableStatus}
  */
-public class IgnitionStableStatusTests extends TestCase {
+public class IgnitionStableStatusTests extends AndroidTestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "IGNITION_SWITCH_NOT_STABLE";
+		String example = mContext.getString(R.string.ignite_switch_not_stable_caps);
 		IgnitionStableStatus enumIgnitionSwitchNotStable = IgnitionStableStatus.valueForString(example);
-		example = "IGNITION_SWITCH_STABLE";
+		example = mContext.getString(R.string.ingite_switch_stable_caps);
 		IgnitionStableStatus enumIgnitionSwitchStable = IgnitionStableStatus.valueForString(example);
-		example = "MISSING_FROM_TRANSMITTER";
+		example = mContext.getString(R.string.missing_from_trans_caps);
 		IgnitionStableStatus enumMissingFromTransmitter = IgnitionStableStatus.valueForString(example);
 		
 		assertNotNull("IGNITION_SWITCH_NOT_STABLE returned null", enumIgnitionSwitchNotStable);
@@ -34,13 +35,13 @@ public class IgnitionStableStatusTests extends TestCase {
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "iGnitIoN_SwiTch_NoT_StablE";
+		String example = mContext.getString(R.string.invalid_enum);
 		try {
 		    IgnitionStableStatus temp = IgnitionStableStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}
 
@@ -51,10 +52,10 @@ public class IgnitionStableStatusTests extends TestCase {
 		String example = null;
 		try {
 		    IgnitionStableStatus temp = IgnitionStableStatus.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+            assertNull(mContext.getString(R.string.result_of_valuestring_should_be_null), temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+            fail(mContext.getString(R.string.invalid_enum_throws_illegal_argument_exception));
 		}
 	}	
 
@@ -69,7 +70,7 @@ public class IgnitionStableStatusTests extends TestCase {
 		enumTestList.add(IgnitionStableStatus.IGNITION_SWITCH_STABLE);
 		enumTestList.add(IgnitionStableStatus.MISSING_FROM_TRANSMITTER);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue(mContext.getString(R.string.enum_value_list_does_not_match_enum_class_list),
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}	
 }
