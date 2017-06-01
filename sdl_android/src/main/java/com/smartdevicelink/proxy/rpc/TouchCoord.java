@@ -60,27 +60,19 @@ public class TouchCoord extends RPCStruct {
     }
     
     public void setX(Integer x) {
-        if (x != null) {
-            store.put(KEY_X, x);
-        } else {
-        	store.remove(KEY_X);
-        }
+        setValue(KEY_X, x);
     }
     
     public Integer getX() {
-        return (Integer) store.get(KEY_X);
+        return getInteger(KEY_X);
     }
     
     public void setY(Integer y) {
-        if (y != null) {
-            store.put(KEY_Y, y);
-        } else {
-        	store.remove(KEY_Y);
-        }
+        setValue(KEY_Y, y);
     }
     
     public Integer getY() {
-        return (Integer) store.get(KEY_Y);
+        return getInteger(KEY_Y);
     }
     
 }

@@ -72,27 +72,21 @@ public class OnCommand extends RPCNotification {
      * @return Integer an integer representation of this object
      */    
     public Integer getCmdID() {
-        return (Integer) parameters.get( KEY_CMD_ID );
+        return getInteger( KEY_CMD_ID );
     }
     /**
      * <p>Sets a Command ID</p>    
      * @param cmdID an integer object representing a Command ID
      */    
     public void setCmdID( Integer cmdID ) {
-        setParameters(KEY_CMD_ID, cmdID);
+        setParameter(KEY_CMD_ID, cmdID);
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
      * @return TriggerSource a TriggerSource object
      */    
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
-        if (obj instanceof TriggerSource) {
-            return (TriggerSource) obj;
-        } else if (obj instanceof String) {
-            return TriggerSource.valueForString((String) obj);
-        }
-        return null;
+        return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
     }
     /**
      * <p>Sets TriggerSource</p>
@@ -100,6 +94,6 @@ public class OnCommand extends RPCNotification {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
+        setParameter(KEY_TRIGGER_SOURCE, triggerSource);
     }
 }

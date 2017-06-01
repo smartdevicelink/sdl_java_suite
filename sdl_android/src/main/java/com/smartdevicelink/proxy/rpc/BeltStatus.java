@@ -4,7 +4,11 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
-/** The status of the seat belts. 
+
+import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_AIRBAG_DEPLOYED;
+import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED;
+
+/** The status of the seat belts.
  *
  * <p><b>Parameter List</b></p>
  * 
@@ -143,243 +147,93 @@ public class BeltStatus extends RPCStruct {
     }
 
     public void setDriverBeltDeployed(VehicleDataEventStatus driverBeltDeployed) {
-        if (driverBeltDeployed != null) {
-            store.put(KEY_DRIVER_BELT_DEPLOYED, driverBeltDeployed);
-        } else {
-        	store.remove(KEY_DRIVER_BELT_DEPLOYED);
-        }
+        setValue(KEY_DRIVER_BELT_DEPLOYED, driverBeltDeployed);
     }
     public VehicleDataEventStatus getDriverBeltDeployed() {
-        Object obj = store.get(KEY_DRIVER_BELT_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BELT_DEPLOYED);
     }
     public void setPassengerBeltDeployed(VehicleDataEventStatus passengerBeltDeployed) {
-        if (passengerBeltDeployed != null) {
-            store.put(KEY_PASSENGER_BELT_DEPLOYED, passengerBeltDeployed);
-        } else {
-        	store.remove(KEY_PASSENGER_BELT_DEPLOYED);
-        }
+        setValue(KEY_PASSENGER_BELT_DEPLOYED, passengerBeltDeployed);
     }
     public VehicleDataEventStatus getPassengerBeltDeployed() {
-        Object obj = store.get(KEY_PASSENGER_BELT_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_BELT_DEPLOYED);
     }
     public void setPassengerBuckleBelted(VehicleDataEventStatus passengerBuckleBelted) {
-        if (passengerBuckleBelted != null) {
-            store.put(KEY_PASSENGER_BUCKLE_BELTED, passengerBuckleBelted);
-        } else {
-        	store.remove(KEY_PASSENGER_BUCKLE_BELTED);
-        }
+        setValue(KEY_PASSENGER_BUCKLE_BELTED, passengerBuckleBelted);
     }
     public VehicleDataEventStatus getPassengerBuckleBelted() {
-        Object obj = store.get(KEY_PASSENGER_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_BUCKLE_BELTED);
     }
     public void setDriverBuckleBelted(VehicleDataEventStatus driverBuckleBelted) {
-        if (driverBuckleBelted != null) {
-            store.put(KEY_DRIVER_BUCKLE_BELTED, driverBuckleBelted);
-        } else {
-        	store.remove(KEY_DRIVER_BUCKLE_BELTED);
-        }
+        setValue(KEY_DRIVER_BUCKLE_BELTED, driverBuckleBelted);
     }
     public VehicleDataEventStatus getDriverBuckleBelted() {
-        Object obj = store.get(KEY_DRIVER_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BUCKLE_BELTED);
     }
     public void setLeftRow2BuckleBelted(VehicleDataEventStatus leftRow2BuckleBelted) {
-        if (leftRow2BuckleBelted != null) {
-            store.put(KEY_LEFT_ROW_2_BUCKLE_BELTED, leftRow2BuckleBelted);
-        } else {
-        	store.remove(KEY_LEFT_ROW_2_BUCKLE_BELTED);
-        }
+        setValue(KEY_LEFT_ROW_2_BUCKLE_BELTED, leftRow2BuckleBelted);
     }
     public VehicleDataEventStatus getLeftRow2BuckleBelted() {
-        Object obj = store.get(KEY_LEFT_ROW_2_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_LEFT_ROW_2_BUCKLE_BELTED);
     }
     public void setPassengerChildDetected(VehicleDataEventStatus passengerChildDetected) {
-        if (passengerChildDetected != null) {
-            store.put(KEY_PASSENGER_CHILD_DETECTED, passengerChildDetected);
-        } else {
-        	store.remove(KEY_PASSENGER_CHILD_DETECTED);
-        }
+        setValue(KEY_PASSENGER_CHILD_DETECTED, passengerChildDetected);
     }
     public VehicleDataEventStatus getPassengerChildDetected() {
-        Object obj = store.get(KEY_PASSENGER_CHILD_DETECTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_CHILD_DETECTED);
     }
     public void setRightRow2BuckleBelted(VehicleDataEventStatus rightRow2BuckleBelted) {
-        if (rightRow2BuckleBelted != null) {
-            store.put(KEY_RIGHT_ROW_2_BUCKLE_BELTED, rightRow2BuckleBelted);
-        } else {
-        	store.remove(KEY_RIGHT_ROW_2_BUCKLE_BELTED);
-        }
+        setValue(KEY_RIGHT_ROW_2_BUCKLE_BELTED, rightRow2BuckleBelted);
     }
     public VehicleDataEventStatus getRightRow2BuckleBelted() {
-        Object obj = store.get(KEY_RIGHT_ROW_2_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_ROW_2_BUCKLE_BELTED);
     }
     public void setMiddleRow2BuckleBelted(VehicleDataEventStatus middleRow2BuckleBelted) {
-        if (middleRow2BuckleBelted != null) {
-            store.put(KEY_MIDDLE_ROW_2_BUCKLE_BELTED, middleRow2BuckleBelted);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
-        }
+        setValue(KEY_MIDDLE_ROW_2_BUCKLE_BELTED, middleRow2BuckleBelted);
     }
     public VehicleDataEventStatus getMiddleRow2BuckleBelted() {
-        Object obj = store.get(KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_2_BUCKLE_BELTED);
     }
     public void setMiddleRow3BuckleBelted(VehicleDataEventStatus middleRow3BuckleBelted) {
-        if (middleRow3BuckleBelted != null) {
-            store.put(KEY_MIDDLE_ROW_3_BUCKLE_BELTED, middleRow3BuckleBelted);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
-        }
+        setValue(KEY_MIDDLE_ROW_3_BUCKLE_BELTED, middleRow3BuckleBelted);
     }
     public VehicleDataEventStatus getMiddleRow3BuckleBelted() {
-        Object obj = store.get(KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_3_BUCKLE_BELTED);
     }
     public void setLeftRow3BuckleBelted(VehicleDataEventStatus leftRow3BuckleBelted) {
-        if (leftRow3BuckleBelted != null) {
-            store.put(KEY_LEFT_ROW_3_BUCKLE_BELTED, leftRow3BuckleBelted);
-        } else {
-        	store.remove(KEY_LEFT_ROW_3_BUCKLE_BELTED);
-        }
+        setValue(KEY_LEFT_ROW_3_BUCKLE_BELTED, leftRow3BuckleBelted);
     }
     public VehicleDataEventStatus getLeftRow3BuckleBelted() {
-        Object obj = store.get(KEY_LEFT_ROW_3_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_LEFT_ROW_3_BUCKLE_BELTED);
     }
     public void setRightRow3BuckleBelted(VehicleDataEventStatus rightRow3BuckleBelted) {
-        if (rightRow3BuckleBelted != null) {
-            store.put(KEY_RIGHT_ROW_3_BUCKLE_BELTED, rightRow3BuckleBelted);
-        } else {
-        	store.remove(KEY_RIGHT_ROW_3_BUCKLE_BELTED);
-        }
+        setValue(KEY_RIGHT_ROW_3_BUCKLE_BELTED, rightRow3BuckleBelted);
     }
     public VehicleDataEventStatus getRightRow3BuckleBelted() {
-        Object obj = store.get(KEY_RIGHT_ROW_3_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_ROW_3_BUCKLE_BELTED);
     }
     public void setLeftRearInflatableBelted(VehicleDataEventStatus rearInflatableBelted) {
-        if (rearInflatableBelted != null) {
-            store.put(KEY_REAR_INFLATABLE_BELTED, rearInflatableBelted);
-        } else {
-        	store.remove(KEY_REAR_INFLATABLE_BELTED);
-        }
+        setValue(KEY_REAR_INFLATABLE_BELTED, rearInflatableBelted);
     }
     public VehicleDataEventStatus getLeftRearInflatableBelted() {
-        Object obj = store.get(KEY_REAR_INFLATABLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_REAR_INFLATABLE_BELTED);
     }
     public void setRightRearInflatableBelted(VehicleDataEventStatus rightRearInflatableBelted) {
-        if (rightRearInflatableBelted != null) {
-            store.put(KEY_RIGHT_REAR_INFLATABLE_BELTED, rightRearInflatableBelted);
-        } else {
-        	store.remove(KEY_RIGHT_REAR_INFLATABLE_BELTED);
-        }
+        setValue(KEY_RIGHT_REAR_INFLATABLE_BELTED, rightRearInflatableBelted);
     }
     public VehicleDataEventStatus getRightRearInflatableBelted() {
-        Object obj = store.get(KEY_RIGHT_REAR_INFLATABLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_REAR_INFLATABLE_BELTED);
     }
     public void setMiddleRow1BeltDeployed(VehicleDataEventStatus middleRow1BeltDeployed) {
-        if (middleRow1BeltDeployed != null) {
-            store.put(KEY_MIDDLE_ROW_1_BELT_DEPLOYED, middleRow1BeltDeployed);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
-        }
+        setValue(KEY_MIDDLE_ROW_1_BELT_DEPLOYED, middleRow1BeltDeployed);
     }
     public VehicleDataEventStatus getMiddleRow1BeltDeployed() {
-        Object obj = store.get(KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_1_BELT_DEPLOYED);
     }
     public void setMiddleRow1BuckleBelted(VehicleDataEventStatus middleRow1BuckleBelted) {
-        if (middleRow1BuckleBelted != null) {
-            store.put(KEY_MIDDLE_ROW_1_BUCKLE_BELTED, middleRow1BuckleBelted);
-        } else {
-        	store.remove(KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
-        }
+        setValue(KEY_MIDDLE_ROW_1_BUCKLE_BELTED, middleRow1BuckleBelted);
     }
     public VehicleDataEventStatus getMiddleRow1BuckleBelted() {
-        Object obj = store.get(KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_MIDDLE_ROW_1_BUCKLE_BELTED);
     }
 }

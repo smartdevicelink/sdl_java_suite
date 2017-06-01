@@ -2,11 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.DebugTool;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
 /**
  * Sets value(s) for the specified global property(ies)
  * 
@@ -141,22 +140,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getHelpPrompt() {
-    	if (parameters.get(KEY_HELP_PROMPT) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-    	}
-	    return null;
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_HELP_PROMPT);
     }
 	/**
 	 * Sets a List<TTSChunk> for Help Prompt that Array of one or more
@@ -173,7 +157,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-		setParameters(KEY_HELP_PROMPT, helpPrompt);
+		setParameter(KEY_HELP_PROMPT, helpPrompt);
     }
 	/**
 	 * Gets a List<TTSChunk> for Timeout Prompt representing Array of one or
@@ -185,22 +169,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTimeoutPrompt() {
-        if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TIMEOUT_PROMPT);
     }
 	/**
 	 * Sets a List<TTSChunk> for Timeout Prompt representing Array of one or
@@ -209,7 +178,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+		setParameter(KEY_TIMEOUT_PROMPT, timeoutPrompt);
     }
 
 	/**
@@ -220,7 +189,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getVrHelpTitle() {
-        return (String) parameters.get(KEY_VR_HELP_TITLE);
+        return getString(KEY_VR_HELP_TITLE);
     }
 
 	/**
@@ -240,7 +209,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelpTitle(String vrHelpTitle) {
-		setParameters(KEY_VR_HELP_TITLE, vrHelpTitle);
+		setParameter(KEY_VR_HELP_TITLE, vrHelpTitle);
     }
 
 	/**
@@ -253,22 +222,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<VrHelpItem> getVrHelp() {
-        if (parameters.get(KEY_VR_HELP) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_HELP);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrHelpItem) {
-	                return (List<VrHelpItem>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<VrHelpItem> newList = new ArrayList<VrHelpItem>();
-	                for (Object hashObj : list) {
-	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<VrHelpItem>) getObject(VrHelpItem.class, KEY_VR_HELP);
     }
 
 	/**
@@ -293,53 +247,33 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-		setParameters(KEY_VR_HELP, vrHelp);
+		setParameter(KEY_VR_HELP, vrHelp);
     }
     
     public String getMenuTitle() {
-        return (String) parameters.get(KEY_MENU_TITLE);
+        return getString(KEY_MENU_TITLE);
     }
 
     public void setMenuTitle(String menuTitle) {
-		setParameters(KEY_MENU_TITLE, menuTitle);
+		setParameter(KEY_MENU_TITLE, menuTitle);
     }
 
     public void setMenuIcon(Image menuIcon) {
-		setParameters(KEY_MENU_ICON, menuIcon);
+		setParameter(KEY_MENU_ICON, menuIcon);
     }
 
     @SuppressWarnings("unchecked")
     public Image getMenuIcon() {
-    	Object obj = parameters.get(KEY_MENU_ICON);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_ICON, e);
-            }
-        }
-        return null;
+		return (Image) getObject(Image.class, KEY_MENU_ICON);
     }
     
     public void setKeyboardProperties(KeyboardProperties keyboardProperties) {
-		setParameters(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
+		setParameter(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
     }
 
     @SuppressWarnings("unchecked")
     public KeyboardProperties getKeyboardProperties() {
-    	Object obj = parameters.get(KEY_KEYBOARD_PROPERTIES);
-        if (obj instanceof KeyboardProperties) {
-            return (KeyboardProperties) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new KeyboardProperties((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_KEYBOARD_PROPERTIES, e);
-            }
-        }
-        return null;
+		return (KeyboardProperties) getObject(KeyboardProperties.class, KEY_KEYBOARD_PROPERTIES);
     }    
     
 }

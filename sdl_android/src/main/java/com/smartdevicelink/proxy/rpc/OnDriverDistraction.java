@@ -6,8 +6,6 @@ import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 
 import java.util.Hashtable;
 
-import static com.smartdevicelink.proxy.constants.Names.triggerSource;
-
 /**
  * <p>Notifies the application of the current driver distraction state (whether driver distraction rules are in effect, or 
  * not).</p>
@@ -60,19 +58,13 @@ public class OnDriverDistraction  extends RPCNotification {
      * @return {@linkplain DriverDistractionState} the Current driver distraction state.
      */    
     public DriverDistractionState getState() {
-        Object obj = parameters.get(KEY_STATE);
-        if (obj instanceof DriverDistractionState) {
-        	return (DriverDistractionState)obj;
-        } else if(obj instanceof String) {
-        	return DriverDistractionState.valueForString((String) obj);
-        }    	
-    	return null;
+        return (DriverDistractionState) getObject(DriverDistractionState.class, KEY_STATE);
     }
     /**
      * <p>Called to set the driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
      * @param state the current driver distraction state
      */    
     public void setState( DriverDistractionState state ) {
-        setParameters(KEY_STATE, state);
+        setParameter(KEY_STATE, state);
     }  
 }

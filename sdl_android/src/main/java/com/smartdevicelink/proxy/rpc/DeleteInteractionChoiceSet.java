@@ -83,7 +83,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * @return Integer -an Integer value representing the unique Choice Set ID
 	 */    
     public Integer getInteractionChoiceSetID() {
-        return (Integer) parameters.get( KEY_INTERACTION_CHOICE_SET_ID );
+        return getInteger( KEY_INTERACTION_CHOICE_SET_ID );
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
@@ -91,6 +91,6 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+		setParameter(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 }

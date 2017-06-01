@@ -74,7 +74,7 @@ public class SetAppIcon extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
-		setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+		setParameter(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -82,6 +82,6 @@ public class SetAppIcon extends RPCRequest {
 	 * @return String -a String value
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return getString(KEY_SDL_FILE_NAME);
     }
 }

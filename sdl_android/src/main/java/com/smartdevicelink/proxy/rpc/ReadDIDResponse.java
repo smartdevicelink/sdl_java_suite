@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -22,25 +21,10 @@ public class ReadDIDResponse extends RPCResponse {
         super(hash);
     }
     public void setDidResult(List<DIDResult> didResult) {
-		setParameters(KEY_DID_RESULT, didResult);
+		setParameter(KEY_DID_RESULT, didResult);
     }
     @SuppressWarnings("unchecked")
     public List<DIDResult> getDidResult() {
-        if (parameters.get(KEY_DID_RESULT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DID_RESULT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof DIDResult) {
-	                return (List<DIDResult>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<DIDResult> newList = new ArrayList<DIDResult>();
-	                for (Object hashObj : list) {
-	                    newList.add(new DIDResult((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<DIDResult>) getObject(DIDResult.class, KEY_DID_RESULT);
     }
 }

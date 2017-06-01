@@ -3,9 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.util.DebugTool;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -191,7 +189,7 @@ public class Show extends RPCRequest {
 	 *         display
 	 */    
     public String getMainField1() {
-        return (String) parameters.get(KEY_MAIN_FIELD_1);
+        return getString(KEY_MAIN_FIELD_1);
     }
 	/**
 	 * Sets the text displayed in a single-line display, or in the upper display
@@ -211,7 +209,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField1(String mainField1) {
-		setParameters(KEY_MAIN_FIELD_1, mainField1);
+		setParameter(KEY_MAIN_FIELD_1, mainField1);
     }
 	/**
 	 * Gets the text displayed on the second display line of a two-line display
@@ -220,7 +218,7 @@ public class Show extends RPCRequest {
 	 *         second display line of a two-line display
 	 */    
     public String getMainField2() {
-        return (String) parameters.get(KEY_MAIN_FIELD_2);
+        return getString(KEY_MAIN_FIELD_2);
     }
 	/**
 	 * Sets the text displayed on the second display line of a two-line display
@@ -241,7 +239,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField2(String mainField2) {
-		setParameters(KEY_MAIN_FIELD_2, mainField2);
+		setParameter(KEY_MAIN_FIELD_2, mainField2);
     }
 
 	/**
@@ -252,7 +250,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField3() {
-        return (String) parameters.get(KEY_MAIN_FIELD_3);
+        return getString(KEY_MAIN_FIELD_3);
     }
 
 	/**
@@ -275,7 +273,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField3(String mainField3) {
-		setParameters(KEY_MAIN_FIELD_3, mainField3);
+		setParameter(KEY_MAIN_FIELD_3, mainField3);
     }
 
 	/**
@@ -286,7 +284,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public String getMainField4() {
-        return (String) parameters.get(KEY_MAIN_FIELD_4);
+        return getString(KEY_MAIN_FIELD_4);
     }
 
 	/**
@@ -309,7 +307,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField4(String mainField4) {
-		setParameters(KEY_MAIN_FIELD_4, mainField4);
+		setParameter(KEY_MAIN_FIELD_4, mainField4);
     }
 	/**
 	 * Gets the alignment that Specifies how mainField1 and mainField2 text
@@ -318,13 +316,7 @@ public class Show extends RPCRequest {
 	 * @return TextAlignment -an Enumeration value
 	 */    
     public TextAlignment getAlignment() {
-        Object obj = parameters.get(KEY_ALIGNMENT);
-        if (obj instanceof TextAlignment) {
-            return (TextAlignment) obj;
-        } else if (obj instanceof String) {
-            return TextAlignment.valueForString((String) obj);
-        }
-        return null;
+		return (TextAlignment) getObject(TextAlignment.class, KEY_ALIGNMENT);
     }
 	/**
 	 * Sets the alignment that Specifies how mainField1 and mainField2 text
@@ -343,7 +335,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlignment(TextAlignment alignment) {
-		setParameters(KEY_ALIGNMENT, alignment);
+		setParameter(KEY_ALIGNMENT, alignment);
     }
 	/**
 	 * Gets text in the Status Bar
@@ -351,7 +343,7 @@ public class Show extends RPCRequest {
 	 * @return String -the value in the Status Bar
 	 */    
     public String getStatusBar() {
-        return (String) parameters.get(KEY_STATUS_BAR);
+        return getString(KEY_STATUS_BAR);
     }
 	/**
 	 * Sets text in the Status Bar
@@ -372,7 +364,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setStatusBar(String statusBar) {
-		setParameters(KEY_STATUS_BAR, statusBar);
+		setParameter(KEY_STATUS_BAR, statusBar);
     }
 	/**
 	 * Gets the String value of the MediaClock
@@ -381,7 +373,7 @@ public class Show extends RPCRequest {
 	 */ 
 	@Deprecated	 
     public String getMediaClock() {
-        return (String) parameters.get(KEY_MEDIA_CLOCK);
+        return getString(KEY_MEDIA_CLOCK);
     }
 	/**
 	 * Sets the value for the MediaClock field using a format described in the
@@ -401,7 +393,7 @@ public class Show extends RPCRequest {
 	 */
 	@Deprecated
     public void setMediaClock(String mediaClock) {
-		setParameters(KEY_MEDIA_CLOCK, mediaClock);
+		setParameter(KEY_MEDIA_CLOCK, mediaClock);
     }
 	/**
 	 * Gets the text in the track field
@@ -409,7 +401,7 @@ public class Show extends RPCRequest {
 	 * @return String -a String displayed in the track field
 	 */    
     public String getMediaTrack() {
-        return (String) parameters.get(KEY_MEDIA_TRACK);
+        return getString(KEY_MEDIA_TRACK);
     }
 	/**
 	 * Sets the text in the track field
@@ -425,7 +417,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMediaTrack(String mediaTrack) {
-		setParameters(KEY_MEDIA_TRACK, mediaTrack);
+		setParameter(KEY_MEDIA_TRACK, mediaTrack);
     }
 
 	/**
@@ -439,7 +431,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setGraphic(Image graphic) {
-		setParameters(KEY_GRAPHIC, graphic);
+		setParameter(KEY_GRAPHIC, graphic);
     }
 
 	/**
@@ -451,38 +443,18 @@ public class Show extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public Image getGraphic() {
-    	Object obj = parameters.get(KEY_GRAPHIC);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GRAPHIC, e);
-            }
-        }
-        return null;
+		return (Image) getObject(Image.class, KEY_GRAPHIC);
     }
 
     
     public void setSecondaryGraphic(Image secondaryGraphic) {
-		setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
+		setParameter(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
     }
 
 
     @SuppressWarnings("unchecked")
     public Image getSecondaryGraphic() {
-    	Object obj = parameters.get(KEY_SECONDARY_GRAPHIC);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SECONDARY_GRAPHIC, e);
-            }
-        }
-        return null;
+		return (Image) getObject(Image.class, KEY_SECONDARY_GRAPHIC);
     }    
     
     
@@ -495,22 +467,7 @@ public class Show extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
 	/**
@@ -531,7 +488,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+		setParameter(KEY_SOFT_BUTTONS, softButtons);
     }
 
 	/**
@@ -543,16 +500,7 @@ public class Show extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<String> getCustomPresets() {
-    	if (parameters.get(KEY_CUSTOM_PRESETS) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_CUSTOM_PRESETS);
-    		if (list != null && list.size()>0) {
-    			Object obj = list.get(0);
-    			if (obj instanceof String) {
-    				return (List<String>) list;
-    			}
-    		}
-    	}
-        return null;
+		return (List<String>) getObject(String.class, KEY_CUSTOM_PRESETS);
     }
 
 	/**
@@ -570,6 +518,6 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCustomPresets(List<String> customPresets) {
-		setParameters(KEY_CUSTOM_PRESETS, customPresets);
+		setParameter(KEY_CUSTOM_PRESETS, customPresets);
     }
 }

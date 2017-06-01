@@ -86,7 +86,7 @@ public class GetDTCs extends RPCRequest {
 	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-		setParameters(KEY_ECU_NAME, ecuName);
+		setParameter(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -96,12 +96,12 @@ public class GetDTCs extends RPCRequest {
 	 *         receive the DTC form
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(KEY_ECU_NAME);
+    	return getInteger(KEY_ECU_NAME);
     }
     public void setDtcMask(Integer dtcMask) {
-		setParameters(KEY_DTC_MASK, dtcMask);
+		setParameter(KEY_DTC_MASK, dtcMask);
     }
     public Integer getDtcMask() {
-    	return (Integer) parameters.get(KEY_DTC_MASK);
+    	return getInteger(KEY_DTC_MASK);
     }
 }

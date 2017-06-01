@@ -77,39 +77,27 @@ public class OnLanguageChange extends RPCNotification {
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
     public void setLanguage(Language language) {
-        setParameters(KEY_LANGUAGE, language);
+        setParameter(KEY_LANGUAGE, language);
     }
     /**
      * <p>Returns language that current SDL voice engine(VR+TTS) use</p>
      * @return {@linkplain Language} language that current SDL voice engine(VR+TTS) use
      */  
     public Language getLanguage() {
-    	Object obj = parameters.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
-        }
-        return null;
+    	return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
     /**
      * <p>Sets language that current display use</p>    
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+        setParameter(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
     /**
      * <p>Returns language that current  display use</p>
      * @return {@linkplain Language} language that current display use
      */  
     public Language getHmiDisplayLanguage() {
-    	Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-        	return Language.valueForString((String) obj);
-        }
-        return null;
+        return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
     }
 }

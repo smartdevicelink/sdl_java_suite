@@ -35,7 +35,7 @@ public class DialNumber extends RPCRequest {
         if (number != null) {
         	number = number.replaceAll("[^0-9*#,;+]", ""); //This will sanitize the input
         }
-		setParameters(KEY_NUMBER, number);
+		setParameter(KEY_NUMBER, number);
     }
 
 	/**
@@ -44,6 +44,6 @@ public class DialNumber extends RPCRequest {
 	 * @return String - a String value representing a number to dial
 	 */
     public String getNumber() {
-        return (String) parameters.get(KEY_NUMBER);
+        return getString(KEY_NUMBER);
     }
 }

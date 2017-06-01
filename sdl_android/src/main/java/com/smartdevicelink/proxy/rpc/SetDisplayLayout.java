@@ -73,13 +73,13 @@ public class SetDisplayLayout extends RPCRequest {
 	 *            a String value representing a diaply layout
 	 */
     public void setDisplayLayout(String displayLayout) {
-		setParameters(KEY_DISPLAY_LAYOUT, displayLayout);
+		setParameter(KEY_DISPLAY_LAYOUT, displayLayout);
     }
 
 	/**
 	 * Gets a display layout.
 	 */
     public String getDisplayLayout() {
-    	return (String) parameters.get(KEY_DISPLAY_LAYOUT);
+    	return getString(KEY_DISPLAY_LAYOUT);
     }
 }

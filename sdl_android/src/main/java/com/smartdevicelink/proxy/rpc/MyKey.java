@@ -48,19 +48,9 @@ public class MyKey extends RPCStruct {
     }
 
     public void setE911Override(VehicleDataStatus e911Override) {
-        if (e911Override != null) {
-            store.put(KEY_E_911_OVERRIDE, e911Override);
-        } else {
-        	store.remove(KEY_E_911_OVERRIDE);
-        }
+        setValue(KEY_E_911_OVERRIDE, e911Override);
     }
     public VehicleDataStatus getE911Override() {
-        Object obj = store.get(KEY_E_911_OVERRIDE);
-        if (obj instanceof VehicleDataStatus) {
-            return (VehicleDataStatus) obj;
-        } else if (obj instanceof String) {
-        	return VehicleDataStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_E_911_OVERRIDE);
     }
 }

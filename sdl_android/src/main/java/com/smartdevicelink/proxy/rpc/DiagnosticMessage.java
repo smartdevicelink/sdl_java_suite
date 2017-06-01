@@ -82,7 +82,7 @@ public class DiagnosticMessage extends RPCRequest {
     
 
     public void setTargetID(Integer targetID) {
-		setParameters(KEY_TARGET_ID, targetID);
+		setParameter(KEY_TARGET_ID, targetID);
     }
     /**
 	 * <p>
@@ -93,31 +93,22 @@ public class DiagnosticMessage extends RPCRequest {
 	 */
 
     public Integer getTargetID() {
-    	return (Integer) parameters.get(KEY_TARGET_ID);
+    	return getInteger(KEY_TARGET_ID);
     }    
 
     public void setMessageLength(Integer messageLength) {
-		setParameters(KEY_MESSAGE_LENGTH, messageLength);
+		setParameter(KEY_MESSAGE_LENGTH, messageLength);
     }
     public Integer getMessageLength() {
-    	return (Integer) parameters.get(KEY_MESSAGE_LENGTH);
+    	return getInteger(KEY_MESSAGE_LENGTH);
     }
 
     @SuppressWarnings("unchecked")
     public List<Integer> getMessageData() {
-    	if(parameters.get(KEY_MESSAGE_DATA) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
-        		}
-    		}
-    	}
-        return null;
+        return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA);
     }
     
     public void setMessageData(List<Integer> messageData) {
-		setParameters(KEY_MESSAGE_DATA, messageData);
+		setParameter(KEY_MESSAGE_DATA, messageData);
     }    
 }

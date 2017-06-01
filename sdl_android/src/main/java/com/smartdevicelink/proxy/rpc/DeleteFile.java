@@ -71,7 +71,7 @@ public class DeleteFile extends RPCRequest {
 	 *            a String value representing a file reference name
 	 */
     public void setSdlFileName(String sdlFileName) {
-		setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+		setParameter(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -80,6 +80,6 @@ public class DeleteFile extends RPCRequest {
 	 * @return String -a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return getString(KEY_SDL_FILE_NAME);
     }
 }

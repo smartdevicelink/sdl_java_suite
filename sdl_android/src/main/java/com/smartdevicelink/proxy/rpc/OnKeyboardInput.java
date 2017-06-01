@@ -65,24 +65,18 @@ public class OnKeyboardInput extends RPCNotification {
     }
 
     public KeyboardEvent getEvent() {
-        Object obj = parameters.get(KEY_EVENT);
-        if (obj instanceof KeyboardEvent) {
-            return (KeyboardEvent) obj;
-        } else if (obj instanceof String) {
-            return KeyboardEvent.valueForString((String) obj);
-        }
-        return null;
+        return (KeyboardEvent) getObject(KeyboardEvent.class, KEY_EVENT);
     }
 
     public void setEvent(KeyboardEvent event) {
-        setParameters(KEY_EVENT, event);
+        setParameter(KEY_EVENT, event);
     }
 
     public void setData(String data) {
-        setParameters(KEY_DATA, data);
+        setParameter(KEY_DATA, data);
     }
     public String getData() {
-        Object obj = parameters.get(KEY_DATA);
+        Object obj = getParameter(KEY_DATA);
         if (obj instanceof String) {
             return (String) obj;
         }

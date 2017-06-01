@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 /**
  * Specifies the version number of the SDL V4 interface. This is used by both the application and SDL to declare what interface version each is using.
@@ -64,7 +64,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the major version
      */	
     public Integer getMajorVersion() {
-        return (Integer) store.get( KEY_MAJOR_VERSION );
+        return getInteger( KEY_MAJOR_VERSION );
     }
     /**
      * Set major version
@@ -75,11 +75,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @param majorVersion minvalue="1" and maxvalue="10" 
      */    
     public void setMajorVersion( Integer majorVersion ) {
-        if (majorVersion != null) {
-            store.put(KEY_MAJOR_VERSION, majorVersion );
-        } else {
-        	store.remove(KEY_MAJOR_VERSION);
-        }
+        setValue(KEY_MAJOR_VERSION, majorVersion);
     }
     /**
      * Get minor version
@@ -90,7 +86,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the minor version
      */    
     public Integer getMinorVersion() {
-        return (Integer) store.get( KEY_MINOR_VERSION );
+        return getInteger( KEY_MINOR_VERSION );
     }
     /**
      * Set minor version
@@ -101,11 +97,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @param minorVersion min: 0; max: 1000
      */
     public void setMinorVersion( Integer minorVersion ) {
-        if (minorVersion != null) {
-            store.put(KEY_MINOR_VERSION, minorVersion );
-        } else {
-        	store.remove(KEY_MINOR_VERSION);
-        }
+        setValue(KEY_MINOR_VERSION, minorVersion);
     }
 
     /**
@@ -117,7 +109,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @return the patch version
      */
     public Integer getPatchVersion() {
-        return (Integer) store.get( KEY_PATCH_VERSION );
+        return getInteger( KEY_PATCH_VERSION );
     }
     /**
      * Set patch version
@@ -128,11 +120,7 @@ public class SdlMsgVersion extends RPCStruct {
      * @param patchVersion min: 0; max: 1000
      */
     public void setPatchVersion( Integer patchVersion ) {
-        if (patchVersion != null) {
-            store.put(KEY_PATCH_VERSION, patchVersion );
-        } else {
-            store.remove(KEY_PATCH_VERSION);
-        }
+        setValue(KEY_PATCH_VERSION, patchVersion);
     }
 
 }

@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -51,23 +50,7 @@ public class AlertManeuver extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons(){
-        if(parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_SOFT_BUTTONS);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof SoftButton){
-                    return (List<SoftButton>) list;
-                }
-                else if(obj instanceof Hashtable){
-                    List<SoftButton> newList = new ArrayList<SoftButton>();
-                    for(Object hashObj : list){
-                        newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
-                    }
-                    return newList;
-                }
-            }
-        }
-        return null;
+        return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
     /**
@@ -86,7 +69,7 @@ public class AlertManeuver extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        setParameters(KEY_SOFT_BUTTONS, softButtons);
+        setParameter(KEY_SOFT_BUTTONS, softButtons);
     }
 
     /**
@@ -96,23 +79,7 @@ public class AlertManeuver extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsChunks(){
-        if(parameters.get(KEY_TTS_CHUNKS) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_TTS_CHUNKS);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof TTSChunk){
-                    return (List<TTSChunk>) list;
-                }
-                else if(obj instanceof Hashtable){
-                    List<TTSChunk> newList = new ArrayList<TTSChunk>();
-                    for(Object hashObj : list){
-                        newList.add(new TTSChunk((Hashtable<String, Object>) hashObj));
-                    }
-                    return newList;
-                }
-            }
-        }
-        return null;
+        return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_CHUNKS);
     }
 
     /**
@@ -123,7 +90,7 @@ public class AlertManeuver extends RPCRequest{
      *            <b>Notes: </b></p>Array must have a least one element
      */
     public void setTtsChunks(List<TTSChunk> ttsChunks){
-        setParameters(KEY_TTS_CHUNKS, ttsChunks);
+        setParameter(KEY_TTS_CHUNKS, ttsChunks);
     }
 
 }

@@ -59,19 +59,13 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
      */    
     public AppInterfaceUnregisteredReason getReason() {
-        Object obj = parameters.get(KEY_REASON);
-        if (obj instanceof AppInterfaceUnregisteredReason) {
-            return (AppInterfaceUnregisteredReason) obj;
-        } else if (obj instanceof String) {
-            return AppInterfaceUnregisteredReason.valueForString((String) obj);
-        }
-        return null;
+        return (AppInterfaceUnregisteredReason) getObject(AppInterfaceUnregisteredReason.class, KEY_REASON);
     }
     /**
      * <p>Set the reason application's interface was terminated</p>
      * @param reason The reason application's interface registration was terminated
      */    
     public void setReason( AppInterfaceUnregisteredReason reason ) {
-        setParameters(KEY_REASON, reason);
+        setParameter(KEY_REASON, reason);
     }
 }

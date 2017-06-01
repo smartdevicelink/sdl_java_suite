@@ -80,7 +80,7 @@ public class DeleteCommand extends RPCRequest {
 	 *         the Command to be deleted from Command Menu
 	 */	
     public Integer getCmdID() {
-        return (Integer) parameters.get( KEY_CMD_ID );
+        return getInteger( KEY_CMD_ID );
     }
 	/**
 	 * Sets the Command ID that identifies the Command to be deleted from Command Menu
@@ -91,6 +91,6 @@ public class DeleteCommand extends RPCRequest {
 	 *            <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
 	 */    
     public void setCmdID( Integer cmdID ) {
-		setParameters(KEY_CMD_ID, cmdID);
+		setParameter(KEY_CMD_ID, cmdID);
     }
 }

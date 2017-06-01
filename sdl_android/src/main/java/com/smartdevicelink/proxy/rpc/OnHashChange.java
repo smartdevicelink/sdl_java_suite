@@ -55,11 +55,11 @@ public class OnHashChange extends RPCNotification {
     }
     
     public String getHashID() {
-        return (String) parameters.get(KEY_HASH_ID);
+        return getString(KEY_HASH_ID);
     }
    
     public void setHashID(String hashID) {
-        setParameters(KEY_HASH_ID, hashID);
+        setParameter(KEY_HASH_ID, hashID);
     }   
     
 }

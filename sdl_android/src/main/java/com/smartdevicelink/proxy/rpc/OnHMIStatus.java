@@ -87,53 +87,35 @@ public class OnHMIStatus extends RPCNotification {
      * @return {@linkplain HMILevel} the current HMI Level in effect for the application
      */    
     public HMILevel getHmiLevel() {
-        Object obj = parameters.get(KEY_HMI_LEVEL);
-        if (obj instanceof HMILevel) {
-            return (HMILevel) obj;
-        } else if (obj instanceof String) {
-            return HMILevel.valueForString((String) obj);
-        }
-        return null;
+        return (HMILevel) getObject(HMILevel.class, KEY_HMI_LEVEL);
     }
     /**
      * <p>Set the HMILevel of OnHMIStatus</p>
      * @param hmiLevel the HMILevel to set
      */    
     public void setHmiLevel( HMILevel hmiLevel ) {
-        setParameters(KEY_HMI_LEVEL, hmiLevel);
+        setParameter(KEY_HMI_LEVEL, hmiLevel);
     }
     /**
      * <p>Get current state of audio streaming for the application</p>
      * @return {@linkplain AudioStreamingState} Returns current state of audio streaming for the application
      */    
     public AudioStreamingState getAudioStreamingState() {
-        Object obj = parameters.get(KEY_AUDIO_STREAMING_STATE);
-        if (obj instanceof AudioStreamingState) {
-            return (AudioStreamingState) obj;
-        } else if (obj instanceof String) {
-            return AudioStreamingState.valueForString((String) obj);
-        }
-        return null;
+        return (AudioStreamingState) getObject(AudioStreamingState.class, KEY_AUDIO_STREAMING_STATE);
     }
     /**
      * <p>Set the audio streaming state</p>
      * @param audioStreamingState the state of audio streaming of the application
      */    
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
-        setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
+        setParameter(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
     }
     /**
      * <p>Get the System Context</p>
      * @return {@linkplain SystemContext} whether a user-initiated interaction is in-progress (VRSESSION or MENU), or not (MAIN).
      */    
     public SystemContext getSystemContext() {
-        Object obj = parameters.get(KEY_SYSTEM_CONTEXT);
-        if (obj instanceof SystemContext) {
-            return (SystemContext) obj;
-        } else if (obj instanceof String) {
-            return SystemContext.valueForString((String) obj);
-        }
-        return null;
+        return (SystemContext) getObject(SystemContext.class, KEY_SYSTEM_CONTEXT);
     }
     /**
      * <p>Set the System Context of OnHMIStatus</p>
@@ -141,7 +123,7 @@ public class OnHMIStatus extends RPCNotification {
      * (VRSESSION or MENU), or not (MAIN)
      */    
     public void setSystemContext( SystemContext systemContext ) {
-        setParameters(KEY_SYSTEM_CONTEXT, systemContext);
+        setParameter(KEY_SYSTEM_CONTEXT, systemContext);
     }
     /**
      * <p>Query whether it's the first run</p>
