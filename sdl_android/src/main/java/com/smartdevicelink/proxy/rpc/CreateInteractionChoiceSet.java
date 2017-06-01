@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @return Integer -an Integer representing the Choice Set ID
 	 */    
     public Integer getInteractionChoiceSetID() {
-        return (Integer) parameters.get( KEY_INTERACTION_CHOICE_SET_ID );
+        return getInteger( KEY_INTERACTION_CHOICE_SET_ID );
     }
 	/**
 	 * Sets a unique ID that identifies the Choice Set
@@ -111,7 +110,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+		setParameter(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 	/**
 	 * Gets Choice Set Array of one or more elements
@@ -121,22 +120,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 */   
     @SuppressWarnings("unchecked") 
     public List<Choice> getChoiceSet() {
-        if (parameters.get(KEY_CHOICE_SET) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_CHOICE_SET);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof Choice) {
-	                return (List<Choice>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<Choice> newList = new ArrayList<Choice>();
-	                for (Object hashObj : list) {
-	                    newList.add(new Choice((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<Choice>) getObject(Choice.class, KEY_CHOICE_SET);
     }
 	/**
 	 * Sets a Choice Set that is an Array of one or more elements
@@ -148,6 +132,6 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
     public void setChoiceSet( List<Choice> choiceSet ) {
-		setParameters(KEY_CHOICE_SET, choiceSet);
+		setParameter(KEY_CHOICE_SET, choiceSet);
     }
 }

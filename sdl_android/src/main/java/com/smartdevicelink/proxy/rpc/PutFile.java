@@ -146,7 +146,7 @@ public class PutFile extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
-        setParameters(KEY_SDL_FILE_NAME, sdlFileName);
+        setParameter(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -155,7 +155,7 @@ public class PutFile extends RPCRequest {
 	 * @return String - a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return getString(KEY_SDL_FILE_NAME);
     }
 
 	/**
@@ -165,7 +165,7 @@ public class PutFile extends RPCRequest {
 	 *            a FileType value representing a selected file type
 	 */
     public void setFileType(FileType fileType) {
-        setParameters(KEY_FILE_TYPE, fileType);
+        setParameter(KEY_FILE_TYPE, fileType);
     }
 
 	/**
@@ -174,13 +174,7 @@ public class PutFile extends RPCRequest {
 	 * @return FileType -a FileType value representing a selected file type
 	 */
     public FileType getFileType() {
-        Object obj = parameters.get(KEY_FILE_TYPE);
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-        	return FileType.valueForString((String) obj);
-        }
-        return null;
+        return (FileType) getObject(FileType.class, KEY_FILE_TYPE);
     }
 
 	/**
@@ -197,7 +191,7 @@ public class PutFile extends RPCRequest {
 	 *            a Boolean value
 	 */
     public void setPersistentFile(Boolean persistentFile) {
-        setParameters(KEY_PERSISTENT_FILE, persistentFile);
+        setParameter(KEY_PERSISTENT_FILE, persistentFile);
     }
 
 	/**
@@ -208,7 +202,7 @@ public class PutFile extends RPCRequest {
 	 *         persist between sessions / ignition cycles
 	 */
     public Boolean getPersistentFile() {
-        return (Boolean) parameters.get(KEY_PERSISTENT_FILE);
+        return getBoolean(KEY_PERSISTENT_FILE);
     }
     public void setFileData(byte[] fileData) {
         setBulkData(fileData);
@@ -230,11 +224,11 @@ public class PutFile extends RPCRequest {
     }
     
     public void setOffset(Long offset) {
-        setParameters(KEY_OFFSET, offset);
+        setParameter(KEY_OFFSET, offset);
     }
 
     public Long getOffset() {
-        final Object o = parameters.get(KEY_OFFSET);
+        final Object o = getParameter(KEY_OFFSET);
         if (o == null){
         	return null;
         }
@@ -261,11 +255,11 @@ public class PutFile extends RPCRequest {
     }
     
     public void setLength(Long length) {
-        setParameters(KEY_LENGTH, length);
+        setParameter(KEY_LENGTH, length);
     }
 
     public Long getLength() {
-        final Object o = parameters.get(KEY_LENGTH);
+        final Object o = getParameter(KEY_LENGTH);
         if (o == null){
         	return null;
         }
@@ -279,11 +273,11 @@ public class PutFile extends RPCRequest {
     }
 
     public void setSystemFile(Boolean systemFile) {
-        setParameters(KEY_SYSTEM_FILE, systemFile);
+        setParameter(KEY_SYSTEM_FILE, systemFile);
     }
 
     public Boolean getSystemFile() {
-        final Object o = parameters.get(KEY_SYSTEM_FILE);
+        final Object o = getParameter(KEY_SYSTEM_FILE);
         if (o instanceof Boolean) {
             return (Boolean) o;
         }

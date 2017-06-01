@@ -54,38 +54,26 @@ public class TouchEventCapabilities extends RPCStruct {
     }
     
     public void setPressAvailable(Boolean pressAvailable) {
-        if (pressAvailable != null) {
-            store.put(KEY_PRESS_AVAILABLE, pressAvailable);
-        } else {
-        	store.remove(KEY_PRESS_AVAILABLE);
-        }
+        setValue(KEY_PRESS_AVAILABLE, pressAvailable);
     }
     
     public Boolean getPressAvailable() {
-        return (Boolean) store.get(KEY_PRESS_AVAILABLE);
+        return getBoolean(KEY_PRESS_AVAILABLE);
     }
     
     public void setMultiTouchAvailable(Boolean multiTouchAvailable) {
-        if (multiTouchAvailable != null) {
-            store.put(KEY_MULTI_TOUCH_AVAILABLE, multiTouchAvailable);
-        } else {
-        	store.remove(KEY_MULTI_TOUCH_AVAILABLE);
-        }
+        setValue(KEY_MULTI_TOUCH_AVAILABLE, multiTouchAvailable);
     }
     
     public Boolean getMultiTouchAvailable() {
-        return (Boolean) store.get(KEY_MULTI_TOUCH_AVAILABLE);
+        return getBoolean(KEY_MULTI_TOUCH_AVAILABLE);
     }
     
     public void setDoublePressAvailable(Boolean doublePressAvailable) {
-        if (doublePressAvailable != null) {
-            store.put(KEY_DOUBLE_PRESS_AVAILABLE, doublePressAvailable);
-        } else {
-        	store.remove(KEY_DOUBLE_PRESS_AVAILABLE);
-        }
+        setValue(KEY_DOUBLE_PRESS_AVAILABLE, doublePressAvailable);
     }
     
     public Boolean getDoublePressAvailable() {
-        return (Boolean) store.get(KEY_DOUBLE_PRESS_AVAILABLE);
+        return getBoolean(KEY_DOUBLE_PRESS_AVAILABLE);
     }
 }

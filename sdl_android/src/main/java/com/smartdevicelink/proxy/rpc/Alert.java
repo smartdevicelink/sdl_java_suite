@@ -166,7 +166,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlertText1(String alertText1) {
-		setParameters(KEY_ALERT_TEXT_1, alertText1);
+		setParameter(KEY_ALERT_TEXT_1, alertText1);
     }
 	/**
 	 * Gets the text which is displayed in the second field of the display
@@ -195,7 +195,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlertText2(String alertText2) {
-		setParameters(KEY_ALERT_TEXT_2, alertText2);
+		setParameter(KEY_ALERT_TEXT_2, alertText2);
     }
 
 	/**
@@ -230,7 +230,7 @@ public class Alert extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAlertText3(String alertText3) {
-		setParameters(KEY_ALERT_TEXT_3, alertText3);
+		setParameter(KEY_ALERT_TEXT_3, alertText3);
     }
 	/**
 	 * Gets TTSChunk[], the Array of type TTSChunk which, taken together,
@@ -241,7 +241,7 @@ public class Alert extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsChunks() {
-		return (List<TTSChunk>) getParameterArray(TTSChunk.class, KEY_TTS_CHUNKS);
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_CHUNKS);
     }
 	/**
 	 * Sets array of type TTSChunk which, taken together, specify what is to be
@@ -252,7 +252,7 @@ public class Alert extends RPCRequest {
 	 *           <p> <b>Notes: </b>Array must have a least one element</p>
 	 */    
     public void setTtsChunks(List<TTSChunk> ttsChunks) {
-		setParameters(KEY_TTS_CHUNKS, ttsChunks);
+		setParameter(KEY_TTS_CHUNKS, ttsChunks);
     }
 	/**
 	 * Gets the duration of the displayed portion of the alert, in milliseconds
@@ -281,7 +281,7 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setDuration(Integer duration) {
-		setParameters(KEY_DURATION, duration);
+		setParameter(KEY_DURATION, duration);
     }
 	/**
 	 * Gets a Boolean value representing the alert tone
@@ -303,7 +303,7 @@ public class Alert extends RPCRequest {
 	 *           <p> <b>Notes: </b>If omitted, default is true</p>
 	 */    
     public void setPlayTone(Boolean playTone) {
-		setParameters(KEY_PLAY_TONE, playTone);
+		setParameter(KEY_PLAY_TONE, playTone);
     }
 
 	/**
@@ -315,7 +315,7 @@ public class Alert extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-		return (List<SoftButton>) getParameterArray(SoftButton.class, KEY_SOFT_BUTTONS);
+		return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
 	/**
@@ -335,12 +335,12 @@ public class Alert extends RPCRequest {
 	 */
     
     public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameters(KEY_SOFT_BUTTONS, softButtons);
+		setParameter(KEY_SOFT_BUTTONS, softButtons);
     }
     public Boolean getProgressIndicator() {
         return getBoolean(KEY_PROGRESS_INDICATOR);
     }
     public void setProgressIndicator(Boolean progressIndicator) {
-        setParameters(KEY_PROGRESS_INDICATOR, progressIndicator);
+        setParameter(KEY_PROGRESS_INDICATOR, progressIndicator);
     }
 }

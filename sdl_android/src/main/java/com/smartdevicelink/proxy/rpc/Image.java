@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+
+import java.util.Hashtable;
 
 /**
  *Specifies, which image shall be used, e.g. in Alerts or on Softbuttons provided the display supports it.
@@ -57,11 +57,7 @@ public class Image extends RPCStruct {
      * @param value either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public void setValue(String value) {
-        if (value != null) {
-            store.put(KEY_VALUE, value);
-        } else {
-        	store.remove(KEY_VALUE);
-        }
+        setValue(KEY_VALUE, value);
     }
     
     /**
@@ -69,7 +65,7 @@ public class Image extends RPCStruct {
      * @return  either the static hex icon value or the binary image file name identifier (sent by PutFile)
      */
     public String getValue() {
-        return (String) store.get(KEY_VALUE);
+        return getString(KEY_VALUE);
     }
     
     /**
@@ -77,11 +73,7 @@ public class Image extends RPCStruct {
      * @param imageType whether it is a static or dynamic image
      */
     public void setImageType(ImageType imageType) {
-        if (imageType != null) {
-            store.put(KEY_IMAGE_TYPE, imageType);
-        } else {
-        	store.remove(KEY_IMAGE_TYPE);
-        }
+        setValue(KEY_IMAGE_TYPE, imageType);
     }
     
     /**
@@ -89,12 +81,6 @@ public class Image extends RPCStruct {
      * @return the image type
      */
     public ImageType getImageType() {
-    	Object obj = store.get(KEY_IMAGE_TYPE);
-        if (obj instanceof ImageType) {
-            return (ImageType) obj;
-        } else if (obj instanceof String) {
-        	return ImageType.valueForString((String) obj);
-        }
-        return null;
+        return (ImageType) getObject(ImageType.class, KEY_IMAGE_TYPE);
     }
 }

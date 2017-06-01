@@ -99,19 +99,13 @@ public class SubscribeButton extends RPCRequest {
 	 * @return ButtonName -an enum value, see <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            return ButtonName.valueForString((String) obj);
-        }
-        return null;
+		return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
 	/**
 	 * Sets a name of the button to subscribe to
 	 * @param buttonName a <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i> value
 	 */    
     public void setButtonName( ButtonName buttonName ) {
-        setParameters(KEY_BUTTON_NAME, buttonName);
+        setParameter(KEY_BUTTON_NAME, buttonName);
     }
 }

@@ -23,9 +23,9 @@ public class DeleteFileResponse extends RPCResponse {
         super(hash);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {
-        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
+        setParameter(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
+        return getInteger(KEY_SPACE_AVAILABLE);
     }
 }

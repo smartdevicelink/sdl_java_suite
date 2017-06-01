@@ -29,11 +29,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public Boolean getDriverDistractionStatus() {
-		return (Boolean)parameters.get(KEY_DRIVER_DISTRACTION);
+		return getBoolean(KEY_DRIVER_DISTRACTION);
 	}
 	
 	public void setDriverDistractionStatus(Boolean driverDistractionStatus) {
-		setParameters(KEY_DRIVER_DISTRACTION, driverDistractionStatus);
+		setParameter(KEY_DRIVER_DISTRACTION, driverDistractionStatus);
 	}	
     /**
      * <p>Get the {@linkplain LockScreenStatus} enumeration, indicating if the lockscreen should be required, optional or off </p>
@@ -41,11 +41,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    	
 
 	public LockScreenStatus getShowLockScreen() {
-		return (LockScreenStatus)parameters.get(KEY_SHOW_LOCK_SCREEN);
+		return (LockScreenStatus) getParameter(KEY_SHOW_LOCK_SCREEN);
 	}
 	
 	public void setShowLockScreen(LockScreenStatus showLockScreen) {
-		setParameters(KEY_SHOW_LOCK_SCREEN, showLockScreen);
+		setParameter(KEY_SHOW_LOCK_SCREEN, showLockScreen);
 	}
     /**
      * <p>Get user selection status for the application (has the app been selected via hmi or voice command)</p>
@@ -53,11 +53,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public Boolean getUserSelected() {
-		return (Boolean)parameters.get(KEY_USER_SELECTED);
+		return getBoolean(KEY_USER_SELECTED);
 	}
 	
 	public void setUserSelected(Boolean userSelected) {
-		setParameters(KEY_USER_SELECTED, userSelected);
+		setParameter(KEY_USER_SELECTED, userSelected);
 	}		
     /**
      * <p>Get HMILevel in effect for the application</p>
@@ -65,10 +65,10 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public HMILevel getHMILevel() {
-		return (HMILevel)parameters.get(KEY_HMI_LEVEL);
+		return (HMILevel) getParameter(KEY_HMI_LEVEL);
 	}
 	
 	public void setHMILevel(HMILevel setHMILevel) {
-		setParameters(KEY_HMI_LEVEL, setHMILevel);
+		setParameter(KEY_HMI_LEVEL, setHMILevel);
 	}				
 }

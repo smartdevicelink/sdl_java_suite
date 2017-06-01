@@ -25,25 +25,16 @@ public class ListFilesResponse extends RPCResponse {
         super(hash);
     }
     public void setFilenames(List<String> filenames) {
-        setParameters(KEY_FILENAMES, filenames);
+        setParameter(KEY_FILENAMES, filenames);
     }
     @SuppressWarnings("unchecked")
     public List<String> getFilenames() {
-        if (parameters.get(KEY_FILENAMES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_FILENAMES);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
-        		}
-        	}
-        }
-    	return null;
+        return (List<String>) getObject(String.class, KEY_FILENAMES);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {
-        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
+        setParameter(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
+        return getInteger(KEY_SPACE_AVAILABLE);
     }
 }

@@ -5,7 +5,6 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -145,7 +144,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @return String -the text displayed when the interaction begins
 	 */
     public String getInitialText() {
-        return (String) parameters.get(KEY_INITIAL_TEXT);
+        return getString(KEY_INITIAL_TEXT);
     }
 	/**
 	 * Sets the Text that Displayed when the interaction begins. This text may
@@ -157,7 +156,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            a String value that Displayed when the interaction begins
 	 */    
     public void setInitialText(String initialText) {
-		setParameters(KEY_INITIAL_TEXT, initialText);
+		setParameter(KEY_INITIAL_TEXT, initialText);
     }
 	/**
 	 * Gets an An array of one or more TTSChunks that, taken together, specify
@@ -168,22 +167,7 @@ public class PerformInteraction extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getInitialPrompt() {
-        if (parameters.get(KEY_INITIAL_PROMPT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_INITIAL_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_INITIAL_PROMPT);
     }
 	/**
 	 * Sets An array of one or more TTSChunks that, taken together, specify what
@@ -194,7 +178,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            user at the start of an interaction
 	 */    
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
+		setParameter(KEY_INITIAL_PROMPT, initialPrompt);
     }
 	/**
 	 * Gets the Indicates mode that indicate how user selects interaction
@@ -205,13 +189,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         (VR_ONLY, MANUAL_ONLY or BOTH)
 	 */    
     public InteractionMode getInteractionMode() {
-        Object obj = parameters.get(KEY_INTERACTION_MODE);
-        if (obj instanceof InteractionMode) {
-            return (InteractionMode) obj;
-        } else if (obj instanceof String) {
-            return InteractionMode.valueForString((String) obj);
-        }
-        return null;
+		return (InteractionMode) getObject(InteractionMode.class, KEY_INTERACTION_MODE);
     }
 	/**
 	 * Sets the Indicates mode that indicate how user selects interaction
@@ -223,7 +201,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            MANUAL_ONLY or BOTH)
 	 */    
     public void setInteractionMode(InteractionMode interactionMode) {
-		setParameters(KEY_INTERACTION_MODE, interactionMode);
+		setParameter(KEY_INTERACTION_MODE, interactionMode);
     }
 	/**
 	 * Gets a List<Integer> value representing an Array of one or more Choice
@@ -235,16 +213,7 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<Integer> getInteractionChoiceSetIDList() {
-    	if(parameters.get(KEY_INTERACTION_CHOICE_SET_ID_LIST) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_INTERACTION_CHOICE_SET_ID_LIST);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
-        		}
-    		}
-    	}
-        return null;
+		return (List<Integer>) getObject(Integer.class, KEY_INTERACTION_CHOICE_SET_ID_LIST);
     }
 	/**
 	 * Sets a List<Integer> representing an Array of one or more Choice Set
@@ -258,7 +227,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */    
     public void setInteractionChoiceSetIDList(List<Integer> interactionChoiceSetIDList) {
-		setParameters(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
+		setParameter(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
     }
 	/**
 	 * Gets a List<TTSChunk> which taken together, specify the help phrase to
@@ -270,22 +239,7 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getHelpPrompt() {
-        if(parameters.get(KEY_HELP_PROMPT) instanceof List<?>){
-        	List<?> list = (List<?>)parameters.get(KEY_HELP_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_HELP_PROMPT);
     }
 	/**
 	 * Sets An array of TTSChunks which, taken together, specify the help phrase
@@ -304,7 +258,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            session
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-		setParameters(KEY_HELP_PROMPT, helpPrompt);
+		setParameter(KEY_HELP_PROMPT, helpPrompt);
     }
 	/**
 	 * Gets An array of TTSChunks which, taken together, specify the phrase to
@@ -315,22 +269,7 @@ public class PerformInteraction extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTimeoutPrompt() {
-        if (parameters.get(KEY_TIMEOUT_PROMPT) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_TIMEOUT_PROMPT);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TIMEOUT_PROMPT);
     }
 	/**
 	 * Sets An array of TTSChunks which, taken together, specify the phrase to
@@ -344,7 +283,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            listen times out during the VR session
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+		setParameter(KEY_TIMEOUT_PROMPT, timeoutPrompt);
     }
 	/**
 	 * Gets a Integer value representing the amount of time, in milliseconds,
@@ -355,7 +294,7 @@ public class PerformInteraction extends RPCRequest {
 	 *         Menu)
 	 */    
     public Integer getTimeout() {
-        return (Integer) parameters.get(KEY_TIMEOUT);
+        return getInteger(KEY_TIMEOUT);
     }
 	/**
 	 * Sets the amount of time, in milliseconds, SDL will wait for the user to
@@ -374,7 +313,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 5000; Max Value: 100000
 	 */    
     public void setTimeout(Integer timeout) {
-		setParameters(KEY_TIMEOUT, timeout);
+		setParameter(KEY_TIMEOUT, timeout);
     }
 
 	/**
@@ -387,22 +326,7 @@ public class PerformInteraction extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<VrHelpItem> getVrHelp() {
-        if (parameters.get(KEY_VR_HELP) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_HELP);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrHelpItem) {
-	                return (List<VrHelpItem>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<VrHelpItem> newList = new ArrayList<VrHelpItem>();
-	                for (Object hashObj : list) {
-	                    newList.add(new VrHelpItem((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<VrHelpItem>) getObject(VrHelpItem.class, KEY_VR_HELP);
     }
 
 	/**
@@ -417,20 +341,14 @@ public class PerformInteraction extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-		setParameters(KEY_VR_HELP, vrHelp);
+		setParameter(KEY_VR_HELP, vrHelp);
     }
     
     public LayoutMode getInteractionLayout() {
-        Object obj = parameters.get(KEY_INTERACTION_LAYOUT);
-        if (obj instanceof LayoutMode) {
-            return (LayoutMode) obj;
-        } else if (obj instanceof String) {
-        	return LayoutMode.valueForString((String) obj);
-        }
-        return null;
+		return (LayoutMode) getObject(LayoutMode.class, KEY_INTERACTION_LAYOUT);
     }
   
     public void setInteractionLayout( LayoutMode interactionLayout ) {
-		setParameters(KEY_INTERACTION_LAYOUT, interactionLayout);
+		setParameter(KEY_INTERACTION_LAYOUT, interactionLayout);
     }    
 }

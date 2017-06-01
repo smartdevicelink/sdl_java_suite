@@ -4,7 +4,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -132,7 +131,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a language value
 	 */
     public void setLanguage(Language language) {
-        setParameters(KEY_LANGUAGE, language);
+        setParameter(KEY_LANGUAGE, language);
     }
 
 	/**
@@ -141,13 +140,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * @return Language -a Language value
 	 */
     public Language getLanguage() {
-    	Object obj = parameters.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-        	return Language.valueForString((String) obj);
-        }
-        return null;
+        return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
 
 	/**
@@ -157,7 +150,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a Language value
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+        setParameter(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
 	/**
@@ -166,13 +159,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * @return Language -a Language value
 	 */
     public Language getHmiDisplayLanguage() {
-    	Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-        	return Language.valueForString((String) obj);
-        }
-        return null;
+    	return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
     }
     
     /**
@@ -181,7 +168,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param appName App name to set
      */
     public void setAppName(String appName){
-        setParameters(KEY_APP_NAME, appName);
+        setParameter(KEY_APP_NAME, appName);
     }
     
     /**
@@ -190,7 +177,7 @@ public class ChangeRegistration extends RPCRequest {
      * @return The app name
      */
     public String getAppName(){
-        return (String) parameters.get(KEY_APP_NAME);
+        return getString(KEY_APP_NAME);
     }
     
     /**
@@ -199,7 +186,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param ngnAppName The NGN app name
      */
     public void setNgnMediaScreenAppName(String ngnAppName){
-        setParameters(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
+        setParameter(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
     }
     
     /**
@@ -208,7 +195,7 @@ public class ChangeRegistration extends RPCRequest {
      * @return The NGN app name
      */
     public String getNgnMediaScreenAppName(){
-        return (String) parameters.get(KEY_NGN_MEDIA_SCREEN_NAME);
+        return getString(KEY_NGN_MEDIA_SCREEN_NAME);
     }
     
     /**
@@ -217,7 +204,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param ttsName The TTS name to set
      */
     public void setTtsName(List<TTSChunk> ttsName){
-        setParameters(KEY_TTS_NAME, ttsName);
+        setParameter(KEY_TTS_NAME, ttsName);
     }
     
     /**
@@ -227,22 +214,7 @@ public class ChangeRegistration extends RPCRequest {
      */
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsName(){
-        if (parameters.get(KEY_TTS_NAME) instanceof List<?>) {
-            List<?> list = (List<?>)parameters.get(KEY_TTS_NAME);
-            if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof TTSChunk) {
-                    return (List<TTSChunk>) list;
-                } else if (obj instanceof Hashtable) {
-                    List<TTSChunk> newList = new ArrayList<TTSChunk>();
-                    for (Object hashObj : list) {
-                        newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-                    }
-                    return newList;
-                }
-            }
-        }
-        return null;
+        return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_NAME);
     }
     
     /**
@@ -255,16 +227,7 @@ public class ChangeRegistration extends RPCRequest {
      */    
     @SuppressWarnings("unchecked")
     public List<String> getVrSynonyms() {
-        if (parameters.get(KEY_VR_SYNONYMS) instanceof List<?>) {
-            List<?> list = (List<?>)parameters.get(KEY_VR_SYNONYMS);
-            if (list != null && list.size()>0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_VR_SYNONYMS);
     }
     
     /**
@@ -285,6 +248,6 @@ public class ChangeRegistration extends RPCRequest {
      *            </ul>
      */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        setParameters(KEY_VR_SYNONYMS, vrSynonyms);
+        setParameter(KEY_VR_SYNONYMS, vrSynonyms);
     }
 }

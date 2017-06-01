@@ -6,8 +6,6 @@ import com.smartdevicelink.proxy.RPCResponse;
 import java.util.Hashtable;
 import java.util.List;
 
-import static com.smartdevicelink.proxy.constants.Names.choiceSet;
-
 /**
  * Get DTCs Response is sent, when GetDTCs has been called
  * 
@@ -28,27 +26,18 @@ public class GetDTCsResponse extends RPCResponse{
 
     @SuppressWarnings("unchecked")
     public List<String> getDtc(){
-        if(parameters.get(KEY_DTC) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_DTC);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof String){
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_DTC);
     }
 
     public void setDtc(List<String> dtc){
-        setParameters(KEY_DTC, dtc);
+        setParameter(KEY_DTC, dtc);
     }
     
     public Integer getEcuHeader(){
-        return (Integer) parameters.get(KEY_ECU_HEADER);
+        return getInteger(KEY_ECU_HEADER);
     }
     
     public void setEcuHeader(Integer ecuHeader){
-        setParameters(KEY_ECU_HEADER, ecuHeader);
+        setParameter(KEY_ECU_HEADER, ecuHeader);
     }
 }

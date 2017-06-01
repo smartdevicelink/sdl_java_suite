@@ -4,9 +4,9 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -85,26 +85,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<GlobalProperty> getProperties() {
-    	if (parameters.get(KEY_PROPERTIES) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_PROPERTIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof GlobalProperty) {
-	                return (List<GlobalProperty>) list;
-	            } else if (obj instanceof String) {
-	            	List<GlobalProperty> newList = new ArrayList<GlobalProperty>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    GlobalProperty toAdd = GlobalProperty.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-    	}
-        return null;
+		return (List<GlobalProperty>) getObject(GlobalProperty.class, KEY_PROPERTIES);
     }
 	/**
 	 * Sets an array of one or more GlobalProperty enumeration elements
@@ -118,6 +99,6 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
     public void setProperties( List<GlobalProperty> properties ) {
-		setParameters(KEY_PROPERTIES, properties);
+		setParameter(KEY_PROPERTIES, properties);
     }
 }

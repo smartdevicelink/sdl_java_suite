@@ -109,33 +109,21 @@ public class OnButtonEvent extends RPCNotification {
      * @return ButtonName Name of the button
      */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            return ButtonName.valueForString((String) obj);
-        }
-        return null;
+        return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
     /**
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
      */    
     public void setButtonName(ButtonName buttonName) {
-        setParameters(KEY_BUTTON_NAME, buttonName);
+        setParameter(KEY_BUTTON_NAME, buttonName);
     }
     /**
      * <p>Return <i>{@linkplain ButtonEventMode} indicates the button was depressed or released</i></p>
      * @return ButtonEventMode the button depressed or released
      */    
     public ButtonEventMode getButtonEventMode() {
-        Object obj = parameters.get(KEY_BUTTON_EVENT_MODE);
-        if (obj instanceof ButtonEventMode) {
-            return (ButtonEventMode) obj;
-        } else if (obj instanceof String) {
-            return ButtonEventMode.valueForString((String) obj);
-        }
-        return null;
+        return (ButtonEventMode) getObject(ButtonEventMode.class, KEY_BUTTON_EVENT_MODE);
     }
     /**
      * <p> Set the event mode of the button,pressed or released</p>
@@ -143,12 +131,12 @@ public class OnButtonEvent extends RPCNotification {
      * @see ButtonEventMode
      */    
     public void setButtonEventMode(ButtonEventMode buttonEventMode) {
-        setParameters(KEY_BUTTON_EVENT_MODE, buttonEventMode);
+        setParameter(KEY_BUTTON_EVENT_MODE, buttonEventMode);
     }
     public void setCustomButtonID(Integer customButtonID) {
-        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
+        setParameter(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
     public Integer getCustomButtonID() {
-    	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);
+    	return getInteger(KEY_CUSTOM_BUTTON_ID);
     }
 }
