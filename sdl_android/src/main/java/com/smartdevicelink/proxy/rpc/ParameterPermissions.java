@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
+import com.smartdevicelink.proxy.RPCStruct;
+
 import java.util.Hashtable;
 import java.util.List;
-
-import com.smartdevicelink.proxy.RPCStruct;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -65,16 +65,7 @@ public class ParameterPermissions extends RPCStruct {
      */
     @SuppressWarnings("unchecked")
     public List<String> getAllowed() {
-        if (store.get(KEY_ALLOWED) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get( KEY_ALLOWED);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
-        		}
-        	}
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_ALLOWED);
     }
     
     /**
@@ -82,11 +73,7 @@ public class ParameterPermissions extends RPCStruct {
      * @param allowed parameter that is permitted for this given RPC
      */
     public void setAllowed(List<String> allowed) {
-        if (allowed != null) {
-            store.put(KEY_ALLOWED, allowed);
-        } else {
-    		store.remove(KEY_ALLOWED);
-    	}
+        setValue(KEY_ALLOWED, allowed);
     }
     
     /**
@@ -95,16 +82,7 @@ public class ParameterPermissions extends RPCStruct {
      */
     @SuppressWarnings("unchecked")
     public List<String> getUserDisallowed() {
-        if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
-            List<?> list = (List<?>)store.get( KEY_USER_DISALLOWED);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
-        		}
-        	}
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_USER_DISALLOWED);
     }
     
     /**
@@ -112,10 +90,6 @@ public class ParameterPermissions extends RPCStruct {
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
     public void setUserDisallowed(List<String> userDisallowed) {
-        if (userDisallowed != null) {
-            store.put(KEY_USER_DISALLOWED, userDisallowed);
-        } else {
-    		store.remove(KEY_USER_DISALLOWED);
-    	}
+        setValue(KEY_USER_DISALLOWED, userDisallowed);
     }
 }

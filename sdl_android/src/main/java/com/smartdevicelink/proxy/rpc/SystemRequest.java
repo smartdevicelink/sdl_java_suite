@@ -65,41 +65,26 @@ public class SystemRequest extends RPCRequest {
 
     @SuppressWarnings("unchecked")    
     public List<String> getLegacyData() {
-        if (parameters.get(KEY_DATA) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DATA);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
-        		}
-        	}
-        }
-    	return null;
+        return (List<String>) getObject(String.class, KEY_DATA);
     }
  
     public void setLegacyData( List<String> data ) {
-        setParameters(KEY_DATA, data);
+        setParameter(KEY_DATA, data);
     }    
             
     public String getFileName() {
-        return (String) parameters.get(KEY_FILE_NAME);
+        return getString(KEY_FILE_NAME);
     }
     
     public void setFileName(String fileName) {
-        setParameters(KEY_FILE_NAME, fileName);
+        setParameter(KEY_FILE_NAME, fileName);
     }    
 
     public RequestType getRequestType() {
-        Object obj = parameters.get(KEY_REQUEST_TYPE);
-        if (obj instanceof RequestType) {
-            return (RequestType) obj;
-        } else if (obj instanceof String) {
-            return RequestType.valueForString((String) obj);
-        }
-        return null;
+        return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
     public void setRequestType(RequestType requestType) {
-        setParameters(KEY_REQUEST_TYPE, requestType);
+        setParameter(KEY_REQUEST_TYPE, requestType);
     }
 }

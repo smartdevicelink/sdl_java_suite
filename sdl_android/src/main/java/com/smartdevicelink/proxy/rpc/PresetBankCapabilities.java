@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 /**
  * Contains information about on-screen preset capabilities.
@@ -45,11 +45,7 @@ public class PresetBankCapabilities extends RPCStruct {
      * @param onScreenPresetsAvailable if Onscreen custom presets are available.
      */
     public void setOnScreenPresetsAvailable(Boolean onScreenPresetsAvailable) {
-    	if (onScreenPresetsAvailable != null) {
-    		store.put(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
-    	} else {
-    		store.remove(KEY_ON_SCREEN_PRESETS_AVAILABLE);
-    	}
+    	setValue(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
     }
     
     /**
@@ -57,6 +53,6 @@ public class PresetBankCapabilities extends RPCStruct {
      * @return if Onscreen custom presets are available
      */
     public Boolean onScreenPresetsAvailable() {
-    	return (Boolean) store.get(KEY_ON_SCREEN_PRESETS_AVAILABLE);
+    	return getBoolean(KEY_ON_SCREEN_PRESETS_AVAILABLE);
     }
 }

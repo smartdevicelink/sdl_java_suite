@@ -1,9 +1,6 @@
 package com.smartdevicelink.proxy;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 public class RPCMessage extends RPCStruct  {
     public static final String KEY_REQUEST = "request";
@@ -76,63 +73,44 @@ public class RPCMessage extends RPCStruct  {
 
 	// Generalized Getters and Setters
 	
-	public void setParameters(String functionName, Object value) {
+	public void setParameter(String key, Object value) {
 		if (value != null) {
-			parameters.put(functionName, value);
+			parameters.put(key, value);
 		} else {
-			parameters.remove(functionName);
+			parameters.remove(key);
 		}
 	}
 
-	public Object getParameters(String key) {
+	public Object getParameter(String key) {
 		return parameters.get(key);
 	}
 
-	public Object getParameterArray(Class tClass, String key){
+	@Override
+	public Object getObject(Class tClass, String key) {
 		Object obj = parameters.get(key);
-		if (obj instanceof Hashtable) {
-			try {
-				Constructor constructor = tClass.getConstructor(Hashtable.class);
-				return constructor.newInstance((Hashtable<String, Object>) obj);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}else if (obj instanceof List<?>) {
-			List<?> list = (List<?>)parameters.get(key);
-			if (list != null && list.size() > 0) {
-				Object item = list.get(0);
-				if (tClass.isInstance(item)) {
-					return list;
-				} else if (item instanceof Hashtable) {
-					List<Object> newList = new ArrayList<Object>();
-					for (Object hashObj : list) {
-						try {
-							Constructor constructor = tClass.getConstructor(Hashtable.class);
-							newList.add(constructor.newInstance((Hashtable<String, Object>)hashObj));
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					return newList;
-				}
-			}
-		}
-		return null;
+		return formatObject(tClass, obj);
 	}
 
 	// Common Object Getters
 
+	@Override
 	public String getString(String key) {
-		return (String) getParameters(key);
+		return (String) parameters.get(key);
 	}
 
+	@Override
 	public Integer getInteger(String key) {
-		return (Integer) getParameters(key);
+		return (Integer) parameters.get(key);
 	}
 
+	@Override
 	public Double getDouble(String key) {
-		return (Double) getParameters(key);
+		return (Double) parameters.get(key);
 	}
 
-	public Boolean getBoolean(String key) { return (Boolean) getParameters(key); }
+	@Override
+	public Boolean getBoolean(String key) { return (Boolean) parameters.get(key); }
+
+	@Override
+	public Long getLong(String key){ return (Long) parameters.get(key); }
 }

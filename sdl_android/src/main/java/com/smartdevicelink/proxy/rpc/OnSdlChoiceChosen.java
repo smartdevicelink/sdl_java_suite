@@ -144,21 +144,15 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		super(hash);
 	}
     public SdlChoice getSdlChoice() {
-    	return (SdlChoice) parameters.get(KEY_SDL_CHOICE);
+    	return (SdlChoice) getParameter(KEY_SDL_CHOICE);
     }
     public void setSdlChoice(SdlChoice sdlChoice) {
-		setParameters(KEY_SDL_CHOICE, sdlChoice);
+		setParameter(KEY_SDL_CHOICE, sdlChoice);
     }
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
-        if (obj instanceof TriggerSource) {
-            return (TriggerSource) obj;
-        } else if (obj instanceof String) {
-            return TriggerSource.valueForString((String) obj);
-        }
-        return null;
+		return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
     }
     public void setTriggerSource( TriggerSource triggerSource ) {
-		setParameters(KEY_TRIGGER_SOURCE, triggerSource);
+		setParameter(KEY_TRIGGER_SOURCE, triggerSource);
     }
 }

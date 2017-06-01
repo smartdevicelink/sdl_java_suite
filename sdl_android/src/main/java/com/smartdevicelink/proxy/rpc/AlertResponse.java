@@ -32,9 +32,9 @@ public class AlertResponse extends RPCResponse {
         super(hash);
     }
     public Integer getTryAgainTime() {
-        return (Integer) parameters.get(KEY_TRY_AGAIN_TIME);
+        return getInteger(KEY_TRY_AGAIN_TIME);
     }
     public void setTryAgainTime(Integer tryAgainTime) {
-        setParameters(KEY_TRY_AGAIN_TIME, tryAgainTime);
+        setParameter(KEY_TRY_AGAIN_TIME, tryAgainTime);
     }
 }

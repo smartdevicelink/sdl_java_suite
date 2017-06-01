@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 public class HMICapabilities extends RPCStruct{
     public static final String KEY_NAVIGATION = "navigation";
@@ -15,7 +15,7 @@ public class HMICapabilities extends RPCStruct{
 	 }
 	 
 	 public boolean isNavigationAvailable(){
-		 Object available = store.get(KEY_NAVIGATION);
+		 Object available = getValue(KEY_NAVIGATION);
 		 if(available == null){
 			 return false;
 		 }
@@ -23,15 +23,11 @@ public class HMICapabilities extends RPCStruct{
 	 }
 	 
 	 public void setNavigationAvilable(Boolean available){
-		 if (available) {
-	            store.put(KEY_NAVIGATION, available);
-	        } else {
-	        	store.remove(KEY_NAVIGATION);
-	        }
+		 setValue(KEY_NAVIGATION, available);
 	 }
 	 
 	 public boolean isPhoneCallAvailable(){
-		 Object available = store.get(KEY_PHONE_CALL);
+		 Object available = getValue(KEY_PHONE_CALL);
 		 if(available == null){
 			 return false;
 		 }
@@ -39,11 +35,7 @@ public class HMICapabilities extends RPCStruct{
 	 }
 	 
 	 public void setPhoneCallAvilable(Boolean available){
-		 if (available) {
-	            store.put(KEY_PHONE_CALL, available);
-	        } else {
-	        	store.remove(KEY_PHONE_CALL);
-	        }
+		 setValue(KEY_PHONE_CALL, available);
 	 }
 
 }

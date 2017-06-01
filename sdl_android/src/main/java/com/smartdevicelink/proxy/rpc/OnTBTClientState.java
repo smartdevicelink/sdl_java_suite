@@ -58,19 +58,13 @@ public class OnTBTClientState extends RPCNotification {
      * @return {@linkplain TBTState} the current state of TBT client
      */    
     public TBTState getState() {
-        Object obj = parameters.get(KEY_STATE);
-        if (obj instanceof TBTState) {
-        	return (TBTState)obj;
-        } else if(obj instanceof String) {
-        	return TBTState.valueForString((String) obj);
-        }    	
-    	return null;
+        return (TBTState) getObject(TBTState.class, KEY_STATE);
     }
     /**
      * <p>Called to set the current state of TBT client</p>
      * @param state current state of TBT client
      */    
     public void setState( TBTState state ) {
-        setParameters(KEY_STATE, state);
+        setParameter(KEY_STATE, state);
     }
 } // end-class

@@ -199,16 +199,7 @@ public class OnSystemRequest extends RPCNotification {
     
     @SuppressWarnings("unchecked")
     public List<String> getLegacyData() {
-    	if (parameters.get(KEY_DATA) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_DATA);
-    		if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>)list;
-        		}
-    		}
-    	}
-        return null;
+        return (List<String>) getObject(String.class, KEY_DATA);
     }
 
     public String getBody(){            	
@@ -228,26 +219,19 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public RequestType getRequestType() {
-        Object obj = parameters.get(KEY_REQUEST_TYPE);
-        if (obj == null) return null;
-        if (obj instanceof RequestType) {
-            return (RequestType) obj;
-        } else if (obj instanceof String) {
-            return RequestType.valueForString((String) obj);
-        }
-        return null;
+        return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
     public void setRequestType(RequestType requestType) {
-        setParameters(KEY_REQUEST_TYPE, requestType);
+        setParameter(KEY_REQUEST_TYPE, requestType);
     }
 
     public String getUrl() {
-        Object o = parameters.get(KEY_URL);        
+        Object o = getParameter(KEY_URL);
         if (o == null)
         {
         	//try again for gen 1.1
-        	o = parameters.get(KEY_URL_V1);	
+        	o = getParameter(KEY_URL_V1);
         }
         if (o == null)
         	return null;
@@ -259,22 +243,15 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setUrl(String url) {
-        setParameters(KEY_URL, url);
+        setParameter(KEY_URL, url);
     }
 
     public FileType getFileType() {
-        Object obj = parameters.get(KEY_FILE_TYPE);
-        if (obj == null) return null;
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-            return FileType.valueForString((String) obj);
-        }
-        return null;
+        return (FileType) getObject(FileType.class, KEY_FILE_TYPE);
     }
 
     public void setFileType(FileType fileType) {
-        setParameters(KEY_FILE_TYPE, fileType);
+        setParameter(KEY_FILE_TYPE, fileType);
     }
 
     /**
@@ -290,7 +267,7 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public Long getOffset() {
-        final Object o = parameters.get(KEY_OFFSET);
+        final Object o = getParameter(KEY_OFFSET);
         
         if (o == null){
         	return null;
@@ -305,14 +282,14 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setOffset(Long offset) {
-        setParameters(KEY_OFFSET, offset);
+        setParameter(KEY_OFFSET, offset);
     }
     
     public Integer getTimeout() {
-        Object o = parameters.get(KEY_TIMEOUT);
+        Object o = getParameter(KEY_TIMEOUT);
         
         if (o == null){
-        	 o = parameters.get(KEY_TIMEOUT_V1);
+        	 o = getParameter(KEY_TIMEOUT_V1);
         	 if (o == null) return null;
         }
         
@@ -323,11 +300,11 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setTimeout(Integer timeout) {
-        setParameters(KEY_TIMEOUT, timeout);
+        setParameter(KEY_TIMEOUT, timeout);
     }    
     
     public Long getLength() {
-        final Object o = parameters.get(KEY_LENGTH);
+        final Object o = getParameter(KEY_LENGTH);
         if (o == null){
         	return null;
         }
@@ -353,6 +330,6 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public void setLength(Long length) {
-        setParameters(KEY_LENGTH, length);
+        setParameter(KEY_LENGTH, length);
     }
 }
