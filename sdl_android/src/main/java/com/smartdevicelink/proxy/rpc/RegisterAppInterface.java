@@ -273,7 +273,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            request) is ignored by SDL&reg;
 	 */    
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-        setParameter(KEY_SDL_MSG_VERSION, sdlMsgVersion);
+        setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
     }
     
     @SuppressWarnings("unchecked")
@@ -282,7 +282,7 @@ public class RegisterAppInterface extends RPCRequest {
     }    
     
     public void setDeviceInfo(DeviceInfo deviceInfo) {
-		setParameter(KEY_DEVICE_INFO, deviceInfo);
+		setParameters(KEY_DEVICE_INFO, deviceInfo);
     }    
 	/**
 	 * Gets Mobile Application's Name
@@ -309,7 +309,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAppName(String appName) {
-		setParameter(KEY_APP_NAME, appName);
+		setParameters(KEY_APP_NAME, appName);
     }
 
 	/**
@@ -342,7 +342,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setTtsName(List<TTSChunk> ttsName) {
-		setParameter(KEY_TTS_NAME, ttsName);
+		setParameters(KEY_TTS_NAME, ttsName);
     }
 	/**
 	 * Gets a String representing an abbreviated version of the mobile
@@ -372,7 +372,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
-		setParameter(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
+		setParameters(KEY_NGN_MEDIA_SCREEN_APP_NAME, ngnMediaScreenAppName);
     }
 	/**
 	 * Gets the List<String> representing the an array of 1-100 elements, each
@@ -404,7 +404,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-		setParameter(KEY_VR_SYNONYMS, vrSynonyms);
+		setParameters(KEY_VR_SYNONYMS, vrSynonyms);
     }
 	/**
 	 * Gets a Boolean representing MediaApplication
@@ -423,7 +423,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            a Boolean value
 	 */    
     public void setIsMediaApplication(Boolean isMediaApplication) {
-		setParameter(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
+		setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
     }
 	/**
 	 * Gets a Language enumeration indicating what language the application
@@ -444,7 +444,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * 
 	 */    
     public void setLanguageDesired(Language languageDesired) {
-		setParameter(KEY_LANGUAGE_DESIRED, languageDesired);
+		setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
     }
 
 	/**
@@ -468,7 +468,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
-		setParameter(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
+		setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
     }
 
 	/**
@@ -502,7 +502,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppHMIType(List<AppHMIType> appHMIType) {
-		setParameter(KEY_APP_HMI_TYPE, appHMIType);
+		setParameters(KEY_APP_HMI_TYPE, appHMIType);
     }
     
     public String getHashID() {
@@ -510,7 +510,7 @@ public class RegisterAppInterface extends RPCRequest {
     }
    
     public void setHashID(String hashID) {
-		setParameter(KEY_HASH_ID, hashID);
+		setParameters(KEY_HASH_ID, hashID);
     }        
     
 	/**
@@ -535,6 +535,6 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setAppID(String appID) {
-		setParameter(KEY_APP_ID, appID);
+		setParameters(KEY_APP_ID, appID);
     }
 }

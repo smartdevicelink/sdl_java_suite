@@ -86,7 +86,7 @@ public class GetDTCs extends RPCRequest {
 	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-		setParameter(KEY_ECU_NAME, ecuName);
+		setParameters(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -99,7 +99,7 @@ public class GetDTCs extends RPCRequest {
     	return getInteger(KEY_ECU_NAME);
     }
     public void setDtcMask(Integer dtcMask) {
-		setParameter(KEY_DTC_MASK, dtcMask);
+		setParameters(KEY_DTC_MASK, dtcMask);
     }
     public Integer getDtcMask() {
     	return getInteger(KEY_DTC_MASK);

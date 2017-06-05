@@ -60,7 +60,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText1(String navigationText1){
-        setParameter(KEY_TEXT1, navigationText1);
+        setParameters(KEY_TEXT1, navigationText1);
     }
 
     /**
@@ -81,7 +81,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText2(String navigationText2){
-        setParameter(KEY_TEXT2, navigationText2);
+        setParameters(KEY_TEXT2, navigationText2);
     }
 
     /**
@@ -102,7 +102,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setEta(String eta){
-        setParameter(KEY_ETA, eta);
+        setParameters(KEY_ETA, eta);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setTotalDistance(String totalDistance){
-        setParameter(KEY_TOTAL_DISTANCE, totalDistance);
+        setParameters(KEY_TOTAL_DISTANCE, totalDistance);
     }
 
     /**
@@ -142,7 +142,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            an Image value
      */
     public void setTurnIcon(Image turnIcon){
-        setParameter(KEY_MANEUVER_IMAGE, turnIcon);
+        setParameters(KEY_MANEUVER_IMAGE, turnIcon);
     }
 
     /**
@@ -162,7 +162,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            an Image value
      */
     public void setNextTurnIcon(Image nextTurnIcon){
-        setParameter(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
+        setParameters(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
     }
 
     /**
@@ -184,7 +184,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuver(Double distanceToManeuver){
-        setParameter(KEY_MANEUVER_DISTANCE, distanceToManeuver);
+        setParameters(KEY_MANEUVER_DISTANCE, distanceToManeuver);
     }
 
     /**
@@ -205,7 +205,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuverScale(Double distanceToManeuverScale){
-        setParameter(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
+        setParameters(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
     }
 
     /**
@@ -227,7 +227,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            a Boolean value
      */
     public void setManeuverComplete(Boolean maneuverComplete){
-        setParameter(KEY_MANEUVER_COMPLETE, maneuverComplete);
+        setParameters(KEY_MANEUVER_COMPLETE, maneuverComplete);
     }
 
     /**
@@ -249,7 +249,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            a List<SoftButton> value
      */
     public void setSoftButtons(List<SoftButton> softButtons){
-        setParameter(KEY_SOFT_BUTTONS, softButtons);
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
     /**
@@ -264,7 +264,7 @@ public class ShowConstantTbt extends RPCRequest{
     }
 
     public void setTimeToDestination(String timeToDestination){
-        setParameter(KEY_TIME_TO_DESTINATION, timeToDestination);
+        setParameters(KEY_TIME_TO_DESTINATION, timeToDestination);
     }
 
     public String getTimeToDestination(){

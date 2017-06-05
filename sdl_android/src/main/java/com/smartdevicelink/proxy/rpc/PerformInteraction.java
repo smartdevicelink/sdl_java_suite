@@ -156,7 +156,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            a String value that Displayed when the interaction begins
 	 */    
     public void setInitialText(String initialText) {
-		setParameter(KEY_INITIAL_TEXT, initialText);
+		setParameters(KEY_INITIAL_TEXT, initialText);
     }
 	/**
 	 * Gets an An array of one or more TTSChunks that, taken together, specify
@@ -178,7 +178,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            user at the start of an interaction
 	 */    
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-		setParameter(KEY_INITIAL_PROMPT, initialPrompt);
+		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
     }
 	/**
 	 * Gets the Indicates mode that indicate how user selects interaction
@@ -201,7 +201,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            MANUAL_ONLY or BOTH)
 	 */    
     public void setInteractionMode(InteractionMode interactionMode) {
-		setParameter(KEY_INTERACTION_MODE, interactionMode);
+		setParameters(KEY_INTERACTION_MODE, interactionMode);
     }
 	/**
 	 * Gets a List<Integer> value representing an Array of one or more Choice
@@ -227,7 +227,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */    
     public void setInteractionChoiceSetIDList(List<Integer> interactionChoiceSetIDList) {
-		setParameter(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
+		setParameters(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
     }
 	/**
 	 * Gets a List<TTSChunk> which taken together, specify the help phrase to
@@ -258,7 +258,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            session
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-		setParameter(KEY_HELP_PROMPT, helpPrompt);
+		setParameters(KEY_HELP_PROMPT, helpPrompt);
     }
 	/**
 	 * Gets An array of TTSChunks which, taken together, specify the phrase to
@@ -283,7 +283,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            listen times out during the VR session
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-		setParameter(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
     }
 	/**
 	 * Gets a Integer value representing the amount of time, in milliseconds,
@@ -313,7 +313,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 5000; Max Value: 100000
 	 */    
     public void setTimeout(Integer timeout) {
-		setParameter(KEY_TIMEOUT, timeout);
+		setParameters(KEY_TIMEOUT, timeout);
     }
 
 	/**
@@ -341,7 +341,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-		setParameter(KEY_VR_HELP, vrHelp);
+		setParameters(KEY_VR_HELP, vrHelp);
     }
     
     public LayoutMode getInteractionLayout() {
@@ -349,6 +349,6 @@ public class PerformInteraction extends RPCRequest {
     }
   
     public void setInteractionLayout( LayoutMode interactionLayout ) {
-		setParameter(KEY_INTERACTION_LAYOUT, interactionLayout);
+		setParameters(KEY_INTERACTION_LAYOUT, interactionLayout);
     }    
 }

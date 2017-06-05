@@ -35,6 +35,6 @@ public class AlertResponse extends RPCResponse {
         return getInteger(KEY_TRY_AGAIN_TIME);
     }
     public void setTryAgainTime(Integer tryAgainTime) {
-        setParameter(KEY_TRY_AGAIN_TIME, tryAgainTime);
+        setParameters(KEY_TRY_AGAIN_TIME, tryAgainTime);
     }
 }

@@ -21,7 +21,7 @@ public class ReadDIDResponse extends RPCResponse {
         super(hash);
     }
     public void setDidResult(List<DIDResult> didResult) {
-		setParameter(KEY_DID_RESULT, didResult);
+		setParameters(KEY_DID_RESULT, didResult);
     }
     @SuppressWarnings("unchecked")
     public List<DIDResult> getDidResult() {

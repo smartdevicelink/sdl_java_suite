@@ -65,6 +65,6 @@ public class OnTBTClientState extends RPCNotification {
      * @param state current state of TBT client
      */    
     public void setState( TBTState state ) {
-        setParameter(KEY_STATE, state);
+        setParameters(KEY_STATE, state);
     }
 } // end-class

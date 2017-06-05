@@ -77,7 +77,7 @@ public class OnLanguageChange extends RPCNotification {
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
     public void setLanguage(Language language) {
-        setParameter(KEY_LANGUAGE, language);
+        setParameters(KEY_LANGUAGE, language);
     }
     /**
      * <p>Returns language that current SDL voice engine(VR+TTS) use</p>
@@ -91,7 +91,7 @@ public class OnLanguageChange extends RPCNotification {
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        setParameter(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
     /**
      * <p>Returns language that current  display use</p>

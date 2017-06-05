@@ -75,6 +75,6 @@ public class OnPermissionsChange extends RPCNotification {
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
 	public void setPermissionItem(List<PermissionItem> permissionItem) {
-		setParameter(KEY_PERMISSION_ITEM, permissionItem);
+		setParameters(KEY_PERMISSION_ITEM, permissionItem);
 	}
 }

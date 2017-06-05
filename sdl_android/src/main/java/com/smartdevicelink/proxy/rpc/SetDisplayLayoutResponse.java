@@ -42,7 +42,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-        setParameter(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
+        setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        setParameter(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
+        setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +60,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        setParameter(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
+        setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +69,7 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     }
 
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-        setParameter(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
+        setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
     }
     
 }

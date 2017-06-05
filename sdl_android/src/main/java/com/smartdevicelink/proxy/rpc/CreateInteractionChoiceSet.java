@@ -110,7 +110,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-		setParameter(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 	/**
 	 * Gets Choice Set Array of one or more elements
@@ -132,6 +132,6 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
     public void setChoiceSet( List<Choice> choiceSet ) {
-		setParameter(KEY_CHOICE_SET, choiceSet);
+		setParameters(KEY_CHOICE_SET, choiceSet);
     }
 }
