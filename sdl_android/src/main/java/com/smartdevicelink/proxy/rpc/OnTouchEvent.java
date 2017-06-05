@@ -68,7 +68,7 @@ public class OnTouchEvent extends RPCNotification {
     }
     
     public void setType(TouchType type) {
-		setParameter(KEY_TYPE, type);
+		setParameters(KEY_TYPE, type);
     }
     
     public TouchType getType() {
@@ -76,7 +76,7 @@ public class OnTouchEvent extends RPCNotification {
     }
     
     public void setEvent(List<TouchEvent> event) {
-		setParameter(KEY_EVENT, event);
+		setParameters(KEY_EVENT, event);
     }
     
     @SuppressWarnings("unchecked")

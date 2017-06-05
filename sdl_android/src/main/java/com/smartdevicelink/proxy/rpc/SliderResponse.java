@@ -36,7 +36,7 @@ public class SliderResponse extends RPCResponse {
      * @param sliderPosition
      */
     public void setSliderPosition(Integer sliderPosition) {
-		setParameter(KEY_SLIDER_POSITION, sliderPosition);
+		setParameters(KEY_SLIDER_POSITION, sliderPosition);
     }
     /**
      * Gets an Initial position of slider control

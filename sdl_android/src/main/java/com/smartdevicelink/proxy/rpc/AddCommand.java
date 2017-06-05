@@ -132,7 +132,7 @@ public class AddCommand extends RPCRequest {
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */
     public void setCmdID(Integer cmdID) {
-		setParameter(KEY_CMD_ID, cmdID);
+		setParameters(KEY_CMD_ID, cmdID);
     }
 	/**
 	 * <p>
@@ -159,7 +159,7 @@ public class AddCommand extends RPCRequest {
 	 *            a menuParams object
 	 */    
     public void setMenuParams(MenuParams menuParams) {
-        setParameter(KEY_MENU_PARAMS, menuParams);
+        setParameters(KEY_MENU_PARAMS, menuParams);
     }
 	/**
 	 * <p>
@@ -190,7 +190,7 @@ public class AddCommand extends RPCRequest {
 	 *            not zero-length, not whitespace only) element</p>
 	 */
     public void setVrCommands( List<String> vrCommands ) {
-		setParameter(KEY_VR_COMMANDS, vrCommands);
+		setParameters(KEY_VR_COMMANDS, vrCommands);
     }
 
 	/**
@@ -216,6 +216,6 @@ public class AddCommand extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCmdIcon(Image cmdIcon) {
-        setParameter(KEY_CMD_ICON, cmdIcon);
+        setParameters(KEY_CMD_ICON, cmdIcon);
     }
 }

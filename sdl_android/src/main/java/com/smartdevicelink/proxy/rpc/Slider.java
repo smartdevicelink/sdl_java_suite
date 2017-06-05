@@ -119,7 +119,7 @@ public class Slider extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue=2; Maxvalue=26
 	 */
     public void setNumTicks(Integer numTicks) {
-    	setParameter(KEY_NUM_TICKS, numTicks);
+    	setParameters(KEY_NUM_TICKS, numTicks);
     }
 
 	/**
@@ -142,7 +142,7 @@ public class Slider extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue=1; Maxvalue=26
 	 */
     public void setPosition(Integer position) {
-    	setParameter(KEY_POSITION, position);
+    	setParameters(KEY_POSITION, position);
     }
 
 	/**
@@ -164,7 +164,7 @@ public class Slider extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSliderHeader(String sliderHeader) {
-    	setParameter(KEY_SLIDER_HEADER, sliderHeader);
+    	setParameters(KEY_SLIDER_HEADER, sliderHeader);
     }
 
 	/**
@@ -185,7 +185,7 @@ public class Slider extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500; Minvalue=1; Maxvalue=26
 	 */
     public void setSliderFooter(List<String> sliderFooter) {
-    	setParameter(KEY_SLIDER_FOOTER, sliderFooter);
+    	setParameters(KEY_SLIDER_FOOTER, sliderFooter);
     }
 
 	/**
@@ -207,7 +207,7 @@ public class Slider extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue=0; Maxvalue=65535; Defvalue=10000
 	 */
     public void setTimeout(Integer timeout) {
-    	setParameter(KEY_TIMEOUT, timeout);
+    	setParameters(KEY_TIMEOUT, timeout);
     }
 
 	/**

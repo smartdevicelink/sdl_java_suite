@@ -81,6 +81,6 @@ public class DeleteSubMenu extends RPCRequest {
      * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
      */    
     public void setMenuID( Integer menuID ) {
-        setParameter(KEY_MENU_ID, menuID);
+        setParameters(KEY_MENU_ID, menuID);
     }
 }

@@ -69,7 +69,7 @@ public class AlertManeuver extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        setParameter(KEY_SOFT_BUTTONS, softButtons);
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
     /**
@@ -90,7 +90,7 @@ public class AlertManeuver extends RPCRequest{
      *            <b>Notes: </b></p>Array must have a least one element
      */
     public void setTtsChunks(List<TTSChunk> ttsChunks){
-        setParameter(KEY_TTS_CHUNKS, ttsChunks);
+        setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 
 }

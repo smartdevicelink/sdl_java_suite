@@ -51,7 +51,7 @@ public class UpdateTurnList extends RPCRequest{
      *            <b>Notes: </b>Minsize=1; Maxsize=100</p>
      */
     public void setTurnList(List<Turn> turnList){
-        setParameter(KEY_TURN_LIST, turnList);
+        setParameters(KEY_TURN_LIST, turnList);
     }
     
     /**
@@ -91,7 +91,7 @@ public class UpdateTurnList extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        setParameter(KEY_SOFT_BUTTONS, softButtons);
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 }

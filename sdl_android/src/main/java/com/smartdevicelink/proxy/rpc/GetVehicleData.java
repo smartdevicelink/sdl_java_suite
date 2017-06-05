@@ -256,25 +256,25 @@ public class GetVehicleData extends RPCRequest {
         super(hash);
     }
     public void setGps(Boolean gps) {
-        setParameter(KEY_GPS, gps);
+        setParameters(KEY_GPS, gps);
     }
     public Boolean getGps() {
         return getBoolean(KEY_GPS);
     }
     public void setSpeed(Boolean speed) {
-        setParameter(KEY_SPEED, speed);
+        setParameters(KEY_SPEED, speed);
     }
     public Boolean getSpeed() {
         return getBoolean(KEY_SPEED);
     }
     public void setRpm(Boolean rpm) {
-        setParameter(KEY_RPM, rpm);
+        setParameters(KEY_RPM, rpm);
     }
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
     public void setFuelLevel(Boolean fuelLevel) {
-        setParameter(KEY_FUEL_LEVEL, fuelLevel);
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
@@ -288,106 +288,106 @@ public class GetVehicleData extends RPCRequest {
         return getFuelLevelState();
     }
     public void setFuelLevelState(Boolean fuelLevelState) {
-        setParameter(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     public Boolean getFuelLevelState() {
         return getBoolean(KEY_FUEL_LEVEL_STATE);
     }
     public void setInstantFuelConsumption(Boolean instantFuelConsumption) {
-        setParameter(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     public Boolean getInstantFuelConsumption() {
         return getBoolean(KEY_INSTANT_FUEL_CONSUMPTION);
     }
     public void setExternalTemperature(Boolean externalTemperature) {
-        setParameter(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     public Boolean getExternalTemperature() {
         return getBoolean(KEY_EXTERNAL_TEMPERATURE);
     }
     
     public void setVin(Boolean vin) {
-        setParameter(KEY_VIN, vin);
+        setParameters(KEY_VIN, vin);
     }
     public Boolean getVin() {
         return getBoolean(KEY_VIN);
     }
     
     public void setPrndl(Boolean prndl) {
-        setParameter(KEY_PRNDL, prndl);
+        setParameters(KEY_PRNDL, prndl);
     }
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
     public void setTirePressure(Boolean tirePressure) {
-        setParameter(KEY_TIRE_PRESSURE, tirePressure);
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     public Boolean getTirePressure() {
         return getBoolean(KEY_TIRE_PRESSURE);
     }
     public void setOdometer(Boolean odometer) {
-        setParameter(KEY_ODOMETER, odometer);
+        setParameters(KEY_ODOMETER, odometer);
     }
     public Boolean getOdometer() {
         return getBoolean(KEY_ODOMETER);
     }
     public void setBeltStatus(Boolean beltStatus) {
-        setParameter(KEY_BELT_STATUS, beltStatus);
+        setParameters(KEY_BELT_STATUS, beltStatus);
     }
     public Boolean getBeltStatus() {
         return getBoolean(KEY_BELT_STATUS);
     }
     public void setBodyInformation(Boolean bodyInformation) {
-        setParameter(KEY_BODY_INFORMATION, bodyInformation);
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     public Boolean getBodyInformation() {
         return getBoolean(KEY_BODY_INFORMATION);
     }
     public void setDeviceStatus(Boolean deviceStatus) {
-        setParameter(KEY_DEVICE_STATUS, deviceStatus);
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     public Boolean getDeviceStatus() {
         return getBoolean(KEY_DEVICE_STATUS);
     }
     public void setDriverBraking(Boolean driverBraking) {
-        setParameter(KEY_DRIVER_BRAKING, driverBraking);
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     public Boolean getDriverBraking() {
         return getBoolean(KEY_DRIVER_BRAKING);
     }
     public void setWiperStatus(Boolean wiperStatus) {
-        setParameter(KEY_WIPER_STATUS, wiperStatus);
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     public Boolean getWiperStatus() {
         return getBoolean(KEY_WIPER_STATUS);
     }
     public void setHeadLampStatus(Boolean headLampStatus) {
-        setParameter(KEY_HEAD_LAMP_STATUS, headLampStatus);
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     public Boolean getHeadLampStatus() {
         return getBoolean(KEY_HEAD_LAMP_STATUS);
     }
     public void setEngineTorque(Boolean engineTorque) {
-        setParameter(KEY_ENGINE_TORQUE, engineTorque);
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     public Boolean getEngineTorque() {
         return getBoolean(KEY_ENGINE_TORQUE);
     }
     public void setAccPedalPosition(Boolean accPedalPosition) {
-        setParameter(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     public Boolean getAccPedalPosition() {
         return getBoolean(KEY_ACC_PEDAL_POSITION);
     }
         
     public void setSteeringWheelAngle(Boolean steeringWheelAngle) {
-        setParameter(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Boolean getSteeringWheelAngle() {
         return getBoolean(KEY_STEERING_WHEEL_ANGLE);
     }                
     public void setECallInfo(Boolean eCallInfo) {
-        setParameter(KEY_E_CALL_INFO, eCallInfo);
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     public Boolean getECallInfo() {
         return getBoolean(KEY_E_CALL_INFO);
@@ -395,25 +395,25 @@ public class GetVehicleData extends RPCRequest {
     
     
     public void setAirbagStatus(Boolean airbagStatus) {
-        setParameter(KEY_AIRBAG_STATUS, airbagStatus);
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     public Boolean getAirbagStatus() {
         return getBoolean(KEY_AIRBAG_STATUS);
     }
     public void setEmergencyEvent(Boolean emergencyEvent) {
-        setParameter(KEY_EMERGENCY_EVENT, emergencyEvent);
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
     public Boolean getEmergencyEvent() {
         return getBoolean(KEY_EMERGENCY_EVENT);
     }
     public void setClusterModeStatus(Boolean clusterModeStatus) {
-        setParameter(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
     public Boolean getClusterModeStatus() {
         return getBoolean(KEY_CLUSTER_MODE_STATUS);
     }
     public void setMyKey(Boolean myKey) {
-        setParameter(KEY_MY_KEY, myKey);
+        setParameters(KEY_MY_KEY, myKey);
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);

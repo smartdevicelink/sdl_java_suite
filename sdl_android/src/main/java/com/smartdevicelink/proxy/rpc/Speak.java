@@ -153,6 +153,6 @@ public class Speak extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setTtsChunks( List<TTSChunk> ttsChunks ) {
-		setParameter(KEY_TTS_CHUNKS, ttsChunks);
+		setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 }

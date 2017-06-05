@@ -104,7 +104,7 @@ public class AddSubMenu extends RPCRequest {
 	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */    
     public void setMenuID( Integer menuID ) {
-		setParameter(KEY_MENU_ID, menuID);
+		setParameters(KEY_MENU_ID, menuID);
     }
 	/**
 	 * <p>Returns an <i>Integer</i> object representing the position of menu</p>
@@ -136,7 +136,7 @@ public class AddSubMenu extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setPosition( Integer position ) {
-		setParameter(KEY_POSITION, position);
+		setParameters(KEY_POSITION, position);
     }
 	/**
 	 * Returns String which is displayed representing this submenu item
@@ -153,6 +153,6 @@ public class AddSubMenu extends RPCRequest {
 	 *            String which will be displayed representing this submenu item
 	 */    
     public void setMenuName( String menuName ) {
-		setParameter(KEY_MENU_NAME, menuName);
+		setParameters(KEY_MENU_NAME, menuName);
     }
 }

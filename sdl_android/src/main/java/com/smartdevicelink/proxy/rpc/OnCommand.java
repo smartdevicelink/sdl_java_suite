@@ -79,7 +79,7 @@ public class OnCommand extends RPCNotification {
      * @param cmdID an integer object representing a Command ID
      */    
     public void setCmdID( Integer cmdID ) {
-        setParameter(KEY_CMD_ID, cmdID);
+        setParameters(KEY_CMD_ID, cmdID);
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
@@ -94,6 +94,6 @@ public class OnCommand extends RPCNotification {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        setParameter(KEY_TRIGGER_SOURCE, triggerSource);
+        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
     }
 }

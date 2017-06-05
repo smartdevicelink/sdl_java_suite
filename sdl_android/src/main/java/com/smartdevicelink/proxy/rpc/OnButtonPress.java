@@ -121,7 +121,7 @@ public class OnButtonPress extends RPCNotification {
      * @param buttonName name of the button
      */    
     public void setButtonName( ButtonName buttonName ) {
-        setParameter(KEY_BUTTON_NAME, buttonName);
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
      * @return ButtonPressMode whether this is a long or short button press event
@@ -134,10 +134,10 @@ public class OnButtonPress extends RPCNotification {
      * @param buttonPressMode indicates whether this is a short or long press
      */    
     public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
-        setParameter(KEY_BUTTON_PRESS_MODE, buttonPressMode);
+        setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
     }
     public void setCustomButtonName(Integer customButtonID) {
-        setParameter(KEY_CUSTOM_BUTTON_ID, customButtonID);
+        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
     public Integer getCustomButtonName() {
     	return getInteger(KEY_CUSTOM_BUTTON_ID);

@@ -29,6 +29,6 @@ public class DiagnosticMessageResponse extends RPCResponse {
     }
     
     public void setMessageDataResult(List<Integer> messageDataResult) {
-        setParameter(KEY_MESSAGE_DATA_RESULT, messageDataResult);
+        setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
     }
 }

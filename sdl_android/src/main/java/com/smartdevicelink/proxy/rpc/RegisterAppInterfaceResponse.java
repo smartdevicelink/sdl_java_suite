@@ -87,7 +87,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 *            request) is ignored by SDL&reg;
 	 */
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-		setParameter(KEY_SDL_MSG_VERSION, sdlMsgVersion);
+		setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
     }
 
 	/**
@@ -110,7 +110,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 */
     public void setLanguage(Language language) {
-		setParameter(KEY_LANGUAGE, language);
+		setParameters(KEY_LANGUAGE, language);
     }
 
 	/**
@@ -134,7 +134,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-		setParameter(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+		setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
 	/**
@@ -151,7 +151,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param displayCapabilities
      */
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-		setParameter(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
+		setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
     }
 
 	/**
@@ -168,7 +168,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param buttonCapabilities
      */
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-		setParameter(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
+		setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
     }
     /**
 	 * Gets getSoftButtonCapabilities set when application interface is registered.
@@ -184,7 +184,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param softButtonCapabilities
      */
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-		setParameter(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
+		setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
     }
 
 	/**
@@ -201,7 +201,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param	presetBankCapabilities
      */
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-		setParameter(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
+		setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
     }
 	
 	/**
@@ -218,7 +218,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param hmiZoneCapabilities
      */
     public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
-		setParameter(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
+		setParameters(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
     }
 	
 	/**
@@ -235,7 +235,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param speechCapabilities
      */
     public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
-		setParameter(KEY_SPEECH_CAPABILITIES, speechCapabilities);
+		setParameters(KEY_SPEECH_CAPABILITIES, speechCapabilities);
     }
 
     
@@ -245,7 +245,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
 
     public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
-		setParameter(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
+		setParameters(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
     }
  
     
@@ -263,7 +263,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param vrCapabilities
      */
     public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
-		setParameter(KEY_VR_CAPABILITIES, vrCapabilities);
+		setParameters(KEY_VR_CAPABILITIES, vrCapabilities);
     }
 	
 	/**
@@ -280,7 +280,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param vehicleType
      */
     public void setVehicleType(VehicleType vehicleType) {
-		setParameter(KEY_VEHICLE_TYPE, vehicleType);
+		setParameters(KEY_VEHICLE_TYPE, vehicleType);
     }
 	
 	/**
@@ -297,7 +297,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * @param audioPassThruCapabilities
      */
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
-		setParameter(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
+		setParameters(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
     }
     public String getProxyVersionInfo() {
 		if (Version.VERSION != null)
@@ -306,7 +306,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		return null;
     }
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
-		setParameter(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
+		setParameters(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
     }
 
     @SuppressWarnings("unchecked")
@@ -315,7 +315,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
     
     public void setHmiCapabilities(HMICapabilities hmiCapabilities) {
-		setParameter(KEY_HMI_CAPABILITIES, hmiCapabilities);
+		setParameters(KEY_HMI_CAPABILITIES, hmiCapabilities);
     }
 
     @SuppressWarnings("unchecked")
@@ -324,7 +324,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }  
     
     public void setSdlVersion(String sdlVersion) {
-		setParameter(KEY_SDL_VERSION, sdlVersion);
+		setParameters(KEY_SDL_VERSION, sdlVersion);
     }
 
     public String getSdlVersion() {    
@@ -332,7 +332,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     } 
     
     public void setSystemSoftwareVersion(String systemSoftwareVersion) {
-		setParameter(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
+		setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
     }
 
     public String getSystemSoftwareVersion() {    

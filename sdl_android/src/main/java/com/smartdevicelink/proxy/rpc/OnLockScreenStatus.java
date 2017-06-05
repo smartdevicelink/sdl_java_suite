@@ -33,7 +33,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	}
 	
 	public void setDriverDistractionStatus(Boolean driverDistractionStatus) {
-		setParameter(KEY_DRIVER_DISTRACTION, driverDistractionStatus);
+		setParameters(KEY_DRIVER_DISTRACTION, driverDistractionStatus);
 	}	
     /**
      * <p>Get the {@linkplain LockScreenStatus} enumeration, indicating if the lockscreen should be required, optional or off </p>
@@ -41,11 +41,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    	
 
 	public LockScreenStatus getShowLockScreen() {
-		return (LockScreenStatus) getParameter(KEY_SHOW_LOCK_SCREEN);
+		return (LockScreenStatus) getParameters(KEY_SHOW_LOCK_SCREEN);
 	}
 	
 	public void setShowLockScreen(LockScreenStatus showLockScreen) {
-		setParameter(KEY_SHOW_LOCK_SCREEN, showLockScreen);
+		setParameters(KEY_SHOW_LOCK_SCREEN, showLockScreen);
 	}
     /**
      * <p>Get user selection status for the application (has the app been selected via hmi or voice command)</p>
@@ -57,7 +57,7 @@ public class OnLockScreenStatus extends RPCNotification {
 	}
 	
 	public void setUserSelected(Boolean userSelected) {
-		setParameter(KEY_USER_SELECTED, userSelected);
+		setParameters(KEY_USER_SELECTED, userSelected);
 	}		
     /**
      * <p>Get HMILevel in effect for the application</p>
@@ -65,10 +65,10 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public HMILevel getHMILevel() {
-		return (HMILevel) getParameter(KEY_HMI_LEVEL);
+		return (HMILevel) getParameters(KEY_HMI_LEVEL);
 	}
 	
 	public void setHMILevel(HMILevel setHMILevel) {
-		setParameter(KEY_HMI_LEVEL, setHMILevel);
+		setParameters(KEY_HMI_LEVEL, setHMILevel);
 	}				
 }

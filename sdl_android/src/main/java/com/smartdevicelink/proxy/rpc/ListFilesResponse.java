@@ -25,14 +25,14 @@ public class ListFilesResponse extends RPCResponse {
         super(hash);
     }
     public void setFilenames(List<String> filenames) {
-        setParameter(KEY_FILENAMES, filenames);
+        setParameters(KEY_FILENAMES, filenames);
     }
     @SuppressWarnings("unchecked")
     public List<String> getFilenames() {
         return (List<String>) getObject(String.class, KEY_FILENAMES);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {
-        setParameter(KEY_SPACE_AVAILABLE, spaceAvailable);
+        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
         return getInteger(KEY_SPACE_AVAILABLE);

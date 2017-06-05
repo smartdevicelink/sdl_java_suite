@@ -131,7 +131,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a language value
 	 */
     public void setLanguage(Language language) {
-        setParameter(KEY_LANGUAGE, language);
+        setParameters(KEY_LANGUAGE, language);
     }
 
 	/**
@@ -150,7 +150,7 @@ public class ChangeRegistration extends RPCRequest {
 	 *            a Language value
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        setParameter(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
 	/**
@@ -168,7 +168,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param appName App name to set
      */
     public void setAppName(String appName){
-        setParameter(KEY_APP_NAME, appName);
+        setParameters(KEY_APP_NAME, appName);
     }
     
     /**
@@ -186,7 +186,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param ngnAppName The NGN app name
      */
     public void setNgnMediaScreenAppName(String ngnAppName){
-        setParameter(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
+        setParameters(KEY_NGN_MEDIA_SCREEN_NAME, ngnAppName);
     }
     
     /**
@@ -204,7 +204,7 @@ public class ChangeRegistration extends RPCRequest {
      * @param ttsName The TTS name to set
      */
     public void setTtsName(List<TTSChunk> ttsName){
-        setParameter(KEY_TTS_NAME, ttsName);
+        setParameters(KEY_TTS_NAME, ttsName);
     }
     
     /**
@@ -248,6 +248,6 @@ public class ChangeRegistration extends RPCRequest {
      *            </ul>
      */    
     public void setVrSynonyms(List<String> vrSynonyms) {
-        setParameter(KEY_VR_SYNONYMS, vrSynonyms);
+        setParameters(KEY_VR_SYNONYMS, vrSynonyms);
     }
 }

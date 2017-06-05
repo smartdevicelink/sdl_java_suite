@@ -23,6 +23,6 @@ public class OnWayPointChange extends RPCNotification {
 	}
 
 	public void setWayPoints(List<LocationDetails> wayPoints) {
-		setParameter(KEY_WAY_POINTS, wayPoints);
+		setParameters(KEY_WAY_POINTS, wayPoints);
 	}
 }
