@@ -223,15 +223,15 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setRequestType(RequestType requestType) {
-        setParameter(KEY_REQUEST_TYPE, requestType);
+        setParameters(KEY_REQUEST_TYPE, requestType);
     }
 
     public String getUrl() {
-        Object o = getParameter(KEY_URL);
+        Object o = getParameters(KEY_URL);
         if (o == null)
         {
         	//try again for gen 1.1
-        	o = getParameter(KEY_URL_V1);
+        	o = getParameters(KEY_URL_V1);
         }
         if (o == null)
         	return null;
@@ -243,7 +243,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setUrl(String url) {
-        setParameter(KEY_URL, url);
+        setParameters(KEY_URL, url);
     }
 
     public FileType getFileType() {
@@ -251,7 +251,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setFileType(FileType fileType) {
-        setParameter(KEY_FILE_TYPE, fileType);
+        setParameters(KEY_FILE_TYPE, fileType);
     }
 
     /**
@@ -267,7 +267,7 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public Long getOffset() {
-        final Object o = getParameter(KEY_OFFSET);
+        final Object o = getParameters(KEY_OFFSET);
         
         if (o == null){
         	return null;
@@ -282,14 +282,14 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setOffset(Long offset) {
-        setParameter(KEY_OFFSET, offset);
+        setParameters(KEY_OFFSET, offset);
     }
     
     public Integer getTimeout() {
-        Object o = getParameter(KEY_TIMEOUT);
+        Object o = getParameters(KEY_TIMEOUT);
         
         if (o == null){
-        	 o = getParameter(KEY_TIMEOUT_V1);
+        	 o = getParameters(KEY_TIMEOUT_V1);
         	 if (o == null) return null;
         }
         
@@ -300,11 +300,11 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setTimeout(Integer timeout) {
-        setParameter(KEY_TIMEOUT, timeout);
+        setParameters(KEY_TIMEOUT, timeout);
     }    
     
     public Long getLength() {
-        final Object o = getParameter(KEY_LENGTH);
+        final Object o = getParameters(KEY_LENGTH);
         if (o == null){
         	return null;
         }
@@ -330,6 +330,6 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public void setLength(Long length) {
-        setParameter(KEY_LENGTH, length);
+        setParameters(KEY_LENGTH, length);
     }
 }

@@ -22,6 +22,6 @@ public class GetWayPoints extends RPCRequest {
     }
 
     public void setWayPointType(WayPointType wayPointType) {
-        setParameter(KEY_WAY_POINT_TYPE, wayPointType);
+        setParameters(KEY_WAY_POINT_TYPE, wayPointType);
     }
 }

@@ -32,7 +32,7 @@ public class PutFileResponse extends RPCResponse {
         super(hash);
     }
     public void setSpaceAvailable(Integer spaceAvailable) {
-        setParameter(KEY_SPACE_AVAILABLE, spaceAvailable);
+        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
         return getInteger(KEY_SPACE_AVAILABLE);

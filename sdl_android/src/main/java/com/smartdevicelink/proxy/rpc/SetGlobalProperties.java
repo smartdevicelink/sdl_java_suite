@@ -157,7 +157,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
-		setParameter(KEY_HELP_PROMPT, helpPrompt);
+		setParameters(KEY_HELP_PROMPT, helpPrompt);
     }
 	/**
 	 * Gets a List<TTSChunk> for Timeout Prompt representing Array of one or
@@ -178,7 +178,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * 
 	 */    
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
-		setParameter(KEY_TIMEOUT_PROMPT, timeoutPrompt);
+		setParameters(KEY_TIMEOUT_PROMPT, timeoutPrompt);
     }
 
 	/**
@@ -209,7 +209,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelpTitle(String vrHelpTitle) {
-		setParameter(KEY_VR_HELP_TITLE, vrHelpTitle);
+		setParameters(KEY_VR_HELP_TITLE, vrHelpTitle);
     }
 
 	/**
@@ -247,7 +247,7 @@ public class SetGlobalProperties extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setVrHelp(List<VrHelpItem> vrHelp) {
-		setParameter(KEY_VR_HELP, vrHelp);
+		setParameters(KEY_VR_HELP, vrHelp);
     }
     
     public String getMenuTitle() {
@@ -255,11 +255,11 @@ public class SetGlobalProperties extends RPCRequest {
     }
 
     public void setMenuTitle(String menuTitle) {
-		setParameter(KEY_MENU_TITLE, menuTitle);
+		setParameters(KEY_MENU_TITLE, menuTitle);
     }
 
     public void setMenuIcon(Image menuIcon) {
-		setParameter(KEY_MENU_ICON, menuIcon);
+		setParameters(KEY_MENU_ICON, menuIcon);
     }
 
     @SuppressWarnings("unchecked")
@@ -268,7 +268,7 @@ public class SetGlobalProperties extends RPCRequest {
     }
     
     public void setKeyboardProperties(KeyboardProperties keyboardProperties) {
-		setParameter(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
+		setParameters(KEY_KEYBOARD_PROPERTIES, keyboardProperties);
     }
 
     @SuppressWarnings("unchecked")

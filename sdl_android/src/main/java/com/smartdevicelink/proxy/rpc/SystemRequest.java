@@ -69,7 +69,7 @@ public class SystemRequest extends RPCRequest {
     }
  
     public void setLegacyData( List<String> data ) {
-        setParameter(KEY_DATA, data);
+        setParameters(KEY_DATA, data);
     }    
             
     public String getFileName() {
@@ -77,7 +77,7 @@ public class SystemRequest extends RPCRequest {
     }
     
     public void setFileName(String fileName) {
-        setParameter(KEY_FILE_NAME, fileName);
+        setParameters(KEY_FILE_NAME, fileName);
     }    
 
     public RequestType getRequestType() {
@@ -85,6 +85,6 @@ public class SystemRequest extends RPCRequest {
     }
 
     public void setRequestType(RequestType requestType) {
-        setParameter(KEY_REQUEST_TYPE, requestType);
+        setParameters(KEY_REQUEST_TYPE, requestType);
     }
 }

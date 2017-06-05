@@ -58,7 +58,7 @@ public class SendLocation extends RPCRequest{
      * @return The longitude of the location
      */
     public Double getLongitudeDegrees(){
-    	Object value = getParameter(KEY_LON_DEGREES);
+    	Object value = getParameters(KEY_LON_DEGREES);
     	return SdlDataTypeConverter.objectToDouble(value);
     }
 
@@ -67,7 +67,7 @@ public class SendLocation extends RPCRequest{
      * @param longitudeDegrees
      */
     public void setLongitudeDegrees(Double longitudeDegrees){
-        setParameter(KEY_LON_DEGREES, longitudeDegrees);
+        setParameters(KEY_LON_DEGREES, longitudeDegrees);
     }
 
     /**
@@ -81,7 +81,7 @@ public class SendLocation extends RPCRequest{
      * @return The latitude of the location
      */
     public Double getLatitudeDegrees(){    	
-    	Object value = getParameter(KEY_LAT_DEGREES);
+    	Object value = getParameters(KEY_LAT_DEGREES);
     	return SdlDataTypeConverter.objectToDouble(value);
     }
 
@@ -90,7 +90,7 @@ public class SendLocation extends RPCRequest{
      * @param latitudeDegrees
      */
     public void setLatitudeDegrees(Double latitudeDegrees){
-        setParameter(KEY_LAT_DEGREES, latitudeDegrees);
+        setParameters(KEY_LAT_DEGREES, latitudeDegrees);
     }
 
     /**
@@ -106,7 +106,7 @@ public class SendLocation extends RPCRequest{
      * @param locationName The name of the location
      */
     public void setLocationName(String locationName){
-        setParameter(KEY_LOCATION_NAME, locationName);
+        setParameters(KEY_LOCATION_NAME, locationName);
     }
 
     /**
@@ -122,7 +122,7 @@ public class SendLocation extends RPCRequest{
      * @param locationDescription The description of the location
      */
     public void setLocationDescription(String locationDescription){
-        setParameter(KEY_LOCATION_DESCRIPTION, locationDescription);
+        setParameters(KEY_LOCATION_DESCRIPTION, locationDescription);
     }
 
     /**
@@ -138,7 +138,7 @@ public class SendLocation extends RPCRequest{
      * @param phoneNumber The phone number of the location
      */
     public void setPhoneNumber(String phoneNumber){
-        setParameter(KEY_PHONE_NUMBER, phoneNumber);
+        setParameters(KEY_PHONE_NUMBER, phoneNumber);
     }
 
     /**
@@ -155,7 +155,7 @@ public class SendLocation extends RPCRequest{
      * @param addressLines The address lines of the location
      */
     public void setAddressLines(List<String> addressLines){
-        setParameter(KEY_ADDRESS_LINES, addressLines);
+        setParameters(KEY_ADDRESS_LINES, addressLines);
     }
 
     /**
@@ -172,7 +172,7 @@ public class SendLocation extends RPCRequest{
      * @param locationImage The image of the location to send
      */
     public void setLocationImage(Image locationImage){
-        setParameter(KEY_LOCATION_IMAGE, locationImage);
+        setParameters(KEY_LOCATION_IMAGE, locationImage);
     }
 
 	public DeliveryMode getDeliveryMode() {
@@ -180,7 +180,7 @@ public class SendLocation extends RPCRequest{
 	}
 
 	public void setDeliveryMode(DeliveryMode deliveryMode) {
-        setParameter(KEY_DELIVERY_MODE, deliveryMode);
+        setParameters(KEY_DELIVERY_MODE, deliveryMode);
 	}
 
     @SuppressWarnings("unchecked")
@@ -189,7 +189,7 @@ public class SendLocation extends RPCRequest{
 	}
 
 	public void setTimeStamp(DateTime timeStamp) {
-        setParameter(KEY_TIME_STAMP, timeStamp);
+        setParameters(KEY_TIME_STAMP, timeStamp);
 	}
 
     @SuppressWarnings("unchecked")
@@ -198,6 +198,6 @@ public class SendLocation extends RPCRequest{
 	}
 
 	public void setAddress(OasisAddress address) {
-        setParameter(KEY_ADDRESS, address);
+        setParameters(KEY_ADDRESS, address);
 	}
 }

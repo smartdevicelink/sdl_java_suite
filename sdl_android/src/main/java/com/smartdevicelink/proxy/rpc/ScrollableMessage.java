@@ -102,7 +102,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setScrollableMessageBody(String scrollableMessageBody) {
-		setParameter(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
+		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
     }
 
 	/**
@@ -124,7 +124,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
 	 */
     public void setTimeout(Integer timeout) {
-		setParameter(KEY_TIMEOUT, timeout);
+		setParameters(KEY_TIMEOUT, timeout);
     }
 
 	/**
@@ -147,7 +147,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameter(KEY_SOFT_BUTTONS, softButtons);
+		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 	/**

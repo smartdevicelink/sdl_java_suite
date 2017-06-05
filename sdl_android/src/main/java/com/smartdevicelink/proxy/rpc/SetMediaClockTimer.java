@@ -115,7 +115,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setStartTime( StartTime startTime ) {
-		setParameter(KEY_START_TIME, startTime);
+		setParameters(KEY_START_TIME, startTime);
     }
     
     @SuppressWarnings("unchecked")
@@ -124,7 +124,7 @@ public class SetMediaClockTimer extends RPCRequest {
     }
     
     public void setEndTime( StartTime endTime ) {
-		setParameter(KEY_END_TIME, endTime);
+		setParameters(KEY_END_TIME, endTime);
     }
     
 	/**
@@ -150,6 +150,6 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setUpdateMode( UpdateMode updateMode ) {
-		setParameter(KEY_UPDATE_MODE, updateMode);
+		setParameters(KEY_UPDATE_MODE, updateMode);
     }
 }

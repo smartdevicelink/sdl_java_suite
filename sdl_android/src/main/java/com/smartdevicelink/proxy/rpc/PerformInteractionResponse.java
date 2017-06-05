@@ -46,7 +46,7 @@ public class PerformInteractionResponse extends RPCResponse {
      * @param choiceID Min: 0  Max: 65535
      */ 
     public void setChoiceID( Integer choiceID ) {
-        setParameter(KEY_CHOICE_ID, choiceID);
+        setParameters(KEY_CHOICE_ID, choiceID);
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
@@ -61,11 +61,11 @@ public class PerformInteractionResponse extends RPCResponse {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        setParameter(KEY_TRIGGER_SOURCE, triggerSource);
+        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
     }
     
     public void setManualTextEntry(String manualTextEntry) {
-        setParameter(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
+        setParameters(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
     }
     public String getManualTextEntry() {
         return getString(KEY_MANUAL_TEXT_ENTRY);

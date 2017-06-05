@@ -17,7 +17,7 @@ public class GetWayPointsResponse extends RPCResponse {
     }
 
     public void setWayPoints(List<LocationDetails> wayPoints) {
-		setParameter(KEY_WAY_POINTS, wayPoints);
+		setParameters(KEY_WAY_POINTS, wayPoints);
     }
     @SuppressWarnings("unchecked")
     public List<LocationDetails> getWayPoints() {

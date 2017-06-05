@@ -62,7 +62,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param gps
      */
     public void setGps(VehicleDataResult gps) {
-        setParameter(KEY_GPS, gps);
+        setParameters(KEY_GPS, gps);
     }
     /**
      * Gets Gps
@@ -77,7 +77,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param speed
      */
     public void setSpeed(VehicleDataResult speed) {
-        setParameter(KEY_SPEED, speed);
+        setParameters(KEY_SPEED, speed);
     }
     /**
      * Gets Speed
@@ -92,7 +92,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param rpm
      */
     public void setRpm(VehicleDataResult rpm) {
-        setParameter(KEY_RPM, rpm);
+        setParameters(KEY_RPM, rpm);
     }
     /**
      * Gets rpm
@@ -107,7 +107,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param fuelLevel
      */
     public void setFuelLevel(VehicleDataResult fuelLevel) {
-        setParameter(KEY_FUEL_LEVEL, fuelLevel);
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
      * Gets Fuel Level
@@ -138,7 +138,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param fuelLevel_State
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
-        setParameter(KEY_FUEL_LEVEL_STATE, fuelLevelState);
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     /**
      * Gets Fuel Level State
@@ -153,7 +153,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param instantFuelConsumption
      */
     public void setInstantFuelConsumption(VehicleDataResult instantFuelConsumption) {
-        setParameter(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     /**
      * Gets Instant Fuel Comsumption
@@ -168,7 +168,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param externalTemperature
      */
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
-        setParameter(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     /**
      * Gets External Temperature
@@ -183,7 +183,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param prndl
      */
     public void setPrndl(VehicleDataResult prndl) {
-        setParameter(KEY_PRNDL, prndl);
+        setParameters(KEY_PRNDL, prndl);
     }
     /**
      * Gets currently selected gear data
@@ -198,7 +198,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param tirePressure
      */
     public void setTirePressure(VehicleDataResult tirePressure) {
-        setParameter(KEY_TIRE_PRESSURE, tirePressure);
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     /**
      * Gets Tire Pressure
@@ -213,7 +213,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param odometer
      */
     public void setOdometer(VehicleDataResult odometer) {
-        setParameter(KEY_ODOMETER, odometer);
+        setParameters(KEY_ODOMETER, odometer);
     }
     /**
      * Gets Odometer
@@ -228,7 +228,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param beltStatus
      */
     public void setBeltStatus(VehicleDataResult beltStatus) {
-        setParameter(KEY_BELT_STATUS, beltStatus);
+        setParameters(KEY_BELT_STATUS, beltStatus);
     }
     /**
      * Gets Belt Status
@@ -243,7 +243,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param bodyInformation
      */
     public void setBodyInformation(VehicleDataResult bodyInformation) {
-        setParameter(KEY_BODY_INFORMATION, bodyInformation);
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     /**
      * Gets Body Information
@@ -258,7 +258,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param deviceStatus
      */
     public void setDeviceStatus(VehicleDataResult deviceStatus) {
-        setParameter(KEY_DEVICE_STATUS, deviceStatus);
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     /**
      * Gets Device Status
@@ -273,7 +273,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param driverBraking
      */
     public void setDriverBraking(VehicleDataResult driverBraking) {
-        setParameter(KEY_DRIVER_BRAKING, driverBraking);
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     /**
      * Gets Driver Braking
@@ -288,7 +288,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param wiperStatus
      */
     public void setWiperStatus(VehicleDataResult wiperStatus) {
-        setParameter(KEY_WIPER_STATUS, wiperStatus);
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     /**
      * Gets Wiper Status
@@ -303,7 +303,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param headLampStatus
      */
     public void setHeadLampStatus(VehicleDataResult headLampStatus) {
-        setParameter(KEY_HEAD_LAMP_STATUS, headLampStatus);
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     /**
      * Gets Head Lamp Status
@@ -318,7 +318,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param engineTorque
      */
     public void setEngineTorque(VehicleDataResult engineTorque) {
-        setParameter(KEY_ENGINE_TORQUE, engineTorque);
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     /**
      * Gets Engine Torque
@@ -333,7 +333,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * @param accPedalPosition
      */
     public void setAccPedalPosition(VehicleDataResult accPedalPosition) {
-        setParameter(KEY_ACC_PEDAL_POSITION, accPedalPosition);
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     /**
      * Gets AccPedal Position
@@ -345,7 +345,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }  
     
     public void setSteeringWheelAngle(VehicleDataResult steeringWheelAngle) {
-        setParameter(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
 
     @SuppressWarnings("unchecked")
@@ -354,35 +354,35 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }    
     
     public void setECallInfo(VehicleDataResult eCallInfo) {
-        setParameter(KEY_E_CALL_INFO, eCallInfo);
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getECallInfo() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_E_CALL_INFO);
     }
     public void setAirbagStatus(VehicleDataResult airbagStatus) {
-        setParameter(KEY_AIRBAG_STATUS, airbagStatus);
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAirbagStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_AIRBAG_STATUS);
     }
     public void setEmergencyEvent(VehicleDataResult emergencyEvent) {
-        setParameter(KEY_EMERGENCY_EVENT, emergencyEvent);
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getEmergencyEvent() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EMERGENCY_EVENT);
     }
     public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
-        setParameter(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getClusterModeStatus() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLUSTER_MODE_STATUS);
     }
     public void setMyKey(VehicleDataResult myKey) {
-        setParameter(KEY_MY_KEY, myKey);
+        setParameters(KEY_MY_KEY, myKey);
     }
     @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {

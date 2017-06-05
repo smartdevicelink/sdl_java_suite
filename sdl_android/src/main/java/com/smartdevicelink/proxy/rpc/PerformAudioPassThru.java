@@ -140,7 +140,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            </ul>
 	 */
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
-		setParameter(KEY_INITIAL_PROMPT, initialPrompt);
+		setParameters(KEY_INITIAL_PROMPT, initialPrompt);
     }
 
 	/**
@@ -166,7 +166,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setAudioPassThruDisplayText1(String audioPassThruDisplayText1) {
-		setParameter(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
+		setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_1, audioPassThruDisplayText1);
     }
 
 	/**
@@ -189,7 +189,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setAudioPassThruDisplayText2(String audioPassThruDisplayText2) {
-		setParameter(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
+		setParameters(KEY_AUDIO_PASS_THRU_DISPLAY_TEXT_2, audioPassThruDisplayText2);
     }
 
 	/**
@@ -209,7 +209,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a SamplingRate value representing a 8 or 16 or 22 or 24 khz
 	 */
     public void setSamplingRate(SamplingRate samplingRate) {
-		setParameter(KEY_SAMPLING_RATE, samplingRate);
+		setParameters(KEY_SAMPLING_RATE, samplingRate);
     }
 
 	/**
@@ -231,7 +231,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue:1; Maxvalue:1000000
 	 */
     public void setMaxDuration(Integer maxDuration) {
-		setParameter(KEY_MAX_DURATION, maxDuration);
+		setParameters(KEY_MAX_DURATION, maxDuration);
     }
 
 	/**
@@ -251,7 +251,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            a BitsPerSample value representing 8 bit or 16 bit
 	 */
     public void setBitsPerSample(BitsPerSample audioQuality) {
-		setParameter(KEY_BITS_PER_SAMPLE, audioQuality);
+		setParameters(KEY_BITS_PER_SAMPLE, audioQuality);
     }
 
 	/**
@@ -270,7 +270,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            an audioType
 	 */
     public void setAudioType(AudioType audioType) {
-		setParameter(KEY_AUDIO_TYPE, audioType);
+		setParameters(KEY_AUDIO_TYPE, audioType);
     }
 
 	/**
@@ -306,6 +306,6 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            should be muted during the APT session
 	 */
     public void setMuteAudio(Boolean muteAudio) {
-		setParameter(KEY_MUTE_AUDIO, muteAudio);
+		setParameters(KEY_MUTE_AUDIO, muteAudio);
     }    
 }

@@ -98,7 +98,7 @@ public class ReadDID extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-		setParameter(KEY_ECU_NAME, ecuName);
+		setParameters(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -125,7 +125,7 @@ public class ReadDID extends RPCRequest {
 	 *            </ul>
 	 */
     public void setDidLocation(List<Integer> didLocation) {
-		setParameter(KEY_DID_LOCATION, didLocation);
+		setParameters(KEY_DID_LOCATION, didLocation);
     }
 
 	/**

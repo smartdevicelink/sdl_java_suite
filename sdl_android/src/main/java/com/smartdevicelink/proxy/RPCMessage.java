@@ -73,7 +73,7 @@ public class RPCMessage extends RPCStruct  {
 
 	// Generalized Getters and Setters
 	
-	public void setParameter(String key, Object value) {
+	public void setParameters(String key, Object value) {
 		if (value != null) {
 			parameters.put(key, value);
 		} else {
@@ -81,7 +81,7 @@ public class RPCMessage extends RPCStruct  {
 		}
 	}
 
-	public Object getParameter(String key) {
+	public Object getParameters(String key) {
 		return parameters.get(key);
 	}
 

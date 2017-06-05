@@ -17,14 +17,14 @@ public class StreamRPCResponse extends RPCResponse {
     }
     
 	public void setFileName(String fileName) {
-		setParameter(KEY_FILENAME, fileName);
+		setParameters(KEY_FILENAME, fileName);
 	}
 	public String getFileName() {
 		return getString(KEY_FILENAME);
 	}
 	
 	public void setFileSize(Long fileSize) {
-		setParameter(KEY_FILESIZE, fileSize);
+		setParameters(KEY_FILESIZE, fileSize);
 	}
 	public Long getFileSize() {
 		return getLong(KEY_FILESIZE);

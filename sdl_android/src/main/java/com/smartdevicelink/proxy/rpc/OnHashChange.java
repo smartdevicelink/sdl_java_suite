@@ -59,7 +59,7 @@ public class OnHashChange extends RPCNotification {
     }
    
     public void setHashID(String hashID) {
-        setParameter(KEY_HASH_ID, hashID);
+        setParameters(KEY_HASH_ID, hashID);
     }   
     
 }

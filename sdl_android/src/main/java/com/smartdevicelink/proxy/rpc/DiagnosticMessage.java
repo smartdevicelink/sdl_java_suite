@@ -82,7 +82,7 @@ public class DiagnosticMessage extends RPCRequest {
     
 
     public void setTargetID(Integer targetID) {
-		setParameter(KEY_TARGET_ID, targetID);
+		setParameters(KEY_TARGET_ID, targetID);
     }
     /**
 	 * <p>
@@ -97,7 +97,7 @@ public class DiagnosticMessage extends RPCRequest {
     }    
 
     public void setMessageLength(Integer messageLength) {
-		setParameter(KEY_MESSAGE_LENGTH, messageLength);
+		setParameters(KEY_MESSAGE_LENGTH, messageLength);
     }
     public Integer getMessageLength() {
     	return getInteger(KEY_MESSAGE_LENGTH);
@@ -109,6 +109,6 @@ public class DiagnosticMessage extends RPCRequest {
     }
     
     public void setMessageData(List<Integer> messageData) {
-		setParameter(KEY_MESSAGE_DATA, messageData);
+		setParameters(KEY_MESSAGE_DATA, messageData);
     }    
 }

@@ -94,7 +94,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param hmiLevel the HMILevel to set
      */    
     public void setHmiLevel( HMILevel hmiLevel ) {
-        setParameter(KEY_HMI_LEVEL, hmiLevel);
+        setParameters(KEY_HMI_LEVEL, hmiLevel);
     }
     /**
      * <p>Get current state of audio streaming for the application</p>
@@ -108,7 +108,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param audioStreamingState the state of audio streaming of the application
      */    
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
-        setParameter(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
+        setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
     }
     /**
      * <p>Get the System Context</p>
@@ -123,7 +123,7 @@ public class OnHMIStatus extends RPCNotification {
      * (VRSESSION or MENU), or not (MAIN)
      */    
     public void setSystemContext( SystemContext systemContext ) {
-        setParameter(KEY_SYSTEM_CONTEXT, systemContext);
+        setParameters(KEY_SYSTEM_CONTEXT, systemContext);
     }
     /**
      * <p>Query whether it's the first run</p>

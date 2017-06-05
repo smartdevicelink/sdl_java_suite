@@ -146,7 +146,7 @@ public class PutFile extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=500
 	 */
     public void setSdlFileName(String sdlFileName) {
-        setParameter(KEY_SDL_FILE_NAME, sdlFileName);
+        setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -165,7 +165,7 @@ public class PutFile extends RPCRequest {
 	 *            a FileType value representing a selected file type
 	 */
     public void setFileType(FileType fileType) {
-        setParameter(KEY_FILE_TYPE, fileType);
+        setParameters(KEY_FILE_TYPE, fileType);
     }
 
 	/**
@@ -191,7 +191,7 @@ public class PutFile extends RPCRequest {
 	 *            a Boolean value
 	 */
     public void setPersistentFile(Boolean persistentFile) {
-        setParameter(KEY_PERSISTENT_FILE, persistentFile);
+        setParameters(KEY_PERSISTENT_FILE, persistentFile);
     }
 
 	/**
@@ -224,11 +224,11 @@ public class PutFile extends RPCRequest {
     }
     
     public void setOffset(Long offset) {
-        setParameter(KEY_OFFSET, offset);
+        setParameters(KEY_OFFSET, offset);
     }
 
     public Long getOffset() {
-        final Object o = getParameter(KEY_OFFSET);
+        final Object o = getParameters(KEY_OFFSET);
         if (o == null){
         	return null;
         }
@@ -255,11 +255,11 @@ public class PutFile extends RPCRequest {
     }
     
     public void setLength(Long length) {
-        setParameter(KEY_LENGTH, length);
+        setParameters(KEY_LENGTH, length);
     }
 
     public Long getLength() {
-        final Object o = getParameter(KEY_LENGTH);
+        final Object o = getParameters(KEY_LENGTH);
         if (o == null){
         	return null;
         }
@@ -273,11 +273,11 @@ public class PutFile extends RPCRequest {
     }
 
     public void setSystemFile(Boolean systemFile) {
-        setParameter(KEY_SYSTEM_FILE, systemFile);
+        setParameters(KEY_SYSTEM_FILE, systemFile);
     }
 
     public Boolean getSystemFile() {
-        final Object o = getParameter(KEY_SYSTEM_FILE);
+        final Object o = getParameters(KEY_SYSTEM_FILE);
         if (o instanceof Boolean) {
             return (Boolean) o;
         }

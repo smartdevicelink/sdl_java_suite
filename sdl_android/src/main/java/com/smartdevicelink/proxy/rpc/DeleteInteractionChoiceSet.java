@@ -91,6 +91,6 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
 	 */    
     public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
-		setParameter(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
+		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 }

@@ -69,14 +69,14 @@ public class OnKeyboardInput extends RPCNotification {
     }
 
     public void setEvent(KeyboardEvent event) {
-        setParameter(KEY_EVENT, event);
+        setParameters(KEY_EVENT, event);
     }
 
     public void setData(String data) {
-        setParameter(KEY_DATA, data);
+        setParameters(KEY_DATA, data);
     }
     public String getData() {
-        Object obj = getParameter(KEY_DATA);
+        Object obj = getParameters(KEY_DATA);
         if (obj instanceof String) {
             return (String) obj;
         }

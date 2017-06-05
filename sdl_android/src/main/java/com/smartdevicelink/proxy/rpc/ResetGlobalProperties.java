@@ -99,6 +99,6 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
     public void setProperties( List<GlobalProperty> properties ) {
-		setParameter(KEY_PROPERTIES, properties);
+		setParameters(KEY_PROPERTIES, properties);
     }
 }

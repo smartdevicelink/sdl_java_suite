@@ -30,7 +30,7 @@ public class GetDTCsResponse extends RPCResponse{
     }
 
     public void setDtc(List<String> dtc){
-        setParameter(KEY_DTC, dtc);
+        setParameters(KEY_DTC, dtc);
     }
     
     public Integer getEcuHeader(){
@@ -38,6 +38,6 @@ public class GetDTCsResponse extends RPCResponse{
     }
     
     public void setEcuHeader(Integer ecuHeader){
-        setParameter(KEY_ECU_HEADER, ecuHeader);
+        setParameters(KEY_ECU_HEADER, ecuHeader);
     }
 }

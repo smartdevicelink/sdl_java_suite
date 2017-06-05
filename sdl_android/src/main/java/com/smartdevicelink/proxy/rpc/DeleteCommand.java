@@ -91,6 +91,6 @@ public class DeleteCommand extends RPCRequest {
 	 *            <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
 	 */    
     public void setCmdID( Integer cmdID ) {
-		setParameter(KEY_CMD_ID, cmdID);
+		setParameters(KEY_CMD_ID, cmdID);
     }
 }

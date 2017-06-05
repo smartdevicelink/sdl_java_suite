@@ -209,7 +209,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField1(String mainField1) {
-		setParameter(KEY_MAIN_FIELD_1, mainField1);
+		setParameters(KEY_MAIN_FIELD_1, mainField1);
     }
 	/**
 	 * Gets the text displayed on the second display line of a two-line display
@@ -239,7 +239,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMainField2(String mainField2) {
-		setParameter(KEY_MAIN_FIELD_2, mainField2);
+		setParameters(KEY_MAIN_FIELD_2, mainField2);
     }
 
 	/**
@@ -273,7 +273,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField3(String mainField3) {
-		setParameter(KEY_MAIN_FIELD_3, mainField3);
+		setParameters(KEY_MAIN_FIELD_3, mainField3);
     }
 
 	/**
@@ -307,7 +307,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setMainField4(String mainField4) {
-		setParameter(KEY_MAIN_FIELD_4, mainField4);
+		setParameters(KEY_MAIN_FIELD_4, mainField4);
     }
 	/**
 	 * Gets the alignment that Specifies how mainField1 and mainField2 text
@@ -335,7 +335,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setAlignment(TextAlignment alignment) {
-		setParameter(KEY_ALIGNMENT, alignment);
+		setParameters(KEY_ALIGNMENT, alignment);
     }
 	/**
 	 * Gets text in the Status Bar
@@ -364,7 +364,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setStatusBar(String statusBar) {
-		setParameter(KEY_STATUS_BAR, statusBar);
+		setParameters(KEY_STATUS_BAR, statusBar);
     }
 	/**
 	 * Gets the String value of the MediaClock
@@ -393,7 +393,7 @@ public class Show extends RPCRequest {
 	 */
 	@Deprecated
     public void setMediaClock(String mediaClock) {
-		setParameter(KEY_MEDIA_CLOCK, mediaClock);
+		setParameters(KEY_MEDIA_CLOCK, mediaClock);
     }
 	/**
 	 * Gets the text in the track field
@@ -417,7 +417,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setMediaTrack(String mediaTrack) {
-		setParameter(KEY_MEDIA_TRACK, mediaTrack);
+		setParameters(KEY_MEDIA_TRACK, mediaTrack);
     }
 
 	/**
@@ -431,7 +431,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setGraphic(Image graphic) {
-		setParameter(KEY_GRAPHIC, graphic);
+		setParameters(KEY_GRAPHIC, graphic);
     }
 
 	/**
@@ -448,7 +448,7 @@ public class Show extends RPCRequest {
 
     
     public void setSecondaryGraphic(Image secondaryGraphic) {
-		setParameter(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
+		setParameters(KEY_SECONDARY_GRAPHIC, secondaryGraphic);
     }
 
 
@@ -488,7 +488,7 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-		setParameter(KEY_SOFT_BUTTONS, softButtons);
+		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 	/**
@@ -518,6 +518,6 @@ public class Show extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCustomPresets(List<String> customPresets) {
-		setParameter(KEY_CUSTOM_PRESETS, customPresets);
+		setParameters(KEY_CUSTOM_PRESETS, customPresets);
     }
 }
