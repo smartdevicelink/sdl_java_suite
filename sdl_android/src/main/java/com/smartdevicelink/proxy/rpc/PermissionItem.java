@@ -80,10 +80,10 @@ public class PermissionItem extends RPCStruct {
         setValue(KEY_HMI_PERMISSIONS, hmiPermissions);
     }
     @SuppressWarnings("unchecked")
-    public ParameterPermissions getParametersPermissions() {
+    public ParameterPermissions getParameterPermissions() {
     	return (ParameterPermissions) getObject(ParameterPermissions.class, KEY_PARAMETER_PERMISSIONS);
     }
-    public void setParametersPermissions(ParameterPermissions parameterPermissions) {
+    public void setParameterPermissions(ParameterPermissions parameterPermissions) {
         setValue(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
     }
 }
