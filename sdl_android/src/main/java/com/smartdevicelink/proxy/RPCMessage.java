@@ -112,5 +112,13 @@ public class RPCMessage extends RPCStruct  {
 	public Boolean getBoolean(String key) { return (Boolean) parameters.get(key); }
 
 	@Override
-	public Long getLong(String key){ return (Long) parameters.get(key); }
+	public Long getLong(String key){
+		Object result = parameters.get(key);
+		if (result instanceof Integer) {
+			return ((Integer) result).longValue();
+		}else if(result instanceof Long){
+			return (Long) result;
+		}
+		return null;
+	}
 }
