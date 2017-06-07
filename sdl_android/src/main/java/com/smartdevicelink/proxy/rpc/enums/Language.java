@@ -131,12 +131,12 @@ public enum Language {
 
     NO_NO("NO-NO"),
     /**
-     *English - India
+     * English - India
      */
 
     EN_IN("EN-IN"),
     /**
-     *Thai - Thailand
+     * Thai - Thailand
      */
 
     TH_TH("TH-TH");
