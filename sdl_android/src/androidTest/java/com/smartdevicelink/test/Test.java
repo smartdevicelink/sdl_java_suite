@@ -1,6 +1,6 @@
 package com.smartdevicelink.test;
 
-import java.util.ArrayList;
+import android.util.Log;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,12 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
@@ -22,7 +22,9 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MenuParams;
+import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
@@ -126,6 +128,9 @@ public class Test {
 	public static final HMILevel                       GENERAL_HMILEVEL                       = HMILevel.HMI_FULL;
 	public static final DIDResult                      GENERAL_DIDRESULT                      = new DIDResult();
 	public static final TextField                      GENERAL_TEXTFIELD                      = new TextField();
+	public static final OasisAddress                   GENERAL_OASISADDRESS                   = new OasisAddress();
+	public static final Coordinate                     GENERAL_COORDINATE                     = new Coordinate();
+	public static final LocationDetails                GENERAL_LOCATIONDETAILS                = new LocationDetails();
 	public static final Dimension                      GENERAL_DIMENSION                      = Dimension._2D;
 	public static final ImageType                      GENERAL_IMAGETYPE                      = ImageType.DYNAMIC;
 	public static final AudioType                      GENERAL_AUDIOTYPE                      = AudioType.PCM;
@@ -295,6 +300,27 @@ public class Test {
 		GENERAL_TEXTFIELD.setWidth(GENERAL_INT);
 		GENERAL_TEXTFIELD.setCharacterSet(GENERAL_CHARACTERSET);
 		GENERAL_TEXTFIELD_LIST.add(GENERAL_TEXTFIELD);
+
+		GENERAL_COORDINATE.setLongitudeDegrees(GENERAL_FLOAT);
+		GENERAL_COORDINATE.setLatitudeDegrees(GENERAL_FLOAT);
+
+		GENERAL_OASISADDRESS.setCountryName(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setThoroughfare(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setSubThoroughfare(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setCountryCode(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setPostalCode(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setLocality(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setSubLocality(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setAdministrativeArea(GENERAL_STRING);
+		GENERAL_OASISADDRESS.setSubAdministrativeArea(GENERAL_STRING);
+
+		GENERAL_LOCATIONDETAILS.setAddressLines(GENERAL_STRING_LIST);
+		GENERAL_LOCATIONDETAILS.setCoordinate(GENERAL_COORDINATE);
+		GENERAL_LOCATIONDETAILS.setLocationDescription(GENERAL_STRING);
+		GENERAL_LOCATIONDETAILS.setLocationImage(GENERAL_IMAGE);
+		GENERAL_LOCATIONDETAILS.setLocationName(GENERAL_STRING);
+		GENERAL_LOCATIONDETAILS.setSearchAddress(GENERAL_OASISADDRESS);
+		GENERAL_LOCATIONDETAILS.setPhoneNumber(GENERAL_STRING);
 		
 		GENERAL_FILETYPE_LIST.add(GENERAL_FILETYPE);
 		

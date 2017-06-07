@@ -1,0 +1,18 @@
+{
+  "request":{
+    "name":"GetWayPoints",
+    "correlationID":196,
+    "parameters":{
+      "wayPointType":"DESTINATION"
+    }
+  },
+  "response":{
+    "name":"GetWayPointsResponse",
+    "correlationID":197,
+    "parameters":{
+      "wayPoints":[
+        {}, {}
+      ]
+    }
+  }
+}

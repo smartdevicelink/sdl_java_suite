@@ -1,0 +1,10 @@
+{
+  "response":{
+    "name":"StreamRPCResponse",
+    "correlationID":198,
+    "parameters":{
+      "fileName":"test",
+      "fileSize":100
+    }
+  }
+}
