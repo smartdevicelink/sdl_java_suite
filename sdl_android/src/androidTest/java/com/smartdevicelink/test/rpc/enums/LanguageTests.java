@@ -66,6 +66,10 @@ public class LanguageTests extends TestCase {
 		Language enumDaDk = Language.valueForString(example);
 		example = "NO-NO";
 		Language enumNoNo = Language.valueForString(example);
+		example = "EN-IN";
+		Language enumEnIn = Language.valueForString(example);
+		example = "TH-TH";
+		Language enumThTh = Language.valueForString(example);
 		
 		assertNotNull("EN-US returned null", enumEnUs);
 		assertNotNull("ES-MX returned null", enumEsMx);
@@ -91,6 +95,8 @@ public class LanguageTests extends TestCase {
 		assertNotNull("CS-CZ returned null", enumCsCz);
 		assertNotNull("DA-DK returned null", enumDaDk);
 		assertNotNull("NO-NO returned null", enumNoNo);
+		assertNotNull("EN-IN returned null", enumEnIn);
+		assertNotNull("TH-TH returned null", enumThTh);
 	}
 
 	/**
@@ -153,6 +159,8 @@ public class LanguageTests extends TestCase {
 		enumTestList.add(Language.CS_CZ);
 		enumTestList.add(Language.DA_DK);
 		enumTestList.add(Language.NO_NO);
+		enumTestList.add(Language.EN_IN);
+		enumTestList.add(Language.TH_TH);
 		
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

@@ -129,7 +129,17 @@ public enum Language {
      * Norwegian - Norway
      */
 
-    NO_NO("NO-NO");
+    NO_NO("NO-NO"),
+    /**
+     *English - India
+     */
+
+    EN_IN("EN-IN"),
+    /**
+     *Thai - Thailand
+     */
+
+    TH_TH("TH-TH");
 
     private final String INTERNAL_NAME;
     
