@@ -82,6 +82,10 @@ public class RPCStructTests extends TestCase {
         testStruct.setValue(longKey, testInt);
 
         assertEquals(Test.MATCH, testStruct.getLong(longKey), new Long(testInt.longValue()));
+
+        testStruct.setValue(longKey, testDouble);
+
+        assertNull(testStruct.getLong(longKey));
     }
 
     public void testGetObject(){
@@ -136,5 +140,19 @@ public class RPCStructTests extends TestCase {
         assertEquals(Test.MATCH, testMediaClockFormats, testStruct.getObject(MediaClockFormat.class, keyMediaClockFormats));
 
         assertNull(testStruct.getObject(Image.class, keyAirbag)); // Test incorrect class
+    }
+
+    public void testGetObjectExceptions(){
+        String invalidKey = "invalid";
+        testStruct.setValue(invalidKey, new Hashtable<>());
+        assertNull(testStruct.getObject(Integer.class, invalidKey));
+
+        List<Hashtable<String, Object>> list = new ArrayList<>();
+        list.add(new Hashtable<String, Object>());
+        testStruct.setValue(invalidKey, list);
+        assertNull(testStruct.getObject(Integer.class, invalidKey));
+
+        testStruct.setValue(invalidKey, Test.GENERAL_STRING);
+        assertNull(testStruct.getObject(Integer.class, invalidKey));
     }
 }
