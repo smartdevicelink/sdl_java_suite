@@ -137,6 +137,15 @@ public class RPCStruct {
 
 	// Helper methods
 
+	/**
+	 * @param tClass a Class to cast Objects to
+	 * @param obj Object returned from a stored hashtable
+	 * @return A null object if obj is null or if none of the following is true:
+	 * a) obj is an instance of tClass
+	 * b) obj is an instance of String and it tClass has a valid `valueForString` method
+	 * c) obj is an instance of a Hashtable
+	 * d) obj is an instance of a List
+	 */
 	protected Object formatObject(Class tClass, Object obj){
 		if(obj == null){
 			return null;
@@ -183,6 +192,11 @@ public class RPCStruct {
 		return null;
 	}
 
+	/**
+	 * @param tClass - a Class with a `valueForString(String s)` method that returns an Object for a given String
+	 * @param s - a String to be converted to an Object using a `valueForString(String s)` method
+	 * @return An Object converted using a `valueForString(String s)` method in the Class passed in, or a null object if such method does not exist
+	 */
 	protected Object getValueForString(Class tClass, String s){
 		Method valueForString = null;
 		try {
@@ -204,7 +218,6 @@ public class RPCStruct {
 	}
 
 	// Common Object Getters
-
 	public String getString(String key) {
 		return (String) store.get(key);
 	}
@@ -219,5 +232,13 @@ public class RPCStruct {
 
 	public Boolean getBoolean(String key) { return (Boolean) store.get(key); }
 
-	public Long getLong(String key){ return (Long) store.get(key); }
+	public Long getLong(String key){
+		Object result = store.get(key);
+		if (result instanceof Integer) {
+			return ((Integer) result).longValue();
+		}else if(result instanceof Long){
+			return (Long) result;
+		}
+		return null;
+	}
 }
