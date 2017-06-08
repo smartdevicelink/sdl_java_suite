@@ -1,11 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * <p>This RPC is used to update the user with navigation information for the constantly shown screen (base screen), but
@@ -61,12 +60,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText1(String navigationText1){
-        if(navigationText1 != null){
-            parameters.put(KEY_TEXT1, navigationText1);
-        }
-        else{
-            parameters.remove(KEY_TEXT1);
-        }
+        setParameters(KEY_TEXT1, navigationText1);
     }
 
     /**
@@ -75,7 +69,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return String -a String value representing a text for navigation text field 1
      */
     public String getNavigationText1(){
-        return (String) parameters.get(KEY_TEXT1);
+        return getString(KEY_TEXT1);
     }
 
     /**
@@ -87,12 +81,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setNavigationText2(String navigationText2){
-        if(navigationText2 != null){
-            parameters.put(KEY_TEXT2, navigationText2);
-        }
-        else{
-            parameters.remove(KEY_TEXT2);
-        }
+        setParameters(KEY_TEXT2, navigationText2);
     }
 
     /**
@@ -101,7 +90,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return String -a String value representing a text for navigation text field 2
      */
     public String getNavigationText2(){
-        return (String) parameters.get(KEY_TEXT2);
+        return getString(KEY_TEXT2);
     }
 
     /**
@@ -113,12 +102,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setEta(String eta){
-        if(eta != null){
-            parameters.put(KEY_ETA, eta);
-        }
-        else{
-            parameters.remove(KEY_ETA);
-        }
+        setParameters(KEY_ETA, eta);
     }
 
     /**
@@ -127,7 +111,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return String -a String value representing a text field for estimated time of arrival
      */
     public String getEta(){
-        return (String) parameters.get(KEY_ETA);
+        return getString(KEY_ETA);
     }
 
     /**
@@ -139,12 +123,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Maxlength=500
      */
     public void setTotalDistance(String totalDistance){
-        if(totalDistance != null){
-            parameters.put(KEY_TOTAL_DISTANCE, totalDistance);
-        }
-        else{
-            parameters.remove(KEY_TOTAL_DISTANCE);
-        }
+        setParameters(KEY_TOTAL_DISTANCE, totalDistance);
     }
 
     /**
@@ -153,7 +132,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return String -a String value representing a text field for total distance
      */
     public String getTotalDistance(){
-        return (String) parameters.get(KEY_TOTAL_DISTANCE);
+        return getString(KEY_TOTAL_DISTANCE);
     }
 
     /**
@@ -163,12 +142,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            an Image value
      */
     public void setTurnIcon(Image turnIcon){
-        if(turnIcon != null){
-            parameters.put(KEY_MANEUVER_IMAGE, turnIcon);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_IMAGE);
-        }
+        setParameters(KEY_MANEUVER_IMAGE, turnIcon);
     }
 
     /**
@@ -178,13 +152,7 @@ public class ShowConstantTbt extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public Image getTurnIcon(){
-        Object obj = parameters.get(KEY_MANEUVER_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-            return new Image((Hashtable<String, Object>) obj);
-        }
-        return null;
+        return (Image) getObject(Image.class, KEY_MANEUVER_IMAGE);
     }
 
     /**
@@ -194,12 +162,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            an Image value
      */
     public void setNextTurnIcon(Image nextTurnIcon){
-        if(nextTurnIcon != null){
-            parameters.put(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
-        }
-        else{
-            parameters.remove(KEY_NEXT_MANEUVER_IMAGE);
-        }
+        setParameters(KEY_NEXT_MANEUVER_IMAGE, nextTurnIcon);
     }
 
     /**
@@ -209,13 +172,7 @@ public class ShowConstantTbt extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public Image getNextTurnIcon(){
-        Object obj = parameters.get(KEY_NEXT_MANEUVER_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-            return new Image((Hashtable<String, Object>) obj);
-        }
-        return null;
+        return (Image) getObject(Image.class, KEY_NEXT_MANEUVER_IMAGE);
     }
 
     /**
@@ -227,12 +184,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuver(Double distanceToManeuver){
-        if(distanceToManeuver != null){
-            parameters.put(KEY_MANEUVER_DISTANCE, distanceToManeuver);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_DISTANCE);
-        }
+        setParameters(KEY_MANEUVER_DISTANCE, distanceToManeuver);
     }
 
     /**
@@ -241,7 +193,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return Double -a Double value representing a Fraction of distance till next maneuver
      */
     public Double getDistanceToManeuver(){
-        return (Double) parameters.get(KEY_MANEUVER_DISTANCE);
+        return getDouble(KEY_MANEUVER_DISTANCE);
     }
 
     /**
@@ -253,12 +205,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            <b>Notes: </b>Minvalue=0; Maxvalue=1000000000
      */
     public void setDistanceToManeuverScale(Double distanceToManeuverScale){
-        if(distanceToManeuverScale != null){
-            parameters.put(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_DISTANCE_SCALE);
-        }
+        setParameters(KEY_MANEUVER_DISTANCE_SCALE, distanceToManeuverScale);
     }
 
     /**
@@ -267,7 +214,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return Double -a Double value representing a Distance till next maneuver (starting from) from previous maneuver
      */
     public Double getDistanceToManeuverScale(){
-        return (Double) parameters.get(KEY_MANEUVER_DISTANCE_SCALE);
+        return getDouble(KEY_MANEUVER_DISTANCE_SCALE);
     }
 
     /**
@@ -280,12 +227,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            a Boolean value
      */
     public void setManeuverComplete(Boolean maneuverComplete){
-        if(maneuverComplete != null){
-            parameters.put(KEY_MANEUVER_COMPLETE, maneuverComplete);
-        }
-        else{
-            parameters.remove(KEY_MANEUVER_COMPLETE);
-        }
+        setParameters(KEY_MANEUVER_COMPLETE, maneuverComplete);
     }
 
     /**
@@ -294,7 +236,7 @@ public class ShowConstantTbt extends RPCRequest{
      * @return Boolean -a Boolean value
      */
     public Boolean getManeuverComplete(){
-        return (Boolean) parameters.get(KEY_MANEUVER_COMPLETE);
+        return getBoolean(KEY_MANEUVER_COMPLETE);
     }
 
     /**
@@ -307,12 +249,7 @@ public class ShowConstantTbt extends RPCRequest{
      *            a List<SoftButton> value
      */
     public void setSoftButtons(List<SoftButton> softButtons){
-        if(softButtons != null){
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        }
-        else{
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
     /**
@@ -323,34 +260,14 @@ public class ShowConstantTbt extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons(){
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-            List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-            if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof SoftButton) {
-                    return (List<SoftButton>) list;
-                } else if (obj instanceof Hashtable) {
-                    List<SoftButton> newList = new ArrayList<SoftButton>();
-                    for (Object hashObj : list) {
-                        newList.add(new SoftButton((Hashtable<String, Object>)hashObj));
-                    }
-                    return newList;
-                }
-            }
-        }
-        return null;
+        return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
     public void setTimeToDestination(String timeToDestination){
-        if(timeToDestination != null){
-            parameters.put(KEY_TIME_TO_DESTINATION, timeToDestination);
-        }
-        else{
-            parameters.remove(KEY_TIME_TO_DESTINATION);
-        }
+        setParameters(KEY_TIME_TO_DESTINATION, timeToDestination);
     }
 
     public String getTimeToDestination(){
-        return (String) parameters.get(KEY_TIME_TO_DESTINATION);
+        return getString(KEY_TIME_TO_DESTINATION);
     }
 }

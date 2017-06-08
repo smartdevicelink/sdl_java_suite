@@ -1,11 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.util.DebugTool;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
 * 
@@ -119,7 +118,7 @@ public class AddCommand extends RPCRequest {
 	 * @return Integer -an integer representation a Unique Command ID
 	 */
     public Integer getCmdID() {
-        return (Integer) parameters.get(KEY_CMD_ID);
+		return getInteger(KEY_CMD_ID);
     }
 	/**
 	 * <p>Sets an Unique Command ID that identifies the command. Is returned in an
@@ -133,11 +132,7 @@ public class AddCommand extends RPCRequest {
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */
     public void setCmdID(Integer cmdID) {
-        if (cmdID != null) {
-            parameters.put(KEY_CMD_ID, cmdID);
-        } else {
-            parameters.remove(KEY_CMD_ID);
-        }
+		setParameters(KEY_CMD_ID, cmdID);
     }
 	/**
 	 * <p>
@@ -150,18 +145,7 @@ public class AddCommand extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public MenuParams getMenuParams() {
-        Object obj = parameters.get(KEY_MENU_PARAMS);
-        if (obj instanceof MenuParams) {
-        	return (MenuParams) obj;
-        }
-        else if (obj instanceof Hashtable) {
-        	try {
-        		return new MenuParams((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MENU_PARAMS, e);
-            }
-        }
-        return null;
+		return (MenuParams) getObject(MenuParams.class, KEY_MENU_PARAMS);
     }
 	/**
 	 * <p>
@@ -175,11 +159,7 @@ public class AddCommand extends RPCRequest {
 	 *            a menuParams object
 	 */    
     public void setMenuParams(MenuParams menuParams) {
-        if (menuParams != null) {
-            parameters.put(KEY_MENU_PARAMS, menuParams);
-        } else {
-            parameters.remove(KEY_MENU_PARAMS);
-        }
+        setParameters(KEY_MENU_PARAMS, menuParams);
     }
 	/**
 	 * <p>
@@ -190,16 +170,7 @@ public class AddCommand extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<String> getVrCommands() {
-        if (parameters.get(KEY_VR_COMMANDS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_COMMANDS);
-	    	if (list != null && list.size() > 0) {
-	    		Object obj = list.get(0);
-	    		if (obj instanceof String) {
-	    			return (List<String>)list;
-	    		}
-	    	}
-    	}
-    	return null;
+		return (List<String>) getObject(String.class, KEY_VR_COMMANDS);
     }
 	/**
 	 * <p>
@@ -219,11 +190,7 @@ public class AddCommand extends RPCRequest {
 	 *            not zero-length, not whitespace only) element</p>
 	 */
     public void setVrCommands( List<String> vrCommands ) {
-        if (vrCommands != null) {
-            parameters.put(KEY_VR_COMMANDS, vrCommands );
-        } else {
-            parameters.remove(KEY_VR_COMMANDS);
-        }
+		setParameters(KEY_VR_COMMANDS, vrCommands);
     }
 
 	/**
@@ -234,17 +201,7 @@ public class AddCommand extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public Image getCmdIcon() {
-        Object obj = parameters.get(KEY_CMD_ICON);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CMD_ICON, e);
-            }
-        }
-        return null;
+		return (Image) getObject(Image.class, KEY_CMD_ICON);
     }
 
 	/**
@@ -259,10 +216,6 @@ public class AddCommand extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setCmdIcon(Image cmdIcon) {
-        if (cmdIcon != null) {
-            parameters.put(KEY_CMD_ICON, cmdIcon);
-        } else {
-            parameters.remove(KEY_CMD_ICON);
-        }
+        setParameters(KEY_CMD_ICON, cmdIcon);
     }
 }

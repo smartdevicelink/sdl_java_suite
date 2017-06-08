@@ -4,7 +4,9 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
-import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+
+import static com.smartdevicelink.proxy.rpc.OnHMIStatus.KEY_HMI_LEVEL;
+
 /**
  * The lockscreen must perform the following:
  *	Limit all application control usability from the mobile device with a full-screen static image overlay or separate view.
@@ -27,16 +29,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public Boolean getDriverDistractionStatus() {
-		return (Boolean)parameters.get(KEY_DRIVER_DISTRACTION);
+		return getBoolean(KEY_DRIVER_DISTRACTION);
 	}
 	
 	public void setDriverDistractionStatus(Boolean driverDistractionStatus) {
-		
-		if (driverDistractionStatus != null){
-			parameters.put(KEY_DRIVER_DISTRACTION, driverDistractionStatus);
-		} else {
-	        parameters.remove(KEY_DRIVER_DISTRACTION);
-	    }
+		setParameters(KEY_DRIVER_DISTRACTION, driverDistractionStatus);
 	}	
     /**
      * <p>Get the {@linkplain LockScreenStatus} enumeration, indicating if the lockscreen should be required, optional or off </p>
@@ -44,15 +41,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    	
 
 	public LockScreenStatus getShowLockScreen() {
-		return (LockScreenStatus)parameters.get(KEY_SHOW_LOCK_SCREEN);
+		return (LockScreenStatus) getParameters(KEY_SHOW_LOCK_SCREEN);
 	}
 	
 	public void setShowLockScreen(LockScreenStatus showLockScreen) {
-		if (showLockScreen != null) {
-			parameters.put(KEY_SHOW_LOCK_SCREEN, showLockScreen );
-        } else {
-        	parameters.remove(KEY_SHOW_LOCK_SCREEN);
-        }
+		setParameters(KEY_SHOW_LOCK_SCREEN, showLockScreen);
 	}
     /**
      * <p>Get user selection status for the application (has the app been selected via hmi or voice command)</p>
@@ -60,15 +53,11 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public Boolean getUserSelected() {
-		return (Boolean)parameters.get(KEY_USER_SELECTED);
+		return getBoolean(KEY_USER_SELECTED);
 	}
 	
 	public void setUserSelected(Boolean userSelected) {
-		if (userSelected != null) {
-			parameters.put(KEY_USER_SELECTED, userSelected );
-        } else {
-        	parameters.remove(KEY_USER_SELECTED);
-        }
+		setParameters(KEY_USER_SELECTED, userSelected);
 	}		
     /**
      * <p>Get HMILevel in effect for the application</p>
@@ -76,14 +65,10 @@ public class OnLockScreenStatus extends RPCNotification {
      */    
 
 	public HMILevel getHMILevel() {
-		return (HMILevel)parameters.get(OnHMIStatus.KEY_HMI_LEVEL);
+		return (HMILevel) getParameters(KEY_HMI_LEVEL);
 	}
 	
 	public void setHMILevel(HMILevel setHMILevel) {
-		if (setHMILevel != null) {
-			parameters.put(OnHMIStatus.KEY_HMI_LEVEL, setHMILevel );
-        } else {
-        	parameters.remove(OnHMIStatus.KEY_HMI_LEVEL);
-        }
+		setParameters(KEY_HMI_LEVEL, setHMILevel);
 	}				
 }

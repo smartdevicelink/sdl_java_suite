@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
+
+import java.util.Hashtable;
+
 /** Emergency Call notification and confirmation data.
  * 
  * <p><b>Parameter List</b></p>
@@ -67,51 +69,21 @@ public class ECallInfo extends RPCStruct {
     }
 
     public void setECallNotificationStatus(VehicleDataNotificationStatus eCallNotificationStatus) {
-        if (eCallNotificationStatus != null) {
-            store.put(KEY_E_CALL_NOTIFICATION_STATUS, eCallNotificationStatus);
-        } else {
-        	store.remove(KEY_E_CALL_NOTIFICATION_STATUS);
-        }
+        setValue(KEY_E_CALL_NOTIFICATION_STATUS, eCallNotificationStatus);
     }
     public VehicleDataNotificationStatus getECallNotificationStatus() {
-        Object obj = store.get(KEY_E_CALL_NOTIFICATION_STATUS);
-        if (obj instanceof VehicleDataNotificationStatus) {
-            return (VehicleDataNotificationStatus) obj;
-        } else if (obj instanceof String) {
-        	return VehicleDataNotificationStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_E_CALL_NOTIFICATION_STATUS);
     }
     public void setAuxECallNotificationStatus(VehicleDataNotificationStatus auxECallNotificationStatus) {
-        if (auxECallNotificationStatus != null) {
-            store.put(KEY_AUX_E_CALL_NOTIFICATION_STATUS, auxECallNotificationStatus);
-        } else {
-        	store.remove(KEY_AUX_E_CALL_NOTIFICATION_STATUS);
-        }
+        setValue(KEY_AUX_E_CALL_NOTIFICATION_STATUS, auxECallNotificationStatus);
     }
     public VehicleDataNotificationStatus getAuxECallNotificationStatus() {
-        Object obj = store.get(KEY_AUX_E_CALL_NOTIFICATION_STATUS);
-        if (obj instanceof VehicleDataNotificationStatus) {
-            return (VehicleDataNotificationStatus) obj;
-        } else if (obj instanceof String) {
-        	return VehicleDataNotificationStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_AUX_E_CALL_NOTIFICATION_STATUS);
     }
     public void setECallConfirmationStatus(ECallConfirmationStatus eCallConfirmationStatus) {
-        if (eCallConfirmationStatus != null) {
-            store.put(KEY_E_CALL_CONFIRMATION_STATUS, eCallConfirmationStatus);
-        } else {
-        	store.remove(KEY_E_CALL_CONFIRMATION_STATUS);
-        }
+        setValue(KEY_E_CALL_CONFIRMATION_STATUS, eCallConfirmationStatus);
     }
     public ECallConfirmationStatus getECallConfirmationStatus() {
-        Object obj = store.get(KEY_E_CALL_CONFIRMATION_STATUS);
-        if (obj instanceof ECallConfirmationStatus) {
-            return (ECallConfirmationStatus) obj;
-        } else if (obj instanceof String) {
-        	return ECallConfirmationStatus.valueForString((String) obj);
-        }
-        return null;
+        return (ECallConfirmationStatus) getObject(ECallConfirmationStatus.class, KEY_E_CALL_CONFIRMATION_STATUS);
     }
 }

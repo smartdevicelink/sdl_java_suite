@@ -59,39 +59,21 @@ public class DIDResult extends RPCStruct {
         super(hash);
     }
     public void setResultCode(VehicleDataResultCode resultCode) {
-    	if (resultCode != null) {
-    		store.put(KEY_RESULT_CODE, resultCode);
-    	} else {
-    		store.remove(KEY_RESULT_CODE);
-    	}
+    	setValue(KEY_RESULT_CODE, resultCode);
     }
     public VehicleDataResultCode getResultCode() {
-        Object obj = store.get(KEY_RESULT_CODE);
-        if (obj instanceof VehicleDataResultCode) {
-            return (VehicleDataResultCode) obj;
-        } else if (obj instanceof String) {
-        	return VehicleDataResultCode.valueForString((String) obj);
-        }
-        return null;
+		return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
     public void setDidLocation(Integer didLocation) {
-    	if (didLocation != null) {
-    		store.put(KEY_DID_LOCATION, didLocation);
-    	} else {
-    		store.remove(KEY_DID_LOCATION);
-    	}
+    	setValue(KEY_DID_LOCATION, didLocation);
     }
     public Integer getDidLocation() {
-    	return (Integer) store.get(KEY_DID_LOCATION);
+    	return getInteger(KEY_DID_LOCATION);
     }    
     public void setData(String data) {
-    	if (data != null) {
-    		store.put(KEY_DATA, data);
-    	} else {
-    		store.remove(KEY_DATA);
-    	}
+    	setValue(KEY_DATA, data);
     }
     public String getData() {
-    	return (String) store.get(KEY_DATA);
+    	return getString(KEY_DATA);
     }
 }

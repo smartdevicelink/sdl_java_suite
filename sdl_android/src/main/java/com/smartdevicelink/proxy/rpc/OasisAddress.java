@@ -35,7 +35,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getCountryName() {
-        return (String) store.get(KEY_COUNTRY_NAME);
+        return getString(KEY_COUNTRY_NAME);
     }
 
 	/**
@@ -46,11 +46,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/
     public void setCountryName(String countryName) {
-        if (countryName != null) {
-            store.put(KEY_COUNTRY_NAME, countryName);
-        } else {
-            store.remove(KEY_COUNTRY_NAME);
-        }
+        setValue(KEY_COUNTRY_NAME, countryName);
     }
 
     /**
@@ -60,7 +56,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getCountryCode() {
-        return (String) store.get(KEY_COUNTRY_CODE);
+        return getString(KEY_COUNTRY_CODE);
     }
 
 	/**
@@ -71,11 +67,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setCountryCode(String countryCode) {
-        if (countryCode != null) {
-            store.put(KEY_COUNTRY_CODE, countryCode);
-        } else {
-            store.remove(KEY_COUNTRY_CODE);
-        }
+        setValue(KEY_COUNTRY_CODE, countryCode);
     }
 
     /**
@@ -85,7 +77,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getPostalCode() {
-        return (String) store.get(KEY_POSTAL_CODE);
+        return getString(KEY_POSTAL_CODE);
     }
 
 	/**
@@ -96,11 +88,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setPostalCode(String postalCode) {
-        if (postalCode != null) {
-            store.put(KEY_POSTAL_CODE, postalCode);
-        } else {
-            store.remove(KEY_POSTAL_CODE);
-        }
+        setValue(KEY_POSTAL_CODE, postalCode);
     }
 
     /**
@@ -110,7 +98,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getAdministrativeArea() {
-        return (String) store.get(KEY_ADMINISTRATIVE_AREA);
+        return getString(KEY_ADMINISTRATIVE_AREA);
     }
 
 	/**
@@ -121,11 +109,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setAdministrativeArea(String administrativeArea) {
-        if (administrativeArea != null) {
-            store.put(KEY_ADMINISTRATIVE_AREA, administrativeArea);
-        } else {
-            store.remove(KEY_ADMINISTRATIVE_AREA);
-        }
+        setValue(KEY_ADMINISTRATIVE_AREA, administrativeArea);
     }
 
     /**
@@ -135,7 +119,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getSubAdministrativeArea() {
-        return (String) store.get(KEY_SUB_ADMINISTRATIVE_AREA);
+        return getString(KEY_SUB_ADMINISTRATIVE_AREA);
     }
 
 	/**
@@ -146,11 +130,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setSubAdministrativeArea(String subAdministrativeArea) {
-        if (subAdministrativeArea != null) {
-            store.put(KEY_SUB_ADMINISTRATIVE_AREA, subAdministrativeArea);
-        } else {
-            store.remove(KEY_SUB_ADMINISTRATIVE_AREA);
-        }
+        setValue(KEY_SUB_ADMINISTRATIVE_AREA, subAdministrativeArea);
     }
 
     /**
@@ -160,7 +140,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getLocality() {
-        return (String) store.get(KEY_LOCALITY);
+        return getString(KEY_LOCALITY);
     }
 
 	/**
@@ -171,11 +151,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/
     public void setLocality(String locality) {
-        if (locality != null) {
-            store.put(KEY_LOCALITY, locality);
-        } else {
-            store.remove(KEY_LOCALITY);
-        }
+        setValue(KEY_LOCALITY, locality);
     }
 
     /**
@@ -185,7 +161,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getSubLocality() {
-        return (String) store.get(KEY_SUB_LOCALITY);
+        return getString(KEY_SUB_LOCALITY);
     }
 
 	/**
@@ -196,11 +172,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setSubLocality(String subLocality) {
-        if (subLocality != null) {
-            store.put(KEY_SUB_LOCALITY, subLocality);
-        } else {
-            store.remove(KEY_SUB_LOCALITY);
-        }
+        setValue(KEY_SUB_LOCALITY, subLocality);
     }
 
     /**
@@ -210,7 +182,7 @@ public class OasisAddress extends RPCStruct{
 	* 
     */
     public String getThoroughfare() {
-        return (String) store.get(KEY_THOROUGH_FARE);
+        return getString(KEY_THOROUGH_FARE);
     }
 
 	/**
@@ -221,11 +193,7 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setThoroughfare(String thoroughFare) {
-        if (thoroughFare != null) {
-            store.put(KEY_THOROUGH_FARE, thoroughFare);
-        } else {
-            store.remove(KEY_THOROUGH_FARE);
-        }
+        setValue(KEY_THOROUGH_FARE, thoroughFare);
     }
     
     /**
@@ -234,7 +202,7 @@ public class OasisAddress extends RPCStruct{
 	* @return String -  The Sub-Thoroughfare associated with the OasisAddress class.
     */
     public String getSubThoroughfare() {
-        return (String) store.get(KEY_SUB_THOROUGH_FARE);
+        return getString(KEY_SUB_THOROUGH_FARE);
     }
     
 	/**
@@ -245,10 +213,6 @@ public class OasisAddress extends RPCStruct{
 	* 
 	*/ 
     public void setSubThoroughfare(String subThoroughfare) {
-        if (subThoroughfare != null) {
-            store.put(KEY_SUB_THOROUGH_FARE, subThoroughfare);
-        } else {
-            store.remove(KEY_SUB_THOROUGH_FARE);
-        }
+        setValue(KEY_SUB_THOROUGH_FARE, subThoroughfare);
     }
 }
