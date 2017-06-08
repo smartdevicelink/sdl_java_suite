@@ -174,6 +174,7 @@ public class RPCStruct {
 							newList.add(constructor.newInstance((Hashtable<String, Object>)hashObj));
 						} catch (Exception e) {
 							e.printStackTrace();
+							return null;
 						}
 					}
 					return newList;

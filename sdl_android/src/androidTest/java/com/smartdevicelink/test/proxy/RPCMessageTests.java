@@ -83,6 +83,9 @@ public class RPCMessageTests extends TestCase {
         testMessage.setParameters(longKey, testInt);
 
         assertEquals(Test.MATCH, testMessage.getLong(longKey), new Long(testInt.longValue()));
+
+        testMessage.setParameters(longKey, testDouble);
+        assertNull(testMessage.getLong(longKey));
     }
 
     public void testGetObject(){
