@@ -15,6 +15,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.test.SampleRpc;
 import com.smartdevicelink.util.DebugTool;
 import java.io.ByteArrayOutputStream;
+import java.util.Hashtable;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -348,6 +349,35 @@ public class WiProProtocolTests extends AndroidTestCase {
 		assertNull(np_exception);
 		assertNull(oom_error);
 		
+	}
+
+	/**
+	 * Test data being null in SendMessage() method
+	 *
+	 * @see WiProProtocol#SendMessage(ProtocolMessage)
+	 */
+	public void testNullDataInSendMessage() {
+		Object protocolMsg = null;
+		Field dataField = null;
+		Field msgLockField = null;
+		try {
+			protocolMsg = Class.forName("com.smartdevicelink.protocol.ProtocolMessage").newInstance();
+			dataField = ProtocolMessage.class.getDeclaredField("_data");
+			dataField.setAccessible(true);
+			// Send null data
+			dataField.set(protocolMsg, null);
+			// Set _version and _messageLocks fields properly so we can progress to the later part of the method being tested
+			WiProProtocol protocol = new WiProProtocol(defaultListener);
+			protocol.setVersion((byte)0x01);
+			Hashtable<Byte, Object> table = new Hashtable<>();
+			table.put((byte)0x00, new Object());
+			msgLockField = WiProProtocol.class.getDeclaredField("_messageLocks");
+			msgLockField.setAccessible(true);
+			msgLockField.set(protocol, table);
+			protocol.SendMessage((ProtocolMessage)protocolMsg);
+		} catch (Exception e) {
+			Assert.fail("Exception in testNullDataInSendMessage(), " + e);
+		}
 	}
 	
 	protected class SdlConnectionTestClass extends SdlConnection{
