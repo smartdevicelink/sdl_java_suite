@@ -56,6 +56,7 @@ public enum FunctionID{
     GET_WAY_POINTS(45, "GetWayPoints"),
     SUBSCRIBE_WAY_POINTS(46, "SubscribeWayPoints"),
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
+    GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
