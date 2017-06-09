@@ -16,7 +16,7 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
     public static final String KEY_AUDIO_STREAMING_CAPABILITY = "audioStreamingCapability";
 
-    public SystemCapability(){ }
+    public SystemCapability(){}
 
     public SystemCapability(Hashtable<String, Object> hash) {
         super(hash);
