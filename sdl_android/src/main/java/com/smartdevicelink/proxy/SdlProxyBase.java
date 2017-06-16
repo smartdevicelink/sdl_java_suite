@@ -2831,8 +2831,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onUpdateTurnListResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			}
-			else {
+			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
+				// GetSystemCapabilityResponse
+				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetSystemCapabilityResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetSystemCapabilityResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
 							"SDL Message Version = " + _sdlMsgVersion);
