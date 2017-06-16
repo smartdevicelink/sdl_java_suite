@@ -7,11 +7,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 public enum SystemCapabilityType {
     NAVIGATION,
 
-    PHONE_CALL,
-
-    VIDEO_STREAMING,
-
-    AUDIO_STREAMING;
+    PHONE_CALL;
 
     public static SystemCapabilityType valueForString(String value) {
         try{

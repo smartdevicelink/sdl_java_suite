@@ -9,10 +9,8 @@ import junit.framework.TestCase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.smartdevicelink.proxy.rpc.HMICapabilities.KEY_AUDIO_STREAMING;
 import static com.smartdevicelink.proxy.rpc.HMICapabilities.KEY_NAVIGATION;
 import static com.smartdevicelink.proxy.rpc.HMICapabilities.KEY_PHONE_CALL;
-import static com.smartdevicelink.proxy.rpc.HMICapabilities.KEY_VIDEO_STREAMING;
 
 public class HMICapabilitiesTests extends TestCase {
     private HMICapabilities msg;
@@ -23,8 +21,6 @@ public class HMICapabilitiesTests extends TestCase {
 
         msg.setNavigationAvilable(Test.GENERAL_BOOLEAN);
         msg.setPhoneCallAvilable(Test.GENERAL_BOOLEAN);
-        msg.setVideoStreamingAvailable(Test.GENERAL_BOOLEAN);
-        msg.setAudioStreamingAvailable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -34,14 +30,10 @@ public class HMICapabilitiesTests extends TestCase {
         // Test Values
         Boolean navAvail = msg.isNavigationAvailable();
         Boolean phoneAvail = msg.isPhoneCallAvailable();
-        Boolean videoAvail = msg.isVideoStreamingAvailable();
-        Boolean audioAvail = msg.isAudioStreamingAvailable();
 
         // Valid Tests
         assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, navAvail);
         assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, phoneAvail);
-        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, videoAvail);
-        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, audioAvail);
 
         // Invalid/Null Tests
         HMICapabilities msg = new HMICapabilities();
@@ -49,8 +41,6 @@ public class HMICapabilitiesTests extends TestCase {
 
         assertFalse(msg.isNavigationAvailable());
         assertFalse(msg.isPhoneCallAvailable());
-        assertFalse(msg.isVideoStreamingAvailable());
-        assertFalse(msg.isAudioStreamingAvailable());
     }
 
     public void testJson(){
@@ -59,8 +49,6 @@ public class HMICapabilitiesTests extends TestCase {
         try{
             reference.put(KEY_NAVIGATION, Test.GENERAL_BOOLEAN);
             reference.put(HMICapabilities.KEY_PHONE_CALL, Test.GENERAL_BOOLEAN);
-            reference.put(HMICapabilities.KEY_VIDEO_STREAMING, Test.GENERAL_BOOLEAN);
-            reference.put(HMICapabilities.KEY_AUDIO_STREAMING, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -70,13 +58,6 @@ public class HMICapabilitiesTests extends TestCase {
 
             assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_PHONE_CALL),
                     JsonUtils.readStringListFromJsonObject(underTest, KEY_PHONE_CALL));
-
-            assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_VIDEO_STREAMING),
-                    JsonUtils.readStringListFromJsonObject(underTest, KEY_VIDEO_STREAMING));
-
-            assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_AUDIO_STREAMING),
-                    JsonUtils.readStringListFromJsonObject(underTest, KEY_AUDIO_STREAMING));
-
         } catch(JSONException e){
             fail(Test.JSON_FAIL);
         }

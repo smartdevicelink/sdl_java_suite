@@ -28,6 +28,7 @@ import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
@@ -429,6 +430,11 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         @Override
         public void onOnWayPointChange(OnWayPointChange notification) {
             Log.i(TAG, "OnWayPointChange notification from SDL: " + notification);
+        }
+
+        @Override
+        public void onGetSystemCapabilityResponse(GetSystemCapabilityResponse response) {
+            Log.i(TAG, "GetSystemCapability response from SDL: " + response);
         }
 
         @Override
