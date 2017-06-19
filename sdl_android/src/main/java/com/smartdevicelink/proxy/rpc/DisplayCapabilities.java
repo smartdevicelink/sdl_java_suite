@@ -30,13 +30,13 @@ import static com.smartdevicelink.proxy.constants.Names.displayType;
  *			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- * 	    <tr>
- * 	        <td>displayName</td>
+ * 		<tr>
+ * 			<td>displayName</td>
  * 			<td>String</td>
  * 			<td>The name of the display
  *			</td>
  * 			<td>SmartDeviceLink 4.4</td>
- * 	    </tr>
+ * 		</tr>
  * 		<tr>
  * 			<td>textField</td>
  * 			<td>TextField[]</td>
@@ -45,13 +45,13 @@ import static com.smartdevicelink.proxy.constants.Names.displayType;
  * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- *     <tr>
+ * 		<tr>
  * 			<td>mediaClockFormats</td>
  * 			<td>MediaClockFormat[]</td>
  * 			<td>An array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- *     <tr>
+ * 		<tr>
  * 			<td>graphicSupported</td>
  * 			<td>Boolean</td>
  * 			<td>The display's persistent screen supports referencing a static or dynamic image.</td>
@@ -67,7 +67,7 @@ import static com.smartdevicelink.proxy.constants.Names.displayType;
  */
 public class DisplayCapabilities extends RPCStruct {
 	public static final String KEY_DISPLAY_TYPE = "displayType";
-    public static final String KEY_DISPLAY_NAME = "displayName";
+	public static final String KEY_DISPLAY_NAME = "displayName";
 	public static final String KEY_MEDIA_CLOCK_FORMATS = "mediaClockFormats";
 	public static final String KEY_TEXT_FIELDS = "textFields";
 	public static final String KEY_IMAGE_FIELDS = "imageFields";
