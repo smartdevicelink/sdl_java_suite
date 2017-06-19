@@ -38,7 +38,7 @@ import java.util.Hashtable;
 public class Image extends RPCStruct {
 	public static final String KEY_VALUE = "value";
 	public static final String KEY_IMAGE_TYPE = "imageType";
-    public static final String KEY_IS_TEMPLATE = "isTemplate";
+	public static final String KEY_IS_TEMPLATE = "isTemplate";
 
 	/**
 	 * Constructs a newly allocated Image object
