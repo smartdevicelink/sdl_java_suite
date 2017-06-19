@@ -1,8 +1,5 @@
 package com.smartdevicelink.test;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
@@ -53,6 +50,9 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class Validator{
 
@@ -1188,6 +1188,10 @@ public class Validator{
     	if (item1.getDisplayType() != item2.getDisplayType()) {
     		return false;
     	}
+
+        if (!item1.getDisplayName().equals(item2.getDisplayName())) {
+            return false;
+        }
     	
     	if (item1.getGraphicSupported() != item2.getGraphicSupported()) {    		
     		return false;

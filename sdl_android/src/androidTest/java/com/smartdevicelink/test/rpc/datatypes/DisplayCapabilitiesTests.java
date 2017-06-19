@@ -108,6 +108,7 @@ public class DisplayCapabilitiesTests extends TestCase{
             reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, Test.GENERAL_INT);
             reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, Test.GENERAL_BOOLEAN);
             reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, Test.GENERAL_DISPLAYTYPE);
+            reference.put(DisplayCapabilities.KEY_DISPLAY_NAME, Test.GENERAL_STRING);
             reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
             reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(Test.GENERAL_MEDIACLOCKFORMAT_LIST));
             reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, Test.JSON_TEXTFIELDS);
