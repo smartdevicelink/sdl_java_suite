@@ -129,6 +129,8 @@ public class SdlRouterService extends Service{
 	public static HashMap<String,RegisteredApp> registeredApps;
 	private SparseArray<String> sessionMap;
 	private SparseArray<Integer> sessionHashIdMap;
+	private static SparseArray<String> previousSessionsMap;
+
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
@@ -354,7 +356,15 @@ public class SdlRouterService extends Service{
 	                	if(appId == null){
 	                		appId = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	}
-	                	if(appId == null || appId.length()<=0 || msg.replyTo == null){
+						if(previousSessionsMap == null){
+							previousSessionsMap = new SparseArray<>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
+						}
+						String savedSessionID = receivedBundle.getString(TransportConstants.SESSION_ID_EXTRA); // Get previous Session ID from TransportBroker
+						if(savedSessionID != null) {
+							Log.w(TAG, "Saved previous session ID into Router Services hashmap = " + savedSessionID + " and appID = " + appId); // store previous session id to Router services hashmap
+							previousSessionsMap.put(Integer.parseInt(savedSessionID), appId);
+						}
+						if(appId == null || appId.length()<=0 || msg.replyTo == null){
 	                		Log.w(TAG, "Unable to register app as no id or messenger was included");
 	                		if(msg.replyTo!=null){
 	                			message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_APP_ID_NOT_INCLUDED;
@@ -472,8 +482,8 @@ public class SdlRouterService extends Service{
 	                	}
 	                    break;
 	                case TransportConstants.ROUTER_REQUEST_NEW_SESSION:
-	                	String appIdRequesting = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
-	                	if(appIdRequesting == null){
+						String appIdRequesting = receivedBundle.getString(TransportConstants.APP_ID_EXTRA_STRING);
+						if(appIdRequesting == null){
 	                		appIdRequesting = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
 	                	}
 	                	Message extraSessionResponse = Message.obtain();
@@ -838,6 +848,7 @@ public class SdlRouterService extends Service{
 		synchronized(SESSION_LOCK){
 			this.sessionMap = new SparseArray<String>();
 			this.sessionHashIdMap = new SparseArray<Integer>();
+			this.previousSessionsMap = new SparseArray<String>();
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
@@ -1785,33 +1796,52 @@ public class SdlRouterService extends Service{
     	}
     	return false;
     }
-	
+
 	private String getAppIDForSession(int sessionId, boolean shouldAssertNewSession){
-		synchronized(SESSION_LOCK){
+		synchronized(SESSION_LOCK) {
 			//Log.d(TAG, "Looking for session: " + sessionId);
-			if(sessionMap == null){ 
+			if (sessionMap == null) {
 				Log.w(TAG, "Session map was null during look up. Creating one on the fly");
 				sessionMap = new SparseArray<String>(); //THIS SHOULD NEVER BE NULL! WHY IS THIS HAPPENING?!?!?!
 			}
 			String appId = sessionMap.get(sessionId);// SdlRouterService.this.sessionMap.get(sessionId);
-			if(appId==null && shouldAssertNewSession){
+			if(appId==null && shouldAssertNewSession) {
 				int pos;
-				synchronized(REGISTERED_APPS_LOCK){
-					for (RegisteredApp app : registeredApps.values()) {
-						pos = app.containsSessionId(-1); 
-						if(pos != -1){
-							app.setSessionId(pos,sessionId);
+				synchronized (REGISTERED_APPS_LOCK) {
+					if (previousSessionsMap != null && previousSessionsMap.size() > 0) {
+						String savedAppId = previousSessionsMap.get(sessionId);
+						Log.w(TAG, "sessionID = " + sessionId + " and savedAppID = " + savedAppId);
+						if (savedAppId != null) {
+							//There was a previous session mapping
+							RegisteredApp app = registeredApps.get(savedAppId);
+							pos = app.containsSessionId(-1);
+							Log.w(TAG,"app.appID = " +app.appId + " pos = " + pos + " sessionID = " + sessionId + " savedAppID = " + savedAppId);
+							if (pos != -1) {
+								app.setSessionId(pos, sessionId);
+							}
 							appId = app.getAppId();
 							sessionMap.put(sessionId, appId);
-							break;
+							Log.w(TAG, "previousSessionsMap != null n sessionMap put in a new entry -> appID = " + app.appId + " and sessionID =" + sessionId);
+						}
+						previousSessionsMap.remove(sessionId);
+					} else {
+						for (RegisteredApp app : registeredApps.values()) {
+							pos = app.containsSessionId(-1);
+							if (pos != -1) {
+								app.setSessionId(pos, sessionId);
+								appId = app.getAppId();
+								sessionMap.put(sessionId, appId);
+								Log.w(TAG, "no previous sessionID, appID = " + app.appId);
+								break;
+							}
 						}
 					}
 				}
 			}
-			//Log.d(TAG, sessionId + " session returning App Id: " + appId);
 			return appId;
 		}
 	}
+
 	
 	/* ****************************************************************************************************************************************
 	// ***********************************************************   LEGACY   ****************************************************************
