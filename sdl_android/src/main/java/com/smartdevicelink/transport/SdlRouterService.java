@@ -1432,6 +1432,7 @@ public class SdlRouterService extends Service{
 	    			//Log.i(TAG, "Checking packet size: " + packetSize);
 	    			Message message = Message.obtain();
 	    			Bundle bundle = new Bundle();
+				    bundle.putString(TransportConstants.SESSION_ID_EXTRA, "" + session);
 	    			
 	    			if(packetSize < ByteArrayMessageSpliter.MAX_BINDER_SIZE){ //This is a small enough packet just send on through
 	    				//Log.w(TAG, " Packet size is just right " + packetSize  + " is smaller than " + ByteArrayMessageSpliter.MAX_BINDER_SIZE + " = " + (packetSize<ByteArrayMessageSpliter.MAX_BINDER_SIZE));
