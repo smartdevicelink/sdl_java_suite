@@ -39,7 +39,6 @@ public class TransportBrokerTest extends AndroidTestCase {
 			assertTrue(broker.start());
 		}
 		broker.stop();
-
 		broker.resetSession();
 		assertFalse(broker.isBound);
 

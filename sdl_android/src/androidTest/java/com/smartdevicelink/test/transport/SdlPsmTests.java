@@ -52,12 +52,9 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0F;
 			version.set(sdlPsm, 1);
 			boolean result = sdlPsm.handleByte(rawByte);
-
 			assertEquals(Test.MATCH, false, result);
-
 			state.set(sdlPsm, SdlPsm.DATA_SIZE_1_STATE);
 			result = sdlPsm.handleByte(rawByte);
-
 			assertEquals(Test.MATCH, true, result);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -70,10 +67,8 @@ public class SdlPsmTests extends TestCase {
 			version.set(sdlPsm, 1);
 			controlFrameInfo.set(sdlPsm, SdlPacket.FRAME_INFO_START_SERVICE);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_CONTROL);
-			
 			dataLength.set(sdlPsm, MAX_DATA_LENGTH + 1);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_4_STATE);
-			
 			assertEquals(Test.MATCH, SdlPsm.ERROR_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -86,10 +81,8 @@ public class SdlPsmTests extends TestCase {
 			version.set(sdlPsm, 1);
 			controlFrameInfo.set(sdlPsm, SdlPacket.FRAME_INFO_START_SERVICE);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_CONTROL);
-			
 			dataLength.set(sdlPsm, MAX_DATA_LENGTH);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_4_STATE);
-			
 			assertEquals(Test.MATCH, SdlPsm.DATA_PUMP_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -101,7 +94,6 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x04;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2143647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.START_STATE);
 			assertEquals(Test.MATCH, SdlPsm.ERROR_STATE, STATE);
@@ -115,10 +107,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2143647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.SERVICE_TYPE_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.CONTROL_FRAME_INFO_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -161,7 +151,6 @@ public class SdlPsmTests extends TestCase {
 
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.SESSION_ID_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_SIZE_1_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -176,7 +165,6 @@ public class SdlPsmTests extends TestCase {
 
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_1_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_SIZE_2_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -191,7 +179,6 @@ public class SdlPsmTests extends TestCase {
 
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_2_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_SIZE_3_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -204,10 +191,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_3_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_SIZE_4_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -219,10 +204,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-			
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_SIZE_4_STATE);
-			
 			assertEquals(Test.MATCH, SdlPsm.ERROR_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -234,10 +217,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.MESSAGE_1_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.MESSAGE_2_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -249,10 +230,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.MESSAGE_2_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.MESSAGE_3_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -264,10 +243,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.MESSAGE_3_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.MESSAGE_4_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -279,10 +256,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2143647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.MESSAGE_4_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_PUMP_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -294,10 +269,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2147483647);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.MESSAGE_4_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.ERROR_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -309,10 +282,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 0);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.MESSAGE_4_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.FINISHED_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -324,10 +295,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 0);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_PUMP_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.FINISHED_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -339,10 +308,8 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2367);
 			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_PUMP_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_PUMP_STATE, STATE);
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
@@ -354,12 +321,9 @@ public class SdlPsmTests extends TestCase {
 			rawByte = 0x0;
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
-
 			dataLength.set(sdlPsm, 2367);
 			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_PUMP_STATE);
 			assertEquals(Test.MATCH, null, sdlPsm.getFormedPacket());
-
-
 			dataLength.set(sdlPsm, 0);
 			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_PUMP_STATE);
 			assertNotNull(sdlPsm.getFormedPacket());
@@ -374,15 +338,11 @@ public class SdlPsmTests extends TestCase {
 			version.set(sdlPsm, 1);
 			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
 			state.set(sdlPsm, SdlPsm.DATA_PUMP_STATE);
-
 			assertEquals(Test.MATCH, SdlPsm.DATA_PUMP_STATE, sdlPsm.getState());
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
 		}
 	}
-
-
-
 
 	protected void tearDown() throws Exception{
 		super.tearDown();
