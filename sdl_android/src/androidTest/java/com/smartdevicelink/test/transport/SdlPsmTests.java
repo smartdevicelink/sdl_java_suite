@@ -96,6 +96,62 @@ public class SdlPsmTests extends TestCase {
 		}	
 	}
 
+	public void testTransitionOnInputStartState(){
+		try{
+			rawByte = 0x04;
+			version.set(sdlPsm, 1);
+			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
+
+			dataLength.set(sdlPsm, 2143647);
+			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.START_STATE);
+			assertEquals(Test.MATCH, SdlPsm.ERROR_STATE, STATE);
+		}catch (Exception e){
+			Log.e(TAG, e.toString());
+		}
+	}
+
+	public void testTransitionOnInputServiceTypeState(){
+		try{
+			rawByte = 0x0;
+			version.set(sdlPsm, 1);
+			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
+
+			dataLength.set(sdlPsm, 2143647);
+			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.SERVICE_TYPE_STATE);
+
+			assertEquals(Test.MATCH, SdlPsm.CONTROL_FRAME_INFO_STATE, STATE);
+		}catch (Exception e){
+			Log.e(TAG, e.toString());
+		}
+	}
+
+	public void testTransitionOnInputControlFrameState(){
+		try{
+			rawByte = 0x0;
+			version.set(sdlPsm, 1);
+			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_SINGLE);
+
+			dataLength.set(sdlPsm, 2143647);
+			int STATE = (Integer) transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.CONTROL_FRAME_INFO_STATE);
+			assertEquals(Test.MATCH, SdlPsm.SESSION_ID_STATE, STATE);
+
+			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_CONTROL);
+			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.CONTROL_FRAME_INFO_STATE);
+			assertEquals(Test.MATCH, SdlPsm.SESSION_ID_STATE, STATE);
+
+			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_CONSECUTIVE);
+			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.CONTROL_FRAME_INFO_STATE);
+			assertEquals(Test.MATCH, SdlPsm.SESSION_ID_STATE, STATE);
+
+			frameType.set(sdlPsm, SdlPacket.FRAME_TYPE_FIRST);
+			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.CONTROL_FRAME_INFO_STATE);
+			assertEquals(Test.MATCH, SdlPsm.SESSION_ID_STATE, STATE);
+
+		}catch (Exception e){
+			Log.e(TAG, e.toString());
+		}
+	}
+
 
 	public void testTransitionOnInputSessionIDState(){
 		try{
@@ -301,9 +357,12 @@ public class SdlPsmTests extends TestCase {
 
 			dataLength.set(sdlPsm, 2367);
 			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_PUMP_STATE);
+			assertEquals(Test.MATCH, null, sdlPsm.getFormedPacket());
 
-			assertEquals(Test.MATCH, SdlPsm.DATA_PUMP_STATE, sdlPsm.getState());
 
+			dataLength.set(sdlPsm, 0);
+			transitionOnInput.invoke(sdlPsm, rawByte, SdlPsm.DATA_PUMP_STATE);
+			assertNotNull(sdlPsm.getFormedPacket());
 		}catch (Exception e){
 			Log.e(TAG, e.toString());
 		}

@@ -2,11 +2,13 @@ package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
 
@@ -38,6 +40,21 @@ public class TransportBrokerTest extends AndroidTestCase {
 		}
 		broker.stop();
 
+		broker.resetSession();
+		assertFalse(broker.isBound);
+
+	}
+
+	public void testSendPacketToRouterService(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+
+		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertTrue(broker.start());
+		}
+		assertFalse(broker.sendPacketToRouterService(null));
 	}
 	
 	public void testSendPacket(){
@@ -84,6 +101,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 		}
 
 	}
+
 	
 	public void testSendMessageToRouterService(){
 		if (Looper.myLooper() == null) {
@@ -116,5 +134,11 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertTrue(broker.sendMessageToRouterService(message));
 
 	}
+
+	public void testConvertAppId(){
+		assertEquals(Long.valueOf(234234), TransportBroker.convertAppId("234234"));
+		assertEquals(Long.valueOf(-1L), TransportBroker.convertAppId(null));
+	}
+
 
 }

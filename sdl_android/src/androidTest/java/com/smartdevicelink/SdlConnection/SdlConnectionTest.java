@@ -4,8 +4,10 @@ import android.test.AndroidTestCase;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
+import com.smartdevicelink.transport.BTTransport;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.transport.USBTransportConfig;
@@ -153,6 +155,20 @@ public class SdlConnectionTest extends AndroidTestCase {
 
 		SdlConnection connection2 = new SdlConnection(btConfig);
 		assertEquals(TransportType.USB, connection2.getCurrentTransportType());
+	}
+
+	public void testGetRegisterCount(){
+		SdlConnection.enableLegacyMode(false, null);
+		USBTransportConfig btConfig = new USBTransportConfig(mContext);
+		SdlConnection connection = new SdlConnection(btConfig,null);
+		assertEquals(0, connection.getRegisterCount());
+		byte data = 0x0F;
+		SdlSession session = SdlSession.createSession(data, null, null);
+		try {
+			connection.registerSession(session);
+		} catch(Exception e){
+		}
+		assertEquals(1, connection.getRegisterCount());
 	}
 	
 	protected class SdlConnectionTestClass extends SdlConnection{
