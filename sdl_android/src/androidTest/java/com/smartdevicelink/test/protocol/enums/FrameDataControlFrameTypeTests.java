@@ -3,6 +3,7 @@ package com.smartdevicelink.test.protocol.enums;
 import java.util.Vector;
 
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
+import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -150,6 +151,16 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 		
 		assertTrue("Array does not match enum values array.",
 					Validator.validateFrameDataControlFrameTypeArray(enumValueArray, enumTestArray));
+	}
+
+	public void testValueOf () {
+		try {
+			final String START_SESSION_STRING = "StartSession";
+			FrameDataControlFrameType startSessionEnum = FrameDataControlFrameType.valueOf(START_SESSION_STRING);
+			assertEquals(FrameDataControlFrameType.StartSession.getValue(), startSessionEnum.getValue());
+		} catch (IllegalArgumentException exception) {
+			fail("Invalid enum throws IllegalArgumentException.");
+		}
 	}
 
 }

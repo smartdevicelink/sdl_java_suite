@@ -49,7 +49,7 @@ public class MultiplexBluetoothTransportTest extends TestCase {
 
 		//TODO test for more than the two states
 		bluetooth = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
-		assertNotNull(bluetooth);
+		assertNull(bluetooth);
 
 		bluetooth = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(stateChangeHandler);
 		assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);

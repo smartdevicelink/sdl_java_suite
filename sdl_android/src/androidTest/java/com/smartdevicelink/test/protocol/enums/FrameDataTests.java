@@ -5,6 +5,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import com.smartdevicelink.protocol.enums.FrameData;
+import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.test.Validator;
 
 public class FrameDataTests extends TestCase {
@@ -112,5 +113,16 @@ public class FrameDataTests extends TestCase {
 		
 		assertTrue("Array does not match enum values array.",
 					Validator.validateFrameDataArray(enumValueArray, enumTestArray));
+	}
+
+	// Verifies retrieving FrameData based on byte.
+	public void testValueOf () {
+		try {
+			final String START_SESSION_STRING = "StartSession";
+			FrameData enumSingle = FrameData.valueOf(START_SESSION_STRING);
+			assertEquals(FrameData.StartSession.getValue(), enumSingle.getValue());
+		} catch (IllegalArgumentException exception) {
+			fail("Invalid enum throws IllegalArgumentException.");
+		}
 	}
 }

@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothSocket;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.test.util.DeviceUtil;
 import com.smartdevicelink.transport.BTTransport;
 import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.SdlPsm;
@@ -47,14 +48,15 @@ public class BTTransportTests extends AndroidTestCase {
      * {@link com.smartdevicelink.transport.BTTransport#getTransportType()}
      */
     public void testGetBTSocket () {
-
-        Exception exception = null;
-        try{
-            btTransport.openConnection();
-        }catch (Exception e){
-            exception = e;
-        }
-            assertEquals(exception, null);
+		if(!DeviceUtil.isEmulator()) {
+			Exception exception = null;
+			try {
+				btTransport.openConnection();
+			} catch (Exception e) {
+				exception = e;
+			}
+			assertEquals(exception, null);
+		}
        }
 
        public void testGetNullChannel(){

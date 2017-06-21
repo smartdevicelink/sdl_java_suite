@@ -113,5 +113,18 @@ public class FrameTypeTests extends TestCase {
 		
 		assertTrue("Array does not match enum values array.",
 					Validator.validateFrameTypeArray(enumValueArray, enumTestArray));
-	}	
+	}
+
+	// Verifies retrieving FrameType based on byte.
+	public void testValueOf () {
+		try {
+			final byte   SINGLE_BYTE   = (byte) 0x01;
+			FrameType enumSingle = FrameType.valueOf(SINGLE_BYTE);
+			assertEquals(FrameType.Single.getValue(), enumSingle.getValue());
+		} catch (IllegalArgumentException exception) {
+			fail("Invalid enum throws IllegalArgumentException.");
+		}
+	}
+
+
 }
