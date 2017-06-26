@@ -41,6 +41,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -116,7 +117,7 @@ public class SdlRouterService extends Service{
 	private boolean isTransportConnected = false;
 	private TransportType connectedTransportType = null;
 	private static Context currentContext = null;
-    
+
     private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
     private Runnable versionCheckRunable, altTransportTimerRunnable;
     private LocalRouterService localCompareTo = null;
@@ -140,7 +141,7 @@ public class SdlRouterService extends Service{
 	PacketWriteTaskMaster packetWriteTaskMaster = null;
 
 	private static LocalRouterService selfRouterService;
-	
+
 	/**
 	 * This flag is to keep track of if we are currently acting as a foreground service
 	 */
@@ -156,23 +157,28 @@ public class SdlRouterService extends Service{
 	private boolean isPingingClients = false;
 	int pingCount = 0;
 
+
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
 	***********************************************  Broadcast Receivers START  **************************************************************
 	****************************************************************************************************************************************
 	****************************************************************************************************************************************/	
-	
+
+
+	public void setMainServiceReceiver(BroadcastReceiver receiver){
+		mainServiceReceiver = receiver;
+	}
 	/** create our receiver from the router service */
-    BroadcastReceiver mainServiceReceiver = new BroadcastReceiver() 
+    BroadcastReceiver mainServiceReceiver = new BroadcastReceiver()
 	{
 		@Override
 		public void onReceive(Context context, Intent intent) 
 		{				
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
 			String action =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
-			sendBroadcast(prepareRegistrationIntent(action));	
-		}
+			sendBroadcast(prepareRegistrationIntent(action));
+			}
 	};
 	
 	private Intent prepareRegistrationIntent(String action){
@@ -841,7 +847,8 @@ public class SdlRouterService extends Service{
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
 	}
-	HashMap<String,ResolveInfo> sdlMultiList ;
+
+	HashMap<String,ResolveInfo> sdlMultiList;
 	public void startVersionCheck(){
 		Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infos = getPackageManager().queryBroadcastReceivers(intent, 0);
@@ -1817,7 +1824,10 @@ public class SdlRouterService extends Service{
 	// ***********************************************************   LEGACY   ****************************************************************
 	//*****************************************************************************************************************************************/
 	private boolean legacyModeEnabled = false;
-	
+
+	public boolean isLegacyMode(){
+		return legacyModeEnabled;
+	}
 	private void enableLegacyMode(boolean enable){
 		Log.d(TAG, "Enable legacy mode: " + enable);
 		legacyModeEnabled = enable; //We put this at the end to avoid a race condition between the bluetooth d/c and notify of legacy mode enabled

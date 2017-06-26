@@ -1,6 +1,7 @@
 package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -12,9 +13,20 @@ import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
 
+import org.junit.Rule;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class TransportBrokerTest extends AndroidTestCase {
 	RouterServiceValidator rsvp;
 	//		public TransportBrokerThread(Context context, String appId, ComponentName service){
+
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
 
 	@Override
 	protected void setUp() throws Exception {
@@ -41,6 +53,16 @@ public class TransportBrokerTest extends AndroidTestCase {
 		broker.stop();
 		broker.resetSession();
 		assertFalse(broker.isBound);
+
+	}
+
+	public void testSendBindingMessage(){
+		SdlRouterService mockService = mock(SdlRouterService.class);
+		TransportBroker mockBroker = mock(TransportBroker.class);
+
+//		when(mockBroker).
+
+
 
 	}
 

@@ -1,10 +1,10 @@
 package com.smartdevicelink.transport;
 
+import android.test.AndroidTestCase;
+
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.enums.TransportType;
-
-import android.test.AndroidTestCase;
 
 import junit.framework.Assert;
 
@@ -15,7 +15,7 @@ public class MultiplexTransportTest extends AndroidTestCase {
 	RouterServiceValidator rsvp;
 	ITransportListener transportListener;
 
-	
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -81,4 +81,5 @@ public class MultiplexTransportTest extends AndroidTestCase {
 			Assert.fail("NPE in MultiplexTransport constructor");
 		}
 	}
+
 }
