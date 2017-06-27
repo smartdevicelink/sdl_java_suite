@@ -15,13 +15,12 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.FrameType;
 
 import junit.framework.Assert;
 
 import org.junit.Rule;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.lang.ref.WeakReference;
 
@@ -37,11 +36,8 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	SdlRouterService mockRouterService;
 	Context context;
 
-	@Rule
-	public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-	@Mock
-	SdlRouterService annotationMockedRouterService;
+//	@Mock
+//	SdlRouterService annotationMockedRouterService;
 
 	@Rule
 	public final ServiceTestRule mServiceRule = new ServiceTestRule();
@@ -57,7 +53,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		context = InstrumentationRegistry.getTargetContext();
 
 		//Create mock class
-		mockRouterService = mock(SdlRouterService.class);
+//		mockRouterService = mock(SdlRouterService.class);
 	}
 
 	@Override
@@ -66,7 +62,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		//Nothing here for now
 	}
 
-	public void testOnBind() throws RemoteException {
+	public void testOnBindChoseCorrectMessenger() throws RemoteException {
 
 		SdlRouterService routerService = new SdlRouterService();
 		//Create Mock Intent
@@ -80,27 +76,32 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 		//check to see received correct messenger
 		assertEquals(binder, routerService.routerMessenger.getBinder());
+		assertNotSame(binder, routerService.altTransportMessenger.getBinder());
+		assertNotSame(binder, routerService.routerStatusMessenger.getBinder());
+	}
 
-		IBinder nullBinder = routerService.onBind(null);
-		assertNull(nullBinder);
+	public void testOnBindNullIntent() throws RemoteException {
 
-		//Check to see onBind() was called.
-//		verify(routerService).onBind(mockIntent); call verify on not mock
+		SdlRouterService routerService = new SdlRouterService();
 
+		IBinder binder = routerService.onBind(null);
+
+		assertNull(binder);
 	}
 
 	public void testOnUnbind(){
 		Intent randomIntent = new Intent();
 		//mock onUnbind() to return true and to not call super.onUnbind()
+		SdlRouterService spyRouterService = spy(new SdlRouterService());
 
 		//Note: You can pass in more than just primitives with the any() method
-		when(mockRouterService.onUnbind(any(Intent.class))).thenReturn(true);
+		when(spyRouterService.onUnbind(any(Intent.class))).thenReturn(true);
 
 		//Call onUnbind()
-		boolean isSuccess = mockRouterService.onUnbind(randomIntent);
+		boolean isSuccess = spyRouterService.onUnbind(randomIntent);
 
 		//Verify method was called
-		verify(mockRouterService).onUnbind(randomIntent);
+		verify(spyRouterService).onUnbind(randomIntent);
 
 		//Check if desired value was returned
 		assertTrue(isSuccess);
@@ -114,8 +115,11 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		//Mock sendPacketToRegisteredApp()
 		when(spy.sendPacketToRegisteredApp(any(SdlPacket.class))).thenReturn(true);
 
-		//Create packet
-		SdlPacket packet = new SdlPacket(2,false, 0,0,0,0,0,0, null);
+		//Create mock Packet
+		SdlPacket packet = mock(SdlPacket.class);
+
+		//Mock getVersion()
+		when(packet.getVersion()).thenReturn(2);
 
 		//Call onPacketRead()
 		spy.onPacketRead(packet);
@@ -128,10 +132,11 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		//Make sure sendPacket...() was never called
 		verify(spy).sendPacketToRegisteredApp(packet);
 
-		//Create legacy packet
-		packet = new SdlPacket(1,false, SdlPacket.FRAME_TYPE_CONTROL,
-								SdlPacket.SERVICE_TYPE_CONTROL,SdlPacket.FRAME_INFO_START_SERVICE_ACK,
-								0,0,0, null);
+		//Alter mock to be a legacy packet
+		when(packet.getVersion()).thenReturn(1);
+		when(packet.getFrameType()).thenReturn(FrameType.Control);
+		when(packet.getFrameInfo()).thenReturn(SdlPacket.FRAME_INFO_START_SERVICE_ACK);
+
 		//Call onPacketRead()
 		spy.onPacketRead(packet);
 

@@ -1142,7 +1142,6 @@ public class SdlRouterService extends Service{
               // Start the Bluetooth services
             	mSerialService.start();
             }
-
 		}
 	}
 	
