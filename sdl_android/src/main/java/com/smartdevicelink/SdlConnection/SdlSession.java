@@ -1,14 +1,5 @@
 package com.smartdevicelink.SdlConnection;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
@@ -25,11 +16,20 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.IStreamListener;
+import com.smartdevicelink.streaming.SdlPipedInputStream;
+import com.smartdevicelink.streaming.SdlPipedOutputStream;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener, ISecurityInitializedListener {
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
@@ -148,12 +148,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@SuppressLint("NewApi")
 	public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
-		OutputStream os = new PipedOutputStream();
+		OutputStream os = new SdlPipedOutputStream();
 		InputStream is = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-			is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
+			is = new SdlPipedInputStream((SdlPipedOutputStream) os, BUFF_READ_SIZE);
 		} else {
-			is = new PipedInputStream((PipedOutputStream) os);
+			is = new SdlPipedInputStream((SdlPipedOutputStream) os);
 		}
         if (sType.equals(SessionType.NAV))
         {
@@ -187,8 +187,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
-			OutputStream os = new PipedOutputStream();
-	        InputStream is = new PipedInputStream((PipedOutputStream) os);
+			OutputStream os = new SdlPipedOutputStream();
+	        InputStream is = new SdlPipedInputStream((SdlPipedOutputStream) os);
 			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
 			mRPCPacketizer.start();
 			return os;
@@ -285,7 +285,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 			int height, int bitrate, SessionType sType, byte rpcSessionID) {
 		try {
-			PipedOutputStream stream = (PipedOutputStream) startStream(sType, rpcSessionID);
+			SdlPipedOutputStream stream = (SdlPipedOutputStream) startStream(sType, rpcSessionID);
 			if (stream == null) return null;
 			mSdlEncoder = new SdlEncoder();
 			mSdlEncoder.setFrameRate(frameRate);

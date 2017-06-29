@@ -1,15 +1,16 @@
 package com.smartdevicelink.encoder;
 
-import java.io.IOException;
-import java.io.PipedOutputStream;
-import java.nio.ByteBuffer;
-
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
 import android.view.Surface;
+
+import com.smartdevicelink.streaming.SdlPipedOutputStream;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SdlEncoder {
@@ -25,7 +26,7 @@ public class SdlEncoder {
 
 	// encoder state
 	private MediaCodec mEncoder;
-	private PipedOutputStream mOutputStream;
+	private SdlPipedOutputStream mOutputStream;
 	
 	// allocate one of these up front so we don't need to do it every time
 	private MediaCodec.BufferInfo mBufferInfo;
@@ -48,7 +49,7 @@ public class SdlEncoder {
 	public void setBitrate(int iVal){
 		bitrate = iVal;	
 	}
-	public void setOutputStream(PipedOutputStream mStream){
+	public void setOutputStream(SdlPipedOutputStream mStream){
 		mOutputStream = mStream;
 	}
 	public Surface prepareEncoder () {
