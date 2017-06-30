@@ -62,7 +62,8 @@ public class VehicleDataHelper{
 	public static final EmergencyEvent EMERGENCY_EVENT = new EmergencyEvent();
 	public static final ClusterModeStatus CLUSTER_MODE_STATUS = new ClusterModeStatus();
 	public static final MyKey MY_KEY = new MyKey();
-	
+	public static final double TURBO_BOOST = 10.10;
+
 	//other variables inside some of the above objects
     // tire status
 	public static final WarningLightStatus 	  TIRE_PRESSURE_TELL_TALE = WarningLightStatus.ON;
@@ -318,7 +319,8 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA.setMyKey(MY_KEY);
-		
+		VEHICLE_DATA.setTurboBoost(TURBO_BOOST);
+
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
 		VEHICLE_DATA_RESPONSE.setRpm(RPM);
@@ -345,6 +347,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA_RESPONSE.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA_RESPONSE.setMyKey(MY_KEY);
+		VEHICLE_DATA_RESPONSE.setTurboBoost(TURBO_BOOST);
 	}
 	
     private VehicleDataHelper(){}	

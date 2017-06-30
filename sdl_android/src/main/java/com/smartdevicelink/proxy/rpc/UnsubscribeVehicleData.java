@@ -213,6 +213,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>turboBoost</td>
+ * 			<td>Boolean</td>
+ * 			<td>Boost Pressure at the manifold</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
  *  </table>
  * <p><b> Response</b></p>
  * <p><b>Non-default Result Codes:</b></p>
@@ -255,7 +263,8 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
-	
+	public static final String KEY_TURBO_BOOST = "turboBoost";
+
 
 	/**
 	 * Constructs a new UnsubscribeVehicleData object
@@ -807,5 +816,28 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return (Boolean) parameters.get(KEY_MY_KEY);
-    }    
+    }
+	/**
+	 * Sets a boolean value. If true, unsubscribe data
+	 *
+	 * @param turboBoost
+	 *            a boolean value
+	 */
+	public void setTurboBoost(Boolean turboBoost) {
+		if (turboBoost != null) {
+			parameters.put(KEY_TURBO_BOOST, turboBoost);
+		} else {
+			parameters.remove(KEY_TURBO_BOOST);
+		}
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the turboBoost data has been unsubscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the turboBoost data has been
+	 *         unsubscribed.
+	 */
+	public Boolean getTurboBoost() {
+		return (Boolean) parameters.get(KEY_TURBO_BOOST);
+	}
 }

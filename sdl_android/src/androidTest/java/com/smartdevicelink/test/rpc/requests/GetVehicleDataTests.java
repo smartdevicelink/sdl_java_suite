@@ -49,6 +49,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 		msg.setEmergencyEvent(Test.GENERAL_BOOLEAN);
 		msg.setClusterModeStatus(Test.GENERAL_BOOLEAN);
 		msg.setMyKey(Test.GENERAL_BOOLEAN);
+		msg.setTurboBoost(Test.GENERAL_BOOLEAN);
 
         return msg;
     }
@@ -93,7 +94,8 @@ public class GetVehicleDataTests extends BaseRpcTests {
             result.put(GetVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
             result.put(GetVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
-        }catch(JSONException e){
+			result.put(GetVehicleData.KEY_TURBO_BOOST, Test.GENERAL_BOOLEAN);
+		}catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
 
@@ -131,7 +133,8 @@ public class GetVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getEmergencyEvent());
 		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getClusterModeStatus());
 		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getMyKey());
-    
+		assertTrue(Test.TRUE, ( (GetVehicleData) msg ).getTurboBoost());
+
 		// Invalid/Null Tests
         GetVehicleData msg = new GetVehicleData();
         assertNotNull(Test.NOT_NULL, msg);
@@ -162,7 +165,8 @@ public class GetVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
-    }
+		assertNull(Test.NULL, msg.getTurboBoost());
+	}
     
     /**
      * Tests a valid JSON construction of this RPC message.
@@ -208,6 +212,7 @@ public class GetVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_MY_KEY), cmd.getMyKey());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, GetVehicleData.KEY_TURBO_BOOST), cmd.getTurboBoost());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	

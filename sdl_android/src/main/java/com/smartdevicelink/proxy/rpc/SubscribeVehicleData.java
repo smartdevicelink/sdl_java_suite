@@ -218,6 +218,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
+ * 	 * 		<tr>
+ * 			<td>turboBoost</td>
+ * 			<td>Boolean</td>
+ * 			<td>Boost Pressure at the manifold</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
  *  </table>
  *  
  * <p> <b>Response</b></p>
@@ -262,6 +270,8 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
+	public static final String KEY_TURBO_BOOST = "turboBoost";
+
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -812,6 +822,30 @@ public class SubscribeVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return (Boolean) parameters.get(KEY_MY_KEY);
-    }      
+    }
+
+	/**
+	 * Sets a boolean value. If true, subscribes turboBoost data
+	 *
+	 * @param turboBoost
+	 *            a boolean value
+	 */
+	public void setTurboBoost(Boolean turboBoost) {
+		if (turboBoost != null) {
+			parameters.put(KEY_TURBO_BOOST, turboBoost);
+		} else {
+			parameters.remove(KEY_TURBO_BOOST);
+		}
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the turboBoost data has been subscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the turboBoost data has been
+	 *         subscribed.
+	 */
+	public Boolean getTurboBoost() {
+		return (Boolean) parameters.get(KEY_TURBO_BOOST);
+	}
     
 }

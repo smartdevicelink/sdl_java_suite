@@ -43,8 +43,10 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_TURBO_BOOST = "turboBoost";
 
-	/** 
+
+    /**
 	 * Constructs a new GetVehicleDataResponse object
 	 */
 
@@ -477,5 +479,17 @@ public class GetVehicleDataResponse extends RPCResponse {
             }
         }
         return null;
-    }        
+    }
+
+    public void setTurboBoost(Double turboBoost) {
+        if (turboBoost != null) {
+            parameters.put(KEY_TURBO_BOOST, turboBoost);
+        } else {
+            parameters.remove(KEY_TURBO_BOOST);
+        }
+    }
+    public Double getTurboBoost() {
+        Object object = parameters.get(KEY_TURBO_BOOST);
+        return SdlDataTypeConverter.objectToDouble(object);
+    }
 }

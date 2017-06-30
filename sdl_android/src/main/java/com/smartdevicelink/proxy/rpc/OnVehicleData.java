@@ -234,6 +234,14 @@ import com.smartdevicelink.util.SdlDataTypeConverter;
  * 			<td> minvalue: -2000; maxvalue:2000</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>turboBoost</td>
+ * 			<td>Float</td>
+ * 			<td>Boost Pressure at the manifold</td>
+ *                 <td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0
@@ -269,6 +277,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_TURBO_BOOST = "turboBoost";
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
@@ -693,5 +702,15 @@ public class OnVehicleData extends RPCNotification {
             }
         }
         return null;
-    }    
+    }
+    public void setTurboBoost(Double turboBoost) {
+        if (turboBoost != null) {
+            parameters.put(KEY_TURBO_BOOST, turboBoost);
+        } else {
+            parameters.remove(KEY_TURBO_BOOST);
+        }
+    }
+    public Double getTurboBoost() {
+        return (Double) parameters.get(KEY_TURBO_BOOST);
+    }
 }

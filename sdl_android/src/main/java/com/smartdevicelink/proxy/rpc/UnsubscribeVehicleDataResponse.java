@@ -36,8 +36,9 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_TURBO_BOOST = "turboBoost";
 
-	/**
+    /**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
 	 */
     public UnsubscribeVehicleDataResponse() {
@@ -717,5 +718,34 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
             }
         }
         return null;
-    }     
+    }
+    /**
+     * Sets turboBoost
+     * @param turboBoost
+     */
+    public void setTurboBoost(VehicleDataResult turboBoost) {
+        if (turboBoost != null) {
+            parameters.put(KEY_TURBO_BOOST, turboBoost);
+        } else {
+            parameters.remove(KEY_TURBO_BOOST);
+        }
+    }
+    /**
+     * Gets turboBoost
+     * @return VehicleDataResult
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getTurboBoost() {
+        Object obj = parameters.get(KEY_TURBO_BOOST);
+        if (obj instanceof VehicleDataResult) {
+            return (VehicleDataResult) obj;
+        } else if (obj instanceof Hashtable) {
+            try {
+                return new VehicleDataResult((Hashtable<String, Object>) obj);
+            } catch (Exception e) {
+                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TURBO_BOOST, e);
+            }
+        }
+        return null;
+    }
 }

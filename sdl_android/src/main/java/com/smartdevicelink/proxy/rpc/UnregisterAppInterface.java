@@ -219,6 +219,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
+ * 	 	<tr>
+ * 			<td>turboBoost</td>
+ * 			<td>Boolean</td>
+ * 			<td>Boost Pressure at the manifold</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0 </td>
+ * 		</tr>
  *  </table>
  * @see RegisterAppInterface
  * @see OnAppInterfaceUnregistered
