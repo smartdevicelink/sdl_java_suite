@@ -825,7 +825,7 @@ public class RPCRequestFactory {
     public static SubscribeVehicleData BuildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 																 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-																 boolean driverBraking, Integer correlationID) 
+																 boolean driverBraking, boolean turboBoost, Integer correlationID)
 	{
 		SubscribeVehicleData msg = new SubscribeVehicleData();
 		msg.setGps(gps);
@@ -842,6 +842,7 @@ public class RPCRequestFactory {
 		msg.setBodyInformation(bodyInformation);
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
+		msg.setTurboBoost(turboBoost);
 		msg.setCorrelationID(correlationID);
 		
 		return msg;
@@ -851,7 +852,7 @@ public class RPCRequestFactory {
     public static UnsubscribeVehicleData BuildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																	 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 																	 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-																	 boolean driverBraking, Integer correlationID) 
+																	 boolean driverBraking, boolean turboBoost, Integer correlationID)
 	{
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
 		msg.setGps(gps);
@@ -868,6 +869,7 @@ public class RPCRequestFactory {
 		msg.setBodyInformation(bodyInformation);
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
+		msg.setTurboBoost(turboBoost);
 		msg.setCorrelationID(correlationID);
 		
 		return msg;		
@@ -877,7 +879,7 @@ public class RPCRequestFactory {
     public static GetVehicleData BuildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 			 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-			 boolean driverBraking, Integer correlationID)
+			 boolean driverBraking, boolean turboBoost, Integer correlationID)
 	{
 		GetVehicleData msg = new GetVehicleData();
 		msg.setGps(gps);
@@ -895,6 +897,7 @@ public class RPCRequestFactory {
 		msg.setBodyInformation(bodyInformation);
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
+		msg.setTurboBoost(turboBoost);
 		msg.setCorrelationID(correlationID);
 				
 		return msg;

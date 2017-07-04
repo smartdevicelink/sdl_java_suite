@@ -53,6 +53,8 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 		msg.setEmergencyEvent(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT.ordinal()));
 		msg.setClusterModeStatus(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()));
 		msg.setMyKey(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()));
+		msg.setTurboBoost(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURBOBOOST.ordinal()));
+
 
 		return msg;
 	}
@@ -101,6 +103,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_EMERGENCY_EVENT, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_MY_KEY, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()).serializeJSON());
+			result.put(SubscribeVehicleDataResponse.KEY_TURBO_BOOST, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURBOBOOST.ordinal()).serializeJSON());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -137,7 +140,9 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 		VehicleDataResult testPrndl          = ( (SubscribeVehicleDataResponse) msg ).getPrndl();
 		VehicleDataResult testBraking        = ( (SubscribeVehicleDataResponse) msg ).getDriverBraking();
 		VehicleDataResult testWiperStatus    = ( (SubscribeVehicleDataResponse) msg ).getWiperStatus();
-		
+		VehicleDataResult testTurboBoost     = ( (SubscribeVehicleDataResponse) msg ).getTurboBoost();
+
+
 		// Valid Tests
 		assertTrue(Test.TRUE, testGps.getDataType().equals(VehicleDataType.VEHICLEDATA_GPS));
 		assertTrue(Test.TRUE, testOdometer.getDataType().equals(VehicleDataType.VEHICLEDATA_ODOMETER));
@@ -163,8 +168,10 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	    assertTrue(Test.TRUE, testPrndl.getDataType().equals(VehicleDataType.VEHICLEDATA_PRNDL));
 	    assertTrue(Test.TRUE, testBraking.getDataType().equals(VehicleDataType.VEHICLEDATA_BRAKING));
 	    assertTrue(Test.TRUE, testWiperStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_WIPERSTATUS));
-   
-        // Invalid/Null Tests
+		assertTrue(Test.TRUE, testTurboBoost.getDataType().equals(VehicleDataType.VEHICLEDATA_TURBOBOOST));
+
+
+		// Invalid/Null Tests
 		SubscribeVehicleDataResponse msg = new SubscribeVehicleDataResponse();
         assertNotNull("Null object creation failed.", msg);        
         testNullBase(msg);
@@ -193,7 +200,8 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
-    }
+		assertNull(Test.NULL, msg.getTurboBoost());
+	}
 	
     /**
      * Tests a valid JSON construction of this RPC message.
@@ -310,6 +318,10 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 			JSONObject myKey = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_MY_KEY);
 			VehicleDataResult referenceMyKey = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(myKey));
 			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceMyKey, cmd.getMyKey()));
+
+			JSONObject turboBoost = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_TURBO_BOOST);
+			VehicleDataResult referenceTurboBoost = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(turboBoost));
+			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceTurboBoost, cmd.getTurboBoost()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	

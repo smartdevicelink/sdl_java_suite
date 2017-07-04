@@ -27,7 +27,8 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "turboBoost":true
     }
   },
   "response":{
@@ -151,7 +152,8 @@
       },
       "myKey":{
         "e911Override":"NO_DATA_EXISTS"
-      }
+      },
+      "turboBoost":10.10
     }
   }
 }

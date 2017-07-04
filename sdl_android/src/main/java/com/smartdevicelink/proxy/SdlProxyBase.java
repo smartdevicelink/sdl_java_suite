@@ -5039,16 +5039,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bodyInformation -Subscribes to body information including power modes.
 	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
 	 * @param driverBraking -Subscribes to the status of the brake pedal.
+	 * @param turboBoost -Subscribes to vehicle turbo boost pressure data in PSI.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException
 	*/
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,						
 									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-									 boolean driverBraking, Integer correlationID) throws SdlException
+									 boolean driverBraking, boolean turboBoost, Integer correlationID) throws SdlException
 	{
 		SubscribeVehicleData msg = RPCRequestFactory.BuildSubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure, 
-																				odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+																				odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, turboBoost, correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5071,6 +5072,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bodyInformation -Unsubscribes to body information including power modes.
 	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
 	 * @param driverBraking -Unsubscribes to the status of the brake pedal.
+	 * @param turboBoost -Unsubscribes to vehicle turbo boost pressure data in PSI.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException
 	*/
@@ -5078,10 +5080,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 						   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 			 						   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-			 						   boolean driverBraking, Integer correlationID) throws SdlException
+			 						   boolean driverBraking, boolean turboBoost, Integer correlationID) throws SdlException
 	{
 		UnsubscribeVehicleData msg = RPCRequestFactory.BuildUnsubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure,
-																					odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+																					odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, turboBoost, correlationID);
 		sendRPCRequest(msg);
 	}
 
@@ -5105,17 +5107,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bodyInformation -Performs an ad-hoc request for  body information including power modes.
 	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
 	 * @param driverBraking -Performs an ad-hoc request for the status of the brake pedal.
+	 * @param turboBoost -Performs an ad-hoc request for vehicle turbo boost pressure data in PSI.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException
 	*/
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 				   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 			 				   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-			 				   boolean driverBraking, Integer correlationID) throws SdlException
+			 				   boolean driverBraking, boolean turboBoost, Integer correlationID) throws SdlException
 	{
 	
 		GetVehicleData msg = RPCRequestFactory.BuildGetVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, vin, prndl, tirePressure, odometer,
-																   beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+																   beltStatus, bodyInformation, deviceStatus, driverBraking, turboBoost, correlationID);
 		sendRPCRequest(msg);
 	}
 

@@ -177,6 +177,14 @@ import com.smartdevicelink.proxy.RPCRequest;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 	    <tr>
+ * 			<td>turboBoost</td>
+ * 			<td>Boolean</td>
+ * 			<td>Boost Pressure at the manifold</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
  *  </table>
  *  
  *  
@@ -226,7 +234,9 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
-	/**
+    public static final String KEY_TURBO_BOOST = "turboBoost";
+
+    /**
 	 * Constructs a new GetVehicleData object
 	 */
 
@@ -508,5 +518,16 @@ public class GetVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return (Boolean) parameters.get(KEY_MY_KEY);
-    }        
+    }
+    public void setTurboBoost(Boolean turboBoost) {
+        if (turboBoost != null) {
+            parameters.put(KEY_TURBO_BOOST, turboBoost);
+        } else {
+            parameters.remove(KEY_TURBO_BOOST);
+        }
+    }
+    public Boolean getTurboBoost() {
+        return (Boolean) parameters.get(KEY_TURBO_BOOST);
+    }
+
 }
