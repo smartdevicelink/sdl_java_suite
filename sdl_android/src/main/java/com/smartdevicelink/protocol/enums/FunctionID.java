@@ -57,6 +57,7 @@ public enum FunctionID{
     SUBSCRIBE_WAY_POINTS(46, "SubscribeWayPoints"),
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
     GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
+	SET_VIDEO_CONFIG(49, "SetVideoConfig"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
