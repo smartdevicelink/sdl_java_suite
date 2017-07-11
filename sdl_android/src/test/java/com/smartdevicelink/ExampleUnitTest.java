@@ -3,6 +3,8 @@ package com.smartdevicelink;
 import com.smartdevicelink.transport.BTTransportConfig;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import static org.junit.Assert.assertEquals;
@@ -17,6 +19,7 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
 		BTTransportConfig mock = mock(BTTransportConfig.class);
+		assertNotNull(mock);
 
 	}
 

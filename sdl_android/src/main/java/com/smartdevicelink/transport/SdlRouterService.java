@@ -68,7 +68,7 @@ import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
+import com.smartdevicelink.transport.utl.ByteArrayMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
@@ -122,7 +122,7 @@ public class SdlRouterService extends Service{
     private Runnable versionCheckRunable, altTransportTimerRunnable;
     private LocalRouterService localCompareTo = null;
     private final static int VERSION_TIMEOUT_RUNNABLE = 1500;
-    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
+    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000;
 	
     private boolean wrongProcess = false;
 	private boolean initPassed = false;
@@ -166,9 +166,6 @@ public class SdlRouterService extends Service{
 	****************************************************************************************************************************************/	
 
 
-	public void setMainServiceReceiver(BroadcastReceiver receiver){
-		mainServiceReceiver = receiver;
-	}
 	/** create our receiver from the router service */
     BroadcastReceiver mainServiceReceiver = new BroadcastReceiver()
 	{
@@ -313,7 +310,6 @@ public class SdlRouterService extends Service{
 		*********************************************** Handlers for bound clients **************************************************************
 		****************************************************************************************************************************************/
 
-		
 	    /**
 	     * Target we publish for clients to send messages to RouterHandler.
 	     */
@@ -331,7 +327,7 @@ public class SdlRouterService extends Service{
 	    	
 	        @Override
 	        public void handleMessage(Message msg) {
-	        	if(this.provider.get() == null){
+	            if(this.provider.get() == null){
 	        		return;
 	        	}
 	        	final Bundle receivedBundle = msg.getData();
@@ -351,7 +347,7 @@ public class SdlRouterService extends Service{
 	        				}
 	        			}
 	            	//**************** We don't break here so we can let the app register as well
-	                case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
+				case TransportConstants.ROUTER_REGISTER_CLIENT: //msg.arg1 is appId
 	                	//pingClients();
 	                	Message message = Message.obtain();
 	                	message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
@@ -964,7 +960,7 @@ public class SdlRouterService extends Service{
 			packetWriteTaskMaster.close();
 			packetWriteTaskMaster = null;
 		}
-		
+
 		super.onDestroy();
 		System.gc(); //Lower end phones need this hint
 		if(!wrongProcess){
@@ -1072,7 +1068,7 @@ public class SdlRouterService extends Service{
 	 * Checks to make sure bluetooth adapter is available and on
 	 * @return
 	 */
-	private boolean bluetoothAvailable(){
+	public boolean bluetoothAvailable(){
 		try {
 			boolean retVal = (!(BluetoothAdapter.getDefaultAdapter() == null) && BluetoothAdapter.getDefaultAdapter().isEnabled());
 			//Log.d(TAG, "Bluetooth Available? - " + retVal);
@@ -1087,7 +1083,7 @@ public class SdlRouterService extends Service{
 	 * 1. If the app has SDL shut off, 												shut down
 	 * 2. if The app has an Alt Transport address or was started by one, 			stay open
 	 * 3. If Bluetooth is off/NA	 												shut down
-	 * 4. Anything else					
+	 * 4. Anything else
 	 */
 	public boolean shouldServiceRemainOpen(Intent intent){
 		//Log.d(TAG, "Determining if this service should remain open");
@@ -1156,14 +1152,14 @@ public class SdlRouterService extends Service{
 		packetWriteTaskMaster.start();
 		
 		connectedTransportType = type;
-		
-		Intent startService = new Intent();  
+
+		Intent startService = new Intent();
 		startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
-    	sendBroadcast(startService); 
+    	sendBroadcast(startService);
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
     		//If we have clients
@@ -1181,7 +1177,6 @@ public class SdlRouterService extends Service{
     		}
 			message.setData(bundle);
 			return message;
-		
 	}
 	
 	public void onTransportDisconnected(TransportType type){
@@ -2131,7 +2126,7 @@ public class SdlRouterService extends Service{
 		String appId;
 		Messenger messenger;
 		Vector<Long> sessionIds;
-		ByteAraryMessageAssembler buffer;
+		ByteArrayMessageAssembler buffer;
 		int prioirtyForBuffingMessage;
 		DeathRecipient deathNote = null;
 		//Packey queue vars
@@ -2273,7 +2268,7 @@ public class SdlRouterService extends Service{
 		public void handleMessage(int flags, byte[] packet){
 			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
 				clearBuffer();
-				buffer = new ByteAraryMessageAssembler();
+				buffer = new ByteArrayMessageAssembler();
 				buffer.init();
 			}
 			if(buffer != null){
@@ -2340,6 +2335,7 @@ public class SdlRouterService extends Service{
 		private void pauseQueue(boolean paused){
 			this.queuePaused = paused;
 		}
+
 		protected void clearBuffer(){
 			if(buffer!=null){
 				buffer.close();

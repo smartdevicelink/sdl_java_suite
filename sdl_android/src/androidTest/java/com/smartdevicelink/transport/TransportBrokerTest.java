@@ -2,11 +2,14 @@ package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
+import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
+import android.support.test.InstrumentationRegistry;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.protocol.SdlPacket;
@@ -18,6 +21,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class TransportBrokerTest extends AndroidTestCase {
@@ -27,13 +31,15 @@ public class TransportBrokerTest extends AndroidTestCase {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
+	Context context;
+
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		rsvp = new RouterServiceValidator(this.mContext);
 		rsvp.validate();
-		
+		context = InstrumentationRegistry.getTargetContext();
 	}
 	
 	private void sleep(){
@@ -56,28 +62,108 @@ public class TransportBrokerTest extends AndroidTestCase {
 
 	}
 
-	public void testSendBindingMessage(){
-		SdlRouterService mockService = mock(SdlRouterService.class);
-		TransportBroker mockBroker = mock(TransportBroker.class);
-
-//		when(mockBroker).
+	///////////////////////////////////////////Starting mock testing///////////////////////////////////
 
 
-
-	}
-
-	public void testSendPacketToRouterService(){
+	public void testSendMultipleSizePacketsToService(){  //working Correctly
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
-		}
-		assertFalse(broker.sendPacketToRouterService(null));
+		SdlPacket spyPacket = spy(SdlPacket.class);
+		when(spyPacket.constructPacket()).thenReturn(new byte[1000001]);
+
+		ComponentName componentName = new ComponentName("","");
+		TransportBroker transportBroker = new TransportBroker(context, "appId", componentName);
+		IBinder mockBinder = mock(IBinder.class);
+		transportBroker.routerServiceMessenger = new Messenger(mockBinder);
+
+		boolean result = transportBroker.sendPacketToRouterService(spyPacket);
+		assertTrue(result);
+
+		when(spyPacket.constructPacket()).thenReturn(new byte[10001]);
+		result = transportBroker.sendPacketToRouterService(spyPacket);
+		assertTrue(result);
 	}
-	
+
+
+	public void testTBThreadRegistrationResponseSuccess(){
+		final Message message = new Message();
+		message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
+		message.arg1 = TransportConstants.REGISTRATION_RESPONSE_SUCESS;
+		TransportBrokerThread brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertNull(brokerThread.broker);
+
+		try {
+			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
+			brokerThread.broker.clientMessenger.send(message);
+			while(!brokerThread.broker.registeredWithRouterService) {} // wait for handle to process switch case
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		assertTrue(brokerThread.broker.registeredWithRouterService);
+	}
+
+
+
+	public void testTBThreadRegistrationResponseDeniedLegacyModeEnabled(){
+		final Message message = new Message();
+		message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
+		message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED;
+		TransportBrokerThread brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertNull(brokerThread.broker);
+
+		try {
+			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
+			brokerThread.broker.clientMessenger.send(message);
+			while(!brokerThread.broker.getLegacyModeEnabled()) {} // wait for handle to process switch case
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		assertFalse(brokerThread.broker.registeredWithRouterService);
+		assertTrue(brokerThread.broker.getLegacyModeEnabled());
+	}
+
+	public void testTBThreadRegistrationResponseDefault(){
+		final Message message = new Message();
+		message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
+		message.arg1 = TransportConstants.REGISTRATION_RESPONSE_DENIED_UNKNOWN;
+		TransportBrokerThread brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertNull(brokerThread.broker);
+
+		try {
+			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
+			brokerThread.broker.registeredWithRouterService = true;
+			brokerThread.broker.clientMessenger.send(message);
+			while(brokerThread.broker.registeredWithRouterService) {} // wait for handle to process switch case
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		assertFalse(brokerThread.broker.registeredWithRouterService);
+	}
+
+
+
+	public void testTBThreadUnregisterClientResponse(){
+		final Message message = new Message();
+		message.what = TransportConstants.ROUTER_UNREGISTER_CLIENT_RESPONSE;
+		message.arg1 = TransportConstants.UNREGISTRATION_RESPONSE_SUCESS;
+		TransportBrokerThread brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertNull(brokerThread.broker);
+
+		try {
+			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
+			brokerThread.broker.clientMessenger.send(message);
+			while(!brokerThread.broker.getLegacyModeEnabled()) {} // wait for handle to process switch case
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		assertFalse(brokerThread.broker.registeredWithRouterService);
+	}
+
+	///////////////////////////////////////////End mock testing///////////////////////////////////
+
+
 	public void testSendPacket(){
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -160,6 +246,43 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertEquals(Long.valueOf(234234), TransportBroker.convertAppId("234234"));
 		assertEquals(Long.valueOf(-1L), TransportBroker.convertAppId(null));
 	}
+
+
+
+	class TransportBrokerThread extends Thread{
+		TransportBroker broker;
+		final Context context;
+		final String appId;
+		final ComponentName service;
+		Looper threadLooper = null;
+		Thread runner;
+		/**
+		 * Thread will automatically start to prepare its looper.
+		 * @param context
+		 * @param appId
+		 */
+		public TransportBrokerThread(Context context, String appId, ComponentName service){
+			super();
+			this.context = context;
+			this.appId = appId;
+			this.service = service;
+			this.runner = new Thread(this);
+			this.runner.start();
+		}
+
+		@Override
+		public void run() {
+			Looper.prepare();
+			if (broker == null) {
+				synchronized (this) {
+					broker = new TransportBroker(context, appId, service);
+				}
+			}
+			threadLooper = Looper.myLooper();
+			Looper.loop();
+		}
+	}
+
 
 
 }

@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcelable;
@@ -19,7 +20,7 @@ import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
+import com.smartdevicelink.transport.utl.ByteArrayMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 
 import java.lang.ref.WeakReference;
@@ -49,10 +50,14 @@ public class TransportBroker {
 	
 	
 	private SdlPacket bufferedPacket = null;
-	private ByteAraryMessageAssembler bufferedPayloadAssembler = null;
+	private ByteArrayMessageAssembler bufferedPayloadAssembler = null;
 	
 	private ServiceConnection routerConnection;
 	private int routerServiceVersion = 1;
+
+	public void setRouterConnection(ServiceConnection connection){
+		routerConnection = connection;
+	}
 	
 	private void initRouterConnection(){
 		routerConnection= new ServiceConnection() {
@@ -129,7 +134,6 @@ public class TransportBroker {
     		return false;
     	}
     }
-    
     
     /**
      * Handler of incoming messages from service.
@@ -230,7 +234,7 @@ public class TransportBroker {
             					broker.bufferedPayloadAssembler = null;            					
             				}
             				
-            				broker.bufferedPayloadAssembler = new ByteAraryMessageAssembler();
+            				broker.bufferedPayloadAssembler = new ByteArrayMessageAssembler();
             				broker.bufferedPayloadAssembler.init();
             			}
             		}else if(bundle.containsKey(TransportConstants.BYTES_TO_SEND_EXTRA_NAME)){
@@ -278,18 +282,19 @@ public class TransportBroker {
             		break;
             	default:
                     super.handleMessage(msg);
-            }   
-            
-        }
+            }
+		}
     }
+
 		
 		
 		
 		/***************************************************************************************************************************************
 		***********************************************  Life Cycle  **************************************************************
 		****************************************************************************************************************************************/	
-			
-		
+
+
+
 		@SuppressLint("SimpleDateFormat")
 		public TransportBroker(Context context, String appId, ComponentName service){
 			synchronized(INIT_LOCK){
@@ -503,7 +508,6 @@ public class TransportBroker {
 				return false;
 			}
 			return true;
-
 		}
 		
 		@SuppressLint("InlinedApi")
@@ -603,6 +607,10 @@ public class TransportBroker {
 				return legacyModeEnabled;
 			}
 			
+		}
+
+		public boolean getLegacyModeEnabled(){
+			return legacyModeEnabled;
 		}
 		
 		/***************************************************************************************************************************************

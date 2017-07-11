@@ -52,7 +52,6 @@ public class RouterServiceValidator {
 	private static final String JSON_APP_PACKAGE_TAG = "packageName";
 	private static final String JSON_APP_VERSION_TAG = "version";
 
-	
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms
 	
 	private static final String SDL = "sdl";

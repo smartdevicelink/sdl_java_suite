@@ -7,8 +7,8 @@ import android.util.Log;
 
 import com.smartdevicelink.transport.TransportConstants;
 
-public class ByteAraryMessageAssembler {
-	private static final String TAG = "ByteAraryMessageAssembler";
+public class ByteArrayMessageAssembler {
+	private static final String TAG = "ByteArrayMessageAssembler";
 	ByteArrayOutputStream buffer;
 	boolean isFinished;
 	

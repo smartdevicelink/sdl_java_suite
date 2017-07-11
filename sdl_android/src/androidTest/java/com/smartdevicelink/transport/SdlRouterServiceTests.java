@@ -8,9 +8,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
+import android.os.TransactionTooLargeException;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ServiceTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -20,28 +23,31 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import junit.framework.Assert;
 
 import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeoutException;
 
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(AndroidJUnit4.class)
 public class SdlRouterServiceTests extends AndroidTestCase {
 
 	public static final String TAG = "SdlRouterServiceTests";
-	SdlRouterService mockRouterService;
 	Context context;
-
-//	@Mock
-//	SdlRouterService annotationMockedRouterService;
 
 	@Rule
 	public final ServiceTestRule mServiceRule = new ServiceTestRule();
-
 
 
 	@Override
@@ -52,8 +58,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		}
 		context = InstrumentationRegistry.getTargetContext();
 
-		//Create mock class
-//		mockRouterService = mock(SdlRouterService.class);
 	}
 
 	@Override
@@ -62,50 +66,9 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		//Nothing here for now
 	}
 
-	public void testOnBindChoseCorrectMessenger() throws RemoteException {
+	@Mock
+	SdlRouterService mockRouterService;
 
-		SdlRouterService routerService = new SdlRouterService();
-		//Create Mock Intent
-		Intent mockIntent = mock(Intent.class);
-		//Mock method to return specific type
-		when(mockIntent.getAction()).thenReturn(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-
-		//Call onBind(). Also check binder status for verification.
-		IBinder binder = routerService.onBind(mockIntent);
-		assertNotNull(binder);
-
-		//check to see received correct messenger
-		assertEquals(binder, routerService.routerMessenger.getBinder());
-		assertNotSame(binder, routerService.altTransportMessenger.getBinder());
-		assertNotSame(binder, routerService.routerStatusMessenger.getBinder());
-	}
-
-	public void testOnBindNullIntent() throws RemoteException {
-
-		SdlRouterService routerService = new SdlRouterService();
-
-		IBinder binder = routerService.onBind(null);
-
-		assertNull(binder);
-	}
-
-	public void testOnUnbind(){
-		Intent randomIntent = new Intent();
-		//mock onUnbind() to return true and to not call super.onUnbind()
-		SdlRouterService spyRouterService = spy(new SdlRouterService());
-
-		//Note: You can pass in more than just primitives with the any() method
-		when(spyRouterService.onUnbind(any(Intent.class))).thenReturn(true);
-
-		//Call onUnbind()
-		boolean isSuccess = spyRouterService.onUnbind(randomIntent);
-
-		//Verify method was called
-		verify(spyRouterService).onUnbind(randomIntent);
-
-		//Check if desired value was returned
-		assertTrue(isSuccess);
-	}
 
 	public void testOnPacketRead(){
 		//Create spy
@@ -142,8 +105,56 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 		//Check to see legacy mode on
 		assertTrue(spy.isLegacyMode());
-
 	}
+
+	public void testOnBindChoseCorrectMessenger() throws RemoteException {
+
+		SdlRouterService routerService = new SdlRouterService();
+		//Create Mock Intent
+		Intent mockIntent = mock(Intent.class);
+		//Mock method to return specific type
+		when(mockIntent.getAction()).thenReturn(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+
+		//Call onBind(). Also check binder status for verification.
+		IBinder binder = routerService.onBind(mockIntent);
+		assertNotNull(binder);
+
+		//check to see received correct messenger
+		assertEquals(binder, routerService.routerMessenger.getBinder());
+		assertNotSame(binder, routerService.altTransportMessenger.getBinder());
+		assertNotSame(binder, routerService.routerStatusMessenger.getBinder());
+	}
+
+
+	public void testOnBindNullIntent() throws RemoteException {
+
+		SdlRouterService routerService = new SdlRouterService();
+
+		IBinder binder = routerService.onBind(null);
+
+		assertNull(binder);
+	}
+
+
+	public void testOnUnbind(){
+		Intent randomIntent = new Intent();
+		//mock onUnbind() to return true and to not call super.onUnbind()
+		SdlRouterService spyRouterService = spy(new SdlRouterService());
+
+		//Note: You can pass in more than just primitives with the any() method
+		when(spyRouterService.onUnbind(any(Intent.class))).thenReturn(true);
+
+		//Call onUnbind()
+		boolean isSuccess = spyRouterService.onUnbind(randomIntent);
+
+		//Verify method was called
+		verify(spyRouterService).onUnbind(randomIntent);
+
+		//Check if desired value was returned
+		assertTrue(isSuccess);
+	}
+
+
 
 	public void testBroadcastReceiversNotNull() {
 		if (Looper.myLooper() == null) {
@@ -155,12 +166,176 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		assertNotNull(routerService.registerAnInstanceOfSerialServer);
 	}
 
-	public void testOnTransportDisconnected(){
 
+	public void testShouldServiceRemainOpen(){
+		//Create spy
+		SdlRouterService spyRouterService = spy(new SdlRouterService());
+		//Create mock with custom Answer
+		Intent customIntent = mock(Intent.class, new Answer() {
+			boolean firstTime = true;
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				if(firstTime) {
+					firstTime = false;
+					return null;
+				}else{
+					return "BIND_REQUEST_TYPE_ALT_TRANSPORT";
+				}
+			}
+		});
+		//mock out inner method
+		when(spyRouterService.bluetoothAvailable()).thenReturn(false);
+		//mock out void method
+		doNothing().when(spyRouterService).closeSelf();
+		boolean result = spyRouterService.shouldServiceRemainOpen(customIntent);
+		//assert to see bluetooth was unavailable
+		assertFalse(result);
+		//Call shouldServiceRemainOpen() again
+		result = spyRouterService.shouldServiceRemainOpen(customIntent);
+
+		assertTrue(result);
+		result = spyRouterService.shouldServiceRemainOpen(customIntent);
+		assertTrue(result);
+		verify(spyRouterService, times(1)).closeSelf();
+	}
+
+	// WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ========
+
+
+	@Test
+	public void testRouterMessenger2() throws RemoteException, TimeoutException, InterruptedException {
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		Intent startServiceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
+
+		mServiceRule.startService(startServiceIntent);
+//		mServiceRule.bindService(startServiceIntent, )
+
+		Intent bindIntent = new Intent();
+		bindIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+		SdlRouterService routerService = new SdlRouterService();
+
+		IBinder binder = routerService.onBind(bindIntent);
+		assertNotNull(binder);
+
+		boolean isPinged = binder.pingBinder();
+		assertTrue(isPinged);
+
+		Message message = new Message();
+		message.what = TransportConstants.ROUTER_REGISTER_CLIENT;
+
+		Messenger messenger = new Messenger(binder);
+		try {
+			messenger.send(message);
+		}catch(Exception e){
+			e.printStackTrace();
+			//Let's check to see if we should retry
+			if(e instanceof TransactionTooLargeException)
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				messenger.send(message);
+		}
+
+		routerService.routerMessenger.describeContents();
 
 	}
 
 
+//
+//ServiceConnection routerConnection = null;
+//	private void initRouterConnection(){
+//		routerConnection= new ServiceConnection() {
+//
+//			public void onServiceConnected(ComponentName className, IBinder service) {
+//				Log.d(TAG, "Bound to service " + className.toString());
+//				routerServiceMessenger = new Messenger(service);
+//				isBound = true;
+//				//So we just established our connection
+//				//Register with router service
+//			}
+//
+//			public void onServiceDisconnected(ComponentName className) {
+//				Log.d(TAG, "Unbound from service " + className.getClassName());
+//				routerServiceMessenger = null;
+//				registeredWithRouterService = false;
+//				isBound = false;
+//
+//			}
+//		};
+//	}
+
+
+
+
+	// INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE =======
+
+//	public void testOnTransportDisconnected(){
+//
+//	}
+//
+//
+//	public void testSendPacketToRegisteredApp(){
+//
+//	}
+//
+//	public void testWriteBytesToTransport(){
+//
+//	}
+//
+
+
+//	public void testOnTransportConnected(){
+//
+//		TransportType customMock = mock(TransportType.class, new Answer() {
+//			@Override
+//			public Object answer(InvocationOnMock invocation) throws Throwable {
+//				return "";
+//			}
+//		});
+//
+//		SdlRouterService routerService = new SdlRouterService();
+//		routerService.onTransportConnected(customMock);
+
+//	}
+
+//
+//	@Test
+//	public void testRouterMessenger() throws RemoteException, TimeoutException {
+//
+//		Intent intent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
+//		IBinder binder = null;
+//		try {
+//			binder = mServiceRule.bindService(intent);
+//		}catch(Exception e){}
+//
+//		SdlRouterService routerService = ((SdlRouterService.LocalBinder) binder).getService();
+//
+//		Message message = new Message();
+//		message.what = TransportConstants.ROUTER_REGISTER_CLIENT;
+//		assertNotNull(routerService);
+//		assertNotNull(routerService.routerMessenger);
+//
+//		routerService.routerMessenger.send(message);
+//
+//	}
+//
+
+
+//
+//	public void testMainBroadcastReceiver(){
+//		SdlRouterService spyRouterService = spy(new SdlRouterService());
+//		doNothing().when(spyRouterService).sendBroadcast(any(Intent.class));
+//
+//		Intent intent = new Intent();
+//		spyRouterService.mainServiceReceiver.onReceive(context,intent);
+//
+//		verify(spyRouterService).sendBroadcast(any(Intent.class));
+//
+//	}
 
 
 
