@@ -22,7 +22,7 @@ public class SetVideoConfigResponse extends RPCResponse {
 	}
 
 	public void setRejectedParams(List<String> rejectedParams){
-		setValue(KEY_REJECTED_PARAMS, rejectedParams);
+		setParameters(KEY_REJECTED_PARAMS, rejectedParams);
 	}
 
 	public List<String> getRejectedParams(){

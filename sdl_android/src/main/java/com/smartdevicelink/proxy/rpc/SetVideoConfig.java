@@ -2,8 +2,6 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 
 import java.util.Hashtable;
 
@@ -22,7 +20,7 @@ public class SetVideoConfig extends RPCRequest{
 	public SetVideoConfig(Hashtable<String, Object> hash){super(hash);}
 
 	public void setConfig(VideoConfig config){
-		setValue(KEY_CONFIG, config);
+		setParameters(KEY_CONFIG, config);
 	}
 
 	public VideoConfig getConfig(){
@@ -30,7 +28,7 @@ public class SetVideoConfig extends RPCRequest{
 	}
 
 	public void setAppID(String appID){
-		setValue(KEY_APPID, appID);
+		setParameters(KEY_APPID, appID);
 	}
 
 	public String getAppID(){

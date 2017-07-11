@@ -33,4 +33,12 @@ public enum VideoStreamingProtocol {
 	 * Vorbis audio streams. In 2013 it was updated to accommodate VP9 video and Opus audio.
 	 */
 	WEBM;
+
+	public static VideoStreamingProtocol valueForString(String value) {
+		try{
+			return valueOf(value);
+		}catch(Exception e){
+			return null;
+		}
+	}
 }

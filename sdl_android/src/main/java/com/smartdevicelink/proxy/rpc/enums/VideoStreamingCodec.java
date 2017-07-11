@@ -39,4 +39,12 @@ public enum VideoStreamingCodec {
 	 * (UHD) and also enables lossless compression.
 	 */
 	VP9;
+
+	public static VideoStreamingCodec valueForString(String value) {
+		try{
+			return valueOf(value);
+		}catch(Exception e){
+			return null;
+		}
+	}
 }

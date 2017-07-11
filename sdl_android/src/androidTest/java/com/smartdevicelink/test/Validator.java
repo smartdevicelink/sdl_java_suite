@@ -50,6 +50,8 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VideoConfig;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -492,6 +494,26 @@ public class Validator{
 
         return true;
     }
+
+	public static boolean validateVideoConfig(VideoConfig config1, VideoConfig config2){
+		if(!config1.getProtocol().equals(config2.getProtocol())){
+			return false;
+		}
+
+		if(!config1.getCodec().equals(config2.getCodec())){
+			return false;
+		}
+
+		if(config1.getWidth() != config2.getWidth()){
+			return false;
+		}
+
+		if(config1.getHeight() != config2.getHeight()){
+			return false;
+		}
+
+		return true;
+	}
 
     public static boolean validateTouchEventCapabilities(TouchEventCapabilities item1, TouchEventCapabilities item2){
         if(item1 == null){
@@ -1171,6 +1193,18 @@ public class Validator{
     	}
     	
     	return true;
+    }
+
+    public static boolean validateSupportedFormats (VideoStreamingFormat vsf1, VideoStreamingFormat vsf2) {
+		if(vsf1.getProtocol() != vsf2.getProtocol()){
+			return false;
+		}
+
+	    if(vsf1.getCodec() != vsf2.getCodec()){
+		    return false;
+	    }
+
+	    return true;
     }
     
     public static boolean validateDisplayCapabilities (DisplayCapabilities item1, DisplayCapabilities item2) {

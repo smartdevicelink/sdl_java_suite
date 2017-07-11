@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Contains information about this system's video streaming capabilities.
@@ -32,11 +33,11 @@ public class VideoStreamingCapability extends RPCStruct {
 		return getInteger(KEY_MAX_BITRATE);
 	}
 
-	public void setSupportedFormats(VideoStreamingFormat formats){
+	public void setSupportedFormats(List<VideoStreamingFormat> formats){
 		setValue(KEY_SUPPORTED_FORMATS, formats);
 	}
 
-	public VideoStreamingFormat getSupportedFormats(){
-		return (VideoStreamingFormat) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
+	public List<VideoStreamingFormat> getSupportedFormats(){
+		return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
 	}
 }

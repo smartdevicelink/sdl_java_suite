@@ -35,6 +35,9 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VideoConfig;
+import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -93,6 +96,8 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 
@@ -206,6 +211,11 @@ public class Test {
 	public static final AppInterfaceUnregisteredReason GENERAL_APPINTERFACEUNREGISTEREDREASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 	public static final SystemCapabilityType           GENERAL_SYSTEMCAPABILITYTYPE           = SystemCapabilityType.NAVIGATION;
 	public static final SystemCapability               GENERAL_SYSTEMCAPABILITY               = new SystemCapability();
+	public static final VideoConfig                    GENERAL_VIDEOCONFIG                    = new VideoConfig();
+	public static final VideoStreamingProtocol         GENERAL_VIDEOSTREAMINGPROTOCOL         = VideoStreamingProtocol.RAW;
+	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
+	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
+	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
 	
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -234,6 +244,7 @@ public class Test {
 	public static final List<HmiZoneCapabilities>       GENERAL_HMIZONECAPABILITIES_LIST       = new ArrayList<HmiZoneCapabilities>(2);
 	public static final List<SoftButtonCapabilities>    GENERAL_SOFTBUTTONCAPABILITIES_LIST    = new ArrayList<SoftButtonCapabilities>(1);
 	public static final List<AudioPassThruCapabilities> GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST = new ArrayList<AudioPassThruCapabilities>(1);
+	public static final List<VideoStreamingFormat>      GENERAL_VIDEOSTREAMINGFORMAT_LIST      = new ArrayList<VideoStreamingFormat>(2);
 	
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();		
@@ -463,6 +474,21 @@ public class Test {
         GENERAL_PERMISSIONITEM_LIST.add(GENERAL_PERMISSIONITEM);
 
 		GENERAL_SYSTEMCAPABILITY.setSystemCapabilityType(GENERAL_SYSTEMCAPABILITYTYPE);
+
+		GENERAL_VIDEOCONFIG.setProtocol(GENERAL_VIDEOSTREAMINGPROTOCOL);
+		GENERAL_VIDEOCONFIG.setCodec(GENERAL_VIDEOSTREAMINGCODEC);
+		GENERAL_VIDEOCONFIG.setWidth(GENERAL_INT);
+		GENERAL_VIDEOCONFIG.setHeight(GENERAL_INT);
+
+		GENERAL_VIDEOSTREAMINGFORMAT.setProtocol(GENERAL_VIDEOSTREAMINGPROTOCOL);
+		GENERAL_VIDEOSTREAMINGFORMAT.setCodec(GENERAL_VIDEOSTREAMINGCODEC);
+
+		GENERAL_VIDEOSTREAMINGFORMAT_LIST.add(GENERAL_VIDEOSTREAMINGFORMAT);
+		GENERAL_VIDEOSTREAMINGFORMAT_LIST.add(GENERAL_VIDEOSTREAMINGFORMAT);
+
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
         
 		try {	
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

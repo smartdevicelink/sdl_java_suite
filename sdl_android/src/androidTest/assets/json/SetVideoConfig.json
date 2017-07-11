@@ -1,0 +1,23 @@
+{
+  "request":{
+    "name":"SetVideoConfig",
+    "correlationID":150,
+    "parameters":{
+      "config":{
+        "protocol":"RAW",
+        "codec":"H264",
+        "width":100,
+        "height":100
+      },
+      "appID":"test"
+    }
+  },
+  "response":{
+    "name":"SetVideoConfigResponse",
+    "correlationID":151,
+    "parameters":{
+      "rejectedParams":["a", "b"],
+      "appID":"8675309"
+    }
+  }
+}
