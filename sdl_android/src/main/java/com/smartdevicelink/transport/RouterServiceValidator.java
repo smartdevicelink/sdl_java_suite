@@ -429,6 +429,11 @@ public class RouterServiceValidator {
 					continue;
 				}
 			}
+		} else {
+			if (listCallback != null) {
+				listCallback.onListObtained(false);
+			}
+			return false;
 		}
 		
 		try {object.put(JSON_PUT_ARRAY_TAG, array);} catch (JSONException e) {e.printStackTrace();}
