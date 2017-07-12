@@ -19,14 +19,6 @@ import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class RSVTestCase extends AndroidTestCase {
@@ -37,6 +29,8 @@ public class RSVTestCase extends AndroidTestCase {
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_MONTH 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 30; // A ~month in ms
 	private static final String TEST =  "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 	RouterServiceValidator rsvp;
+	private boolean mHasSdlApp;
+
 	/**
 	 * Set this boolean if you want to test the actual validation of router service
 	 */
@@ -46,7 +40,8 @@ public class RSVTestCase extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		rsvp = new RouterServiceValidator(this.mContext);
-		
+		List<RouterServiceValidator.SdlApp> mAppsList = RouterServiceValidator.findAllSdlApps(mContext);
+		mHasSdlApp = (mAppsList != null) && (!mAppsList.isEmpty());
 	}
 
 	@Override
@@ -143,8 +138,10 @@ public class RSVTestCase extends AndroidTestCase {
 
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
 
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
-
+		if (mHasSdlApp) {
+			assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
+		}
+		releaseTListLock();
 	}
 
 	public void testMediumSecurity(){
@@ -157,9 +154,10 @@ public class RSVTestCase extends AndroidTestCase {
 		assertTrue(checkShouldOverrideInstalledFrom(rsvp,true));
 
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_WEEK);
-
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
-
+		if (mHasSdlApp) {
+			assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
+		}
+		releaseTListLock();
 	}
 
 	public void testLowSecurity(){
@@ -173,7 +171,10 @@ public class RSVTestCase extends AndroidTestCase {
 
 		assertEquals(RouterServiceValidator.getRefreshRate(), REFRESH_TRUSTED_APP_LIST_TIME_MONTH);
 
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
+		if (mHasSdlApp) {
+			assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, true, null, trustedListCallback));
+		}
+		releaseTListLock();
 
 	}
 
@@ -279,7 +280,10 @@ public class RSVTestCase extends AndroidTestCase {
 		requestTListLock();
 
 		assertTrue(RouterServiceValidator.invalidateList(mContext));
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, false, null, trustedListCallback));
+		if (mHasSdlApp) {
+			assertTrue(RouterServiceValidator.createTrustedListRequest(mContext, false, null, trustedListCallback));
+		}
+		releaseTListLock();
 	}
 
 	public void testAppStorePackages(){
@@ -349,19 +353,21 @@ public class RSVTestCase extends AndroidTestCase {
 				releaseTListLock();
 			}
 		};
+		if (mHasSdlApp) {
+			assertTrue(RouterServiceValidator.createTrustedListRequest(mContext,true, cb));
+			//Now wait for call to finish
+			synchronized(REQUEST_LOCK){
+				try {
+					REQUEST_LOCK.wait();
+					assertTrue(didFinish);
 
-		assertTrue(RouterServiceValidator.createTrustedListRequest(mContext,true, cb));
-		//Now wait for call to finish
-		synchronized(REQUEST_LOCK){
-			try {
-				REQUEST_LOCK.wait();
-				assertTrue(didFinish);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+		} else {
+			releaseTListLock();
 		}
-
-
 	}
 
 	/**
