@@ -10,19 +10,24 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.ByteArrayMessageAssembler;
 
 import org.junit.Rule;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.lang.reflect.Field;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -30,14 +35,10 @@ import static org.mockito.Mockito.when;
 
 public class TransportBrokerTest extends AndroidTestCase {
 	RouterServiceValidator rsvp;
-	//		public TransportBrokerThread(Context context, String appId, ComponentName service){
-
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	Context context;
-
-
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -52,7 +53,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 		}catch(Exception e){}
 	}
 	
-	public void testStart(){
+	public void testStart() throws Exception{
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
@@ -62,10 +63,45 @@ public class TransportBrokerTest extends AndroidTestCase {
 		}
 		broker.stop();
 		broker.resetSession();
-		assertFalse(broker.isBound);
 
+		Field queuedOnTransportConnect = TransportBroker.class.getDeclaredField("queuedOnTransportConnect");
+		queuedOnTransportConnect.setAccessible(true);
+		TransportType type = (TransportType) queuedOnTransportConnect.get(broker);
+
+		assertNull(type);
+		assertNull(broker.routerServiceMessenger);
 	}
 
+	public void testOnServiceUnregisteredFromRouterService()throws Exception{
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		broker.onServiceUnregisteredFromRouterService(0);
+
+		Field queuedOnTransportConnect = TransportBroker.class.getDeclaredField("queuedOnTransportConnect");
+		queuedOnTransportConnect.setAccessible(true);
+		TransportType type = (TransportType) queuedOnTransportConnect.get(broker);
+
+		assertNull(type);
+	}
+
+
+
+
+	public void testOnHardwareConnected() throws Exception{
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		broker.onHardwareConnected(TransportType.BLUETOOTH);
+
+		Field queuedOnTransportConnect = TransportBroker.class.getDeclaredField("queuedOnTransportConnect");
+		queuedOnTransportConnect.setAccessible(true);
+		TransportType type = (TransportType) queuedOnTransportConnect.get(broker);
+
+		assertEquals(type, TransportType.BLUETOOTH);
+	}
 
 
 	public void testSendMultipleSizePacketsToService(){  
@@ -90,7 +126,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 	}
 
 
-	public void testTBHandlerRegistrationResponseSuccess(){
+	public void testTBHandlerRegistrationResponseSuccess() throws Exception{
 		final Message message = new Message();
 		message.what = TransportConstants.ROUTER_REGISTER_CLIENT_RESPONSE;
 		message.arg1 = TransportConstants.REGISTRATION_RESPONSE_SUCESS;
@@ -109,6 +145,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+
 		assertTrue(brokerThread.broker.registeredWithRouterService);
 	}
 
@@ -122,10 +159,8 @@ public class TransportBrokerTest extends AndroidTestCase {
 
 		try {
 			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
-//			SystemClock.sleep(800);
 			brokerThread.broker.clientMessenger.send(message);
 			while(!brokerThread.broker.getLegacyModeEnabled()) {} // wait for handle to process switch case
-//			SystemClock.sleep(800);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -185,13 +220,15 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertFalse(brokerThread.broker.registeredWithRouterService);
 	}
 
-	public void testTBHandlerRouterReceivedPacket() {
+
+	public void testTBHandlerRouterReceivedPacketWithByteToSendExtra() throws Exception{
 		final Message message = new Message();
 		message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
-
 		Bundle bundle = new Bundle();
 		SdlPacket packet = new SdlPacket(1,false,1,1,0,0,0,0,null,0,0);
-		bundle.putParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME, packet);
+		bundle.putParcelable(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, packet);
+		bundle.putBoolean(TransportConstants.HARDWARE_CONNECTED, true);
+		bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED);
 		message.setData(bundle);
 
 		TransportBrokerThread brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
@@ -200,14 +237,50 @@ public class TransportBrokerTest extends AndroidTestCase {
 		try {
 			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
 			brokerThread.broker.clientMessenger.send(message);
+			int count = 0;
+			while(brokerThread.getBufferedPacket()==null && count<10){
+				sleep();
+				count++;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		assertNull( brokerThread.getBufferedPacket());
+		assertNull(brokerThread.getBufferedPayloadAssembler());
 		assertFalse(brokerThread.broker.registeredWithRouterService);
+
 	}
 
 
-		///////////////////////////////////////////End mock testing///////////////////////////////////
+	public void testTBHandlerRouterReceivedPacketWithFormatPacketExtra() throws Exception{
+		final Message message = new Message();
+		message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
+
+		Bundle bundle = new Bundle();
+		SdlPacket packet = new SdlPacket(1,false,1,1,0,0,0,0,null,0,0);
+		bundle.putParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME, packet);
+		bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED);
+		bundle.putBoolean(TransportConstants.HARDWARE_CONNECTED, true);
+		message.setData(bundle);
+
+		TransportBrokerThread brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertNull(brokerThread.broker);
+
+		try {
+			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
+			brokerThread.broker.clientMessenger.send(message);
+			int count = 0;
+			while(brokerThread.getBufferedPacket()==null && count<10){
+				sleep();
+				count++;
+				}
+			} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(packet, brokerThread.getBufferedPacket());
+		assertFalse(brokerThread.broker.registeredWithRouterService);
+	}
 
 
 	public void testSendPacket(){
@@ -252,7 +325,6 @@ public class TransportBrokerTest extends AndroidTestCase {
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
 		}
-
 	}
 
 	
@@ -285,8 +357,45 @@ public class TransportBrokerTest extends AndroidTestCase {
 		message = new Message();
 
 		assertTrue(broker.sendMessageToRouterService(message));
-
 	}
+
+//	public void testSendMessageToRouterServiceException() throws Exception{
+//		if (Looper.myLooper() == null) {
+//			Looper.prepare();
+//		}
+//		TransportBroker broker = spy(new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService()));
+//		Messenger mockMessenger = mock(Messenger.class);
+//		doThrow(RemoteException.class).when(mockMessenger).send(any(Message.class));
+//		broker.routerServiceMessenger = mockMessenger;
+//		broker.sendMessageToRouterService(null,0);
+//
+//		verify(broker, times(5)).sendMessageToRouterService(any(Message.class));
+//	}
+
+	public void testRequestNewSession(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		TransportBroker broker = spy(new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService()));
+		broker.requestNewSession();
+
+		ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+		verify(broker).sendMessageToRouterService(argument.capture());
+		assertEquals(TransportConstants.ROUTER_REQUEST_NEW_SESSION, argument.getValue().what);
+	}
+
+	public void testRemoveSession(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		TransportBroker broker = spy(new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService()));
+		broker.removeSession(0);
+
+		ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+		verify(broker).sendMessageToRouterService(argument.capture());
+		assertEquals(TransportConstants.ROUTER_REMOVE_SESSION, argument.getValue().what);
+	}
+
 
 	public void testConvertAppId(){
 		assertEquals(Long.valueOf(234234), TransportBroker.convertAppId("234234"));
@@ -302,6 +411,9 @@ public class TransportBrokerTest extends AndroidTestCase {
 		final ComponentName service;
 		Looper threadLooper = null;
 		Thread runner;
+		TransportType queuedOnTransportConnect;
+
+
 		/**
 		 * Thread will automatically start to prepare its looper.
 		 * @param context
@@ -321,11 +433,26 @@ public class TransportBrokerTest extends AndroidTestCase {
 			Looper.prepare();
 			if (broker == null) {
 				synchronized (this) {
-					broker = spy(new TransportBroker(context, appId, service));
+					broker = new TransportBroker(context, appId, service);
 				}
 			}
 			threadLooper = Looper.myLooper();
 			Looper.loop();
+		}
+
+
+		public ByteArrayMessageAssembler getBufferedPayloadAssembler() throws Exception{
+			Field bufferedPayloadAssembler = TransportBroker.class.getDeclaredField("bufferedPayloadAssembler");
+			bufferedPayloadAssembler.setAccessible(true);
+			ByteArrayMessageAssembler assembler = (ByteArrayMessageAssembler) bufferedPayloadAssembler.get(broker);
+			return assembler;
+		}
+
+		public SdlPacket getBufferedPacket() throws Exception{
+			Field bufferedPacket = TransportBroker.class.getDeclaredField("bufferedPacket");
+			bufferedPacket.setAccessible(true);
+			SdlPacket packet = (SdlPacket) bufferedPacket.get(broker);
+			return packet;
 		}
 	}
 

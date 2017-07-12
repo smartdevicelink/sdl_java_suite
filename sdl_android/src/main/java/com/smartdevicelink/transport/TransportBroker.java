@@ -379,7 +379,7 @@ public class TransportBroker {
 		****************************************************************************************************************************************/	
 		
 		
-		public void onServiceUnregsiteredFromRouterService(int unregisterCode){
+		public void onServiceUnregisteredFromRouterService(int unregisterCode){
 			queuedOnTransportConnect = null;
 		}
 		

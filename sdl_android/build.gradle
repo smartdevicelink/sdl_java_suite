@@ -31,11 +31,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // required if you want to use Mockito for unit tests
-    testCompile 'org.mockito:mockito-core:2.7.9'
+    testCompile 'org.mockito:mockito-core:2.8.47'
 
-    testCompile "org.mockito:mockito-inline:2.7.9"
+    testCompile "org.mockito:mockito-inline:2.8.47"
     // required if you want to use Mockito for Android tests
-    androidTestCompile 'org.mockito:mockito-android:2.7.9'
+    androidTestCompile 'org.mockito:mockito-android:2.8.47'
 
 
 
