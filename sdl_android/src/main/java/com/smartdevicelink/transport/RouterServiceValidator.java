@@ -351,7 +351,7 @@ public class RouterServiceValidator {
 		List<SdlApp> apps = new ArrayList<SdlApp>();
 		PackageManager packageManager = context.getPackageManager();
 		Intent intent = new Intent();
-		intent.setAction("sdl.router.startservice");
+		intent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 		List<ResolveInfo> infoList = packageManager.queryBroadcastReceivers(intent, 0);
 		if(infoList!=null){
 			//We want to sort our list so that we know it's the same everytime
