@@ -143,7 +143,7 @@ public class PutFile extends RPCRequest {
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
 	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500
+	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
 	 */
     public void setSdlFileName(String sdlFileName) {
         setParameters(KEY_SDL_FILE_NAME, sdlFileName);
