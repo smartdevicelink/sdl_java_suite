@@ -1168,15 +1168,15 @@ public class SdlRouterService extends Service{
 	}
 	
 	private Message createHardwareConnectedMessage(final TransportType type){
-			Message message = Message.obtain();
-			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
-			Bundle bundle = new Bundle();
-			bundle.putString(TransportConstants.HARDWARE_CONNECTED, type.name());
-    		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
-    			bundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
-    		}
-			message.setData(bundle);
-			return message;
+		Message message = Message.obtain();
+		message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
+		Bundle bundle = new Bundle();
+		bundle.putString(TransportConstants.HARDWARE_CONNECTED, type.name());
+		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
+			bundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+		}
+		message.setData(bundle);
+		return message;
 	}
 	
 	public void onTransportDisconnected(TransportType type){

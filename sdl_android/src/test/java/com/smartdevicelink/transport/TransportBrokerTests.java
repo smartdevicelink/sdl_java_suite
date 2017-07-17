@@ -3,6 +3,7 @@ package com.smartdevicelink.transport;
 import android.content.Context;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 
 import junit.framework.TestCase;
 
@@ -45,7 +46,8 @@ public class TransportBrokerTests extends TestCase{
 		broker.isBound = true;
 
 		Messenger mockMessenger = mock(Messenger.class);
-		doThrow(new NullPointerException()).when(mockMessenger).send(message);
+		doThrow(new RemoteException()).when(mockMessenger).send(message);
+
 		broker.routerServiceMessenger = mockMessenger;
 		boolean result = broker.sendMessageToRouterService(message);
 

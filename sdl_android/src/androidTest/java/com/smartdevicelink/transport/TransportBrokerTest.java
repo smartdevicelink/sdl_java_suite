@@ -14,7 +14,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.test.InstrumentationRegistry;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -29,14 +28,15 @@ import org.mockito.junit.MockitoRule;
 
 import java.lang.reflect.Field;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
+/**
+ * Testing isolated methods
+ */
 public class TransportBrokerTest extends AndroidTestCase {
 	RouterServiceValidator rsvp;
 	TransportBrokerThread brokerThread;
@@ -94,6 +94,50 @@ public class TransportBrokerTest extends AndroidTestCase {
 		TransportType type = (TransportType) queuedOnTransportConnect.get(broker);
 
 		assertEquals(type, TransportType.BLUETOOTH);
+	}
+
+
+
+	public void testOnPacketReceived(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertFalse(broker.start());
+		}
+	}
+
+
+	public void testSendMessageToRouterService(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		Handler handler = new Handler();
+		Message message = new Message();
+		broker.routerServiceMessenger = null;
+		broker.isBound = true;
+
+		assertFalse(broker.sendMessageToRouterService(message));
+
+		broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
+
+		broker.isBound = false;
+
+		assertFalse(broker.sendMessageToRouterService(message));
+
+		broker.isBound = true;
+		broker.registeredWithRouterService = true;
+
+		message = null;
+
+		assertFalse(broker.sendMessageToRouterService(message));
+
+		message = new Message();
+
+		assertTrue(broker.sendMessageToRouterService(message));
 	}
 
 
@@ -273,82 +317,30 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertFalse(brokerThread.broker.registeredWithRouterService);
 	}
 
+	public void testTBHandlerHardwareConnectionEvent() throws Exception {
+		final Message message = new Message();
+		message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
+		Bundle bundle = new Bundle();
+		bundle.putString(TransportConstants.HARDWARE_CONNECTED, TransportType.BLUETOOTH.name());
+		message.setData(bundle);
+		brokerThread = new TransportBrokerThread(context, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		assertNull(brokerThread.broker);
 
-	public void testSendPacket(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
+		try {
+			while(brokerThread.broker==null) {} // wait for thread to finish instantiation
+			brokerThread.broker.clientMessenger.send(message);
+			int count = 0;
+			while(brokerThread.getQueuedOnTransportConnect()==null && count<10){
+				sleep();
+				count++;
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
 		}
-
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
-		}
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
-			assertNotNull(adapter);
-			assertTrue(adapter.isEnabled());
-		}
-		//Not ideal, but not implementing callbacks just for unit tests
-		int count = 0;
-		while(broker.routerServiceMessenger == null && count<10){
-			sleep();
-			count++;
-		}
-		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
-			assertNotNull(broker.routerServiceMessenger);
-		}
-
-		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
-		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
-		//assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
-		//assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
-
-		broker.stop();
-
-	}
-	
-	public void testOnPacketReceived(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
-		}
+		assertEquals(TransportType.BLUETOOTH, brokerThread.getQueuedOnTransportConnect());
+		assertFalse(brokerThread.broker.registeredWithRouterService);
 	}
 
-	
-	public void testSendMessageToRouterService(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-		Handler handler = new Handler();
-		Message message = new Message();
-		broker.routerServiceMessenger = null;
-		broker.isBound = true;
-
-		assertFalse(broker.sendMessageToRouterService(message));
-
-		broker.routerServiceMessenger = new Messenger(handler); //So it's not ambiguous
-
-		broker.isBound = false;
-
-		assertFalse(broker.sendMessageToRouterService(message));
-
-		broker.isBound = true;
-		broker.registeredWithRouterService = true;
-
-		message = null;
-
-		assertFalse(broker.sendMessageToRouterService(message));
-
-		message = new Message();
-
-		assertTrue(broker.sendMessageToRouterService(message));
-	}
 
 	public void testStart() throws Exception{
 		if (Looper.myLooper() == null) {
@@ -356,7 +348,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 		}
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertTrue(broker.start());
+			assertFalse(broker.start());
 		}
 		broker.stop();
 		broker.resetSession();
@@ -401,7 +393,39 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertEquals(Long.valueOf(-1L), TransportBroker.convertAppId(null));
 	}
 
+	public void testSendPacket(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
 
+		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+
+		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertFalse(broker.start());
+		}
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
+			assertNotNull(adapter);
+			assertTrue(adapter.isEnabled());
+		}
+		//Not ideal, but not implementing callbacks just for unit tests
+		int count = 0;
+		while(broker.routerServiceMessenger == null && count<10){
+			sleep();
+			count++;
+		}
+//		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
+//			assertNotNull(broker.routerServiceMessenger);
+//		}
+
+		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
+		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
+		//assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
+		//assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
+
+		broker.stop();
+
+	}
 
 	class TransportBrokerThread extends Thread{
 		TransportBroker broker;
@@ -457,7 +481,6 @@ public class TransportBrokerTest extends AndroidTestCase {
 
 		}
 
-
 		public ByteArrayMessageAssembler getBufferedPayloadAssembler() throws Exception{
 			Field bufferedPayloadAssembler = TransportBroker.class.getDeclaredField("bufferedPayloadAssembler");
 			bufferedPayloadAssembler.setAccessible(true);
@@ -471,8 +494,15 @@ public class TransportBrokerTest extends AndroidTestCase {
 			SdlPacket packet = (SdlPacket) bufferedPacket.get(broker);
 			return packet;
 		}
-	}
 
+		public TransportType getQueuedOnTransportConnect() throws Exception{
+			Field transportConnect = TransportBroker.class.getDeclaredField("queuedOnTransportConnect");
+			transportConnect.setAccessible(true);
+			TransportType transportType = (TransportType) transportConnect.get(broker);
+			return transportType;
+		}
+
+	}
 
 
 }

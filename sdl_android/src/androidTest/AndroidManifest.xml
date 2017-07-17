@@ -16,4 +16,16 @@
         <uses-library android:name="android.test.runner" />
     </application>
 
+    <service android:name="com.smartdevicelink.transport.FakeSdlRouterService"
+             android:exported="true"
+             android:enabled="true"
+        >
+    </service>
+
+    <service android:name="com.smartdevicelink.transport.SdlRouterService"
+             android:exported="true"
+             android:enabled="true"
+        >
+    </service>
+
 </manifest>
