@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 19
+        targetSdkVersion 19 
         versionCode 1
         versionName "4.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,9 +20,6 @@ android {
         }
     }
 
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -37,21 +34,19 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // required if you want to use Mockito for unit tests
     testCompile 'org.mockito:mockito-core:2.8.47'
-
+    testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-inline:2.8.47"
-    // required if you want to use Mockito for Android tests
+
     androidTestCompile 'org.mockito:mockito-android:2.8.47'
 
-
-
-    androidTestCompile 'com.android.support:support-annotations:24.0.0'
+    //Testing Support Library
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestCompile 'com.android.support:support-annotations:25.3.1'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    testCompile 'junit:junit:4.12'
 
 }
 

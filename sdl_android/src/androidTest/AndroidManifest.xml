@@ -22,10 +22,5 @@
         >
     </service>
 
-    <service android:name="com.smartdevicelink.transport.SdlRouterService"
-             android:exported="true"
-             android:enabled="true"
-        >
-    </service>
 
 </manifest>

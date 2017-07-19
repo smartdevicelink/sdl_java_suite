@@ -22,6 +22,7 @@ import com.smartdevicelink.protocol.enums.FrameType;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,12 @@ import org.mockito.stubbing.Answer;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeoutException;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -41,37 +48,33 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
-public class SdlRouterServiceTests extends AndroidTestCase {
+public class SdlRouterServiceTests {
 
 	public static final String TAG = "SdlRouterServiceTests";
-	Context context;
+	Context context= InstrumentationRegistry.getTargetContext();
 
 	@Rule
 	public final ServiceTestRule mServiceRule = new ServiceTestRule();
-
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		context = InstrumentationRegistry.getTargetContext();
-
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		//Nothing here for now
-	}
 
 	@Mock
 	SdlRouterService mockRouterService;
 
 
+	@Test
+	public void testVersionCheck(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		SdlRouterService routerService = new SdlRouterService();
+		routerService.startVersionCheck();
+
+	}
+
+	@Test
 	public void testOnPacketRead(){
-		//Create spy
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
 		SdlRouterService routerService = new SdlRouterService();
 		SdlRouterService spy = spy(routerService);
 
@@ -107,8 +110,12 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 		assertTrue(spy.isLegacyMode());
 	}
 
-	public void testOnBindChoseCorrectMessenger() throws RemoteException {
 
+	@Test
+	public void testOnBindChoseCorrectMessenger() throws RemoteException {
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
 		SdlRouterService routerService = new SdlRouterService();
 		//Create Mock Intent
 		Intent mockIntent = mock(Intent.class);
@@ -126,8 +133,11 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	}
 
 
+	@Test
 	public void testOnBindNullIntent() throws RemoteException {
-
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
 		SdlRouterService routerService = new SdlRouterService();
 
 		IBinder binder = routerService.onBind(null);
@@ -136,7 +146,11 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	}
 
 
+	@Test
 	public void testOnUnbind(){
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
 		Intent randomIntent = new Intent();
 		//mock onUnbind() to return true and to not call super.onUnbind()
 		SdlRouterService spyRouterService = spy(new SdlRouterService());
@@ -156,6 +170,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 
 
+	@Test
 	public void testBroadcastReceiversNotNull() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -167,6 +182,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	}
 
 
+	@Test
 	public void testShouldServiceRemainOpen(){
 		//Create spy
 		SdlRouterService spyRouterService = spy(new SdlRouterService());
@@ -245,142 +261,11 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	}
 
 
-//
-//ServiceConnection routerConnection = null;
-//	private void initRouterConnection(){
-//		routerConnection= new ServiceConnection() {
-//
-//			public void onServiceConnected(ComponentName className, IBinder service) {
-//				Log.d(TAG, "Bound to service " + className.toString());
-//				routerServiceMessenger = new Messenger(service);
-//				isBound = true;
-//				//So we just established our connection
-//				//Register with router service
-//			}
-//
-//			public void onServiceDisconnected(ComponentName className) {
-//				Log.d(TAG, "Unbound from service " + className.getClassName());
-//				routerServiceMessenger = null;
-//				registeredWithRouterService = false;
-//				isBound = false;
-//
-//			}
-//		};
-//	}
-
-
-
-
-	// INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE ======= INCOMPLETE =======
-
-//	public void testOnTransportDisconnected(){
-//
-//	}
-//
-//
-//	public void testSendPacketToRegisteredApp(){
-//
-//	}
-//
-//	public void testWriteBytesToTransport(){
-//
-//	}
-//
-
-
-//	public void testOnTransportConnected(){
-//
-//		TransportType customMock = mock(TransportType.class, new Answer() {
-//			@Override
-//			public Object answer(InvocationOnMock invocation) throws Throwable {
-//				return "";
-//			}
-//		});
-//
-//		SdlRouterService routerService = new SdlRouterService();
-//		routerService.onTransportConnected(customMock);
-
-//	}
-
-//
-//	@Test
-//	public void testRouterMessenger() throws RemoteException, TimeoutException {
-//
-//		Intent intent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-//		IBinder binder = null;
-//		try {
-//			binder = mServiceRule.bindService(intent);
-//		}catch(Exception e){}
-//
-//		SdlRouterService routerService = ((SdlRouterService.LocalBinder) binder).getService();
-//
-//		Message message = new Message();
-//		message.what = TransportConstants.ROUTER_REGISTER_CLIENT;
-//		assertNotNull(routerService);
-//		assertNotNull(routerService.routerMessenger);
-//
-//		routerService.routerMessenger.send(message);
-//
-//	}
-//
-
-
-//
-//	public void testMainBroadcastReceiver(){
-//		SdlRouterService spyRouterService = spy(new SdlRouterService());
-//		doNothing().when(spyRouterService).sendBroadcast(any(Intent.class));
-//
-//		Intent intent = new Intent();
-//		spyRouterService.mainServiceReceiver.onReceive(context,intent);
-//
-//		verify(spyRouterService).sendBroadcast(any(Intent.class));
-//
-//	}
-
-
-
-
-
-	//Testing Broadcast Receivers
-//	public void testMainBroadcastReceiver() throws TimeoutException {
-//		SdlRouterService routerService = new SdlRouterService();
-//
-//		Intent registrationIntent = new Intent();
-////		registrationIntent.setAction(action);
-////		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, this.getPackageName());
-////		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, this.getClass().getName());
-//
-//		// 1. Create mock BroadcastReceiver
-//		BroadcastReceiver fakeServiceReceiver = mock(BroadcastReceiver.class);
-//
-//		// 2. Tell fakeServiceReceiver to throw exception if onReceive is called
-//		doThrow(new RuntimeException()).when(fakeServiceReceiver).onReceive(context,registrationIntent);
-//
-//		// 3. Set fakeBR to mocked service
-//		routerService.setMainServiceReceiver(fakeServiceReceiver);
-//
-//		// 4. Mock mockRouterService to have no action when sendBroadcast() is called
-//		mServiceRule.startService(new Intent(context, SdlRouterService.class));
-////		doNothing().when(routerService).sendBroadcast(any(Intent.class));
-//
-//		// 5. invoke onReceive()
-//		//NEED TO CALL SERVICE to start it
-//		fakeServiceReceiver.onReceive(context, registrationIntent); // no context in sendBroadcast() call
-//
-//		// 6. Check to see if onReceive method was called
-//		verify(routerService.mainServiceReceiver).onReceive(context, any(Intent.class));
-
-		// 7. Check to see if the inner method was called
-//		verify(routerService).sendBroadcast(registrationIntent);
-//	}
-
-
-
-
 	/**
 	 * Test null bundle handling in AltTransportHandler when handling messages. Only test the case of
 	 * msg.what == TransportConstants.ROUTER_RECEIVED_PACKET
 	 */
+	@Test
 	public void testAlTransportHandlerHandleNullBundle() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -432,87 +317,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			Assert.fail("Exception in testAlTransportHandlerHandleNullBundle, " + e);
 		}
 	}
-
-
-/////////////
-//	@Test
-//	public void testBinding() throws TimeoutException {
-////		Intent serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-//
-////		IBinder binder = mServiceRule.bindService(serviceIntent); //
-////		 mServiceRule.startService(serviceIntent);
-//
-////		SdlRouterService routerService = ((SdlRouterService.LocalBinder)binder).getService();
-//
-////		assertNotNull(routerService.registerAnInstanceOfSerialServer);
-//
-//
-//	}
-//
-//	@Test
-//	public void testMainBroadcastReceiver() throws TimeoutException {
-//		Intent serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-//		serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-//		IBinder binder = mServiceRule.bindService(serviceIntent);
-//
-//		SdlRouterService routerService = ((SdlRouterService.LocalBinder)binder).getService();
-//
-//		doNothing().when(routerService).sendBroadcast(serviceIntent);
-//		verify(routerService).onCreate();
-//
-//		Intent registrationIntent = new Intent();
-//		registrationIntent.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
-//		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, mockRouterService.getPackageName());
-//		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, mockRouterService.getClass().getName());
-//		routerService.mainServiceReceiver.onReceive(InstrumentationRegistry.getTargetContext(), serviceIntent); // no context in sendBroadcast() call
-//		verify(routerService).sendBroadcast(serviceIntent);
-//	}
-//
-//	@Test
-//	public void testRegisterBroadcastReceiver() throws TimeoutException {
-//		Intent serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-//		serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-//		IBinder binder = mServiceRule.bindService(serviceIntent);
-//		SdlRouterService routerService = ((SdlRouterService.LocalBinder)binder).getService();
-//
-//		Intent disconnectIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-//		disconnectIntent.setAction("android.bluetooth.adapter.action.STATE_CHANGED");
-//		disconnectIntent.putExtra("senderintent", "Bar");
-//		disconnectIntent.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA, "Bar");
-//
-////		mockRouterService.registerAnInstanceOfSerialServer.onReceive(context, disconnectIntent); // context
-////		assertFalse(isReached);
-////		verify(mockRouterService.sdlMultiList, atLeastOnce()).remove(any());
-//
-//	}
-//
-//	@Test
-//	public void testDisconnectBroadcastReceiver() {
-//
-//	}
-//
-//	@Test
-//	public void testRouterHandler() throws TimeoutException {
-//		Intent serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-//		serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-//		IBinder binder = mServiceRule.bindService(serviceIntent);
-//		SdlRouterService routerService = ((SdlRouterService.LocalBinder)binder).getService();
-//
-//		Intent requestTypeIntent = new Intent();
-//		requestTypeIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-//
-//		SdlRouterService mockRouterService = mock(SdlRouterService.class);
-//		mockRouterService.onBind(requestTypeIntent);
-//		Message message = Message.obtain(); //Do we need to always obtain new? or can we just swap bundles?
-//		message.what = TransportConstants.ROUTER_SEND_PACKET;
-//		Bundle bundle = new Bundle();
-//		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
-//		message.setData(bundle);
-//
-////		verify(mockRouterService.routerMessenger)
-//
-//	}
-//
 
 
 }
