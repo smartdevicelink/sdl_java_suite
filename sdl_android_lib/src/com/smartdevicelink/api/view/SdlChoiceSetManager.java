@@ -19,12 +19,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-/**
- * Created by mschwerz on 5/4/16.
- */
 public class SdlChoiceSetManager {
     private static final String TAG = SdlChoiceSetManager.class.getSimpleName();
 
+    //TODO: Make these AtomicIntegers
     private Integer Choice_Count=0;
     private Integer Choice_Set_Count=0;
 
@@ -34,6 +32,7 @@ public class SdlChoiceSetManager {
         mApplicationContext = application;
     }
 
+    //TODO: Convert to a SparseArray
     private HashMap<Integer,SdlChoiceSet> mChoiceSetsUploaded = new HashMap<>();
 
     Integer requestChoiceCount(){
@@ -44,11 +43,13 @@ public class SdlChoiceSetManager {
         return Choice_Set_Count++;
     }
 
+    //TODO: make private and void
     boolean registerSdlChoiceSet(SdlChoiceSet set){
         mChoiceSetsUploaded.put(set.getChoiceSetId(),set);
         return true;
     }
 
+    //TODO: Wrap the method in a runnable with a post on the Sdl thread
     public boolean uploadChoiceSetCreation(final SdlChoiceSet choiceSet, final ChoiceSetReadyListener listener){
         if(hasBeenUploaded(choiceSet))
             return true;
@@ -145,7 +146,7 @@ public class SdlChoiceSetManager {
         return uploadChoiceSetCreation(choiceSet, listener);
     }
 
-
+    //TODO: Wrap the method in a runnable with a post on the Sdl thread
     public boolean deleteChoiceSetCreation(final SdlChoiceSet setToDelete, final ChoiceSetDeletedListener listener){
 
         DeleteInteractionChoiceSet deleteSet= new DeleteInteractionChoiceSet();
@@ -171,7 +172,7 @@ public class SdlChoiceSetManager {
         return false;
     }
 
-
+    //TODO: Make private
     boolean unregisterSdlChoiceSet(SdlChoiceSet choiceSetName){
         if(hasBeenUploaded(choiceSetName)){
             mChoiceSetsUploaded.remove(choiceSetName);

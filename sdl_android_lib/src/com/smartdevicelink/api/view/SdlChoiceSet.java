@@ -18,6 +18,7 @@ public class SdlChoiceSet {
     private final Integer mChoiceSetId;
     private final SdlChoiceSetManager mManager;
 
+    //TODO: Make it so that it takes in a choice set manager instead
     public SdlChoiceSet( @NonNull ArrayList<SdlChoice> choices, @NonNull SdlContext context){
         mManager= context.getSdlChoiceSetManager();
         SdlChoiceSet matchingSet = null;
@@ -76,6 +77,10 @@ public class SdlChoiceSet {
     }
 
     private boolean compareToSavedSet(ArrayList<SdlChoice> choices){
+        if(choices.size() != mChoices.size()){
+            return false;
+        }
+
         for(int i=0; i<mChoices.size();i++) {
             if(!mChoices.get(mChoices.keyAt(i)).compareModelData(choices.get(i))){
                 return false;
