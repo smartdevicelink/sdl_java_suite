@@ -15,6 +15,16 @@ public enum Language {
 	 */
 
     EN_US("EN-US"),
+	/**
+	 * English - India
+	 */
+
+	EN_IN("EN-IN"),
+	/**
+	 * Thai - Thailand
+	 */
+
+	TH_TH("TH-TH"),
     /**
      * Spanish - Mexico
      */
