@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.Language}
+ * {@link com.smartdevicelink.proxy.rpc.enums.Language}
  */
 public class LanguageTests extends TestCase {
 
@@ -20,6 +20,10 @@ public class LanguageTests extends TestCase {
 	public void testValidEnums () {	
 		String example = "EN-US";
 		Language enumEnUs = Language.valueForString(example);
+		example = "EN-IN";
+		Language enumEnIn = Language.valueForString(example);
+		example = "TH-TH";
+		Language enumThTh = Language.valueForString(example);
 		example = "ES-MX";
 		Language enumEsMx = Language.valueForString(example);
 		example = "FR-CA";
@@ -68,6 +72,8 @@ public class LanguageTests extends TestCase {
 		Language enumNoNo = Language.valueForString(example);
 		
 		assertNotNull("EN-US returned null", enumEnUs);
+		assertNotNull("EN-IN returned null", enumEnIn);
+		assertNotNull("TH-TH returned null", enumThTh);
 		assertNotNull("ES-MX returned null", enumEsMx);
 		assertNotNull("FR-CA returned null", enumFrCa);
 		assertNotNull("DE-DE returned null", enumDeDe);
@@ -130,6 +136,8 @@ public class LanguageTests extends TestCase {
 		List<Language> enumTestList = new ArrayList<Language>();
 		
 		enumTestList.add(Language.EN_US);
+		enumTestList.add(Language.EN_IN);
+		enumTestList.add(Language.TH_TH);
 		enumTestList.add(Language.ES_MX);
 		enumTestList.add(Language.FR_CA);
 		enumTestList.add(Language.DE_DE);
