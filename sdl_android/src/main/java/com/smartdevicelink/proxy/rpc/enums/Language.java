@@ -11,6 +11,83 @@ import java.util.EnumSet;
  */
 public enum Language {
 	/**
+	 * English - SA
+	 */
+
+	EN_SA("EN-SA"),
+
+	/**
+	 * Hebrew - IL
+	 */
+
+	HE_IL("HE-IL"),
+
+	/**
+	 * Romanian - RO
+	 */
+
+	RO_RO("RO-RO"),
+
+	/**
+	 * Ukrainian - UA
+	 */
+
+	UK_UA("UK-UA"),
+
+	/**
+	 * Indonesian - ID
+	 */
+
+	ID_ID("ID-ID"),
+
+	/**
+	 * Vietnamese - VN
+	 */
+
+	VI_VN("VI-VN"),
+
+	/**
+	 * Malay - MY
+	 */
+
+	MS_MY("MS-MY"),
+
+	/**
+	 * Hindi - IN
+	 */
+
+	HI_IN("HI-IN"),
+
+	/**
+	 * Dutch - BE
+	 */
+
+	NL_BE("NL-BE"),
+
+	/**
+	 * Greek - GR
+	 */
+
+	EL_GR("EL-GR"),
+
+	/**
+	 * Hungarian - HU
+	 */
+
+	HU_HU("HU-HU"),
+
+	/**
+	 * Finnish - FI
+	 */
+
+	FI_FI("FI-FI"),
+
+	/**
+	 * Slovak - SK
+	 */
+
+	SK_SK("SK-SK"),
+	/**
 	 * English - US
 	 */
 

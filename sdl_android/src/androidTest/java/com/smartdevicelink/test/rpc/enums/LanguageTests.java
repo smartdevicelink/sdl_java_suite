@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.Language}
+ * {@link com.smartdevicelink.proxy.rpc.enums.Language}
  */
 public class LanguageTests extends TestCase {
 
@@ -20,6 +20,32 @@ public class LanguageTests extends TestCase {
 	public void testValidEnums () {	
 		String example = "EN-US";
 		Language enumEnUs = Language.valueForString(example);
+		example = "EN-SA";
+		Language enumEnSa = Language.valueForString(example);
+		example = "HE-IL";
+		Language enumHeIl = Language.valueForString(example);
+		example = "RO-RO";
+		Language enumRoRo = Language.valueForString(example);
+		example = "UK-UA";
+		Language enumUkUa = Language.valueForString(example);
+		example = "ID-ID";
+		Language enumIdId = Language.valueForString(example);
+		example = "VI-VN";
+		Language enumViVn = Language.valueForString(example);
+		example = "MS-MY";
+		Language enumMsMy = Language.valueForString(example);
+		example = "HI-IN";
+		Language enumHiIn = Language.valueForString(example);
+		example = "NL-BE";
+		Language enumNlBe = Language.valueForString(example);
+		example = "EL-GR";
+		Language enumElGr = Language.valueForString(example);
+		example = "HU-HU";
+		Language enumHuHu = Language.valueForString(example);
+		example = "FI-FI";
+		Language enumFiFi = Language.valueForString(example);
+		example = "SK-SK";
+		Language enumSkSk = Language.valueForString(example);
 		example = "ES-MX";
 		Language enumEsMx = Language.valueForString(example);
 		example = "FR-CA";
@@ -72,6 +98,19 @@ public class LanguageTests extends TestCase {
 		Language enumThTh = Language.valueForString(example);
 		
 		assertNotNull("EN-US returned null", enumEnUs);
+		assertNotNull("EN-SA returned null", enumEnSa);
+		assertNotNull("HE-IL returned null", enumHeIl);
+		assertNotNull("RO-RO returned null", enumRoRo);
+		assertNotNull("UK-UA returned null", enumUkUa);
+		assertNotNull("ID-ID returned null", enumIdId);
+		assertNotNull("VI-VN returned null", enumViVn);
+		assertNotNull("MS-MY returned null", enumMsMy);
+		assertNotNull("HI-IN returned null", enumHiIn);
+		assertNotNull("NL-BE returned null", enumNlBe);
+		assertNotNull("EL-GR returned null", enumElGr);
+		assertNotNull("HU-HU returned null", enumHuHu);
+		assertNotNull("FI-FI returned null", enumFiFi);
+		assertNotNull("SK-SK returned null", enumSkSk);
 		assertNotNull("ES-MX returned null", enumEsMx);
 		assertNotNull("FR-CA returned null", enumFrCa);
 		assertNotNull("DE-DE returned null", enumDeDe);
@@ -136,6 +175,19 @@ public class LanguageTests extends TestCase {
 		List<Language> enumTestList = new ArrayList<Language>();
 		
 		enumTestList.add(Language.EN_US);
+		enumTestList.add(Language.EN_SA);
+		enumTestList.add(Language.HE_IL);
+		enumTestList.add(Language.RO_RO);
+		enumTestList.add(Language.UK_UA);
+		enumTestList.add(Language.ID_ID);
+		enumTestList.add(Language.VI_VN);
+		enumTestList.add(Language.MS_MY);
+		enumTestList.add(Language.HI_IN);
+		enumTestList.add(Language.NL_BE);
+		enumTestList.add(Language.EL_GR);
+		enumTestList.add(Language.HU_HU);
+		enumTestList.add(Language.FI_FI);
+		enumTestList.add(Language.SK_SK);
 		enumTestList.add(Language.ES_MX);
 		enumTestList.add(Language.FR_CA);
 		enumTestList.add(Language.DE_DE);
