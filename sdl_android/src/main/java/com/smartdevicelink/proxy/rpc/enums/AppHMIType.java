@@ -39,6 +39,10 @@ public enum AppHMIType {
      */
     TESTING,
     /**
+     * Custom App Interfaces
+     */
+    PROJECTION,
+    /**
      * System App
      */
     SYSTEM;
