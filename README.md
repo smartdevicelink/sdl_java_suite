@@ -22,6 +22,8 @@ The mobile library component of SDL is meant to run on the end user’s smart-de
 
 ## SmartDeviceLink Android
 
-We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://github.com/smartdevicelink/sdl_core/blob/master/README.md) and [here](http://projects.genivi.org/smartdevicelink/about).
+We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://smartdevicelink.com)
 
 You can also find some branches that have yet to be merged into this GitHub project on the GENIVI page [here](http://git.projects.genivi.org/?p=smartdevicelink_android.git;a=summary).
+
+For easy integration of SmartDeviceLink Android into your project using Gradle, Maven or Ivy please grab a snippet from [Bintray](https://bintray.com/smartdevicelink/sdl_android/sdl_android)
