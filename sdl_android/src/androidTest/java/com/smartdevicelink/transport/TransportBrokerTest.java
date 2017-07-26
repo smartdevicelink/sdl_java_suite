@@ -1,7 +1,6 @@
 package com.smartdevicelink.transport;
 
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
@@ -17,13 +16,11 @@ import android.test.AndroidTestCase;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
-import com.smartdevicelink.test.util.DeviceUtil;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteArrayMessageAssembler;
 
 import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 

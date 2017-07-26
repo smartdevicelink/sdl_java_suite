@@ -189,7 +189,7 @@ public class TransportBrokerConnectionTests {
 			broker.registeredWithRouterService = true;
 			serviceConnection.onServiceConnected(routerServiceName, binder);
 			int i = 0;
-			while(i<3){
+			while(i<2){
 				sleep();
 				i++;
 			}
@@ -199,7 +199,7 @@ public class TransportBrokerConnectionTests {
 			SdlRouterService.registeredApps = new HashMap<>();
 			broker.stop();
 			int i = 0;
-			while(i<3){
+			while(i<2){
 				sleep();
 				i++;
 			}
@@ -208,7 +208,7 @@ public class TransportBrokerConnectionTests {
 		public void requestNewSession(){
 			broker.requestNewSession();
 			int i = 0;
-			while(i<3){
+			while(i<2){
 				sleep();
 				i++;
 			}

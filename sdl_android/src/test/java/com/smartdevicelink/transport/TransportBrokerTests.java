@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.mockito.Mock;
 
+import static com.smartdevicelink.proxy.constants.Names.result;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doThrow;
@@ -47,11 +48,15 @@ public class TransportBrokerTests extends TestCase{
 
 		Messenger mockMessenger = mock(Messenger.class);
 		doThrow(new RemoteException()).when(mockMessenger).send(message);
-
+		Boolean result;
 		broker.routerServiceMessenger = mockMessenger;
-		boolean result = broker.sendMessageToRouterService(message);
+		try {
+			result = broker.sendMessageToRouterService(message);
+		} catch(Exception e) {
+			result = null;
+		}
 
-		assertFalse(result);
+		assertNull(result);
 		verify(mockMessenger).send(any(Message.class));
 		verify(broker, times(1)).sendMessageToRouterService(any(Message.class), anyInt());
 	}
