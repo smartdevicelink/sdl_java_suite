@@ -121,6 +121,11 @@ public class RouterServiceValidator {
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
 				service = null;
 				Log.w(TAG, "Supplied service is not actually running.");
+			} else {
+				// If the running router service is created by this app, the validation is good by default
+				if (this.service.getPackageName().equals(context.getPackageName())) {
+					return true;
+				}
 			}
 		}
 		if(this.service == null){
