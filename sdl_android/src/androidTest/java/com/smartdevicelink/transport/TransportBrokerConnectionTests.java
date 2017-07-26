@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -51,7 +52,16 @@ public class TransportBrokerConnectionTests {
 
 	@Test
 	public void testBindingWithNoAppId() throws TimeoutException, NoSuchFieldException, IllegalAccessException, RemoteException {
-		initRouterServiceParts();
+		serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
+		rsvp = new RouterServiceValidator(InstrumentationRegistry.getTargetContext());
+		rsvp.validate();
+		serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+		mServiceRule.startService(serviceIntent);
+		int it = 0;
+		while((binder = mServiceRule.bindService(serviceIntent)) == null && it < 100){
+			it++;
+		}
+		brokerThread = new TransportBrokerThread(InstrumentationRegistry.getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 		while(brokerThread.broker==null){}
 
 		brokerThread.setAppIdToEmpty();
@@ -63,7 +73,6 @@ public class TransportBrokerConnectionTests {
 
 	@Test
 	public void testRequestNewSession() throws TimeoutException, NoSuchFieldException, IllegalAccessException, RemoteException {
-//		initRouterServiceParts();
 		serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
 		rsvp = new RouterServiceValidator(InstrumentationRegistry.getTargetContext());
 		rsvp.validate();
@@ -108,19 +117,19 @@ public class TransportBrokerConnectionTests {
 
 	}
 
-
-	private void initRouterServiceParts() throws TimeoutException {
+	@Test
+	public void testOnServiceDisconnected() throws TimeoutException, NoSuchFieldException, IllegalAccessException, RemoteException {
 		serviceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
 		rsvp = new RouterServiceValidator(InstrumentationRegistry.getTargetContext());
 		rsvp.validate();
 		serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-		mServiceRule.startService(serviceIntent);
-		int it = 0;
-		while((binder = mServiceRule.bindService(serviceIntent)) == null && it < 100){
-			it++;
-		}
+
 		brokerThread = new TransportBrokerThread(InstrumentationRegistry.getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 
+		while(brokerThread.broker==null){}
+		brokerThread.callOnServiceDisconnected();
+
+		assertNull(brokerThread.broker.routerServiceMessenger);
 	}
 
 
@@ -193,6 +202,25 @@ public class TransportBrokerConnectionTests {
 				sleep();
 				i++;
 			}
+		}
+
+		public void callOnServiceDisconnected() throws NoSuchFieldException, IllegalAccessException{
+			ComponentName routerServiceName = new ComponentName("com.smartdevicelink.transport", "com.smartdevicelink.transport.SdlRouterService");
+
+			Field servConnectionField = TransportBroker.class.getDeclaredField("routerConnection");
+			servConnectionField.setAccessible(true);
+			ServiceConnection serviceConnection = (ServiceConnection) servConnectionField.get(broker);
+
+			SdlRouterService.registeredApps = new HashMap<>();
+			broker.registeredWithRouterService = true;
+			serviceConnection.onServiceDisconnected(routerServiceName);
+			int i = 0;
+			while(i<2){
+				sleep();
+				i++;
+			}
+
+
 		}
 
 		public void callStop() throws NoSuchFieldException, IllegalAccessException {
