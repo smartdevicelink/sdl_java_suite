@@ -1,9 +1,11 @@
 package com.smartdevicelink.protocol;
 
+import com.livio.bsonjavaport.BSON.BsonObject;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.protocol.enums.BsonTags;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.MessageType;
@@ -13,11 +15,13 @@ import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
 	private final static String FailurePropagating_Msg = "Failure propagating ";
+	public static String MAX_PROTOCOL_VERSION = "5.0.0";
 
 	public static final int V1_V2_MTU_SIZE = 1500;
 	public static final int V3_V4_MTU_SIZE = 131072;
@@ -67,11 +71,15 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 	
 	public void setVersion(byte version) {
-        if (version > 4) {
-            this._version = 4; //protect for future, proxy only supports v4 or lower
+        if (version > 5) {
+            this._version = 5; //protect for future, proxy only supports v5 or lower
             HEADER_SIZE = 12;
             MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE; //default to lowest size since capabilities of this version are unknown
-        } else if (version == 4) {
+        } else if (version == 5) {
+	        this._version = version;
+	        HEADER_SIZE = 12;
+	        MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 5 supports 128k MTU
+        }else if (version == 4) {
             this._version = version;
             HEADER_SIZE = 12;
             MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 4 supports 128k MTU
@@ -92,6 +100,9 @@ public class WiProProtocol extends AbstractProtocol {
 
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00, false);
+		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
+			header.putTag(BsonTags.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION);
+		}
 		handlePacketToSend(header);
 	} // end-method
 
@@ -394,6 +405,19 @@ public class WiProProtocol extends AbstractProtocol {
             else if (frameInfo == FrameDataControlFrameType.StartSession.getValue()) {
 				sendStartProtocolSessionACK(serviceType, (byte)packet.getSessionId());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionACK.getValue()) {
+				if(packet.version >= 5){
+					if(serviceType.equals(SessionType.RPC)){
+						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
+						MAX_DATA_SIZE = (Integer) packet.getTag(BsonTags.MTU);
+						MAX_PROTOCOL_VERSION = (String) packet.getTag(BsonTags.PROTOCOL_VERSION);
+					}else if(serviceType.equals(SessionType.PCM)){
+						// Not implemented
+					}else if(serviceType.equals(SessionType.NAV)){
+						// Not implemented
+					}
+				}else{
+
+				}
 				// Use this sessionID to create a message lock
 				Object messageLock = _messageLocks.get(packet.getSessionId());
 				if (messageLock == null) {
@@ -405,7 +429,7 @@ public class WiProProtocol extends AbstractProtocol {
 					if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
 						hashID = BitConverter.intFromByteArray(packet.payload, 0);
 					}
-				}	
+				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "", hashID, packet.isEncrypted());				
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
@@ -479,6 +503,8 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted) {
+		// TODO: Add bson tags based on sessionType
+
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, sessionID, isEncrypted);
 		handlePacketToSend(header);
 		
