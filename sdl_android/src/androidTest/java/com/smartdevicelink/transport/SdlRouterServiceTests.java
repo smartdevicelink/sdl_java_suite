@@ -14,7 +14,6 @@ import android.os.TransactionTooLargeException;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ServiceTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
@@ -22,7 +21,6 @@ import com.smartdevicelink.protocol.enums.FrameType;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,19 +54,6 @@ public class SdlRouterServiceTests {
 	@Rule
 	public final ServiceTestRule mServiceRule = new ServiceTestRule();
 
-	@Mock
-	SdlRouterService mockRouterService;
-
-
-	@Test
-	public void testVersionCheck(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		SdlRouterService routerService = new SdlRouterService();
-		routerService.startVersionCheck();
-
-	}
 
 	@Test
 	public void testOnPacketRead(){
@@ -218,47 +203,6 @@ public class SdlRouterServiceTests {
 	// WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ========
 
 
-	@Test
-	public void testRouterMessenger2() throws RemoteException, TimeoutException, InterruptedException {
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		Intent startServiceIntent = new Intent(InstrumentationRegistry.getTargetContext(), SdlRouterService.class);
-
-		mServiceRule.startService(startServiceIntent);
-//		mServiceRule.bindService(startServiceIntent, )
-
-		Intent bindIntent = new Intent();
-		bindIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-		SdlRouterService routerService = new SdlRouterService();
-
-		IBinder binder = routerService.onBind(bindIntent);
-		assertNotNull(binder);
-
-		boolean isPinged = binder.pingBinder();
-		assertTrue(isPinged);
-
-		Message message = new Message();
-		message.what = TransportConstants.ROUTER_REGISTER_CLIENT;
-
-		Messenger messenger = new Messenger(binder);
-		try {
-			messenger.send(message);
-		}catch(Exception e){
-			e.printStackTrace();
-			//Let's check to see if we should retry
-			if(e instanceof TransactionTooLargeException)
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-				messenger.send(message);
-		}
-
-		routerService.routerMessenger.describeContents();
-
-	}
 
 
 	/**

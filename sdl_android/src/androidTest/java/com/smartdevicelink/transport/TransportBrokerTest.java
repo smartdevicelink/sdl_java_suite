@@ -23,6 +23,7 @@ import com.smartdevicelink.transport.utl.ByteArrayMessageAssembler;
 
 import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -42,6 +43,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 	TransportBrokerThread brokerThread;
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
 
 	Context context;
 	@Override
@@ -96,17 +98,6 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertEquals(type, TransportType.BLUETOOTH);
 	}
 
-
-
-	public void testOnPacketReceived(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertFalse(broker.start());
-		}
-	}
 
 
 	public void testSendMessageToRouterService(){
@@ -347,9 +338,7 @@ public class TransportBrokerTest extends AndroidTestCase {
 			Looper.prepare();
 		}
 		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertFalse(broker.start());
-		}
+		broker.start();
 		broker.stop();
 		broker.resetSession();
 
@@ -393,39 +382,6 @@ public class TransportBrokerTest extends AndroidTestCase {
 		assertEquals(Long.valueOf(-1L), TransportBroker.convertAppId(null));
 	}
 
-	public void testSendPacket(){
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-
-		TransportBroker broker = new TransportBroker(mContext, SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
-
-		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
-			assertFalse(broker.start());
-		}
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
-			assertNotNull(adapter);
-			assertTrue(adapter.isEnabled());
-		}
-		//Not ideal, but not implementing callbacks just for unit tests
-		int count = 0;
-		while(broker.routerServiceMessenger == null && count<10){
-			sleep();
-			count++;
-		}
-//		if(!DeviceUtil.isEmulator()){ // Cannot perform BT adapter operations in emulator
-//			assertNotNull(broker.routerServiceMessenger);
-//		}
-
-		//assertFalse(broker.sendPacketToRouterService(null, 0, 0));
-		//assertFalse(broker.sendPacketToRouterService(new byte[3], -1, 0));
-		//assertFalse(broker.sendPacketToRouterService(new byte[3], 0, 4));
-		//assertTrue(broker.sendPacketToRouterService(new byte[3],0, 3));
-
-		broker.stop();
-
-	}
 
 	class TransportBrokerThread extends Thread{
 		TransportBroker broker;
