@@ -1,6 +1,8 @@
 package com.smartdevicelink.protocol;
 
-import com.livio.bsonjavaport.BSON.BsonObject;
+
+import android.util.Log;
+
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -15,8 +17,10 @@ import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 public class WiProProtocol extends AbstractProtocol {
 	byte _version = 1;
@@ -29,6 +33,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public static final int V2_HEADER_SIZE = 12;
 	private static int HEADER_SIZE = 8;
 	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;
+	private static long DYNAMIC_MTU_SIZE = MAX_DATA_SIZE;
 	private static int TLS_MAX_RECORD_SIZE = 16384;
 
 	int hashID = 0;
@@ -43,6 +48,7 @@ public class WiProProtocol extends AbstractProtocol {
 	Hashtable<Integer, MessageFrameAssembler> _assemblerForMessageID = new Hashtable<Integer, MessageFrameAssembler>();
 	Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>>();
 	Hashtable<Byte, Object> _messageLocks = new Hashtable<Byte, Object>();
+	private HashMap<SessionType, Long> mtus = new HashMap<SessionType,Long>();
 
 	// Hide no-arg ctor
 	private WiProProtocol() {
@@ -56,6 +62,7 @@ public class WiProProtocol extends AbstractProtocol {
 		{
 			sdlconn = (SdlConnection) protocolListener;
 		}
+		mtus.put(SessionType.RPC, new Long(V1_V2_MTU_SIZE  - HEADER_SIZE));
 	} // end-ctor
 	
 	/**
@@ -63,7 +70,15 @@ public class WiProProtocol extends AbstractProtocol {
 	 * @return the max transfer unit 
 	 */
 	public int getMtu(){
-		return MAX_DATA_SIZE;
+		return mtus.get(SessionType.RPC).intValue();//'MAX_DATA_SIZE;
+	}
+
+	public long getMtu(SessionType type){
+		Long mtu = mtus.get(type);
+		if(mtu == null){
+			mtu = mtus.get(SessionType.RPC);
+		}
+		return mtu;
 	}
 	
 	public byte getVersion() {
@@ -78,7 +93,7 @@ public class WiProProtocol extends AbstractProtocol {
         } else if (version == 5) {
 	        this._version = version;
 	        HEADER_SIZE = 12;
-	        MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 5 supports 128k MTU
+	        MAX_DATA_SIZE = getMtu(); //versions 5 supports 128k MTU
         }else if (version == 4) {
             this._version = version;
             HEADER_SIZE = 12;
@@ -102,6 +117,7 @@ public class WiProProtocol extends AbstractProtocol {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, (byte) 0x00, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
 			header.putTag(BsonTags.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION);
+			Log.i(sessionType.getName(), "Sending PROTOCOL_VERSION: "+MAX_PROTOCOL_VERSION);
 		}
 		handlePacketToSend(header);
 	} // end-method
@@ -113,6 +129,10 @@ public class WiProProtocol extends AbstractProtocol {
 	
 	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
 		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, _version, BitConverter.intToByteArray(hashId));
+		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
+			header.putTag(BsonTags.HASH_ID, hashID);
+			Log.i(sessionType.getName(), "Sending " + BsonTags.HASH_ID + " : "+hashID);
+		}
 		handlePacketToSend(header);
 
 	} // end-method
@@ -256,7 +276,7 @@ public class WiProProtocol extends AbstractProtocol {
 	protected MessageFrameAssembler getFrameAssemblerForFrame(SdlPacket packet) {
 		Integer iSessionId = Integer.valueOf(packet.getSessionId());
 		Byte bySessionId = iSessionId.byteValue();
-	
+
 		Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(bySessionId);
 		if (hashSessionID == null) {
 			hashSessionID = new Hashtable<Integer, MessageFrameAssembler>();
@@ -405,33 +425,46 @@ public class WiProProtocol extends AbstractProtocol {
             else if (frameInfo == FrameDataControlFrameType.StartSession.getValue()) {
 				sendStartProtocolSessionACK(serviceType, (byte)packet.getSessionId());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionACK.getValue()) {
-				if(packet.version >= 5){
-					if(serviceType.equals(SessionType.RPC)){
-						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-						MAX_DATA_SIZE = (Integer) packet.getTag(BsonTags.MTU);
-						MAX_PROTOCOL_VERSION = (String) packet.getTag(BsonTags.PROTOCOL_VERSION);
-					}else if(serviceType.equals(SessionType.PCM)){
-						// Not implemented
-					}else if(serviceType.equals(SessionType.NAV)){
-						// Not implemented
-					}
-				}else{
-
-				}
 				// Use this sessionID to create a message lock
 				Object messageLock = _messageLocks.get(packet.getSessionId());
 				if (messageLock == null) {
 					messageLock = new Object();
 					_messageLocks.put((byte)packet.getSessionId(), messageLock);
 				}
-				int hashID = 0;
-				if (_version > 1){
-					if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
-						hashID = BitConverter.intFromByteArray(packet.payload, 0);
+				if(packet.version >= 5){
+					if(serviceType.equals(SessionType.RPC)){
+						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
+						mtus.put(SessionType.RPC,(Long) packet.getTag(BsonTags.MTU));
+						MAX_PROTOCOL_VERSION = (String) packet.getTag(BsonTags.PROTOCOL_VERSION);
+
+						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
+						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
+						Log.i(serviceType.getName(), "Receiving MAX_PROTOCOL_VERSION: "+MAX_PROTOCOL_VERSION);
+					}else if(serviceType.equals(SessionType.PCM)){
+						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
+						mtus.put(SessionType.PCM,(Long) packet.getTag(BsonTags.MTU));
+
+						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
+						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
+					}else if(serviceType.equals(SessionType.NAV)){
+						// TODO: Implement Bson Tags
+					}
+				}else{
+					if (_version > 1){
+						if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
+							hashID = BitConverter.intFromByteArray(packet.payload, 0);
+						}
 					}
 				}
-				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "", hashID, packet.isEncrypted());				
+				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), _version, "", hashID, packet.isEncrypted());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
+				if(packet.version >= 5){
+					if(serviceType.equals(SessionType.RPC) || serviceType.equals(SessionType.PCM) ||
+							serviceType.equals(SessionType.NAV)) {
+						List<String> rejectedParams = (List<String>) packet.getTag(BsonTags.REJECTED_PARAMS);
+						Log.i(serviceType.getName(), "Receiving rejectedParams: " + rejectedParams.toString());
+					}
+				}
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), _version, "");
 				} else {
@@ -446,6 +479,13 @@ public class WiProProtocol extends AbstractProtocol {
 			} else if (frameInfo == FrameDataControlFrameType.EndSessionACK.getValue()) {
 				handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
 			} else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
+				if(packet.version >= 5){
+					if(serviceType.equals(SessionType.RPC) || serviceType.equals(SessionType.PCM) ||
+							serviceType.equals(SessionType.NAV)) {
+						List<String> rejectedParams = (List<String>) packet.getTag(BsonTags.REJECTED_PARAMS);
+						Log.i(serviceType.getName(), "Receiving rejectedParams: " + rejectedParams.toString());
+					}
+				}
 				handleProtocolSessionEndedNACK(serviceType, (byte)packet.getSessionId(), "");
 			} else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {
 				if (packet.getPayload() != null && packet.getDataSize() == 4) //service data ack will be 4 bytes in length
@@ -503,11 +543,14 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted) {
-		// TODO: Add bson tags based on sessionType
-
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, sessionID, isEncrypted);
+		if(sessionType.equals(SessionType.PCM)){ // check for RPC session
+			header.putTag(BsonTags.HASH_ID, hashID);
+			Log.i(sessionType.getName(), "Sending hashID: "+hashID);
+			header.putTag(BsonTags.MTU, Long.parseLong(""+ MAX_DATA_SIZE));
+			Log.i(sessionType.getName(), "Sending MTU: "+MAX_DATA_SIZE);
+		}
 		handlePacketToSend(header);
-		
 	}
 
 	@Override
@@ -538,7 +581,10 @@ public class WiProProtocol extends AbstractProtocol {
 	public void EndProtocolService(SessionType serviceType, byte sessionID) {
  		SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, _version, new byte[4]);
 		handlePacketToSend(header);
-		
+		if(serviceType.equals(SessionType.PCM) || serviceType.equals(SessionType.NAV)){ // check for RPC session
+			header.putTag(BsonTags.HASH_ID, hashID);
+			Log.i(serviceType.getName(), "Sending " + BsonTags.HASH_ID + " : "+hashID);
+		}
 	}
 
 } // end-class

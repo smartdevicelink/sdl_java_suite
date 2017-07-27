@@ -359,9 +359,12 @@ public class SdlPacket implements Parcelable{
 	}
 
 	public Object getTag(String tag){
-		if(bsonPayload.isEmpty()){
+		if(payload == null){
+			return null;
+		}else if(bsonPayload.isEmpty()){
 			bsonPayload = BsonEncoder.decodeFromBytes(payload);
 		}
+
 		if(bsonPayload == null){
 			return null;
 		}
