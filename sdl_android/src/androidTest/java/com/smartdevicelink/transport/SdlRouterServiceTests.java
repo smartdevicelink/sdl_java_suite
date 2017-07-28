@@ -3,14 +3,13 @@ package com.smartdevicelink.transport;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Messenger;
 import android.os.RemoteException;
-import android.os.TransactionTooLargeException;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ServiceTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -21,15 +20,14 @@ import com.smartdevicelink.protocol.enums.FrameType;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeoutException;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -53,6 +51,16 @@ public class SdlRouterServiceTests {
 
 	@Rule
 	public final ServiceTestRule mServiceRule = new ServiceTestRule();
+
+	@After
+	public void finish(){
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			Looper.myLooper().quitSafely();
+		} else {
+			Looper.myLooper().quit();
+		}
+
+	}
 
 
 	@Test
@@ -199,8 +207,6 @@ public class SdlRouterServiceTests {
 		assertTrue(result);
 		verify(spyRouterService, times(1)).closeSelf();
 	}
-
-	// WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ======== WORK IN PROGRESS ========
 
 
 

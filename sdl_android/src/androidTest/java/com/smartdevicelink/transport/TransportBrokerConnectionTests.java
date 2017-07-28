@@ -90,6 +90,8 @@ public class TransportBrokerConnectionTests {
 		brokerThread.requestNewSession();
 
 		assertTrue(brokerThread.broker.isBound);
+		assertTrue(brokerThread.broker.routerServiceMessenger==null);
+
 
 	}
 

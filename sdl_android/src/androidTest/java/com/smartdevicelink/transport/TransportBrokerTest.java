@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
 public class TransportBrokerTest extends AndroidTestCase {
 	RouterServiceValidator rsvp;
 	TransportBrokerThread brokerThread;
+
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 

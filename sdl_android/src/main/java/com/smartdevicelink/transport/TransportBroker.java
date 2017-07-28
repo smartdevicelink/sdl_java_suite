@@ -54,7 +54,7 @@ public class TransportBroker {
 	
 	private ServiceConnection routerConnection;
 	private int routerServiceVersion = 1;
-	
+
 	private void initRouterConnection(){
 		routerConnection= new ServiceConnection() {
 
