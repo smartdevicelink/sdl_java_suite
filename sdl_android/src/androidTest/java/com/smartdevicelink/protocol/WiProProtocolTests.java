@@ -1,29 +1,22 @@
 package com.smartdevicelink.protocol;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import junit.framework.Assert;
-
-import com.smartdevicelink.protocol.IProtocolListener;
-import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.WiProProtocol;
-import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
-import com.smartdevicelink.protocol.enums.MessageType;
-import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.test.SampleRpc;
-import com.smartdevicelink.util.DebugTool;
-import java.io.ByteArrayOutputStream;
+import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
+import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.test.SampleRpc;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
 
-import android.test.AndroidTestCase;
-import android.util.Log;
+import junit.framework.Assert;
+
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -126,11 +119,15 @@ public class WiProProtocolTests extends AndroidTestCase {
 		wiProProtocol = new WiProProtocol(defaultListener);
 		wiProProtocol.setVersion((byte)0x04);
 		assertEquals((byte)0x04,wiProProtocol.getVersion());
-		
-		//If we get newer than 4, it should fall back to 4
+
 		wiProProtocol = new WiProProtocol(defaultListener);
 		wiProProtocol.setVersion((byte)0x05);
-		assertEquals((byte)0x04,wiProProtocol.getVersion());
+		assertEquals((byte)0x05,wiProProtocol.getVersion());
+
+		//If we get newer than 5, it should fall back to 5
+		wiProProtocol = new WiProProtocol(defaultListener);
+		wiProProtocol.setVersion((byte)0x06);
+		assertEquals((byte)0x05,wiProProtocol.getVersion());
 		
 		//Is this right?
 		wiProProtocol = new WiProProtocol(defaultListener);
