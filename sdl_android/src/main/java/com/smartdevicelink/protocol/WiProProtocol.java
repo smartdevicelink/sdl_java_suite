@@ -17,7 +17,6 @@ import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -32,8 +31,6 @@ public class WiProProtocol extends AbstractProtocol {
 	public static final int V1_HEADER_SIZE = 8;
 	public static final int V2_HEADER_SIZE = 12;
 	private static int HEADER_SIZE = 8;
-	private static int MAX_DATA_SIZE = V1_V2_MTU_SIZE  - HEADER_SIZE;
-	private static long DYNAMIC_MTU_SIZE = MAX_DATA_SIZE;
 	private static int TLS_MAX_RECORD_SIZE = 16384;
 
 	int hashID = 0;
@@ -70,7 +67,7 @@ public class WiProProtocol extends AbstractProtocol {
 	 * @return the max transfer unit 
 	 */
 	public int getMtu(){
-		return mtus.get(SessionType.RPC).intValue();//'MAX_DATA_SIZE;
+		return mtus.get(SessionType.RPC).intValue();
 	}
 
 	public long getMtu(SessionType type){
@@ -84,32 +81,36 @@ public class WiProProtocol extends AbstractProtocol {
 	public byte getVersion() {
 		return this._version;
 	}
-	
+
+	/**
+	 * This method will set the major protocol version that we should use. It will also set the default MTU based on version.
+	 * @param version
+	 */
 	public void setVersion(byte version) {
         if (version > 5) {
             this._version = 5; //protect for future, proxy only supports v5 or lower
             HEADER_SIZE = 12;
-            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE; //default to lowest size since capabilities of this version are unknown
+			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) );
         } else if (version == 5) {
 	        this._version = version;
 	        HEADER_SIZE = 12;
-	        MAX_DATA_SIZE = getMtu(); //versions 5 supports 128k MTU
+			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) );
         }else if (version == 4) {
             this._version = version;
             HEADER_SIZE = 12;
-            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 4 supports 128k MTU
+			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) ); //versions 4 supports 128k MTU
         } else if (version == 3) {
             this._version = version;
             HEADER_SIZE = 12;
-            MAX_DATA_SIZE = V3_V4_MTU_SIZE; //versions 3 supports 128k MTU
+			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) ); //versions 3 supports 128k MTU
         } else if (version == 2) {
             this._version = version;
             HEADER_SIZE = 12;
-            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE;
+			mtus.put(SessionType.RPC,new Long(V1_V2_MTU_SIZE - HEADER_SIZE) );
         } else if (version == 1){
             this._version = version;
             HEADER_SIZE = 8;
-            MAX_DATA_SIZE = V1_V2_MTU_SIZE - HEADER_SIZE;
+			mtus.put(SessionType.RPC,new Long(V1_V2_MTU_SIZE - HEADER_SIZE) );
         }
     }
 
@@ -203,13 +204,14 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 		
 		synchronized(messageLock) {
-			if (data.length > MAX_DATA_SIZE) {
-				
+			if (data.length > getMtu(sessionType)) {
+
 				messageID++;
 	
 				// Assemble first frame.
-				int frameCount = data.length / MAX_DATA_SIZE;
-				if (data.length % MAX_DATA_SIZE > 0) {
+				Long mtu = getMtu(sessionType);
+				int frameCount = new Long(data.length / mtu).intValue();
+				if (data.length % mtu > 0) {
 					frameCount++;
 				}
 				//byte[] firstFrameData = new byte[HEADER_SIZE];
@@ -241,8 +243,8 @@ public class WiProProtocol extends AbstractProtocol {
 					} // end-if
 					
 					int bytesToWrite = data.length - currentOffset;
-					if (bytesToWrite > MAX_DATA_SIZE) { 
-						bytesToWrite = MAX_DATA_SIZE; 
+					if (bytesToWrite > mtu) {
+						bytesToWrite = mtu.intValue();
 					}
 					SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, _version,data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
 					consecHeader.setPriorityCoefficient(i+2+protocolMsg.priorityCoefficient);
@@ -432,9 +434,12 @@ public class WiProProtocol extends AbstractProtocol {
 					_messageLocks.put((byte)packet.getSessionId(), messageLock);
 				}
 				if(packet.version >= 5){
+					Object mtu = packet.getTag(BsonTags.MTU);
+					if(mtu!=null){
+						mtus.put(serviceType,(Long) packet.getTag(BsonTags.MTU));
+					}
 					if(serviceType.equals(SessionType.RPC)){
 						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-						mtus.put(SessionType.RPC,(Long) packet.getTag(BsonTags.MTU));
 						MAX_PROTOCOL_VERSION = (String) packet.getTag(BsonTags.PROTOCOL_VERSION);
 
 						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
@@ -442,13 +447,11 @@ public class WiProProtocol extends AbstractProtocol {
 						Log.i(serviceType.getName(), "Receiving MAX_PROTOCOL_VERSION: "+MAX_PROTOCOL_VERSION);
 					}else if(serviceType.equals(SessionType.PCM)){
 						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-						mtus.put(SessionType.PCM,(Long) packet.getTag(BsonTags.MTU));
 
 						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
 						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
 					}else if(serviceType.equals(SessionType.NAV)){
 						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-						mtus.put(SessionType.NAV,(Long) packet.getTag(BsonTags.MTU));
 
 						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
 						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
