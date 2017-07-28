@@ -138,8 +138,8 @@ public class WiProProtocol extends AbstractProtocol {
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(BsonTags.PROTOCOL_VERSION, protocolVersion);
-			Log.i(sessionType.getName(), "Sending PROTOCOL_VERSION: "+ protocolVersion);
+			header.putTag(BsonTags.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
+			Log.i(sessionType.getName(), "Sending PROTOCOL_VERSION: "+ MAX_PROTOCOL_VERSION.toString());
 		}
 		handlePacketToSend(header);
 	} // end-method
