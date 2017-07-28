@@ -447,7 +447,12 @@ public class WiProProtocol extends AbstractProtocol {
 						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
 						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
 					}else if(serviceType.equals(SessionType.NAV)){
-						// TODO: Implement Bson Tags
+						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
+						mtus.put(SessionType.NAV,(Long) packet.getTag(BsonTags.MTU));
+
+						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
+						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
+						// TODO: Implement remaining bson tags for video
 					}
 				}else{
 					if (_version > 1){
@@ -544,11 +549,8 @@ public class WiProProtocol extends AbstractProtocol {
 	@Override
 	public void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, _version, sessionID, isEncrypted);
-		if(sessionType.equals(SessionType.PCM)){ // check for RPC session
-			header.putTag(BsonTags.HASH_ID, hashID);
-			Log.i(sessionType.getName(), "Sending hashID: "+hashID);
-			header.putTag(BsonTags.MTU, Long.parseLong(""+ MAX_DATA_SIZE));
-			Log.i(sessionType.getName(), "Sending MTU: "+MAX_DATA_SIZE);
+		if(sessionType.equals(SessionType.NAV)){
+			// TODO: Add bson tags for video service
 		}
 		handlePacketToSend(header);
 	}
