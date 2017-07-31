@@ -106,6 +106,10 @@ public class WiProProtocol extends AbstractProtocol {
 
 	} // end-method
 
+	/**
+	 * Attempt to send a message. If the message contains null data, it will not be sent.
+	 * @param protocolMsg the message to be sent.
+	 */
 	public void SendMessage(ProtocolMessage protocolMsg) {	
 		protocolMsg.setRPCType((byte) 0x00); //always sending a request
 		SessionType sessionType = protocolMsg.getSessionType();
