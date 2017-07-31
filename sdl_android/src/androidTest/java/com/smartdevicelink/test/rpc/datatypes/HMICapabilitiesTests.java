@@ -12,10 +12,6 @@ import org.json.JSONObject;
 import static com.smartdevicelink.proxy.rpc.HMICapabilities.KEY_NAVIGATION;
 import static com.smartdevicelink.proxy.rpc.HMICapabilities.KEY_PHONE_CALL;
 
-/**
- * Created by austinkirk on 6/7/17.
- */
-
 public class HMICapabilitiesTests extends TestCase {
     private HMICapabilities msg;
 
@@ -62,7 +58,6 @@ public class HMICapabilitiesTests extends TestCase {
 
             assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_PHONE_CALL),
                     JsonUtils.readStringListFromJsonObject(underTest, KEY_PHONE_CALL));
-
         } catch(JSONException e){
             fail(Test.JSON_FAIL);
         }

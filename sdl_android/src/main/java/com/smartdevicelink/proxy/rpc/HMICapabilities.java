@@ -7,8 +7,8 @@ import java.util.Hashtable;
 public class HMICapabilities extends RPCStruct{
     public static final String KEY_NAVIGATION = "navigation";
     public static final String KEY_PHONE_CALL = "phoneCall";
-	
-	 public HMICapabilities() { }
+
+	public HMICapabilities() { }
 	  
 	 public HMICapabilities(Hashtable<String, Object> hash) {
 		 super(hash);
