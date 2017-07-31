@@ -35,21 +35,21 @@ public class SystemCapability extends RPCStruct {
         setValue(KEY_SYSTEM_CAPABILITY_TYPE, value);
     }
 
-    public Object getCapabilityForType(SystemCapabilityType type){
+    public RPCStruct getCapabilityForType(SystemCapabilityType type){
         if(type.equals(SystemCapabilityType.NAVIGATION)){
-            return getObject(Object.class, KEY_NAVIGATION_CAPABILITY);
+            return (RPCStruct) getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.PHONE_CALL)){
-            return getObject(Object.class, KEY_PHONE_CAPABILITY);
+            return (RPCStruct) getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
         }else{
             return null;
         }
     }
 
-    public void setCapabilityForType(SystemCapabilityType type, Object capability){
+    public void setCapabilityForType(SystemCapabilityType type, RPCStruct capability){
         if(type.equals(SystemCapabilityType.NAVIGATION)){
-            setValue(KEY_NAVIGATION_CAPABILITY, (Object) capability);
+            setValue(KEY_NAVIGATION_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.PHONE_CALL)){
-            setValue(KEY_PHONE_CAPABILITY, (Object) capability);
+            setValue(KEY_PHONE_CAPABILITY, capability);
         }else{
             return;
         }
