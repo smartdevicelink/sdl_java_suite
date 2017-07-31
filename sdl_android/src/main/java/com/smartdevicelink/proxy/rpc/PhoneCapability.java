@@ -21,7 +21,7 @@ public class PhoneCapability extends RPCStruct {
 		return getBoolean(KEY_DIALNUMBER_ENABLED);
 	}
 
-	public void setDialNumberEnabled(Boolean tf){
-		setValue(KEY_DIALNUMBER_ENABLED, tf);
+	public void setDialNumberEnabled(Boolean dialNumberEnabled){
+		setValue(KEY_DIALNUMBER_ENABLED, dialNumberEnabled);
 	}
 }
