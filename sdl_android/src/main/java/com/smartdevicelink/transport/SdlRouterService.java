@@ -98,7 +98,7 @@ public class SdlRouterService extends Service{
 	 */
 	@Deprecated
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
-	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
+	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register";
 	
 	/** Message types sent from the BluetoothReadService Handler */
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -171,7 +171,7 @@ public class SdlRouterService extends Service{
 		{				
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
 			String action =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
-			sendBroadcast(prepareRegistrationIntent(action));	
+			sendBroadcast(prepareRegistrationIntent(action));
 		}
 	};
 	
@@ -220,7 +220,7 @@ public class SdlRouterService extends Service{
 		BroadcastReceiver registerAnInstanceOfSerialServer = new BroadcastReceiver() {
 			final Object COMPARE_LOCK = new Object();
 					@Override
-					public void onReceive(Context context, Intent intent) 
+					public void onReceive(Context context, Intent intent)
 					{
 						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
 						synchronized(COMPARE_LOCK){
@@ -307,7 +307,7 @@ public class SdlRouterService extends Service{
 		*********************************************** Handlers for bound clients **************************************************************
 		****************************************************************************************************************************************/
 
-		
+
 	    /**
 	     * Target we publish for clients to send messages to RouterHandler.
 	     */
@@ -322,7 +322,7 @@ public class SdlRouterService extends Service{
 	    	public RouterHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
 	    	}
-	    	
+
 	        @Override
 	        public void handleMessage(Message msg) {
 	        	if(this.provider.get() == null){
@@ -1293,10 +1293,10 @@ public class SdlRouterService extends Service{
 				return false;
 			}
 			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
-				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
-				int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
-				int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
 				if(packet!=null){
+					int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
+					int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
 					mSerialService.write(packet,offset,count);
 					return true;
 				}
