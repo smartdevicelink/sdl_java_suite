@@ -471,14 +471,8 @@ public class WiProProtocol extends AbstractProtocol {
 						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
 						Log.i(serviceType.getName(), "Receiving MAX_PROTOCOL_VERSION: "+ protocolVersion);
 					}else if(serviceType.equals(SessionType.PCM)){
-						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-
-						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
 						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
 					}else if(serviceType.equals(SessionType.NAV)){
-						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-
-						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
 						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
 						// TODO: Implement remaining bson tags for video
 					}
@@ -495,7 +489,11 @@ public class WiProProtocol extends AbstractProtocol {
 					if(serviceType.equals(SessionType.RPC) || serviceType.equals(SessionType.PCM) ||
 							serviceType.equals(SessionType.NAV)) {
 						List<String> rejectedParams = (List<String>) packet.getTag(BsonTags.REJECTED_PARAMS);
-						Log.i(serviceType.getName(), "Receiving rejectedParams: " + rejectedParams.toString());
+						if(rejectedParams != null) {
+							for (String s : rejectedParams) {
+								Log.e("Rejected BSON Parameter", s);
+							}
+						}
 					}
 				}
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
@@ -516,7 +514,11 @@ public class WiProProtocol extends AbstractProtocol {
 					if(serviceType.equals(SessionType.RPC) || serviceType.equals(SessionType.PCM) ||
 							serviceType.equals(SessionType.NAV)) {
 						List<String> rejectedParams = (List<String>) packet.getTag(BsonTags.REJECTED_PARAMS);
-						Log.i(serviceType.getName(), "Receiving rejectedParams: " + rejectedParams.toString());
+						if(rejectedParams != null) {
+							for (String s : rejectedParams) {
+								Log.e("Rejected BSON Parameter", s);
+							}
+						}
 					}
 				}
 				handleProtocolSessionEndedNACK(serviceType, (byte)packet.getSessionId(), "");
@@ -611,10 +613,6 @@ public class WiProProtocol extends AbstractProtocol {
 	public void EndProtocolService(SessionType serviceType, byte sessionID) {
  		SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[4]);
 		handlePacketToSend(header);
-		if(serviceType.equals(SessionType.PCM) || serviceType.equals(SessionType.NAV)){ // check for RPC session
-			header.putTag(BsonTags.HASH_ID, hashID);
-			Log.i(serviceType.getName(), "Sending " + BsonTags.HASH_ID + " : "+hashID);
-		}
 	}
 
 } // end-class
