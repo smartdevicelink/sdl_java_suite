@@ -50,10 +50,14 @@ public class MultiplexBluetoothTransport {
     private static final UUID SERVER_UUID= new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE =" SdlRouterService";
-    
+    // Key names received from the BluetoothSerialServer Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+    private static final long MS_TILL_TIMEOUT = 2500;
+    private static final int READ_BUFFER_SIZE = 4096;
+    private static final Object THREAD_LOCK =  new Object();;
 
-	protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
-
+    protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE 			= 0;    // we're doing nothing
@@ -67,40 +71,24 @@ public class MultiplexBluetoothTransport {
     private final BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
     private final Handler mHandler;
     private AcceptThread mSecureAcceptThread; 
-    private static Object threadLock = null;
     private ConnectThread mConnectThread;
-    private static ConnectedThread mConnectedThread; //I HATE ALL THIS STATIC CRAP, But it seems like the only way right now
-    private static ConnectedWriteThread mConnectedWriteThread; //I HATE ALL THIS STATIC CRAP, But it seems like the only way right now
-
-    private  static int mState;
-    
-    // Key names received from the BluetoothSerialServer Handler
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
-    
-    
+    private ConnectedThread mConnectedThread;
+    private ConnectedWriteThread mConnectedWriteThread;
+    private int mState;
     private int mBluetoothLevel = 0;
     Handler timeOutHandler;
     Runnable socketRunable;
-    private static final long msTillTimeout = 2500;
-
-    private static final int READ_BUFFER_SIZE = 4096;
+    boolean keepSocketAlive = true;
 
     public static String currentlyConnectedDevice = null;
     public static String currentlyConnectedDeviceAddress = null;
-    private static MultiplexBluetoothTransport serverInstance = null;
-    //private BluetoothServerSocket serverSocket= null;
 
 
-	static boolean keepSocketAlive = true;
-    
-    
     /**
      * Constructor. Prepares a new BluetoothChat session.
-     * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    private MultiplexBluetoothTransport(Handler handler) {
+    public MultiplexBluetoothTransport(Handler handler) {
     	//Log.w(TAG, "Creating Bluetooth Serial Adapter");
        // mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
@@ -108,32 +96,41 @@ public class MultiplexBluetoothTransport {
           
         //This will keep track of which method worked last night
         mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
-        Object object = new Object();
-        threadLock = object;
-
     }
 
 
-
-	/*
-     * Let's use this method from now on to get bluetooth service
+    /**
+     * This method has been deprecated. It will return an instance of MultiplexBluetoothTransport but <b>should not</b> be used.
+     * @param handler for receiving status messages from the transport
+     * @return an instance of MultiplexBluetoothTransport
+     * @deprecated
      */
+	@Deprecated
     public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler){
-    	return getBluetoothSerialServerInstance(handler,true);
+    	return new MultiplexBluetoothTransport(handler);
     }
-	/*
-     * Let's use this method from now on to get bluetooth service
+    /**
+     * This method has been deprecated. It will return an instance of MultiplexBluetoothTransport but <b>should not</b> be used.
+     * @param handler for receiving status messages from the transport
+     * @param keepSocketAlive Flag for keeping the socket alive
+     * @return an instance of MultiplexBluetoothTransport
+     * @deprecated
      */
+	@Deprecated
     public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(Handler handler, boolean keepSocketAlive){
-
-        if(serverInstance==null){
-        	serverInstance = new MultiplexBluetoothTransport(handler);
-        }
-        MultiplexBluetoothTransport.keepSocketAlive = keepSocketAlive;
-    	return serverInstance;
+        MultiplexBluetoothTransport transport = new MultiplexBluetoothTransport(handler);
+        transport.setKeepSocketAlive(keepSocketAlive);
+    	return transport;
     }
+
+    /**
+     * This method has been deprecated. <b>It will always return null.</b>
+     * @return always null
+     * @deprecated
+     */
+    @Deprecated
     public synchronized static MultiplexBluetoothTransport getBluetoothSerialServerInstance(){
-    	return serverInstance;
+    	return null;
     }
 
     //These methods are used so we can have a semi-static reference to the Accept Thread (Static reference inherited by housing class)
@@ -167,7 +164,7 @@ public class MultiplexBluetoothTransport {
 
     private void clearInstanceOnError(int state){
         if(state == STATE_ERROR){
-            serverInstance = null;
+           // serverInstance = null;
         }
     }
 
@@ -178,7 +175,7 @@ public class MultiplexBluetoothTransport {
     }
 
     public void setKeepSocketAlive(boolean keepSocketAlive){
-    	MultiplexBluetoothTransport.keepSocketAlive = keepSocketAlive;
+    	this.keepSocketAlive = keepSocketAlive;
     }
     
     /**
@@ -187,7 +184,7 @@ public class MultiplexBluetoothTransport {
     public synchronized void start() {
     	//Log.d(TAG, "Starting up Bluetooth Server to Listen");
         // Cancel any thread attempting to make a connection
-        if (serverInstance.mConnectThread != null) {serverInstance.mConnectThread.cancel(); serverInstance.mConnectThread = null;}
+        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
 
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
@@ -196,14 +193,14 @@ public class MultiplexBluetoothTransport {
        
 
         // Start the thread to listen on a BluetoothServerSocket
-        if (getBluetoothSerialServerInstance().getAcceptThread() == null
-        		&& serverInstance.mAdapter != null
-        		&&  serverInstance.mAdapter.isEnabled()) {
+        if (getAcceptThread() == null
+        		&& mAdapter != null
+        		&&  mAdapter.isEnabled()) {
         	//Log.d(TAG, "Secure thread was null, attempting to create new");
-        	getBluetoothSerialServerInstance().setAcceptThread(new AcceptThread(true));
-            if(getBluetoothSerialServerInstance().getAcceptThread()!=null){
-            	getBluetoothSerialServerInstance().setState(STATE_LISTEN);
-            	 getBluetoothSerialServerInstance().getAcceptThread().start();
+        	setAcceptThread(new AcceptThread(true));
+            if(getAcceptThread()!=null){
+            	setState(STATE_LISTEN);
+            	 getAcceptThread().start();
             }
         }
     }
@@ -215,7 +212,7 @@ public class MultiplexBluetoothTransport {
     public synchronized void connect(BluetoothDevice device) {
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
-            if (serverInstance.mConnectThread != null) {serverInstance.mConnectThread.cancel(); serverInstance.mConnectThread = null;}
+            if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
         }
 
         // Cancel any thread currently running a connection
@@ -230,9 +227,9 @@ public class MultiplexBluetoothTransport {
         }
         
         // Start the thread to connect with the given device
-       serverInstance.mConnectThread = new ConnectThread(device);
-       serverInstance.mConnectThread.start();
-       serverInstance.setState(STATE_CONNECTING);
+       mConnectThread = new ConnectThread(device);
+       mConnectThread.start();
+       setState(STATE_CONNECTING);
     }
 
     /**
@@ -242,9 +239,9 @@ public class MultiplexBluetoothTransport {
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
         // Cancel the thread that completed the connection
-        if (getBluetoothSerialServerInstance().mConnectThread != null) {
-        	getBluetoothSerialServerInstance().mConnectThread.cancel(); 
-        	getBluetoothSerialServerInstance().mConnectThread = null;
+        if (mConnectThread != null) {
+        	mConnectThread.cancel();
+        	mConnectThread = null;
         }
         
         // Cancel any thread currently running a connection
@@ -257,9 +254,9 @@ public class MultiplexBluetoothTransport {
         	mConnectedWriteThread = null;
         }
         // Cancel the accept thread because we only want to connect to one device
-        if (!keepSocketAlive && getBluetoothSerialServerInstance().mSecureAcceptThread != null) {
-        	getBluetoothSerialServerInstance().mSecureAcceptThread.cancel();
-            getBluetoothSerialServerInstance().mSecureAcceptThread = null;
+        if (!keepSocketAlive && mSecureAcceptThread != null) {
+        	mSecureAcceptThread.cancel();
+            mSecureAcceptThread = null;
         }
 
         // Start the thread to manage the connection and perform transmissions
@@ -280,21 +277,21 @@ public class MultiplexBluetoothTransport {
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, device.getName());
         msg.setData(bundle);
-        getBluetoothSerialServerInstance().mHandler.sendMessage(msg);
-        getBluetoothSerialServerInstance().setState(STATE_CONNECTED);
+        mHandler.sendMessage(msg);
+        setState(STATE_CONNECTED);
     }
 
     /**
      * Stop all threads
      */
     public synchronized void stop() {
-    	getBluetoothSerialServerInstance().stop(STATE_NONE);
+    	stop(STATE_NONE);
     }
     protected synchronized void stop(int stateToTransitionTo) {
     	//Log.d(TAG, "Attempting to close the bluetooth serial server");
-        if (getBluetoothSerialServerInstance().mConnectThread != null) {
-        	getBluetoothSerialServerInstance().mConnectThread.cancel(); 
-        	getBluetoothSerialServerInstance().mConnectThread = null;
+        if (mConnectThread != null) {
+        	mConnectThread.cancel();
+        	mConnectThread = null;
         }
 
         if (mConnectedThread != null) {
@@ -308,7 +305,7 @@ public class MultiplexBluetoothTransport {
             mSecureAcceptThread = null;
         }
 
-        getBluetoothSerialServerInstance().setState(stateToTransitionTo);
+        setState(stateToTransitionTo);
     }
     
 
@@ -339,7 +336,7 @@ public class MultiplexBluetoothTransport {
         Bundle bundle = new Bundle();
         bundle.putString(TOAST, "Unable to connect device");
         msg.setData(bundle);
-        getBluetoothSerialServerInstance().mHandler.sendMessage(msg);
+        mHandler.sendMessage(msg);
 
         // Start the service over to restart listening mode
        // BluetoothSerialServer.this.start();
@@ -354,14 +351,14 @@ public class MultiplexBluetoothTransport {
         Bundle bundle = new Bundle();
         bundle.putString(TOAST, "Device connection was lost");
         msg.setData(bundle);
-        getBluetoothSerialServerInstance().mHandler.sendMessage(msg);
-        getBluetoothSerialServerInstance().stop();
+        mHandler.sendMessage(msg);
+        stop();
 
     }
     
     private void timerDelayRemoveDialog(final BluetoothSocket sock){
-    	getBluetoothSerialServerInstance().timeOutHandler = new Handler(); 
-    	getBluetoothSerialServerInstance().socketRunable = new Runnable() {           
+    	timeOutHandler = new Handler();
+    	socketRunable = new Runnable() {
             public void run() {
             	//Log.e(TAG, "BLUETOOTH SOCKET CONNECT TIMEOUT - ATTEMPT TO CLOSE SOCKET");
             	try {
@@ -371,7 +368,7 @@ public class MultiplexBluetoothTransport {
 				}         
             }
         };
-        getBluetoothSerialServerInstance().timeOutHandler.postDelayed(socketRunable, msTillTimeout); 
+        timeOutHandler.postDelayed(socketRunable, MS_TILL_TIMEOUT);
     }
     
     
@@ -388,14 +385,14 @@ public class MultiplexBluetoothTransport {
         
         @SuppressLint("NewApi")
 		public AcceptThread(boolean secure) {
-        	synchronized(threadLock){
+        	synchronized(THREAD_LOCK){
             	//Log.d(TAG, "Creating an Accept Thread");
             	BluetoothServerSocket tmp = null;
             	mSocketType = secure ? "Secure":"Insecure";
             	// Create a new listening server socket
             	try {
                 	if (secure) {
-                		tmp = getBluetoothSerialServerInstance().mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE, SERVER_UUID);
+                		tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE, SERVER_UUID);
                 	}
             	} catch (IOException e) {
                 	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
@@ -412,7 +409,7 @@ public class MultiplexBluetoothTransport {
         }
         
         public void run() {
-            synchronized(threadLock){
+            synchronized(THREAD_LOCK){
             	Log.d(TAG, "Socket Type: " + mSocketType +
                     " BEGIN mAcceptThread" + this);
             setName("AcceptThread" + mSocketType);
@@ -425,7 +422,7 @@ public class MultiplexBluetoothTransport {
                 try {
                 	if(listenAttempts>=5){
                 		Log.e(TAG, "Complete failure in attempting to listen for Bluetooth connection, erroring out.");
-                		getBluetoothSerialServerInstance().stop(STATE_ERROR);
+                		MultiplexBluetoothTransport.this.stop(STATE_ERROR);
                 		return;
                 	}
                 	listenAttempts++;
@@ -440,12 +437,12 @@ public class MultiplexBluetoothTransport {
                 	}
                 	else{
                 		Log.e(TAG, "Listening Socket was null, stopping the bluetooth serial server.");
-                		getBluetoothSerialServerInstance().stop(STATE_ERROR);
+                		MultiplexBluetoothTransport.this.stop(STATE_ERROR);
                 		return;
                 	}
                 } catch (IOException e) {
                     Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed");
-                    getBluetoothSerialServerInstance().stop(STATE_ERROR);
+                    MultiplexBluetoothTransport.this.stop(STATE_ERROR);
                     return;
                 }
 
@@ -456,7 +453,7 @@ public class MultiplexBluetoothTransport {
                         case STATE_LISTEN:
                         case STATE_CONNECTING:
                             // Situation normal. Start the connected thread.
-                        	getBluetoothSerialServerInstance().connected(socket, socket.getRemoteDevice());
+                        	connected(socket, socket.getRemoteDevice());
                             
                             break;
                         case STATE_NONE:
@@ -739,7 +736,7 @@ public class MultiplexBluetoothTransport {
                 // Exception during write
             	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
             	Log.e(TAG, "Error sending bytes to connected device!");
-            	getBluetoothSerialServerInstance().connectionLost();
+            	connectionLost();
             }
         }
 
