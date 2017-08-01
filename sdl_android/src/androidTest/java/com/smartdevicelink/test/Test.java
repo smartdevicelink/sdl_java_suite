@@ -35,7 +35,6 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VideoConfig;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
@@ -211,7 +210,6 @@ public class Test {
 	public static final AppInterfaceUnregisteredReason GENERAL_APPINTERFACEUNREGISTEREDREASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 	public static final SystemCapabilityType           GENERAL_SYSTEMCAPABILITYTYPE           = SystemCapabilityType.NAVIGATION;
 	public static final SystemCapability               GENERAL_SYSTEMCAPABILITY               = new SystemCapability();
-	public static final VideoConfig                    GENERAL_VIDEOCONFIG                    = new VideoConfig();
 	public static final VideoStreamingProtocol         GENERAL_VIDEOSTREAMINGPROTOCOL         = VideoStreamingProtocol.RAW;
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
@@ -474,11 +472,6 @@ public class Test {
         GENERAL_PERMISSIONITEM_LIST.add(GENERAL_PERMISSIONITEM);
 
 		GENERAL_SYSTEMCAPABILITY.setSystemCapabilityType(GENERAL_SYSTEMCAPABILITYTYPE);
-
-		GENERAL_VIDEOCONFIG.setProtocol(GENERAL_VIDEOSTREAMINGPROTOCOL);
-		GENERAL_VIDEOCONFIG.setCodec(GENERAL_VIDEOSTREAMINGCODEC);
-		GENERAL_VIDEOCONFIG.setWidth(GENERAL_INT);
-		GENERAL_VIDEOCONFIG.setHeight(GENERAL_INT);
 
 		GENERAL_VIDEOSTREAMINGFORMAT.setProtocol(GENERAL_VIDEOSTREAMINGPROTOCOL);
 		GENERAL_VIDEOSTREAMINGFORMAT.setCodec(GENERAL_VIDEOSTREAMINGCODEC);
