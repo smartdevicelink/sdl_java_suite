@@ -143,8 +143,6 @@ public class MultiplexBluetoothTransport {
     protected synchronized void setStateManually(int state){
         //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
         mState = state;
-
-        clearInstanceOnError(state);
     }
     /**
      * Set the current state of the chat connection
@@ -158,14 +156,6 @@ public class MultiplexBluetoothTransport {
         // Give the new state to the Handler so the UI Activity can update
         //Also sending the previous state so we know if we lost a connection
         mHandler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState).sendToTarget();
-
-        clearInstanceOnError(state);
-    }
-
-    private void clearInstanceOnError(int state){
-        if(state == STATE_ERROR){
-           // serverInstance = null;
-        }
     }
 
     /**
