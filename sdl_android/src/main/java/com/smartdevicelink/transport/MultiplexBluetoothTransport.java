@@ -256,16 +256,15 @@ public class MultiplexBluetoothTransport {
         mConnectedWriteThread = new ConnectedWriteThread(socket);
         mConnectedWriteThread.start();
 
-        //Store a static name of the device that is connected. We can do this since the only time
-        //we will access it will be when we receive a CONNECT packet from a device
-        if(device!=null && device.getName()!=null && device.getName()!=""){
+        //Store a static name of the device that is connected.
+        if(device!=null){
         	currentlyConnectedDevice = device.getName();
         }
         
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(DEVICE_NAME, device.getName());
+        bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
         msg.setData(bundle);
         mHandler.sendMessage(msg);
         setState(STATE_CONNECTED);
