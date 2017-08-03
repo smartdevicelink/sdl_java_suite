@@ -450,9 +450,7 @@ public class MultiplexBluetoothTransport {
                             // Either not ready or already connected. Terminate new socket.
                             try {
                             	Log.d(TAG, "Close unwanted socket");
-                                if(socket!=null){
-                                	socket.close();
-                                }
+                               	socket.close();
                             } catch (IOException e) {
                                 Log.e(TAG, "Could not close unwanted socket", e);
                             }
