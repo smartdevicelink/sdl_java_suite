@@ -72,7 +72,7 @@ public class SdlMenu extends SdlMenuItem {
         if(mEntryMap.containsKey(name)){
             Log.d(TAG, getName() + ": removing item name " + name);
             SdlMenuItem item = mEntryMap.remove(name);
-            removeEntryKey(name);
+            mEntryKeyList.remove(name);
             if(item != null){
                 if(mPendingAdditions.contains(name)){
                     mPendingAdditions.remove(name);
@@ -178,12 +178,4 @@ public class SdlMenu extends SdlMenuItem {
         sdlContext.sendRpc(dsm);
     }
 
-    private void removeEntryKey(String key){
-        for(int i = 0; i < mEntryKeyList.size(); i++){
-            if(mEntryKeyList.get(i).equals(key)){
-                mEntryKeyList.remove(key);
-                break;
-            }
-        }
-    }
 }
