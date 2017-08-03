@@ -50,6 +50,7 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -1171,6 +1172,18 @@ public class Validator{
     	}
     	
     	return true;
+    }
+
+    public static boolean validateSupportedFormats (VideoStreamingFormat vsf1, VideoStreamingFormat vsf2) {
+		if(vsf1.getProtocol() != vsf2.getProtocol()){
+			return false;
+		}
+
+	    if(vsf1.getCodec() != vsf2.getCodec()){
+		    return false;
+	    }
+
+	    return true;
     }
     
     public static boolean validateDisplayCapabilities (DisplayCapabilities item1, DisplayCapabilities item2) {
