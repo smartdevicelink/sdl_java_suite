@@ -3,7 +3,7 @@ package com.smartdevicelink.protocol;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-import com.livio.bsonjavaport.BSON.BsonEncoder;
+import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 
 import android.os.Parcel;
