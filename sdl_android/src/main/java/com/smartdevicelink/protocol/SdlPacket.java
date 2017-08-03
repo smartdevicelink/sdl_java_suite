@@ -369,11 +369,6 @@ public class SdlPacket implements Parcelable{
 			return null;
 		}
 
-		Object val = bsonPayload.get(tag);
-		if(val == null){
-			return null;
-		}else{
-			return val;
-		}
+		return bsonPayload.get(tag);
 	}
 }

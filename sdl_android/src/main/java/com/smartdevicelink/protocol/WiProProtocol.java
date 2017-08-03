@@ -23,7 +23,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class WiProProtocol extends AbstractProtocol {
-	//byte _version = 1;
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
 	public static final Version MAX_PROTOCOL_VERSION = new Version("5.0.0");
@@ -111,27 +110,27 @@ public class WiProProtocol extends AbstractProtocol {
         if (version > 5) {
             this.protocolVersion = new Version("5.0.0"); //protect for future, proxy only supports v5 or lower
             HEADER_SIZE = 12;
-			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) );
+            mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) );
         } else if (version == 5) {
-			this.protocolVersion = new Version("5.0.0");
-	        HEADER_SIZE = 12;
-			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) );
+            this.protocolVersion = new Version("5.0.0");
+            HEADER_SIZE = 12;
+            mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) );
         }else if (version == 4) {
-			this.protocolVersion = new Version("4.0.0");
+            this.protocolVersion = new Version("4.0.0");
             HEADER_SIZE = 12;
-			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) ); //versions 4 supports 128k MTU
+            mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) ); //versions 4 supports 128k MTU
         } else if (version == 3) {
-			this.protocolVersion = new Version("3.0.0");
+            this.protocolVersion = new Version("3.0.0");
             HEADER_SIZE = 12;
-			mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) ); //versions 3 supports 128k MTU
+            mtus.put(SessionType.RPC,new Long(V3_V4_MTU_SIZE) ); //versions 3 supports 128k MTU
         } else if (version == 2) {
-			this.protocolVersion = new Version("2.0.0");
+            this.protocolVersion = new Version("2.0.0");
             HEADER_SIZE = 12;
-			mtus.put(SessionType.RPC,new Long(V1_V2_MTU_SIZE - HEADER_SIZE) );
+            mtus.put(SessionType.RPC,new Long(V1_V2_MTU_SIZE - HEADER_SIZE) );
         } else if (version == 1){
-			this.protocolVersion = new Version("1.0.0");
+            this.protocolVersion = new Version("1.0.0");
             HEADER_SIZE = 8;
-			mtus.put(SessionType.RPC,new Long(V1_V2_MTU_SIZE - HEADER_SIZE) );
+            mtus.put(SessionType.RPC,new Long(V1_V2_MTU_SIZE - HEADER_SIZE) );
         }
     }
 
@@ -139,7 +138,6 @@ public class WiProProtocol extends AbstractProtocol {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
 			header.putTag(BsonTags.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
-			Log.i(sessionType.getName(), "Sending PROTOCOL_VERSION: "+ MAX_PROTOCOL_VERSION.toString());
 		}
 		handlePacketToSend(header);
 	} // end-method
@@ -153,7 +151,6 @@ public class WiProProtocol extends AbstractProtocol {
 		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashId));
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
 			header.putTag(BsonTags.HASH_ID, hashID);
-			Log.i(sessionType.getName(), "Sending " + BsonTags.HASH_ID + " : "+hashID);
 		}
 		handlePacketToSend(header);
 
@@ -466,15 +463,6 @@ public class WiProProtocol extends AbstractProtocol {
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
 						}
-
-						Log.i(serviceType.getName(), "Receiving hashID: "+hashID);
-						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
-						Log.i(serviceType.getName(), "Receiving MAX_PROTOCOL_VERSION: "+ protocolVersion);
-					}else if(serviceType.equals(SessionType.PCM)){
-						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
-					}else if(serviceType.equals(SessionType.NAV)){
-						Log.i(serviceType.getName(), "Receiving mtu: "+packet.getTag(BsonTags.MTU));
-						// TODO: Implement remaining bson tags for video
 					}
 				}else{
 					if (protocolVersion.getMajor() > 1){
