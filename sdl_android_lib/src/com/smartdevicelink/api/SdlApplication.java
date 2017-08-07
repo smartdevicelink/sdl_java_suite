@@ -559,7 +559,7 @@ public class SdlApplication extends SdlContextAbsImpl {
                                 Log.v(TAG,"Config indicates the app does not support the lang the module requested, going to default");
 
                             }
-                            Log.v(TAG,"Connected Lang: "+ mConnectedLanguage.toString()+ " "+"Module Lang: "+ mSdlProxyALM.getSdlLanguage().toString());
+                            Log.v(TAG,"Connected Lang: "+ mConnectedLanguage+ " "+"Module Lang: "+ mSdlProxyALM.getSdlLanguage());
                         } catch (SdlException e) {
                             e.printStackTrace();
                             Log.e(TAG, "Language could not be grabbed from proxy object");
