@@ -67,7 +67,7 @@ public class SdlPacket implements Parcelable{
 	int messageId;
 	int priorityCoefficient;
 	byte[] payload = null;
-	HashMap<String, Object> bsonPayload = new HashMap<>();
+	HashMap<String, Object> bsonPayload;
 
 	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
@@ -188,8 +188,8 @@ public class SdlPacket implements Parcelable{
 		return payload;
 	}
 	
-	public byte[] constructPacket(){
-		if(!bsonPayload.isEmpty()){
+	public byte[] constructPacket() {
+		if (bsonPayload != null && !bsonPayload.isEmpty()) {
 			byte[] bsonBytes = BsonEncoder.encodeToBytes(bsonPayload);
 			payload = bsonBytes;
 			dataSize = bsonBytes.length;
@@ -355,13 +355,16 @@ public class SdlPacket implements Parcelable{
     };
 
 	public void putTag(String tag, Object data){
+		if(bsonPayload == null){
+			bsonPayload = new HashMap<>();
+		}
 		bsonPayload.put(tag, data);
 	}
 
 	public Object getTag(String tag){
 		if(payload == null){
 			return null;
-		}else if(bsonPayload.isEmpty()){
+		}else if(bsonPayload == null || bsonPayload.isEmpty()){
 			bsonPayload = BsonEncoder.decodeFromBytes(payload);
 		}
 

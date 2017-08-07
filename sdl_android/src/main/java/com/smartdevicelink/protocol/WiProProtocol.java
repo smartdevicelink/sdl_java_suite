@@ -1,8 +1,5 @@
 package com.smartdevicelink.protocol;
 
-
-import android.util.Log;
-
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -137,7 +134,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(BsonTags.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
+			header.putTag(BsonTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
 		}
 		handlePacketToSend(header);
 	} // end-method
@@ -150,7 +147,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
 		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashId));
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(BsonTags.HASH_ID, hashID);
+			header.putTag(BsonTags.RPC.EndService.HASH_ID, hashID);
 		}
 		handlePacketToSend(header);
 
@@ -452,13 +449,21 @@ public class WiProProtocol extends AbstractProtocol {
 					_messageLocks.put((byte)packet.getSessionId(), messageLock);
 				}
 				if(packet.version >= 5){
-					Object mtu = packet.getTag(BsonTags.MTU);
+					String mtuTag = null;
+					if(serviceType.equals(SessionType.RPC)){
+						mtuTag = BsonTags.RPC.StartServiceACK.MTU;
+					}else if(serviceType.equals(SessionType.PCM)){
+						mtuTag = BsonTags.PCM.StartServiceACK.MTU;
+					}else if(serviceType.equals(SessionType.NAV)){
+						mtuTag = BsonTags.VIDEO.StartServiceACK.MTU;
+					}
+					Object mtu = packet.getTag(mtuTag);
 					if(mtu!=null){
-						mtus.put(serviceType,(Long) packet.getTag(BsonTags.MTU));
+						mtus.put(serviceType,(Long) packet.getTag(mtuTag));
 					}
 					if(serviceType.equals(SessionType.RPC)){
-						hashID = (Integer) packet.getTag(BsonTags.HASH_ID);
-						Object version = packet.getTag(BsonTags.PROTOCOL_VERSION);
+						hashID = (Integer) packet.getTag(BsonTags.RPC.StartServiceACK.HASH_ID);
+						Object version = packet.getTag(BsonTags.RPC.StartServiceACK.PROTOCOL_VERSION);
 						if(version!=null){
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
@@ -474,15 +479,16 @@ public class WiProProtocol extends AbstractProtocol {
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				if(packet.version >= 5){
-					if(serviceType.equals(SessionType.RPC) || serviceType.equals(SessionType.PCM) ||
-							serviceType.equals(SessionType.NAV)) {
-						List<String> rejectedParams = (List<String>) packet.getTag(BsonTags.REJECTED_PARAMS);
-						if(rejectedParams != null) {
-							for (String s : rejectedParams) {
-								Log.e("Rejected BSON Parameter", s);
-							}
-						}
+					String rejectedTag = null;
+					if(serviceType.equals(SessionType.RPC)){
+						rejectedTag = BsonTags.RPC.StartServiceNAK.REJECTED_PARAMS;
+					}else if(serviceType.equals(SessionType.PCM)){
+						rejectedTag = BsonTags.PCM.StartServiceNAK.REJECTED_PARAMS;
+					}else if(serviceType.equals(SessionType.NAV)){
+						rejectedTag = BsonTags.VIDEO.StartServiceNAK.REJECTED_PARAMS;
 					}
+					List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
+					// TODO: Pass these back
 				}
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
 					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "");
@@ -499,15 +505,16 @@ public class WiProProtocol extends AbstractProtocol {
 				handleProtocolSessionEnded(serviceType, (byte)packet.getSessionId(), "");
 			} else if (frameInfo == FrameDataControlFrameType.EndSessionNACK.getValue()) {
 				if(packet.version >= 5){
-					if(serviceType.equals(SessionType.RPC) || serviceType.equals(SessionType.PCM) ||
-							serviceType.equals(SessionType.NAV)) {
-						List<String> rejectedParams = (List<String>) packet.getTag(BsonTags.REJECTED_PARAMS);
-						if(rejectedParams != null) {
-							for (String s : rejectedParams) {
-								Log.e("Rejected BSON Parameter", s);
-							}
-						}
+					String rejectedTag = null;
+					if(serviceType.equals(SessionType.RPC)){
+						rejectedTag = BsonTags.RPC.EndServiceNAK.REJECTED_PARAMS;
+					}else if(serviceType.equals(SessionType.PCM)){
+						rejectedTag = BsonTags.PCM.EndServiceNAK.REJECTED_PARAMS;
+					}else if(serviceType.equals(SessionType.NAV)){
+						rejectedTag = BsonTags.VIDEO.EndServiceNAK.REJECTED_PARAMS;
 					}
+					List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
+					// TODO: Pass these back
 				}
 				handleProtocolSessionEndedNACK(serviceType, (byte)packet.getSessionId(), "");
 			} else if (frameInfo == FrameDataControlFrameType.ServiceDataACK.getValue()) {
