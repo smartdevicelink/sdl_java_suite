@@ -87,6 +87,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -259,6 +260,7 @@ public class Test {
 	public static final JSONArray  JSON_BUTTONCAPABILITIES        = new JSONArray();
 	public static final JSONArray  JSON_SOFTBUTTONCAPABILITIES    = new JSONArray();
 	public static final JSONArray  JSON_AUDIOPASSTHRUCAPABILITIES = new JSONArray();
+	public static final JSONArray  JSON_TEXTFIELDTYPES            = new JSONArray();
 	
 	public static final JSONObject JSON_TURN                      = new JSONObject();
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
@@ -634,6 +636,10 @@ public class Test {
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_ID, GENERAL_INT);
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_LONG_LIST));
 			JSON_TOUCHEVENTS.put(JSON_TOUCHEVENT);
+
+			JSON_TEXTFIELDTYPES.put(TextFieldType.CURRENT_TEMPERATURE);
+			JSON_TEXTFIELDTYPES.put(TextFieldType.MEDIA_ALBUM);
+			JSON_TEXTFIELDTYPES.put(TextFieldType.MEDIA_ARTIST);
 			
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);
