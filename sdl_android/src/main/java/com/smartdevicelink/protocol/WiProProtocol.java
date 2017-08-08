@@ -4,7 +4,7 @@ import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.protocol.enums.BsonTags;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.MessageType;
@@ -134,7 +134,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(BsonTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
+			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
 		}
 		handlePacketToSend(header);
 	} // end-method
@@ -147,7 +147,7 @@ public class WiProProtocol extends AbstractProtocol {
 	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
 		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashId));
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(BsonTags.RPC.EndService.HASH_ID, hashID);
+			header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
 		}
 		handlePacketToSend(header);
 
@@ -451,19 +451,19 @@ public class WiProProtocol extends AbstractProtocol {
 				if(packet.version >= 5){
 					String mtuTag = null;
 					if(serviceType.equals(SessionType.RPC)){
-						mtuTag = BsonTags.RPC.StartServiceACK.MTU;
+						mtuTag = ControlFrameTags.RPC.StartServiceACK.MTU;
 					}else if(serviceType.equals(SessionType.PCM)){
-						mtuTag = BsonTags.PCM.StartServiceACK.MTU;
+						mtuTag = ControlFrameTags.Audio.StartServiceACK.MTU;
 					}else if(serviceType.equals(SessionType.NAV)){
-						mtuTag = BsonTags.VIDEO.StartServiceACK.MTU;
+						mtuTag = ControlFrameTags.Video.StartServiceACK.MTU;
 					}
 					Object mtu = packet.getTag(mtuTag);
 					if(mtu!=null){
 						mtus.put(serviceType,(Long) packet.getTag(mtuTag));
 					}
 					if(serviceType.equals(SessionType.RPC)){
-						hashID = (Integer) packet.getTag(BsonTags.RPC.StartServiceACK.HASH_ID);
-						Object version = packet.getTag(BsonTags.RPC.StartServiceACK.PROTOCOL_VERSION);
+						hashID = (Integer) packet.getTag(ControlFrameTags.RPC.StartServiceACK.HASH_ID);
+						Object version = packet.getTag(ControlFrameTags.RPC.StartServiceACK.PROTOCOL_VERSION);
 						if(version!=null){
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
@@ -481,11 +481,11 @@ public class WiProProtocol extends AbstractProtocol {
 				if(packet.version >= 5){
 					String rejectedTag = null;
 					if(serviceType.equals(SessionType.RPC)){
-						rejectedTag = BsonTags.RPC.StartServiceNAK.REJECTED_PARAMS;
+						rejectedTag = ControlFrameTags.RPC.StartServiceNAK.REJECTED_PARAMS;
 					}else if(serviceType.equals(SessionType.PCM)){
-						rejectedTag = BsonTags.PCM.StartServiceNAK.REJECTED_PARAMS;
+						rejectedTag = ControlFrameTags.Audio.StartServiceNAK.REJECTED_PARAMS;
 					}else if(serviceType.equals(SessionType.NAV)){
-						rejectedTag = BsonTags.VIDEO.StartServiceNAK.REJECTED_PARAMS;
+						rejectedTag = ControlFrameTags.Video.StartServiceNAK.REJECTED_PARAMS;
 					}
 					List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
 					// TODO: Pass these back
@@ -507,11 +507,11 @@ public class WiProProtocol extends AbstractProtocol {
 				if(packet.version >= 5){
 					String rejectedTag = null;
 					if(serviceType.equals(SessionType.RPC)){
-						rejectedTag = BsonTags.RPC.EndServiceNAK.REJECTED_PARAMS;
+						rejectedTag = ControlFrameTags.RPC.EndServiceNAK.REJECTED_PARAMS;
 					}else if(serviceType.equals(SessionType.PCM)){
-						rejectedTag = BsonTags.PCM.EndServiceNAK.REJECTED_PARAMS;
+						rejectedTag = ControlFrameTags.Audio.EndServiceNAK.REJECTED_PARAMS;
 					}else if(serviceType.equals(SessionType.NAV)){
-						rejectedTag = BsonTags.VIDEO.EndServiceNAK.REJECTED_PARAMS;
+						rejectedTag = ControlFrameTags.Video.EndServiceNAK.REJECTED_PARAMS;
 					}
 					List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
 					// TODO: Pass these back
