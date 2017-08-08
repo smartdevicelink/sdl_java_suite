@@ -46,25 +46,25 @@ public class TextFieldTypeTests extends TestCase{
 		TextFieldType enumHumidity = TextFieldType.valueForString(example);
 
 
-		assertNotNull("mainField1 returned null", enumMediaTitle);
-		assertNotNull("mainField2 returned null", enumMediaArtist);
-		assertNotNull("mainField2 returned null", enumMediaAlbum);
-		assertNotNull("mainField2 returned null", enumMediaYear);
-		assertNotNull("mainField2 returned null", enumMediaGenre);
-		assertNotNull("mainField2 returned null", enumMediaStation);
-		assertNotNull("mainField2 returned null", enumRating);
-		assertNotNull("mainField2 returned null", enumCurrentTemperature);
-		assertNotNull("mainField2 returned null", enumMaximumTemperature);
-		assertNotNull("mainField2 returned null", enumMinimumTemperature);
-		assertNotNull("mainField2 returned null", enumWeatherTerm);
-		assertNotNull("mainField2 returned null", enumHumidity);
+		assertNotNull("MEDIA_TITLE returned null", enumMediaTitle);
+		assertNotNull("MEDIA_ARTIST returned null", enumMediaArtist);
+		assertNotNull("MEDIA_ALBUM returned null", enumMediaAlbum);
+		assertNotNull("MEDIA_YEAR returned null", enumMediaYear);
+		assertNotNull("MEDIA_GENRE returned null", enumMediaGenre);
+		assertNotNull("MEDIA_STATION returned null", enumMediaStation);
+		assertNotNull("RATING returned null", enumRating);
+		assertNotNull("CURRENT_TEMPERATURE returned null", enumCurrentTemperature);
+		assertNotNull("MAXIMUM_TEMPERATURE returned null", enumMaximumTemperature);
+		assertNotNull("MINIMUM_TEMPERATURE returned null", enumMinimumTemperature);
+		assertNotNull("WEATHER_TERM returned null", enumWeatherTerm);
+		assertNotNull("HUMIDITY returned null", enumHumidity);
 	}
 
 	/**
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "MEDIAZ_TITLE";
+		String example = "MEDIA_TITLEZ";
 		try {
 			TextFieldType temp = TextFieldType.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
