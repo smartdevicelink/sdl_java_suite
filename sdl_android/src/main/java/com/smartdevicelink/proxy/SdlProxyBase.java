@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -83,6 +84,8 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -333,9 +336,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					RPCProtectedServiceStarted();
 				}
 			} else if (sessionType.eq(SessionType.NAV)) {
-				NavServiceStarted();
+				NavServiceStarted(isEncrypted);
 			} else if (sessionType.eq(SessionType.PCM)) {
-				AudioServiceStarted();
+				AudioServiceStarted(isEncrypted);
 			} else if (sessionType.eq(SessionType.RPC)){
 				cycleProxy(SdlDisconnectedReason.RPC_SESSION_ENDED);
 			}
@@ -3509,7 +3512,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	public ScheduledExecutorService createScheduler(){
 		return  Executors.newSingleThreadScheduledExecutor();
-	}	
+	}
+
+	public void startService(SessionType serviceType, boolean isEncrypted){
+		sdlSession.startService(serviceType, sdlSession.getSessionId(), isEncrypted);
+	}
+
+	public void endService(SessionType serviceType){
+		sdlSession.endService(serviceType, sdlSession.getSessionId());
+	}
+
+	public void setVideoConfig(ImageResolution desiredResolution, VideoStreamingFormat desiredFormat){
+		sdlSession.setVideoConfig(desiredResolution, desiredFormat);
+	}
 
 	/**
 	 *Opens the video service (serviceType 11) and subsequently streams raw H264 video from an InputStream provided by the app
@@ -3806,19 +3821,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         sdlSession.drainEncoder(endOfStream);
     }
 	
-	private void NavServiceStarted() {
+	private void NavServiceStarted(boolean isEncrypted) {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = true;
+
+		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceStarted(sdlSession, SessionType.NAV, isEncrypted);
+		}
 	}
 	
 	private void NavServiceStartedNACK() {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = false;
+
+		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceError(sdlSession, SessionType.NAV, "Start NAV Service NACK'ed");
+		}
 	}
 	
-    private void AudioServiceStarted() {
+    private void AudioServiceStarted(boolean isEncrypted) {
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = true;
+
+	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceStarted(sdlSession, SessionType.PCM, isEncrypted);
+	    }
 	}
     
     private void RPCProtectedServiceStarted() {
@@ -3828,26 +3855,46 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private void AudioServiceStartedNACK() {
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = false;
+
+	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceError(sdlSession, SessionType.PCM, "Start PCM Service NACK'ed");
+	    }
 	}
 
 	private void NavServiceEnded() {
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = true;
+
+		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceEnded(sdlSession, SessionType.NAV);
+		}
 	}
 	
 	private void NavServiceEndedNACK() {
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = false;
+
+		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceError(sdlSession, SessionType.NAV, "End NAV Service NACK'ed");
+		}
 	}
 	
     private void AudioServiceEnded() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = true;
+
+	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceEnded(sdlSession, SessionType.PCM);
+	    }
 	}
 	
     private void AudioServiceEndedNACK() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
+
+	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceError(sdlSession, SessionType.PCM, "End PCM Service NACK'ed");
+	    }
 	}	
 	
 	public void setAppService(Service mService)
@@ -5562,6 +5609,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		
 		return sdlSession.isServiceProtected(sType);		
+	}
+
+	public void setServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceType != null && sdlSession != null && sdlServiceListener != null){
+			sdlSession.setServiceListener(serviceType, sdlServiceListener);
+		}
+	}
+
+	public ImageResolution getAcceptedVideoResolution(){
+		return sdlSession.getAcceptedVideoResolution();
+	}
+
+	public VideoStreamingFormat getAcceptedVideoFormat(){
+		return sdlSession.getAcceptedVideoFormat();
 	}
 	
 	public IProxyListenerBase getProxyListener()

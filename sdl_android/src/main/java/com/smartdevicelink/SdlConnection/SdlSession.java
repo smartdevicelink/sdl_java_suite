@@ -5,11 +5,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
@@ -22,6 +24,10 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.rpc.ImageResolution;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.IStreamListener;
@@ -51,6 +57,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	SdlEncoder mSdlEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
+	private HashMap<SessionType, ISdlServiceListener> serviceListeners;
+	private ImageResolution  desiredResolution = null;
+	private VideoStreamingFormat desiredFormat = null;
+	private ImageResolution  acceptedResolution = null;
+	private VideoStreamingFormat acceptedFormat = null;
 
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
@@ -595,5 +606,44 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	public static boolean removeConnection(SdlConnection connection){
 		return shareConnections.remove(connection);
+	}
+
+	public void setServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceListeners == null){
+			serviceListeners = new HashMap<>();
+		}
+		if(serviceType != null && sdlServiceListener != null){
+			serviceListeners.put(serviceType, sdlServiceListener);
+		}
+	}
+
+	public HashMap<SessionType, ISdlServiceListener> getServiceListeners(){
+		return serviceListeners;
+	}
+
+	public void setDesiredVideoConfig(ImageResolution desiredResolution, VideoStreamingFormat desiredFormat){
+		this.desiredResolution = desiredResolution;
+		this.desiredFormat = desiredFormat;
+	}
+
+	public VideoStreamingFormat getDesiredVideoFormat(){
+		return desiredFormat;
+	}
+
+	public ImageResolution getDesiredVideoResolution(){
+		return desiredResolution;
+	}
+
+	public void setAcceptedVideoConfig(ImageResolution acceptedResolution, VideoStreamingFormat acceptedFormat){
+		this.acceptedResolution = acceptedResolution;
+		this.acceptedFormat = acceptedFormat;
+	}
+
+	public VideoStreamingFormat getAcceptedVideoFormat(){
+		return acceptedFormat;
+	}
+
+	public ImageResolution getAcceptedVideoResolution(){
+		return acceptedResolution;
 	}
 }
