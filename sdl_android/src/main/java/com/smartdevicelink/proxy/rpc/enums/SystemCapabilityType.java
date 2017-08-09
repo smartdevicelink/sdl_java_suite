@@ -9,11 +9,10 @@ public enum SystemCapabilityType {
 
     PHONE_CALL,
 
-    VIDEO_STREAMING;
+    VIDEO_STREAMING,
 
     REMOTE_CONTROL,
     ;
-
 
     public static SystemCapabilityType valueForString(String value) {
         try{

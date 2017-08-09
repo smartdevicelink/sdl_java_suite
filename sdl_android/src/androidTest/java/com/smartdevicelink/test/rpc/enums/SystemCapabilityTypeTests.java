@@ -24,15 +24,12 @@ public class SystemCapabilityTypeTests extends TestCase {
 		SystemCapabilityType enumPhoneCall = SystemCapabilityType.valueForString(example);
 		example = "VIDEO_STREAMING";
 		SystemCapabilityType enumVideoStreaming = SystemCapabilityType.valueForString(example);
-		example = "AUDIO_STREAMING";
-		SystemCapabilityType enumAudioStreaming = SystemCapabilityType.valueForString(example);
 		example = "REMOTE_CONTROL";
 		SystemCapabilityType enumRemoteControl = SystemCapabilityType.valueForString(example);
 
 		assertNotNull("NAVIGATION returned null", enumNavigation);
 		assertNotNull("PHONE_CALL returned null", enumPhoneCall);
 		assertNotNull("VIDEO_STREAMING returned null", enumVideoStreaming);
-		assertNotNull("AUDIO_STREAMING returned null", enumAudioStreaming);
 		assertNotNull("REMOTE_CONTROL returned null", enumRemoteControl);
 	}
 
@@ -74,7 +71,6 @@ public class SystemCapabilityTypeTests extends TestCase {
 		enumTestList.add(SystemCapabilityType.NAVIGATION);
 		enumTestList.add(SystemCapabilityType.PHONE_CALL);
 		enumTestList.add(SystemCapabilityType.VIDEO_STREAMING);
-		enumTestList.add(SystemCapabilityType.AUDIO_STREAMING);
 		enumTestList.add(SystemCapabilityType.REMOTE_CONTROL);
 
 		assertTrue("Enum value list does not match enum class list", 
