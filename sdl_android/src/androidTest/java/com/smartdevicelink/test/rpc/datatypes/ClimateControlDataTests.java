@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
 import com.smartdevicelink.proxy.rpc.ClimateControlData;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
@@ -12,14 +11,11 @@ import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

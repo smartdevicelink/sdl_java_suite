@@ -18,6 +18,10 @@ import org.json.JSONObject;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.rpc.SystemCapability}
+ */
 public class SystemCapabilityTests extends TestCase {
 
     private SystemCapability msg;

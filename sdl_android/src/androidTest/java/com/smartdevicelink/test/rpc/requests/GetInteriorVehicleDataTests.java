@@ -15,6 +15,10 @@ import org.json.JSONObject;
 
 import java.util.Hashtable;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.rpc.GetInteriorVehicleData}
+ */
 public class GetInteriorVehicleDataTests extends BaseRpcTests {
 
     @Override

@@ -46,6 +46,9 @@ public enum AppHMIType {
      * System App
      */
     SYSTEM,
+    /**
+     * Remote Control
+     */
     REMOTE_CONTROL,
     ;
 

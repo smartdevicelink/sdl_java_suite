@@ -17,6 +17,10 @@ import org.json.JSONObject;
 
 import java.util.Hashtable;
 
+/**
+ * This is a unit test class for the SmartDeviceLink library project class :
+ * {@link com.smartdevicelink.rpc.ButtonPress}
+ */
 public class ButtonPressTests extends BaseRpcTests {
 
     @Override
@@ -61,20 +65,12 @@ public class ButtonPressTests extends BaseRpcTests {
     public void testRpcValues () {
         // Test Values
         ModuleType testModuleType = ( (ButtonPress) msg ).getModuleType();
-
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, testModuleType);
-
-        // Test Values
         ButtonName testButtonName = ( (ButtonPress) msg ).getButtonName();
-
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, testButtonName);
-
-        // Test Values
         ButtonPressMode testButtonPressMode = ( (ButtonPress) msg ).getButtonPressMode();
 
         // Valid Tests
+        assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, testModuleType);
+        assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, testButtonName);
         assertEquals(Test.MATCH, Test.GENERAL_BUTTONPRESSMODE, testButtonPressMode);
 
         // Invalid/Null Tests
