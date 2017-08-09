@@ -121,6 +121,7 @@ public class Test {
 	
 	// RPC Request/Response/Notification/Datatype Test Values
 	public static final int                            GENERAL_INT                            = 100;
+	public static final Integer                        GENERAL_INTEGER                        = 100;
 	public static final Long                           GENERAL_LONG                           = 100L;
 	public static final Turn                           GENERAL_TURN                           = new Turn();
 	public static final float                          GENERAL_FLOAT                          = 100f;

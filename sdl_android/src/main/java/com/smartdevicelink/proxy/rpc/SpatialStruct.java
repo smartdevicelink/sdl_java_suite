@@ -28,7 +28,7 @@ public class SpatialStruct extends RPCStruct {
 	}
 
 	public Integer getID() {
-		return getInteger(KEY_X);
+		return getInteger(KEY_ID);
 	}
 
 	/**
