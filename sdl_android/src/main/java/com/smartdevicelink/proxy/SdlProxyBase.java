@@ -3522,8 +3522,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.endService(serviceType, sdlSession.getSessionId());
 	}
 
-	public void setVideoConfig(ImageResolution desiredResolution, VideoStreamingFormat desiredFormat){
-		sdlSession.setVideoConfig(desiredResolution, desiredFormat);
+	public void setDesiredVideoConfig(ImageResolution desiredResolution, VideoStreamingFormat desiredFormat){
+		sdlSession.setDesiredVideoConfig(desiredResolution, desiredFormat);
 	}
 
 	/**
