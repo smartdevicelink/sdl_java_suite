@@ -1,5 +1,6 @@
 package com.smartdevicelink.transport;
 
+import static com.smartdevicelink.proxy.constants.Names.info;
 import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
@@ -1153,11 +1154,23 @@ public class SdlRouterService extends Service{
 		
 		Intent startService = new Intent();  
 		startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
+		//Perform our query prior to adding any extras or flags
+		List<ResolveInfo> sdlApps = getPackageManager().queryBroadcastReceivers(startService, 0);
+
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
-    	sendBroadcast(startService); 
+		startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+		//Iterate through all apps that we know are listening for this intent with an explicit intent (neccessary for Android O SDK 26)
+		if(sdlApps != null && sdlApps.size()>0){
+			for(ResolveInfo app: sdlApps){
+				startService.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+				sendBroadcast(startService);
+			}
+		}
+
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
     		//If we have clients
