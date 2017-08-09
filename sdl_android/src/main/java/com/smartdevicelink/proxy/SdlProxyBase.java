@@ -2831,6 +2831,34 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onUpdateTurnListResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.SET_INTERIOR_VEHICLE_DATA.toString())) {
+				final SetInteriorVehicleDataResponse msg = new SetInteriorVehicleDataResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSetInteriorVehicleDataResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSetInteriorVehicleDataResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA.toString())) {
+				final GetInteriorVehicleDataResponse msg = new GetInteriorVehicleDataResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetInteriorVehicleDataResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetInteriorVehicleDataResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
@@ -2846,7 +2874,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetSystemCapabilityResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			} else {
+			} else if (functionName.equals(FunctionID.BUTTON_PRESS.toString())) {
+				final ButtonPressResponse msg = new ButtonPressResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onButtonPressResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onButtonPressResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			}
+			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
 							"SDL Message Version = " + _sdlMsgVersion);
@@ -3241,6 +3284,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onOnWayPointChange((OnWayPointChange)msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ON_INTERIOR_VEHICLE_DATA.toString())) {
+				final OnInteriorVehicleData msg = new OnInteriorVehicleData(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnInteriorVehicleData(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnInteriorVehicleData(msg);
 					onRPCNotificationReceived(msg);
 				}
 			}

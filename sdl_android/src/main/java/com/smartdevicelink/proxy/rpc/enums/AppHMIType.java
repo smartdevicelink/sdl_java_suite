@@ -45,7 +45,9 @@ public enum AppHMIType {
     /**
      * System App
      */
-    SYSTEM;
+    SYSTEM,
+    REMOTE_CONTROL,
+    ;
 
     /**
      * Convert String to AppHMIType

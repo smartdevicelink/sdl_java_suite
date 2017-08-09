@@ -11,6 +11,10 @@ public enum SystemCapabilityType {
 
     VIDEO_STREAMING;
 
+    REMOTE_CONTROL,
+    ;
+
+
     public static SystemCapabilityType valueForString(String value) {
         try{
             return valueOf(value);

@@ -168,7 +168,9 @@ public enum Result {
     /**
      * The provided hash ID does not match the hash of the current set of registered data or the core could not resume the previous data.
      */
-    RESUME_FAILED;
+    RESUME_FAILED,
+	DATA_NOT_AVAILABLE,
+	;
 	 /**
      * Convert String to Result
      * @param value String
