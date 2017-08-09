@@ -12,6 +12,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.MetadataStruct;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -94,6 +95,7 @@ public class ShowTests extends BaseRpcTests {
 		TextAlignment    testAlignment     = ( (Show) msg ).getAlignment();
 		List<SoftButton> testSoftButtons   = ( (Show) msg ).getSoftButtons();
 		List<String>     testCustomPresets = ( (Show) msg ).getCustomPresets();
+		MetadataStruct   testMetadata      = ( (Show) msg ).getTextFieldMetadata();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testTrack);
@@ -104,6 +106,7 @@ public class ShowTests extends BaseRpcTests {
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText3);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText4);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), testCustomPresets.size());
+		assertEquals(Test.MATCH, Test.GENERAL_METADATASTRUCT, testMetadata);
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testGraphic2));
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testGraphic1));
@@ -163,6 +166,7 @@ public class ShowTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_STATUS_BAR), cmd.getStatusBar());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_ALIGNMENT), cmd.getAlignment().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MEDIA_TRACK), cmd.getMediaTrack());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_TEXT_FIELD_METADATA), cmd.getTextFieldMetadata());
 
 			JSONObject secondaryGraphic = JsonUtils.readJsonObjectFromJsonObject(parameters, Show.KEY_SECONDARY_GRAPHIC);
 			Image referenceSecondaryGraphic = new Image(JsonRPCMarshaller.deserializeJSONObject(secondaryGraphic));
