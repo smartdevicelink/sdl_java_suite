@@ -19,8 +19,7 @@ public class SendHapticData extends RPCRequest {
 	 * Constructs a new SendHapticData object indicated by the Hashtable parameter
 	 * </p>
 	 *
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
 	public SendHapticData(Hashtable<String, Object> hash){
 		super(hash);
