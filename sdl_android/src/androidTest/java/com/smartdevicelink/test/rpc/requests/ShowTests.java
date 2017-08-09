@@ -12,7 +12,6 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.MetadataStruct;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -74,7 +73,7 @@ public class ShowTests extends BaseRpcTests {
 			result.put(Show.KEY_ALIGNMENT, Test.GENERAL_TEXTALIGNMENT);
 			result.put(Show.KEY_CUSTOM_PRESETS, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
 			result.put(Show.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
-			result.put(Show.KEY_TEXT_FIELD_METADATA, Test.GENERAL_METADATASTRUCT);
+			result.put(Show.KEY_TEXT_FIELD_METADATA, Test.GENERAL_METADATASTRUCT.serializeJSON());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -95,7 +94,6 @@ public class ShowTests extends BaseRpcTests {
 		TextAlignment    testAlignment     = ( (Show) msg ).getAlignment();
 		List<SoftButton> testSoftButtons   = ( (Show) msg ).getSoftButtons();
 		List<String>     testCustomPresets = ( (Show) msg ).getCustomPresets();
-		MetadataStruct   testMetadataStruct = ( (Show) msg ).getTextFieldMetadata();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testTrack);
@@ -106,7 +104,6 @@ public class ShowTests extends BaseRpcTests {
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText3);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText4);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), testCustomPresets.size());
-		assertEquals(Test.MATCH, Test.GENERAL_METADATASTRUCT, testMetadataStruct);
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testGraphic2));
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testGraphic1));

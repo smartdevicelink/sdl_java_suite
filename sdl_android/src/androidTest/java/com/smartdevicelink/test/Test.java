@@ -486,7 +486,17 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
-        
+
+		List<TextFieldType> exampleList = new ArrayList<>();
+		exampleList.add(0, TextFieldType.CURRENT_TEMPERATURE);
+		exampleList.add(1, TextFieldType.MEDIA_ALBUM);
+		exampleList.add(2, TextFieldType.MEDIA_ARTIST);
+
+		GENERAL_METADATASTRUCT.setMainField1(exampleList);
+		GENERAL_METADATASTRUCT.setMainField2(exampleList);
+		GENERAL_METADATASTRUCT.setMainField3(exampleList);
+		GENERAL_METADATASTRUCT.setMainField4(exampleList);
+
 		try {	
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
