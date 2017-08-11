@@ -8,16 +8,13 @@ import com.smartdevicelink.proxy.rpc.SpatialStruct;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Hashtable;
-
-/**
- * Created by brettywhite on 8/9/17.
- */
 
 public class SendHapticDataTests extends BaseRpcTests {
 
@@ -26,11 +23,11 @@ public class SendHapticDataTests extends BaseRpcTests {
 	@Override
 	protected RPCMessage createMessage(){
 		spatialStruct = new SpatialStruct();
-		spatialStruct.setID(Test.GENERAL_INT);
-		spatialStruct.setX(Test.GENERAL_FLOAT);
-		spatialStruct.setY(Test.GENERAL_FLOAT);
-		spatialStruct.setWidth(Test.GENERAL_FLOAT);
-		spatialStruct.setHeight(Test.GENERAL_FLOAT);
+		spatialStruct.setID(Test.GENERAL_INTEGER);
+		spatialStruct.setX(Test.GENERAL_INTEGER);
+		spatialStruct.setY(Test.GENERAL_INTEGER);
+		spatialStruct.setWidth(Test.GENERAL_INTEGER);
+		spatialStruct.setHeight(Test.GENERAL_INTEGER);
 
 		SendHapticData msg = new SendHapticData();
 		msg.setHapticSpatialData(spatialStruct);
@@ -89,6 +86,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SendHapticData cmd = new SendHapticData(hash);
+
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
 			assertNotNull(Test.NOT_NULL, body);
 
@@ -97,7 +95,9 @@ public class SendHapticDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendHapticData.KEY_HAPTIC_SPATIAL_DATA), cmd.getHapticSpatialData().serializeJSON());
+			JSONObject sendHapticData = JsonUtils.readJsonObjectFromJsonObject(parameters, SendHapticData.KEY_HAPTIC_SPATIAL_DATA);
+			SpatialStruct referenceSendHapticData = new SpatialStruct(JsonRPCMarshaller.deserializeJSONObject(sendHapticData));
+			assertTrue(Test.TRUE, Validator.validateSpatialData(referenceSendHapticData, cmd.getHapticSpatialData()));
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}

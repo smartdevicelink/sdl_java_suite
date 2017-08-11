@@ -104,11 +104,6 @@ public class RPCMessage extends RPCStruct  {
 	}
 
 	@Override
-	public Float getFloat(String key) {
-		return (Float) parameters.get(key);
-	}
-
-	@Override
 	public Double getDouble(String key) {
 		return (Double) parameters.get(key);
 	}

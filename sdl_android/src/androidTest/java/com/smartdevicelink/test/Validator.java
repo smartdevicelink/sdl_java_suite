@@ -40,6 +40,7 @@ import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.SpatialStruct;
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TextField;
@@ -1476,6 +1477,38 @@ public class Validator{
     	
     	return true;
     }
+
+
+	public static boolean validateSpatialData (SpatialStruct item1, SpatialStruct item2) {
+		if (item1 == null) {
+			return ( item2 == null );
+		}
+		if (item2 == null) {
+			return ( item1 == null );
+		}
+
+		if (item1.getID() != item2.getID()) {
+			return false;
+		}
+
+		if (item1.getHeight() != item2.getHeight()) {
+			return false;
+		}
+
+		if (item1.getWidth() != item2.getWidth()) {
+			return false;
+		}
+
+		if (item1.getX() != item2.getX()) {
+			return false;
+		}
+
+		if (item1.getY() != item2.getY()) {
+			return false;
+		}
+
+		return true;
+	}
     
     public static boolean validateVrHelpItems (List<VrHelpItem> item1, List<VrHelpItem> item2) {
     	if (item1 == null) {
