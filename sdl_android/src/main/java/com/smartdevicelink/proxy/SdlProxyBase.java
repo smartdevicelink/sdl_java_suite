@@ -3825,7 +3825,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = true;
 
-		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
 			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceStarted(sdlSession, SessionType.NAV, isEncrypted);
 		}
 	}
@@ -3834,7 +3834,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = false;
 
-		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
 			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceError(sdlSession, SessionType.NAV, "Start NAV Service NACK'ed");
 		}
 	}
@@ -3843,7 +3843,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = true;
 
-	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
 		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceStarted(sdlSession, SessionType.PCM, isEncrypted);
 	    }
 	}
@@ -3856,7 +3856,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = false;
 
-	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
 		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceError(sdlSession, SessionType.PCM, "Start PCM Service NACK'ed");
 	    }
 	}
@@ -3865,7 +3865,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = true;
 
-		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
 			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceEnded(sdlSession, SessionType.NAV);
 		}
 	}
@@ -3874,7 +3874,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = false;
 
-		if(sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
+		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
 			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceError(sdlSession, SessionType.NAV, "End NAV Service NACK'ed");
 		}
 	}
@@ -3883,7 +3883,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = true;
 
-	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
 		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceEnded(sdlSession, SessionType.PCM);
 	    }
 	}
@@ -3892,7 +3892,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
 
-	    if(sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
+	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
 		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceError(sdlSession, SessionType.PCM, "End PCM Service NACK'ed");
 	    }
 	}	

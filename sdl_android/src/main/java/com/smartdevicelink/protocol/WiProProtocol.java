@@ -478,8 +478,8 @@ public class WiProProtocol extends AbstractProtocol {
 						VideoStreamingFormat acceptedFormat = new VideoStreamingFormat();
 						acceptedResolution.setResolutionHeight((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.HEIGHT));
 						acceptedResolution.setResolutionWidth((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.WIDTH));
-						acceptedFormat.setCodec((VideoStreamingCodec) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC));
-						acceptedFormat.setProtocol((VideoStreamingProtocol) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL));
+						acceptedFormat.setCodec(VideoStreamingCodec.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC)));
+						acceptedFormat.setProtocol(VideoStreamingProtocol.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL)));
 						if(session != null) {
 							session.setAcceptedVideoConfig(acceptedResolution, acceptedFormat);
 						}
