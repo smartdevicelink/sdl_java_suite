@@ -13,7 +13,7 @@ public class SystemCapabilityManager {
 	HashMap<SystemCapabilityType, Object> cachedSystemCapabilities = new HashMap<>();
 	ISystemCapabilityManager callback;
 
-	interface ISystemCapabilityManager{
+	public interface ISystemCapabilityManager{
 		void onSendPacketRequest(RPCRequest message);
 	}
 
@@ -77,22 +77,26 @@ public class SystemCapabilityManager {
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
 					cachedSystemCapabilities.put(systemCapabilityType, retrievedCapability);
 				}
-				RETURN_LOCK.notify();
+				synchronized(RETURN_LOCK){
+					RETURN_LOCK.notify();
+				}
 			}
 		});
-
-		callback.onSendPacketRequest(request);
 
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					RETURN_LOCK.wait();
+					synchronized(RETURN_LOCK){
+						RETURN_LOCK.wait();
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
+
+		callback.onSendPacketRequest(request);
 
 		return cachedSystemCapabilities.get(systemCapabilityType);
 	}
