@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -80,6 +81,7 @@ import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -95,6 +97,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
@@ -216,6 +219,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;	
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
+	protected SystemCapabilityManager _systemCapabilityManager;
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -1819,7 +1823,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					return;
 				}				
 			}
-		}	
+		}
+
+		//Initialize _systemCapabilityManager here.
+		_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
+			@Override
+			public void onSendPacketRequest(RPCRequest message) {
+				message.setCorrelationID(CorrelationIdGenerator.generateId());
+				try {
+					sendRPCRequest(message);
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		_systemCapabilityManager.parseRAIResponse(rai);
 	}
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
@@ -5527,7 +5545,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, correlationID);
 		sendRPCRequest(msg);
 	}
-	
+
+	public Object getSystemCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener){
+		if(scListener == null){
+			return _systemCapabilityManager.getSystemCapability(systemCapabilityType);
+		}else{
+			return _systemCapabilityManager.getSystemCapability(systemCapabilityType, scListener);
+		}
+	}
+
+
 	/******************** END Public Helper Methods *************************/
 	
 	/**
