@@ -33,6 +33,7 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -58,10 +59,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
 	private HashMap<SessionType, ISdlServiceListener> serviceListeners;
-	private ImageResolution  desiredResolution = null;
-	private VideoStreamingFormat desiredFormat = null;
-	private ImageResolution  acceptedResolution = null;
-	private VideoStreamingFormat acceptedFormat = null;
+	private VideoStreamingParams desiredVideoParams = null;
+	private VideoStreamingParams acceptedVideoParams = null;
 
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
@@ -621,29 +620,19 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return serviceListeners;
 	}
 
-	public void setDesiredVideoConfig(ImageResolution desiredResolution, VideoStreamingFormat desiredFormat){
-		this.desiredResolution = desiredResolution;
-		this.desiredFormat = desiredFormat;
+	public void setDesiredVideoParams(VideoStreamingParams params){
+		this.desiredVideoParams = params;
 	}
 
-	public VideoStreamingFormat getDesiredVideoFormat(){
-		return desiredFormat;
+	public VideoStreamingParams getDesiredVideoParams(){
+		return desiredVideoParams;
 	}
 
-	public ImageResolution getDesiredVideoResolution(){
-		return desiredResolution;
+	public void setAcceptedVideoParams(VideoStreamingParams params){
+		this.acceptedVideoParams = params;
 	}
 
-	public void setAcceptedVideoConfig(ImageResolution acceptedResolution, VideoStreamingFormat acceptedFormat){
-		this.acceptedResolution = acceptedResolution;
-		this.acceptedFormat = acceptedFormat;
-	}
-
-	public VideoStreamingFormat getAcceptedVideoFormat(){
-		return acceptedFormat;
-	}
-
-	public ImageResolution getAcceptedVideoResolution(){
-		return acceptedResolution;
+	public VideoStreamingParams getAcceptedVideoParams(){
+		return acceptedVideoParams;
 	}
 }

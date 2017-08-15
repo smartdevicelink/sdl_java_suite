@@ -92,6 +92,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
@@ -3522,8 +3523,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.endService(serviceType, sdlSession.getSessionId());
 	}
 
-	public void setDesiredVideoConfig(ImageResolution desiredResolution, VideoStreamingFormat desiredFormat){
-		sdlSession.setDesiredVideoConfig(desiredResolution, desiredFormat);
+	public void setDesiredVideoParams(VideoStreamingParams params){
+		sdlSession.setDesiredVideoParams(params);
 	}
 
 	/**
@@ -5617,12 +5618,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
-	public ImageResolution getAcceptedVideoResolution(){
-		return sdlSession.getAcceptedVideoResolution();
-	}
-
-	public VideoStreamingFormat getAcceptedVideoFormat(){
-		return sdlSession.getAcceptedVideoFormat();
+	public VideoStreamingParams getAcceptedVideoParams(){
+		return sdlSession.getAcceptedVideoParams();
 	}
 	
 	public IProxyListenerBase getProxyListener()

@@ -14,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
@@ -481,7 +482,10 @@ public class WiProProtocol extends AbstractProtocol {
 						acceptedFormat.setCodec(VideoStreamingCodec.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC)));
 						acceptedFormat.setProtocol(VideoStreamingProtocol.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL)));
 						if(session != null) {
-							session.setAcceptedVideoConfig(acceptedResolution, acceptedFormat);
+							VideoStreamingParams agreedVideoParams = session.getDesiredVideoParams();
+							agreedVideoParams.setResolution(acceptedResolution);
+							agreedVideoParams.setFormat(acceptedFormat);
+							session.setAcceptedVideoParams(agreedVideoParams);
 						}
 					}
 				}else{
@@ -591,11 +595,9 @@ public class WiProProtocol extends AbstractProtocol {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
 		if(sessionType.equals(SessionType.NAV)){
 			SdlSession videoSession = sdlconn.findSessionById(sessionID);
-			ImageResolution desiredResolution = null;
-			VideoStreamingFormat desiredFormat = null;
 			if(videoSession != null){
-				desiredResolution = videoSession.getDesiredVideoResolution();
-				desiredFormat = videoSession.getDesiredVideoFormat();
+				ImageResolution desiredResolution = videoSession.getDesiredVideoParams().getResolution();
+				VideoStreamingFormat desiredFormat = videoSession.getDesiredVideoParams().getFormat();
 				if(desiredResolution != null){
 					header.putTag(ControlFrameTags.Video.StartService.WIDTH, desiredResolution.getResolutionWidth());
 					header.putTag(ControlFrameTags.Video.StartService.HEIGHT, desiredResolution.getResolutionHeight());
