@@ -22,155 +22,155 @@ public class RdsData extends RPCStruct{
     }
 
     /**
-     * Sets the ps portion of the RdsData class
+     * Sets the programService portion of the RdsData class
      *
-     * @param ps
+     * @param programService
      * Program Service Name.
      */
-    public void setPs(String ps) {
-        setValue(KEY_PS, ps);
+    public void setProgramService(String programService) {
+        setValue(KEY_PS, programService);
     }
 
     /**
-     * Gets the ps portion of the RdsData class
+     * Gets the programService portion of the RdsData class
      *
      * @return String - Program Service Name.
      */
-    public String getPs() {
+    public String getProgramService() {
         return getString(KEY_PS);
     }
 
     /**
-     * Sets the rt portion of the RdsData class
+     * Sets the radioText portion of the RdsData class
      *
-     * @param rt
+     * @param radioText
      * Radio Text.
      */
-    public void setRt(String rt) {
-        setValue(KEY_RT, rt);
+    public void setRadioText(String radioText) {
+        setValue(KEY_RT, radioText);
     }
 
     /**
-     * Gets the rt portion of the RdsData class
+     * Gets the radioText portion of the RdsData class
      *
      * @return String - Radio Text.
      */
-    public String getRt() {
+    public String getRadioText() {
         return getString(KEY_RT);
     }
 
     /**
-     * Sets the ct portion of the RdsData class
+     * Sets the clockText portion of the RdsData class
      *
-     * @param ct
+     * @param clockText
      * The clock text in UTC format as YYYY-MM-DDThh:mm:ss.sTZD.
      */
-    public void setCt(String ct) {
-        setValue(KEY_CT, ct);
+    public void setClockText(String clockText) {
+        setValue(KEY_CT, clockText);
     }
 
     /**
-     * Gets the ct portion of the RdsData class
+     * Gets the clockText portion of the RdsData class
      *
      * @return String - The clock text in UTC format as YYYY-MM-DDThh:mm:ss.sTZD.
      */
-    public String getCt() {
+    public String getClockText() {
         return getString(KEY_CT);
     }
 
     /**
-     * Sets the pi portion of the RdsData class
+     * Sets the programIdentification portion of the RdsData class
      *
-     * @param pi
+     * @param programIdentification
      * Program Identification - the call sign for the radio station.
      */
-    public void setPi(String pi) {
-        setValue(KEY_PI, pi);
+    public void setProgramIdentification(String programIdentification) {
+        setValue(KEY_PI, programIdentification);
     }
 
     /**
-     * Gets the pi portion of the RdsData class
+     * Gets the programIdentification portion of the RdsData class
      *
      * @return String - Program Identification - the call sign for the radio station.
      */
-    public String getPi() {
+    public String getProgramIdentification() {
         return getString(KEY_PI);
     }
 
     /**
-     * Sets the reg portion of the RdsData class
+     * Sets the region portion of the RdsData class
      *
-     * @param reg
+     * @param region
      * Region.
      */
-    public void setReg(String reg) {
-        setValue(KEY_REG, reg);
+    public void setRegion(String region) {
+        setValue(KEY_REG, region);
     }
 
     /**
-     * Gets the reg portion of the RdsData class
+     * Gets the region portion of the RdsData class
      *
      * @return String - Region.
      */
-    public String getReg() {
+    public String getRegion() {
         return getString(KEY_REG);
     }
 
     /**
-     * Sets the tp portion of the RdsData class
+     * Sets the trafficProgram portion of the RdsData class
      *
-     * @param tp
+     * @param trafficProgram
      * Traffic Program Identification - Identifies a station that offers traffic.
      */
-    public void setTp(Boolean tp) {
-        setValue(KEY_TP, tp);
+    public void setTrafficProgram(Boolean trafficProgram) {
+        setValue(KEY_TP, trafficProgram);
     }
 
     /**
-     * Gets the tp portion of the RdsData class
+     * Gets the trafficProgram portion of the RdsData class
      *
      * @return Boolean - Traffic Program Identification - Identifies a station that offers traffic.
      */
-    public Boolean getTp() {
+    public Boolean getTrafficProgram() {
         return getBoolean(KEY_TP);
     }
 
     /**
-     * Sets the ta portion of the RdsData class
+     * Sets the trafficAnnouncement portion of the RdsData class
      *
-     * @param ta
+     * @param trafficAnnouncement
      * Traffic Announcement Identification - Indicates an ongoing traffic announcement.
      */
-    public void setTa(Boolean ta) {
-        setValue(KEY_TA, ta);
+    public void setTrafficAnnouncement(Boolean trafficAnnouncement) {
+        setValue(KEY_TA, trafficAnnouncement);
     }
 
     /**
-     * Gets the ta portion of the RdsData class
+     * Gets the trafficAnnouncement portion of the RdsData class
      *
      * @return Boolean - Traffic Announcement Identification - Indicates an ongoing traffic announcement.
      */
-    public Boolean getTa() {
+    public Boolean getTrafficAnnouncement() {
         return getBoolean(KEY_TA);
     }
 
     /**
-     * Sets the pty portion of the RdsData class
+     * Sets the programType portion of the RdsData class
      *
-     * @param pty
+     * @param programType
      * The program type - The region should be used to differentiate between EU and North America program types.
      */
-    public void setPty(Integer pty) {
-        setValue(KEY_PTY, pty);
+    public void setProgramType(Integer programType) {
+        setValue(KEY_PTY, programType);
     }
 
     /**
-     * Gets the pty portion of the RdsData class
+     * Gets the programType portion of the RdsData class
      *
      * @return Integer - The program type.
      * The region should be used to differentiate between EU and North America program types.
      */
-    public Integer getPty() {
+    public Integer getProgramType() {
         return getInteger(KEY_PTY);
     }
 }

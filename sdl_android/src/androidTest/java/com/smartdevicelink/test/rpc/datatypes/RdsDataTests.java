@@ -23,14 +23,14 @@ public class RdsDataTests extends TestCase{
     public void setUp(){
         msg = new RdsData();
 
-        msg.setPs(Test.GENERAL_STRING);
-        msg.setRt(Test.GENERAL_STRING);
-        msg.setCt(Test.GENERAL_STRING);
-        msg.setPi(Test.GENERAL_STRING);
-        msg.setReg(Test.GENERAL_STRING);
-        msg.setTp(Test.GENERAL_BOOLEAN);
-        msg.setTa(Test.GENERAL_BOOLEAN);
-        msg.setPty(Test.GENERAL_INT);
+        msg.setProgramService(Test.GENERAL_STRING);
+        msg.setRadioText(Test.GENERAL_STRING);
+        msg.setClockText(Test.GENERAL_STRING);
+        msg.setProgramIdentification(Test.GENERAL_STRING);
+        msg.setRegion(Test.GENERAL_STRING);
+        msg.setTrafficProgram(Test.GENERAL_BOOLEAN);
+        msg.setTrafficAnnouncement(Test.GENERAL_BOOLEAN);
+        msg.setProgramType(Test.GENERAL_INT);
     }
 
     /**
@@ -38,14 +38,14 @@ public class RdsDataTests extends TestCase{
 	 */
     public void testRpcValues () {
         // Test Values
-        String ps = msg.getPs();
-        String rt = msg.getRt();
-        String ct = msg.getCt();
-        String pi = msg.getPi();
-        int pty = msg.getPty();
-        boolean tp = msg.getTp();
-        boolean ta = msg.getTa();
-        String reg = msg.getReg();
+        String ps = msg.getProgramService();
+        String rt = msg.getRadioText();
+        String ct = msg.getClockText();
+        String pi = msg.getProgramIdentification();
+        int pty = msg.getProgramType();
+        boolean tp = msg.getTrafficProgram();
+        boolean ta = msg.getTrafficAnnouncement();
+        String reg = msg.getRegion();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_STRING, ps);
@@ -61,14 +61,14 @@ public class RdsDataTests extends TestCase{
         RdsData msg = new RdsData();
         assertNotNull(Test.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getPs());
-        assertNull(Test.NULL, msg.getRt());
-        assertNull(Test.NULL, msg.getCt());
-        assertNull(Test.NULL, msg.getPi());
-        assertNull(Test.NULL, msg.getReg());
-        assertNull(Test.NULL, msg.getTp());
-        assertNull(Test.NULL, msg.getTa());
-        assertNull(Test.NULL, msg.getPty());
+        assertNull(Test.NULL, msg.getProgramService());
+        assertNull(Test.NULL, msg.getRadioText());
+        assertNull(Test.NULL, msg.getClockText());
+        assertNull(Test.NULL, msg.getProgramIdentification());
+        assertNull(Test.NULL, msg.getRegion());
+        assertNull(Test.NULL, msg.getTrafficProgram());
+        assertNull(Test.NULL, msg.getTrafficAnnouncement());
+        assertNull(Test.NULL, msg.getProgramType());
     }
 
     public void testJson(){

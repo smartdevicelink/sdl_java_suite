@@ -538,58 +538,58 @@ public class Validator{
             return ( rdsData1 == null );
         }
 
-        if(rdsData1.getPs() != rdsData2.getPs()){
+        if(rdsData1.getProgramService() != rdsData2.getProgramService()){
             log("validateRdsData",
-                    "Ps " + rdsData1.getPs() + " didn't match Ps " + rdsData2.getPs()
+                    "Ps " + rdsData1.getProgramService() + " didn't match Ps " + rdsData2.getProgramService()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getRt() != rdsData2.getRt()){
+        if(rdsData1.getRadioText() != rdsData2.getRadioText()){
             log("validateRdsData",
-                    "Rt " + rdsData1.getRt() + " didn't match Rt " + rdsData2.getRt()
+                    "Rt " + rdsData1.getRadioText() + " didn't match Rt " + rdsData2.getRadioText()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getCt() != rdsData2.getCt()){
+        if(rdsData1.getClockText() != rdsData2.getClockText()){
             log("validateRdsData",
-                    "Ct " + rdsData1.getCt() + " didn't match Ct " + rdsData2.getCt()
+                    "Ct " + rdsData1.getClockText() + " didn't match Ct " + rdsData2.getClockText()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getPi() != rdsData2.getPi()){
+        if(rdsData1.getProgramIdentification() != rdsData2.getProgramIdentification()){
             log("validateRdsData",
-                    "Pi " + rdsData1.getPi() + " didn't match Pi " + rdsData2.getPi()
+                    "Pi " + rdsData1.getProgramIdentification() + " didn't match Pi " + rdsData2.getProgramIdentification()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getReg() != rdsData2.getReg()){
+        if(rdsData1.getRegion() != rdsData2.getRegion()){
             log("validateRdsData",
-                    "Reg " + rdsData1.getReg() + " didn't match Reg " + rdsData2.getReg()
+                    "Reg " + rdsData1.getRegion() + " didn't match Reg " + rdsData2.getRegion()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getTp() != rdsData2.getTp()){
+        if(rdsData1.getTrafficProgram() != rdsData2.getTrafficProgram()){
             log("validateRdsData",
-                    "Tp " + rdsData1.getTp() + " didn't match Tp " + rdsData2.getTp()
+                    "Tp " + rdsData1.getTrafficProgram() + " didn't match Tp " + rdsData2.getTrafficProgram()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getTa() != rdsData2.getTa()){
+        if(rdsData1.getTrafficAnnouncement() != rdsData2.getTrafficAnnouncement()){
             log("validateRdsData",
-                    "Ta " + rdsData1.getTa() + " didn't match Ta " + rdsData2.getTa()
+                    "Ta " + rdsData1.getTrafficAnnouncement() + " didn't match Ta " + rdsData2.getTrafficAnnouncement()
                             + ".");
             return false;
         }
 
-        if(rdsData1.getPty() != rdsData2.getPty()){
+        if(rdsData1.getProgramType() != rdsData2.getProgramType()){
             log("validateRdsData",
-                    "Pty " + rdsData1.getPty() + " didn't match Pty " + rdsData2.getPty()
+                    "Pty " + rdsData1.getProgramType() + " didn't match Pty " + rdsData2.getProgramType()
                             + ".");
             return false;
         }
