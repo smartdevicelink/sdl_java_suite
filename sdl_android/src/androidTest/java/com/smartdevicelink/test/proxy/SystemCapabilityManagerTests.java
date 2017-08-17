@@ -61,21 +61,21 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		systemCapabilityManager.parseRAIResponse(raiResponse);
 
 		assertTrue(Test.TRUE,
-				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getSystemCapability(SystemCapabilityType.HMI)));
+				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
-				Validator.validateDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES, (DisplayCapabilities) systemCapabilityManager.getSystemCapability(SystemCapabilityType.DISPLAY)));
+				Validator.validateDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES, (DisplayCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY)));
 		assertTrue(Test.TRUE,
-				Validator.validateAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, (List<AudioPassThruCapabilities>) systemCapabilityManager.getSystemCapability(SystemCapabilityType.AUDIO_PASSTHROUGH)));
+				Validator.validateAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, (List<AudioPassThruCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.AUDIO_PASSTHROUGH)));
 		assertTrue(Test.TRUE,
-				Validator.validateButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST, (List<ButtonCapabilities> )systemCapabilityManager.getSystemCapability(SystemCapabilityType.BUTTON)));
+				Validator.validateButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST, (List<ButtonCapabilities> )systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON)));
 		assertTrue(Test.TRUE,
-				Validator.validateHMIZoneCapabilities(Test.GENERAL_HMIZONECAPABILITIES_LIST, (List<HmiZoneCapabilities>) systemCapabilityManager.getSystemCapability(SystemCapabilityType.HMI_ZONE)));
+				Validator.validateHMIZoneCapabilities(Test.GENERAL_HMIZONECAPABILITIES_LIST, (List<HmiZoneCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.HMI_ZONE)));
 		assertTrue(Test.TRUE,
-				Validator.validatePresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES, (PresetBankCapabilities) systemCapabilityManager.getSystemCapability(SystemCapabilityType.PRESET_BANK)));
+				Validator.validatePresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES, (PresetBankCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.PRESET_BANK)));
 		assertTrue(Test.TRUE,
-				Validator.validateSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getSystemCapability(SystemCapabilityType.SOFTBUTTON)));
+				Validator.validateSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON)));
 		assertTrue(Test.TRUE,
-				Validator.validateSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getSystemCapability(SystemCapabilityType.SPEECH)));
+				Validator.validateSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH)));
 	}
 
 	public void testGetVSCapability(){
@@ -100,7 +100,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 			}
 		});
 
-		systemCapabilityManager.getSystemCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+		systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				assertTrue(Test.TRUE,
