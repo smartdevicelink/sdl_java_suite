@@ -19,23 +19,32 @@ public class VideoStreamingParams {
 	private final int DEFAULT_INTERVAL = 5;
 
 
-	private int displayDensity = DEFAULT_DENSITY;
-	private int frameRate = DEFAULT_FRAMERATE;
-	private int bitrate = DEFAULT_BITRATE;
-	private int interval = DEFAULT_INTERVAL;
-	private VideoStreamingFormat format;
+	private int displayDensity;
+	private int frameRate;
+	private int bitrate;
+	private int interval;
 	private ImageResolution resolution;
+	private VideoStreamingFormat format;
 
     public VideoStreamingParams(){
-	    format = new VideoStreamingFormat();
-	    format.setProtocol(DEFAULT_PROTOCOL);
-	    format.setCodec(DEFAULT_CODEC);
+	    displayDensity = DEFAULT_DENSITY;
+	    frameRate = DEFAULT_FRAMERATE;
+	    bitrate = DEFAULT_BITRATE;
+	    interval = DEFAULT_INTERVAL;
 	    resolution = new ImageResolution();
 	    resolution.setResolutionWidth(DEFAULT_WIDTH);
 	    resolution.setResolutionHeight(DEFAULT_HEIGHT);
+	    format = new VideoStreamingFormat();
+	    format.setProtocol(DEFAULT_PROTOCOL);
+	    format.setCodec(DEFAULT_CODEC);
     }
 
-    public VideoStreamingParams(ImageResolution resolution, VideoStreamingFormat format){
+    public VideoStreamingParams(int displayDensity, int frameRate, int bitrate, int interval,
+                                ImageResolution resolution, VideoStreamingFormat format){
+	    this.displayDensity = displayDensity;
+	    this.frameRate = frameRate;
+	    this.bitrate = bitrate;
+	    this.interval = interval;
 	    this.resolution = resolution;
 	    this.format = format;
     }

@@ -492,6 +492,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		if (isEncrypted)
 			encryptedServices.addIfAbsent(sessionType);
 		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			serviceListeners.get(sessionType).onServiceStarted(this, sessionType, isEncrypted);
+		}
 		//if (version == 3)
 			initialiseSession();
 		if (sessionType.eq(SessionType.RPC)){
@@ -503,6 +506,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
 			String correlationID) {		
 		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			serviceListeners.get(sessionType).onServiceEnded(this, sessionType);
+		}
 		encryptedServices.remove(sessionType);
 	}
 
@@ -544,14 +550,19 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);		
+		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			serviceListeners.get(sessionType).onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NACK'ed");
+		}
 	}
 
 	@Override
 	public void onProtocolSessionEndedNACKed(SessionType sessionType,
 			byte sessionID, String correlationID) {
 		this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
-		
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			serviceListeners.get(sessionType).onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+		}
 	}
 
 	@Override

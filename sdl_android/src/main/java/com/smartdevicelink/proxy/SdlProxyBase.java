@@ -3825,28 +3825,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void NavServiceStarted(boolean isEncrypted) {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = true;
-
-		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
-			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceStarted(sdlSession, SessionType.NAV, isEncrypted);
-		}
 	}
 	
 	private void NavServiceStartedNACK() {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = false;
-
-		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
-			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceError(sdlSession, SessionType.NAV, "Start NAV Service NACK'ed");
-		}
 	}
 	
     private void AudioServiceStarted(boolean isEncrypted) {
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = true;
-
-	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
-		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceStarted(sdlSession, SessionType.PCM, isEncrypted);
-	    }
 	}
     
     private void RPCProtectedServiceStarted() {
@@ -3856,47 +3844,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private void AudioServiceStartedNACK() {
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = false;
-
-	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
-		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceError(sdlSession, SessionType.PCM, "Start PCM Service NACK'ed");
-	    }
 	}
 
 	private void NavServiceEnded() {
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = true;
-
-		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
-			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceEnded(sdlSession, SessionType.NAV);
-		}
 	}
 	
 	private void NavServiceEndedNACK() {
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = false;
-
-		if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.NAV)){
-			sdlSession.getServiceListeners().get(SessionType.NAV).onServiceError(sdlSession, SessionType.NAV, "End NAV Service NACK'ed");
-		}
 	}
 	
     private void AudioServiceEnded() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = true;
-
-	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
-		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceEnded(sdlSession, SessionType.PCM);
-	    }
 	}
 	
     private void AudioServiceEndedNACK() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
-
-	    if(sdlSession.getServiceListeners() != null && sdlSession.getServiceListeners().containsKey(SessionType.PCM)){
-		    sdlSession.getServiceListeners().get(SessionType.PCM).onServiceError(sdlSession, SessionType.PCM, "End PCM Service NACK'ed");
-	    }
-	}	
+	}
 	
 	public void setAppService(Service mService)
 	{

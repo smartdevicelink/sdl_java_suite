@@ -475,13 +475,13 @@ public class WiProProtocol extends AbstractProtocol {
 						}
 					}else if(serviceType.equals(SessionType.NAV)){
 						SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
-						ImageResolution acceptedResolution = new ImageResolution();
-						VideoStreamingFormat acceptedFormat = new VideoStreamingFormat();
-						acceptedResolution.setResolutionHeight((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.HEIGHT));
-						acceptedResolution.setResolutionWidth((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.WIDTH));
-						acceptedFormat.setCodec(VideoStreamingCodec.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC)));
-						acceptedFormat.setProtocol(VideoStreamingProtocol.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL)));
 						if(session != null) {
+							ImageResolution acceptedResolution = new ImageResolution();
+							VideoStreamingFormat acceptedFormat = new VideoStreamingFormat();
+							acceptedResolution.setResolutionHeight((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.HEIGHT));
+							acceptedResolution.setResolutionWidth((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.WIDTH));
+							acceptedFormat.setCodec(VideoStreamingCodec.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC)));
+							acceptedFormat.setProtocol(VideoStreamingProtocol.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL)));
 							VideoStreamingParams agreedVideoParams = session.getDesiredVideoParams();
 							agreedVideoParams.setResolution(acceptedResolution);
 							agreedVideoParams.setFormat(acceptedFormat);
