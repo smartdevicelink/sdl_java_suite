@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
@@ -99,9 +100,20 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 			}
 		});
 
-		VideoStreamingCapability testCapability = (VideoStreamingCapability) systemCapabilityManager.getSystemCapability(SystemCapabilityType.VIDEO_STREAMING);
-		assertTrue(Test.TRUE,
-			Validator.validateVideoStreamingCapability(vsCapability, testCapability));
+		systemCapabilityManager.getSystemCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+			@Override
+			public void onCapabilityRetrieved(Object capability) {
+				assertTrue(Test.TRUE,
+						Validator.validateVideoStreamingCapability(
+								(VideoStreamingCapability) referenceCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING),
+								(VideoStreamingCapability) capability));
+			}
+
+			@Override
+			public void onError(String info) {
+				assertTrue(false);
+			}
+		});
 	}
 
 

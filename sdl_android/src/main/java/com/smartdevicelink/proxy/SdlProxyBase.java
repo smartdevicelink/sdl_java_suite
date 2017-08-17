@@ -97,7 +97,6 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
@@ -1824,20 +1823,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}				
 			}
 		}
-
-		//Initialize _systemCapabilityManager here.
-		_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
-			@Override
-			public void onSendPacketRequest(RPCRequest message) {
-				message.setCorrelationID(CorrelationIdGenerator.generateId());
-				try {
-					sendRPCRequest(message);
-				} catch (SdlException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		_systemCapabilityManager.parseRAIResponse(rai);
 	}
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
@@ -1860,6 +1845,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_appInterfaceRegisterd = true;
 					}
 					processRaiResponse(msg);
+
+					//Initialize _systemCapabilityManager here.
+					_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
+						@Override
+						public void onSendPacketRequest(RPCRequest message) {
+							try {
+								sendRPCRequest(message);
+							} catch (SdlException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					_systemCapabilityManager.parseRAIResponse(msg);
 					
 					Intent sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE.toString());
@@ -5546,14 +5544,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sendRPCRequest(msg);
 	}
 
-	public Object getSystemCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener){
-		if(scListener == null){
-			return _systemCapabilityManager.getSystemCapability(systemCapabilityType);
-		}else{
-			return _systemCapabilityManager.getSystemCapability(systemCapabilityType, scListener);
-		}
+	public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener){
+		_systemCapabilityManager.getCapability(systemCapabilityType, scListener);
 	}
 
+	public Object getCapability(SystemCapabilityType systemCapabilityType){
+		return _systemCapabilityManager.getCapability(systemCapabilityType);
+	}
 
 	/******************** END Public Helper Methods *************************/
 	

@@ -6,6 +6,7 @@ import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.CorrelationIdGenerator;
 
 import java.util.HashMap;
 
@@ -34,41 +35,40 @@ public class SystemCapabilityManager {
 
 	/**
 	 * @param systemCapabilityType Type of capability desired
-	 * @param scListener callback for
-	 * @return
+	 * @param scListener callback to execute upon retrieving capability
 	 */
-	public Object getSystemCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
+	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
 		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
 		if(capability != null){
 			scListener.onCapabilityRetrieved(capability);
-			return capability;
 		}else if(scListener == null){
-			return null;
+			return;
 		}
 
-		capability = getSystemCapabilityCommon(systemCapabilityType);
-		scListener.onCapabilityRetrieved(capability);
-		return capability;
-	}
-
-	public Object getSystemCapability(final SystemCapabilityType systemCapabilityType){
-		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
-		if(capability != null){
-			return capability;
-		}
-
-		return getSystemCapabilityCommon(systemCapabilityType);
+		retrieveCapability(systemCapabilityType, scListener);
 	}
 
 	/**
 	 * @param systemCapabilityType Type of capability desired
-	 * @return Synchronous result returned by GetSystemCapabilityResponse, null if systemCapabilityType is null
+	 * @return Desired capability if it is cached in the manager, otherwise returns a null object
+	 * and works in the background to retrieve the capability for the next call
 	 */
-	private Object getSystemCapabilityCommon(final SystemCapabilityType systemCapabilityType){
+	public Object getCapability(final SystemCapabilityType systemCapabilityType){
+		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
+		if(capability != null){
+			return capability;
+		}
 
-		final Object RETURN_LOCK = new Object();
+		retrieveCapability(systemCapabilityType, null);
+		return null;
+	}
 
-		GetSystemCapability request = new GetSystemCapability();
+	/**
+	 * @param systemCapabilityType Type of capability desired
+	 * passes GetSystemCapabilityType request to  `callback` to be sent by proxy
+	 */
+	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
+		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
@@ -76,28 +76,14 @@ public class SystemCapabilityManager {
 				if(response.getSuccess()){
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
 					cachedSystemCapabilities.put(systemCapabilityType, retrievedCapability);
-				}
-				synchronized(RETURN_LOCK){
-					RETURN_LOCK.notify();
+					scListener.onCapabilityRetrieved(retrievedCapability);
+				}else{
+					scListener.onError(response.getInfo());
 				}
 			}
 		});
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					synchronized(RETURN_LOCK){
-						RETURN_LOCK.wait();
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
+		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
 		callback.onSendPacketRequest(request);
-
-		return cachedSystemCapabilities.get(systemCapabilityType);
 	}
 }
