@@ -161,6 +161,7 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
         mActivityState = SdlActivityState.BACKGROUND;
         getSdlMenuManager().redoTransactions(this);
         mViewManager.setCurrentTemplate(currentTemplate);
+        mViewManager.updateView();
         this.onStart();
         if (!superCalled) throw new SuperNotCalledException(this.getClass().getCanonicalName()
                 + " did not call through to super() in method onStart(). This should NEVER happen.");
