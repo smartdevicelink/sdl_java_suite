@@ -1,32 +1,13 @@
 package com.smartdevicelink.transport;
 
-import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
-import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
-import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
-
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.Vector;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -71,6 +52,30 @@ import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
+import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
+import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
+import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
+import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_ID;
+import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_NAME;
+import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 /**
  * <b>This class should not be modified by anyone outside of the approved contributors of the SmartDeviceLink project.</b>
  * This service is a central point of communication between hardware and the registered clients. It will multiplex a single transport
@@ -896,6 +901,9 @@ public class SdlRouterService extends Service{
 			}
 		}
 		if(intent != null ){
+			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
+				enterForeground();
+			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
 				if(startSequenceComplete){ //We only check if we are sure we are already through the start up process
@@ -1036,18 +1044,37 @@ public class SdlRouterService extends Service{
         	notification = builder.getNotification();
         	
         }else{
+			if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+				//Now we need to add a notification channel
+				NotificationManager notificationManager =	(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				String channelId = SDL_NOTIFICATION_CHANNEL_ID;
+				CharSequence channelName = SDL_NOTIFICATION_CHANNEL_NAME;
+				int importance = NotificationManager.IMPORTANCE_DEFAULT;
+				NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+				notificationChannel.enableLights(false);
+				notificationChannel.enableVibration(false);
+				notificationManager.createNotificationChannel(notificationChannel);
+				builder.setChannelId(channelId);
+
+			}
         	notification = builder.build();
         }
         if(notification == null){
         	Log.e(TAG, "Notification was null");
+			return;
         }
         startForeground(FOREGROUND_SERVICE_ID, notification);
         isForeground = true;
  
     }
-	
+
 	private void exitForeground(){
 		if(isForeground){
+			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.deleteNotificationChannel(TransportConstants.SDL_NOTIFICATION_CHANNEL_ID);
+			}
+
 			this.stopForeground(true);
 		}
 	}
