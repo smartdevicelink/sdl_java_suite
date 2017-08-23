@@ -78,29 +78,4 @@ public class SendHapticDataTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getHapticSpatialData());
 	}
 
-
-	/**
-	 * Tests a valid JSON construction of this RPC message.
-	 */
-	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-		assertNotNull(Test.NOT_NULL, commandJson);
-
-		try {
-			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			SendHapticData cmd = new SendHapticData(hash);
-			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
-
-			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
-
-			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SendHapticData.KEY_HAPTIC_SPATIAL_DATA), cmd.getHapticSpatialData().serializeJSON());
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
-	}
-
 }
