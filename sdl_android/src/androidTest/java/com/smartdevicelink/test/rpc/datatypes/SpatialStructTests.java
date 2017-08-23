@@ -24,10 +24,10 @@ public class SpatialStructTests extends TestCase {
 		msg = new SpatialStruct();
 
 		msg.setID(Test.GENERAL_INTEGER);
-		msg.setX(Test.GENERAL_INTEGER);
-		msg.setY(Test.GENERAL_INTEGER);
-		msg.setWidth(Test.GENERAL_INTEGER);
-		msg.setHeight(Test.GENERAL_INTEGER);
+		msg.setX(Test.GENERAL_FLOAT);
+		msg.setY(Test.GENERAL_FLOAT);
+		msg.setWidth(Test.GENERAL_FLOAT);
+		msg.setHeight(Test.GENERAL_FLOAT);
 	}
 
 	/**
@@ -36,17 +36,17 @@ public class SpatialStructTests extends TestCase {
 	public void testRpcValues () {
 		// Test Values
 		Integer id = msg.getID();
-		Integer x = msg.getX();
-		Integer y = msg.getY();
-		Integer width = msg.getWidth();
-		Integer height = msg.getHeight();
+		Float x = msg.getX();
+		Float y = msg.getY();
+		Float width = msg.getWidth();
+		Float height = msg.getHeight();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, id);
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, x);
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, y);
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, width);
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, height);
+		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, x);
+		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, y);
+		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, width);
+		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, height);
 
 		// Invalid/Null Tests
 		SpatialStruct msg = new SpatialStruct();
@@ -64,10 +64,10 @@ public class SpatialStructTests extends TestCase {
 
 		try {
 			reference.put(SpatialStruct.KEY_ID, Test.GENERAL_INTEGER);
-			reference.put(SpatialStruct.KEY_X, (Test.GENERAL_INTEGER));
-			reference.put(SpatialStruct.KEY_Y, (Test.GENERAL_INTEGER));
-			reference.put(SpatialStruct.KEY_WIDTH, (Test.GENERAL_INTEGER));
-			reference.put(SpatialStruct.KEY_HEIGHT, (Test.GENERAL_INTEGER));
+			reference.put(SpatialStruct.KEY_X, ((Float) Test.GENERAL_FLOAT));
+			reference.put(SpatialStruct.KEY_Y, ((Float) Test.GENERAL_FLOAT));
+			reference.put(SpatialStruct.KEY_WIDTH, ((Float) Test.GENERAL_FLOAT));
+			reference.put(SpatialStruct.KEY_HEIGHT, ((Float) Test.GENERAL_FLOAT));
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());

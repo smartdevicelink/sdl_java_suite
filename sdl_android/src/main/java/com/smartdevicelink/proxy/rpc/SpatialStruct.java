@@ -34,42 +34,44 @@ public class SpatialStruct extends RPCStruct {
 	/**
 	 * The X-coordinate of the user control
 	 */
-	public void setX(Integer x) {
+	public void setX(Float x) {
 		setValue(KEY_X, x);
 	}
 
-	public Integer getX() {
-		return getInteger(KEY_X);
+	public Float getX() {
+		return getFloat(KEY_X);
 	}
 
 	/**
 	 * The Y-coordinate of the user control
 	 */
-	public void setY(Integer y) {
+	public void setY(Float y) {
 		setValue(KEY_Y, y);
 	}
 
-	public Integer getY() {
-		return getInteger(KEY_Y);
+	public Float getY() {
+		return getFloat(KEY_Y);
 	}
 
 	/**
 	 * The width of the user control's bounding rectangle
 	 */
-	public void setWidth(Integer width) {
+	public void setWidth(Float width) {
 		setValue(KEY_WIDTH, width);
 	}
 
-	public Integer getWidth() {
-		return getInteger(KEY_WIDTH);
+	public Float getWidth() {
+		return getFloat(KEY_WIDTH);
 	}
 
 	/**
 	 * The height of the user control's bounding rectangle
 	 */
-	public void setHeight(Integer height) {
+	public void setHeight(Float height) {
 		setValue(KEY_HEIGHT, height);
 	}
 
-	public Integer getHeight() { return getInteger(KEY_HEIGHT); }
+	public Float getHeight() {
+		return getFloat(KEY_HEIGHT);
+	}
 }
