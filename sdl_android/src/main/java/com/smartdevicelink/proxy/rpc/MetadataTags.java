@@ -8,10 +8,10 @@ import java.util.List;
 
 public class MetadataTags extends RPCStruct {
 
-	public static final String KEY_MAIN_FIELD_1_TYPE = "mainField1Type";
-	public static final String KEY_MAIN_FIELD_2_TYPE = "mainField2Type";
-	public static final String KEY_MAIN_FIELD_3_TYPE = "mainField3Type";
-	public static final String KEY_MAIN_FIELD_4_TYPE = "mainField4Type";
+	public static final String KEY_MAIN_FIELD_1_TYPE = "mainField1";
+	public static final String KEY_MAIN_FIELD_2_TYPE = "mainField2";
+	public static final String KEY_MAIN_FIELD_3_TYPE = "mainField3";
+	public static final String KEY_MAIN_FIELD_4_TYPE = "mainField4";
 
 	/**
 	 * Constructs a newly allocated MetadataTags object

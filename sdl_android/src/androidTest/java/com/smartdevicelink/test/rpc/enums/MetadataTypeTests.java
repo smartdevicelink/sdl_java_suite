@@ -20,44 +20,44 @@ public class MetadataTypeTests extends TestCase{
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {
-		String example = "MEDIA_TITLE";
+		String example = "mediaTitle";
 		MetadataType enumMediaTitle = MetadataType.valueForString(example);
-		example = "MEDIA_ARTIST";
+		example = "mediaArtist";
 		MetadataType enumMediaArtist = MetadataType.valueForString(example);
-		example = "MEDIA_ALBUM";
+		example = "mediaAlbum";
 		MetadataType enumMediaAlbum = MetadataType.valueForString(example);
-		example = "MEDIA_YEAR";
+		example = "mediaYear";
 		MetadataType enumMediaYear = MetadataType.valueForString(example);
-		example = "MEDIA_GENRE";
+		example = "mediaGenre";
 		MetadataType enumMediaGenre = MetadataType.valueForString(example);
-		example = "MEDIA_STATION";
+		example = "mediaStation";
 		MetadataType enumMediaStation = MetadataType.valueForString(example);
-		example = "RATING";
+		example = "rating";
 		MetadataType enumRating = MetadataType.valueForString(example);
-		example = "CURRENT_TEMPERATURE";
+		example = "currentTemperature";
 		MetadataType enumCurrentTemperature = MetadataType.valueForString(example);
-		example = "MAXIMUM_TEMPERATURE";
+		example = "maximumTemperature";
 		MetadataType enumMaximumTemperature = MetadataType.valueForString(example);
-		example = "MINIMUM_TEMPERATURE";
+		example = "minimumTemperature";
 		MetadataType enumMinimumTemperature = MetadataType.valueForString(example);
-		example = "WEATHER_TERM";
+		example = "weatherTerm";
 		MetadataType enumWeatherTerm = MetadataType.valueForString(example);
-		example = "HUMIDITY";
+		example = "humidity";
 		MetadataType enumHumidity = MetadataType.valueForString(example);
 
 
-		assertNotNull("MEDIA_TITLE returned null", enumMediaTitle);
-		assertNotNull("MEDIA_ARTIST returned null", enumMediaArtist);
-		assertNotNull("MEDIA_ALBUM returned null", enumMediaAlbum);
-		assertNotNull("MEDIA_YEAR returned null", enumMediaYear);
-		assertNotNull("MEDIA_GENRE returned null", enumMediaGenre);
-		assertNotNull("MEDIA_STATION returned null", enumMediaStation);
-		assertNotNull("RATING returned null", enumRating);
-		assertNotNull("CURRENT_TEMPERATURE returned null", enumCurrentTemperature);
-		assertNotNull("MAXIMUM_TEMPERATURE returned null", enumMaximumTemperature);
-		assertNotNull("MINIMUM_TEMPERATURE returned null", enumMinimumTemperature);
-		assertNotNull("WEATHER_TERM returned null", enumWeatherTerm);
-		assertNotNull("HUMIDITY returned null", enumHumidity);
+		assertNotNull("mediaTitle returned null", enumMediaTitle);
+		assertNotNull("mediaArtist returned null", enumMediaArtist);
+		assertNotNull("mediaAlbum returned null", enumMediaAlbum);
+		assertNotNull("mediaYear returned null", enumMediaYear);
+		assertNotNull("mediaGenre returned null", enumMediaGenre);
+		assertNotNull("mediaStation returned null", enumMediaStation);
+		assertNotNull("rating returned null", enumRating);
+		assertNotNull("currentTemperature returned null", enumCurrentTemperature);
+		assertNotNull("maximumTemperature returned null", enumMaximumTemperature);
+		assertNotNull("minimumTemperature returned null", enumMinimumTemperature);
+		assertNotNull("weatherTerm returned null", enumWeatherTerm);
+		assertNotNull("humidity returned null", enumHumidity);
 	}
 
 	/**
@@ -95,18 +95,18 @@ public class MetadataTypeTests extends TestCase{
 		List<MetadataType> enumValueList = Arrays.asList(MetadataType.values());
 
 		List<MetadataType> enumTestList = new ArrayList<MetadataType>();
-		enumTestList.add(MetadataType.MEDIA_TITLE);
-		enumTestList.add(MetadataType.MEDIA_ARTIST);
-		enumTestList.add(MetadataType.MEDIA_ALBUM);
-		enumTestList.add(MetadataType.MEDIA_YEAR);
-		enumTestList.add(MetadataType.MEDIA_GENRE);
-		enumTestList.add(MetadataType.MEDIA_STATION);
-		enumTestList.add(MetadataType.RATING);
-		enumTestList.add(MetadataType.CURRENT_TEMPERATURE);
-		enumTestList.add(MetadataType.MAXIMUM_TEMPERATURE);
-		enumTestList.add(MetadataType.MINIMUM_TEMPERATURE);
-		enumTestList.add(MetadataType.WEATHER_TERM);
-		enumTestList.add(MetadataType.HUMIDITY);
+		enumTestList.add(MetadataType.mediaTitle);
+		enumTestList.add(MetadataType.mediaArtist);
+		enumTestList.add(MetadataType.mediaAlbum);
+		enumTestList.add(MetadataType.mediaYear);
+		enumTestList.add(MetadataType.mediaGenre);
+		enumTestList.add(MetadataType.mediaStation);
+		enumTestList.add(MetadataType.rating);
+		enumTestList.add(MetadataType.currentTemperature);
+		enumTestList.add(MetadataType.maximumTemperature);
+		enumTestList.add(MetadataType.minimumTemperature);
+		enumTestList.add(MetadataType.weatherTerm);
+		enumTestList.add(MetadataType.humidity);
 
 		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

@@ -29,9 +29,9 @@ public class MetadataTagsTests extends TestCase {
 	public void setUp() {
 		// Create List for Testing
 		exampleList = new ArrayList<>();
-		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
-		exampleList.add(1, MetadataType.MEDIA_ALBUM);
-		exampleList.add(2, MetadataType.MEDIA_ARTIST);
+		exampleList.add(0, MetadataType.currentTemperature);
+		exampleList.add(1, MetadataType.mediaAlbum);
+		exampleList.add(2, MetadataType.mediaArtist);
 
 		msg = new MetadataTags();
 
