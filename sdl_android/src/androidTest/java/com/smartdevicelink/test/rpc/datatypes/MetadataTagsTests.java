@@ -1,7 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import com.smartdevicelink.proxy.rpc.enums.TextFieldType;
-import com.smartdevicelink.proxy.rpc.MetadataStruct;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 
@@ -17,23 +17,23 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class:
- * {@link com.smartdevicelink.proxy.rpc.MetadataStruct}
+ * {@link MetadataTags}
  */
 
-public class MetadataStructTests extends TestCase {
+public class MetadataTagsTests extends TestCase {
 
-	private MetadataStruct msg;
-	private List<TextFieldType> exampleList;
+	private MetadataTags msg;
+	private List<MetadataType> exampleList;
 
 	@Override
 	public void setUp() {
 		// Create List for Testing
 		exampleList = new ArrayList<>();
-		exampleList.add(0, TextFieldType.CURRENT_TEMPERATURE);
-		exampleList.add(1, TextFieldType.MEDIA_ALBUM);
-		exampleList.add(2, TextFieldType.MEDIA_ARTIST);
+		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
+		exampleList.add(1, MetadataType.MEDIA_ALBUM);
+		exampleList.add(2, MetadataType.MEDIA_ARTIST);
 
-		msg = new MetadataStruct();
+		msg = new MetadataTags();
 
 		msg.setMainField1(exampleList);
 		msg.setMainField2(exampleList);
@@ -46,10 +46,10 @@ public class MetadataStructTests extends TestCase {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		List<TextFieldType> mainField1Types = msg.getMainField1();
-		List<TextFieldType> mainField2Types = msg.getMainField2();
-		List<TextFieldType> mainField3Types = msg.getMainField3();
-		List<TextFieldType> mainField4Types = msg.getMainField4();
+		List<MetadataType> mainField1Types = msg.getMainField1();
+		List<MetadataType> mainField2Types = msg.getMainField2();
+		List<MetadataType> mainField3Types = msg.getMainField3();
+		List<MetadataType> mainField4Types = msg.getMainField4();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, exampleList, mainField1Types);
@@ -58,7 +58,7 @@ public class MetadataStructTests extends TestCase {
 		assertEquals(Test.MATCH, exampleList, mainField4Types);
 
 		// Invalid/Null Tests
-		MetadataStruct msg = new MetadataStruct();
+		MetadataTags msg = new MetadataTags();
 		assertNotNull(Test.NOT_NULL, msg);
 
 		assertNull(Test.NULL, msg.getMainField1());
@@ -71,10 +71,10 @@ public class MetadataStructTests extends TestCase {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(MetadataStruct.KEY_MAIN_FIELD_1_TYPE, Test.JSON_TEXTFIELDTYPES);
-			reference.put(MetadataStruct.KEY_MAIN_FIELD_2_TYPE, Test.JSON_TEXTFIELDTYPES);
-			reference.put(MetadataStruct.KEY_MAIN_FIELD_3_TYPE, Test.JSON_TEXTFIELDTYPES);
-			reference.put(MetadataStruct.KEY_MAIN_FIELD_4_TYPE, Test.JSON_TEXTFIELDTYPES);
+			reference.put(MetadataTags.KEY_MAIN_FIELD_1_TYPE, Test.JSON_TEXTFIELDTYPES);
+			reference.put(MetadataTags.KEY_MAIN_FIELD_2_TYPE, Test.JSON_TEXTFIELDTYPES);
+			reference.put(MetadataTags.KEY_MAIN_FIELD_3_TYPE, Test.JSON_TEXTFIELDTYPES);
+			reference.put(MetadataTags.KEY_MAIN_FIELD_4_TYPE, Test.JSON_TEXTFIELDTYPES);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());

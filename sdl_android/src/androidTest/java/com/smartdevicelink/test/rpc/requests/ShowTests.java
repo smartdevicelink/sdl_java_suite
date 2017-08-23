@@ -12,7 +12,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.MetadataStruct;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -43,7 +43,7 @@ public class ShowTests extends BaseRpcTests {
 		msg.setSecondaryGraphic(Test.GENERAL_IMAGE);
 		msg.setCustomPresets(Test.GENERAL_STRING_LIST);
 		msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
-		msg.setTextFieldMetadata(Test.GENERAL_METADATASTRUCT);
+		msg.setMetadataTags(Test.GENERAL_METADATASTRUCT);
 
 		return msg;
 	}
@@ -74,7 +74,7 @@ public class ShowTests extends BaseRpcTests {
 			result.put(Show.KEY_ALIGNMENT, Test.GENERAL_TEXTALIGNMENT);
 			result.put(Show.KEY_CUSTOM_PRESETS, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
 			result.put(Show.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
-			result.put(Show.KEY_TEXT_FIELD_METADATA, Test.GENERAL_METADATASTRUCT.serializeJSON());
+			result.put(Show.KEY_METADATA_TAGS, Test.GENERAL_METADATASTRUCT.serializeJSON());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -95,7 +95,7 @@ public class ShowTests extends BaseRpcTests {
 		TextAlignment    testAlignment     = ( (Show) msg ).getAlignment();
 		List<SoftButton> testSoftButtons   = ( (Show) msg ).getSoftButtons();
 		List<String>     testCustomPresets = ( (Show) msg ).getCustomPresets();
-		MetadataStruct   testMetadata      = ( (Show) msg ).getTextFieldMetadata();
+		MetadataTags testMetadata      = ( (Show) msg ).getMetadataTags();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testTrack);
@@ -127,7 +127,7 @@ public class ShowTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getCustomPresets());
 		assertNull(Test.NULL, msg.getMediaTrack());
 		assertNull(Test.NULL, msg.getSoftButtons());
-		assertNull(Test.NULL, msg.getTextFieldMetadata());
+		assertNull(Test.NULL, msg.getMetadataTags());
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class ShowTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_STATUS_BAR), cmd.getStatusBar());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_ALIGNMENT), cmd.getAlignment().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MEDIA_TRACK), cmd.getMediaTrack());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_TEXT_FIELD_METADATA), cmd.getTextFieldMetadata());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_METADATA_TAGS), cmd.getMetadataTags());
 
 			JSONObject secondaryGraphic = JsonUtils.readJsonObjectFromJsonObject(parameters, Show.KEY_SECONDARY_GRAPHIC);
 			Image referenceSecondaryGraphic = new Image(JsonRPCMarshaller.deserializeJSONObject(secondaryGraphic));

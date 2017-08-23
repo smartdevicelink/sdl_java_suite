@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import com.smartdevicelink.proxy.rpc.enums.TextFieldType;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 
 import junit.framework.TestCase;
 
@@ -11,39 +11,39 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.proxy.rpc.enums.TextFieldName}
+ * {@link com.smartdevicelink.proxy.rpc.MetadataTags}
  */
 
-public class TextFieldTypeTests extends TestCase{
+public class MetadataTypeTests extends TestCase{
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {
 		String example = "MEDIA_TITLE";
-		TextFieldType enumMediaTitle = TextFieldType.valueForString(example);
+		MetadataType enumMediaTitle = MetadataType.valueForString(example);
 		example = "MEDIA_ARTIST";
-		TextFieldType enumMediaArtist = TextFieldType.valueForString(example);
+		MetadataType enumMediaArtist = MetadataType.valueForString(example);
 		example = "MEDIA_ALBUM";
-		TextFieldType enumMediaAlbum = TextFieldType.valueForString(example);
+		MetadataType enumMediaAlbum = MetadataType.valueForString(example);
 		example = "MEDIA_YEAR";
-		TextFieldType enumMediaYear = TextFieldType.valueForString(example);
+		MetadataType enumMediaYear = MetadataType.valueForString(example);
 		example = "MEDIA_GENRE";
-		TextFieldType enumMediaGenre = TextFieldType.valueForString(example);
+		MetadataType enumMediaGenre = MetadataType.valueForString(example);
 		example = "MEDIA_STATION";
-		TextFieldType enumMediaStation = TextFieldType.valueForString(example);
+		MetadataType enumMediaStation = MetadataType.valueForString(example);
 		example = "RATING";
-		TextFieldType enumRating = TextFieldType.valueForString(example);
+		MetadataType enumRating = MetadataType.valueForString(example);
 		example = "CURRENT_TEMPERATURE";
-		TextFieldType enumCurrentTemperature = TextFieldType.valueForString(example);
+		MetadataType enumCurrentTemperature = MetadataType.valueForString(example);
 		example = "MAXIMUM_TEMPERATURE";
-		TextFieldType enumMaximumTemperature = TextFieldType.valueForString(example);
+		MetadataType enumMaximumTemperature = MetadataType.valueForString(example);
 		example = "MINIMUM_TEMPERATURE";
-		TextFieldType enumMinimumTemperature = TextFieldType.valueForString(example);
+		MetadataType enumMinimumTemperature = MetadataType.valueForString(example);
 		example = "WEATHER_TERM";
-		TextFieldType enumWeatherTerm = TextFieldType.valueForString(example);
+		MetadataType enumWeatherTerm = MetadataType.valueForString(example);
 		example = "HUMIDITY";
-		TextFieldType enumHumidity = TextFieldType.valueForString(example);
+		MetadataType enumHumidity = MetadataType.valueForString(example);
 
 
 		assertNotNull("MEDIA_TITLE returned null", enumMediaTitle);
@@ -66,7 +66,7 @@ public class TextFieldTypeTests extends TestCase{
 	public void testInvalidEnum () {
 		String example = "MEDIA_TITLEZ";
 		try {
-			TextFieldType temp = TextFieldType.valueForString(example);
+			MetadataType temp = MetadataType.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
@@ -80,7 +80,7 @@ public class TextFieldTypeTests extends TestCase{
 	public void testNullEnum () {
 		String example = null;
 		try {
-			TextFieldType temp = TextFieldType.valueForString(example);
+			MetadataType temp = MetadataType.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
@@ -89,24 +89,24 @@ public class TextFieldTypeTests extends TestCase{
 	}
 
 	/**
-	 * Verifies the possible enum values of TextFieldType.
+	 * Verifies the possible enum values of MetadataType.
 	 */
 	public void testListEnum() {
-		List<TextFieldType> enumValueList = Arrays.asList(TextFieldType.values());
+		List<MetadataType> enumValueList = Arrays.asList(MetadataType.values());
 
-		List<TextFieldType> enumTestList = new ArrayList<TextFieldType>();
-		enumTestList.add(TextFieldType.MEDIA_TITLE);
-		enumTestList.add(TextFieldType.MEDIA_ARTIST);
-		enumTestList.add(TextFieldType.MEDIA_ALBUM);
-		enumTestList.add(TextFieldType.MEDIA_YEAR);
-		enumTestList.add(TextFieldType.MEDIA_GENRE);
-		enumTestList.add(TextFieldType.MEDIA_STATION);
-		enumTestList.add(TextFieldType.RATING);
-		enumTestList.add(TextFieldType.CURRENT_TEMPERATURE);
-		enumTestList.add(TextFieldType.MAXIMUM_TEMPERATURE);
-		enumTestList.add(TextFieldType.MINIMUM_TEMPERATURE);
-		enumTestList.add(TextFieldType.WEATHER_TERM);
-		enumTestList.add(TextFieldType.HUMIDITY);
+		List<MetadataType> enumTestList = new ArrayList<MetadataType>();
+		enumTestList.add(MetadataType.MEDIA_TITLE);
+		enumTestList.add(MetadataType.MEDIA_ARTIST);
+		enumTestList.add(MetadataType.MEDIA_ALBUM);
+		enumTestList.add(MetadataType.MEDIA_YEAR);
+		enumTestList.add(MetadataType.MEDIA_GENRE);
+		enumTestList.add(MetadataType.MEDIA_STATION);
+		enumTestList.add(MetadataType.RATING);
+		enumTestList.add(MetadataType.CURRENT_TEMPERATURE);
+		enumTestList.add(MetadataType.MAXIMUM_TEMPERATURE);
+		enumTestList.add(MetadataType.MINIMUM_TEMPERATURE);
+		enumTestList.add(MetadataType.WEATHER_TERM);
+		enumTestList.add(MetadataType.HUMIDITY);
 
 		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

@@ -17,7 +17,7 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.MetadataStruct;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -88,7 +88,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldType;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -216,7 +216,7 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
-	public static final MetadataStruct                 GENERAL_METADATASTRUCT                 = new MetadataStruct();
+	public static final MetadataTags GENERAL_METADATASTRUCT                 = new MetadataTags();
 	
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -487,10 +487,10 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 
-		List<TextFieldType> exampleList = new ArrayList<>();
-		exampleList.add(0, TextFieldType.CURRENT_TEMPERATURE);
-		exampleList.add(1, TextFieldType.MEDIA_ALBUM);
-		exampleList.add(2, TextFieldType.MEDIA_ARTIST);
+		List<MetadataType> exampleList = new ArrayList<>();
+		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
+		exampleList.add(1, MetadataType.MEDIA_ALBUM);
+		exampleList.add(2, MetadataType.MEDIA_ARTIST);
 
 		GENERAL_METADATASTRUCT.setMainField1(exampleList);
 		GENERAL_METADATASTRUCT.setMainField2(exampleList);
@@ -649,9 +649,9 @@ public class Test {
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_LONG_LIST));
 			JSON_TOUCHEVENTS.put(JSON_TOUCHEVENT);
 
-			JSON_TEXTFIELDTYPES.put(TextFieldType.CURRENT_TEMPERATURE);
-			JSON_TEXTFIELDTYPES.put(TextFieldType.MEDIA_ALBUM);
-			JSON_TEXTFIELDTYPES.put(TextFieldType.MEDIA_ARTIST);
+			JSON_TEXTFIELDTYPES.put(MetadataType.CURRENT_TEMPERATURE);
+			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ALBUM);
+			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
 			
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

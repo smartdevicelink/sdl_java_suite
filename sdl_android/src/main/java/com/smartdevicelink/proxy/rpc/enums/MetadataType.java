@@ -4,7 +4,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * Defines the metadata types that can be applied to text fields
  *
  */
-public enum TextFieldType {
+public enum MetadataType {
 
 	/**
 	 * The data in this field contains the title of the currently playing audio track.
@@ -71,7 +71,7 @@ public enum TextFieldType {
 	 * @param value String
 	 * @return VehicleDataType
 	 */
-	public static TextFieldType valueForString(String value) {
+	public static MetadataType valueForString(String value) {
 		try{
 			return valueOf(value);
 		}catch(Exception e){

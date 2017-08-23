@@ -164,7 +164,7 @@ public class Show extends RPCRequest {
 	public static final String KEY_MEDIA_TRACK = "mediaTrack";
 	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
-	public static final String KEY_TEXT_FIELD_METADATA = "textFieldMetadata";
+	public static final String KEY_METADATA_TAGS = "metadataTags";
 	/**
 	 * Constructs a new Show object
 	 */
@@ -525,25 +525,25 @@ public class Show extends RPCRequest {
 	/**
 	 * Sets text field metadata defined by the App
 	 *
-	 * @param textFieldMetadata
+	 * @param metadataTags
 	 *            A Struct containing metadata pertaining to the main text fields
 	 *            <p></p>
 	 *            <ul>
 	 * @since SmartDeviceLink 4.4
 	 */
-    public void setTextFieldMetadata(MetadataStruct textFieldMetadata){
-		setParameters(KEY_TEXT_FIELD_METADATA, textFieldMetadata);
+    public void setMetadataTags(MetadataTags textFieldMetadata){
+		setParameters(KEY_METADATA_TAGS, textFieldMetadata);
 	}
 
 	/**
 	 * Gets text field metadata defined by the App
 	 *
-	 * @return MetadataStruct - App defined metadata information. See MetadataStruct. Uses mainField1, mainField2, mainField3, mainField4.
+	 * @return metadataTags - App defined metadata information. See MetadataTags. Uses mainField1, mainField2, mainField3, mainField4.
 	 *			If omitted on supported displays, the currently set metadata tags will not change.
 	 *          If any text field contains no tags or the none tag, the metadata tag for that textfield should be removed.
 	 * @since SmartDeviceLink 4.4
 	 */
-	public MetadataStruct getTextFieldMetadata() {
-		return (MetadataStruct) getObject(MetadataStruct.class, KEY_TEXT_FIELD_METADATA);
+	public MetadataTags getMetadataTags() {
+		return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);
 	}
 }
