@@ -213,7 +213,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 										PackageInfo itPack = packageManager.getPackageInfo(t1.activityInfo.packageName, 0);
 										if (thisPack.lastUpdateTime < itPack.lastUpdateTime) {
 											return -1;
-										} else if (thisPack.lastUpdateTime < itPack.lastUpdateTime) {
+										} else if (thisPack.lastUpdateTime > itPack.lastUpdateTime) {
 											return 1;
 										}
 
