@@ -531,8 +531,8 @@ public class Show extends RPCRequest {
 	 *            <ul>
 	 * @since SmartDeviceLink 4.4
 	 */
-    public void setMetadataTags(MetadataTags textFieldMetadata){
-		setParameters(KEY_METADATA_TAGS, textFieldMetadata);
+    public void setMetadataTags(MetadataTags metadataTags){
+		setParameters(KEY_METADATA_TAGS, metadataTags);
 	}
 
 	/**
