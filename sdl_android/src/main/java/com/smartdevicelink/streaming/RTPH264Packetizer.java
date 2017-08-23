@@ -74,8 +74,14 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	private static final int FU_HEADER_LEN = 1;
 	private static final byte TYPE_FU_A = 28;
 
-	// See StreamPacketizer class. We can only use 1024 as the max buffer size if the service is encrypted.
-	private final static int MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE = 1024;
+	// To align with StreamPacketizer class
+	private final static int TLS_MAX_RECORD_SIZE = 16384;
+	private final static int TLS_RECORD_HEADER_SIZE = 5;
+	private final static int TLS_RECORD_MES_AUTH_CDE_SIZE = 32;
+	private final static int TLS_MAX_RECORD_PADDING_SIZE = 256;
+
+	private final static int MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE =
+			TLS_MAX_RECORD_SIZE - TLS_RECORD_HEADER_SIZE - TLS_RECORD_MES_AUTH_CDE_SIZE- TLS_MAX_RECORD_PADDING_SIZE;
 
 	private boolean mServiceProtected;
 	private Thread mThread;
