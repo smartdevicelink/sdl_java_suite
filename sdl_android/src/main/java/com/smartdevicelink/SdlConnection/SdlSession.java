@@ -54,7 +54,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	SdlEncoder mSdlEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
-	private HashMap<SessionType, ISdlServiceListener> serviceListeners;
+	private HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
 	private VideoStreamingParams desiredVideoParams = null;
 	private VideoStreamingParams acceptedVideoParams = null;
 
@@ -489,7 +489,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			encryptedServices.addIfAbsent(sessionType);
 		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-			serviceListeners.get(sessionType).onServiceStarted(this, sessionType, isEncrypted);
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceStarted(this, sessionType, isEncrypted);
+			}
 		}
 		//if (version == 3)
 			initialiseSession();
@@ -503,7 +506,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			String correlationID) {		
 		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-			serviceListeners.get(sessionType).onServiceEnded(this, sessionType);
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceEnded(this, sessionType);
+			}
 		}
 		encryptedServices.remove(sessionType);
 	}
@@ -548,7 +554,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			byte sessionID, byte version, String correlationID) {
 		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-			serviceListeners.get(sessionType).onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NACK'ed");
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NACK'ed");
+			}
 		}
 	}
 
@@ -557,7 +566,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			byte sessionID, String correlationID) {
 		this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
-			serviceListeners.get(sessionType).onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+			}
 		}
 	}
 
@@ -614,16 +626,27 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return shareConnections.remove(connection);
 	}
 
-	public void setServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+	public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
 		if(serviceListeners == null){
 			serviceListeners = new HashMap<>();
 		}
 		if(serviceType != null && sdlServiceListener != null){
-			serviceListeners.put(serviceType, sdlServiceListener);
+			if(!serviceListeners.containsKey(serviceType)){
+				serviceListeners.put(serviceType,new CopyOnWriteArrayList<ISdlServiceListener>());
+			}
+			serviceListeners.get(serviceType).add(sdlServiceListener);
 		}
 	}
 
-	public HashMap<SessionType, ISdlServiceListener> getServiceListeners(){
+	public boolean removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceListeners!= null && serviceType != null && sdlServiceListener != null && serviceListeners.containsKey(serviceType)){
+			return serviceListeners.get(serviceType).remove(sdlServiceListener);
+		}
+		return false;
+	}
+
+
+	public HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> getServiceListeners(){
 		return serviceListeners;
 	}
 

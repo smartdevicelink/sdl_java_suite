@@ -5580,9 +5580,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sdlSession.isServiceProtected(sType);		
 	}
 
-	public void setServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+	public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
 		if(serviceType != null && sdlSession != null && sdlServiceListener != null){
-			sdlSession.setServiceListener(serviceType, sdlServiceListener);
+			sdlSession.addServiceListener(serviceType, sdlServiceListener);
+		}
+	}
+
+	public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceType != null && sdlSession != null && sdlServiceListener != null){
+			sdlSession.removeServiceListener(serviceType, sdlServiceListener);
 		}
 	}
 
