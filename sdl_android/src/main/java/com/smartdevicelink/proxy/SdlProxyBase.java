@@ -2846,10 +2846,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetSystemCapabilityResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			} else {
+			}
+			else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
+				final SendHapticDataResponse msg = new SendHapticDataResponse(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
+					onRPCResponseReceived(msg);
+				}
+			}
+			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
-							"SDL Message Version = " + _sdlMsgVersion);
+							" SDL Message Version = " + _sdlMsgVersion);
 				} else {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString());
 				}
@@ -3242,22 +3259,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onOnWayPointChange((OnWayPointChange)msg);
 					onRPCNotificationReceived(msg);
-				}
-			}
-			else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
-				final SendHapticDataResponse msg = new SendHapticDataResponse(hash);
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
-							onRPCResponseReceived(msg);
-						}
-					});
-				} else {
-					_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
-					onRPCResponseReceived(msg);
 				}
 			}
 			else {
