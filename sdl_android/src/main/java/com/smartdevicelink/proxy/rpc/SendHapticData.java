@@ -4,6 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
 import java.util.Hashtable;
+import java.util.List;
 
 public class SendHapticData extends RPCRequest {
 	public static final String KEY_HAPTIC_RECT_DATA = "hapticRectData";
@@ -32,12 +33,13 @@ public class SendHapticData extends RPCRequest {
      * When a request is sent, if successful, it will replace all spatial data previously sent through RPC.
 	 * If an empty array is sent, the existing spatial data will be cleared
 	 */
-	public void setHapticRectData(HapticRect hapticRectData) {
+	public void setHapticRectData(List<HapticRect> hapticRectData) {
 		setParameters(KEY_HAPTIC_RECT_DATA, hapticRectData);
 	}
 
-	public HapticRect getHapticRectData() {
-		return (HapticRect) getObject(HapticRect.class, KEY_HAPTIC_RECT_DATA);
+	@SuppressWarnings("unchecked")
+	public List<HapticRect> getHapticRectData() {
+		return (List<HapticRect>) getObject(HapticRect.class, KEY_HAPTIC_RECT_DATA);
 	}
 
 }

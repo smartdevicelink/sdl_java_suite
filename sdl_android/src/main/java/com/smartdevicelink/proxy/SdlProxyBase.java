@@ -3244,6 +3244,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					onRPCNotificationReceived(msg);
 				}
 			}
+			else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
+				final SendHapticDataResponse msg = new SendHapticDataResponse(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
+					onRPCResponseReceived(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName.toString() + 

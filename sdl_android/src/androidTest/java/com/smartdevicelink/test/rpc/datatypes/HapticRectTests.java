@@ -18,7 +18,7 @@ public class HapticRectTests extends TestCase {
 	public void setUp() {
 		msg = new HapticRect();
 
-		msg.setId(Test.GENERAL_STRING);
+		msg.setId(Test.GENERAL_INTEGER);
 		msg.setRect(Test.GENERAL_RECTANGLE);
 	}
 
@@ -27,11 +27,11 @@ public class HapticRectTests extends TestCase {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		String id = msg.getId();
+		Integer id = msg.getId();
 		Rectangle rect = msg.getRect();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, id);
+		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, id);
 		assertEquals(Test.MATCH, Test.GENERAL_RECTANGLE, rect);
 
 		// Invalid/Null Tests

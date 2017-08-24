@@ -11,6 +11,9 @@ import com.smartdevicelink.test.Test;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by brettywhite on 8/9/17.
  */
@@ -22,11 +25,14 @@ public class SendHapticDataTests extends BaseRpcTests {
 	@Override
 	protected RPCMessage createMessage(){
 		hapticRect = new HapticRect();
-		hapticRect.setId(Test.GENERAL_STRING);
+		hapticRect.setId(Test.GENERAL_INTEGER);
 		hapticRect.setRect(Test.GENERAL_RECTANGLE);
 
+		ArrayList<HapticRect> hapticArray = new ArrayList<HapticRect>();
+		hapticArray.add(0,hapticRect);
+
 		SendHapticData msg = new SendHapticData();
-		msg.setHapticRectData(hapticRect);
+		msg.setHapticRectData(hapticArray);
 
 		return msg;
 	}
@@ -59,10 +65,10 @@ public class SendHapticDataTests extends BaseRpcTests {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		HapticRect testSpatialStruct = ((SendHapticData) msg).getHapticRectData();
+		List<HapticRect> hapticArray = ((SendHapticData) msg).getHapticRectData();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, hapticRect, testSpatialStruct);
+		assertEquals(Test.MATCH, hapticRect, hapticArray.get(0));
 		// Invalid/Null Tests
 		SendHapticData msg = new SendHapticData();
 		assertNotNull(Test.NOT_NULL, msg);

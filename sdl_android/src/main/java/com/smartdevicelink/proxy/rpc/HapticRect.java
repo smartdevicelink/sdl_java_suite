@@ -20,12 +20,12 @@ public class HapticRect extends RPCStruct {
 	/**
 	 * A user control spatial identifier
 	 */
-	public void setId(String id) {
+	public void setId(Integer id) {
 		setValue(KEY_ID, id);
 	}
 
-	public String getId() {
-		return getString(KEY_ID);
+	public Integer getId() {
+		return getInteger(KEY_ID);
 	}
 
 	/**
