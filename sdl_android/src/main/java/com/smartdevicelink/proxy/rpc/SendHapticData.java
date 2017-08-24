@@ -25,12 +25,12 @@ public class SendHapticData extends RPCRequest {
 		super(hash);
 	}
 
-	public void setHapticSpatialData(SpatialStruct hapticSpatialData) {
+	public void setHapticSpatialData(Rectangle hapticSpatialData) {
 		setParameters(KEY_HAPTIC_SPATIAL_DATA, hapticSpatialData);
 	}
 
-	public SpatialStruct getHapticSpatialData() {
-		return (SpatialStruct) getObject(SpatialStruct.class, KEY_HAPTIC_SPATIAL_DATA);
+	public Rectangle getHapticSpatialData() {
+		return (Rectangle) getObject(Rectangle.class, KEY_HAPTIC_SPATIAL_DATA);
 	}
 
 }

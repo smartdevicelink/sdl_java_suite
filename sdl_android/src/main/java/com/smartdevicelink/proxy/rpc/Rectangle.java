@@ -5,30 +5,18 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
- * Defines spatial for each user control object for video streaming application
+ * Defines Rectangle for each user control object for video streaming application
  */
 
-public class SpatialStruct extends RPCStruct {
-	public static final String KEY_ID = "id";
+public class Rectangle extends RPCStruct {
 	public static final String KEY_X = "x";
 	public static final String KEY_Y = "y";
 	public static final String KEY_WIDTH = "width";
 	public static final String KEY_HEIGHT = "height";
 
-	public SpatialStruct() {}
-	public SpatialStruct(Hashtable<String, Object> hash) {
+	public Rectangle() {}
+	public Rectangle(Hashtable<String, Object> hash) {
 		super(hash);
-	}
-
-	/**
-	 * A user control spatial identifier
-	 */
-	public void setID(Integer id) {
-		setValue(KEY_ID, id);
-	}
-
-	public Integer getID() {
-		return getInteger(KEY_ID);
 	}
 
 	/**
