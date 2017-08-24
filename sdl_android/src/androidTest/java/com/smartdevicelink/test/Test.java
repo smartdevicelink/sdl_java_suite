@@ -21,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -215,6 +216,7 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
 	
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -483,6 +485,11 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+
+		GENERAL_RECTANGLE.setX(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setY(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setWidth(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setHeight(GENERAL_FLOAT);
         
 		try {	
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

@@ -2,6 +2,7 @@ package com.smartdevicelink.test.rpc.requests;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.test.BaseRpcTests;
@@ -16,18 +17,16 @@ import org.json.JSONObject;
 
 public class SendHapticDataTests extends BaseRpcTests {
 
-	private Rectangle spatialStruct;
+	private HapticRect hapticRect;
 
 	@Override
 	protected RPCMessage createMessage(){
-		spatialStruct = new Rectangle();
-		spatialStruct.setX(Test.GENERAL_FLOAT);
-		spatialStruct.setY(Test.GENERAL_FLOAT);
-		spatialStruct.setWidth(Test.GENERAL_FLOAT);
-		spatialStruct.setHeight(Test.GENERAL_FLOAT);
+		hapticRect = new HapticRect();
+		hapticRect.setId(Test.GENERAL_STRING);
+		hapticRect.setRect(Test.GENERAL_RECTANGLE);
 
 		SendHapticData msg = new SendHapticData();
-		msg.setHapticSpatialData(spatialStruct);
+		msg.setHapticRectData(hapticRect);
 
 		return msg;
 	}
@@ -47,7 +46,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(SendHapticData.KEY_HAPTIC_SPATIAL_DATA, spatialStruct.serializeJSON());
+			result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, hapticRect.serializeJSON());
 		}catch(JSONException e){
 			fail(Test.JSON_FAIL);
 		}
@@ -60,16 +59,16 @@ public class SendHapticDataTests extends BaseRpcTests {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		Rectangle testSpatialStruct = ((SendHapticData) msg).getHapticSpatialData();
+		HapticRect testSpatialStruct = ((SendHapticData) msg).getHapticRectData();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, spatialStruct, testSpatialStruct);
+		assertEquals(Test.MATCH, hapticRect, testSpatialStruct);
 		// Invalid/Null Tests
 		SendHapticData msg = new SendHapticData();
 		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getHapticSpatialData());
+		assertNull(Test.NULL, msg.getHapticRectData());
 	}
 
 }

@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 public class SendHapticData extends RPCRequest {
-	public static final String KEY_HAPTIC_SPATIAL_DATA = "hapticSpatialData";
+	public static final String KEY_HAPTIC_RECT_DATA = "hapticRectData";
 	/**
 	 * Constructs a new SendHapticData object
 	 */
@@ -16,7 +16,8 @@ public class SendHapticData extends RPCRequest {
 
 	/**
 	 * <p>
-	 * Constructs a new SendHapticData object indicated by the Hashtable parameter
+	 * Send the spatial data gathered from SDLCarWindow or VirtualDisplayEncoder to the HMI.
+	 * This data will be utilized by the HMI to determine how and when haptic events should occur
 	 * </p>
 	 *
 	 * @param hash The Hashtable to use
@@ -25,12 +26,18 @@ public class SendHapticData extends RPCRequest {
 		super(hash);
 	}
 
-	public void setHapticSpatialData(Rectangle hapticSpatialData) {
-		setParameters(KEY_HAPTIC_SPATIAL_DATA, hapticSpatialData);
+	/**
+	 * Array of spatial data structures that represent the locations of all user controls present on the HMI.
+	 * This data should be updated if/when the application presents a new screen.
+     * When a request is sent, if successful, it will replace all spatial data previously sent through RPC.
+	 * If an empty array is sent, the existing spatial data will be cleared
+	 */
+	public void setHapticRectData(HapticRect hapticRectData) {
+		setParameters(KEY_HAPTIC_RECT_DATA, hapticRectData);
 	}
 
-	public Rectangle getHapticSpatialData() {
-		return (Rectangle) getObject(Rectangle.class, KEY_HAPTIC_SPATIAL_DATA);
+	public HapticRect getHapticRectData() {
+		return (HapticRect) getObject(HapticRect.class, KEY_HAPTIC_RECT_DATA);
 	}
 
 }

@@ -17,5 +17,25 @@ public class HapticRect extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * A user control spatial identifier
+	 */
+	public void setId(String id) {
+		setValue(KEY_ID, id);
+	}
 
+	public String getId() {
+		return getString(KEY_ID);
+	}
+
+	/**
+	 * The position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
+	 */
+	public void setRect(Rectangle rect) {
+		setValue(KEY_RECT, rect);
+	}
+
+	public Rectangle getRect() {
+		return (Rectangle) getObject(Rectangle.class, KEY_RECT);
+	}
 }
