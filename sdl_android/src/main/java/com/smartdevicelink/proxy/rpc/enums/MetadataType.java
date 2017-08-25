@@ -71,14 +71,14 @@ public enum MetadataType {
 
 	;
 
-	private final String INTERNAL_NAME;
+	private final String internalName;
 
 	private MetadataType(String internalName) {
-		this.INTERNAL_NAME = internalName;
+		this.internalName = internalName;
 	}
 
 	public String toString() {
-		return this.INTERNAL_NAME;
+		return this.internalName;
 	}
 
 	public static MetadataType valueForString(String value) {
