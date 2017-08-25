@@ -59,10 +59,10 @@ public class RectangleTests extends TestCase {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(Rectangle.KEY_X, ((Float) Test.GENERAL_FLOAT));
-			reference.put(Rectangle.KEY_Y, ((Float) Test.GENERAL_FLOAT));
-			reference.put(Rectangle.KEY_WIDTH, ((Float) Test.GENERAL_FLOAT));
-			reference.put(Rectangle.KEY_HEIGHT, ((Float) Test.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_X, (Test.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_Y, (Test.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_WIDTH, (Test.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_HEIGHT, (Test.GENERAL_FLOAT));
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());

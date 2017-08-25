@@ -21,6 +21,7 @@ import java.util.List;
 public class SendHapticDataTests extends BaseRpcTests {
 
 	private HapticRect hapticRect;
+	private ArrayList<HapticRect> hapticArray;
 
 	@Override
 	protected RPCMessage createMessage(){
@@ -28,7 +29,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 		hapticRect.setId(Test.GENERAL_INTEGER);
 		hapticRect.setRect(Test.GENERAL_RECTANGLE);
 
-		ArrayList<HapticRect> hapticArray = new ArrayList<HapticRect>();
+		hapticArray = new ArrayList<HapticRect>();
 		hapticArray.add(0,hapticRect);
 
 		SendHapticData msg = new SendHapticData();
@@ -52,7 +53,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, hapticRect.serializeJSON());
+			result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, hapticArray);
 		}catch(JSONException e){
 			fail(Test.JSON_FAIL);
 		}

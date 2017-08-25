@@ -125,7 +125,7 @@ public class Test {
 	public static final Integer                        GENERAL_INTEGER                        = 100;
 	public static final Long                           GENERAL_LONG                           = 100L;
 	public static final Turn                           GENERAL_TURN                           = new Turn();
-	public static final float                          GENERAL_FLOAT                          = 100f;
+	public static final Float                          GENERAL_FLOAT                          = 100f;
 	public static final Image                          GENERAL_IMAGE                          = new Image();	
 	public static final Choice                         GENERAL_CHOICE                         = new Choice();
 	public static final String                         GENERAL_STRING                         = "test";
