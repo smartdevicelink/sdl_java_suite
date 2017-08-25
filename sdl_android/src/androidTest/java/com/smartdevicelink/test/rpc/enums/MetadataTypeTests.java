@@ -95,18 +95,18 @@ public class MetadataTypeTests extends TestCase{
 		List<MetadataType> enumValueList = Arrays.asList(MetadataType.values());
 
 		List<MetadataType> enumTestList = new ArrayList<MetadataType>();
-		enumTestList.add(MetadataType.mediaTitle);
-		enumTestList.add(MetadataType.mediaArtist);
-		enumTestList.add(MetadataType.mediaAlbum);
-		enumTestList.add(MetadataType.mediaYear);
-		enumTestList.add(MetadataType.mediaGenre);
-		enumTestList.add(MetadataType.mediaStation);
-		enumTestList.add(MetadataType.rating);
-		enumTestList.add(MetadataType.currentTemperature);
-		enumTestList.add(MetadataType.maximumTemperature);
-		enumTestList.add(MetadataType.minimumTemperature);
-		enumTestList.add(MetadataType.weatherTerm);
-		enumTestList.add(MetadataType.humidity);
+		enumTestList.add(MetadataType.MEDIA_TITLE);
+		enumTestList.add(MetadataType.MEDIA_ARTIST);
+		enumTestList.add(MetadataType.MEDIA_ALBUM);
+		enumTestList.add(MetadataType.MEDIA_YEAR);
+		enumTestList.add(MetadataType.MEDIA_GENRE);
+		enumTestList.add(MetadataType.MEDIA_STATION);
+		enumTestList.add(MetadataType.RATING);
+		enumTestList.add(MetadataType.CURRENT_TEMPERATURE);
+		enumTestList.add(MetadataType.MAXIMUM_TEMPERATURE);
+		enumTestList.add(MetadataType.MINIMUM_TEMPERATURE);
+		enumTestList.add(MetadataType.WEATHER_TERM);
+		enumTestList.add(MetadataType.HUMIDITY);
 
 		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

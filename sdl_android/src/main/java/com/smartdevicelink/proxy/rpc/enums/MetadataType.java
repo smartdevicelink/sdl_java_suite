@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+import java.util.EnumSet;
+
 /**
  * Defines the metadata types that can be applied to text fields
  *
@@ -9,76 +11,86 @@ public enum MetadataType {
 	/**
 	 * The data in this field contains the title of the currently playing audio track.
 	 */
-	mediaTitle,
+	MEDIA_TITLE("mediaTitle"),
 
 	/**
 	 * The data in this field contains the artist or creator of the currently playing audio track.
 	 */
-	mediaArtist,
+	MEDIA_ARTIST("mediaArtist"),
 
 	/**
 	 * The data in this field contains the album title of the currently playing audio track.
 	 */
-	mediaAlbum,
+	MEDIA_ALBUM("mediaAlbum"),
 
 	/**
 	 * The data in this field contains the creation year of the currently playing audio track.
 	 */
-	mediaYear,
+	MEDIA_YEAR("mediaYear"),
 
 	/**
 	 * The data in this field contains the genre of the currently playing audio track.
 	 */
-	mediaGenre,
+	MEDIA_GENRE("mediaGenre"),
 
 	/**
 	 * The data in this field contains the name of the current source for the media.
 	 */
-	mediaStation,
+	MEDIA_STATION("mediaStation"),
 
 	/**
 	 * The data in this field is a rating.
 	 */
-	rating,
+	RATING("rating"),
 
 	/**
 	 * The data in this field is the current temperature.
 	 */
-	currentTemperature,
+	CURRENT_TEMPERATURE("currentTemperature"),
 
 	/**
 	 * The data in this field is the maximum temperature for the day.
 	 */
-	maximumTemperature,
+	MAXIMUM_TEMPERATURE("maximumTemperature"),
 
 	/**
 	 * The data in this field is the minimum temperature for the day.
 	 */
-	minimumTemperature,
+	MINIMUM_TEMPERATURE("minimumTemperature"),
 
 	/**
 	 * The data in this field describes the current weather (ex. cloudy, clear, etc.).
 	 */
-	weatherTerm,
+	WEATHER_TERM("weatherTerm"),
 
 	/**
 	 * The data in this field describes the current humidity value.
 	 */
-	humidity,
+	HUMIDITY("humidity"),
 
 
 	;
 
-	/**
-	 * Convert String to VehicleDataType
-	 * @param value String
-	 * @return VehicleDataType
-	 */
+	private final String INTERNAL_NAME;
+
+	private MetadataType(String internalName) {
+		this.INTERNAL_NAME = internalName;
+	}
+
+	public String toString() {
+		return this.INTERNAL_NAME;
+	}
+
 	public static MetadataType valueForString(String value) {
-		try{
-			return valueOf(value);
-		}catch(Exception e){
+		if(value == null){
 			return null;
 		}
+
+		for (MetadataType anEnum : EnumSet.allOf(MetadataType.class)) {
+			if (anEnum.toString().equals(value)) {
+				return anEnum;
+			}
+		}
+		return null;
 	}
 }

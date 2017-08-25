@@ -488,9 +488,9 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 
 		List<MetadataType> exampleList = new ArrayList<>();
-		exampleList.add(0, MetadataType.currentTemperature);
-		exampleList.add(1, MetadataType.mediaAlbum);
-		exampleList.add(2, MetadataType.mediaArtist);
+		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
+		exampleList.add(1, MetadataType.MEDIA_ALBUM);
+		exampleList.add(2, MetadataType.MEDIA_ARTIST);
 
 		GENERAL_METADATASTRUCT.setMainField1(exampleList);
 		GENERAL_METADATASTRUCT.setMainField2(exampleList);
@@ -649,9 +649,9 @@ public class Test {
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_LONG_LIST));
 			JSON_TOUCHEVENTS.put(JSON_TOUCHEVENT);
 
-			JSON_TEXTFIELDTYPES.put(MetadataType.currentTemperature);
-			JSON_TEXTFIELDTYPES.put(MetadataType.mediaAlbum);
-			JSON_TEXTFIELDTYPES.put(MetadataType.mediaArtist);
+			JSON_TEXTFIELDTYPES.put(MetadataType.CURRENT_TEMPERATURE);
+			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ALBUM);
+			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
 			
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);
