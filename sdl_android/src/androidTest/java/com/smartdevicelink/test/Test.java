@@ -11,6 +11,7 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
+import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
@@ -217,6 +218,7 @@ public class Test {
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
+	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -490,6 +492,9 @@ public class Test {
 		GENERAL_RECTANGLE.setY(GENERAL_FLOAT);
 		GENERAL_RECTANGLE.setWidth(GENERAL_FLOAT);
 		GENERAL_RECTANGLE.setHeight(GENERAL_FLOAT);
+
+		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
+		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
         
 		try {	
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

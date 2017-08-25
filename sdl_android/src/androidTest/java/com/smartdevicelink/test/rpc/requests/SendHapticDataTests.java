@@ -1,13 +1,14 @@
 package com.smartdevicelink.test.rpc.requests;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
-import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.Test;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,20 +21,16 @@ import java.util.List;
 
 public class SendHapticDataTests extends BaseRpcTests {
 
-	private HapticRect hapticRect;
-	private ArrayList<HapticRect> hapticArray;
+	private SendHapticData msg;
 
 	@Override
 	protected RPCMessage createMessage(){
-		hapticRect = new HapticRect();
-		hapticRect.setId(Test.GENERAL_INTEGER);
-		hapticRect.setRect(Test.GENERAL_RECTANGLE);
+		msg = new SendHapticData();
 
-		hapticArray = new ArrayList<HapticRect>();
-		hapticArray.add(0,hapticRect);
+		List<HapticRect> list = new ArrayList<>();
+		list.add(Test.GENERAL_HAPTIC_RECT);
 
-		SendHapticData msg = new SendHapticData();
-		msg.setHapticRectData(hapticArray);
+		msg.setHapticRectData(list);
 
 		return msg;
 	}
@@ -52,10 +49,17 @@ public class SendHapticDataTests extends BaseRpcTests {
 	protected JSONObject getExpectedParameters(int sdlVersion){
 		JSONObject result = new JSONObject();
 
-		try{
-			result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, hapticArray);
-		}catch(JSONException e){
-			fail(Test.JSON_FAIL);
+		JSONArray jsonArray = new JSONArray();
+		try {
+			jsonArray.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_HAPTIC_RECT.getStore()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			result.put(SendHapticData.KEY_HAPTIC_RECT_DATA, jsonArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 
 		return result;
@@ -66,10 +70,11 @@ public class SendHapticDataTests extends BaseRpcTests {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		List<HapticRect> hapticArray = ((SendHapticData) msg).getHapticRectData();
+		List<HapticRect> list = msg.getHapticRectData();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, hapticRect, hapticArray.get(0));
+		assertEquals(Test.MATCH, Test.GENERAL_HAPTIC_RECT, list.get(0));
+
 		// Invalid/Null Tests
 		SendHapticData msg = new SendHapticData();
 		assertNotNull(Test.NOT_NULL, msg);
