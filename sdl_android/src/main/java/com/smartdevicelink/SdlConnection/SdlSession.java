@@ -654,7 +654,15 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		this.desiredVideoParams = params;
 	}
 
+	/**
+	 * Returns the currently set desired video streaming parameters. If there haven't been any set,
+	 * the default options will be returned and set for this instance.
+	 * @return
+	 */
 	public VideoStreamingParams getDesiredVideoParams(){
+		if(desiredVideoParams == null){
+			desiredVideoParams = new VideoStreamingParams();
+		}
 		return desiredVideoParams;
 	}
 
