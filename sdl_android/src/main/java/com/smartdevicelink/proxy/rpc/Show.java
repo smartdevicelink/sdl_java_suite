@@ -529,7 +529,7 @@ public class Show extends RPCRequest {
 	 *            A Struct containing metadata pertaining to the main text fields
 	 *            <p></p>
 	 *            <ul>
-	 * @since SmartDeviceLink 4.4
+	 * @since SmartDeviceLink 4.5.0
 	 */
     public void setMetadataTags(MetadataTags metadataTags){
 		setParameters(KEY_METADATA_TAGS, metadataTags);
@@ -541,7 +541,7 @@ public class Show extends RPCRequest {
 	 * @return metadataTags - App defined metadata information. See MetadataTags. Uses mainField1, mainField2, mainField3, mainField4.
 	 *			If omitted on supported displays, the currently set metadata tags will not change.
 	 *          If any text field contains no tags or the none tag, the metadata tag for that textfield should be removed.
-	 * @since SmartDeviceLink 4.4
+	 * @since SmartDeviceLink 4.5.0
 	 */
 	public MetadataTags getMetadataTags() {
 		return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);

@@ -64,7 +64,10 @@ public enum MetadataType {
 	/**
 	 * The data in this field describes the current humidity value.
 	 */
-	humidity;
+	humidity,
+
+
+	;
 
 	/**
 	 * Convert String to VehicleDataType
