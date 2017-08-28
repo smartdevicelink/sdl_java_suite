@@ -337,9 +337,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					RPCProtectedServiceStarted();
 				}
 			} else if (sessionType.eq(SessionType.NAV)) {
-				NavServiceStarted(isEncrypted);
+				NavServiceStarted();
 			} else if (sessionType.eq(SessionType.PCM)) {
-				AudioServiceStarted(isEncrypted);
+				AudioServiceStarted();
 			} else if (sessionType.eq(SessionType.RPC)){
 				cycleProxy(SdlDisconnectedReason.RPC_SESSION_ENDED);
 			}
@@ -3822,7 +3822,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         sdlSession.drainEncoder(endOfStream);
     }
 	
-	private void NavServiceStarted(boolean isEncrypted) {
+	private void NavServiceStarted() {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = true;
 	}
@@ -3832,7 +3832,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponse = false;
 	}
 	
-    private void AudioServiceStarted(boolean isEncrypted) {
+    private void AudioServiceStarted() {
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = true;
 	}
