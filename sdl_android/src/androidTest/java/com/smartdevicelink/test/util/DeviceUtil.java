@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.util;
 
 import android.os.Build;
-import android.util.Log;
 
 public class DeviceUtil {
     public static boolean isEmulator() {
