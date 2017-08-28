@@ -9,7 +9,12 @@ import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.ImageResolution;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
@@ -468,6 +473,20 @@ public class WiProProtocol extends AbstractProtocol {
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
 						}
+					}else if(serviceType.equals(SessionType.NAV)){
+						SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
+						if(session != null) {
+							ImageResolution acceptedResolution = new ImageResolution();
+							VideoStreamingFormat acceptedFormat = new VideoStreamingFormat();
+							acceptedResolution.setResolutionHeight((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.HEIGHT));
+							acceptedResolution.setResolutionWidth((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.WIDTH));
+							acceptedFormat.setCodec(VideoStreamingCodec.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC)));
+							acceptedFormat.setProtocol(VideoStreamingProtocol.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL)));
+							VideoStreamingParams agreedVideoParams = session.getDesiredVideoParams();
+							agreedVideoParams.setResolution(acceptedResolution);
+							agreedVideoParams.setFormat(acceptedFormat);
+							session.setAcceptedVideoParams(agreedVideoParams);
+						}
 					}
 				}else{
 					if (protocolVersion.getMajor() > 1){
@@ -575,7 +594,19 @@ public class WiProProtocol extends AbstractProtocol {
 	public void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
 		if(sessionType.equals(SessionType.NAV)){
-			// TODO: Add bson tags for video service
+			SdlSession videoSession = sdlconn.findSessionById(sessionID);
+			if(videoSession != null){
+				ImageResolution desiredResolution = videoSession.getDesiredVideoParams().getResolution();
+				VideoStreamingFormat desiredFormat = videoSession.getDesiredVideoParams().getFormat();
+				if(desiredResolution != null){
+					header.putTag(ControlFrameTags.Video.StartService.WIDTH, desiredResolution.getResolutionWidth());
+					header.putTag(ControlFrameTags.Video.StartService.HEIGHT, desiredResolution.getResolutionHeight());
+				}
+				if(desiredFormat != null){
+					header.putTag(ControlFrameTags.Video.StartService.VIDEO_CODEC, desiredFormat.getCodec().toString());
+					header.putTag(ControlFrameTags.Video.StartService.VIDEO_PROTOCOL, desiredFormat.getProtocol().toString());
+				}
+			}
 		}
 		handlePacketToSend(header);
 	}
