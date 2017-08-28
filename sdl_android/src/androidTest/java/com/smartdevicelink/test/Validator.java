@@ -217,6 +217,13 @@ public class Validator{
             return false;
         }
 
+        if(image1.isTemplateImage() != image2.isTemplateImage()){
+            log("validateImage",
+                    "image1 type \"" + image1.isTemplateImage() + "\" didn't match image2 type \"" + image2.isTemplateImage()
+                            + "\".");
+            return false;
+        }
+
         return true;
     }
 

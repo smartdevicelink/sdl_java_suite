@@ -3909,7 +3909,63 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		sendRPCRequest(msg);
 	}
-	
+
+	/**
+	 *Sends an AddCommand RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 *@param commandID -Unique command ID of the command to add.
+	 *@param menuText  -Menu text for optional sub value containing menu parameters.
+	 *@param parentID  -Menu parent ID for optional sub value containing menu parameters.
+	 *@param position  -Menu position for optional sub value containing menu parameters.
+	 *@param vrCommands -VR synonyms for this AddCommand.
+	 *@param cmdIcon - Describes the image of Command.
+	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
+	 *@throws SdlException
+	 */
+	public void addCommand(Integer commandID,
+						   String menuText, Integer parentID, Integer position,
+						   Vector<String> vrCommands, Image cmdIcon, Integer correlationID)
+			throws SdlException {
+
+		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
+				vrCommands, cmdIcon, correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+	/**
+	 *Sends an AddCommand RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 *@param commandID -Unique command ID of the command to add.
+	 *@param menuText  -Menu text for optional sub value containing menu parameters.
+	 *@param parentID  -Menu parent ID for optional sub value containing menu parameters.
+	 *@param position  -Menu position for optional sub value containing menu parameters.
+	 *@param vrCommands -VR synonyms for this AddCommand.
+	 *@param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
+	 *@param IconType -Describes whether the image is static or dynamic
+	 *@param isIconTemplateImage -True if image is template image, else false
+	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
+	 *@throws SdlException
+	 */
+	public void addCommand(Integer commandID,
+						   String menuText, Integer parentID, Integer position,
+						   Vector<String> vrCommands, String IconValue, ImageType IconType,
+						   Boolean isIconTemplateImage, Integer correlationID)
+			throws SdlException {
+		Image cmdIcon = null;
+
+		if (IconValue != null && IconType != null)
+		{
+			cmdIcon = new Image();
+			cmdIcon.setValue(IconValue);
+			cmdIcon.setImageType(IconType);
+		}
+
+		cmdIcon.setTemplateImage(isIconTemplateImage);
+
+		addCommand(commandID,menuText,parentID,position,vrCommands,cmdIcon,correlationID);
+	}
+
 	/**
 	 *Sends an AddCommand RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 *
@@ -3929,7 +3985,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		addCommand(commandID, menuText, null, position, vrCommands, IconValue, IconType, correlationID);
 	}
-	
+
+	/**
+	 *Sends an AddCommand RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 *@param commandID -Unique command ID of the command to add.
+	 *@param menuText -Menu text for optional sub value containing menu parameters.
+	 *@param position -Menu position for optional sub value containing menu parameters.
+	 *@param vrCommands -VR synonyms for this AddCommand.
+	 *@param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
+	 *@param IconType -Describes whether the image is static or dynamic
+	 *@param isIconTemplateImage -True if image is template image, else false
+	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
+	 *@throws SdlException
+	 */
+	public void addCommand(Integer commandID,
+						   String menuText, Integer position,
+						   Vector<String> vrCommands, String IconValue, ImageType IconType,
+						   Boolean isIconTemplateImage,Integer correlationID)
+			throws SdlException {
+
+		addCommand(commandID, menuText, null, position, vrCommands, IconValue, IconType, isIconTemplateImage,correlationID);
+	}
+
 	/**
 	 *Sends an AddCommand RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 *

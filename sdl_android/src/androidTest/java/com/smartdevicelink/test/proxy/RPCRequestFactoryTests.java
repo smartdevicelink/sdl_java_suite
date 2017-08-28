@@ -455,6 +455,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		Image image = new Image();
 		image.setValue("value");
 		image.setImageType(ImageType.DYNAMIC);
+		image.setTemplateImage(true);
 		testItem.setImage(image);
 		testVrHelpItems.add(testItem);
 		testCSIDs = new Vector<Integer>();
@@ -748,6 +749,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		Image testGraphic = new Image();
 		testGraphic.setImageType(ImageType.STATIC);
 		testGraphic.setValue("test");
+		testGraphic.setTemplateImage(false);
 		String testText1 = "test1", testText2 = "test2", testText3 = "test3", testText4 = "test4", testStatusBar = "status", testMediaClock = "media", testMediaTrack = "track";
 		Vector<SoftButton> testSoftButtons = new Vector<SoftButton>();
 		testSoftButtons.add(new SoftButton());
