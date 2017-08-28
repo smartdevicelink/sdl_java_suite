@@ -29,7 +29,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
  * 		<tr>
  * 			<td>imageType</td>
  * 			<td>ImageType</td>
- * 			<td>Describes, whether it is a static or dynamic image.</td>
+ * 			<td>Describes, whether it is a static or dynamic image & template image.</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
@@ -38,12 +38,27 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 public class Image extends RPCStruct {
 	public static final String KEY_VALUE = "value";
 	public static final String KEY_IMAGE_TYPE = "imageType";
+    	public static final String KEY_IS_TEMPLATE_IMAGE = "isTemplate";
 
 	/**
 	 * Constructs a newly allocated Image object
 	 */
     public Image() { }
-    
+
+    /**
+     * Constructs a newly allocated Image object
+     */
+    public Image(String imageValue, ImageType imageType, Boolean isTemplateImage)
+            throws IllegalArgumentException{
+        if (null == imageValue || null == imageType)
+        {
+            throw new IllegalArgumentException("imageValue or imageType cannot be null.");
+        }
+        setValue(imageValue);
+        setImageType(imageType);
+        setTemplateImage(isTemplateImage);
+    }
+
     /**
      * Constructs a newly allocated Image object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
@@ -96,5 +111,23 @@ public class Image extends RPCStruct {
         	return ImageType.valueForString((String) obj);
         }
         return null;
+    }
+
+    /**
+     * set either the image is template image
+     * @param value Should be true if image is template image else false.
+     */
+    public void setTemplateImage(Boolean value) {
+        if (value != null){
+            store.put(KEY_IS_TEMPLATE_IMAGE, value);
+        }
+    }
+
+    /**
+     * get either the image is template image
+     * @return  True if template image else false
+     */
+    public Boolean isTemplateImage () {
+        return (Boolean) store.get(KEY_IS_TEMPLATE_IMAGE);
     }
 }
