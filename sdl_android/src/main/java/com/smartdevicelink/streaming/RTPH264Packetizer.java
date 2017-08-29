@@ -303,31 +303,31 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 			return;
 		}
 
-		ByteBuffer nalu;
+		ByteBuffer nalUnit;
 
-		while ((nalu = nalUnitReader.getNalUnit()) != null) {
+		while ((nalUnit = nalUnitReader.getNalUnit()) != null) {
 			if (mWaitForIDR) {
-				if (isIDR(nalu)) {
+				if (isIDR(nalUnit)) {
 					mWaitForIDR = false;
 				} else {
 					continue;
 				}
 			}
-			outputRTPFrames(nalu, ptsInUs, nalUnitReader.hasConsumedAll());
+			outputRTPFrames(nalUnit, ptsInUs, nalUnitReader.hasConsumedAll());
 		}
 	}
 
-	private boolean outputRTPFrames(ByteBuffer nalu, long ptsInUs, boolean isLast) {
-		if (RTP_HEADER_LEN + nalu.remaining() > MAX_RTP_PACKET_SIZE) {
+	private boolean outputRTPFrames(ByteBuffer nalUnit, long ptsInUs, boolean isLast) {
+		if (RTP_HEADER_LEN + nalUnit.remaining() > MAX_RTP_PACKET_SIZE) {
 			// Split into multiple Fragmentation Units ([5.8] in RFC 6184)
-			byte firstByte = nalu.get();
+			byte firstByte = nalUnit.get();
 			boolean firstFragment = true;
 			boolean lastFragment = false;
 
-			while (nalu.remaining() > 0) {
+			while (nalUnit.remaining() > 0) {
 				int payloadLength = MAX_RTP_PACKET_SIZE - (RTP_HEADER_LEN + FU_INDICATOR_LEN + FU_HEADER_LEN);
-				if (nalu.remaining() <= payloadLength) {
-					payloadLength = nalu.remaining();
+				if (nalUnit.remaining() <= payloadLength) {
+					payloadLength = nalUnit.remaining();
 					lastFragment = true;
 				}
 
@@ -338,8 +338,8 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 				// FU header
 				frame.put((byte)((firstFragment ? 0x80 : lastFragment ? 0x40 : 0) | (firstByte & 0x1F)));
 				// FU payload
-				frame.put(nalu.array(), nalu.position(), payloadLength);
-				nalu.position(nalu.position() + payloadLength);
+				frame.put(nalUnit.array(), nalUnit.position(), payloadLength);
+				nalUnit.position(nalUnit.position() + payloadLength);
 				frame.flip();
 
 				try {
@@ -353,8 +353,8 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 			}
 		} else {
 			// Use Single NAL Unit Packet ([5.6] in RFC 6184)
-			ByteBuffer frame = allocateRTPFrame(nalu.remaining(), false, isLast, ptsInUs);
-			frame.put(nalu);
+			ByteBuffer frame = allocateRTPFrame(nalUnit.remaining(), false, isLast, ptsInUs);
+			frame.put(nalUnit);
 			frame.flip();
 
 			try {
@@ -395,11 +395,11 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 		return frame;
 	}
 
-	private static boolean isIDR(ByteBuffer nalu) {
-		assert nalu != null;
-		assert nalu.hasRemaining();
+	private static boolean isIDR(ByteBuffer nalUnit) {
+		assert nalUnit != null;
+		assert nalUnit.hasRemaining();
 
-		byte nalUnitType = (byte)(nalu.get(nalu.position()) & 0x1F);
+		byte nalUnitType = (byte)(nalUnit.get(nalUnit.position()) & 0x1F);
 		return nalUnitType == 5;
 	}
 
@@ -408,13 +408,13 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	static {
 		// Sunday's quick search algorithm is used to find the start code.
 		// Prepare the table (SKIP_TABLE[0] = 2, SKIP_TABLE[1] = 1 and other elements will be 4).
-		byte[] NALU_START_CODE = {0, 0, 1};
-		int searchStringLen = NALU_START_CODE.length;
+		byte[] NAL_UNIT_START_CODE = {0, 0, 1};
+		int searchStringLen = NAL_UNIT_START_CODE.length;
 		for (int i = 0; i < SKIP_TABLE.length; i++) {
 			SKIP_TABLE[i] = searchStringLen + 1;
 		}
 		for (int i = 0; i < searchStringLen; i++) {
-			SKIP_TABLE[NALU_START_CODE[i] & 0xFF] = searchStringLen - i;
+			SKIP_TABLE[NAL_UNIT_START_CODE[i] & 0xFF] = searchStringLen - i;
 		}
 	}
 

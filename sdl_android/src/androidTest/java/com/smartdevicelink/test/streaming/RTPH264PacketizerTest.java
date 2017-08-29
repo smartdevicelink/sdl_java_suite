@@ -60,26 +60,26 @@ public class RTPH264PacketizerTest extends TestCase {
 	private static final byte WIPRO_VERSION = 0x0B;
 	private static final byte SESSION_ID = 0x0A;
 
-	private class ByteStreamNALU {
+	private class ByteStreamNALUnit {
 		byte[] startCode;
-		byte[] nalu;
+		byte[] nalUnit;
 		int frameNum;
 
-		ByteStreamNALU(byte[] startCode, byte[] nalu, int frameNum) {
+		ByteStreamNALUnit(byte[] startCode, byte[] nalUnit, int frameNum) {
 			this.startCode = startCode;
-			this.nalu = nalu;
+			this.nalUnit = nalUnit;
 			this.frameNum = frameNum;
 		}
 
 		byte[] createArray() {
-			byte[] array = new byte[startCode.length + nalu.length];
+			byte[] array = new byte[startCode.length + nalUnit.length];
 			System.arraycopy(startCode, 0, array, 0, startCode.length);
-			System.arraycopy(nalu, 0, array, startCode.length, nalu.length);
+			System.arraycopy(nalUnit, 0, array, startCode.length, nalUnit.length);
 			return array;
 		}
 
 		public int getLength() {
-			return startCode.length + nalu.length;
+			return startCode.length + nalUnit.length;
 		}
 	}
 
@@ -87,60 +87,60 @@ public class RTPH264PacketizerTest extends TestCase {
 	private static final byte[] START_CODE_4 = {0x00, 0x00, 0x00, 0x01};
 
 	/* a sample H.264 stream, including 33 frames of 16px white square */
-	private final ByteStreamNALU[] SAMPLE_STREAM = new ByteStreamNALU[] {
+	private final ByteStreamNALUnit[] SAMPLE_STREAM = new ByteStreamNALUnit[] {
 		// SPS
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x67, 0x42, (byte)0xC0, 0x0A, (byte)0xA6, 0x11, 0x11, (byte)0xE8,
-		                                            0x40, 0x00, 0x00, (byte)0xFA, 0x40, 0x00, 0x3A, (byte)0x98,
-		                                            0x23, (byte)0xC4, (byte)0x89, (byte)0x84, 0x60}, 0),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x67, 0x42, (byte)0xC0, 0x0A, (byte)0xA6, 0x11, 0x11, (byte)0xE8,
+		                                               0x40, 0x00, 0x00, (byte)0xFA, 0x40, 0x00, 0x3A, (byte)0x98,
+		                                               0x23, (byte)0xC4, (byte)0x89, (byte)0x84, 0x60}, 0),
 		// PPS
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x68, (byte)0xC8, 0x42, 0x0F, 0x13, 0x20}, 0),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x68, (byte)0xC8, 0x42, 0x0F, 0x13, 0x20}, 0),
 		// I
-		new ByteStreamNALU(START_CODE_3, new byte[]{0x65, (byte)0x88, (byte)0x82, 0x07, 0x67, 0x39, 0x31, 0x40,
-		                                            0x00, 0x5E, 0x0A, (byte)0xFB, (byte)0xEF, (byte)0xAE, (byte)0xBA, (byte)0xEB,
-		                                            (byte)0xAE, (byte)0xBA, (byte)0xEB, (byte)0xC0}, 0),
+		new ByteStreamNALUnit(START_CODE_3, new byte[]{0x65, (byte)0x88, (byte)0x82, 0x07, 0x67, 0x39, 0x31, 0x40,
+		                                               0x00, 0x5E, 0x0A, (byte)0xFB, (byte)0xEF, (byte)0xAE, (byte)0xBA, (byte)0xEB,
+		                                               (byte)0xAE, (byte)0xBA, (byte)0xEB, (byte)0xC0}, 0),
 		// P
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x1C, 0x0E, (byte)0xCE, 0x71, (byte)0xB0}, 1),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x2A, 0x03, (byte)0xB3, (byte)0x9C, 0x6C}, 2),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x3B, 0x03, (byte)0xB3, (byte)0x9C, 0x6C}, 3),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x49, 0x00, (byte)0xEC, (byte)0xE7, 0x1B}, 4),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x59, 0x40, (byte)0xEC, (byte)0xE7, 0x1B}, 5),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x69, (byte)0x80, (byte)0xEC, (byte)0xE7, 0x1B}, 6),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x79, (byte)0xC0, (byte)0xEC, (byte)0xE7, 0x1B}, 7),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0x88, (byte)0x80, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 8),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0x98, (byte)0x90, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 9),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xA8, (byte)0xA0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 10),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xB8, (byte)0xB0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 11),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xC8, (byte)0xC0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 12),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xD8, (byte)0xD0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 13),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xE8, (byte)0xE0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 14),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xF8, (byte)0xF0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 15),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x00, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 16),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x10, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 17),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x20, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 18),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x30, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 19),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x40, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 20),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x50, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 21),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x60, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 22),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x70, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 23),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0x80, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 24),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0x90, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 25),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xA0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 26),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xB0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 27),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xC0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 28),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xD0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 29),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x1C, 0x0E, (byte)0xCE, 0x71, (byte)0xB0}, 1),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x2A, 0x03, (byte)0xB3, (byte)0x9C, 0x6C}, 2),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x3B, 0x03, (byte)0xB3, (byte)0x9C, 0x6C}, 3),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x49, 0x00, (byte)0xEC, (byte)0xE7, 0x1B}, 4),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x59, 0x40, (byte)0xEC, (byte)0xE7, 0x1B}, 5),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x69, (byte)0x80, (byte)0xEC, (byte)0xE7, 0x1B}, 6),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x79, (byte)0xC0, (byte)0xEC, (byte)0xE7, 0x1B}, 7),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0x88, (byte)0x80, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 8),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0x98, (byte)0x90, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 9),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xA8, (byte)0xA0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 10),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xB8, (byte)0xB0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 11),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xC8, (byte)0xC0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 12),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xD8, (byte)0xD0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 13),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xE8, (byte)0xE0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 14),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, (byte)0xF8, (byte)0xF0, 0x3B, 0x39, (byte)0xC6, (byte)0xC0}, 15),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x00, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 16),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x10, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 17),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x20, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 18),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x30, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 19),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x40, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 20),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x50, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 21),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x60, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 22),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, 0x70, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 23),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0x80, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 24),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0x90, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 25),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xA0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 26),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xB0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 27),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xC0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 28),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9B, (byte)0xD0, 0x1D, (byte)0x9C, (byte)0xE3, 0x60}, 29),
 		// SPS
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x67, 0x42, (byte)0xC0, 0x0A, (byte)0xA6, 0x11, 0x11, (byte)0xE8,
-		                                            0x40, 0x00, 0x00, (byte)0xFA, 0x40, 0x00, 0x3A, (byte)0x98,
-		                                            0x23, (byte)0xC4, (byte)0x89, (byte)0x84, 0x60}, 30),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x67, 0x42, (byte)0xC0, 0x0A, (byte)0xA6, 0x11, 0x11, (byte)0xE8,
+		                                               0x40, 0x00, 0x00, (byte)0xFA, 0x40, 0x00, 0x3A, (byte)0x98,
+		                                               0x23, (byte)0xC4, (byte)0x89, (byte)0x84, 0x60}, 30),
 		// PPS
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x68, (byte)0xC8, 0x42, 0x0F, 0x13, 0x20}, 30),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x68, (byte)0xC8, 0x42, 0x0F, 0x13, 0x20}, 30),
 		// I
-		new ByteStreamNALU(START_CODE_3, new byte[]{0x65, (byte)0x88, (byte)0x81, 0x00, (byte)0x8E, 0x73, (byte)0x93, 0x14,
-		                                            0x00, 0x06, (byte)0xA4, 0x2F, (byte)0xBE, (byte)0xFA, (byte)0xEB, (byte)0xAE,
-		                                            (byte)0xBA, (byte)0xEB, (byte)0xAE, (byte)0xBC}, 30),
+		new ByteStreamNALUnit(START_CODE_3, new byte[]{0x65, (byte)0x88, (byte)0x81, 0x00, (byte)0x8E, 0x73, (byte)0x93, 0x14,
+		                                               0x00, 0x06, (byte)0xA4, 0x2F, (byte)0xBE, (byte)0xFA, (byte)0xEB, (byte)0xAE,
+		                                               (byte)0xBA, (byte)0xEB, (byte)0xAE, (byte)0xBC}, 30),
 		// P
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x1C, 0x0D, (byte)0xCE, 0x71, (byte)0xB0}, 31),
-		new ByteStreamNALU(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x2A, 0x03, 0x33, (byte)0x9C, 0x6C}, 32),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x1C, 0x0D, (byte)0xCE, 0x71, (byte)0xB0}, 31),
+		new ByteStreamNALUnit(START_CODE_4, new byte[]{0x41, (byte)0x9A, 0x2A, 0x03, 0x33, (byte)0x9C, 0x6C}, 32),
 	};
 
 	/**
@@ -207,26 +207,26 @@ public class RTPH264PacketizerTest extends TestCase {
 	 * Test for creating Fragmentation Units from H.264 byte stream
 	 */
 	public void testFragmentationUnits() {
-		ByteStreamNALU[] stream = new ByteStreamNALU[] {
+		ByteStreamNALUnit[] stream = new ByteStreamNALUnit[] {
 			SAMPLE_STREAM[0], SAMPLE_STREAM[1], null, null, null, SAMPLE_STREAM[5]
 		};
-		byte[] fakeNALU1 = new byte[65535 - RTP_HEADER_LEN];  // not fragmented
-		byte[] fakeNALU2 = new byte[65536 - RTP_HEADER_LEN];  // will be fragmented
-		byte[] fakeNALU3 = new byte[65537 - RTP_HEADER_LEN];  // ditto
+		byte[] fakeNALUnit1 = new byte[65535 - RTP_HEADER_LEN];  // not fragmented
+		byte[] fakeNALUnit2 = new byte[65536 - RTP_HEADER_LEN];  // will be fragmented
+		byte[] fakeNALUnit3 = new byte[65537 - RTP_HEADER_LEN];  // ditto
 
-		for (int i = 0; i < fakeNALU1.length; i++) {
-			fakeNALU1[i] = (byte)(i % 256);
+		for (int i = 0; i < fakeNALUnit1.length; i++) {
+			fakeNALUnit1[i] = (byte)(i % 256);
 		}
-		for (int i = 0; i < fakeNALU2.length; i++) {
-			fakeNALU2[i] = (byte)(i % 256);
+		for (int i = 0; i < fakeNALUnit2.length; i++) {
+			fakeNALUnit2[i] = (byte)(i % 256);
 		}
-		for (int i = 0; i < fakeNALU3.length; i++) {
-			fakeNALU3[i] = (byte)(i % 256);
+		for (int i = 0; i < fakeNALUnit3.length; i++) {
+			fakeNALUnit3[i] = (byte)(i % 256);
 		}
 
-		stream[2] = new ByteStreamNALU(START_CODE_3, fakeNALU1, 0);
-		stream[3] = new ByteStreamNALU(START_CODE_4, fakeNALU2, 1);
-		stream[4] = new ByteStreamNALU(START_CODE_4, fakeNALU3, 2);
+		stream[2] = new ByteStreamNALUnit(START_CODE_3, fakeNALUnit1, 0);
+		stream[3] = new ByteStreamNALUnit(START_CODE_4, fakeNALUnit2, 1);
+		stream[4] = new ByteStreamNALUnit(START_CODE_4, fakeNALUnit3, 2);
 
 		StreamVerifier verifier = new StreamVerifier(stream);
 		SdlSession session = createTestSession();
@@ -257,9 +257,9 @@ public class RTPH264PacketizerTest extends TestCase {
 	 * Test for RTP sequence number gets wrap-around correctly
 	 */
 	public void testSequenceNumWrapAround() {
-		ByteStreamNALU[] stream = new ByteStreamNALU[70000];
+		ByteStreamNALUnit[] stream = new ByteStreamNALUnit[70000];
 		for (int i = 0; i < stream.length; i++) {
-			stream[i] = new ByteStreamNALU(START_CODE_4, SAMPLE_STREAM[3].nalu, i);
+			stream[i] = new ByteStreamNALUnit(START_CODE_4, SAMPLE_STREAM[3].nalUnit, i);
 		}
 
 		StreamVerifier verifier = new StreamVerifier(stream);
@@ -357,9 +357,9 @@ public class RTPH264PacketizerTest extends TestCase {
 	public void testPauseResume() {
 		int index = 0;
 		// split SAMPLE_STREAM into three parts
-		ByteStreamNALU[] inputStream1 = new ByteStreamNALU[8];
-		ByteStreamNALU[] inputStream2 = new ByteStreamNALU[19];
-		ByteStreamNALU[] inputStream3 = new ByteStreamNALU[10];
+		ByteStreamNALUnit[] inputStream1 = new ByteStreamNALUnit[8];
+		ByteStreamNALUnit[] inputStream2 = new ByteStreamNALUnit[19];
+		ByteStreamNALUnit[] inputStream3 = new ByteStreamNALUnit[10];
 		for (int i = 0; i < inputStream1.length; i++) {
 			inputStream1[i] = SAMPLE_STREAM[index++];
 		}
@@ -372,7 +372,7 @@ public class RTPH264PacketizerTest extends TestCase {
 
 		index = 0;
 		// expected output is "all NAL units in inputStream1" plus "I frame and onwards in inputStream3"
-		ByteStreamNALU[] expectedStream = new ByteStreamNALU[inputStream1.length + 3];
+		ByteStreamNALUnit[] expectedStream = new ByteStreamNALUnit[inputStream1.length + 3];
 		for (int i = 0; i < inputStream1.length; i++) {
 			expectedStream[index++] = inputStream1[i];
 		}
@@ -429,15 +429,15 @@ public class RTPH264PacketizerTest extends TestCase {
 		private static final int STATE_LENGTH = 0;
 		private static final int STATE_PACKET = 1;
 
-		private ByteStreamNALU[] mStream;
-		private byte[] mExpectedNALU;
+		private ByteStreamNALUnit[] mStream;
+		private byte[] mExpectedNALUnit;
 		private ByteBuffer mReceiveBuffer;
 		private int mPacketLen;
 		private int mState;
 		private int mNALCount;
 		private int mTotalPacketCount;
 		private boolean mFragmented;
-		private int mOffsetInNALU;
+		private int mOffsetInNALUnit;
 		private byte mPayloadType;
 		private boolean mVerifySSRC;
 		private int mExpectedSSRC;
@@ -445,11 +445,11 @@ public class RTPH264PacketizerTest extends TestCase {
 		private short mFirstSequenceNum;
 		private int mFirstTimestamp;
 
-		StreamVerifier(ByteStreamNALU[] stream) {
+		StreamVerifier(ByteStreamNALUnit[] stream) {
 			this(stream, (byte)96);
 		}
 
-		StreamVerifier(ByteStreamNALU[] stream, byte payloadType) {
+		StreamVerifier(ByteStreamNALUnit[] stream, byte payloadType) {
 			mStream = stream;
 			mReceiveBuffer = ByteBuffer.allocate(256 * 1024);
 			mReceiveBuffer.order(ByteOrder.BIG_ENDIAN);
@@ -459,7 +459,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			mNALCount = 0;
 			mTotalPacketCount = 0;
 			mFragmented = false;
-			mOffsetInNALU = 1; // Used when verifying FUs. The first byte is skipped.
+			mOffsetInNALUnit = 1; // Used when verifying FUs. The first byte is skipped.
 
 			mPayloadType = payloadType;
 			mVerifySSRC = false;
@@ -480,7 +480,7 @@ public class RTPH264PacketizerTest extends TestCase {
 
 		@Override
 		public void sendStreamPacket(ProtocolMessage pm) {
-			mExpectedNALU = mStream[mNALCount].nalu;
+			mExpectedNALUnit = mStream[mNALCount].nalUnit;
 			// should be same as MockEncoder's configuration (29.97 FPS)
 			int expectedPTSDelta = mStream[mNALCount].frameNum * 1001 * 3;
 			boolean isLast = shouldBeLast();
@@ -586,11 +586,11 @@ public class RTPH264PacketizerTest extends TestCase {
 
 		private void verifySingleFrame(byte[] packet) {
 			assertEquals(true, arrayCompare(packet, RTP_HEADER_LEN, packet.length - RTP_HEADER_LEN,
-			                                mExpectedNALU, 0, mExpectedNALU.length));
+			                                mExpectedNALUnit, 0, mExpectedNALUnit.length));
 		}
 
 		private boolean verifyFUTypeA(byte[] packet) {
-			int firstByte = mExpectedNALU[0] & 0xFF;
+			int firstByte = mExpectedNALUnit[0] & 0xFF;
 
 			int byte0 = packet[RTP_HEADER_LEN] & 0xFF;
 			assertEquals((byte)((firstByte >> 7) & 1), (byte)((byte0 >> 7) & 1));   // F bit
@@ -604,8 +604,8 @@ public class RTPH264PacketizerTest extends TestCase {
 			assertEquals((byte)(firstByte & 0x1F), (byte)(byte1 & 0x1F));   // Type
 
 			int len = packet.length - (RTP_HEADER_LEN + 2);
-			assertEquals(true, arrayCompare(packet, RTP_HEADER_LEN + 2, len, mExpectedNALU, mOffsetInNALU, len));
-			mOffsetInNALU += len;
+			assertEquals(true, arrayCompare(packet, RTP_HEADER_LEN + 2, len, mExpectedNALUnit, mOffsetInNALUnit, len));
+			mOffsetInNALUnit += len;
 
 			if (!mFragmented) {
 				// this should be the first fragmentation unit
@@ -614,12 +614,12 @@ public class RTPH264PacketizerTest extends TestCase {
 				mFragmented = true;
 			} else {
 				assertEquals(false, isFirstFU);
-				if (mExpectedNALU.length == mOffsetInNALU) {
+				if (mExpectedNALUnit.length == mOffsetInNALUnit) {
 					// this is the last fragmentation unit
 					assertEquals(true, isLastFU);
 
 					mFragmented = false;
-					mOffsetInNALU = 1;
+					mOffsetInNALUnit = 1;
 					return true;
 				} else {
 					assertEquals(false, isLastFU);
@@ -632,8 +632,8 @@ public class RTPH264PacketizerTest extends TestCase {
 			if (mNALCount + 1 >= mStream.length) {
 				return true;
 			}
-			ByteStreamNALU current = mStream[mNALCount];
-			ByteStreamNALU next = mStream[mNALCount + 1];
+			ByteStreamNALUnit current = mStream[mNALCount];
+			ByteStreamNALUnit next = mStream[mNALCount + 1];
 			if (next.frameNum != current.frameNum) {
 				return true;
 			} else {
@@ -670,16 +670,16 @@ public class RTPH264PacketizerTest extends TestCase {
 			mFPSDen = 1001;
 		}
 
-		void inputByteStream(ByteStreamNALU[] stream) {
+		void inputByteStream(ByteStreamNALUnit[] stream) {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 
 			for (int i = 0; i < stream.length; i++) {
-				ByteStreamNALU bs = stream[i];
+				ByteStreamNALUnit bs = stream[i];
 				byte[] array = bs.createArray();
 				os.write(array, 0, array.length);
 
 				if (i < stream.length - 1) {
-					ByteStreamNALU next = stream[i + 1];
+					ByteStreamNALUnit next = stream[i + 1];
 					if (bs.frameNum == next.frameNum) {
 						// enqueue it and send at once
 						continue;
