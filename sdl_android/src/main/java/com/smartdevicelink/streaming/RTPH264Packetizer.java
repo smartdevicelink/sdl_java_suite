@@ -42,6 +42,8 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 
 /*
  * Note for testing.
@@ -264,11 +266,13 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	/**
 	 * Called by the encoder.
 	 *
-	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(Format, byte[], long)
+	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(VideoStreamingCodec, VideoStreamingProtocol, byte[], long)
 	 */
 	@Override
-	public void onEncoderOutput(IEncoderListener.Format format, byte[] data, long ptsInUs) {
-		if (data == null || format != Format.H264_BYTE_STREAM) {
+	public void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
+	                            byte[] data, long ptsInUs) {
+		if (data == null ||
+				codec != VideoStreamingCodec.H264 || protocol != VideoStreamingProtocol.RAW) {
 			return;
 		}
 
@@ -279,12 +283,14 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	/**
 	 * Called by the encoder.
 	 *
-	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(Format, byte[], int, int, long)
+	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(VideoStreamingCodec, VideoStreamingProtocol, byte[], int, int, long)
 	 */
 	@Override
-	public void onEncoderOutput(IEncoderListener.Format format, byte[] data,
-	                            int offset, int length, long ptsInUs) throws ArrayIndexOutOfBoundsException {
-		if (data == null || format != Format.H264_BYTE_STREAM) {
+	public void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
+	                            byte[] data, int offset, int length, long ptsInUs)
+			throws ArrayIndexOutOfBoundsException {
+		if (data == null ||
+				codec != VideoStreamingCodec.H264 || protocol != VideoStreamingProtocol.RAW) {
 			return;
 		}
 

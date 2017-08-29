@@ -30,34 +30,31 @@
 
 package com.smartdevicelink.encoder;
 
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+
 /**
  * A listener that receives a chunk of data from an encoder.
  */
 public interface IEncoderListener {
 	/**
-	 * Definitions of data formats.
-	 */
-	enum Format {
-		/**
-		 * H.264 byte stream in Annex B format. "data" contains one or more H.264 NAL units.
-		 */
-		H264_BYTE_STREAM,
-	}
-
-	/**
 	 * Called when a chunk of data is output by the encoder.
 	 *
-	 * @param format             The format of the data
-	 * @param data               The raw data output by the encoder
+	 * @param codec              The codec used by the encoder
+	 * @param protocol           The protocol used by the encoder
+	 * @param data               Data output by the encoder in the format of 'codec' and 'protocol'
 	 * @param presentationTimeUs The presentation timestamp (PTS) of this data in microseconds
 	 */
-	void onEncoderOutput(Format format, byte[] data, long presentationTimeUs);
+	void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
+	                     byte[] data, long presentationTimeUs);
 
 	/**
 	 * Called when a chunk of data is output by the encoder.
 	 *
-	 * @param format             The format of the data
-	 * @param data               An array containing the raw data output by the encoder
+	 * @param codec              The codec used by the encoder
+	 * @param protocol           The protocol used by the encoder
+	 * @param data               An array containing data output by the encoder in the format of
+	 *                           'codec' and 'protocol'
 	 * @param offset             Starting offset in 'data'
 	 * @param length             Length of the raw data
 	 * @param presentationTimeUs The presentation timestamp (PTS) of this data in microseconds
@@ -67,6 +64,7 @@ public interface IEncoderListener {
 	 *                                        or length does not satisfy
 	 *                                        {@code 0 < length && offset + length <= data.length}
 	 */
-	void onEncoderOutput(Format format, byte[] data, int offset, int length, long presentationTimeUs)
+	void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
+	                     byte[] data, int offset, int length, long presentationTimeUs)
 		throws ArrayIndexOutOfBoundsException;
 }

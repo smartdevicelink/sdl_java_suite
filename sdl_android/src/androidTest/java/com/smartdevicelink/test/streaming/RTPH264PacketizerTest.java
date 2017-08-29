@@ -34,6 +34,8 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.RTPH264Packetizer;
 import com.smartdevicelink.transport.BTTransportConfig;
@@ -686,7 +688,8 @@ public class RTPH264PacketizerTest extends TestCase {
 
 				long timestampUs = bs.frameNum * 1000L * 1000L * mFPSDen / mFPSNum;
 				byte[] data = os.toByteArray();
-				mListener.onEncoderOutput(IEncoderListener.Format.H264_BYTE_STREAM, data, timestampUs);
+				mListener.onEncoderOutput(VideoStreamingCodec.H264, VideoStreamingProtocol.RAW,
+						data, timestampUs);
 				os.reset();
 			}
 
