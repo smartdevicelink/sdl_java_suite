@@ -5,37 +5,32 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.os.Handler;
 import android.util.Log;
 
 import com.smartdevicelink.transport.SdlRouterService;
-import com.smartdevicelink.transport.TransportConstants;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 import static com.smartdevicelink.transport.TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
-import static com.smartdevicelink.util.AndroidTools.getSdlEnabledApps;
 
 /**
  * Created by Joey Grover on 8/18/17.
  */
 
 public class ServiceFinder {
-    public static final String TAG = "ServiceFinder";
+    public static final String TAG = ServiceFinder.class.getSimpleName();
 
     private static final int TIMEOUT = 1000;
     final String receiverLocation;
     final Context context;
     final ServiceFinderCallback callback;
     final Vector<ComponentName> services;
-    final HashMap<String,ResolveInfo> sdlMultiList;
+    final HashMap<String,ResolveInfo> sdlMultiMap;
     final Handler timeoutHandler;
     final Runnable timeoutRunnable;
 
@@ -46,7 +41,7 @@ public class ServiceFinder {
         this.callback = callback;
         this.services = new Vector<ComponentName>();
 
-        this.sdlMultiList = AndroidTools.getSdlEnabledApps(context, packageName);
+        this.sdlMultiMap = AndroidTools.getSdlEnabledApps(context, packageName);
 
         this.context.registerReceiver(mainServiceReceiver, new IntentFilter(this.receiverLocation));
 
@@ -80,10 +75,10 @@ public class ServiceFinder {
                     //Add to running services
                     services.add(new ComponentName(packageName, className));
                     //Remove from our waiting for response list
-                    sdlMultiList.remove(packageName);
+                    sdlMultiMap.remove(packageName);
 
                     //If list is empty, return to callback and unregister
-                    if (sdlMultiList.isEmpty() && callback != null) {
+                    if (sdlMultiMap.isEmpty() && callback != null) {
                         timeoutHandler.removeCallbacks(timeoutRunnable);
                         onFinished();
                     }
@@ -111,7 +106,7 @@ public class ServiceFinder {
         Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
         PackageManager manager = context.getPackageManager();
         List<ResolveInfo> infos = manager.queryBroadcastReceivers(intent, 0);
-        HashMap<String,ResolveInfo> sdlMultiList = new HashMap<String,ResolveInfo>();
+        HashMap<String,ResolveInfo> sdlMultiMap = new HashMap<String,ResolveInfo>();
         for(ResolveInfo info: infos){
             //Log.d(TAG, "Sdl enabled app: " + info.activityInfo.packageName);
             if(info.activityInfo.applicationInfo.packageName.equals(packageName)){
@@ -119,7 +114,7 @@ public class ServiceFinder {
                 continue;
             }
 
-            sdlMultiList.put(info.activityInfo.packageName, info);
+            sdlMultiMap.put(info.activityInfo.packageName, info);
             try {
                 ServiceInfo[] services = manager.getPackageInfo(info.activityInfo.applicationInfo.packageName, PackageManager.GET_SERVICES).services;
                 for(int i=0; i<services.length; i++){
@@ -129,7 +124,7 @@ public class ServiceFinder {
                 e.printStackTrace();
             }
         }
-        return sdlMultiList;
+        return sdlMultiMap;
     }*/
 
     private static Intent createQueryIntent(String receiverLocation){
