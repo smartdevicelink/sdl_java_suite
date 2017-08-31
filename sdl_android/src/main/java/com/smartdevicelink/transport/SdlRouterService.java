@@ -185,6 +185,7 @@ public class SdlRouterService extends Service{
 		registrationIntent.setAction(action);
 		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, this.getPackageName());
 		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, this.getClass().getName());
+		registrationIntent.setFlags((Intent.FLAG_RECEIVER_FOREGROUND));
 		return registrationIntent;
 	}
 	

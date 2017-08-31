@@ -136,6 +136,7 @@ public class ServiceFinder {
         Intent intent = new Intent();
         intent.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
         intent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, receiverLocation);
+        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         return intent;
     }
 
