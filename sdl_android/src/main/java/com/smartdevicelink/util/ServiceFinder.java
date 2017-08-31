@@ -39,7 +39,7 @@ public class ServiceFinder {
         this.receiverLocation = packageName + ".ServiceFinder";
         this.context = context.getApplicationContext();
         this.callback = callback;
-        this.services = new Vector<ComponentName>();
+        this.services = new Vector<>();
 
         this.sdlMultiMap = AndroidTools.getSdlEnabledApps(context, packageName);
 
@@ -135,7 +135,7 @@ public class ServiceFinder {
         return intent;
     }
 
-    public interface ServiceFinderCallback{
+    interface ServiceFinderCallback{
         public void onComplete(Vector<ComponentName> routerServices);
     }
 }
