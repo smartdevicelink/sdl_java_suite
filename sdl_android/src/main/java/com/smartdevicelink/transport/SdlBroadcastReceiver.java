@@ -333,7 +333,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 */
 	public static void queryForConnectedService(final Context context){
 		//Leverage existing call. Include ping bit
-		if(Build.VERSION.SDK_INT == Build.VERSION_CODES.O){
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 			ServiceFinder finder = new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
