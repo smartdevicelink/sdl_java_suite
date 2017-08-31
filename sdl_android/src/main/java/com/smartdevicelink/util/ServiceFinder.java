@@ -135,7 +135,7 @@ public class ServiceFinder {
         return intent;
     }
 
-    interface ServiceFinderCallback {
+    public interface ServiceFinderCallback {
         void onComplete(Vector<ComponentName> routerServices);
     }
 }
