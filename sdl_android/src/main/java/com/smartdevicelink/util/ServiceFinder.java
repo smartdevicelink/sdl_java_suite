@@ -30,12 +30,12 @@ public class ServiceFinder {
     final Context context;
     final ServiceFinderCallback callback;
     final Vector<ComponentName> services;
-    final HashMap<String,ResolveInfo> sdlMultiMap;
+    final HashMap<String, ResolveInfo> sdlMultiMap;
     final Handler timeoutHandler;
     final Runnable timeoutRunnable;
 
 
-    public ServiceFinder(Context context, String packageName, final ServiceFinderCallback callback){
+    public ServiceFinder(Context context, String packageName, final ServiceFinderCallback callback) {
         this.receiverLocation = packageName + ".ServiceFinder";
         this.context = context.getApplicationContext();
         this.callback = callback;
@@ -60,17 +60,16 @@ public class ServiceFinder {
 
     }
 
-    BroadcastReceiver mainServiceReceiver = new BroadcastReceiver()
-    {
+    BroadcastReceiver mainServiceReceiver = new BroadcastReceiver() {
         private final Object LIST_LOCK = new Object();
+
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "Received intent " + intent);
-            if(intent !=null){
+            if (intent != null) {
                 String packageName = intent.getStringExtra(BIND_LOCATION_PACKAGE_NAME_EXTRA);
                 String className = intent.getStringExtra(BIND_LOCATION_CLASS_NAME_EXTRA);
-                Log.d(TAG, "Received intent from package: " +packageName + ". Classname: "+ className);
+                Log.d(TAG, "Received intent from package: " + packageName + ". Classname: " + className);
                 synchronized (LIST_LOCK) {
                     //Add to running services
                     services.add(new ComponentName(packageName, className));
@@ -87,47 +86,48 @@ public class ServiceFinder {
         }
     };
 
-    private void onFinished(){
-        if(callback!=null){
+    private void onFinished() {
+        if (callback != null) {
             callback.onComplete(services);
         }
         context.unregisterReceiver(mainServiceReceiver);
 
     }
 
-    /**
-     * Get all SDL enabled apps. If the package name is null, it will return all apps. However, if the package name is included, the
-     * resulting hash map will not include the app with that package name.
-     * @param context
-     * @param packageName
-     * @return
-     *
-    public static HashMap<String,ResolveInfo> getSdlEnabledApps(Context context, String packageName){
-        Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
-        PackageManager manager = context.getPackageManager();
-        List<ResolveInfo> infos = manager.queryBroadcastReceivers(intent, 0);
-        HashMap<String,ResolveInfo> sdlMultiMap = new HashMap<String,ResolveInfo>();
-        for(ResolveInfo info: infos){
-            //Log.d(TAG, "Sdl enabled app: " + info.activityInfo.packageName);
-            if(info.activityInfo.applicationInfo.packageName.equals(packageName)){
-                //Log.d(TAG, "Ignoring my own package");
-                continue;
-            }
+//    /**
+//     * Get all SDL enabled apps. If the package name is null, it will return all apps. However, if the package name is included, the
+//     * resulting hash map will not include the app with that package name.
+//     *
+//     * @param context
+//     * @param packageName
+//     * @return
+//     */
+//    public static HashMap<String, ResolveInfo> getSdlEnabledApps(Context context, String packageName) {
+//        Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
+//        PackageManager manager = context.getPackageManager();
+//        List<ResolveInfo> infos = manager.queryBroadcastReceivers(intent, 0);
+//        HashMap<String, ResolveInfo> sdlMultiMap = new HashMap<String, ResolveInfo>();
+//        for (ResolveInfo info : infos) {
+//            //Log.d(TAG, "Sdl enabled app: " + info.activityInfo.packageName);
+//            if (info.activityInfo.applicationInfo.packageName.equals(packageName)) {
+//                //Log.d(TAG, "Ignoring my own package");
+//                continue;
+//            }
+//
+//            sdlMultiMap.put(info.activityInfo.packageName, info);
+//            try {
+//                ServiceInfo[] services = manager.getPackageInfo(info.activityInfo.applicationInfo.packageName, PackageManager.GET_SERVICES).services;
+//                for (int i = 0; i < services.length; i++) {
+//                    Log.d(TAG, "Found : " + services[i].name);
+//                }
+//            } catch (PackageManager.NameNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return sdlMultiMap;
+//    }
 
-            sdlMultiMap.put(info.activityInfo.packageName, info);
-            try {
-                ServiceInfo[] services = manager.getPackageInfo(info.activityInfo.applicationInfo.packageName, PackageManager.GET_SERVICES).services;
-                for(int i=0; i<services.length; i++){
-                    Log.d(TAG, "Found : " +services[i].name);
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return sdlMultiMap;
-    }*/
-
-    private static Intent createQueryIntent(String receiverLocation){
+    private static Intent createQueryIntent(String receiverLocation) {
         Intent intent = new Intent();
         intent.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
         intent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, receiverLocation);
@@ -135,7 +135,7 @@ public class ServiceFinder {
         return intent;
     }
 
-    interface ServiceFinderCallback{
-        public void onComplete(Vector<ComponentName> routerServices);
+    interface ServiceFinderCallback {
+        void onComplete(Vector<ComponentName> routerServices);
     }
 }
