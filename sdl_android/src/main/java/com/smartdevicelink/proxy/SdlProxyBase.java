@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -45,6 +46,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -109,6 +111,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
 	
+	private static final VideoStreamingFormat VIDEO_STREAMING_FORMAT_H264_RAW = new VideoStreamingFormat();
+	private static final VideoStreamingFormat VIDEO_STREAMING_FORMAT_H264_RTP = new VideoStreamingFormat();
+	static {
+		VIDEO_STREAMING_FORMAT_H264_RAW.setCodec(VideoStreamingCodec.H264);
+		VIDEO_STREAMING_FORMAT_H264_RAW.setProtocol(VideoStreamingProtocol.RAW);
+		VIDEO_STREAMING_FORMAT_H264_RTP.setCodec(VideoStreamingCodec.H264);
+		VIDEO_STREAMING_FORMAT_H264_RTP.setProtocol(VideoStreamingProtocol.RTP);
+	}
+
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
 	
@@ -3547,6 +3558,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 		navServiceStartResponseReceived = false;
 		navServiceStartResponse = false;
+		navServiceStartRejectedParams = null;
+
+		// When startH264() API is used, we will not send video format / width / height information
+		// with StartService. (Reasons: InputStream does not provide timestamp information so RTP
+		// cannot be used. startH264() does not provide with/height information.)
+		VideoStreamingParams emptyParam = new VideoStreamingParams();
+		emptyParam.setResolution(null);
+		emptyParam.setFormat(null);
+		sdlSession.setDesiredVideoParams(emptyParam);
 
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
@@ -3581,6 +3601,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		navServiceStartResponseReceived = false;
 		navServiceStartResponse = false;
+		navServiceStartRejectedParams = null;
+
+		// When startH264() API is used, we will not send video format / width / height information
+		// with StartService. (Reasons: OutputStream does not provide timestamp information so RTP
+		// cannot be used. startH264() does not provide with/height information.)
+		VideoStreamingParams emptyParam = new VideoStreamingParams();
+		emptyParam.setResolution(null);
+		emptyParam.setFormat(null);
+		sdlSession.setDesiredVideoParams(emptyParam);
+
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
@@ -3778,27 +3808,113 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         SdlConnection sdlConn = sdlSession.getSdlConnection();
         if (sdlConn == null) return null;
         
-        navServiceStartResponseReceived = false;
-        navServiceStartResponse = false;
-        sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-        
-        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-        ScheduledExecutorService scheduler = createScheduler();
-        scheduler.execute(fTask);
-        
-        while (!navServiceStartResponseReceived && !fTask.isDone());
-        scheduler.shutdown();
-        scheduler = null;
-        fTask = null;
-        
-        if (navServiceStartResponse) {
-            return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
-                                                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
-        } else {
-            return null;
+        VideoStreamingFormat[] availableFormats = { VIDEO_STREAMING_FORMAT_H264_RTP, VIDEO_STREAMING_FORMAT_H264_RAW };
+        List<VideoStreamingParams> desiredParamsList = createDesiredVideoParams(
+                _videoStreamingCapabilities, frameRate, iFrameInterval, width, height, bitrate, availableFormats);
+
+        // if none of video formats are accepted, try StartService without parameter at last
+        VideoStreamingParams emptyParam = new VideoStreamingParams();
+        emptyParam.setResolution(null);
+        emptyParam.setFormat(null);
+        desiredParamsList.add(emptyParam);
+
+        for (VideoStreamingParams params : desiredParamsList) {
+            sdlSession.setDesiredVideoParams(params);
+
+            navServiceStartResponseReceived = false;
+            navServiceStartResponse = false;
+            navServiceStartRejectedParams = null;
+
+            sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
+
+            FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+            ScheduledExecutorService scheduler = createScheduler();
+            scheduler.execute(fTask);
+
+            while (!navServiceStartResponseReceived && !fTask.isDone());
+            scheduler.shutdown();
+            scheduler = null;
+            fTask = null;
+
+            if (navServiceStartResponse) {
+                return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+                        height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+            }
+
+            if (navServiceStartRejectedParams != null) {
+                StringBuilder builder = new StringBuilder();
+                for (String paramName : navServiceStartRejectedParams) {
+                    if (builder.length() > 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(paramName);
+                }
+                DebugTool.logWarning("StartService for nav failed. Rejected params: " + builder.toString());
+
+                if (!navServiceStartRejectedParams.contains(ControlFrameTags.Video.StartService.VIDEO_PROTOCOL)
+                        && !navServiceStartRejectedParams.contains(ControlFrameTags.Video.StartService.VIDEO_CODEC)) {
+                    // The reason of NACK is not protocol nor codec. There is no point retrying with
+                    // another video format, so we simply fail here.
+                    break;
+                }
+            } else {
+                DebugTool.logWarning("StartService for nav failed (rejected params not supplied)");
+            }
         }
+        return null;
     }
-    
+
+    /**
+     * Creates a list of VideoStreamingParams with video formats that are supported by both HMI and proxy
+     *
+     * Note: this method does not take care of matching video resolution. App should look into
+     * HMI capability's preferredResolution and adjust width and height accordingly.
+     *
+     * @param hmiCapability HMI's capability information
+     * @param frameRate specified rate of frames
+     * @param frameInterval specified interval
+     * @param width specified width of the video
+     * @param height specified height of the video
+     * @param bitrate specified bitrate of the video
+     * @param availableFormats list of video formats supported by proxy
+     * @return list of VideoStreamingParams instance. This list can be empty.
+     */
+    private static List<VideoStreamingParams> createDesiredVideoParams(
+            VideoStreamingCapability hmiCapability,
+            int frameRate, int frameInterval, int width, int height, int bitrate,
+            VideoStreamingFormat[] availableFormats) {
+        ArrayList<VideoStreamingFormat> formats = new ArrayList<>();
+        if (hmiCapability != null && hmiCapability.getSupportedFormats() != null
+                && availableFormats != null) {
+            // supportedFormat is listed in HMI's preferred order
+            for (VideoStreamingFormat supportedFormat : hmiCapability.getSupportedFormats()) {
+                for (VideoStreamingFormat availableFormat : availableFormats) {
+                    if (supportedFormat.getProtocol() == availableFormat.getProtocol()
+                            && supportedFormat.getCodec() == availableFormat.getCodec()) {
+                        formats.add(supportedFormat);
+                        break;
+                    }
+                }
+            }
+        }
+
+        ArrayList<VideoStreamingParams> list = new ArrayList<>();
+        for (VideoStreamingFormat format : formats) {
+            VideoStreamingParams params = new VideoStreamingParams();
+            ImageResolution resolution = new ImageResolution();
+            resolution.setResolutionWidth(width);
+            resolution.setResolutionHeight(height);
+            params.setResolution(resolution);
+            params.setFrameRate(frameRate);
+            params.setBitrate(bitrate);
+            params.setInterval(frameInterval);
+            params.setFormat(format);
+            list.add(params);
+        }
+
+        return list;
+    }
+
 	/**
 	 *Starts the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
 	 */
