@@ -362,7 +362,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 		if (rtpPayloadLen <= 0) {
 			throw new IllegalArgumentException("Invalid rtpPayloadLen value: " + rtpPayloadLen);
 		}
-		if (ptsInUs <= 0) {
+		if (ptsInUs < 0) {
 			throw new IllegalArgumentException("Invalid ptsInUs value: " + ptsInUs);
 		}
 
