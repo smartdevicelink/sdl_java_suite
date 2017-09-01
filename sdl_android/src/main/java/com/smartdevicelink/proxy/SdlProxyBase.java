@@ -134,8 +134,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private boolean navServiceStartResponseReceived = false;
 	private boolean navServiceStartResponse = false;
+	private List<String> navServiceStartRejectedParams = null;
 	private boolean pcmServiceStartResponseReceived = false;
 	private boolean pcmServiceStartResponse = false;
+	private List<String> pcmServiceStartRejectedParams = null;
 	private boolean navServiceEndResponseReceived = false;
 	private boolean navServiceEndResponse = false;
 	private boolean pcmServiceEndResponseReceived = false;
@@ -355,7 +357,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolSessionStartedNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
 			OnServiceNACKed message = new OnServiceNACKed(sessionType);
 			queueInternalMessage(message);
 			
@@ -367,7 +369,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
 				sendBroadcastIntent(sendIntent);
 				
-				NavServiceStartedNACK();
+				NavServiceStartedNACK(rejectedParams);
 			}
 			else if (sessionType.eq(SessionType.PCM)) {
 				Intent sendIntent = createBroadcastIntent();
@@ -376,7 +378,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent, "COMMENT2", " NACK ServiceType: " + sessionType.getName());
 				sendBroadcastIntent(sendIntent);
 				
-				AudioServiceStartedNACK();
+				AudioServiceStartedNACK(rejectedParams);
 			}
 		}
 
@@ -3835,9 +3837,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		navServiceStartResponse = true;
 	}
 	
-	private void NavServiceStartedNACK() {
+	private void NavServiceStartedNACK(List<String> rejectedParams) {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = false;
+		navServiceStartRejectedParams = rejectedParams;
 	}
 	
     private void AudioServiceStarted() {
@@ -3849,9 +3852,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     	rpcProtectedResponseReceived = true;
     	rpcProtectedStartResponse = true;
 	}
-    private void AudioServiceStartedNACK() {
+    private void AudioServiceStartedNACK(List<String> rejectedParams) {
 		pcmServiceStartResponseReceived = true;
 		pcmServiceStartResponse = false;
+		pcmServiceStartRejectedParams = rejectedParams;
 	}
 
 	private void NavServiceEnded() {
