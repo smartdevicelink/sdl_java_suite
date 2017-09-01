@@ -161,18 +161,6 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	}
 
 	/**
-	 * Overwrites MTU value. This is only for testing.
-	 *
-	 * @param mtu maximum payload size of SDL frames
-	 */
-	public void setMTU(int mtu) {
-		if (mtu <= 0) {
-			mtu = MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE;
-		}
-		bufferSize = mtu;
-	}
-
-	/**
 	 * Starts this packetizer.
 	 *
 	 * It is recommended that the video encoder is started after the packetizer is started.

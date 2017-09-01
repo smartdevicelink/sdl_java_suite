@@ -184,8 +184,31 @@ public class RTPH264PacketizerTest extends TestCase {
 		} catch (IOException e) {
 			fail();
 		}
-		// use small MTU and make some RTP packets split into multiple SDL frames
-		packetizer.setMTU(FRAME_LENGTH_LEN + RTP_HEADER_LEN + 16);
+
+		// try to modify "bufferSize" variable (in AbstractPacketizer)
+		Class packetizerClass = RTPH264Packetizer.class;
+		String fieldName = "bufferSize";
+		java.lang.reflect.Field bufferSizeField = null;
+		while (packetizerClass != null) {
+			try {
+				bufferSizeField = packetizerClass.getDeclaredField(fieldName);
+				break;
+			} catch (NoSuchFieldException e) {
+				packetizerClass = packetizerClass.getSuperclass();
+			}
+		}
+		if (bufferSizeField != null) {
+			try {
+				bufferSizeField.setAccessible(true);
+				// use small MTU and make some RTP packets split into multiple SDL frames
+				bufferSizeField.set(packetizer, FRAME_LENGTH_LEN + RTP_HEADER_LEN + 16);
+			} catch (IllegalAccessException e) {
+				fail("Cannot access to private field \"" + fieldName + "\".");
+			}
+		} else {
+			fail("Cannot find private field \"" + fieldName + "\".");
+		}
+
 		MockEncoder encoder = new MockEncoder(packetizer);
 
 		try {
