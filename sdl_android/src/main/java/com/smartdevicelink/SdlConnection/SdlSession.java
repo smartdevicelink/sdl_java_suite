@@ -119,6 +119,14 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
 	}
 	
+	public long getMtu(SessionType type) {
+		if (this._sdlConnection != null) {
+			return this._sdlConnection.getWiProProtocol().getMtu(type);
+		} else {
+			return 0;
+		}
+	}
+
 	public void close() {
 		if (sdlSecurity != null)
 		{

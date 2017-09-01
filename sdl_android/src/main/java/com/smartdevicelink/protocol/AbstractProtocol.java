@@ -31,6 +31,7 @@ public abstract class AbstractProtocol {
 	public abstract void SendMessage(ProtocolMessage msg);
 
 	public abstract int getMtu();
+	public abstract long getMtu(SessionType type);
 	
 	public abstract void handlePacketReceived(SdlPacket packet);
 	

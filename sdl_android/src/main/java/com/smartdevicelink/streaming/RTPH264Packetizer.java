@@ -111,6 +111,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 
 		mServiceProtected = session.isServiceProtected(_serviceType);
 
+		bufferSize = (int)this._session.getMtu(SessionType.NAV);
 		if (bufferSize == 0) {
 			// fail safe
 			bufferSize = MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE;
