@@ -81,6 +81,7 @@ import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -214,6 +215,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected VehicleType _vehicleType = null;
 	protected List<AudioPassThruCapabilities> _audioPassThruCapabilities = null;
 	protected HMICapabilities _hmiCapabilities = null;
+	protected VideoStreamingCapability _videoStreamingCapabilities = null;
 	protected String _systemSoftwareVersion = null;
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
@@ -1184,6 +1186,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_putFileListenerList.clear();
 		
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
+		_videoStreamingCapabilities = null;
 				
 		// Setup SdlConnection
 		synchronized(CONNECTION_REFERENCE_LOCK) {
@@ -2838,6 +2841,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
+				if (msg.getSystemCapability() != null &&
+						msg.getSystemCapability().getSystemCapabilityType() == SystemCapabilityType.VIDEO_STREAMING) {
+					_videoStreamingCapabilities = (VideoStreamingCapability)
+							msg.getSystemCapability().getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING);
+				}
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
