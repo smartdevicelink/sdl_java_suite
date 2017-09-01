@@ -359,11 +359,17 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 
 	private ByteBuffer allocateRTPFrame(int rtpPayloadLen,
 	                                    boolean hasPadding, boolean isLast, long ptsInUs) {
-		assert rtpPayloadLen > 0;
-		assert ptsInUs > 0;
+		if (rtpPayloadLen <= 0) {
+			throw new IllegalArgumentException("Invalid rtpPayloadLen value: " + rtpPayloadLen);
+		}
+		if (ptsInUs <= 0) {
+			throw new IllegalArgumentException("Invalid ptsInUs value: " + ptsInUs);
+		}
 
 		int packetLength = RTP_HEADER_LEN + rtpPayloadLen;
-		assert packetLength <= MAX_RTP_PACKET_SIZE;
+		if (packetLength > MAX_RTP_PACKET_SIZE) {
+			throw new IllegalArgumentException("Invalid rtpPayloadLen value: " + rtpPayloadLen);
+		}
 		int ptsIn90kHz = (int)(ptsInUs * 9 / 100) + mInitialPTS;
 
 		ByteBuffer frame = ByteBuffer.allocate(FRAME_LENGTH_LEN + packetLength);
@@ -378,15 +384,18 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 			.putInt(ptsIn90kHz)
 			.putInt(mSSRC);
 
-		assert frame.position() == FRAME_LENGTH_LEN + RTP_HEADER_LEN;
+		if (frame.position() != FRAME_LENGTH_LEN + RTP_HEADER_LEN) {
+			throw new RuntimeException("Data size in ByteBuffer mismatch");
+		}
 
 		mSequenceNum++;
 		return frame;
 	}
 
 	private static boolean isIDR(ByteBuffer nalUnit) {
-		assert nalUnit != null;
-		assert nalUnit.hasRemaining();
+		if (nalUnit == null || !nalUnit.hasRemaining()) {
+			throw new IllegalArgumentException("Invalid nalUnit arg");
+		}
 
 		byte nalUnitType = (byte)(nalUnit.get(nalUnit.position()) & 0x1F);
 		return nalUnitType == 5;
