@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -31,6 +32,12 @@ public class MetadataTags extends RPCStruct {
 		setValue(KEY_MAIN_FIELD_1_TYPE, metadataTypes);
 	}
 
+	public void setMainField1(MetadataType metadata) {
+		List<MetadataType> metadataTypes = new ArrayList<>();
+		metadataTypes.add(metadata);
+		setValue(KEY_MAIN_FIELD_1_TYPE, metadataTypes);
+	}
+
 	/**
 	 * @return   The type of data contained in the "mainField1" text field
 	 */
@@ -43,6 +50,12 @@ public class MetadataTags extends RPCStruct {
 	 * set       The type of data contained in the "mainField2" text field
 	 */
 	public void setMainField2( List<MetadataType> metadataTypes ) {
+		setValue(KEY_MAIN_FIELD_2_TYPE, metadataTypes);
+	}
+
+	public void setMainField2(MetadataType metadata) {
+		List<MetadataType> metadataTypes = new ArrayList<>();
+		metadataTypes.add(metadata);
 		setValue(KEY_MAIN_FIELD_2_TYPE, metadataTypes);
 	}
 
@@ -61,6 +74,12 @@ public class MetadataTags extends RPCStruct {
 		setValue(KEY_MAIN_FIELD_3_TYPE, metadataTypes);
 	}
 
+	public void setMainField3(MetadataType metadata) {
+		List<MetadataType> metadataTypes = new ArrayList<>();
+		metadataTypes.add(metadata);
+		setValue(KEY_MAIN_FIELD_3_TYPE, metadataTypes);
+	}
+
 	/**
 	 * @return   The type of data contained in the "mainField3" text field
 	 */
@@ -73,6 +92,12 @@ public class MetadataTags extends RPCStruct {
 	 * set       The type of data contained in the "mainField4" text field
 	 */
 	public void setMainField4( List<MetadataType> metadataTypes ) {
+		setValue(KEY_MAIN_FIELD_4_TYPE, metadataTypes);
+	}
+
+	public void setMainField4(MetadataType metadata) {
+		List<MetadataType> metadataTypes = new ArrayList<>();
+		metadataTypes.add(metadata);
 		setValue(KEY_MAIN_FIELD_4_TYPE, metadataTypes);
 	}
 

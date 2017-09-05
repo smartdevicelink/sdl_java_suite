@@ -23,6 +23,7 @@ import java.util.List;
 public class MetadataTagsTests extends TestCase {
 
 	private MetadataTags msg;
+	private MetadataTags msg2;
 	private List<MetadataType> exampleList;
 
 	@Override
@@ -34,11 +35,17 @@ public class MetadataTagsTests extends TestCase {
 		exampleList.add(2, MetadataType.MEDIA_ARTIST);
 
 		msg = new MetadataTags();
-
 		msg.setMainField1(exampleList);
 		msg.setMainField2(exampleList);
 		msg.setMainField3(exampleList);
 		msg.setMainField4(exampleList);
+
+		// Setup without a list
+		msg2 = new MetadataTags();
+		msg2.setMainField1(MetadataType.CURRENT_TEMPERATURE);
+		msg2.setMainField2(MetadataType.HUMIDITY);
+		msg2.setMainField3(MetadataType.MAXIMUM_TEMPERATURE);
+		msg2.setMainField4(MetadataType.MEDIA_ALBUM);
 	}
 
 	/**
@@ -56,6 +63,18 @@ public class MetadataTagsTests extends TestCase {
 		assertEquals(Test.MATCH, exampleList, mainField2Types);
 		assertEquals(Test.MATCH, exampleList, mainField3Types);
 		assertEquals(Test.MATCH, exampleList, mainField4Types);
+
+		// Test metadata set without a list
+		mainField1Types = msg2.getMainField1();
+		mainField2Types = msg2.getMainField2();
+		mainField3Types = msg2.getMainField3();
+		mainField4Types = msg2.getMainField4();
+
+		// Valid Tests
+		assertEquals(Test.MATCH, MetadataType.CURRENT_TEMPERATURE, mainField1Types.get(0));
+		assertEquals(Test.MATCH, MetadataType.HUMIDITY, mainField2Types.get(0));
+		assertEquals(Test.MATCH, MetadataType.MAXIMUM_TEMPERATURE, mainField3Types.get(0));
+		assertEquals(Test.MATCH, MetadataType.MEDIA_ALBUM, mainField4Types.get(0));
 
 		// Invalid/Null Tests
 		MetadataTags msg = new MetadataTags();
