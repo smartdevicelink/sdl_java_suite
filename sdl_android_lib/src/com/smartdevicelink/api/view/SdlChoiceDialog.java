@@ -71,8 +71,12 @@ public class SdlChoiceDialog {
     private PerformInteraction createPerformInteraction(SdlContext context){
         PerformInteraction newPerformInteraction= addVrHelpItems(context, new PerformInteraction());
         if(newPerformInteraction!=null) {
-            newPerformInteraction.setInitialText(mInitialText);
-            newPerformInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
+            if(mInitialText != null) {
+                newPerformInteraction.setInitialText(mInitialText);
+            }
+            if(mInitialPrompt != null) {
+                newPerformInteraction.setInitialPrompt(Collections.singletonList(mInitialPrompt));
+            }
             if(mManualInteraction!=null){
                 if(mManualInteraction.getTimeout()!=null)
                     newPerformInteraction.setTimeout(mManualInteraction.getTimeout());
