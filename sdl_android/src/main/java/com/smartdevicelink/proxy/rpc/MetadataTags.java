@@ -27,8 +27,8 @@ public class MetadataTags extends RPCStruct {
 	/**
 	 * set       The type of data contained in the "mainField1" text field
 	 */
-	public void setMainField1( List<MetadataType> mainField1 ) {
-		setValue(KEY_MAIN_FIELD_1_TYPE, mainField1);
+	public void setMainField1( List<MetadataType> metadataTypes ) {
+		setValue(KEY_MAIN_FIELD_1_TYPE, metadataTypes);
 	}
 
 	/**
@@ -42,8 +42,8 @@ public class MetadataTags extends RPCStruct {
 	/**
 	 * set       The type of data contained in the "mainField2" text field
 	 */
-	public void setMainField2( List<MetadataType> mainField2 ) {
-		setValue(KEY_MAIN_FIELD_2_TYPE, mainField2);
+	public void setMainField2( List<MetadataType> metadataTypes ) {
+		setValue(KEY_MAIN_FIELD_2_TYPE, metadataTypes);
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class MetadataTags extends RPCStruct {
 	/**
 	 * set       The type of data contained in the "mainField3" text field
 	 */
-	public void setMainField3( List<MetadataType> mainField3 ) {
-		setValue(KEY_MAIN_FIELD_3_TYPE, mainField3);
+	public void setMainField3( List<MetadataType> metadataTypes ) {
+		setValue(KEY_MAIN_FIELD_3_TYPE, metadataTypes);
 	}
 
 	/**
@@ -72,8 +72,8 @@ public class MetadataTags extends RPCStruct {
 	/**
 	 * set       The type of data contained in the "mainField4" text field
 	 */
-	public void setMainField4( List<MetadataType> mainField4 ) {
-		setValue(KEY_MAIN_FIELD_4_TYPE, mainField4);
+	public void setMainField4( List<MetadataType> metadataTypes ) {
+		setValue(KEY_MAIN_FIELD_4_TYPE, metadataTypes);
 	}
 
 	/**
