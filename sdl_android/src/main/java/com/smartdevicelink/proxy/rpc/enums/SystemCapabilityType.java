@@ -26,7 +26,7 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 			<td>Y</td>
  * 			<td>Call is synchronous <strong>after</strong> initial call</td>
  * 		</tr>
- *      <tr>
+ * 		<tr>
  * 			<td>VIDEO_STREAMING</td>
  * 			<td>VideoStreamingCapability</td>
  * 			<td>Returns Video Streaming Capabilities</td>
