@@ -16,84 +16,84 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 			<td>NAVIGATION</td>
  * 			<td>NavigationCapability</td>
  * 			<td>Returns Navigation Capabilities</td>
- *          <td>Y</td>
+ * 			<td>Y</td>
  * 			<td>Call is synchronous <strong>after</strong> initial call</td>
  * 		</tr>
  * 		<tr>
  * 			<td>PHONE_CALL</td>
  * 			<td>PhoneCapability</td>
  * 			<td>Returns Phone Capabilities</td>
- *          <td>Y</td>
+ * 			<td>Y</td>
  * 			<td>Call is synchronous <strong>after</strong> initial call</td>
  * 		</tr>
  *      <tr>
  * 			<td>VIDEO_STREAMING</td>
  * 			<td>VideoStreamingCapability</td>
  * 			<td>Returns Video Streaming Capabilities</td>
- *          <td>Y</td>
+ * 			<td>Y</td>
  * 			<td>Call is synchronous <strong>after</strong> initial call</td>
  * 		</tr>
  * 		<tr>
  * 			<td>REMOTE_CONTROL</td>
  * 			<td>RemoteControlCapabilities</td>
  * 			<td>Returns Remote Control Capabilities</td>
- *          <td>Y</td>
+ * 			<td>Y</td>
  * 			<td>Call is synchronous <strong>after</strong> initial call</td>
  * 		</tr>
  * 		<tr>
  * 			<td>HMI</td>
  * 			<td>HMICapabilities</td>
  * 			<td>Returns HMI Capabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
  * 		</tr>
  * 		<tr>
  * 			<td>DISPLAY</td>
  * 			<td>DisplayCapabilities</td>
  * 			<td>Returns Display Capabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
  * 		</tr>
  * 		<tr>
  * 			<td>AUDIO_PASSTHROUGH</td>
  * 			<td>List<AudioPassThruCapabilities></td>
  * 			<td>Returns a List of AudioPassThruCapabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
  * 		</tr>
  * 		<tr>
  * 			<td>BUTTON</td>
  * 			<td>List<ButtonCapabilities></td>
  * 			<td>Returns a List of ButtonCapabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
  * 		</tr>
  * 		<tr>
  * 			<td>HMI_ZONE</td>
  * 			<td>HmiZoneCapabilities</td>
  * 			<td>Returns HmiZone Capabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
  * 		</tr>
  * 		<tr>
  * 			<td>PRESET_BANK</td>
  * 			<td>PresetBankCapabilities</td>
  * 			<td>Returns PresetBank Capabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
  * 		</tr>
  * 		<tr>
  * 			<td>SOFTBUTTON</td>
  * 			<td>List<SoftButtonCapabilities></td>
  * 			<td>Returns a List of SoftButtonCapabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
  * 		</tr>
  * 		<tr>
  * 			<td>SPEECH</td>
  * 			<td>SpeechCapabilities</td>
  * 			<td>Returns Speech Capabilities</td>
- *          <td>N</td>
+ * 			<td>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
  * 		</tr>
  *
