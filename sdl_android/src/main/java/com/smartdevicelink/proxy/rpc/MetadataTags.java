@@ -26,14 +26,17 @@ public class MetadataTags extends RPCStruct {
 	public MetadataTags(Hashtable<String, Object> hash){super(hash);}
 
 	/**
-	 * set       The type of data contained in the "mainField1" text field
+	 * Set the metadata types of data contained in the "mainField1" text field
 	 */
 	public void setMainField1( List<MetadataType> metadataTypes ) {
 		setValue(KEY_MAIN_FIELD_1_TYPE, metadataTypes);
 	}
 
-	public void setMainField1(MetadataType metadata) {
-		setValue(KEY_MAIN_FIELD_1_TYPE, Collections.singletonList(metadata));
+	/**
+	 * Set the metadata type of data contained in the "mainField1" text field
+	 */
+	public void setMainField1(MetadataType metadataType) {
+		setValue(KEY_MAIN_FIELD_1_TYPE, Collections.singletonList(metadataType));
 	}
 
 	/**
@@ -45,14 +48,17 @@ public class MetadataTags extends RPCStruct {
 	}
 
 	/**
-	 * set       The type of data contained in the "mainField2" text field
+	 * Set the metadata types of data contained in the "mainField2" text field
 	 */
 	public void setMainField2( List<MetadataType> metadataTypes ) {
 		setValue(KEY_MAIN_FIELD_2_TYPE, metadataTypes);
 	}
 
-	public void setMainField2(MetadataType metadata) {
-		setValue(KEY_MAIN_FIELD_2_TYPE, Collections.singletonList(metadata));
+	/**
+	 * Set the metadata type of data contained in the "mainField2" text field
+	 */
+	public void setMainField2(MetadataType metadataType) {
+		setValue(KEY_MAIN_FIELD_2_TYPE, Collections.singletonList(metadataType));
 	}
 
 	/**
@@ -64,14 +70,17 @@ public class MetadataTags extends RPCStruct {
 	}
 
 	/**
-	 * set       The type of data contained in the "mainField3" text field
+	 * Set the metadata types of data contained in the "mainField3" text field
 	 */
 	public void setMainField3( List<MetadataType> metadataTypes ) {
 		setValue(KEY_MAIN_FIELD_3_TYPE, metadataTypes);
 	}
 
-	public void setMainField3(MetadataType metadata) {
-		setValue(KEY_MAIN_FIELD_3_TYPE, Collections.singletonList(metadata));
+	/**
+	 * Set the metadata type of data contained in the "mainField3" text field
+	 */
+	public void setMainField3(MetadataType metadataType) {
+		setValue(KEY_MAIN_FIELD_3_TYPE, Collections.singletonList(metadataType));
 	}
 
 	/**
@@ -83,14 +92,17 @@ public class MetadataTags extends RPCStruct {
 	}
 
 	/**
-	 * set       The type of data contained in the "mainField4" text field
+	 * Set the metadata types of data contained in the "mainField4" text field
 	 */
 	public void setMainField4( List<MetadataType> metadataTypes ) {
 		setValue(KEY_MAIN_FIELD_4_TYPE, metadataTypes);
 	}
 
-	public void setMainField4(MetadataType metadata) {
-		setValue(KEY_MAIN_FIELD_4_TYPE, Collections.singletonList(metadata));
+	/**
+	 * Set the metadata type of data contained in the "mainField4" text field
+	 */
+	public void setMainField4(MetadataType metadataType) {
+		setValue(KEY_MAIN_FIELD_4_TYPE, Collections.singletonList(metadataType));
 	}
 
 	/**
