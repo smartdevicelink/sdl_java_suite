@@ -11,6 +11,7 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
+import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
@@ -22,6 +23,7 @@ import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -123,9 +125,10 @@ public class Test {
 	
 	// RPC Request/Response/Notification/Datatype Test Values
 	public static final int                            GENERAL_INT                            = 100;
+	public static final Integer                        GENERAL_INTEGER                        = 100;
 	public static final Long                           GENERAL_LONG                           = 100L;
 	public static final Turn                           GENERAL_TURN                           = new Turn();
-	public static final float                          GENERAL_FLOAT                          = 100f;
+	public static final Float                          GENERAL_FLOAT                          = 100f;
 	public static final Image                          GENERAL_IMAGE                          = new Image();	
 	public static final Choice                         GENERAL_CHOICE                         = new Choice();
 	public static final String                         GENERAL_STRING                         = "test";
@@ -217,7 +220,8 @@ public class Test {
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
 	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
-	
+	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
+	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -497,7 +501,15 @@ public class Test {
 		GENERAL_METADATASTRUCT.setMainField3(exampleList);
 		GENERAL_METADATASTRUCT.setMainField4(exampleList);
 
-		try {	
+		GENERAL_RECTANGLE.setX(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setY(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setWidth(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setHeight(GENERAL_FLOAT);
+
+		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
+		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
+        
+		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
 			

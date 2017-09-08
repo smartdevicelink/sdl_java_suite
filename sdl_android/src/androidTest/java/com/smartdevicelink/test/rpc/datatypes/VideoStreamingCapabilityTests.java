@@ -29,6 +29,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		msg.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 		msg.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
 		msg.setMaxBitrate(Test.GENERAL_INT);
+		msg.setIsHapticSpatialDataSupported(Test.GENERAL_BOOLEAN);
 	}
 
 	/**
@@ -39,11 +40,13 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		List<VideoStreamingFormat> format = msg.getSupportedFormats();
 		ImageResolution res = msg.getPreferredResolution();
 		Integer maxBitrate = msg.getMaxBitrate();
+		Boolean isHapticSpatialDataSupported = msg.getIsHapticSpatialDataSupported();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, (List<VideoStreamingFormat>) Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
 		assertEquals(Test.MATCH, (ImageResolution) Test.GENERAL_IMAGERESOLUTION, res);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, maxBitrate);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, isHapticSpatialDataSupported);
 
 		// Invalid/Null Tests
 		VideoStreamingCapability msg = new VideoStreamingCapability();
@@ -52,6 +55,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		assertNull(Test.NULL, msg.getMaxBitrate());
 		assertNull(Test.NULL, msg.getPreferredResolution());
 		assertNull(Test.NULL, msg.getSupportedFormats());
+		assertNull(Test.NULL, msg.getIsHapticSpatialDataSupported());
 	}
 
 	public void testJson() {
@@ -61,6 +65,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 			reference.put(VideoStreamingCapability.KEY_MAX_BITRATE, Test.GENERAL_INT);
 			reference.put(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION, Test.GENERAL_IMAGERESOLUTION);
 			reference.put(VideoStreamingCapability.KEY_SUPPORTED_FORMATS, Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+			reference.put(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -69,7 +74,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE)) {
+				if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED)) {
 					assertTrue(Test.TRUE, JsonUtils.readIntegerFromJsonObject(reference, key) == JsonUtils.readIntegerFromJsonObject(underTest, key));
 				} else if (key.equals(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION)) {
 					ImageResolution irReference = (ImageResolution) JsonUtils.readObjectFromJsonObject(reference, key);
