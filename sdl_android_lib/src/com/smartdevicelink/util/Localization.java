@@ -16,24 +16,8 @@ import java.util.Locale;
  * other than the default language/region is required.
  */
 public class Localization {
-    private String language;
-    private String region;
     private Locale locale;
-    private Resources resources;
-
-    /**
-     * Return the language string passed to this instance.
-     */
-    public String getLanguage() {
-        return this.language;
-    }
-
-    /**
-     * Return the region string used for this instance.
-     */
-    public String getRegion() {
-        return this.region;
-    }
+    private Context context;
 
     /**
      * Return the locale object used by the Resource object of this instance.
@@ -54,50 +38,25 @@ public class Localization {
      * @param context A context required to create a new resource object.
      */
     public Localization(@NonNull Context context) {
-        this(context, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
+        this(context, Locale.getDefault());
     }
 
     /**
      * Creates an instance with a resource object using the specified language code.
      * @param context A context required to create a new resource object.
-     * @param language The language code used for the locale object.
+     * @param locale The locale identifier for the resource object.
      */
-    public Localization(@NonNull Context context, @NonNull String language) {
-        this(context, language, "");
-    }
-
-    /**
-     * Creates an instance with a resource object using the specified language and region code.
-     * @param context A context required to create a new resource object.
-     * @param language The language code used for the locale object.
-     * @param region The region code used for the locale object.
-     */
-    public Localization(@NonNull Context context, @NonNull String language, @NonNull String region) {
-        Resources resources = context.getResources();
-        AssetManager assets = resources.getAssets();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        Configuration config = new Configuration(resources.getConfiguration());
-
-        Locale locale = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Locale.Builder builder = new Locale.Builder();
-            builder.setLanguage(language.toLowerCase());
-            builder.setRegion(region.toUpperCase());
-            locale = builder.build();
-        } else {
-            locale = new Locale(language.toLowerCase(), region.toUpperCase());
-        }
-
+    public Localization(@NonNull Context context, @NonNull Locale locale) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Resources resources = context.getResources();
+            Configuration config = new Configuration(resources.getConfiguration());
             config.setLocale(locale);
+            
+            ContextWrapper wrapper = new ContextWrapper(context);
+            this.context = wrapper.createConfigurationContext(config);
         } else {
-            config.locale = locale;
+            this.context = context.getAppllicationContext();
         }
-
-        this.language = language;
-        this.region = region;
         this.locale = locale;
-        this.resources = new Resources(assets, metrics, config);
     }
 }
