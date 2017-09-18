@@ -84,15 +84,13 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.streaming.VideoStreamingParams;
+import com.smartdevicelink.streaming.VideoStreamingParameters;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
@@ -3540,7 +3538,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.endService(serviceType, sdlSession.getSessionId());
 	}
 
-	public void setDesiredVideoParams(VideoStreamingParams params){
+	public void setDesiredVideoParams(VideoStreamingParameters params){
 		sdlSession.setDesiredVideoParams(params);
 	}
 
@@ -5609,7 +5607,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
-	public VideoStreamingParams getAcceptedVideoParams(){
+	public VideoStreamingParameters getAcceptedVideoParams(){
 		return sdlSession.getAcceptedVideoParams();
 	}
 	

@@ -22,11 +22,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.streaming.VideoStreamingParameters;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,11 +39,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
+import static android.R.attr.format;
+
 @TargetApi(21)
 public class VirtualDisplayEncoder {
     private static final String TAG = "VirtualDisplayEncoder";
     private final String videoMimeType = "video/avc";
-    private StreamingParameters streamingParams = new StreamingParameters();
+    private VideoStreamingParameters streamingParams = new VideoStreamingParameters();
     private DisplayManager mDisplayManager;
     private volatile MediaCodec mVideoEncoder = null;
     private volatile MediaCodec.BufferInfo mVideoBufferInfo = null;
@@ -58,79 +63,7 @@ public class VirtualDisplayEncoder {
     private final Object START_DISP_LOCK = new Object();
     private final Object STREAMING_LOCK = new Object();
 
-    public class StreamingParameters {
-        protected int displayDensity = DisplayMetrics.DENSITY_HIGH;
-        protected int videoWidth = 800;
-        protected int videoHeight = 480;
-        protected int frameRate = 24;
-        protected int bitrate = 512000;
-        protected int interval = 5;
 
-        public StreamingParameters(){
-            // empty
-        }
-
-        public StreamingParameters(int displayDensity, int videoWidth, int videoHeight, int frameRate, int bitrate, int interval) {
-            this.displayDensity = displayDensity;
-            this.videoWidth = videoWidth;
-            this.videoHeight = videoHeight;
-            this.frameRate = frameRate;
-            this.bitrate = bitrate;
-            this.interval = interval;
-        }
-
-        /**
-         * Set displayDensity to a value from DisplayMetrics
-         * @param displayDensity
-         */
-        public void setDisplayDensity(int displayDensity) {
-            this.displayDensity = displayDensity;
-        }
-
-        public int getDisplayDensity() {
-            return displayDensity;
-        }
-
-        public void setVideoWidth(int videoWidth) {
-            this.videoWidth = videoWidth;
-        }
-
-        public int getVideoWidth() {
-            return videoWidth;
-        }
-
-        public void setVideoHeight(int videoHeight) {
-            this.videoHeight = videoHeight;
-        }
-
-        public int getVideoHeight() {
-            return videoHeight;
-        }
-
-        public void setFrameRate(int frameRate) {
-            this.frameRate = frameRate;
-        }
-
-        public int getFrameRate() {
-            return frameRate;
-        }
-
-        public void setBitrate(int bitrate) {
-            this.bitrate = bitrate;
-        }
-
-        public int getBitrate() {
-            return bitrate;
-        }
-
-        public void setInterval(int interval) {
-            this.interval = interval;
-        }
-
-        public int getInterval() {
-            return interval;
-        }
-    }
 
     /**
      * Initialization method for VirtualDisplayEncoder object. MUST be called before start() or shutdown()
@@ -147,7 +80,7 @@ public class VirtualDisplayEncoder {
             throw new Exception("API level of 21 required");
         }
 
-        if (context == null || videoStream == null || presentationClass == null || screenParams == null) {
+        if (context == null || videoStream == null || presentationClass == null || screenParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
             Log.e(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
             throw new Exception("init parameters cannot be null");
         }
@@ -157,11 +90,11 @@ public class VirtualDisplayEncoder {
         mContext = context;
 
         if(screenParams.getImageResolution().getResolutionHeight() != null){
-            streamingParams.videoHeight = screenParams.getImageResolution().getResolutionHeight();
+            streamingParams.getResolution().setResolutionHeight(screenParams.getImageResolution().getResolutionHeight());
         }
 
         if(screenParams.getImageResolution().getResolutionWidth() != null){
-            streamingParams.videoWidth = screenParams.getImageResolution().getResolutionWidth();
+            streamingParams.getResolution().setResolutionWidth(screenParams.getImageResolution().getResolutionWidth());
         }
 
         sdlOutStream = videoStream;
@@ -173,12 +106,16 @@ public class VirtualDisplayEncoder {
         initPassed = true;
     }
 
-    public StreamingParameters getStreamingParams(){
+    public VideoStreamingParameters getStreamingParams(){
         return this.streamingParams;
     }
 
-    public void setStreamingParams(int displayDensity, int videoWidth, int videoHeight, int frameRate, int bitrate, int interval){
-        this.streamingParams = new StreamingParameters(displayDensity, videoWidth, videoHeight, frameRate, bitrate, interval);
+    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format){
+        this.streamingParams = new VideoStreamingParameters(displayDensity,frameRate,bitrate,interval,resolution,format);
+    }
+
+    public void setStreamingParams(VideoStreamingParameters streamingParams){
+        this.streamingParams = streamingParams;
     }
 
     /**
@@ -190,6 +127,9 @@ public class VirtualDisplayEncoder {
             Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
+        if(streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null){
+            return;
+        }
 
         synchronized (STREAMING_LOCK) {
 
@@ -198,7 +138,8 @@ public class VirtualDisplayEncoder {
 
                 // Create a virtual display that will output to our encoder.
                 virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                        streamingParams.videoWidth, streamingParams.videoHeight, streamingParams.displayDensity, inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
+                        streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
+                        streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
 
                 startEncoder();
 
@@ -265,17 +206,21 @@ public class VirtualDisplayEncoder {
 
     private Surface prepareVideoEncoder() {
 
+        if(streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null){
+            return null;
+        }
+
         if (mVideoBufferInfo == null) {
             mVideoBufferInfo = new MediaCodec.BufferInfo();
         }
 
-        MediaFormat format = MediaFormat.createVideoFormat(videoMimeType, streamingParams.videoWidth, streamingParams.videoHeight);
+        MediaFormat format = MediaFormat.createVideoFormat(videoMimeType, streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight());
 
         // Set some required properties. The media codec may fail if these aren't defined.
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
-        format.setInteger(MediaFormat.KEY_BIT_RATE, streamingParams.bitrate);
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, streamingParams.frameRate);
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, streamingParams.interval); // seconds between I-frames
+        format.setInteger(MediaFormat.KEY_BIT_RATE, streamingParams.getBitrate());
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, streamingParams.getFrameRate());
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, streamingParams.getInterval()); // seconds between I-frames
 
         // Create a MediaCodec encoder and configure it. Get a Surface we can use for recording into.
         try {

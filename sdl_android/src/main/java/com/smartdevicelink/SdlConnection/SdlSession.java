@@ -29,7 +29,7 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.streaming.VideoStreamingParams;
+import com.smartdevicelink.streaming.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -55,8 +55,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
 	private HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
-	private VideoStreamingParams desiredVideoParams = null;
-	private VideoStreamingParams acceptedVideoParams = null;
+	private VideoStreamingParameters desiredVideoParams = null;
+	private VideoStreamingParameters acceptedVideoParams = null;
 
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
@@ -650,7 +650,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return serviceListeners;
 	}
 
-	public void setDesiredVideoParams(VideoStreamingParams params){
+	public void setDesiredVideoParams(VideoStreamingParameters params){
 		this.desiredVideoParams = params;
 	}
 
@@ -659,18 +659,18 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	 * the default options will be returned and set for this instance.
 	 * @return
 	 */
-	public VideoStreamingParams getDesiredVideoParams(){
+	public VideoStreamingParameters getDesiredVideoParams(){
 		if(desiredVideoParams == null){
-			desiredVideoParams = new VideoStreamingParams();
+			desiredVideoParams = new VideoStreamingParameters();
 		}
 		return desiredVideoParams;
 	}
 
-	public void setAcceptedVideoParams(VideoStreamingParams params){
+	public void setAcceptedVideoParams(VideoStreamingParameters params){
 		this.acceptedVideoParams = params;
 	}
 
-	public VideoStreamingParams getAcceptedVideoParams(){
+	public VideoStreamingParameters getAcceptedVideoParams(){
 		return acceptedVideoParams;
 	}
 }

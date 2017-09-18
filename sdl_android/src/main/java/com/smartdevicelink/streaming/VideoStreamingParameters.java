@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 
-public class VideoStreamingParams {
+public class VideoStreamingParameters {
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
 	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
 	private final int DEFAULT_WIDTH = 800;
@@ -26,7 +26,7 @@ public class VideoStreamingParams {
 	private ImageResolution resolution;
 	private VideoStreamingFormat format;
 
-    public VideoStreamingParams(){
+    public VideoStreamingParameters(){
 	    displayDensity = DEFAULT_DENSITY;
 	    frameRate = DEFAULT_FRAMERATE;
 	    bitrate = DEFAULT_BITRATE;
@@ -39,8 +39,8 @@ public class VideoStreamingParams {
 	    format.setCodec(DEFAULT_CODEC);
     }
 
-    public VideoStreamingParams(int displayDensity, int frameRate, int bitrate, int interval,
-                                ImageResolution resolution, VideoStreamingFormat format){
+    public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
+                                    ImageResolution resolution, VideoStreamingFormat format){
 	    this.displayDensity = displayDensity;
 	    this.frameRate = frameRate;
 	    this.bitrate = bitrate;
