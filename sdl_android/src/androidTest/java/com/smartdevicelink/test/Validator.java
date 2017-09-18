@@ -14,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.BodyInformation;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
+import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
@@ -30,9 +31,11 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MyKey;
+import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
@@ -48,6 +51,7 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -293,6 +297,99 @@ public class Validator{
                     || button1.getSystemAction() != button2.getSystemAction() || button1.getType() != button2.getType()){
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    public static boolean validateCoordinate(Coordinate c1, Coordinate c2){
+        if(c1 == null){
+            return ( c2 == null );
+        }
+        if(c2 == null){
+            return ( c1 == null );
+        }
+
+        if(c1.getLatitudeDegrees() != c2.getLatitudeDegrees()){
+            return false;
+        }
+
+        if(c1.getLongitudeDegrees() != c2.getLongitudeDegrees()){
+            return false;
+        }
+
+        return true;
+    }
+
+	public static boolean validateRectangle(Rectangle c1, Rectangle c2){
+		if(c1 == null){
+			return ( c2 == null );
+		}
+		if(c2 == null){
+			return ( c1 == null );
+		}
+
+		if(c1.getX() != c2.getX()){
+			return false;
+		}
+
+		if(c1.getY() != c2.getY()){
+			return false;
+		}
+
+		if(c1.getWidth() != c2.getWidth()){
+			return false;
+		}
+
+		if(c1.getHeight() != c2.getHeight()){
+			return false;
+		}
+
+		return true;
+	}
+
+    public static boolean validateOasisAddress(OasisAddress a1, OasisAddress a2){
+        if(a1 == null){
+            return ( a2 == null );
+        }
+        if(a2 == null){
+            return ( a1 == null );
+        }
+
+        if(!a1.getAdministrativeArea().equals(a2.getAdministrativeArea())){
+            return false;
+        }
+
+        if(!a1.getCountryCode().equals(a2.getCountryCode())){
+            return false;
+        }
+
+        if(!a1.getCountryName().equals(a2.getCountryName())){
+            return false;
+        }
+
+        if(!a1.getLocality().equals(a2.getLocality())){
+            return false;
+        }
+
+        if(!a1.getSubLocality().equals(a2.getSubLocality())){
+            return false;
+        }
+
+        if(!a1.getSubAdministrativeArea().equals(a2.getSubAdministrativeArea())){
+            return false;
+        }
+
+        if(!a1.getPostalCode().equals(a2.getPostalCode())){
+            return false;
+        }
+
+        if(!a1.getThoroughfare().equals(a2.getThoroughfare())){
+            return false;
+        }
+
+        if(!a1.getSubThoroughfare().equals(a2.getSubThoroughfare())){
+            return false;
         }
 
         return true;
@@ -1103,6 +1200,18 @@ public class Validator{
     	}
     	
     	return true;
+    }
+
+    public static boolean validateSupportedFormats (VideoStreamingFormat vsf1, VideoStreamingFormat vsf2) {
+		if(vsf1.getProtocol() != vsf2.getProtocol()){
+			return false;
+		}
+
+	    if(vsf1.getCodec() != vsf2.getCodec()){
+		    return false;
+	    }
+
+	    return true;
     }
     
     public static boolean validateDisplayCapabilities (DisplayCapabilities item1, DisplayCapabilities item2) {

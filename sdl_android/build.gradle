@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "25.0.2"
     defaultConfig {
         minSdkVersion 8
@@ -15,6 +15,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled = true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -27,8 +30,26 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile ('com.smartdevicelink:bson_java_port:1.0.0@aar'){
+        transitive = true
+    }
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
 }
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.trickyandroid:jacoco-everywhere:0.2.1'
+    }
+}
+
+apply from: 'bintray.gradle'
+apply plugin: 'jacoco-everywhere'

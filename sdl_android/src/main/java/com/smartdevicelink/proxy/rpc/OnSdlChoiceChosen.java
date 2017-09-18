@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+
+import java.util.Hashtable;
+import java.util.List;
 
 public class OnSdlChoiceChosen extends RPCNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
@@ -144,29 +144,15 @@ public class OnSdlChoiceChosen extends RPCNotification {
 		super(hash);
 	}
     public SdlChoice getSdlChoice() {
-    	return (SdlChoice) parameters.get(KEY_SDL_CHOICE);
+    	return (SdlChoice) getParameters(KEY_SDL_CHOICE);
     }
     public void setSdlChoice(SdlChoice sdlChoice) {
-    	if (sdlChoice != null) {
-    		parameters.put(KEY_SDL_CHOICE, sdlChoice);
-    	} else {
-            parameters.remove(KEY_SDL_CHOICE);
-        }
+		setParameters(KEY_SDL_CHOICE, sdlChoice);
     }
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
-        if (obj instanceof TriggerSource) {
-            return (TriggerSource) obj;
-        } else if (obj instanceof String) {
-            return TriggerSource.valueForString((String) obj);
-        }
-        return null;
+		return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
     }
     public void setTriggerSource( TriggerSource triggerSource ) {
-        if (triggerSource != null) {
-            parameters.put(KEY_TRIGGER_SOURCE, triggerSource );
-        } else {
-        	parameters.remove(KEY_TRIGGER_SOURCE);
-        }
+		setParameters(KEY_TRIGGER_SOURCE, triggerSource);
     }
 }

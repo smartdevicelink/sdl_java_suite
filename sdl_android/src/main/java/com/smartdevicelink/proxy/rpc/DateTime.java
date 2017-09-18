@@ -30,7 +30,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getMilliSecond() {
-        return (Integer) store.get(KEY_MILLISECOND);
+        return getInteger(KEY_MILLISECOND);
     }
 
 	/**
@@ -41,11 +41,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/    
     public void setMilliSecond(Integer milliSecond) {
-        if (milliSecond != null) {
-            store.put(KEY_MILLISECOND, milliSecond);
-        } else {
-            store.remove(KEY_MILLISECOND);
-        }
+        setValue(KEY_MILLISECOND, milliSecond);
     }
 
     
@@ -56,7 +52,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getSecond() {
-        return (Integer) store.get(KEY_SECOND);
+        return getInteger(KEY_SECOND);
     }
     
 	/**
@@ -67,11 +63,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/
     public void setSecond(Integer second) {
-        if (second != null) {
-            store.put(KEY_SECOND, second);
-        } else {
-            store.remove(KEY_SECOND);
-        }
+        setValue(KEY_SECOND, second);
     }
 
     
@@ -82,7 +74,7 @@ public class DateTime extends RPCStruct{
 	* 
     */    
     public Integer getMinute() {
-        return (Integer) store.get(KEY_MINUTE);
+        return getInteger(KEY_MINUTE);
     }
     
 	/**
@@ -93,11 +85,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/ 
     public void setMinute(Integer minute) {
-        if (minute != null) {
-            store.put(KEY_MINUTE, minute);
-        } else {
-            store.remove(KEY_MINUTE);
-        }
+        setValue(KEY_MINUTE, minute);
     }
 
     /**
@@ -107,7 +95,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getHour() {
-        return (Integer) store.get(KEY_HOUR);
+        return getInteger(KEY_HOUR);
     }
 
 	/**
@@ -118,11 +106,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/ 
     public void setHour(Integer hour) {
-        if (hour != null) {
-            store.put(KEY_HOUR, hour);
-        } else {
-            store.remove(KEY_HOUR);
-        }
+        setValue(KEY_HOUR, hour);
     }
 
     /**
@@ -132,7 +116,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getDay() {
-        return (Integer) store.get(KEY_DAY);
+        return getInteger(KEY_DAY);
     }
 
 	/**
@@ -143,11 +127,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/ 
     public void setDay(Integer day) {
-        if (day != null) {
-            store.put(KEY_DAY, day);
-        } else {
-            store.remove(KEY_DAY);
-        }
+        setValue(KEY_DAY, day);
     }
 
     /**
@@ -157,7 +137,7 @@ public class DateTime extends RPCStruct{
 	* 
     */    
     public Integer getMonth() {
-        return (Integer) store.get(KEY_MONTH);
+        return getInteger(KEY_MONTH);
     }
 
 	/**
@@ -168,11 +148,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/ 
     public void setMonth(Integer month) {
-        if (month != null) {
-            store.put(KEY_MONTH, month);
-        } else {
-            store.remove(KEY_MONTH);
-        }
+        setValue(KEY_MONTH, month);
     }
 
     /**
@@ -182,7 +158,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getYear() {
-        return (Integer) store.get(KEY_YEAR);
+        return getInteger(KEY_YEAR);
     }
 
 	/**
@@ -193,11 +169,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/ 
     public void setYear(Integer year) {
-        if (year != null) {
-            store.put(KEY_YEAR, year);
-        } else {
-            store.remove(KEY_YEAR);
-        }
+        setValue(KEY_YEAR, year);
     }
 
     /**
@@ -207,7 +179,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getTzHour() {
-        return (Integer) store.get(KEY_TZ_HOUR);
+        return getInteger(KEY_TZ_HOUR);
     }
 
 	/**
@@ -218,11 +190,7 @@ public class DateTime extends RPCStruct{
 	* 
 	*/ 
     public void setTzHour(Integer tzHour) {
-        if (tzHour != null) {
-            store.put(KEY_TZ_HOUR, tzHour);
-        } else {
-            store.remove(KEY_TZ_HOUR);
-        }
+        setValue(KEY_TZ_HOUR, tzHour);
     }
     
     /**
@@ -232,7 +200,7 @@ public class DateTime extends RPCStruct{
 	* 
     */
     public Integer getTzMinute() {
-        return (Integer) store.get(KEY_TZ_MINUTE);
+        return getInteger(KEY_TZ_MINUTE);
     }
 
 	/**
@@ -242,10 +210,6 @@ public class DateTime extends RPCStruct{
 	* The time zone offset in Minutes with regard to UTC associated with this DateTime class
 	*/ 
     public void setTzMinute(Integer tzMinute) {
-        if (tzMinute != null) {
-            store.put(KEY_TZ_MINUTE, tzMinute);
-        } else {
-            store.remove(KEY_TZ_MINUTE);
-        }
+        setValue(KEY_TZ_MINUTE, tzMinute);
     }
 }

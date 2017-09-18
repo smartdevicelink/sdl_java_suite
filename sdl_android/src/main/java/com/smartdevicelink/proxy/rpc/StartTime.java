@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 /**
  * Describes the hour, minute and second values used to set the media clock.
@@ -59,7 +59,7 @@ public class StartTime extends RPCStruct {
      * @return hours Minvalue="0", maxvalue="59"
      */    
     public Integer getHours() {
-        return (Integer) store.get( KEY_HOURS );
+        return getInteger( KEY_HOURS );
     }
     /**
      * Set the hour. Minvalue="0", maxvalue="59"
@@ -67,46 +67,34 @@ public class StartTime extends RPCStruct {
      * @param hours min: 0; max: 59
      */    
     public void setHours( Integer hours ) {
-        if (hours != null) {
-            store.put(KEY_HOURS, hours );
-        } else {
-        	store.remove(KEY_HOURS);
-        }
+        setValue(KEY_HOURS, hours);
     }
     /**
      * Get the minute. Minvalue="0", maxvalue="59".
      * @return minutes Minvalue="0", maxvalue="59"
      */    
     public Integer getMinutes() {
-        return (Integer) store.get( KEY_MINUTES );
+        return getInteger( KEY_MINUTES );
     }
     /**
      * Set the minute. Minvalue="0", maxvalue="59".
      * @param minutes min: 0; max: 59
      */    
     public void setMinutes( Integer minutes ) {
-        if (minutes != null) {
-            store.put(KEY_MINUTES, minutes );
-        } else {
-        	store.remove(KEY_MINUTES);
-        }
+        setValue(KEY_MINUTES, minutes);
     }
     /**
      * Get the second. Minvalue="0", maxvalue="59".
      * @return seconds. Minvalue="0", maxvalue="59".
      */    
     public Integer getSeconds() {
-        return (Integer) store.get( KEY_SECONDS );
+        return getInteger( KEY_SECONDS );
     }
     /**
      * Set the second. Minvalue="0", maxvalue="59".
      * @param seconds min: 0 max: 59
      */    
     public void setSeconds( Integer seconds ) {
-        if (seconds != null) {
-            store.put(KEY_SECONDS, seconds );
-        } else {
-        	store.remove(KEY_SECONDS);
-        }
+        setValue(KEY_SECONDS, seconds);
     }
 }

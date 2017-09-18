@@ -1,7 +1,9 @@
 package com.smartdevicelink.protocol;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
+import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 
 import android.os.Parcel;
@@ -65,6 +67,7 @@ public class SdlPacket implements Parcelable{
 	int messageId;
 	int priorityCoefficient;
 	byte[] payload = null;
+	HashMap<String, Object> bsonPayload;
 
 	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
@@ -185,7 +188,12 @@ public class SdlPacket implements Parcelable{
 		return payload;
 	}
 	
-	public byte[] constructPacket(){
+	public byte[] constructPacket() {
+		if (bsonPayload != null && !bsonPayload.isEmpty()) {
+			byte[] bsonBytes = BsonEncoder.encodeToBytes(bsonPayload);
+			payload = bsonBytes;
+			dataSize = bsonBytes.length;
+		}
 		return constructPacket(version, encryption, frameType,
 				serviceType, frameInfo, sessionId,
 				dataSize, messageId, payload);
@@ -219,6 +227,7 @@ public class SdlPacket implements Parcelable{
 	public static byte[] constructPacket(int version, boolean encryption, int frameType,
 			int serviceType, int controlFrameInfo, int sessionId,
 			int dataSize, int messageId, byte[] payload){
+
 		ByteBuffer builder;
 		switch(version){
 			case 1:
@@ -344,6 +353,25 @@ public class SdlPacket implements Parcelable{
 		}
 
     };
-	
-	
+
+	public void putTag(String tag, Object data){
+		if(bsonPayload == null){
+			bsonPayload = new HashMap<>();
+		}
+		bsonPayload.put(tag, data);
+	}
+
+	public Object getTag(String tag){
+		if(payload == null){
+			return null;
+		}else if(bsonPayload == null || bsonPayload.isEmpty()){
+			bsonPayload = BsonEncoder.decodeFromBytes(payload);
+		}
+
+		if(bsonPayload == null){
+			return null;
+		}
+
+		return bsonPayload.get(tag);
+	}
 }

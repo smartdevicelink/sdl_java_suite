@@ -69,7 +69,7 @@
     "parameters":{
       "manualTextEntry":"Text Entry",
       "triggerSource":"MENU",
-      "choiceID":45,
+      "choiceID":45
     }
   }
 }

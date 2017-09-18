@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.streaming;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -41,12 +42,8 @@ public class StreamRPCPacketizerTests extends TestCase {
 		MockInterfaceBroker _interfaceBroker = new MockInterfaceBroker();
 		BaseTransportConfig _transportConfig = new BTTransportConfig(true);
 		SdlSession testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
-
-		try {			
-			URL url = new URL("ftp://mirror.csclub.uwaterloo.ca/index.html");
-		    URLConnection urlConnection = url.openConnection();
-			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
-			
+		try {
+			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			StreamRPCPacketizer testStreamRpcPacketizer = new StreamRPCPacketizer(null, testListener, testInputStream, testRequest, testSessionType, testSessionId, testWV, testWV, testSdlSession);
 			assertNotNull(Test.NOT_NULL, testStreamRpcPacketizer);
 			

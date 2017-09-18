@@ -17,6 +17,7 @@ import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
@@ -31,9 +32,9 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
-import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.OnWayPointChange;
@@ -43,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
@@ -335,4 +337,8 @@ public interface IProxyListenerBase  {
 
 	public void onUnsubscribeWayPointsResponse(UnsubscribeWayPointsResponse response);
 	public void onOnWayPointChange(OnWayPointChange notification);
+
+	public void onGetSystemCapabilityResponse(GetSystemCapabilityResponse response);
+
+	public void onSendHapticDataResponse(SendHapticDataResponse response);
 }

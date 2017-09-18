@@ -1,11 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -14,6 +8,13 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * An asynchronous request from the system for specific data from the device or the cloud or response to a request from the device or cloud. Binary data can be included in hybrid part of message for some requests (such as Authentication request responses)
  * 
@@ -198,16 +199,7 @@ public class OnSystemRequest extends RPCNotification {
     
     @SuppressWarnings("unchecked")
     public List<String> getLegacyData() {
-    	if (parameters.get(KEY_DATA) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_DATA);
-    		if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>)list;
-        		}
-    		}
-    	}
-        return null;
+        return (List<String>) getObject(String.class, KEY_DATA);
     }
 
     public String getBody(){            	
@@ -227,30 +219,19 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public RequestType getRequestType() {
-        Object obj = parameters.get(KEY_REQUEST_TYPE);
-        if (obj == null) return null;
-        if (obj instanceof RequestType) {
-            return (RequestType) obj;
-        } else if (obj instanceof String) {
-            return RequestType.valueForString((String) obj);
-        }
-        return null;
+        return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
     public void setRequestType(RequestType requestType) {
-        if (requestType != null) {
-            parameters.put(KEY_REQUEST_TYPE, requestType);
-        } else {
-            parameters.remove(KEY_REQUEST_TYPE);
-        }
+        setParameters(KEY_REQUEST_TYPE, requestType);
     }
 
     public String getUrl() {
-        Object o = parameters.get(KEY_URL);        
+        Object o = getParameters(KEY_URL);
         if (o == null)
         {
         	//try again for gen 1.1
-        	o = parameters.get(KEY_URL_V1);	
+        	o = getParameters(KEY_URL_V1);
         }
         if (o == null)
         	return null;
@@ -262,30 +243,15 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setUrl(String url) {
-        if (url != null) {
-            parameters.put(KEY_URL, url);
-        } else {
-            parameters.remove(KEY_URL);
-        }
+        setParameters(KEY_URL, url);
     }
 
     public FileType getFileType() {
-        Object obj = parameters.get(KEY_FILE_TYPE);
-        if (obj == null) return null;
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-            return FileType.valueForString((String) obj);
-        }
-        return null;
+        return (FileType) getObject(FileType.class, KEY_FILE_TYPE);
     }
 
     public void setFileType(FileType fileType) {
-        if (fileType != null) {
-            parameters.put(KEY_FILE_TYPE, fileType);
-        } else {
-            parameters.remove(KEY_FILE_TYPE);
-        }
+        setParameters(KEY_FILE_TYPE, fileType);
     }
 
     /**
@@ -301,7 +267,7 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public Long getOffset() {
-        final Object o = parameters.get(KEY_OFFSET);
+        final Object o = getParameters(KEY_OFFSET);
         
         if (o == null){
         	return null;
@@ -316,18 +282,14 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setOffset(Long offset) {
-        if (offset != null) {
-            parameters.put(KEY_OFFSET, offset);
-        } else {
-            parameters.remove(KEY_OFFSET);
-        }
+        setParameters(KEY_OFFSET, offset);
     }
     
     public Integer getTimeout() {
-        Object o = parameters.get(KEY_TIMEOUT);
+        Object o = getParameters(KEY_TIMEOUT);
         
         if (o == null){
-        	 o = parameters.get(KEY_TIMEOUT_V1);
+        	 o = getParameters(KEY_TIMEOUT_V1);
         	 if (o == null) return null;
         }
         
@@ -338,15 +300,11 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setTimeout(Integer timeout) {
-        if (timeout != null) {
-            parameters.put(KEY_TIMEOUT, timeout);
-        } else {
-            parameters.remove(KEY_TIMEOUT);
-        }
+        setParameters(KEY_TIMEOUT, timeout);
     }    
     
     public Long getLength() {
-        final Object o = parameters.get(KEY_LENGTH);
+        final Object o = getParameters(KEY_LENGTH);
         if (o == null){
         	return null;
         }
@@ -372,10 +330,6 @@ public class OnSystemRequest extends RPCNotification {
     }
     
     public void setLength(Long length) {
-        if (length != null) {
-            parameters.put(KEY_LENGTH, length);
-        } else {
-            parameters.remove(KEY_LENGTH);
-        }
+        setParameters(KEY_LENGTH, length);
     }
 }

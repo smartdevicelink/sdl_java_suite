@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.streaming;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -42,30 +43,27 @@ public class AbstractPacketizerTests extends TestCase {
 		MockPacketizer  testPacketizer1  = null;
 		MockPacketizer  testPacketizer2  = null;
 		MockPacketizer  testPacketizer3  = null;
-		MockPacketizer  testPacketizer4  = null;
 		IStreamListener testListener     = new MockStreamListener();
-		
 		try {
-			
-			URL url = new URL("ftp://mirror.csclub.uwaterloo.ca/index.html");
-		    URLConnection urlConnection = url.openConnection();
-			testInputStream = new BufferedInputStream(urlConnection.getInputStream());
-			
+			testInputStream = new BufferedInputStream(new ByteArrayInputStream("sdl streaming test".getBytes()));
 			MockInterfaceBroker _interfaceBroker = new MockInterfaceBroker();
 			BaseTransportConfig _transportConfig = new BTTransportConfig(true);
-		
 			testSdlSession = SdlSession.createSession(testWiproVersion,_interfaceBroker, _transportConfig);
-			
 			testPacketizer1 = new MockPacketizer(testListener, testInputStream, testSessionType, testSessionId, testSdlSession);
 			testPacketizer2 = new MockPacketizer(null, null, null, testSessionId, testSdlSession);
 			testPacketizer3 = new MockPacketizer(testListener, testInputStream, testRpcRequest, testSessionType, testSessionId, testWiproVersion, testSdlSession);
-			testPacketizer4 = new MockPacketizer(null, null, null, null, testSessionId, testWiproVersion, null);
+			try {
+				new MockPacketizer(null, null, null, null, testSessionId, testWiproVersion, null);
+				fail("Exception should be thrown");
+			}catch(Exception e) {
+				assertTrue(e instanceof IllegalArgumentException);
+			}
+
 			
 			// Valid Tests
 			assertNotNull(Test.NOT_NULL, testPacketizer1);
 			assertNotNull(Test.NOT_NULL, testPacketizer2);
 			assertNotNull(Test.NOT_NULL, testPacketizer3);
-			assertNotNull(Test.NOT_NULL, testPacketizer4);
 			
 			assertEquals(Test.MATCH, testListener, testPacketizer1.getListener());
 			assertEquals(Test.MATCH, testInputStream, testPacketizer1.getInputStream());
@@ -83,13 +81,9 @@ public class AbstractPacketizerTests extends TestCase {
 			assertNull(Test.NULL, testPacketizer2.getListener());
 			assertNull(Test.NULL, testPacketizer2.getInputStream());
 			assertNull(Test.NULL, testPacketizer2.getSessionType());
-			assertNull(Test.NULL, testPacketizer4.getListener());
-			assertNull(Test.NULL, testPacketizer4.getInputStream());
-			assertNull(Test.NULL, testPacketizer4.getSessionType());
-			assertNull(Test.NULL, testPacketizer4.getRPCRequest());
-			assertNull(Test.NULL, testPacketizer4.getSdlSession());
 			
 		} catch (IOException e) {
+			e.printStackTrace();
 			fail("IOException was thrown.");
 		}
 	}

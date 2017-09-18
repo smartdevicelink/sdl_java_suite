@@ -95,76 +95,51 @@ public class DeviceInfo extends RPCStruct{
     }
 
    public void setHardware(String hardware) {
-        if (hardware != null) {
-        	store.put(KEY_HARDWARE, hardware);
-        } else {
-        	store.remove(KEY_HARDWARE);
-        }
+        setValue(KEY_HARDWARE, hardware);
    }
 
    public String getHardware() {
-       return (String) store.get(KEY_HARDWARE);
+       return getString(KEY_HARDWARE);
    }
     
    public void setFirmwareRev(String firmwareRev) {
-       if (firmwareRev != null) {
-       	store.put(KEY_FIRMWARE_REV, firmwareRev);
-       } else {
-       	store.remove(KEY_FIRMWARE_REV);
-       }
+       setValue(KEY_FIRMWARE_REV, firmwareRev);
   }
 
   public String getFirmwareRev() {
-      return (String) store.get(KEY_FIRMWARE_REV);
+      return getString(KEY_FIRMWARE_REV);
   }
 
   public void setOs(String os) {
-      if (os != null) {
-      	store.put(KEY_OS, os);
-      } else {
-      	store.remove(KEY_OS);
-      }
+      setValue(KEY_OS, os);
   }
 
  public String getOs() {
-     return (String) store.get(KEY_OS);
+     return getString(KEY_OS);
  }  
 
  public void setOsVersion(String osVersion) {
-     if (osVersion != null) {
-     	store.put(KEY_OS_VERSION, osVersion);
-     } else {
-     	store.remove(KEY_OS_VERSION);
-     }
+     setValue(KEY_OS_VERSION, osVersion);
 }
 
 public String getOsVersion() {
-    return (String) store.get(KEY_OS_VERSION);
+    return getString(KEY_OS_VERSION);
 }  
     
 public void setCarrier(String carrier) {
-    if (carrier != null) {
-    	store.put(KEY_CARRIER, carrier);
-    } else {
-    	store.remove(KEY_CARRIER);
-    }
+    setValue(KEY_CARRIER, carrier);
 }
 
 public String getCarrier() {
-   return (String) store.get(KEY_CARRIER);
+   return getString(KEY_CARRIER);
 } 
 
 public Integer getMaxNumberRFCOMMPorts() {
-    return (Integer) store.get( KEY_MAX_NUMBER_RFCOMM_PORTS );
+    return getInteger( KEY_MAX_NUMBER_RFCOMM_PORTS );
 }
 
 public void setMaxNumberRFCOMMPorts( Integer maxNumberRFCOMMPorts ) {
-    if (maxNumberRFCOMMPorts != null) {
-        store.put(KEY_MAX_NUMBER_RFCOMM_PORTS, maxNumberRFCOMMPorts );
-    }
-    else {
-    	store.remove(KEY_MAX_NUMBER_RFCOMM_PORTS);
-    }    
+    setValue(KEY_MAX_NUMBER_RFCOMM_PORTS, maxNumberRFCOMMPorts);
 }
 
 }

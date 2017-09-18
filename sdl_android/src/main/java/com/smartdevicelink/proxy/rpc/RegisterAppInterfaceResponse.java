@@ -1,9 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.Version;
@@ -12,6 +8,9 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Register AppInterface Response is sent, when RegisterAppInterface has been called
@@ -65,13 +64,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
-        Object obj = parameters.get(KEY_SDL_MSG_VERSION);
-        if (obj instanceof SdlMsgVersion) {
-        	return (SdlMsgVersion)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new SdlMsgVersion((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
     }
 
 	/**
@@ -94,11 +87,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 *            request) is ignored by SDL&reg;
 	 */
     public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
-        if (sdlMsgVersion != null) {
-            parameters.put(KEY_SDL_MSG_VERSION, sdlMsgVersion);
-        } else {
-            parameters.remove(KEY_SDL_MSG_VERSION);
-        }
+		setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
     }
 
 	/**
@@ -108,13 +97,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return Enumeration -a language enumeration
 	 */
     public Language getLanguage() {
-        Object obj = parameters.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
-        }
-        return null;
+		return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
 
 	/**
@@ -127,11 +110,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 */
     public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-            parameters.remove(KEY_LANGUAGE);
-        }
+		setParameters(KEY_LANGUAGE, language);
     }
 
 	/**
@@ -144,13 +123,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public Language getHmiDisplayLanguage() {
-        Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
-        }
-        return null;
+		return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
     }
 
 	/**
@@ -161,11 +134,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+		setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
 	/**
@@ -175,24 +144,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
-        Object obj = parameters.get(KEY_DISPLAY_CAPABILITIES);
-        if (obj instanceof DisplayCapabilities) {
-        	return (DisplayCapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new DisplayCapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);
     }
     /**
      * Sets Display Capabilities
      * @param displayCapabilities
      */
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
-        if (displayCapabilities != null) {
-            parameters.put(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
-        } else {
-        	parameters.remove(KEY_DISPLAY_CAPABILITIES);
-        }
+		setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
     }
 
 	/**
@@ -202,33 +161,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<ButtonCapabilities> getButtonCapabilities() {
-        if (parameters.get(KEY_BUTTON_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_BUTTON_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ButtonCapabilities) {
-	                return (List<ButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<ButtonCapabilities> newList = new ArrayList<ButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<ButtonCapabilities>) getObject(ButtonCapabilities.class, KEY_BUTTON_CAPABILITIES);
     }
     /**
      * Sets Button Capabilities
      * @param buttonCapabilities
      */
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
-        if (buttonCapabilities != null) {
-            parameters.put(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
-        } else {
-        	parameters.remove(KEY_BUTTON_CAPABILITIES);
-        }
+		setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
     }
     /**
 	 * Gets getSoftButtonCapabilities set when application interface is registered.
@@ -237,33 +177,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
-        if (parameters.get(KEY_SOFT_BUTTON_CAPABILITIES) instanceof List<?>) {
-	    	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTON_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButtonCapabilities) {
-	                return (List<SoftButtonCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButtonCapabilities> newList = new ArrayList<SoftButtonCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButtonCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
     }
     /**
      * Sets softButtonCapabilities
      * @param softButtonCapabilities
      */
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
-        if (softButtonCapabilities != null) {
-            parameters.put(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTON_CAPABILITIES);
-        }
+		setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
     }
 
 	/**
@@ -273,24 +194,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
-        Object obj = parameters.get(KEY_PRESET_BANK_CAPABILITIES);
-        if (obj instanceof PresetBankCapabilities) {
-        	return (PresetBankCapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new PresetBankCapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (PresetBankCapabilities) getObject(PresetBankCapabilities.class, KEY_PRESET_BANK_CAPABILITIES);
     }
     /**
      * Sets presetBankCapabilities
      * @param	presetBankCapabilities
      */
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
-        if (presetBankCapabilities != null) {
-            parameters.put(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
-        } else {
-        	parameters.remove(KEY_PRESET_BANK_CAPABILITIES);
-        }
+		setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
     }
 	
 	/**
@@ -300,37 +211,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<HmiZoneCapabilities> getHmiZoneCapabilities() {
-        if (parameters.get(KEY_HMI_ZONE_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_HMI_ZONE_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HmiZoneCapabilities) {
-	                return (List<HmiZoneCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<HmiZoneCapabilities> newList = new ArrayList<HmiZoneCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HmiZoneCapabilities toAdd = HmiZoneCapabilities.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<HmiZoneCapabilities>) getObject(HmiZoneCapabilities.class, KEY_HMI_ZONE_CAPABILITIES);
     }
     /**
      * Sets hmiZoneCapabilities
      * @param hmiZoneCapabilities
      */
     public void setHmiZoneCapabilities(List<HmiZoneCapabilities> hmiZoneCapabilities) {
-        if (hmiZoneCapabilities != null) {
-            parameters.put(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
-        } else {
-        	parameters.remove(KEY_HMI_ZONE_CAPABILITIES);
-        }
+		setParameters(KEY_HMI_ZONE_CAPABILITIES, hmiZoneCapabilities);
     }
 	
 	/**
@@ -340,70 +228,24 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<SpeechCapabilities> getSpeechCapabilities() {
-        if (parameters.get(KEY_SPEECH_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SPEECH_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SpeechCapabilities) {
-	                return (List<SpeechCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<SpeechCapabilities> newList = new ArrayList<SpeechCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    SpeechCapabilities toAdd = SpeechCapabilities.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<SpeechCapabilities>) getObject(SpeechCapabilities.class, KEY_SPEECH_CAPABILITIES);
     }
     /**
      * Sets speechCapabilities
      * @param speechCapabilities
      */
     public void setSpeechCapabilities(List<SpeechCapabilities> speechCapabilities) {
-        if (speechCapabilities != null) {
-            parameters.put(KEY_SPEECH_CAPABILITIES, speechCapabilities);
-        } else {
-        	parameters.remove(KEY_SPEECH_CAPABILITIES);
-        }
+		setParameters(KEY_SPEECH_CAPABILITIES, speechCapabilities);
     }
 
     
     @SuppressWarnings("unchecked")
     public List<PrerecordedSpeech> getPrerecordedSpeech() {
-        if (parameters.get(KEY_PRERECORDED_SPEECH) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_PRERECORDED_SPEECH);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof PrerecordedSpeech) {
-	                return (List<PrerecordedSpeech>) list;
-	            } else if (obj instanceof String) {
-	            	List<PrerecordedSpeech> newList = new ArrayList<PrerecordedSpeech>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    PrerecordedSpeech toAdd = PrerecordedSpeech.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<PrerecordedSpeech>) getObject(PrerecordedSpeech.class, KEY_PRERECORDED_SPEECH);
     }
 
     public void setPrerecordedSpeech(List<PrerecordedSpeech> prerecordedSpeech) {
-        if (prerecordedSpeech != null) {
-            parameters.put(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
-        } else {
-        	parameters.remove(KEY_PRERECORDED_SPEECH);
-        }
+		setParameters(KEY_PRERECORDED_SPEECH, prerecordedSpeech);
     }
  
     
@@ -414,37 +256,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<VrCapabilities> getVrCapabilities() {
-        if (parameters.get(KEY_VR_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_VR_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof VrCapabilities) {
-	                return (List<VrCapabilities>) list;
-	            } else if (obj instanceof String) {
-	            	List<VrCapabilities> newList = new ArrayList<VrCapabilities>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    VrCapabilities toAdd = VrCapabilities.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<VrCapabilities>) getObject(VrCapabilities.class, KEY_VR_CAPABILITIES);
     }
     /**
      * Sets VrCapabilities
      * @param vrCapabilities
      */
     public void setVrCapabilities(List<VrCapabilities> vrCapabilities) {
-        if (vrCapabilities != null) {
-            parameters.put(KEY_VR_CAPABILITIES, vrCapabilities);
-        } else {
-        	parameters.remove(KEY_VR_CAPABILITIES);
-        }
+		setParameters(KEY_VR_CAPABILITIES, vrCapabilities);
     }
 	
 	/**
@@ -454,24 +273,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public VehicleType getVehicleType() {
-        Object obj = parameters.get(KEY_VEHICLE_TYPE);
-        if (obj instanceof VehicleType) {
-        	return (VehicleType)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new VehicleType((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (VehicleType) getObject(VehicleType.class, KEY_VEHICLE_TYPE);
     }
     /**
      * Sets vehicleType
      * @param vehicleType
      */
     public void setVehicleType(VehicleType vehicleType) {
-        if (vehicleType != null) {
-            parameters.put(KEY_VEHICLE_TYPE, vehicleType);
-        } else {
-        	parameters.remove(KEY_VEHICLE_TYPE);
-        }
+		setParameters(KEY_VEHICLE_TYPE, vehicleType);
     }
 	
 	/**
@@ -481,33 +290,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<AudioPassThruCapabilities> getAudioPassThruCapabilities() {
-        if (parameters.get(KEY_AUDIO_PASS_THRU_CAPABILITIES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_AUDIO_PASS_THRU_CAPABILITIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof AudioPassThruCapabilities) {
-	                return (List<AudioPassThruCapabilities>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<AudioPassThruCapabilities> newList = new ArrayList<AudioPassThruCapabilities>();
-	                for (Object hashObj : list) {
-	                    newList.add(new AudioPassThruCapabilities((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<AudioPassThruCapabilities>) getObject(AudioPassThruCapabilities.class, KEY_AUDIO_PASS_THRU_CAPABILITIES);
     }
     /**
      * Sets AudioPassThruCapabilities
      * @param audioPassThruCapabilities
      */
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
-        if (audioPassThruCapabilities != null) {
-            parameters.put(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
-        } else {
-        	parameters.remove(KEY_AUDIO_PASS_THRU_CAPABILITIES);
-        }
+		setParameters(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
     }
     public String getProxyVersionInfo() {
 		if (Version.VERSION != null)
@@ -516,70 +306,36 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		return null;
     }
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
-        if (supportedDiagModes != null) {
-        	parameters.put(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
-        }
-        else
-        {
-        	parameters.remove(KEY_SUPPORTED_DIAG_MODES);
-        }
+		setParameters(KEY_SUPPORTED_DIAG_MODES, supportedDiagModes);
     }
 
     @SuppressWarnings("unchecked")
     public List<Integer> getSupportedDiagModes() {
-        
-    	if (parameters.get(KEY_SUPPORTED_DIAG_MODES) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get( KEY_SUPPORTED_DIAG_MODES);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof Integer) {
-                	return (List<Integer>) list;
-        		}
-        	}
-        }
-        return null;
+		return (List<Integer>) getObject(Integer.class, KEY_SUPPORTED_DIAG_MODES);
     }
     
     public void setHmiCapabilities(HMICapabilities hmiCapabilities) {
-        if (hmiCapabilities != null) {
-        	parameters.put(KEY_HMI_CAPABILITIES, hmiCapabilities);
-        }else{
-        	parameters.remove(KEY_HMI_CAPABILITIES);
-        }
+		setParameters(KEY_HMI_CAPABILITIES, hmiCapabilities);
     }
 
     @SuppressWarnings("unchecked")
     public HMICapabilities getHmiCapabilities() {
-    	Object obj = parameters.get(KEY_HMI_CAPABILITIES);
-        if (obj instanceof HMICapabilities) {
-        	return (HMICapabilities)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new HMICapabilities((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (HMICapabilities) getObject(HMICapabilities.class, KEY_HMI_CAPABILITIES);
     }  
     
     public void setSdlVersion(String sdlVersion) {
-        if (sdlVersion != null) {
-        	parameters.put(KEY_SDL_VERSION, sdlVersion);
-        }else{
-        	parameters.remove(KEY_SDL_VERSION);
-        }
+		setParameters(KEY_SDL_VERSION, sdlVersion);
     }
 
     public String getSdlVersion() {    
-    	 return (String) parameters.get(KEY_SDL_VERSION);
+    	 return getString(KEY_SDL_VERSION);
     } 
     
     public void setSystemSoftwareVersion(String systemSoftwareVersion) {
-        if (systemSoftwareVersion != null) {
-        	parameters.put(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
-        }else{
-        	parameters.remove(KEY_SYSTEM_SOFTWARE_VERSION);
-        }
+		setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
     }
 
     public String getSystemSoftwareVersion() {    
-    	 return (String) parameters.get(KEY_SYSTEM_SOFTWARE_VERSION);
+    	 return getString(KEY_SYSTEM_SOFTWARE_VERSION);
     } 
 }

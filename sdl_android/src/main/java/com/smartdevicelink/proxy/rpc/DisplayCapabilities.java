@@ -1,13 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 /**
  * Contains information about the display for the SDL system to which the application is currently connected.
  * <p><b> Parameter List</b></p>
@@ -78,24 +79,14 @@ public class DisplayCapabilities extends RPCStruct {
      * @return the type of display
      */    
     public DisplayType getDisplayType() {
-        Object obj = store.get(KEY_DISPLAY_TYPE);
-        if (obj instanceof DisplayType) {
-            return (DisplayType) obj;
-        } else if (obj instanceof String) {
-            return DisplayType.valueForString((String) obj);
-        }
-        return null;
+        return (DisplayType) getObject(DisplayType.class, KEY_DISPLAY_TYPE);
     }
     /**
      * Set the type of display
      * @param displayType the display type
      */    
     public void setDisplayType( DisplayType displayType ) {
-        if (displayType != null) {
-            store.put(KEY_DISPLAY_TYPE, displayType );
-        } else {
-        	store.remove(KEY_DISPLAY_TYPE);
-        }
+        setValue(KEY_DISPLAY_TYPE, displayType);
     }
     /**
      *Get an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
@@ -104,22 +95,7 @@ public class DisplayCapabilities extends RPCStruct {
      */    
     @SuppressWarnings("unchecked")
     public List<TextField> getTextFields() {
-        if (store.get(KEY_TEXT_FIELDS) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get(KEY_TEXT_FIELDS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TextField) {
-	                return (List<TextField>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TextField> newList = new ArrayList<TextField>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TextField((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return (List<TextField>) getObject(TextField.class, KEY_TEXT_FIELDS);
     }
     /**
      * Set an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
@@ -127,57 +103,26 @@ public class DisplayCapabilities extends RPCStruct {
      * @param textFields the List of textFields
      */    
     public void setTextFields( List<TextField> textFields ) {
-        if (textFields != null) {
-            store.put(KEY_TEXT_FIELDS, textFields );
-        } else {
-        	store.remove(KEY_TEXT_FIELDS);
-        }
+        setValue(KEY_TEXT_FIELDS, textFields);
     }
     
     
     
     @SuppressWarnings("unchecked")
     public List<ImageField> getImageFields() {
-        if (store.get(KEY_IMAGE_FIELDS) instanceof List<?>) {
-            List<?> list = (List<?>)store.get(KEY_IMAGE_FIELDS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof ImageField) {
-	                return (List<ImageField>) list;
-	            } else if (obj instanceof Hashtable) {
-	                List<ImageField> newList = new ArrayList<ImageField>();
-	                for (Object hashObj : list) {
-	                    newList.add(new ImageField((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return (List<ImageField>) getObject(ImageField.class, KEY_IMAGE_FIELDS);
     }
   
     public void setImageFields( List<ImageField> imageFields ) {
-        if (imageFields != null) {
-            store.put(KEY_IMAGE_FIELDS, imageFields );
-        }
-        else
-        {
-        	store.remove(KEY_IMAGE_FIELDS);
-        }
+        setValue(KEY_IMAGE_FIELDS, imageFields);
     }    
     
     public Integer getNumCustomPresetsAvailable() {
-        return (Integer) store.get(KEY_NUM_CUSTOM_PRESETS_AVAILABLE);
+        return getInteger(KEY_NUM_CUSTOM_PRESETS_AVAILABLE);
     }
  
     public void setNumCustomPresetsAvailable(Integer numCustomPresetsAvailable) {
-        if (numCustomPresetsAvailable != null) {
-            store.put(KEY_NUM_CUSTOM_PRESETS_AVAILABLE, numCustomPresetsAvailable);
-        }
-        else
-        {
-        	store.remove(KEY_NUM_CUSTOM_PRESETS_AVAILABLE);
-        }
+        setValue(KEY_NUM_CUSTOM_PRESETS_AVAILABLE, numCustomPresetsAvailable);
     }
       
     /**
@@ -186,37 +131,14 @@ public class DisplayCapabilities extends RPCStruct {
      */    
     @SuppressWarnings("unchecked")
     public List<MediaClockFormat> getMediaClockFormats() {
-        if (store.get(KEY_MEDIA_CLOCK_FORMATS) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get(KEY_MEDIA_CLOCK_FORMATS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof MediaClockFormat) {
-	                return (List<MediaClockFormat>) list;
-	            } else if (obj instanceof String) {
-	            	List<MediaClockFormat> newList = new ArrayList<MediaClockFormat>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    MediaClockFormat toAdd = MediaClockFormat.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return (List<MediaClockFormat>) getObject(MediaClockFormat.class, KEY_MEDIA_CLOCK_FORMATS);
     }
     /**
      * Set an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
      * @param mediaClockFormats the List of MediaClockFormat
      */    
     public void setMediaClockFormats( List<MediaClockFormat> mediaClockFormats ) {
-        if (mediaClockFormats != null) {
-            store.put(KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats );
-        } else {
-        	store.remove(KEY_MEDIA_CLOCK_FORMATS);
-        }
+        setValue(KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats);
     }
     
     /**
@@ -225,11 +147,7 @@ public class DisplayCapabilities extends RPCStruct {
      * @since SmartDeviceLink 2.0
      */
     public void setGraphicSupported(Boolean graphicSupported) {
-    	if (graphicSupported != null) {
-    		store.put(KEY_GRAPHIC_SUPPORTED, graphicSupported);
-    	} else {
-    		store.remove(KEY_GRAPHIC_SUPPORTED);
-    	}
+    	setValue(KEY_GRAPHIC_SUPPORTED, graphicSupported);
     }
     
     /**
@@ -238,53 +156,24 @@ public class DisplayCapabilities extends RPCStruct {
      * @since SmartDeviceLink 2.0
      */
     public Boolean getGraphicSupported() {
-    	return (Boolean) store.get(KEY_GRAPHIC_SUPPORTED);
+    	return getBoolean(KEY_GRAPHIC_SUPPORTED);
     }
     
     @SuppressWarnings("unchecked")
     public List<String> getTemplatesAvailable() {
-        if (store.get(KEY_TEMPLATES_AVAILABLE) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get( KEY_TEMPLATES_AVAILABLE);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
-        		}
-        	}
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_TEMPLATES_AVAILABLE);
     }   
     
     public void setTemplatesAvailable(List<String> templatesAvailable) {
-        if (templatesAvailable != null) {
-            store.put(KEY_TEMPLATES_AVAILABLE, templatesAvailable);
-        }
-        else
-        {
-        	store.remove(KEY_TEMPLATES_AVAILABLE);
-        }        
+        setValue(KEY_TEMPLATES_AVAILABLE, templatesAvailable);
     }
         
     public void setScreenParams(ScreenParams screenParams) {
-        if (screenParams != null) {
-            store.put(KEY_SCREEN_PARAMS, screenParams);
-        } else {
-            store.remove(KEY_SCREEN_PARAMS);
-        }
+        setValue(KEY_SCREEN_PARAMS, screenParams);
     }
 
     @SuppressWarnings("unchecked")
     public ScreenParams getScreenParams() {
-        Object obj = store.get(KEY_SCREEN_PARAMS);
-        if (obj instanceof ScreenParams) {
-            return (ScreenParams) obj;
-        } else if (obj instanceof Hashtable) {
-            try {
-                return new ScreenParams((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SCREEN_PARAMS, e);
-            }
-        }
-        return null;
+        return (ScreenParams) getObject(ScreenParams.class, KEY_SCREEN_PARAMS);
     }     
 }

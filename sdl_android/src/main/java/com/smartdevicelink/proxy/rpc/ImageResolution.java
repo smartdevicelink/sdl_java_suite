@@ -62,26 +62,18 @@ public class ImageResolution extends RPCStruct {
     }
     
     public void setResolutionWidth(Integer resolutionWidth) {
-        if (resolutionWidth != null) {
-            store.put(KEY_RESOLUTION_WIDTH, resolutionWidth);
-        } else {
-        	store.remove(KEY_RESOLUTION_WIDTH);
-        }
+        setValue(KEY_RESOLUTION_WIDTH, resolutionWidth);
     }
     
     public Integer getResolutionWidth() {
-        return (Integer) store.get(KEY_RESOLUTION_WIDTH);
+        return getInteger(KEY_RESOLUTION_WIDTH);
     }
     
     public void setResolutionHeight(Integer resolutionHeight) {
-        if (resolutionHeight != null) {
-            store.put(KEY_RESOLUTION_HEIGHT, resolutionHeight);
-        } else {
-        	store.remove(KEY_RESOLUTION_HEIGHT);
-        }
+        setValue(KEY_RESOLUTION_HEIGHT, resolutionHeight);
     }
     
     public Integer getResolutionHeight() {
-        return (Integer) store.get(KEY_RESOLUTION_HEIGHT);
+        return getInteger(KEY_RESOLUTION_HEIGHT);
     }
 }

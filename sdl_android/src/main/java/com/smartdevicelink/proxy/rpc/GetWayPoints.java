@@ -18,20 +18,10 @@ public class GetWayPoints extends RPCRequest {
     }
 
     public WayPointType getWayPointType() {
-        Object obj = parameters.get(KEY_WAY_POINT_TYPE);
-        if (obj instanceof WayPointType) {
-            return (WayPointType) obj;
-        } else if (obj instanceof String) {
-            return WayPointType.valueForString((String) obj);
-        }
-        return null;
+        return (WayPointType) getObject(WayPointType.class, KEY_WAY_POINT_TYPE);
     }
 
     public void setWayPointType(WayPointType wayPointType) {
-        if (wayPointType != null) {
-            parameters.put(KEY_WAY_POINT_TYPE, wayPointType);
-        } else {
-            parameters.remove(KEY_WAY_POINT_TYPE);
-        }
+        setParameters(KEY_WAY_POINT_TYPE, wayPointType);
     }
 }

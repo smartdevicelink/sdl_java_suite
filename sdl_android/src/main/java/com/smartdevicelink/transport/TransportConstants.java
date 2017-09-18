@@ -51,9 +51,9 @@ public class TransportConstants {
 	public static final String	BIND_REQUEST_TYPE_ALT_TRANSPORT					= "BIND_REQUEST_TYPE_ALT_TRANSPORT";
 	public static final String	BIND_REQUEST_TYPE_STATUS						= "BIND_REQUEST_TYPE_STATUS";
 
-	
+
 	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
-	
+
 	/**
 	 * This class houses all important router service versions
 	 */

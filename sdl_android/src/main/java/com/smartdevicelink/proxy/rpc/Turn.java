@@ -1,8 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
+
+import java.util.Hashtable;
 
 /**
  * Describes a navigation turn including an optional icon
@@ -51,12 +52,7 @@ public class Turn extends RPCStruct{
      *            the text to describe the turn (e.g. streetname)
      */
     public void setNavigationText(String navigationText){
-        if(navigationText != null){
-            store.put(KEY_NAVIGATION_TEXT, navigationText);
-        }
-        else{
-            store.remove(KEY_NAVIGATION_TEXT);
-        }
+        setValue(KEY_NAVIGATION_TEXT, navigationText);
     }
 
     /**
@@ -65,7 +61,7 @@ public class Turn extends RPCStruct{
      * @return the text to describe the turn (e.g. streetname)
      */
     public String getNavigationText(){
-        return (String) store.get(KEY_NAVIGATION_TEXT);
+        return getString(KEY_NAVIGATION_TEXT);
     }
 
     /**
@@ -75,11 +71,7 @@ public class Turn extends RPCStruct{
      *            the image to be shown for a turn
      */
     public void setTurnIcon(Image turnIcon){
-        if (turnIcon != null) {
-            store.put(KEY_TURN_IMAGE, turnIcon);
-        } else {
-            store.remove(KEY_TURN_IMAGE);
-        }
+        setValue(KEY_TURN_IMAGE, turnIcon);
     }
 
     /**
@@ -89,13 +81,7 @@ public class Turn extends RPCStruct{
      */
     @SuppressWarnings("unchecked")
     public Image getTurnIcon(){
-        Object obj = store.get(KEY_TURN_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-            return new Image((Hashtable<String, Object>) obj);
-        }
-        return null;
+        return (Image) getObject(Image.class, KEY_TURN_IMAGE);
     }
 
 }

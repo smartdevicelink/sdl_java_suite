@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * <p>Non periodic vehicle data read request. This is an RPC to get diagnostics
@@ -98,11 +98,7 @@ public class ReadDID extends RPCRequest {
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
     public void setEcuName(Integer ecuName) {
-    	if (ecuName != null) {
-    		parameters.put(KEY_ECU_NAME, ecuName);
-    	} else {
-    		parameters.remove(KEY_ECU_NAME);
-    	}
+		setParameters(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -112,7 +108,7 @@ public class ReadDID extends RPCRequest {
 	 *         module
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(KEY_ECU_NAME);
+    	return getInteger(KEY_ECU_NAME);
     }
 
 	/**
@@ -129,11 +125,7 @@ public class ReadDID extends RPCRequest {
 	 *            </ul>
 	 */
     public void setDidLocation(List<Integer> didLocation) {
-    	if (didLocation != null) {
-    		parameters.put(KEY_DID_LOCATION, didLocation);
-    	} else {
-    		parameters.remove(KEY_DID_LOCATION);
-    	}
+		setParameters(KEY_DID_LOCATION, didLocation);
     }
 
 	/**
@@ -144,15 +136,6 @@ public class ReadDID extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<Integer> getDidLocation() {
-        if (parameters.get(KEY_DID_LOCATION) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DID_LOCATION);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof Integer) {
-                	return (List<Integer>) list;
-        		}
-        	}
-        }
-        return null;
+		return (List<Integer>) getObject(Integer.class, KEY_DID_LOCATION);
     }
 }
