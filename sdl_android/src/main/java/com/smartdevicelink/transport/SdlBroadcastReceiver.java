@@ -74,7 +74,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			return;
         }
         
-	    boolean didStart = false;
+		boolean didStart = false;
 		if (localRouterClass == null){
 			localRouterClass = defineLocalSdlRouterClass();
 		}
