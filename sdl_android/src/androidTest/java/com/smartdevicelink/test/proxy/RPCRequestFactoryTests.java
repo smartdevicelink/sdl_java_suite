@@ -80,7 +80,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testInt, testBSR.getCorrelationID());
 		
 		testBSR  = RPCRequestFactory.buildSystemRequest(testData, null);
-		assertNull(Test.NULL, testBSR.getCorrelationID());
+		assertNotNull(Test.NULL, testBSR.getCorrelationID());
 		
 		testBSR  = RPCRequestFactory.buildSystemRequest(null, testInt);
 		assertNull(Test.NULL, testBSR);
@@ -95,7 +95,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testInt, testBSR.getCorrelationID());
 		
 		testBSR  = RPCRequestFactory.buildSystemRequestLegacy(testVData, null);
-		assertNull(Test.NULL, testBSR.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBSR.getCorrelationID());
 		
 		testBSR  = RPCRequestFactory.buildSystemRequestLegacy(null, testInt);
 		assertNull(Test.NULL, testBSR);
@@ -145,7 +145,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testBAC.getMenuParams());
 		assertNull(Test.NULL, testBAC.getVrCommands());
 		assertNull(Test.NULL, testBAC.getCmdIcon());
-		assertNull(Test.NULL, testBAC.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position, Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 		testIconValue = "icon";
@@ -167,7 +167,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testBAC.getMenuParams());
 		assertNull(Test.NULL, testBAC.getVrCommands());
 		assertNull(Test.NULL, testBAC.getCmdIcon());
-		assertNull(Test.NULL, testBAC.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Integer parentID, Integer position, Vector<String> vrCommands, Integer correlationID)
 		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testParentID, testPosition, testVrCommands, testCorrelationID);
@@ -182,7 +182,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testBAC.getCmdID());
 		assertNull(Test.NULL, testBAC.getMenuParams());
 		assertNull(Test.NULL, testBAC.getVrCommands());
-		assertNull(Test.NULL, testBAC.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, String menuText, Vector<String> vrCommands, Integer correlationID)
 		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testMenuText, testVrCommands, testCorrelationID);
@@ -195,7 +195,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testBAC.getCmdID());
 		assertNull(Test.NULL, testBAC.getMenuParams());
 		assertNull(Test.NULL, testBAC.getVrCommands());
-		assertNull(Test.NULL, testBAC.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBAC.getCorrelationID());
 		
 		// Test -- buildAddCommand(Integer commandID, Vector<String> vrCommands, Integer correlationID)
 		testBAC = RPCRequestFactory.buildAddCommand(testCommandID, testVrCommands, testCorrelationID);
@@ -206,7 +206,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		testBAC = RPCRequestFactory.buildAddCommand(null, null, null);
 		assertNull(Test.NULL, testBAC.getCmdID());
 		assertNull(Test.NULL, testBAC.getVrCommands());
-		assertNull(Test.NULL, testBAC.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBAC.getCorrelationID());
 	}
 	
 	public void testBuildAddSubMenu () {
@@ -232,7 +232,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testBASM.getMenuID());
 		assertNull(Test.NULL, testBASM.getMenuName());
 		assertNull(Test.NULL, testBASM.getPosition());
-		assertNull(Test.NULL, testBASM.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBASM.getCorrelationID());
 	}
 	
 	public void testBuildAlert () {
@@ -294,7 +294,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testAlert.getPlayTone());
 		assertNull(Test.NULL, testAlert.getDuration());
 		assertNull(Test.NULL, testAlert.getSoftButtons());
-		assertNull(Test.NULL, testAlert.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testAlert.getCorrelationID());
 		
 		// Test -- buildAlert(String ttsText, Boolean playTone, Integer correlationID)
 		// ^ Calls another build method.
@@ -323,7 +323,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testAlert.getAlertText2());
 		assertNull(Test.NULL, testAlert.getPlayTone());
 		assertNull(Test.NULL, testAlert.getDuration());
-		assertNull(Test.NULL, testAlert.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testAlert.getCorrelationID());
 	}
 	
 	public void testBuildCreateInteractionChoiceSet () {
@@ -346,7 +346,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		testBCICS = RPCRequestFactory.buildCreateInteractionChoiceSet(null, null, null);
 		assertNull(Test.NULL, testBCICS.getChoiceSet());
 		assertNull(Test.NULL, testBCICS.getInteractionChoiceSetID());
-		assertNull(Test.NULL, testBCICS.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testBCICS.getCorrelationID());
 	}
 	
 	public void testBuildDeleteCommand () {
@@ -363,7 +363,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testDC = RPCRequestFactory.buildDeleteCommand(null, null);
 		assertNull(Test.NULL, testDC.getCmdID());
-		assertNull(Test.NULL, testDC.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testDC.getCorrelationID());
 		
 	}
 	
@@ -381,7 +381,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testFileName, testDF.getSdlFileName());
 		
 		testDF = RPCRequestFactory.buildDeleteFile(null, null);
-		assertNull(Test.NULL, testDF.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testDF.getCorrelationID());
 		assertNull(Test.NULL, testDF.getSdlFileName());
 		
 	}
@@ -400,7 +400,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testDICS = RPCRequestFactory.buildDeleteInteractionChoiceSet(null, null);
 		assertNull(Test.NULL, testDICS.getInteractionChoiceSetID());
-		assertNull(Test.NULL, testDICS.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testDICS.getCorrelationID());
 	}
 	
 	public void testBuildDeleteSubMenu () {
@@ -417,7 +417,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testDSM = RPCRequestFactory.buildDeleteSubMenu(null, null);
 		assertNull(Test.NULL, testDSM.getMenuID());
-		assertNull(Test.NULL, testDSM.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testDSM.getCorrelationID());
 	}
 	
 	public void testBuildListFiles () {
@@ -430,7 +430,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testCorrelationID, testLF.getCorrelationID());
 				
 		testLF = RPCRequestFactory.buildListFiles(null);
-		assertNull(Test.NULL, testLF.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testLF.getCorrelationID());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -480,7 +480,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testPI.getInteractionMode());
 		assertNull(Test.NULL, testPI.getTimeout());
 		assertNull(Test.NULL, testPI.getVrHelp());
-		assertNull(Test.NULL, testPI.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testPI.getCorrelationID());
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Vector<Integer> interactionChoiceSetIDList, String helpPrompt, String timeoutPrompt, InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp, Integer correlationID)
 		// ^ Calls another build method.
@@ -510,7 +510,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testPI.getTimeoutPrompt());
 		assertNull(Test.NULL, testPI.getInteractionMode());
 		assertNull(Test.NULL, testPI.getTimeout());
-		assertNull(Test.NULL, testPI.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testPI.getCorrelationID());
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Vector<Integer> interactionChoiceSetIDList, String helpPrompt, String timeoutPrompt, InteractionMode interactionMode, Integer timeout, Integer correlationID)
 		// ^ Calls another build method.
@@ -538,7 +538,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testPI.getHelpPrompt());
 		assertNull(Test.NULL, testPI.getInteractionMode());
 		assertNull(Test.NULL, testPI.getTimeout());
-		assertNull(Test.NULL, testPI.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testPI.getCorrelationID());
 		
 		// Test -- buildPerformInteraction(String initPrompt, String displayText, Vector<Integer> interactionChoiceSetIDList, String helpPrompt, InteractionMode interactionMode, Integer timeout, Integer correlationID)
 		// ^ Calls another build method.
@@ -567,7 +567,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testPF.getFileType());
 		assertNull(Test.NULL, testPF.getPersistentFile());
 		assertNull(Test.NULL, testPF.getFileData());
-		assertNull(Test.NULL, testPF.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testPF.getCorrelationID());
 		
 		// Test -- buildPutFile(String sdlFileName, Integer iOffset, Integer iLength)
 		testPF = RPCRequestFactory.buildPutFile(testFileName, testOffset, testLength);
@@ -665,7 +665,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testSAI = RPCRequestFactory.buildSetAppIcon(null, null);
 		assertNull(Test.NULL, testSAI.getSdlFileName());
-		assertNull(Test.NULL, testSAI.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSAI.getCorrelationID());
 		
 	}
 	
@@ -698,7 +698,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		testSBP = RPCRequestFactory.buildSetGlobalProperties((Vector<TTSChunk>) null, null, null);
 		assertNull(Test.NULL, testSBP.getHelpPrompt());
 		assertNull(Test.NULL, testSBP.getTimeoutPrompt());
-		assertNull(Test.NULL, testSBP.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSBP.getCorrelationID());
 		
 		// Test -- buildSetGlobalProperties(String helpPrompt, String timeoutPrompt, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID)
 		// ^ Calls another build method.
@@ -716,7 +716,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testSBP.getTimeoutPrompt());
 		assertNull(Test.NULL, testSBP.getVrHelpTitle());
 		assertNull(Test.NULL, testSBP.getVrHelp());
-		assertNull(Test.NULL, testSBP.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSBP.getCorrelationID());
 	}
 	
 	public void testBuildSetMediaClockTimer () {
@@ -736,7 +736,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(null, null, null, null, null);
 		assertNull(Test.NULL, testSMCT.getStartTime());
 		assertNull(Test.NULL, testSMCT.getUpdateMode());
-		assertNull(Test.NULL, testSMCT.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSMCT.getCorrelationID());
 		
 		// Test -- buildSetMediaClockTimer(UpdateMode updateMode, Integer correlationID)
 		// ^ Calls another build method.
@@ -784,7 +784,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testShow.getSoftButtons());
 		assertNull(Test.NULL, testShow.getCustomPresets());
 		assertNull(Test.NULL, testShow.getAlignment());
-		assertNull(Test.NULL, testShow.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testShow.getCorrelationID());
 		// Test -- buildShow(String mainText1, String mainText2, String mainText3, String mainText4, TextAlignment alignment, Integer correlationID)
 		// ^ Calls another build method.
 		
@@ -805,7 +805,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testShow.getMediaClock());
 		assertNull(Test.NULL, testShow.getMediaTrack());
 		assertNull(Test.NULL, testShow.getAlignment());
-		assertNull(Test.NULL, testShow.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testShow.getCorrelationID());
 		
 		// Test -- buildShow(String mainText1, String mainText2, TextAlignment alignment, Integer correlationID)
 		// ^ Calls another build method.
@@ -825,7 +825,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testSpeak = RPCRequestFactory.buildSpeak((String) null, null);
 		assertNull(Test.NULL, testSpeak.getTtsChunks());
-		assertNull(Test.NULL, testSpeak.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSpeak.getCorrelationID());
 		
 		// Test -- buildSpeak(Vector<TTSChunk> ttsChunks, Integer correlationID)
 		testSpeak = RPCRequestFactory.buildSpeak(testTTSChunks, testCorrelationID);
@@ -834,7 +834,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testSpeak = RPCRequestFactory.buildSpeak((Vector<TTSChunk>) null, null);
 		assertNull(Test.NULL, testSpeak.getTtsChunks());
-		assertNull(Test.NULL, testSpeak.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSpeak.getCorrelationID());
 	}
 	
 	public void testBuildSubscribeButton () {
@@ -850,7 +850,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testSB = RPCRequestFactory.buildSubscribeButton(null, null);
 		assertNull(Test.NULL, testSB.getButtonName());
-		assertNull(Test.NULL, testSB.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSB.getCorrelationID());
 		
 	}
 	
@@ -864,7 +864,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testCorrelationID, testUAI.getCorrelationID());
 		
 		testUAI = RPCRequestFactory.buildUnregisterAppInterface(null);
-		assertNull(Test.NULL, testUAI.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testUAI.getCorrelationID());
 	}
 	
 	public void testBuildUnsubscribeButton () {
@@ -880,7 +880,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testUB = RPCRequestFactory.buildUnsubscribeButton(null, null);
 		assertNull(Test.NULL, testUB.getButtonName());
-		assertNull(Test.NULL, testUB.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testUB.getCorrelationID());
 		
 	}
 	
@@ -909,7 +909,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testCorrelationID, testSVD.getCorrelationID());
 		
 		testSVD = RPCRequestFactory.BuildSubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
-		assertNull(Test.NULL, testSVD.getCorrelationID());
+		assertNotNull(Test.NULL, testSVD.getCorrelationID());
 	}
 	
 	public void testBuildUnsubscribeVehicleData () {
@@ -937,7 +937,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testCorrelationID, testUVD.getCorrelationID());
 		
 		testUVD = RPCRequestFactory.BuildUnsubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
-		assertNull(Test.NULL, testUVD.getCorrelationID());
+		assertNotNull(Test.NULL, testUVD.getCorrelationID());
 	}
 	
 	public void testBuildGetVehicleData () {
@@ -966,7 +966,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testCorrelationID, testGVD.getCorrelationID());
 		
 		testGVD = RPCRequestFactory.BuildGetVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testVIN, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
-		assertNull(Test.NULL, testGVD.getCorrelationID());	
+		assertNotNull(Test.NULL, testGVD.getCorrelationID());
 	}
 	
 	public void testBuildScrollableMessage () {
@@ -988,7 +988,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testSM.getScrollableMessageBody());
 		assertNull(Test.NULL, testSM.getTimeout());
 		assertNull(Test.NULL, testSM.getSoftButtons());
-		assertNull(Test.NULL, testSM.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSM.getCorrelationID());
 	}
 	
 	public void testBuildSlider () {
@@ -1013,7 +1013,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testSlider.getSliderHeader());
 		assertNull(Test.NULL, testSlider.getSliderFooter());
 		assertNull(Test.NULL, testSlider.getTimeout());
-		assertNull(Test.NULL, testSlider.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSlider.getCorrelationID());
 	}
 	
 	public void testBuildChangeRegistration () {
@@ -1031,7 +1031,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		testCR = RPCRequestFactory.BuildChangeRegistration(null, null, null);
 		assertNull(Test.NULL, testCR.getLanguage());
 		assertNull(Test.NULL, testCR.getHmiDisplayLanguage());
-		assertNull(Test.NULL, testCR.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testCR.getCorrelationID());
 	}
 	
 	public void testBuildSetDisplayLayout () {
@@ -1047,7 +1047,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		
 		testSDL = RPCRequestFactory.BuildSetDisplayLayout(null, null);
 		assertNull(Test.NULL, testSDL.getDisplayLayout());
-		assertNull(Test.NULL, testSDL.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testSDL.getCorrelationID());
 	}
 	
 	public void testBuildPerformAudioPassThru () {
@@ -1085,7 +1085,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testPAPT.getBitsPerSample());
 		assertNull(Test.NULL, testPAPT.getAudioType());
 		assertNull(Test.NULL, testPAPT.getMuteAudio());
-		assertNull(Test.NULL, testPAPT.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testPAPT.getCorrelationID());
 	}
 	
 	public void testBuildEndAudioPassThru () {
@@ -1098,6 +1098,6 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testCorrelationID, testEAPT.getCorrelationID());
 		
 		testEAPT = RPCRequestFactory.BuildEndAudioPassThru(null);
-		assertNull(Test.NULL, testEAPT.getCorrelationID());
+		assertNotNull(Test.NOT_NULL, testEAPT.getCorrelationID());
 	}	
 }

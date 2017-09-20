@@ -136,7 +136,7 @@ public class TouchEvent extends RPCStruct {
     public List<TouchCoord> getC() {
     	return getTouchCoordinates();
     }
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
     public List<TouchCoord> getTouchCoordinates() {
         return (List<TouchCoord>) getObject(TouchCoord.class, KEY_C);
     } 
