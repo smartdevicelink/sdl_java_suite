@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,14 +26,16 @@ public class SystemCapabilityManager {
 	}
 
 	public void parseRAIResponse(RegisterAppInterfaceResponse response){
-		cachedSystemCapabilities.put(SystemCapabilityType.HMI, response.getHmiCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.AUDIO_PASSTHROUGH, response.getAudioPassThruCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.HMI_ZONE, response.getHmiZoneCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
-		cachedSystemCapabilities.put(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
+		if(response!=null && response.getSuccess()) {
+			cachedSystemCapabilities.put(SystemCapabilityType.HMI, response.getHmiCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.AUDIO_PASSTHROUGH, response.getAudioPassThruCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.HMI_ZONE, response.getHmiZoneCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
+		}
 	}
 
 	/**
@@ -91,7 +94,9 @@ public class SystemCapabilityManager {
 		});
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
-		callback.onSendPacketRequest(request);
+		if(callback!=null){
+			callback.onSendPacketRequest(request);
+		}
 	}
 
 	/**
