@@ -654,7 +654,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		rpcResponseListeners = new SparseArray<OnRPCResponseListener>();
 		rpcNotificationListeners = new SparseArray<OnRPCNotificationListener>();
-		
+
+		//Initialize _systemCapabilityManager here.
+		_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
+			@Override
+			public void onSendPacketRequest(RPCRequest message) {
+				try {
+					sendRPCRequest(message);
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 		// Initialize the proxy
 		try {
 			initializeProxy();
@@ -1846,17 +1858,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					processRaiResponse(msg);
 
-					//Initialize _systemCapabilityManager here.
-					_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
-						@Override
-						public void onSendPacketRequest(RPCRequest message) {
-							try {
-								sendRPCRequest(message);
-							} catch (SdlException e) {
-								e.printStackTrace();
-							}
-						}
-					});
+					//Populate the system capability manager with the RAI response
 					_systemCapabilityManager.parseRAIResponse(msg);
 					
 					Intent sendIntent = createBroadcastIntent();
