@@ -4,6 +4,7 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -77,10 +78,15 @@ public class SystemCapabilityManager {
 				if(response.getSuccess()){
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
 					cachedSystemCapabilities.put(systemCapabilityType, retrievedCapability);
-					scListener.onCapabilityRetrieved(retrievedCapability);
+					if(scListener!=null){scListener.onCapabilityRetrieved(retrievedCapability);	}
 				}else{
-					scListener.onError(response.getInfo());
+					if(scListener!=null){scListener.onError(response.getInfo());}
 				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				if(scListener!=null){scListener.onError(info);}
 			}
 		});
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
