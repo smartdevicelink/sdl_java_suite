@@ -25,6 +25,8 @@ import com.smartdevicelink.util.CorrelationIdGenerator;
 
 import java.util.List;
 
+import static android.R.id.list;
+
 public class SystemCapabilityManagerTests extends AndroidTestCase {
 	public static final String TAG = "SystemCapabilityManagerTests";
 	public static SystemCapabilityManager systemCapabilityManager;
@@ -39,8 +41,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		super.tearDown();
 	}
 
-	public void testParseRAI() {
-		systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
+	public SystemCapabilityManager createSampleManager(){
+		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
 			@Override
 			public void onSendPacketRequest(RPCRequest message) {
 
@@ -59,6 +61,11 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		raiResponse.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
 
 		systemCapabilityManager.parseRAIResponse(raiResponse);
+		return systemCapabilityManager;
+	}
+
+	public void testParseRAI() {
+		systemCapabilityManager = createSampleManager();
 
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
@@ -114,6 +121,16 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 				assertTrue(false);
 			}
 		});
+	}
+
+	public void testListConversion(){
+		SystemCapabilityManager systemCapabilityManager = createSampleManager();
+		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
+		assertNotNull(capability);
+		List<SoftButtonCapabilities> list = (List<SoftButtonCapabilities>)SystemCapabilityManager.convertToList(capability);
+		assertNotNull(list);
+
+
 	}
 
 

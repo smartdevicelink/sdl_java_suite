@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class SystemCapabilityManager {
 	HashMap<SystemCapabilityType, Object> cachedSystemCapabilities = new HashMap<>();
@@ -85,5 +86,19 @@ public class SystemCapabilityManager {
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
 		callback.onSendPacketRequest(request);
+	}
+
+	/**
+	 * Converts a capability object into a list.
+	 * @param object the capability that needs to be converted
+	 * @return a List of capabilities if object is instance of List, otherwise it will return null.
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static List<?> convertToList(Object object){
+		if(object instanceof List<?>){
+			return (List<?>) object;
+		}else{
+			return null;
+		}
 	}
 }
