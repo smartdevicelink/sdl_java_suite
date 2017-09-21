@@ -59,6 +59,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		raiResponse.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
 		raiResponse.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		raiResponse.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
+		raiResponse.setSuccess(true);
 
 		systemCapabilityManager.parseRAIResponse(raiResponse);
 		return systemCapabilityManager;
