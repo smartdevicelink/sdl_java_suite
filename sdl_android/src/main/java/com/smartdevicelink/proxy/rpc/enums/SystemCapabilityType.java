@@ -96,6 +96,14 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 			<td align=center>N</td>
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>VOICE_RECOGNITION</td>
+ * 			<td>VrCapabilities</td>
+ * 			<td>Returns VOICE_RECOGNITION</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+ * 		</tr>
+ * 	</table>
  *
  */
 
@@ -358,7 +366,29 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    SPEECH;
+    SPEECH,
+	/**
+	 * Available Synchronously after Register App Interface response <br>
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>VOICE_RECOGNITION</td>
+	 * 			<td>VrCapabilities</td>
+	 * 			<td>Returns VOICE_RECOGNITION</td>
+	 * 			<td align=center>N</td>
+	 * 			<td>Available Synchronously <strong>after</strong> Register App Interface response</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+    VOICE_RECOGNITION,
+
+	;
 
     public static SystemCapabilityType valueForString(String value) {
         try{
