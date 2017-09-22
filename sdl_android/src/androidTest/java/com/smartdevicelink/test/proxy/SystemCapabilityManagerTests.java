@@ -128,7 +128,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
 		assertNotNull(capability);
-		List<SoftButtonCapabilities> list = (List<SoftButtonCapabilities>)SystemCapabilityManager.convertToList(capability);
+		List<SoftButtonCapabilities> list = SystemCapabilityManager.convertToList(capability, SoftButtonCapabilities.class);
 		assertNotNull(list);
 
 

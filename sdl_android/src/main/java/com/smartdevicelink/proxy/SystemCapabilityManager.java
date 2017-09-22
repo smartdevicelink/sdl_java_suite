@@ -11,6 +11,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -139,12 +140,26 @@ public class SystemCapabilityManager {
 	/**
 	 * Converts a capability object into a list.
 	 * @param object the capability that needs to be converted
+	 * @param classType The class type of that should be contained in the list
 	 * @return a List of capabilities if object is instance of List, otherwise it will return null.
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static List<?> convertToList(Object object){
-		if(object instanceof List<?>){
-			return (List<?>) object;
+	public static <T> List<T> convertToList(Object object, Class<T> classType){
+		if(classType!=null && object!=null && object instanceof List ){
+			List list = (List)object;
+			if(!list.isEmpty()){
+				if(classType.isInstance(list.get(0))){
+					return (List<T>)object;
+				}else{
+					//The list is not of the correct list type
+					return null;
+				}
+			}else {
+				//We return a new list of type T instead of null because while we don't know if
+				//the original list was of type T we want to ensure that we don't throw a cast class exception
+				//but still
+				return new ArrayList<T>();
+			}
 		}else{
 			return null;
 		}

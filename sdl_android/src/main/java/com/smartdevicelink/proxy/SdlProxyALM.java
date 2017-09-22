@@ -1643,7 +1643,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("SDL is unavailable. Unable to get the buttonCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 
-		return ( List<ButtonCapabilities> ) convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
+		return convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON), ButtonCapabilities.class);
 	}
 
 	/**
@@ -1664,7 +1664,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is not connected. Unable to get the softButtonCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return ( List<SoftButtonCapabilities> ) convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON));
+		return convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON),SoftButtonCapabilities.class);
 	}
 
 	/**
@@ -1726,7 +1726,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the displayCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return ( DisplayCapabilities ) convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
+		return ( DisplayCapabilities ) _systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 	}
 
 	/**
@@ -1747,7 +1747,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the hmiZoneCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return ( List<HmiZoneCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
+		return convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.HMI_ZONE), HmiZoneCapabilities.class);
 	}
 
 	/**
@@ -1769,7 +1769,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("SDL is unavailable. Unable to get the speechCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 
-		return ( List<SpeechCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
+		return convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH), SpeechCapabilities.class);
 	}
 	/**
 	 * Gets PrerecordedSpeech set when application interface is registered.
@@ -1865,7 +1865,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the vrCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return ( List<VrCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
+		return convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.VOICE_RECOGNITION), VrCapabilities.class);
 	}
 
 	/**
@@ -1905,7 +1905,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return ( List<AudioPassThruCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
+		return convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.AUDIO_PASSTHROUGH), AudioPassThruCapabilities.class);
 	}
 
 	public List<Integer> getSupportedDiagModes() throws SdlException {
@@ -1939,7 +1939,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is not connected. Unable to get the HMICapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return ( HMICapabilities ) _systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON);
+		return ( HMICapabilities ) _systemCapabilityManager.getCapability(SystemCapabilityType.HMI);
 	}
 
 
