@@ -16,6 +16,7 @@ import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -31,6 +32,8 @@ import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+
+import static com.smartdevicelink.proxy.SystemCapabilityManager.convertToList;
 
 
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
@@ -1636,10 +1639,11 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the buttonCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _buttonCapabilities;
+
+		return ( List<ButtonCapabilities> ) convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
 	}
 
 	/**
@@ -1657,10 +1661,10 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is not connected. Unable to get the softButtonCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _softButtonCapabilities;
+		return ( List<SoftButtonCapabilities> ) convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON));
 	}
 
 	/**
@@ -1681,7 +1685,7 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		if (!_appInterfaceRegisterd) {
 			throw new SdlException("SDL is not connected. Unable to get the presetBankCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _presetBankCapabilities;
+		return ( PresetBankCapabilities ) _systemCapabilityManager.getCapability(SystemCapabilityType.PRESET_BANK);
 	}
 
 	/**
@@ -1719,10 +1723,10 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the displayCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _displayCapabilities;
+		return ( DisplayCapabilities ) convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
 	}
 
 	/**
@@ -1740,10 +1744,10 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the hmiZoneCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _hmiZoneCapabilities;
+		return ( List<HmiZoneCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
 	}
 
 	/**
@@ -1761,11 +1765,11 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the speechCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 
-		return _speechCapabilities;
+		return ( List<SpeechCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
 	}
 	/**
 	 * Gets PrerecordedSpeech set when application interface is registered.
@@ -1858,10 +1862,10 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is unavailable. Unable to get the vrCapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _vrCapabilities;
+		return ( List<VrCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
 	}
 
 	/**
@@ -1898,10 +1902,10 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is not connected. Unable to get the vehicleType.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _audioPassThruCapabilities;
+		return ( List<AudioPassThruCapabilities> )convertToList(_systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON));
 	}
 
 	public List<Integer> getSupportedDiagModes() throws SdlException {
@@ -1932,10 +1936,10 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		}
 
 		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
+		if (!_appInterfaceRegisterd || _systemCapabilityManager == null) {
 			throw new SdlException("SDL is not connected. Unable to get the HMICapabilities.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-		return _hmiCapabilities;
+		return ( HMICapabilities ) _systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON);
 	}
 
 
