@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -35,9 +36,45 @@ public class SystemCapabilityManager {
 			cachedSystemCapabilities.put(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.VOICE_RECOGNITION, response.getVrCapabilities());
 		}
 	}
 
+	/**
+	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability
+	 * that is being cached in the SystemCapabilityManager.
+	 * @param systemCapabilityType
+	 * @param capability
+	 */
+	public void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
+		cachedSystemCapabilities.put(systemCapabilityType,capability);
+	}
+
+	/**
+	 * Ability to see if the connected module supports the given capability. Useful to check before
+	 * attempting to query for capabilities that require asynchronous calls to initialize.
+	 * @param type the SystemCapabilityType that is to be checked
+	 * @return if that capability is supported with the current, connected module
+	 */
+	public boolean isCapabilitySupported(SystemCapabilityType type){
+		if(cachedSystemCapabilities.containsKey(type)){
+			return true;
+		}else if(cachedSystemCapabilities.containsKey(SystemCapabilityType.HMI)){
+			HMICapabilities hmiCapabilities = ((HMICapabilities)cachedSystemCapabilities.get(SystemCapabilityType.HMI));
+			switch (type) {
+				case NAVIGATION:
+					return hmiCapabilities.isNavigationAvailable();
+				case PHONE_CALL:
+					return hmiCapabilities.isPhoneCallAvailable();
+				case VIDEO_STREAMING:
+					return hmiCapabilities.isVideoStreamingAvailable();
+				default:
+					return false;
+			}
+		}else{
+			return false;
+		}
+	}
 	/**
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability

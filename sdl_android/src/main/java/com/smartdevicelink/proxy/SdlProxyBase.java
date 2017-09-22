@@ -201,17 +201,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected String _autoActivateIdReturned = null;
 	protected Language _sdlLanguage = null;
 	protected Language _hmiDisplayLanguage = null;
-	protected DisplayCapabilities _displayCapabilities = null;
-	protected List<ButtonCapabilities> _buttonCapabilities = null;
-	protected List<SoftButtonCapabilities> _softButtonCapabilities = null;
-	protected PresetBankCapabilities _presetBankCapabilities = null;
-	protected List<HmiZoneCapabilities> _hmiZoneCapabilities = null;
-	protected List<SpeechCapabilities> _speechCapabilities = null;
 	protected List<PrerecordedSpeech> _prerecordedSpeech = null;
-	protected List<VrCapabilities> _vrCapabilities = null;
 	protected VehicleType _vehicleType = null;
-	protected List<AudioPassThruCapabilities> _audioPassThruCapabilities = null;
-	protected HMICapabilities _hmiCapabilities = null;
 	protected String _systemSoftwareVersion = null;
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
@@ -1873,20 +1864,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					//_autoActivateIdReturned = msg.getAutoActivateID();
 					/*Place holder for legacy support*/ _autoActivateIdReturned = "8675309";
-					_buttonCapabilities = msg.getButtonCapabilities();
-					_displayCapabilities = msg.getDisplayCapabilities();
-					_softButtonCapabilities = msg.getSoftButtonCapabilities();
-					_presetBankCapabilities = msg.getPresetBankCapabilities();
-					_hmiZoneCapabilities = msg.getHmiZoneCapabilities();
-					_speechCapabilities = msg.getSpeechCapabilities();
 					_prerecordedSpeech = msg.getPrerecordedSpeech();
 					_sdlLanguage = msg.getLanguage();
 					_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 					_sdlMsgVersion = msg.getSdlMsgVersion();
-					_vrCapabilities = msg.getVrCapabilities();
 					_vehicleType = msg.getVehicleType();
-					_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
-					_hmiCapabilities = msg.getHmiCapabilities();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
 					
@@ -2026,23 +2008,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_appInterfaceRegisterd = true;
 				}
 				processRaiResponse(msg);
-				
+				//Populate the system capability manager with the RAI response
+				_systemCapabilityManager.parseRAIResponse(msg);
+
 				//_autoActivateIdReturned = msg.getAutoActivateID();
 				/*Place holder for legacy support*/ _autoActivateIdReturned = "8675309";
-				_buttonCapabilities = msg.getButtonCapabilities();
-				_displayCapabilities = msg.getDisplayCapabilities();
-				_softButtonCapabilities = msg.getSoftButtonCapabilities();
-				_presetBankCapabilities = msg.getPresetBankCapabilities();
-				_hmiZoneCapabilities = msg.getHmiZoneCapabilities();
-				_speechCapabilities = msg.getSpeechCapabilities();
 				_prerecordedSpeech = msg.getPrerecordedSpeech();
 				_sdlLanguage = msg.getLanguage();
 				_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 				_sdlMsgVersion = msg.getSdlMsgVersion();
-				_vrCapabilities = msg.getVrCapabilities();
 				_vehicleType = msg.getVehicleType();
-				_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
-				_hmiCapabilities = msg.getHmiCapabilities();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 				_proxyVersionInfo = msg.getProxyVersionInfo();
 				
@@ -2561,11 +2536,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
                 
                 // successfully changed display layout - update layout capabilities
-                if(msg.getSuccess()){
-                    _displayCapabilities = msg.getDisplayCapabilities();
-                    _buttonCapabilities = msg.getButtonCapabilities();
-                    _presetBankCapabilities = msg.getPresetBankCapabilities();
-                    _softButtonCapabilities = msg.getSoftButtonCapabilities();
+                if(msg.getSuccess() && _systemCapabilityManager!=null){
+					_systemCapabilityManager.setCapability(SystemCapabilityType.DISPLAY, msg.getDisplayCapabilities());
+					_systemCapabilityManager.setCapability(SystemCapabilityType.BUTTON, msg.getButtonCapabilities());
+					_systemCapabilityManager.setCapability(SystemCapabilityType.PRESET_BANK, msg.getPresetBankCapabilities());
+					_systemCapabilityManager.setCapability(SystemCapabilityType.SOFTBUTTON, msg.getSoftButtonCapabilities());
                 }
                 
                 if (_callbackToUIThread) {
