@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
@@ -474,5 +475,10 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         public void onGenericResponse(GenericResponse response) {
             Log.i(TAG, "Generic response from SDL: " + response.getResultCode().name() + " Info: " + response.getInfo());
         }
+
+        @Override
+		public void onSendHapticDataResponse(SendHapticDataResponse response) {
+			Log.i(TAG, "SendHapticDataResponse response from SDL: " + response);
+		}
     }
 }

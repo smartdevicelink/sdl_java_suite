@@ -108,7 +108,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
             //Send a non-null bundle with a null bytes array
             //First, set mSerialService to the correct state so we get to test packet being null
-            MultiplexBluetoothTransport transport = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(null);
+            MultiplexBluetoothTransport transport = new MultiplexBluetoothTransport(null);
             transport.setStateManually(MultiplexBluetoothTransport.STATE_CONNECTED);
             field = SdlRouterService.class.getDeclaredField("mSerialService");
             field.setAccessible(true);

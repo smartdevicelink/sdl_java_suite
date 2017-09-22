@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -83,12 +84,15 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
@@ -2888,11 +2892,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onButtonPressResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
+				final SendHapticDataResponse msg = new SendHapticDataResponse(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSendHapticDataResponse((SendHapticDataResponse) msg);
+					onRPCResponseReceived(msg);
+				}
 			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
-							"SDL Message Version = " + _sdlMsgVersion);
+							" SDL Message Version = " + _sdlMsgVersion);
 				} else {
 					DebugTool.logError("Unrecognized response Message: " + functionName.toString());
 				}
@@ -3568,7 +3587,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	public ScheduledExecutorService createScheduler(){
 		return  Executors.newSingleThreadScheduledExecutor();
-	}	
+	}
+
+	public void startService(SessionType serviceType, boolean isEncrypted){
+		sdlSession.startService(serviceType, sdlSession.getSessionId(), isEncrypted);
+	}
+
+	public void endService(SessionType serviceType){
+		sdlSession.endService(serviceType, sdlSession.getSessionId());
+	}
+
+	public void setDesiredVideoParams(VideoStreamingParams params){
+		sdlSession.setDesiredVideoParams(params);
+	}
 
 	/**
 	 *Opens the video service (serviceType 11) and subsequently streams raw H264 video from an InputStream provided by the app
@@ -3907,7 +3938,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private void AudioServiceEndedNACK() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
-	}	
+	}
 	
 	public void setAppService(Service mService)
 	{
@@ -5621,6 +5652,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		
 		return sdlSession.isServiceProtected(sType);		
+	}
+
+	public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceType != null && sdlSession != null && sdlServiceListener != null){
+			sdlSession.addServiceListener(serviceType, sdlServiceListener);
+		}
+	}
+
+	public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceType != null && sdlSession != null && sdlServiceListener != null){
+			sdlSession.removeServiceListener(serviceType, sdlServiceListener);
+		}
+	}
+
+	public VideoStreamingParams getAcceptedVideoParams(){
+		return sdlSession.getAcceptedVideoParams();
 	}
 	
 	public IProxyListenerBase getProxyListener()

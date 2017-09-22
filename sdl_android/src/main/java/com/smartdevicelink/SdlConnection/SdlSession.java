@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,11 +23,13 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -51,6 +54,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	SdlEncoder mSdlEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
+	private HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
+	private VideoStreamingParams desiredVideoParams = null;
+	private VideoStreamingParams acceptedVideoParams = null;
 
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
@@ -482,6 +488,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		if (isEncrypted)
 			encryptedServices.addIfAbsent(sessionType);
 		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceStarted(this, sessionType, isEncrypted);
+			}
+		}
 		//if (version == 3)
 			initialiseSession();
 		if (sessionType.eq(SessionType.RPC)){
@@ -493,6 +505,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
 			String correlationID) {		
 		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceEnded(this, sessionType);
+			}
+		}
 		encryptedServices.remove(sessionType);
 	}
 
@@ -534,14 +552,25 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);		
+		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NACK'ed");
+			}
+		}
 	}
 
 	@Override
 	public void onProtocolSessionEndedNACKed(SessionType sessionType,
 			byte sessionID, String correlationID) {
 		this.sessionListener.onProtocolSessionEndedNACKed(sessionType, sessionID, correlationID);
-		
+		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
+			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
+			for(ISdlServiceListener listener:listeners){
+				listener.onServiceError(this, sessionType, "End "+ sessionType.toString() +" Service NACK'ed");
+			}
+		}
 	}
 
 	@Override
@@ -595,5 +624,53 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	public static boolean removeConnection(SdlConnection connection){
 		return shareConnections.remove(connection);
+	}
+
+	public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceListeners == null){
+			serviceListeners = new HashMap<>();
+		}
+		if(serviceType != null && sdlServiceListener != null){
+			if(!serviceListeners.containsKey(serviceType)){
+				serviceListeners.put(serviceType,new CopyOnWriteArrayList<ISdlServiceListener>());
+			}
+			serviceListeners.get(serviceType).add(sdlServiceListener);
+		}
+	}
+
+	public boolean removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
+		if(serviceListeners!= null && serviceType != null && sdlServiceListener != null && serviceListeners.containsKey(serviceType)){
+			return serviceListeners.get(serviceType).remove(sdlServiceListener);
+		}
+		return false;
+	}
+
+
+	public HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> getServiceListeners(){
+		return serviceListeners;
+	}
+
+	public void setDesiredVideoParams(VideoStreamingParams params){
+		this.desiredVideoParams = params;
+	}
+
+	/**
+	 * Returns the currently set desired video streaming parameters. If there haven't been any set,
+	 * the default options will be returned and set for this instance.
+	 * @return
+	 */
+	public VideoStreamingParams getDesiredVideoParams(){
+		if(desiredVideoParams == null){
+			desiredVideoParams = new VideoStreamingParams();
+		}
+		return desiredVideoParams;
+	}
+
+	public void setAcceptedVideoParams(VideoStreamingParams params){
+		this.acceptedVideoParams = params;
+	}
+
+	public VideoStreamingParams getAcceptedVideoParams(){
+		return acceptedVideoParams;
 	}
 }

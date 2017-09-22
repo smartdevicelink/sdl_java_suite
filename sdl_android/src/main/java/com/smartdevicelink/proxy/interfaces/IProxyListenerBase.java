@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
@@ -350,4 +351,6 @@ public interface IProxyListenerBase  {
 	public void onSetInteriorVehicleDataResponse(SetInteriorVehicleDataResponse response);
 
 	public void onOnInteriorVehicleData(OnInteriorVehicleData notification);
+
+	public void onSendHapticDataResponse(SendHapticDataResponse response);
 }

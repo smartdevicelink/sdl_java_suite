@@ -13,6 +13,7 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
+import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
@@ -21,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -30,6 +32,7 @@ import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
 import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
+import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -102,6 +105,7 @@ import com.smartdevicelink.proxy.rpc.enums.TBTState;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -137,9 +141,10 @@ public class Test {
 	
 	// RPC Request/Response/Notification/Datatype Test Values
 	public static final int                            GENERAL_INT                            = 100;
+	public static final Integer                        GENERAL_INTEGER                        = 100;
 	public static final Long                           GENERAL_LONG                           = 100L;
 	public static final Turn                           GENERAL_TURN                           = new Turn();
-	public static final float                          GENERAL_FLOAT                          = 100f;
+	public static final Float                          GENERAL_FLOAT                          = 100f;
 	public static final Image                          GENERAL_IMAGE                          = new Image();	
 	public static final Choice                         GENERAL_CHOICE                         = new Choice();
 	public static final String                         GENERAL_STRING                         = "test";
@@ -233,6 +238,7 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
 	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;
@@ -246,6 +252,10 @@ public class Test {
 	public static final ModuleData 					   GENERAL_MODULEDATA                     = new ModuleData();
 	public static final ClimateControlCapabilities     GENERAL_CLIMATECONTROLCAPABILITIES     = new ClimateControlCapabilities();
 	public static final RadioControlCapabilities       GENERAL_RADIOCONTROLCAPABILITIES       = new RadioControlCapabilities();
+
+	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
+	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
+	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -297,7 +307,7 @@ public class Test {
 	public static final JSONArray  JSON_AUDIOPASSTHRUCAPABILITIES = new JSONArray();
 	public static final JSONArray JSON_RADIOCONTROLCAPABILITIES   = new JSONArray();
 	public static final JSONArray JSON_CLIMATECONTROLCAPABILITIES = new JSONArray();
-
+	public static final JSONArray  JSON_TEXTFIELDTYPES            = new JSONArray();
 	public static final JSONObject JSON_TURN                      = new JSONObject();
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
 	public static final JSONObject JSON_CHOICE                    = new JSONObject();
@@ -593,7 +603,25 @@ public class Test {
 		GENERAL_REMOTECONTROLCAPABILITIES.setClimateControlCapabilities(GENERAL_CLIMATECONTROLCAPABILITIES_LIST);
 		GENERAL_REMOTECONTROLCAPABILITIES.setRadioControlCapabilities(GENERAL_RADIOCONTROLCAPABILITIES_LIST);
 
-		try {	
+		List<MetadataType> exampleList = new ArrayList<>();
+		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
+		exampleList.add(1, MetadataType.MEDIA_ALBUM);
+		exampleList.add(2, MetadataType.MEDIA_ARTIST);
+
+		GENERAL_METADATASTRUCT.setMainField1(exampleList);
+		GENERAL_METADATASTRUCT.setMainField2(exampleList);
+		GENERAL_METADATASTRUCT.setMainField3(exampleList);
+		GENERAL_METADATASTRUCT.setMainField4(exampleList);
+
+		GENERAL_RECTANGLE.setX(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setY(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setWidth(GENERAL_FLOAT);
+		GENERAL_RECTANGLE.setHeight(GENERAL_FLOAT);
+
+		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
+		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
+        
+		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);
 			
@@ -772,6 +800,10 @@ public class Test {
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_ID, GENERAL_INT);
 			JSON_TOUCHEVENT.put(TouchEvent.KEY_TS, JsonUtils.createJsonArray(GENERAL_LONG_LIST));
 			JSON_TOUCHEVENTS.put(JSON_TOUCHEVENT);
+
+			JSON_TEXTFIELDTYPES.put(MetadataType.CURRENT_TEMPERATURE);
+			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ALBUM);
+			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
 			
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

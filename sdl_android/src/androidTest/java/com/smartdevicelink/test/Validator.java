@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
 import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
+import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
@@ -331,6 +332,33 @@ public class Validator{
 
         return true;
     }
+
+	public static boolean validateRectangle(Rectangle c1, Rectangle c2){
+		if(c1 == null){
+			return ( c2 == null );
+		}
+		if(c2 == null){
+			return ( c1 == null );
+		}
+
+		if(c1.getX() != c2.getX()){
+			return false;
+		}
+
+		if(c1.getY() != c2.getY()){
+			return false;
+		}
+
+		if(c1.getWidth() != c2.getWidth()){
+			return false;
+		}
+
+		if(c1.getHeight() != c2.getHeight()){
+			return false;
+		}
+
+		return true;
+	}
 
     public static boolean validateOasisAddress(OasisAddress a1, OasisAddress a2){
         if(a1 == null){

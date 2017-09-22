@@ -13,6 +13,7 @@ public class VideoStreamingCapability extends RPCStruct {
 	public static final String KEY_PREFERRED_RESOLUTION = "preferredResolution";
 	public static final String KEY_MAX_BITRATE = "maxBitrate";
 	public static final String KEY_SUPPORTED_FORMATS = "supportedFormats";
+	public static final String KEY_HAPTIC_SPATIAL_DATA_SUPPORTED = "hapticSpatialDataSupported";
 
 	public VideoStreamingCapability(){}
 	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
@@ -39,5 +40,13 @@ public class VideoStreamingCapability extends RPCStruct {
 
 	public List<VideoStreamingFormat> getSupportedFormats(){
 		return (List<VideoStreamingFormat>) getObject(VideoStreamingFormat.class, KEY_SUPPORTED_FORMATS);
+	}
+
+	public Boolean getIsHapticSpatialDataSupported() {
+		return getBoolean(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED);
+	}
+
+	public void setIsHapticSpatialDataSupported(Boolean hapticSpatialDataSupported) {
+		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
 	}
 }
