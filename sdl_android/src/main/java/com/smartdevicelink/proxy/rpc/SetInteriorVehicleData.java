@@ -5,6 +5,10 @@ import com.smartdevicelink.proxy.RPCRequest;
 
 import java.util.Hashtable;
 
+/**
+ * This function allows a remote control type mobile application change the settings
+ * of a specific remote control module.
+ */
 public class SetInteriorVehicleData extends RPCRequest {
 	public static final String KEY_MODULE_DATA = "moduleData";
 

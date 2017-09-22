@@ -5,6 +5,10 @@ import com.smartdevicelink.proxy.rpc.enums.RadioBand;
 import com.smartdevicelink.proxy.rpc.enums.RadioState;
 import java.util.Hashtable;
 
+/**
+ * Include information (both read-only and changeable data) about a
+ * remote control radio module.
+ */
 public class RadioControlData extends RPCStruct{
     public static final String KEY_FREQUENCY_INTEGER= "frequencyInteger";
     public static final String KEY_FREQUENCY_FRACTION= "frequencyFraction";
@@ -66,6 +70,7 @@ public class RadioControlData extends RPCStruct{
      * Sets the band portion of the RadioControlData class
      *
      * @param band
+     * The radio band (AM|FM|XM) of the radio tuner.
      */
     public void setBand(RadioBand band) {
         setValue(KEY_BAND, band);
@@ -74,7 +79,7 @@ public class RadioControlData extends RPCStruct{
     /**
      * Gets the band portion of the RadioControlData class
      *
-     * @return RadioBand
+     * @return RadioBand - The radio band (AM|FM|XM) of the radio tuner.
      */
     public RadioBand getBand() {
         return (RadioBand) getObject(RadioBand.class, KEY_BAND);
@@ -84,6 +89,7 @@ public class RadioControlData extends RPCStruct{
      * Sets the rdsData portion of the RadioControlData class
      *
      * @param rdsData
+     * Read only parameter. See RdsData data type for details.
      */
     public void setRdsData(RdsData rdsData) {
         setValue(KEY_RDS_DATA, rdsData);
@@ -92,7 +98,7 @@ public class RadioControlData extends RPCStruct{
     /**
      * Gets the rdsData portion of the RadioControlData class
      *
-     * @return RdsData
+     * @return RdsData - Read only parameter. See RdsData data type for details.
      */
     public RdsData getRdsData() {
         return (RdsData) getObject(RdsData.class, KEY_RDS_DATA);
@@ -140,6 +146,7 @@ public class RadioControlData extends RPCStruct{
      * Sets the signalStrength portion of the RadioControlData class
      *
      * @param signalStrength
+     * Read only parameter. Indicates the strength of receiving radio signal in current frequency.
      */
     public void setSignalStrength(Integer signalStrength) {
         setValue(KEY_SIGNAL_STRENGTH, signalStrength);
@@ -148,7 +155,7 @@ public class RadioControlData extends RPCStruct{
     /**
      * Gets the signalStrength portion of the RadioControlData class
      *
-     * @return Integer
+     * @return Integer - Read only parameter. Indicates the strength of receiving radio signal in current frequency.
      */
     public Integer getSignalStrength() {
         return getInteger(KEY_SIGNAL_STRENGTH);
@@ -196,6 +203,7 @@ public class RadioControlData extends RPCStruct{
      * Sets the state portion of the RadioControlData class
      *
      * @param state
+     * Read only parameter. See RadioState data type for details.
      */
     public void setState(RadioState state) {
         setValue(KEY_STATE, state);
@@ -204,7 +212,7 @@ public class RadioControlData extends RPCStruct{
     /**
      * Gets the state portion of the RadioControlData class
      *
-     * @return RadioState
+     * @return RadioState - Read only parameter. See RadioState data type for details.
      */
     public RadioState getState() {
         return (RadioState) getObject(RadioState.class, KEY_STATE);

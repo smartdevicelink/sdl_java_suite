@@ -1,5 +1,8 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+/**
+ *  List possible states of a remote control radio module.
+ */
 public enum RadioState {
     ACQUIRING,
     ACQUIRED,

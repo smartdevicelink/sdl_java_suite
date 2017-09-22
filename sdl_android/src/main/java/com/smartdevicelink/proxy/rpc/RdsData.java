@@ -4,6 +4,10 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
 
+/**
+ * Include the data defined in Radio Data System, which is a communications protocol standard
+ * for embedding small amounts of digital information in conventional FM radio broadcasts.
+ */
 public class RdsData extends RPCStruct{
     public static final String KEY_PS= "PS";
     public static final String KEY_RT= "RT";

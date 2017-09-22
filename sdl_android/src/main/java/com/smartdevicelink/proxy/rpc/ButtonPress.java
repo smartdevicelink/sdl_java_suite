@@ -7,6 +7,10 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import java.util.Hashtable;
 
+/**
+ * This function allows a remote control type mobile application
+ * simulate a hardware button press event.
+ */
 public class ButtonPress extends RPCRequest {
 	public static final String KEY_MODULE_TYPE = "moduleType";
     public static final String KEY_BUTTON_NAME = "buttonName";

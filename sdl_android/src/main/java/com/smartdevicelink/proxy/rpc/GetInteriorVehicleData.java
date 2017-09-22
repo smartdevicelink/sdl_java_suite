@@ -5,6 +5,13 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import java.util.Hashtable;
 
+/**
+ * Read the current status value of specified remote control module (type). In addition,
+ * When subscribe=true, subscribes for specific remote control module data items;
+ * When subscribe=false, un-subscribes for specific remote control module data items.
+ * Once subscribed, the application will be notified by the onInteriorVehicleData notification
+ * whenever new data is available for the module.
+ */
 public class GetInteriorVehicleData extends RPCRequest {
 	public static final String KEY_MODULE_TYPE = "moduleType";
     public static final String KEY_SUBSCRIBE = "subscribe";
