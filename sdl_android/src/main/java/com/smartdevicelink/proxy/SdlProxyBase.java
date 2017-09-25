@@ -59,6 +59,7 @@ import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -81,6 +82,7 @@ import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -201,23 +203,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected String _autoActivateIdReturned = null;
 	protected Language _sdlLanguage = null;
 	protected Language _hmiDisplayLanguage = null;
-	protected DisplayCapabilities _displayCapabilities = null;
-	protected List<ButtonCapabilities> _buttonCapabilities = null;
-	protected List<SoftButtonCapabilities> _softButtonCapabilities = null;
-	protected PresetBankCapabilities _presetBankCapabilities = null;
-	protected List<HmiZoneCapabilities> _hmiZoneCapabilities = null;
-	protected List<SpeechCapabilities> _speechCapabilities = null;
 	protected List<PrerecordedSpeech> _prerecordedSpeech = null;
-	protected List<VrCapabilities> _vrCapabilities = null;
 	protected VehicleType _vehicleType = null;
-	protected List<AudioPassThruCapabilities> _audioPassThruCapabilities = null;
-	protected HMICapabilities _hmiCapabilities = null;
 	protected String _systemSoftwareVersion = null;
 	protected List<Integer> _diagModes = null;
 	protected Boolean firstTimeFull = true;
 	protected String _proxyVersionInfo = null;
 	protected Boolean _bResumeSuccess = false;	
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
+	protected SystemCapabilityManager _systemCapabilityManager;
 	
 	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -653,7 +647,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		rpcResponseListeners = new SparseArray<OnRPCResponseListener>();
 		rpcNotificationListeners = new SparseArray<OnRPCNotificationListener>();
-		
+
+		//Initialize _systemCapabilityManager here.
+		_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
+			@Override
+			public void onSendPacketRequest(RPCRequest message) {
+				try {
+					sendRPCRequest(message);
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 		// Initialize the proxy
 		try {
 			initializeProxy();
@@ -1821,7 +1827,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					return;
 				}				
 			}
-		}	
+		}
 	}
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
@@ -1844,6 +1850,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_appInterfaceRegisterd = true;
 					}
 					processRaiResponse(msg);
+
+					//Populate the system capability manager with the RAI response
+					_systemCapabilityManager.parseRAIResponse(msg);
 					
 					Intent sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.REGISTER_APP_INTERFACE.toString());
@@ -1857,20 +1866,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					//_autoActivateIdReturned = msg.getAutoActivateID();
 					/*Place holder for legacy support*/ _autoActivateIdReturned = "8675309";
-					_buttonCapabilities = msg.getButtonCapabilities();
-					_displayCapabilities = msg.getDisplayCapabilities();
-					_softButtonCapabilities = msg.getSoftButtonCapabilities();
-					_presetBankCapabilities = msg.getPresetBankCapabilities();
-					_hmiZoneCapabilities = msg.getHmiZoneCapabilities();
-					_speechCapabilities = msg.getSpeechCapabilities();
 					_prerecordedSpeech = msg.getPrerecordedSpeech();
 					_sdlLanguage = msg.getLanguage();
 					_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 					_sdlMsgVersion = msg.getSdlMsgVersion();
-					_vrCapabilities = msg.getVrCapabilities();
 					_vehicleType = msg.getVehicleType();
-					_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
-					_hmiCapabilities = msg.getHmiCapabilities();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
 					
@@ -2010,23 +2010,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_appInterfaceRegisterd = true;
 				}
 				processRaiResponse(msg);
-				
+				//Populate the system capability manager with the RAI response
+				_systemCapabilityManager.parseRAIResponse(msg);
+
 				//_autoActivateIdReturned = msg.getAutoActivateID();
 				/*Place holder for legacy support*/ _autoActivateIdReturned = "8675309";
-				_buttonCapabilities = msg.getButtonCapabilities();
-				_displayCapabilities = msg.getDisplayCapabilities();
-				_softButtonCapabilities = msg.getSoftButtonCapabilities();
-				_presetBankCapabilities = msg.getPresetBankCapabilities();
-				_hmiZoneCapabilities = msg.getHmiZoneCapabilities();
-				_speechCapabilities = msg.getSpeechCapabilities();
 				_prerecordedSpeech = msg.getPrerecordedSpeech();
 				_sdlLanguage = msg.getLanguage();
 				_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 				_sdlMsgVersion = msg.getSdlMsgVersion();
-				_vrCapabilities = msg.getVrCapabilities();
 				_vehicleType = msg.getVehicleType();
-				_audioPassThruCapabilities = msg.getAudioPassThruCapabilities();
-				_hmiCapabilities = msg.getHmiCapabilities();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 				_proxyVersionInfo = msg.getProxyVersionInfo();
 				
@@ -2545,11 +2538,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
                 
                 // successfully changed display layout - update layout capabilities
-                if(msg.getSuccess()){
-                    _displayCapabilities = msg.getDisplayCapabilities();
-                    _buttonCapabilities = msg.getButtonCapabilities();
-                    _presetBankCapabilities = msg.getPresetBankCapabilities();
-                    _softButtonCapabilities = msg.getSoftButtonCapabilities();
+                if(msg.getSuccess() && _systemCapabilityManager!=null){
+					_systemCapabilityManager.setCapability(SystemCapabilityType.DISPLAY, msg.getDisplayCapabilities());
+					_systemCapabilityManager.setCapability(SystemCapabilityType.BUTTON, msg.getButtonCapabilities());
+					_systemCapabilityManager.setCapability(SystemCapabilityType.PRESET_BANK, msg.getPresetBankCapabilities());
+					_systemCapabilityManager.setCapability(SystemCapabilityType.SOFTBUTTON, msg.getSoftButtonCapabilities());
                 }
                 
                 if (_callbackToUIThread) {
@@ -3508,24 +3501,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 	private class CallableMethod implements Callable<Void> {
-	private long waitTime;
+		private long waitTime;
 
-	public CallableMethod(int timeInMillis){
+		public CallableMethod(int timeInMillis){
 		this.waitTime=timeInMillis;
-	}
-	@Override
-	public Void call() {
-		try {
-			Thread.sleep(waitTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
-		return null;
-	}
+		@Override
+		public Void call() {
+			try {
+				Thread.sleep(waitTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 	}		
+
 	public FutureTask<Void> createFutureTask(CallableMethod callMethod){
 			return new FutureTask<Void>(callMethod);
 	}
+
 	public ScheduledExecutorService createScheduler(){
 		return  Executors.newSingleThreadScheduledExecutor();
 	}
@@ -3541,6 +3536,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setDesiredVideoParams(VideoStreamingParameters params){
 		sdlSession.setDesiredVideoParams(params);
 	}
+
 
 	/**
 	 *Opens the video service (serviceType 11) and subsequently streams raw H264 video from an InputStream provided by the app
@@ -3879,7 +3875,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private void AudioServiceEndedNACK() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
-	}
+	}	
 	
 	public void setAppService(Service mService)
 	{
@@ -5558,7 +5554,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, correlationID);
 		sendRPCRequest(msg);
 	}
-	
+
+	public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener){
+		_systemCapabilityManager.getCapability(systemCapabilityType, scListener);
+	}
+
+	public Object getCapability(SystemCapabilityType systemCapabilityType){
+		return _systemCapabilityManager.getCapability(systemCapabilityType);
+	}
+
 	/******************** END Public Helper Methods *************************/
 	
 	/**
@@ -5595,6 +5599,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sdlSession.isServiceProtected(sType);		
 	}
 
+
 	public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
 		if(serviceType != null && sdlSession != null && sdlServiceListener != null){
 			sdlSession.addServiceListener(serviceType, sdlServiceListener);
@@ -5610,7 +5615,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public VideoStreamingParameters getAcceptedVideoParams(){
 		return sdlSession.getAcceptedVideoParams();
 	}
-	
+
 	public IProxyListenerBase getProxyListener()
 	{
 		return _proxyListener;
