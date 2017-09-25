@@ -15,6 +15,7 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_PHONE_CAPABILITY = "phoneCapability";
 	public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
 
+
     public SystemCapability(){}
 
     public SystemCapability(Hashtable<String, Object> hash) {

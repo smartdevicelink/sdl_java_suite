@@ -497,6 +497,7 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
+				List<String> rejectedParams = null;
 				if(packet.version >= 5){
 					String rejectedTag = null;
 					if(serviceType.equals(SessionType.RPC)){
@@ -506,11 +507,10 @@ public class WiProProtocol extends AbstractProtocol {
 					}else if(serviceType.equals(SessionType.NAV)){
 						rejectedTag = ControlFrameTags.Video.StartServiceNAK.REJECTED_PARAMS;
 					}
-					List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
-					// TODO: Pass these back
+					rejectedParams = (List<String>) packet.getTag(rejectedTag);
 				}
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
-					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "");
+					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "", rejectedParams);
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + packet.getSessionId(), null);
 				}
