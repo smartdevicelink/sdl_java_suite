@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.Headers;
@@ -51,10 +52,13 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.VehicleDataResult;
 import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 
 public class Validator{
 
@@ -1606,4 +1610,68 @@ public class Validator{
         
         return true;
     }
+
+	public static boolean validateHMICapabilities(HMICapabilities hmiA, HMICapabilities hmiB){
+		if(hmiA.isPhoneCallAvailable() != hmiB.isPhoneCallAvailable()){
+			return false;
+		}
+
+		if(hmiA.isVideoStreamingAvailable() != hmiB.isVideoStreamingAvailable()){
+			return false;
+		}
+
+		if(hmiA.isNavigationAvailable() != hmiB.isNavigationAvailable()){
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateHMIZoneCapabilities(List<HmiZoneCapabilities> hmizA, List<HmiZoneCapabilities> hmizB){
+		for(int i = 0; i < hmizA.size(); i++){
+			if(!hmizA.get(i).equals(hmizB.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean validateSpeechCapabilities(List<SpeechCapabilities> spA, List<SpeechCapabilities> spB){
+		for(int i = 0; i < spA.size(); i++){
+			if(!spA.get(i).equals(spB.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean validateVideoStreamingFormat(VideoStreamingFormat a, VideoStreamingFormat b){
+		if(!a.getCodec().equals(b.getCodec())){
+			return false;
+		}
+
+		if(!a.getProtocol().equals(b.getProtocol())){
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateVideoStreamingCapability(VideoStreamingCapability a, VideoStreamingCapability b){
+		if(!validateImageResolution(a.getPreferredResolution(), b.getPreferredResolution())){
+			return false;
+		}
+
+		if(!a.getMaxBitrate().equals(b.getMaxBitrate())){
+			return false;
+		}
+
+		for(int i = 0; i < a.getSupportedFormats().size(); i++){
+			if(!validateVideoStreamingFormat(a.getSupportedFormats().get(i), b.getSupportedFormats().get(i))){
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
