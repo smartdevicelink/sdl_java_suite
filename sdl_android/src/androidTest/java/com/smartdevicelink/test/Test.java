@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -219,9 +220,13 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
+	
+
 	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
+
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -491,6 +496,10 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 
+		GENERAL_HMICAPABILITIES.setNavigationAvilable(GENERAL_BOOLEAN);
+		GENERAL_HMICAPABILITIES.setVideoStreamingAvailable(GENERAL_BOOLEAN);
+		GENERAL_HMICAPABILITIES.setPhoneCallAvilable(GENERAL_BOOLEAN);
+
 		List<MetadataType> exampleList = new ArrayList<>();
 		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
 		exampleList.add(1, MetadataType.MEDIA_ALBUM);
@@ -508,6 +517,7 @@ public class Test {
 
 		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
 		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
+
         
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
