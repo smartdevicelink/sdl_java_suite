@@ -1533,77 +1533,88 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	void dispatchInternalMessage(final InternalProxyMessage message) {
 		try{
-			if (message.getFunctionName().equals(InternalProxyMessage.OnProxyError)) {
-				final OnError msg = (OnError)message;
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onError(msg.getInfo(), msg.getException());
-						}
-					});
-				} else {
-					_proxyListener.onError(msg.getInfo(), msg.getException());
+			switch (message.getFunctionName()) {
+				case InternalProxyMessage.OnProxyError: {
+					final OnError msg = (OnError) message;
+					if (_callbackToUIThread) {
+						// Run in UI thread
+						_mainUIHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								_proxyListener.onError(msg.getInfo(), msg.getException());
+							}
+						});
+					} else {
+						_proxyListener.onError(msg.getInfo(), msg.getException());
+					}
+					break;
 				}
-			} else if (message.getFunctionName().equals(InternalProxyMessage.OnServiceEnded)) {
-				final OnServiceEnded msg = (OnServiceEnded)message;
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onServiceEnded(msg);
-						}
-					});
-				} else {
-					_proxyListener.onServiceEnded(msg);
+				case InternalProxyMessage.OnServiceEnded: {
+					final OnServiceEnded msg = (OnServiceEnded) message;
+					if (_callbackToUIThread) {
+						// Run in UI thread
+						_mainUIHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								_proxyListener.onServiceEnded(msg);
+							}
+						});
+					} else {
+						_proxyListener.onServiceEnded(msg);
+					}
+					break;
 				}
-			} else if (message.getFunctionName().equals(InternalProxyMessage.OnServiceNACKed)) {
-				final OnServiceNACKed msg = (OnServiceNACKed)message;
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onServiceNACKed(msg);
-						}
-					});
-				} else {
-					_proxyListener.onServiceNACKed(msg);
-				}
+				case InternalProxyMessage.OnServiceNACKed: {
+					final OnServiceNACKed msg = (OnServiceNACKed) message;
+					if (_callbackToUIThread) {
+						// Run in UI thread
+						_mainUIHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								_proxyListener.onServiceNACKed(msg);
+							}
+						});
+					} else {
+						_proxyListener.onServiceNACKed(msg);
+					}
 
 			/* *************Start Legacy Specific Call-backs************/
-			} else if (message.getFunctionName().equals(InternalProxyMessage.OnProxyOpened)) {
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							((IProxyListener)_proxyListener).onProxyOpened();
-						}
-					});
-				} else {
-					((IProxyListener)_proxyListener).onProxyOpened();
+					break;
 				}
-			} else if (message.getFunctionName().equals(InternalProxyMessage.OnProxyClosed)) {
-				final OnProxyClosed msg = (OnProxyClosed)message;
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onProxyClosed(msg.getInfo(), msg.getException(), msg.getReason());
-						}
-					});
-				} else {
-					_proxyListener.onProxyClosed(msg.getInfo(), msg.getException(), msg.getReason());
-				}
+				case InternalProxyMessage.OnProxyOpened:
+					if (_callbackToUIThread) {
+						// Run in UI thread
+						_mainUIHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								((IProxyListener) _proxyListener).onProxyOpened();
+							}
+						});
+					} else {
+						((IProxyListener) _proxyListener).onProxyOpened();
+					}
+					break;
+				case InternalProxyMessage.OnProxyClosed: {
+					final OnProxyClosed msg = (OnProxyClosed) message;
+					if (_callbackToUIThread) {
+						// Run in UI thread
+						_mainUIHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								_proxyListener.onProxyClosed(msg.getInfo(), msg.getException(), msg.getReason());
+							}
+						});
+					} else {
+						_proxyListener.onProxyClosed(msg.getInfo(), msg.getException(), msg.getReason());
+					}
 			/* ***************End Legacy Specific Call-backs************/
-			} else {
-				// Diagnostics
-				SdlTrace.logProxyEvent("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.", SDL_LIB_TRACE_KEY);
-				DebugTool.logError("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.");
+					break;
+				}
+				default:
+					// Diagnostics
+					SdlTrace.logProxyEvent("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.", SDL_LIB_TRACE_KEY);
+					DebugTool.logError("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.");
+					break;
 			}
 			
 		SdlTrace.logProxyEvent("Proxy fired callback: " + message.getFunctionName(), SDL_LIB_TRACE_KEY);
