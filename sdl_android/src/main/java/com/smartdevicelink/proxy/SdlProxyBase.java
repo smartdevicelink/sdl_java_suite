@@ -2867,7 +2867,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				msg.setFirstRun(firstTimeFull);
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
 				
-				if (msg.getHmiLevel() != _priorHmiLevel && msg.getAudioStreamingState() != _priorAudioStreamingState) {
+				if (msg.getHmiLevel() != _priorHmiLevel || msg.getAudioStreamingState() != _priorAudioStreamingState) {
+					_priorHmiLevel = msg.getHmiLevel();
+					_priorAudioStreamingState = msg.getAudioStreamingState();
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
