@@ -1476,8 +1476,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
 						if (message.getPayloadProtected()) hash.put(RPCStruct.KEY_PROTECTED, true);
 					} else {
-						final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-						hash = mhash;
+						hash = JsonRPCMarshaller.unmarshall(message.getData());
 					}
 					handleRPCMessage(hash);							
 				} catch (final Exception excp) {
@@ -2857,10 +2856,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else {
 				if (_sdlMsgVersion != null) {
-					DebugTool.logError("Unrecognized response Message: " + functionName.toString() + 
+					DebugTool.logError("Unrecognized response Message: " + functionName +
 							" SDL Message Version = " + _sdlMsgVersion);
 				} else {
-					DebugTool.logError("Unrecognized response Message: " + functionName.toString());
+					DebugTool.logError("Unrecognized response Message: " + functionName);
 				}
 			} // end-if
 
@@ -2877,7 +2876,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					sdlSession.getLockScreenMan().setHMILevel(msg.getHmiLevel());
 				}
 				
-				msg.setFirstRun(Boolean.valueOf(firstTimeFull));
+				msg.setFirstRun(firstTimeFull);
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
 				
 				if (msg.getHmiLevel() != _priorHmiLevel && msg.getAudioStreamingState() != _priorAudioStreamingState) {
@@ -3250,10 +3249,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else {
 				if (_sdlMsgVersion != null) {
-					DebugTool.logInfo("Unrecognized notification Message: " + functionName.toString() + 
+					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
 							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
 				} else {
-					DebugTool.logInfo("Unrecognized notification Message: " + functionName.toString());
+					DebugTool.logInfo("Unrecognized notification Message: " + functionName);
 				}
 			} // end-if
 		} // end-if notification
@@ -3434,8 +3433,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try {
 			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
 			rpcPacketizer.start();
-			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
-			return streamController;
+			return new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 		} catch (Exception e) {
             Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
             return null;
@@ -3456,8 +3454,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try {
 			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
 			rpcPacketizer.start();
-			RPCStreamController streamController = new RPCStreamController(rpcPacketizer, request.getCorrelationID());
-			return streamController;
+			return new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 		} catch (Exception e) {
             Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
             return null;
