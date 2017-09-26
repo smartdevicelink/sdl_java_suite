@@ -881,7 +881,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 	
-	private void sendSystemRequestToUrl(OnSystemRequest msg)
+	private void sendOnSystemRequestToUrl(OnSystemRequest msg)
 	{		
 		Intent sendIntent = createBroadcastIntent();
 		Intent sendIntent2 = createBroadcastIntent();
@@ -902,7 +902,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		Headers myHeader = msg.getHeader();			
 		
-		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "sendSystemRequestToUrl");		
+		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "sendOnSystemRequestToUrl");
 		updateBroadcastIntent(sendIntent, "COMMENT5", "\r\nCloud URL: " + sURLString);	
 		
 		try 
@@ -976,7 +976,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (iResponseCode != HttpURLConnection.HTTP_OK)
 			{
-	            Log.i(TAG, "Response code not HTTP_OK, returning from sendSystemRequestToUrl.");
+	            Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "Response code not HTTP_OK, aborting request. ");
 	            return;
 	        }
@@ -1071,31 +1071,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		catch (SdlException e) 
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Could not get data from JSONObject received.", e);
-			updateBroadcastIntent(sendIntent, "COMMENT3", " SdlException encountered sendSystemRequestToUrl: "+ e);
+			updateBroadcastIntent(sendIntent, "COMMENT3", " SdlException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Could not get data from JSONObject received."+ e);
 		} 
 		catch (JSONException e) 
 		{
 			DebugTool.logError("sendSystemRequestToUrl: JSONException: ", e);
-			updateBroadcastIntent(sendIntent, "COMMENT3", " JSONException encountered sendSystemRequestToUrl: "+ e);
+			updateBroadcastIntent(sendIntent, "COMMENT3", " JSONException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: JSONException: "+ e);
 		} 
 		catch (UnsupportedEncodingException e) 
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Could not encode string.", e);
-			updateBroadcastIntent(sendIntent, "COMMENT3", " UnsupportedEncodingException encountered sendSystemRequestToUrl: "+ e);
+			updateBroadcastIntent(sendIntent, "COMMENT3", " UnsupportedEncodingException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Could not encode string."+ e);
 		} 
 		catch (ProtocolException e) 
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Could not set request method to post.", e);
-			updateBroadcastIntent(sendIntent, "COMMENT3", " ProtocolException encountered sendSystemRequestToUrl: "+ e);
+			updateBroadcastIntent(sendIntent, "COMMENT3", " ProtocolException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Could not set request method to post."+ e);
 		} 
 		catch (MalformedURLException e) 
 		{
 			DebugTool.logError("sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
-			updateBroadcastIntent(sendIntent, "COMMENT3", " MalformedURLException encountered sendSystemRequestToUrl: "+ e);
+			updateBroadcastIntent(sendIntent, "COMMENT3", " MalformedURLException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server."+ e);
 		} 
 		catch (IOException e) 
@@ -1107,7 +1107,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		catch (Exception e) 
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Unexpected Exception: ", e);
-			updateBroadcastIntent(sendIntent, "COMMENT3", " Exception encountered sendSystemRequestToUrl: "+ e);
+			updateBroadcastIntent(sendIntent, "COMMENT3", " Exception encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Unexpected Exception: " + e);
 		}
 		finally
@@ -1948,7 +1948,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						Thread handleOffboardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
-								sendSystemRequestToUrl(msg);
+								sendOnSystemRequestToUrl(msg);
 							}
 						};
 
@@ -2975,7 +2975,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						Thread handleOffboardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
-								sendSystemRequestToUrl(msg);
+								sendOnSystemRequestToUrl(msg);
 							}
 						};
 
@@ -3103,7 +3103,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						Thread handleOffboardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
-								sendSystemRequestToUrl(msg);
+								sendOnSystemRequestToUrl(msg);
 							}
 						};
 
