@@ -57,7 +57,6 @@ import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
@@ -1148,9 +1147,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	// Protected isConnected method to allow legacy proxy to poll isConnected state
 	public Boolean getIsConnected() {
-		if (sdlSession == null) return false;
-		
-		return sdlSession.getIsConnected();
+		return sdlSession != null && sdlSession.getIsConnected();
+
 	}
 	
 	/**
@@ -3616,10 +3614,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service stream is paused successfully, return false otherwise  
 	 */		
 	@SuppressWarnings("unused")
-	public boolean pausePCM()
-	{
-		if (sdlSession == null) return false;
-		return sdlSession.pauseAudioStream();		
+	public boolean pausePCM() {
+		return sdlSession != null && sdlSession.pauseAudioStream();
 	}
 
 	/**
@@ -3627,10 +3623,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service stream is paused successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
-	public boolean pauseH264()
-	{
-		if (sdlSession == null) return false;
-		return sdlSession.pauseVideoStream();		
+	public boolean pauseH264() {
+		return sdlSession != null && sdlSession.pauseVideoStream();
 	}
 
 	/**
@@ -3638,10 +3632,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service stream is resumed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
-	public boolean resumePCM()
-	{
-		if (sdlSession == null) return false;
-		return sdlSession.resumeAudioStream();		
+	public boolean resumePCM() {
+		return sdlSession != null && sdlSession.resumeAudioStream();
 	}
 
 	/**
@@ -3649,10 +3641,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service is resumed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
-	public boolean resumeH264()
-	{
-		if (sdlSession == null) return false;
-		return sdlSession.resumeVideoStream();	
+	public boolean resumeH264() {
+		return sdlSession != null && sdlSession.resumeVideoStream();
 	}
 
 	
@@ -5744,12 +5734,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings("unused")
-	public boolean isServiceTypeProtected(SessionType sType)
-	{
-		if (sdlSession == null)
-			return false;
-		
-		return sdlSession.isServiceProtected(sType);		
+	public boolean isServiceTypeProtected(SessionType sType) {
+		return sdlSession != null && sdlSession.isServiceProtected(sType);
+
 	}
 	
 	public IProxyListenerBase getProxyListener()
