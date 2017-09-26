@@ -1337,8 +1337,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			synchronized(CONNECTION_REFERENCE_LOCK) {
 				if (sdlSession != null) sdlSession.close();
 			}		
-		} catch (SdlException e) {
-			throw e;
 		} finally {
 			SdlTrace.logProxyEvent("SdlProxy cleaned.", SDL_LIB_TRACE_KEY);
 		}
@@ -1389,8 +1387,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			rpcResponseListeners = null;
 			
-		} catch (SdlException e) {
-			throw e;
 		} finally {
 			SdlTrace.logProxyEvent("SdlProxy disposed.", SDL_LIB_TRACE_KEY);
 		}
