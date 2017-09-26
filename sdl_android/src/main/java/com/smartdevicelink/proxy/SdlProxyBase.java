@@ -81,7 +81,6 @@ import com.smartdevicelink.proxy.rpc.enums.SdlConnectionState;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
@@ -175,8 +174,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Language _hmiDisplayLanguageDesired = null;
 	private Vector<AppHMIType> _appType = null;
 	private String _appID = null;
+	@SuppressWarnings({"FieldCanBeLocal", "unused"}) //Need to understand what this is used for
 	private String _autoActivateIdDesired = null;
-	private String _lastHashID = null;	
+	private String _lastHashID = null;
 	private SdlMsgVersion _sdlMsgVersionRequest = null;
 	private Vector<String> _vrSynonyms = null;
 	private boolean _bAppResumeEnabled = false;
@@ -200,10 +200,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected SdlConnectionState _sdlConnectionState = null;
 	protected SdlInterfaceAvailability _sdlIntefaceAvailablity = null;
 	protected HMILevel _hmiLevel = null;
-	private HMILevel _priorHmiLevel = null;
 	protected AudioStreamingState _audioStreamingState = null;
-	private AudioStreamingState _priorAudioStreamingState = null;
-	protected SystemContext _systemContext = null;
 	// Variables set by RegisterAppInterfaceResponse
 	protected SdlMsgVersion _sdlMsgVersion = null;
 	protected String _autoActivateIdReturned = null;
@@ -1328,7 +1325,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				rpcResponseListeners.clear();
 			}
 			if(rpcNotificationListeners != null){
-				rpcNotificationListeners.clear(); //TODO make sure we want to clear this
+				rpcNotificationListeners.clear();
 			}
 			
 			// Clean up SDL Connection
@@ -2878,9 +2875,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				msg.setFirstRun(firstTimeFull);
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
 				
-				if (msg.getHmiLevel() != _priorHmiLevel || msg.getAudioStreamingState() != _priorAudioStreamingState) {
-					_priorHmiLevel = msg.getHmiLevel();
-					_priorAudioStreamingState = msg.getAudioStreamingState();
+				if (msg.getHmiLevel() != _hmiLevel || msg.getAudioStreamingState() != _audioStreamingState) {
+					_hmiLevel = msg.getHmiLevel();
+					_audioStreamingState = msg.getAudioStreamingState();
+
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
