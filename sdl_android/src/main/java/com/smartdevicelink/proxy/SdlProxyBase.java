@@ -583,7 +583,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 						@Override
 						public void dispatch(InternalProxyMessage message) {
-							dispatchInternalMessage((InternalProxyMessage)message);
+							dispatchInternalMessage(message);
 						}
 	
 						@Override
@@ -609,7 +609,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			_incomingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("INCOMING_MESSAGE_DISPATCHER",new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
-							dispatchIncomingMessage((ProtocolMessage)message);
+							dispatchIncomingMessage(message);
 						}
 	
 						@Override
@@ -635,7 +635,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			_outgoingProxyMessageDispatcher = new ProxyMessageDispatcher<ProtocolMessage>("OUTGOING_MESSAGE_DISPATCHER",new IDispatchingStrategy<ProtocolMessage>() {
 						@Override
 						public void dispatch(ProtocolMessage message) {
-							dispatchOutgoingMessage((ProtocolMessage)message);
+							dispatchOutgoingMessage(message);
 						}
 	
 						@Override
