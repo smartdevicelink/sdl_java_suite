@@ -130,7 +130,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								ON_UPDATE_LISTENER_LOCK = new Object(),
 								ON_NOTIFICATION_LISTENER_LOCK = new Object();
 	
-	private Object APP_INTERFACE_REGISTERED_LOCK = new Object();
+	private final Object APP_INTERFACE_REGISTERED_LOCK = new Object();
 		
 	private int iFileCount = 0;
 
@@ -1398,7 +1398,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	} // end-method
 
 	
-	private static Object CYCLE_LOCK = new Object();
+	private final static Object CYCLE_LOCK = new Object();
 	
 	private boolean _cycling = false;
 	
