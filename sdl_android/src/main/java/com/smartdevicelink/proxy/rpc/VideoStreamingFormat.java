@@ -17,6 +17,11 @@ public class VideoStreamingFormat extends RPCStruct {
 	public VideoStreamingFormat(){}
 	public VideoStreamingFormat(Hashtable<String, Object> hash){super(hash);}
 
+	public VideoStreamingFormat(VideoStreamingCodec codec,VideoStreamingProtocol protocol){
+		setCodec(codec);
+		setProtocol(protocol);
+	}
+
 	public void setProtocol(VideoStreamingProtocol protocol){
 		setValue(KEY_PROTOCOL, protocol);
 	}
