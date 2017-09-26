@@ -3704,6 +3704,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				return null;
 			}
 		} else {
+			if (pcmServiceStartRejectedParams != null) {
+				StringBuilder builder = new StringBuilder();
+				for (String paramName : pcmServiceStartRejectedParams) {
+					if (builder.length() > 0) {
+						builder.append(", ");
+					}
+					builder.append(paramName);
+				}
+				DebugTool.logWarning("StartService for nav failed. Rejected params: " + builder.toString());
+
+			} else {
+				DebugTool.logWarning("StartService for nav failed (rejected params not supplied)");
+			}
 			return null;
 		}
 	}
@@ -3962,8 +3975,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		scheduler.shutdown();
 
 		return rpcProtectedStartResponse;
-	}	
-	
+	}
+
+	@SuppressWarnings("unused")
 	public void getLockScreenIcon(final OnLockScreenIconDownloadedListener l){
 	    if(lockScreenIconRequest == null){
             l.onLockScreenIconDownloadError(new SdlException("This version of SDL core may not support lock screen icons.", 
