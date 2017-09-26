@@ -1138,15 +1138,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	// Test correlationID
 	private boolean isCorrelationIDProtected(Integer correlationID) {
-		if (correlationID != null && 
-						(HEARTBEAT_CORRELATION_ID == correlationID
+		return correlationID != null &&
+				(HEARTBEAT_CORRELATION_ID == correlationID
 						|| REGISTER_APP_INTERFACE_CORRELATION_ID == correlationID
 						|| UNREGISTER_APP_INTERFACE_CORRELATION_ID == correlationID
-						|| POLICIES_CORRELATION_ID == correlationID)) {
-			return true;
-		}
-		
-		return false;
+						|| POLICIES_CORRELATION_ID == correlationID);
+
 	}
 	
 	// Protected isConnected method to allow legacy proxy to poll isConnected state
@@ -1173,10 +1170,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_haveReceivedFirstNonNoneHMILevel = false;
 		_haveReceivedFirstFocusLevel = false;
 		_haveReceivedFirstFocusLevelFull = false;
-		if (_preRegisterd) 
-			_appInterfaceRegisterd = true;
-		else
-			_appInterfaceRegisterd = false;
+		_appInterfaceRegisterd = _preRegisterd;
 		
 		_putFileListenerList.clear();
 		
@@ -2929,12 +2923,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (sdlSession != null)
 				{
 					DriverDistractionState drDist = msg.getState();
-					boolean bVal = false;
-					if (drDist == DriverDistractionState.DD_ON)
-						bVal = true;
-					else
-						bVal = false;
-					sdlSession.getLockScreenMan().setDriverDistStatus(bVal);
+					sdlSession.getLockScreenMan().setDriverDistStatus(drDist == DriverDistractionState.DD_ON);
 				}
 				
 				if (_callbackToUIThread) {
@@ -3628,14 +3617,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		while (!navServiceEndResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
-		if (navServiceEndResponse) {
-			return true;
-		} else {
-			return false;
-		}
+		return navServiceEndResponse;
 	}
 	/**
 	 *Pauses the stream for the opened audio service (serviceType 10)
@@ -3695,8 +3678,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		while (!pcmServiceStartResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
 		if (pcmServiceStartResponse) {
 			try {
@@ -3727,8 +3708,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		while (!pcmServiceStartResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
 		if (pcmServiceStartResponse) {
 			try {
@@ -3760,14 +3739,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		while (!pcmServiceEndResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
-		if (pcmServiceEndResponse) {
-			return true;
-		} else {
-			return false;
-		}
+		return pcmServiceEndResponse;
 	}
     
 	/**
@@ -3992,14 +3965,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		while (!rpcProtectedResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
-		if (rpcProtectedStartResponse) {
-			return true;
-		} else {
-			return false;
-		}
+		return rpcProtectedStartResponse;
 	}	
 	
 	public void getLockScreenIcon(final OnLockScreenIconDownloadedListener l){
