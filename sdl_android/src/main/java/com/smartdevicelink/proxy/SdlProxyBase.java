@@ -262,12 +262,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			// disconnect has completed
 			notifyPutFileStreamError(null, info);
 			
-			if (_advancedLifecycleManagementEnabled) {
-				// If ALM, nothing is required to be done here
-			} else {
+			if (!_advancedLifecycleManagementEnabled) {
 				// If original model, notify app the proxy is closed so it will delete and reinstanciate 
 				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
-			}
+			}// else If ALM, nothing is required to be done here
+
 		}
 
 		@Override
@@ -344,9 +343,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
 				startRPCProtocolSession(sessionID, correlationID);
-			}  else {
-				// Handle other protocol session types here
-			}
+			}  //else{} Handle other protocol session types here
+
 		}
 
 		@Override
@@ -1488,9 +1486,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					DebugTool.logError("Failure handling protocol message: " + excp.toString(), excp);
 					passErrorToProxyListener("Error handing incoming protocol message.", excp);
 				} // end-catch
-			} else {
-				// Handle other protocol message types here
-			}
+			} //else { Handle other protocol message types here}
 		} catch (final Exception e) {
 			// Pass error to application through listener 
 			DebugTool.logError("Error handing proxy event.", e);
@@ -1825,12 +1821,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (sec.getMakeList().contains(make))
 				{
 					setSdlSecurity(sec);
-					if (sec != null)
-					{
 						sec.setAppId(_appID);
 						if (sdlSession != null)
 							sec.handleSdlSession(sdlSession);
-					}
 					return;
 				}				
 			}
@@ -1927,8 +1920,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							public void run() {
 								if (_proxyListener instanceof IProxyListener) {
 									((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
-								} else if (_proxyListener instanceof IProxyListenerALM) {
-									//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								}
 								onRPCResponseReceived(msg);
 							}
@@ -1936,8 +1927,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} else {
 						if (_proxyListener instanceof IProxyListener) {
 							((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
-						} else if (_proxyListener instanceof IProxyListenerALM) {
-							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
 						onRPCResponseReceived(msg);
 					}
@@ -2071,8 +2060,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							public void run() {
 								if (_proxyListener instanceof IProxyListener) {
 									((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
-								} else if (_proxyListener instanceof IProxyListenerALM) {
-									//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 								}
 	                            onRPCResponseReceived(msg);
 							}
@@ -2080,8 +2067,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} else {
 						if (_proxyListener instanceof IProxyListener) {
 							((IProxyListener)_proxyListener).onRegisterAppInterfaceResponse(msg);
-						} else if (_proxyListener instanceof IProxyListenerALM) {
-							//((IProxyListenerALM)_proxyListener).onRegisterAppInterfaceResponse(msg);
 						}
                         onRPCResponseReceived(msg);
 					}
@@ -2394,8 +2379,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							if (_proxyListener instanceof IProxyListener) {
 								((IProxyListener)_proxyListener).onUnregisterAppInterfaceResponse(msg);
-							} else if (_proxyListener instanceof IProxyListenerALM) {
-								//((IProxyListenerALM)_proxyListener).onUnregisterAppInterfaceResponse(msg);
 							}
 							onRPCResponseReceived(msg);
 						}
@@ -2403,8 +2386,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					if (_proxyListener instanceof IProxyListener) {
 						((IProxyListener)_proxyListener).onUnregisterAppInterfaceResponse(msg);
-					} else if (_proxyListener instanceof IProxyListenerALM) {
-						//((IProxyListenerALM)_proxyListener).onUnregisterAppInterfaceResponse(msg);
 					}
 					onRPCResponseReceived(msg);
 				}
@@ -3693,6 +3674,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!pcmServiceStartResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
 
@@ -3724,6 +3706,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!pcmServiceStartResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 
@@ -3756,6 +3739,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!pcmServiceEndResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 
@@ -3806,7 +3790,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             ScheduledExecutorService scheduler = createScheduler();
             scheduler.execute(fTask);
 
-            while (!navServiceStartResponseReceived && !fTask.isDone());
+			//noinspection StatementWithEmptyBody
+			while (!navServiceStartResponseReceived && !fTask.isDone());
             scheduler.shutdown();
             scheduler = null;
             fTask = null;
@@ -3987,6 +3972,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!rpcProtectedResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
 
@@ -4212,9 +4198,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void addCommand(Integer commandID,
 						   String menuText, Integer correlationID)
 			throws SdlException {
-		Vector<String> vrCommands = null;
-		
-		addCommand(commandID, menuText, null, null, vrCommands, correlationID);
+		addCommand(commandID, menuText, null, null, (Vector<String>)null, correlationID);
 	}
 	
 	/**
