@@ -100,7 +100,7 @@ import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";
@@ -166,7 +166,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean _advancedLifecycleManagementEnabled = false;
 	// Parameters passed to the constructor from the app to register an app interface
 	private String _applicationName = null;
-	private long instanceDateTime = System.currentTimeMillis();
+	private final long instanceDateTime = System.currentTimeMillis();
 	private String sConnectionDetails = "N/A";
 	private Vector<TTSChunk> _ttsName = null;
 	private String _ngnMediaScreenAppName = null;
@@ -219,7 +219,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
 	protected SystemCapabilityManager _systemCapabilityManager;
 	
-	private CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
+	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
 	protected byte _wiproVersion = 1;
 	
@@ -327,7 +327,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			             sdlSession.setIncomingHeartbeatMonitor(incomingHeartbeatMonitor);
 					 }		
 					 
-					startRPCProtocolSession(sessionID, correlationID);
+					startRPCProtocolSession();
 				}
 				else
 				{
@@ -342,7 +342,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else if (_wiproVersion > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
-				startRPCProtocolSession(sessionID, correlationID);
+				startRPCProtocolSession();
 			}  //else{} Handle other protocol session types here
 
 		}
@@ -493,12 +493,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, null, null, null, transportConfig);	
 	}
 	
-	private void performBaseCommon(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
-			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
-			BaseTransportConfig transportConfig) throws SdlException
+	@SuppressWarnings("ConstantConditions")
+	private void performBaseCommon(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+								   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+								   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+								   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+								   String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
+								   BaseTransportConfig transportConfig) throws SdlException
 	{
 		setWiProVersion((byte)PROX_PROT_VER_ONE);
 		
@@ -791,7 +792,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private void sendBroadcastIntent(Intent sendIntent)
 	{
-		Service myService = null;		
+		Service myService;
 		if (_proxyListener != null && _proxyListener instanceof Service)
 		{
 			myService = (Service) _proxyListener;				
@@ -829,8 +830,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String sCharSet = "utf-8";
 		int iContentLength = iContentLen;
 
-		URL url = null;
-		HttpURLConnection urlConnection = null;
+		URL url;
+		HttpURLConnection urlConnection;
 		
 		Intent sendIntent = createBroadcastIntent();
 		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "getURLConnection");
@@ -967,9 +968,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			wr.close();
 			
 			
-			long BeforeTime = System.currentTimeMillis();			
-			@SuppressWarnings("unused")
-            String sResponseMsg = urlConnection.getResponseMessage();			
+			long BeforeTime = System.currentTimeMillis();
 			long AfterTime = System.currentTimeMillis();
 			final long roundtriptime = AfterTime - BeforeTime;
 			
@@ -1293,6 +1292,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		dispose();
 	}
 	
+	@SuppressWarnings("UnusedParameters")
 	private void cleanProxy(SdlDisconnectedReason disconnectedReason) throws SdlException {
 		try {
 			
@@ -1500,7 +1500,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	public String serializeJSON(RPCMessage msg)
 	{
-		String sReturn = null;		
+		String sReturn;
 		try
 		{
 			sReturn = msg.serializeJSON(getWiProVersion()).toString(2);
@@ -1797,7 +1797,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		if (_secList == null) return;
 
-		SdlSecurityBase sec = null;
+		SdlSecurityBase sec;
 		Service svc = getService();
 		SdlSecurityBase.setAppService(svc);
 		
@@ -3315,7 +3315,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		queueInternalMessage(message);
 	}
 	
-	private void startRPCProtocolSession(byte sessionID, String correlationID) {
+	private void startRPCProtocolSession() {
 		
 		// Set Proxy Lifecyclek Available
 		if (_advancedLifecycleManagementEnabled) {
@@ -3332,7 +3332,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_hmiDisplayLanguageDesired,
 						_appType,
 						_appID,
-						_autoActivateIdDesired,						
 						REGISTER_APP_INTERFACE_CORRELATION_ID);
 				
 			} catch (Exception e) {
@@ -3457,8 +3456,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
 		if (sdlSession == null) return null;		
 		if (is == null) return null;
-		startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
-		return null;
+		return startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
@@ -3479,7 +3477,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 	private class CallableMethod implements Callable<Void> {
-	private long waitTime;
+	private final long waitTime;
 
 	public CallableMethod(int timeInMillis){
 		this.waitTime=timeInMillis;
@@ -3528,10 +3526,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!navServiceStartResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
 		if (navServiceStartResponse) {
 			try {
@@ -3572,10 +3569,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!navServiceStartResponseReceived  && !fTask.isDone());
 		scheduler.shutdown();
-		scheduler = null;
-		fTask = null;
 
 		if (navServiceStartResponse) {
 			try {
@@ -3604,6 +3600,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
 
+		//noinspection StatementWithEmptyBody
 		while (!navServiceEndResponseReceived && !fTask.isDone());
 		scheduler.shutdown();
 
@@ -3781,10 +3778,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			//noinspection StatementWithEmptyBody
 			while (!navServiceStartResponseReceived && !fTask.isDone());
             scheduler.shutdown();
-            scheduler = null;
-            fTask = null;
 
-            if (navServiceStartResponse) {
+			if (navServiceStartResponse) {
                 return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
                         height, bitrate, SessionType.NAV, sdlSession.getSessionId());
             }
@@ -4744,7 +4739,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName,
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, String autoActivateID, Integer correlationID) 
+			String appID, Integer correlationID)
 			throws SdlException {
 		String carrierName = null;
 		if(telephonyManager != null){
@@ -5347,7 +5342,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
+		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);
 		startRPCStream(is, msg);
 	}
 	
@@ -5386,7 +5381,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);		
+		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);
 		return startRPCStream(msg);
 	}	
 	
@@ -5426,7 +5421,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		startRPCStream(is, msg);
 	}
 	
@@ -5474,7 +5469,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
 		return startRPCStream(msg);
 	}
 	
@@ -5522,7 +5517,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(sPath, msg);
 	}
 	
@@ -5575,7 +5570,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
 		return startPutFileStream(is, msg);
 	}
 	
