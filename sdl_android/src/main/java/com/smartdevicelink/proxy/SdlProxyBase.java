@@ -140,6 +140,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private List<String> navServiceStartRejectedParams = null;
 	private boolean pcmServiceStartResponseReceived = false;
 	private boolean pcmServiceStartResponse = false;
+	@SuppressWarnings("FieldCanBeLocal")
 	private List<String> pcmServiceStartRejectedParams = null;
 	private boolean navServiceEndResponseReceived = false;
 	private boolean navServiceEndResponse = false;
@@ -192,7 +193,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	// Proxy State Variables
 	protected Boolean _appInterfaceRegisterd = false;
 	protected Boolean _preRegisterd = false;
-	@SuppressWarnings("unused")
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
     private Boolean _haveReceivedFirstNonNoneHMILevel = false;
 	protected Boolean _haveReceivedFirstFocusLevel = false;
 	protected Boolean _haveReceivedFirstFocusLevelFull = false;
@@ -1282,6 +1283,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	* Public method to determine Debug Tool enabled
 	*/
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isDebugEnabled() {
 		return DebugTool.isDebugEnabled();
 	}	
