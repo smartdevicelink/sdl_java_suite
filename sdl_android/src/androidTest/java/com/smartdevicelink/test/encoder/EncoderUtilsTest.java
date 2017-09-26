@@ -60,7 +60,7 @@ public class EncoderUtilsTest extends TestCase {
                 0x40, 0x00, 0x00, (byte)0xFA, 0x40, 0x00, 0x3A, (byte)0x98,
                 0x23, (byte)0xC4, (byte)0x89, (byte)0x84, 0x60
         };
-        // example of SPS NAL unit with 4-byte start code
+        // example of PPS NAL unit with 4-byte start code
         byte[] pps = new byte[] {
                 0x00, 0x00, 0x00, 0x01,
                 0x68, (byte)0xC8, 0x42, 0x0F, 0x13, 0x20
