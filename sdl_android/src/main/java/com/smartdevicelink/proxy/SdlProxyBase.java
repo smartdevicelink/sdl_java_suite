@@ -481,7 +481,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param autoActivateID Auto activation identifier.
 	 * @param callbackToUIThread Flag that indicates that this proxy should send callback to UI thread or not.
 	 * @param transportConfig Configuration of transport to be used by underlying connection.
-	 * @throws SdlException
+	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
 	 */
 	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
@@ -712,7 +712,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param callbackToUIThread Flag that indicates that this proxy should send callback to UI thread or not.
 	 * @param preRegister Flag that indicates that this proxy should be pre-registerd or not.
 	 * @param transportConfig Configuration of transport to be used by underlying connection.
-	 * @throws SdlException
+	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
 	 */	
 	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
 			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
@@ -1205,7 +1205,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	/**
 	 * This method will fake the multiplex connection event
-	 * @param action
 	 */
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
@@ -1584,7 +1583,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onServiceNACKed(msg);
 				}
 
-			/**************Start Legacy Specific Call-backs************/
+			/* *************Start Legacy Specific Call-backs************/
 			} else if (message.getFunctionName().equals(InternalProxyMessage.OnProxyOpened)) {
 				if (_callbackToUIThread) {
 					// Run in UI thread
@@ -1610,7 +1609,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					_proxyListener.onProxyClosed(msg.getInfo(), msg.getException(), msg.getReason());
 				}
-			/****************End Legacy Specific Call-backs************/
+			/* ***************End Legacy Specific Call-backs************/
 			} else {
 				// Diagnostics
 				SdlTrace.logProxyEvent("Unknown RPC Message encountered. Check for an updated version of the SDL Proxy.", SDL_LIB_TRACE_KEY);
@@ -1698,9 +1697,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	/**
 	 * Only call this method for a PutFile response. It will cause a class cast exception if not.
-	 * @param correlationId
-	 * @param bytesWritten
-	 * @param totalSize
+	 * @param correlationId correlation id of the packet being updated
+	 * @param bytesWritten how many bytes were written
+	 * @param totalSize the total size in bytes
 	 */
 	public void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
@@ -1715,7 +1714,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
 	 * <p>Will automatically remove the listener for the list of listeners on completion. 
-	 * @param msg
+	 * @param msg The RPCResponse message that was received
 	 * @return if a listener was called or not
 	 */
 	private boolean onRPCResponseReceived(RPCResponse msg){
@@ -1737,9 +1736,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 /**
- * 
- * @param listener
- * @param correlationId
+ * Add a listener that will receive the response to the specific RPCRequest sent with the corresponding correlation id
+ * @param listener that will get called back when a response is received
+ * @param correlationId of the RPCRequest that was sent
  * @param totalSize only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
  */
 	public void addOnRPCResponseListener(OnRPCResponseListener listener,int correlationId, int totalSize){
@@ -1775,7 +1774,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * This will ad a listener for the specific type of notification. As of now it will only allow
 	 * a single listener per notification function id
-	 * @param notification The notification type that this listener is designated for
+	 * @param notificationId The notification type that this listener is designated for
 	 * @param listener The listener that will be called when a notification of the provided type is received
 	 */
 	public void addOnRPCNotificationListener(FunctionID notificationId,OnRPCNotificationListener listener){
@@ -3276,8 +3275,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Takes an RPCRequest and sends it to SDL.  Responses are captured through callback on IProxyListener.  
 	 * 
-	 * @param request
-	 * @throws SdlException
+	 * @param request is the RPCRequest being sent
+	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
 	 */
 	public void sendRPCRequest(RPCRequest request) throws SdlException {
 		if (_proxyDisposed) {
@@ -4023,7 +4022,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	    }
 	}
 
-	/******************** Public Helper Methods *************************/
+	/* ******************* Public Helper Methods *************************/
 	
 	/*Begin V1 Enhanced helper*/
 	
@@ -4038,7 +4037,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
 	 *@param IconType -Describes whether the image is static or dynamic
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
@@ -4061,7 +4060,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
 	 *@param IconType -Describes whether the image is static or dynamic
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer position,
@@ -4080,7 +4079,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
 	 *@param IconType -Describes whether the image is static or dynamic
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer position, String IconValue, ImageType IconType,
@@ -4098,7 +4097,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
 	 *@param IconType -Describes whether the image is static or dynamic
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, String IconValue, ImageType IconType, Integer correlationID) 
@@ -4116,7 +4115,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
 	 * @param IconType -Describes whether the image is static or dynamic
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) 
@@ -4133,7 +4132,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param IconValue -A static hex icon value or the binary image file name identifier (sent by the PutFile RPC).
 	 * @param IconType -Describes whether the image is static or dynamic
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) 
@@ -4153,7 +4152,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param position  -Menu position for optional sub value containing menu parameters.
 	 *@param vrCommands -VR synonyms for this AddCommand.
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer parentID, Integer position,
@@ -4174,7 +4173,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param position  -Menu position for optional sub value containing menu parameters.
 	 *@param vrCommands -VR synonyms for this AddCommand.
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer position,
@@ -4191,7 +4190,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param menuText -Menu text for optional sub value containing menu parameters.
 	 *@param position  -Menu position for optional sub value containing menu parameters.
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer position,
@@ -4207,7 +4206,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param commandID -Unique command ID of the command to add.
 	 *@param menuText -Menu text for optional sub value containing menu parameters.
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Integer correlationID) 
@@ -4224,7 +4223,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param menuText -Menu text for optional sub value containing menu parameters.
 	 *@param vrCommands -VR synonyms for this AddCommand.
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			String menuText, Vector<String> vrCommands, Integer correlationID) 
@@ -4239,7 +4238,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param commandID -Unique command ID of the command to add.
 	 *@param vrCommands -VR synonyms for this AddCommand.
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 *@throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addCommand(Integer commandID,
 			Vector<String> vrCommands, Integer correlationID) 
@@ -4256,7 +4255,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param menuName -Text to show in the menu for this sub menu.
 	 * @param position -Position within the items that are are at top level of the in application menu.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addSubMenu(Integer menuID, String menuName,
 			Integer position, Integer correlationID) 
@@ -4274,7 +4273,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param menuID -Unique ID of the sub menu to add.
 	 * @param menuName -Text to show in the menu for this sub menu.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void addSubMenu(Integer menuID, String menuName,
 			Integer correlationID) throws SdlException {
@@ -4294,7 +4293,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param duration -Timeout in milliseconds.
 	 * @param softButtons -A list of App defined SoftButtons.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(String ttsText, String alertText1,
 			String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
@@ -4316,7 +4315,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param duration -Timeout in milliseconds.
 	 * @param softButtons -A list of App defined SoftButtons.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(Vector<TTSChunk> ttsChunks,
 			String alertText1, String alertText2, String alertText3, Boolean playTone,
@@ -4334,7 +4333,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param playTone -Defines if tone should be played.
 	 * @param softButtons -A list of App defined SoftButtons.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(String ttsText, Boolean playTone, Vector<SoftButton> softButtons,
 			Integer correlationID) throws SdlException {
@@ -4349,7 +4348,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param playTone -Defines if tone should be played.
 	 * @param softButtons -A list of App defined SoftButtons.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(Vector<TTSChunk> chunks, Boolean playTone, Vector<SoftButton> softButtons,
 			Integer correlationID) throws SdlException {
@@ -4367,7 +4366,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param duration -Timeout in milliseconds.
 	 * @param softButtons -A list of App defined SoftButtons.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(String alertText1, String alertText2, String alertText3,
 			Boolean playTone, Integer duration, Vector<SoftButton> softButtons, Integer correlationID) 
@@ -4387,7 +4386,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param playTone -Defines if tone should be played.
 	 * @param duration -Timeout in milliseconds.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(String ttsText, String alertText1,
 			String alertText2, Boolean playTone, Integer duration,
@@ -4408,7 +4407,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param playTone -Defines if tone should be played.
 	 * @param duration -Timeout in milliseconds.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(Vector<TTSChunk> ttsChunks,
 			String alertText1, String alertText2, Boolean playTone,
@@ -4426,7 +4425,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param ttsText -The text to speech message in the form of a string.
 	 * @param playTone -Defines if tone should be played.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(String ttsText, Boolean playTone,
 			Integer correlationID) throws SdlException {
@@ -4440,7 +4439,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param chunks -A list of text/phonemes to speak in the form of ttsChunks.
 	 * @param playTone -Defines if tone should be played.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(Vector<TTSChunk> chunks, Boolean playTone,
 			Integer correlationID) throws SdlException {
@@ -4456,7 +4455,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param playTone -Defines if tone should be played.
 	 * @param duration -Timeout in milliseconds.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void alert(String alertText1, String alertText2,
 			Boolean playTone, Integer duration, Integer correlationID) 
@@ -4468,10 +4467,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Sends a CreateInteractionChoiceSet RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param choiceSet
-	 * @param interactionChoiceSetID
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param choiceSet to be sent to the module
+	 * @param interactionChoiceSetID to be used in reference to the supplied choiceSet
+	 * @param correlationID to be set to the RPCRequest
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void createInteractionChoiceSet(
 			Vector<Choice> choiceSet, Integer interactionChoiceSetID,
@@ -4488,7 +4487,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param commandID -ID of the command(s) to delete.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void deleteCommand(Integer commandID,
 			Integer correlationID) throws SdlException {
@@ -4503,7 +4502,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param interactionChoiceSetID -ID of the interaction choice set to delete.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void deleteInteractionChoiceSet(
 			Integer interactionChoiceSetID, Integer correlationID) 
@@ -4520,7 +4519,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param menuID -The menuID of the submenu to delete.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void deleteSubMenu(Integer menuID,
 			Integer correlationID) throws SdlException {
@@ -4542,7 +4541,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param interactionChoiceSetID -Interaction choice set IDs to use with an interaction.
 	 * @param vrHelp -Suggested VR Help Items to display on-screen during Perform Interaction.      	
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(String initPrompt,
 			String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
@@ -4566,7 +4565,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param timeout -Timeout in milliseconds.
 	 * @param vrHelp -Suggested VR Help Items to display on-screen during Perform Interaction.      	
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(String initPrompt,
 			String displayText, Integer interactionChoiceSetID,
@@ -4594,7 +4593,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param timeout -Timeout in milliseconds.
 	 * @param vrHelp -Suggested VR Help Items to display on-screen during Perform Interaction.      	
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(String initPrompt,
 			String displayText, Vector<Integer> interactionChoiceSetIDList,
@@ -4622,7 +4621,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param timeout -Timeout in milliseconds.
 	 * @param vrHelp -Suggested VR Help Items to display on-screen during Perform Interaction.      	
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
@@ -4648,7 +4647,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param displayText -Text to be displayed first.
 	 * @param interactionChoiceSetID -Interaction choice set IDs to use with an interaction.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(String initPrompt,
 			String displayText, Integer interactionChoiceSetID,
@@ -4671,7 +4670,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param interactionMode - The method in which the user is notified and uses the interaction (Manual,VR,Both).
 	 * @param timeout -Timeout in milliseconds.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(String initPrompt,
 			String displayText, Integer interactionChoiceSetID,
@@ -4698,7 +4697,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param interactionMode - The method in which the user is notified and uses the interaction (Manual,VR,Both).
 	 * @param timeout -Timeout in milliseconds.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(String initPrompt,
 			String displayText, Vector<Integer> interactionChoiceSetIDList,
@@ -4725,7 +4724,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param interactionMode - The method in which the user is notified and uses the interaction (Manual,VR,Both).
 	 * @param timeout -Timeout in milliseconds.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
@@ -4780,12 +4779,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Sends a SetGlobalProperties RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param helpPrompt
-	 * @param timeoutPrompt
-	 * @param vrHelpTitle
-	 * @param vrHelp
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param helpPrompt that will be used for the VR screen
+	 * @param timeoutPrompt string to be displayed after timeout
+	 * @param vrHelpTitle string that may be displayed on VR prompt dialog
+	 * @param vrHelp a list of VR synonyms that may be displayed to user
+	 * @param correlationID to be attached to the request
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID) 
@@ -4800,12 +4799,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Sends a SetGlobalProperties RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param helpChunks
-	 * @param timeoutChunks
-	 * @param vrHelpTitle
-	 * @param vrHelp
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param helpChunks tts chunks that should be used when prompting the user
+	 * @param timeoutChunks tts chunks that will be used when a timeout occurs
+	 * @param vrHelpTitle string that may be displayed on VR prompt dialog
+	 * @param vrHelp a list of VR synonyms that may be displayed to user
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, String vrHelpTitle, Vector<VrHelpItem> vrHelp,
@@ -4821,11 +4820,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	/**
 	 * Sends a SetGlobalProperties RPCRequest to SDL. Responses are captured through callback on IProxyListener.
-	 * 
-	 * @param helpPrompt
-	 * @param timeoutPrompt
-	 * @param correlationID
-	 * @throws SdlException
+	 *
+	 * @param helpPrompt that will be used for the VR screen
+	 * @param timeoutPrompt string to be displayed after timeout
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, Integer correlationID) 
@@ -4839,11 +4838,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	/**
 	 * Sends a SetGlobalProperties RPCRequest to SDL. Responses are captured through callback on IProxyListener.
-	 * 
-	 * @param helpChunks
-	 * @param timeoutChunks
-	 * @param correlationID
-	 * @throws SdlException
+	 *
+	 * @param helpChunks tts chunks that should be used when prompting the user
+	 * @param timeoutChunks tts chunks that will be used when a timeout occurs
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
@@ -4870,12 +4869,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Sends a SetMediaClockTimer RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param hours
-	 * @param minutes
-	 * @param seconds
-	 * @param updateMode
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param hours integer for hours
+	 * @param minutes integer for minutes
+	 * @param seconds integer for seconds
+	 * @param updateMode mode in which the media clock timer should be updated
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void setMediaClockTimer(Integer hours,
 			Integer minutes, Integer seconds, UpdateMode updateMode,
@@ -4890,8 +4889,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Pauses the media clock. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void pauseMediaClockTimer(Integer correlationID) 
 			throws SdlException {
@@ -4905,8 +4904,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Resumes the media clock. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void resumeMediaClockTimer(Integer correlationID) 
 			throws SdlException {
@@ -4920,8 +4919,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Clears the media clock. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void clearMediaClockTimer(Integer correlationID) 
 			throws SdlException {
@@ -4935,19 +4934,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Sends a Show RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param mainText1 -Text displayed in a single or upper display line.
-	 * @param mainText2 -Text displayed on the second display line.
-	 * @param mainText3 -Text displayed on the second "page" first display line.
-	 * @param mainText4 -Text displayed on the second "page" second display line.
-	 * @param statusBar
-	 * @param mediaClock -Text value for MediaClock field.
-	 * @param mediaTrack -Text displayed in the track field.
-	 * @param graphic -Image struct determining whether static or dynamic image to display in app.
-	 * @param softButtons -App defined SoftButtons.
-	 * @param customPresets -App labeled on-screen presets.
-	 * @param alignment -Specifies how mainText1 and mainText2s texts should be aligned on display.
-	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @param mainText1 text displayed in a single or upper display line.
+	 * @param mainText2 text displayed on the second display line.
+	 * @param mainText3 text displayed on the second "page" first display line.
+	 * @param mainText4 text displayed on the second "page" second display line.
+	 * @param statusBar text is placed in the status bar area (Only valid for NAVIGATION apps)
+	 * @param mediaClock text value for MediaClock field.
+	 * @param mediaTrack text displayed in the track field.
+	 * @param graphic image struct determining whether static or dynamic image to display in app.
+	 * @param softButtons app defined SoftButtons.
+	 * @param customPresets app labeled on-screen presets.
+	 * @param alignment specifies how mainText1 and mainText2s texts should be aligned on display.
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void show(String mainText1, String mainText2, String mainText3, String mainText4,
 			String statusBar, String mediaClock, String mediaTrack,
@@ -4974,7 +4973,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param customPresets -App labeled on-screen presets.
 	 * @param alignment -Specifies how mainText1 and mainText2s texts should be aligned on display.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void show(String mainText1, String mainText2, String mainText3, String mainText4,
 			Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
@@ -4988,14 +4987,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Sends a Show RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param mainText1 -Text displayed in a single or upper display line.
-	 * @param mainText2 -Text displayed on the second display line.
-	 * @param statusBar
-	 * @param mediaClock -Text value for MediaClock field.
-	 * @param mediaTrack -Text displayed in the track field.
-	 * @param alignment -Specifies how mainText1 and mainText2s texts should be aligned on display.
-	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @param mainText1 text displayed in a single or upper display line.
+	 * @param mainText2 text displayed on the second display line.
+	 * @param statusBar text is placed in the status bar area (Only valid for NAVIGATION apps)
+	 * @param mediaClock text value for MediaClock field.
+	 * @param mediaTrack text displayed in the track field.
+	 * @param alignment specifies how mainText1 and mainText2s texts should be aligned on display.
+	 * @param correlationID unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void show(String mainText1, String mainText2,
 			String statusBar, String mediaClock, String mediaTrack,
@@ -5016,7 +5015,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param mainText2 -Text displayed on the second display line.
 	 * @param alignment -Specifies how mainText1 and mainText2s texts should be aligned on display.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void show(String mainText1, String mainText2,
 			TextAlignment alignment, Integer correlationID) 
@@ -5030,7 +5029,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param ttsText -The text to speech message in the form of a string.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void speak(String ttsText, Integer correlationID) 
 			throws SdlException {
@@ -5046,7 +5045,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param ttsChunks -Text/phonemes to speak in the form of ttsChunks.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void speak(Vector<TTSChunk> ttsChunks,
 			Integer correlationID) throws SdlException {
@@ -5061,7 +5060,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param buttonName -Name of the button to subscribe.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void subscribeButton(ButtonName buttonName,
 			Integer correlationID) throws SdlException {
@@ -5095,7 +5094,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param buttonName -Name of the button to unsubscribe.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void unsubscribeButton(ButtonName buttonName, 
 			Integer correlationID) throws SdlException {
@@ -5114,7 +5113,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param choiceVrCommands -Vector of vrCommands used to select this choice by voice. Must contain
 	 * 			at least one non-empty element.
 	 * @return Choice created. 
-	 * @throws SdlException 
 	 */
 	public Choice createChoiceSetChoice(Integer choiceID, String choiceMenuName,
 			Vector<String> choiceVrCommands) {		
@@ -5139,7 +5137,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param audioType -Specifies the type of audio data being requested.
 	 * @param muteAudio -Defines if the current audio source should be muted during the APT session.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException 
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void performaudiopassthru(String initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
 			  SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
@@ -5153,8 +5151,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * Ends audio pass thru session. Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param correlationID
-	 * @throws SdlException 
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void endaudiopassthru(Integer correlationID) throws SdlException 
 	{
@@ -5181,7 +5179,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
 	 * @param driverBraking -Subscribes to the status of the brake pedal.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,						
@@ -5213,7 +5211,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
 	 * @param driverBraking -Unsubscribes to the status of the brake pedal.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
@@ -5247,7 +5245,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
 	 * @param driverBraking -Performs an ad-hoc request for the status of the brake pedal.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 				   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
@@ -5269,7 +5267,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param timeout -App defined timeout.  Indicates how long of a timeout from the last action.
 	 * @param softButtons -App defined SoftButtons.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/		
 	public void scrollablemessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
 	{
@@ -5288,7 +5286,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param sliderFooter - Text footer to display (meant to display min/max threshold descriptors).
 	 * @param timeout -App defined timeout.  Indicates how long of a timeout from the last action.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void slider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
 	{
@@ -5299,10 +5297,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *     Responses are captured through callback on IProxyListener.
 	 * 
-	 * @param language
-	 * @param hmiDisplayLanguage
-	 * @param correlationID
-	 * @throws SdlException
+	 * @param language requested SDL voice engine (VR+TTS) language registration
+	 * @param hmiDisplayLanguage request display language registration.
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void changeregistration(Language language, Language hmiDisplayLanguage, Integer correlationID) throws SdlException
 	{
@@ -5319,8 +5317,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param iOffset - The data offset in bytes, a value of zero is used to indicate data starting from the beginging of the file.
 	 * A value greater than zero is used for resuming partial data chunks.
 	 * @param iLength - The total length of the file being sent.
-	 * @throws SdlException
-	 * @see {@link#putFileStream(InputStream, String, Long, Long)}
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @see  #putFileStream(InputStream, String, Long, Long)
 	*/
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
@@ -5339,7 +5337,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * indicate data starting from the beginning of the file and a value greater
 	 * than zero is used for resuming partial data chunks.
 	 * @param length The total length of the file being sent.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
@@ -5356,8 +5354,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param iLength - The total length of the file being sent.
 	 * 
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
-	 * @throws SdlException
-	 * @see {@link#putFileStream(String, Long, Long)}
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @see #putFileStream(String, Long, Long)
 	 */
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
@@ -5375,7 +5373,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * indicate data starting from the beginning of the file and a value greater
 	 * than zero is used for resuming partial data chunks.
 	 * @param length The total length of the file being sent.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public OutputStream putFileStream(String fileName, Long offset, Long length) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
@@ -5394,8 +5392,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param fileType - The selected file type -- see the FileType enumeration for details
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
-	 * @throws SdlException
-	 * @see {@link#putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean)}
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @see #putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, OnPutFileUpdateListener)
 	 */
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
@@ -5420,7 +5418,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * sessions / ignition cycles.
 	 * @param isSystemFile Indicates if the file is meant to be passed through
 	 * core to elsewhere in the system.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
@@ -5440,8 +5438,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
 	 * @return OutputStream - The output stream of byte data that is written to by the app developer
-	 * @throws SdlException
-	 * @see {@link#putFileStream(String, Long, Long, FileType, Boolean, Boolean)}
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @see #putFileStream(String, Long, Long, FileType, Boolean, Boolean, OnPutFileUpdateListener)
 	 */
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
@@ -5465,7 +5463,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * sessions / ignition cycles.
 	 * @param isSystemFile Indicates if the file is meant to be passed through
 	 * core to elsewhere in the system.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
@@ -5484,10 +5482,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param fileType - The selected file type -- see the FileType enumeration for details
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
-	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @param iCorrelationID - A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
-	 * @throws SdlException
-	 * @see {@link#putFileStream(String, String, Long, FileType, Boolean, Boolean, Integer)}
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @see #putFileStream(String, String, Long, FileType, Boolean, Boolean, Boolean, Integer, OnPutFileUpdateListener)
 	 */	
 	@Deprecated
 	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
@@ -5516,7 +5514,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return RPCStreamController If the putFileStream was not started 
 	 * successfully null is returned, otherwise a valid object reference is 
 	 * returned .
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
@@ -5535,10 +5533,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param fileType - The selected file type -- see the FileType enumeration for details
 	 * @param bPersistentFile - Indicates if the file is meant to persist between sessions / ignition cycles.
 	 * @param  bSystemFile - Indicates if the file is meant to be passed thru core to elsewhere on the system.
-	 * @param correlationID - A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @param iCorrelationID - A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @return RPCStreamController - If the putFileStream was not started successfully null is returned, otherwise a valid object reference is returned 
-	 * @throws SdlException
-	 * @see {@link#putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, Integer)}
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @see #putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, Boolean, Integer)
 	 */	
 	@Deprecated
 	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
@@ -5565,7 +5563,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @param correlationId A unique id that correlates each RPCRequest and 
 	 * RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
@@ -5590,9 +5588,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param sdlFileName -File reference name.
 	 * @param fileType -Selected file type.
 	 * @param persistentFile -Indicates if the file is meant to persist between sessions / ignition cycles.
-	 * @param fileData
+	 * @param fileData byte array of data of the file that is to be sent
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void putfile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException 
 	{
@@ -5606,7 +5604,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param sdlFileName -File reference name.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void deletefile(String sdlFileName, Integer correlationID) throws SdlException 
 	{
@@ -5619,7 +5617,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *     Responses are captured through callback on IProxyListener.
 	 * 
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void listfiles(Integer correlationID) throws SdlException
 	{
@@ -5633,7 +5631,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param sdlFileName -File reference name.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void setappicon(String sdlFileName, Integer correlationID) throws SdlException 
 	{
@@ -5647,7 +5645,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @param displayLayout -Predefined or dynamically created screen layout.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
-	 * @throws SdlException
+	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	public void setdisplaylayout(String displayLayout, Integer correlationID) throws SdlException
 	{
@@ -5663,7 +5661,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return _systemCapabilityManager.getCapability(systemCapabilityType);
 	}
 
-	/******************** END Public Helper Methods *************************/
+	/* ******************* END Public Helper Methods *************************/
 	
 	/**
 	 * Gets type of transport currently used by this SdlProxy.
