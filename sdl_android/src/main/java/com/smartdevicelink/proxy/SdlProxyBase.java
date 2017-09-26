@@ -101,6 +101,7 @@ import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";
@@ -1200,6 +1201,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 * This method will fake the multiplex connection event
 	 */
+	@SuppressWarnings("unused")
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession != null) {
@@ -1234,6 +1236,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *  Public method to enable the siphon transport
 	 */
+	@SuppressWarnings("unused")
 	public void enableSiphonDebug() {
 
 		short enabledPortNumber = SiphonServer.enableSiphonServer();
@@ -1249,6 +1252,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *  Public method to disable the Siphon Trace Server
 	 */
+	@SuppressWarnings("unused")
 	public void disableSiphonDebug() {
 
 		short disabledPortNumber = SiphonServer.disableSiphonServer();
@@ -1285,6 +1289,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}	
 	
 	
+	@SuppressWarnings("unused")
 	@Deprecated
 	public void close() throws SdlException {
 		dispose();
@@ -1537,7 +1542,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	void dispatchInternalMessage(final InternalProxyMessage message) {
 		try{
 			if (message.getFunctionName().equals(InternalProxyMessage.OnProxyError)) {
-				final OnError msg = (OnError)message;			
+				final OnError msg = (OnError)message;
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -1694,6 +1699,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bytesWritten how many bytes were written
 	 * @param totalSize the total size in bytes
 	 */
+	@SuppressWarnings("unused")
 	public void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 		if(rpcResponseListeners !=null 
@@ -1710,6 +1716,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param msg The RPCResponse message that was received
 	 * @return if a listener was called or not
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	private boolean onRPCResponseReceived(RPCResponse msg){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 			int correlationId = msg.getCorrelationID();
@@ -1747,12 +1754,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public SparseArray<OnRPCResponseListener> getResponseListeners(){
 		synchronized(ON_UPDATE_LISTENER_LOCK){
 			return this.rpcResponseListeners;
 		}
 	}
 	
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean onRPCNotificationReceived(RPCNotification notification){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
 			OnRPCNotificationListener listener = rpcNotificationListeners.get(FunctionID.getFunctionId(notification.getFunctionName()));
@@ -1770,12 +1779,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param notificationId The notification type that this listener is designated for
 	 * @param listener The listener that will be called when a notification of the provided type is received
 	 */
-	public void addOnRPCNotificationListener(FunctionID notificationId,OnRPCNotificationListener listener){
+	@SuppressWarnings("unused")
+	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
 			rpcNotificationListeners.put(notificationId.getId(), listener);
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public void removeOnRPCNotificationListener(FunctionID notificationId){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
 			rpcNotificationListeners.delete(notificationId.getId());
@@ -3440,7 +3451,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         }			
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "UnusedReturnValue"})
 	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
 	{		
 		if (sdlSession == null) return null;
@@ -3473,6 +3484,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return null;
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
 		if (sdlSession == null) return false;		
 		sdlSession.startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
@@ -3516,6 +3528,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Opens the video service (serviceType 11) and subsequently streams raw H264 video from an InputStream provided by the app
 	 *@return true if service is opened successfully and stream is started, return false otherwise
 	 */
+	@SuppressWarnings("unused")
 	public boolean startH264(InputStream is, boolean isEncrypted) {
 		
 		if (sdlSession == null) return false;		
@@ -3559,6 +3572,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Opens the video service (serviceType 11) and subsequently provides an OutputStream to the app to use for a raw H264 video stream
 	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
 	 */
+	@SuppressWarnings("unused")
 	public OutputStream startH264(boolean isEncrypted) {
 
 		if (sdlSession == null) return null;		
@@ -3601,6 +3615,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Closes the opened video service (serviceType 11)
 	 *@return true if the video service is closed successfully, return false otherwise  
 	 */	
+	@SuppressWarnings("unused")
 	public boolean endH264() {
 		if (sdlSession == null) return false;		
 
@@ -3621,6 +3636,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Pauses the stream for the opened audio service (serviceType 10)
 	 *@return true if the audio service stream is paused successfully, return false otherwise  
 	 */		
+	@SuppressWarnings("unused")
 	public boolean pausePCM()
 	{
 		if (sdlSession == null) return false;
@@ -3631,6 +3647,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Pauses the stream for the opened video service (serviceType 11)
 	 *@return true if the video service stream is paused successfully, return false otherwise  
 	 */	
+	@SuppressWarnings("unused")
 	public boolean pauseH264()
 	{
 		if (sdlSession == null) return false;
@@ -3641,6 +3658,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Resumes the stream for the opened audio service (serviceType 10)
 	 *@return true if the audio service stream is resumed successfully, return false otherwise  
 	 */	
+	@SuppressWarnings("unused")
 	public boolean resumePCM()
 	{
 		if (sdlSession == null) return false;
@@ -3651,6 +3669,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Resumes the stream for the opened video service (serviceType 11)
 	 *@return true if the video service is resumed successfully, return false otherwise  
 	 */	
+	@SuppressWarnings("unused")
 	public boolean resumeH264()
 	{
 		if (sdlSession == null) return false;
@@ -3662,6 +3681,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Opens the audio service (serviceType 10) and subsequently streams raw PCM audio from an InputStream provided by the app
 	 *@return true if service is opened successfully and stream is started, return false otherwise  
 	 */
+	@SuppressWarnings("unused")
 	public boolean startPCM(InputStream is, boolean isEncrypted) {
 		if (sdlSession == null) return false;		
 		
@@ -3692,6 +3712,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Opens the audio service (serviceType 10) and subsequently provides an OutputStream to the app
 	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
 	 */		
+	@SuppressWarnings("unused")
 	public OutputStream startPCM(boolean isEncrypted) {
 		if (sdlSession == null) return null;		
 		
@@ -3721,6 +3742,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *Closes the opened audio service (serviceType 10)
 	 *@return true if the audio service is closed successfully, return false otherwise  
 	 */		
+	@SuppressWarnings("unused")
 	public boolean endPCM() {
 		if (sdlSession == null) return false;		
 		SdlConnection sdlConn = sdlSession.getSdlConnection();		
@@ -3749,8 +3771,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param bitrate - specified bitrate to utilize for creation of Surface
 	 *@return Surface if service is opened successfully and stream is started, return null otherwise
 	 */
-    public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
-                                            int height, int bitrate, boolean isEncrypted) {
+    @SuppressWarnings("unused")
+	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+											int height, int bitrate, boolean isEncrypted) {
         
         if (sdlSession == null) return null;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
@@ -3870,7 +3893,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *Starts the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
 	 */
-    public void startEncoder () {
+    @SuppressWarnings("unused")
+	public void startEncoder () {
         if (sdlSession == null) return;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
         if (sdlConn == null) return;
@@ -3881,7 +3905,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
 	 */
-    public void releaseEncoder() {
+    @SuppressWarnings("unused")
+	public void releaseEncoder() {
         if (sdlSession == null) return;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
         if (sdlConn == null) return;
@@ -3892,7 +3917,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/**
 	 *Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
 	 */
-    public void drainEncoder(boolean endOfStream) {
+    @SuppressWarnings("unused")
+	public void drainEncoder(boolean endOfStream) {
         if (sdlSession == null) return;		
         SdlConnection sdlConn = sdlSession.getSdlConnection();		
         if (sdlConn == null) return;
@@ -3951,6 +3977,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_appService = mService;
 	}
 	
+	@SuppressWarnings("unused")
 	public boolean startProtectedRPCService() {
 		rpcProtectedResponseReceived = false;
 		rpcProtectedStartResponse = false;
@@ -4003,9 +4030,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void addCommand(Integer commandID,
-			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) 
+						   String menuText, Integer parentID, Integer position,
+						   Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
 		
 		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
@@ -4026,9 +4054,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Integer position,
-			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) 
+						   String menuText, Integer position,
+						   Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, position, vrCommands, IconValue, IconType, correlationID);
@@ -4045,9 +4074,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Integer position, String IconValue, ImageType IconType,
-			Integer correlationID) 
+						   String menuText, Integer position, String IconValue, ImageType IconType,
+						   Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, position, null, IconValue, IconType, correlationID);
@@ -4063,8 +4093,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, String IconValue, ImageType IconType, Integer correlationID) 
+						   String menuText, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, null, null, IconValue, IconType, correlationID);
@@ -4081,8 +4112,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) 
+						   String menuText, Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, null, vrCommands, IconValue, IconType, correlationID);
@@ -4098,8 +4130,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID) 
+						   Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, null, null, null, vrCommands, IconValue, IconType, correlationID);
@@ -4118,9 +4151,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void addCommand(Integer commandID,
-			String menuText, Integer parentID, Integer position,
-			Vector<String> vrCommands, Integer correlationID) 
+						   String menuText, Integer parentID, Integer position,
+						   Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
 		
 		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
@@ -4139,9 +4173,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Integer position,
-			Vector<String> vrCommands, Integer correlationID) 
+						   String menuText, Integer position,
+						   Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, position, vrCommands, correlationID);
@@ -4156,9 +4191,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Integer position,
-			Integer correlationID) 
+						   String menuText, Integer position,
+						   Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, position, null, correlationID);
@@ -4172,8 +4208,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Integer correlationID) 
+						   String menuText, Integer correlationID)
 			throws SdlException {
 		Vector<String> vrCommands = null;
 		
@@ -4189,8 +4226,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			String menuText, Vector<String> vrCommands, Integer correlationID) 
+						   String menuText, Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, menuText, null, null, vrCommands, correlationID);
@@ -4204,8 +4242,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addCommand(Integer commandID,
-			Vector<String> vrCommands, Integer correlationID) 
+						   Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
 		
 		addCommand(commandID, null, null, null, vrCommands, correlationID);
@@ -4221,8 +4260,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void addSubMenu(Integer menuID, String menuName,
-			Integer position, Integer correlationID) 
+						   Integer position, Integer correlationID)
 			throws SdlException {
 		
 		AddSubMenu msg = RPCRequestFactory.buildAddSubMenu(menuID, menuName,
@@ -4239,8 +4279,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void addSubMenu(Integer menuID, String menuName,
-			Integer correlationID) throws SdlException {
+						   Integer correlationID) throws SdlException {
 		
 		addSubMenu(menuID, menuName, null, correlationID);
 	}
@@ -4259,9 +4300,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void alert(String ttsText, String alertText1,
-			String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
-			Integer correlationID) throws SdlException {
+					  String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
+					  Integer correlationID) throws SdlException {
 
 		Alert msg = RPCRequestFactory.buildAlert(ttsText, alertText1, alertText2, alertText3, playTone, duration, softButtons, correlationID);
 
@@ -4299,8 +4341,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void alert(String ttsText, Boolean playTone, Vector<SoftButton> softButtons,
-			Integer correlationID) throws SdlException {
+					  Integer correlationID) throws SdlException {
 		
 		alert(ttsText, null, null, null, playTone, null, softButtons, correlationID);
 	}
@@ -4314,8 +4357,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void alert(Vector<TTSChunk> chunks, Boolean playTone, Vector<SoftButton> softButtons,
-			Integer correlationID) throws SdlException {
+					  Integer correlationID) throws SdlException {
 		
 		alert(chunks, null, null, null, playTone, null, softButtons, correlationID);
 	}
@@ -4332,8 +4376,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void alert(String alertText1, String alertText2, String alertText3,
-			Boolean playTone, Integer duration, Vector<SoftButton> softButtons, Integer correlationID) 
+					  Boolean playTone, Integer duration, Vector<SoftButton> softButtons, Integer correlationID)
 			throws SdlException {
 		
 		alert((Vector<TTSChunk>)null, alertText1, alertText2, alertText3, playTone, duration, softButtons, correlationID);
@@ -4352,9 +4397,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void alert(String ttsText, String alertText1,
-			String alertText2, Boolean playTone, Integer duration,
-			Integer correlationID) throws SdlException {
+					  String alertText2, Boolean playTone, Integer duration,
+					  Integer correlationID) throws SdlException {
 
 		Alert msg = RPCRequestFactory.buildAlert(ttsText, alertText1, alertText2, 
 				playTone, duration, correlationID);
@@ -4391,8 +4437,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void alert(String ttsText, Boolean playTone,
-			Integer correlationID) throws SdlException {
+					  Integer correlationID) throws SdlException {
 		
 		alert(ttsText, null, null, playTone, null, correlationID);
 	}
@@ -4405,8 +4452,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void alert(Vector<TTSChunk> chunks, Boolean playTone,
-			Integer correlationID) throws SdlException {
+					  Integer correlationID) throws SdlException {
 		
 		alert(chunks, null, null, playTone, null, correlationID);
 	}
@@ -4421,8 +4469,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void alert(String alertText1, String alertText2,
-			Boolean playTone, Integer duration, Integer correlationID) 
+					  Boolean playTone, Integer duration, Integer correlationID)
 			throws SdlException {
 		
 		alert((Vector<TTSChunk>)null, alertText1, alertText2, playTone, duration, correlationID);
@@ -4436,6 +4485,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID to be set to the RPCRequest
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void createInteractionChoiceSet(
 			Vector<Choice> choiceSet, Integer interactionChoiceSetID,
 			Integer correlationID) throws SdlException {
@@ -4453,8 +4503,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void deleteCommand(Integer commandID,
-			Integer correlationID) throws SdlException {
+							  Integer correlationID) throws SdlException {
 		
 		DeleteCommand msg = RPCRequestFactory.buildDeleteCommand(commandID, correlationID);
 
@@ -4468,6 +4519,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void deleteInteractionChoiceSet(
 			Integer interactionChoiceSetID, Integer correlationID) 
 			throws SdlException {
@@ -4485,8 +4537,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void deleteSubMenu(Integer menuID,
-			Integer correlationID) throws SdlException {
+							  Integer correlationID) throws SdlException {
 		
 		DeleteSubMenu msg = RPCRequestFactory.buildDeleteSubMenu(menuID, correlationID);
 
@@ -4507,9 +4560,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-			String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) throws SdlException {
+								   String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
+								   Integer correlationID) throws SdlException {
 		
 		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
 				displayText, interactionChoiceSetID, vrHelp, correlationID);
@@ -4531,11 +4585,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-			String displayText, Integer interactionChoiceSetID,
-			String helpPrompt, String timeoutPrompt,
-			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) throws SdlException {
+								   String displayText, Integer interactionChoiceSetID,
+								   String helpPrompt, String timeoutPrompt,
+								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+								   Integer correlationID) throws SdlException {
 		
 		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
 				initPrompt, displayText, interactionChoiceSetID,
@@ -4559,11 +4614,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-			String displayText, Vector<Integer> interactionChoiceSetIDList,
-			String helpPrompt, String timeoutPrompt,
-			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
-			Integer correlationID) throws SdlException {
+								   String displayText, Vector<Integer> interactionChoiceSetIDList,
+								   String helpPrompt, String timeoutPrompt,
+								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+								   Integer correlationID) throws SdlException {
 		
 		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
 				displayText, interactionChoiceSetIDList,
@@ -4587,6 +4643,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
 			Vector<Integer> interactionChoiceSetIDList,
@@ -4613,9 +4670,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-			String displayText, Integer interactionChoiceSetID,
-			Integer correlationID) throws SdlException {
+								   String displayText, Integer interactionChoiceSetID,
+								   Integer correlationID) throws SdlException {
 		
 		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
 				displayText, interactionChoiceSetID, correlationID);
@@ -4636,11 +4694,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-			String displayText, Integer interactionChoiceSetID,
-			String helpPrompt, String timeoutPrompt,
-			InteractionMode interactionMode, Integer timeout,
-			Integer correlationID) throws SdlException {
+								   String displayText, Integer interactionChoiceSetID,
+								   String helpPrompt, String timeoutPrompt,
+								   InteractionMode interactionMode, Integer timeout,
+								   Integer correlationID) throws SdlException {
 		
 		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
 				initPrompt, displayText, interactionChoiceSetID,
@@ -4663,11 +4722,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-			String displayText, Vector<Integer> interactionChoiceSetIDList,
-			String helpPrompt, String timeoutPrompt,
-			InteractionMode interactionMode, Integer timeout,
-			Integer correlationID) throws SdlException {
+								   String displayText, Vector<Integer> interactionChoiceSetIDList,
+								   String helpPrompt, String timeoutPrompt,
+								   InteractionMode interactionMode, Integer timeout,
+								   Integer correlationID) throws SdlException {
 		
 		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
 				displayText, interactionChoiceSetIDList,
@@ -4690,6 +4750,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performInteraction(
 			Vector<TTSChunk> initChunks, String displayText,
 			Vector<Integer> interactionChoiceSetIDList,
@@ -4750,6 +4811,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID to be attached to the request
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID) 
 		throws SdlException {
@@ -4770,6 +4832,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, String vrHelpTitle, Vector<VrHelpItem> vrHelp,
 			Integer correlationID) throws SdlException {
@@ -4790,6 +4853,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, Integer correlationID) 
 		throws SdlException {
@@ -4808,6 +4872,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
 			Integer correlationID) throws SdlException {
@@ -4818,8 +4883,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sendRPCRequest(req);
 	}
 	
+	@SuppressWarnings("unused")
 	public void resetGlobalProperties(Vector<GlobalProperty> properties,
-			Integer correlationID) throws SdlException {
+									  Integer correlationID) throws SdlException {
 		
 		ResetGlobalProperties req = new ResetGlobalProperties();
 		
@@ -4840,9 +4906,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void setMediaClockTimer(Integer hours,
-			Integer minutes, Integer seconds, UpdateMode updateMode,
-			Integer correlationID) throws SdlException {
+								   Integer minutes, Integer seconds, UpdateMode updateMode,
+								   Integer correlationID) throws SdlException {
 
 		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(hours,
 				minutes, seconds, updateMode, correlationID);
@@ -4856,7 +4923,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void pauseMediaClockTimer(Integer correlationID) 
+	@SuppressWarnings("unused")
+	public void pauseMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
 		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
@@ -4871,7 +4939,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void resumeMediaClockTimer(Integer correlationID) 
+	@SuppressWarnings("unused")
+	public void resumeMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
 		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
@@ -4886,7 +4955,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void clearMediaClockTimer(Integer correlationID) 
+	@SuppressWarnings("unused")
+	public void clearMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
 		Show msg = RPCRequestFactory.buildShow(null, null, null, "     ", null, null, correlationID);
@@ -4912,10 +4982,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void show(String mainText1, String mainText2, String mainText3, String mainText4,
-			String statusBar, String mediaClock, String mediaTrack,
-			Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
-			TextAlignment alignment, Integer correlationID) 
+					 String statusBar, String mediaClock, String mediaTrack,
+					 Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
+					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
 		
 		Show msg = RPCRequestFactory.buildShow(mainText1, mainText2, mainText3, mainText4,
@@ -4939,9 +5010,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void show(String mainText1, String mainText2, String mainText3, String mainText4,
-			Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
-			TextAlignment alignment, Integer correlationID) 
+					 Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
+					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
 		
 		show(mainText1, mainText2, mainText3, mainText4, null, null, null, graphic, softButtons, customPresets, alignment, correlationID);
@@ -4960,9 +5032,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("SameParameterValue")
 	public void show(String mainText1, String mainText2,
-			String statusBar, String mediaClock, String mediaTrack,
-			TextAlignment alignment, Integer correlationID) 
+					 String statusBar, String mediaClock, String mediaTrack,
+					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
 		
 		Show msg = RPCRequestFactory.buildShow(mainText1, mainText2,
@@ -4981,8 +5054,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void show(String mainText1, String mainText2,
-			TextAlignment alignment, Integer correlationID) 
+					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
 		
 		show(mainText1, mainText2, null, null, null, alignment, correlationID);
@@ -4995,7 +5069,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void speak(String ttsText, Integer correlationID) 
+	@SuppressWarnings("unused")
+	public void speak(String ttsText, Integer correlationID)
 			throws SdlException {
 		
 		Speak msg = RPCRequestFactory.buildSpeak(TTSChunkFactory.createSimpleTTSChunks(ttsText),
@@ -5011,8 +5086,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void speak(Vector<TTSChunk> ttsChunks,
-			Integer correlationID) throws SdlException {
+					  Integer correlationID) throws SdlException {
 
 		Speak msg = RPCRequestFactory.buildSpeak(ttsChunks, correlationID);
 
@@ -5026,8 +5102,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void subscribeButton(ButtonName buttonName,
-			Integer correlationID) throws SdlException {
+								Integer correlationID) throws SdlException {
 
 		SubscribeButton msg = RPCRequestFactory.buildSubscribeButton(buttonName,
 				correlationID);
@@ -5060,8 +5137,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void unsubscribeButton(ButtonName buttonName, 
-			Integer correlationID) throws SdlException {
+	@SuppressWarnings("unused")
+	public void unsubscribeButton(ButtonName buttonName,
+								  Integer correlationID) throws SdlException {
 
 		UnsubscribeButton msg = RPCRequestFactory.buildUnsubscribeButton(
 				buttonName, correlationID);
@@ -5078,8 +5156,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 			at least one non-empty element.
 	 * @return Choice created. 
 	 */
+	@SuppressWarnings("unused")
 	public Choice createChoiceSetChoice(Integer choiceID, String choiceMenuName,
-			Vector<String> choiceVrCommands) {		
+										Vector<String> choiceVrCommands) {
 		Choice returnChoice = new Choice();
 		
 		returnChoice.setChoiceID(choiceID);
@@ -5103,9 +5182,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void performaudiopassthru(String initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
-			  SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
-			  AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {		
+									 SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
+									 AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {
 
 		PerformAudioPassThru msg = RPCRequestFactory.BuildPerformAudioPassThru(initialPrompt, audioPassThruDisplayText1, audioPassThruDisplayText2, 
 																				samplingRate, maxDuration, bitsPerSample, audioType, muteAudio, correlationID);
@@ -5118,7 +5198,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void endaudiopassthru(Integer correlationID) throws SdlException 
+	@SuppressWarnings("unused")
+	public void endaudiopassthru(Integer correlationID) throws SdlException
 	{
 		EndAudioPassThru msg = RPCRequestFactory.BuildEndAudioPassThru(correlationID);		
 		sendRPCRequest(msg);
@@ -5145,8 +5226,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
+	@SuppressWarnings("unused")
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
-									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,						
+									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									 boolean driverBraking, Integer correlationID) throws SdlException
 	{
@@ -5178,10 +5260,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 
+	@SuppressWarnings("unused")
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
-			 						   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
-			 						   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-			 						   boolean driverBraking, Integer correlationID) throws SdlException
+									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									   boolean driverBraking, Integer correlationID) throws SdlException
 	{
 		UnsubscribeVehicleData msg = RPCRequestFactory.BuildUnsubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure,
 																					odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
@@ -5211,10 +5294,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
+	@SuppressWarnings("unused")
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
-			 				   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
-			 				   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
-			 				   boolean driverBraking, Integer correlationID) throws SdlException
+							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
+							   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+							   boolean driverBraking, Integer correlationID) throws SdlException
 	{
 	
 		GetVehicleData msg = RPCRequestFactory.BuildGetVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, vin, prndl, tirePressure, odometer,
@@ -5233,6 +5317,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/		
+	@SuppressWarnings("unused")
 	public void scrollablemessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
 	{
 		ScrollableMessage msg = RPCRequestFactory.BuildScrollableMessage(scrollableMessageBody, timeout, softButtons, correlationID);		
@@ -5252,6 +5337,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
+	@SuppressWarnings("unused")
 	public void slider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
 	{
 		Slider msg = RPCRequestFactory.BuildSlider(numTicks, position, sliderHeader, sliderFooter, timeout, correlationID);		
@@ -5266,6 +5352,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
+	@SuppressWarnings("unused")
 	public void changeregistration(Language language, Language hmiDisplayLanguage, Integer correlationID) throws SdlException
 	{
 		ChangeRegistration msg = RPCRequestFactory.BuildChangeRegistration(language, hmiDisplayLanguage, correlationID);
@@ -5284,6 +5371,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 * @see  #putFileStream(InputStream, String, Long, Long)
 	*/
+	@SuppressWarnings("unused")
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
@@ -5303,6 +5391,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param length The total length of the file being sent.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
 		startRPCStream(inputStream, msg);
@@ -5321,6 +5410,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 * @see #putFileStream(String, Long, Long)
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
@@ -5339,6 +5429,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param length The total length of the file being sent.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public OutputStream putFileStream(String fileName, Long offset, Long length) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
 		return startRPCStream(msg);
@@ -5359,6 +5450,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 * @see #putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, OnPutFileUpdateListener)
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
@@ -5384,6 +5476,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
 		msg.setOnPutFileUpdateListener(cb);
@@ -5405,6 +5498,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 * @see #putFileStream(String, Long, Long, FileType, Boolean, Boolean, OnPutFileUpdateListener)
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
@@ -5429,6 +5523,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * core to elsewhere in the system.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
 		msg.setOnPutFileUpdateListener(cb);
@@ -5451,6 +5546,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 * @see #putFileStream(String, String, Long, FileType, Boolean, Boolean, Boolean, Integer, OnPutFileUpdateListener)
 	 */	
+	@SuppressWarnings("unused")
 	@Deprecated
 	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
@@ -5480,6 +5576,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * returned .
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
 		msg.setOnPutFileUpdateListener(cb);
@@ -5502,6 +5599,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 * @see #putFileStream(InputStream, String, Long, Long, FileType, Boolean, Boolean, Boolean, Integer)
 	 */	
+	@SuppressWarnings("unused")
 	@Deprecated
 	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
@@ -5529,6 +5627,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@SuppressWarnings("unused")
 	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
 		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
 		return startPutFileStream(inputStream, msg);
@@ -5539,6 +5638,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Used to end an existing putFileStream that was previously initiated with any putFileStream method.
 	 *
 	 */
+	@SuppressWarnings("unused")
 	public void endPutFileStream()
 	{
 		endRPCStream();
@@ -5556,7 +5656,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
-	public void putfile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException 
+	@SuppressWarnings("unused")
+	public void putfile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException
 	{
 		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, fileType, persistentFile, fileData, correlationID);
 		sendRPCRequest(msg);
@@ -5570,7 +5671,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
-	public void deletefile(String sdlFileName, Integer correlationID) throws SdlException 
+	@SuppressWarnings("unused")
+	public void deletefile(String sdlFileName, Integer correlationID) throws SdlException
 	{
 		DeleteFile msg = RPCRequestFactory.buildDeleteFile(sdlFileName, correlationID);
 		sendRPCRequest(msg);
@@ -5583,6 +5685,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
+	@SuppressWarnings("unused")
 	public void listfiles(Integer correlationID) throws SdlException
 	{
 		ListFiles msg = RPCRequestFactory.buildListFiles(correlationID);
@@ -5597,7 +5700,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
-	public void setappicon(String sdlFileName, Integer correlationID) throws SdlException 
+	@SuppressWarnings("unused")
+	public void setappicon(String sdlFileName, Integer correlationID) throws SdlException
 	{
 		SetAppIcon msg = RPCRequestFactory.buildSetAppIcon(sdlFileName, correlationID);
 		sendRPCRequest(msg);
@@ -5611,16 +5715,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
+	@SuppressWarnings("unused")
 	public void setdisplaylayout(String displayLayout, Integer correlationID) throws SdlException
 	{
 		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, correlationID);
 		sendRPCRequest(msg);
 	}
 
+	@SuppressWarnings("unused")
 	public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener){
 		_systemCapabilityManager.getCapability(systemCapabilityType, scListener);
 	}
 
+	@SuppressWarnings("unused")
 	public Object getCapability(SystemCapabilityType systemCapabilityType){
 		return _systemCapabilityManager.getCapability(systemCapabilityType);
 	}
@@ -5634,6 +5741,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * 
 	 * @see TransportType
 	 */
+	@SuppressWarnings("unused")
 	public TransportType getCurrentTransportType() throws IllegalStateException {
 		if (sdlSession  == null) {
 			throw new IllegalStateException("Incorrect state of SdlProxyBase: Calling for getCurrentTransportType() while connection is not initialized");
@@ -5653,6 +5761,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public boolean isServiceTypeProtected(SessionType sType)
 	{
 		if (sdlSession == null)
@@ -5666,37 +5775,45 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return _proxyListener;
 	}
 	
+	@SuppressWarnings("unused")
 	public String getAppName()
 	{
 		return _applicationName;
 	}
 
+	@SuppressWarnings("unused")
 	public String getNgnAppName()
 	{
 		return _ngnMediaScreenAppName;
 	}
 
+	@SuppressWarnings("unused")
 	public String getAppID()
 	{
 		return _appID;
 	}
+	@SuppressWarnings("unused")
 	public DeviceInfo getDeviceInfo()
 	{
 		return deviceInfo;
 	}
+	@SuppressWarnings("unused")
 	public long getInstanceDT()
 	{
 		return instanceDateTime;
 	}
+	@SuppressWarnings("unused")
 	public void setConnectionDetails(String sDetails)
 	{
 		sConnectionDetails = sDetails;
 	}
+	@SuppressWarnings("unused")
 	public String getConnectionDetails()
 	{
 		return sConnectionDetails;
 	}
 	//for testing only
+	@SuppressWarnings("unused")
 	public void setPoliciesURL(String sText)
 	{
 		sPoliciesURL = sText;
