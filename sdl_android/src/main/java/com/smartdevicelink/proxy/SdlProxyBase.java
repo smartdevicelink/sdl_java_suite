@@ -3615,8 +3615,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service stream is paused successfully, return false otherwise  
 	 */		
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean pausePCM() {
-		return sdlSession != null && sdlSession.pauseAudioStream();
+		return pauseAudioStream();
 	}
 
 	/**
@@ -3634,8 +3635,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service stream is resumed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean resumePCM() {
-		return sdlSession != null && sdlSession.resumeAudioStream();
+		return resumeAudioStream();
 	}
 
 	/**
@@ -3654,6 +3656,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if service is opened successfully and stream is started, return false otherwise  
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean startPCM(InputStream is, boolean isEncrypted) {
 		if (sdlSession == null) return false;		
 		
@@ -3686,6 +3689,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
 	 */		
 	@SuppressWarnings("unused")
+	@Deprecated
 	public OutputStream startPCM(boolean isEncrypted) {
 		if (sdlSession == null) return null;		
 		
@@ -3730,24 +3734,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service is closed successfully, return false otherwise  
 	 */		
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean endPCM() {
-		if (sdlSession == null) return false;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
-		
-		pcmServiceEndResponseReceived = false;
-		pcmServiceEndResponse = false;
-		sdlSession.stopAudioStream();
-		
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
-
-		//noinspection StatementWithEmptyBody
-		while (!pcmServiceEndResponseReceived && !fTask.isDone());
-		scheduler.shutdown();
-
-		return pcmServiceEndResponse;
+		return endAudioStream();
 	}
 
     /**
@@ -4121,6 +4110,49 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             }
             return null;
         }
+    }
+
+    /**
+     *Closes the opened audio service (serviceType 10)
+     *@return true if the audio service is closed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean endAudioStream() {
+        if (sdlSession == null) return false;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return false;
+
+        pcmServiceEndResponseReceived = false;
+        pcmServiceEndResponse = false;
+        sdlSession.stopAudioStream();
+
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!pcmServiceEndResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+
+        return pcmServiceEndResponse;
+    }
+
+    /**
+     *Pauses the stream for the opened audio service (serviceType 10)
+     *@return true if the audio service stream is paused successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean pauseAudioStream() {
+        return sdlSession != null && sdlSession.pauseAudioStream();
+    }
+
+    /**
+     *Resumes the stream for the opened audio service (serviceType 10)
+     *@return true if the audio service stream is resumed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean resumeAudioStream() {
+        return sdlSession != null && sdlSession.resumeAudioStream();
     }
 
 	private void NavServiceStarted() {
