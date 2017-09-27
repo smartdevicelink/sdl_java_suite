@@ -59,6 +59,7 @@ import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -3754,7 +3755,42 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		return pcmServiceEndResponse;
 	}
-    
+
+    /**
+     * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
+     * to the app to send video data.
+     *
+     * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param codec       Video codec which will be used for streaming. Currently, only
+     *                    VideoStreamingCodec.H264 is accepted.
+     * @param width       Width of the video in pixels
+     * @param height      Height of the video in pixels
+     *
+     * @return IVideoStreamListener interface if service is opened successfully and streaming is
+     *         started, null otherwise
+     */
+    @SuppressWarnings("unused")
+    public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingCodec codec,
+                                                 int width, int height) {
+        if (sdlSession == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (sdlSession.getSdlConnection() == null) {
+            DebugTool.logWarning("SdlConnection is not available.");
+            return null;
+        }
+
+        VideoStreamingCodec[] codecs = {codec};
+        VideoStreamingParams acceptedParams = tryStartVideoStream(codecs, width, height, -1, -1,
+                -1, isEncrypted);
+        if (acceptedParams != null) {
+            return sdlSession.startVideoStream();
+        } else {
+            return null;
+        }
+    }
+
 	/**
 	 * Opens the video service (serviceType 11) and creates a Surface (used for streaming video) with input parameters provided by the app
 	 * @param frameRate - specified rate of frames to utilize for creation of Surface 
@@ -3933,9 +3969,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             resolution.setResolutionWidth(width);
             resolution.setResolutionHeight(height);
             params.setResolution(resolution);
-            params.setFrameRate(frameRate);
-            params.setBitrate(bitrate);
-            params.setInterval(frameInterval);
+            if (frameRate >= 0) {
+                params.setFrameRate(frameRate);
+            }
+            if (bitrate >= 0) {
+                params.setBitrate(bitrate);
+            }
+            if (frameInterval >= 0) {
+                params.setInterval(frameInterval);
+            }
             params.setFormat(format);
             list.add(params);
         }

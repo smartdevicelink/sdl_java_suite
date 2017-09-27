@@ -25,6 +25,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.ISecurityInitializedListener;
@@ -198,7 +199,34 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
 		return os;
 	}
-	
+
+	public IVideoStreamListener startVideoStream() {
+		byte rpcSessionID = getSessionId();
+		VideoStreamingProtocol protocol = getAcceptedProtocol();
+		try {
+			switch (protocol) {
+				case RAW: {
+					StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.NAV, rpcSessionID, this);
+					packetizer.sdlConnection = this.getSdlConnection();
+					mVideoPacketizer = packetizer;
+					mVideoPacketizer.start();
+					return packetizer;
+				}
+				case RTP: {
+					RTPH264Packetizer packetizer = new RTPH264Packetizer(this, SessionType.NAV, rpcSessionID, this);
+					mVideoPacketizer = packetizer;
+					mVideoPacketizer.start();
+					return packetizer;
+				}
+				default:
+					Log.e(TAG, "Protocol " + protocol + " is not supported.");
+					return null;
+			}
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
 			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
