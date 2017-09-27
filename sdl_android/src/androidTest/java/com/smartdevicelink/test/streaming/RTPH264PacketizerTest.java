@@ -34,6 +34,7 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.streaming.IStreamListener;
@@ -444,6 +445,94 @@ public class RTPH264PacketizerTest extends TestCase {
 		assertEquals(expectedStream.length, verifier.getPacketCount());
 	}
 
+	/**
+	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#sendFrame(byte[], int, int, long)}
+	 */
+	public void testSendFrameInterfaceWithArray() {
+		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
+		SdlSession session = createTestSession();
+		RTPH264Packetizer packetizer = null;
+		try {
+			packetizer = new RTPH264Packetizer(verifier, SessionType.NAV, SESSION_ID, session);
+		} catch (IOException e) {
+			fail();
+		}
+		MockVideoApp mockApp = new MockVideoApp(packetizer);
+
+		try {
+			packetizer.start();
+		} catch (IOException e) {
+			fail();
+		}
+
+		mockApp.inputByteStreamWithArrayOffset(SAMPLE_STREAM);
+		try {
+			Thread.sleep(1000, 0);
+		} catch (InterruptedException e) {}
+
+		packetizer.stop();
+		assertEquals(SAMPLE_STREAM.length, verifier.getPacketCount());
+	}
+
+	/**
+	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#sendFrame(ByteBuffer, long)}
+	 */
+	public void testSendFrameInterfaceWithByteBuffer() {
+		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
+		SdlSession session = createTestSession();
+		RTPH264Packetizer packetizer = null;
+		try {
+			packetizer = new RTPH264Packetizer(verifier, SessionType.NAV, SESSION_ID, session);
+		} catch (IOException e) {
+			fail();
+		}
+		MockVideoApp mockApp = new MockVideoApp(packetizer);
+
+		try {
+			packetizer.start();
+		} catch (IOException e) {
+			fail();
+		}
+
+		mockApp.inputByteStreamWithByteBuffer(SAMPLE_STREAM);
+		try {
+			Thread.sleep(1000, 0);
+		} catch (InterruptedException e) {}
+
+		packetizer.stop();
+		assertEquals(SAMPLE_STREAM.length, verifier.getPacketCount());
+	}
+
+	/**
+	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#sendFrame(ByteBuffer, long)}
+	 * with direct ByteBuffer
+	 */
+	public void testSendFrameInterfaceWithDirectByteBuffer() {
+		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
+		SdlSession session = createTestSession();
+		RTPH264Packetizer packetizer = null;
+		try {
+			packetizer = new RTPH264Packetizer(verifier, SessionType.NAV, SESSION_ID, session);
+		} catch (IOException e) {
+			fail();
+		}
+		MockVideoApp mockApp = new MockVideoApp(packetizer);
+
+		try {
+			packetizer.start();
+		} catch (IOException e) {
+			fail();
+		}
+
+		mockApp.inputByteStreamWithDirectByteBuffer(SAMPLE_STREAM);
+		try {
+			Thread.sleep(1000, 0);
+		} catch (InterruptedException e) {}
+
+		packetizer.stop();
+		assertEquals(SAMPLE_STREAM.length, verifier.getPacketCount());
+	}
+
 	private SdlSession createTestSession() {
 		return SdlSession.createSession(WIPRO_VERSION, new MockInterfaceBroker(), new BTTransportConfig(true));
 	}
@@ -713,6 +802,118 @@ public class RTPH264PacketizerTest extends TestCase {
 				byte[] data = os.toByteArray();
 				mListener.onEncoderOutput(VideoStreamingCodec.H264, VideoStreamingProtocol.RAW,
 						data, timestampUs);
+				os.reset();
+			}
+
+			try {
+				os.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	private interface IVideoFrameSender {
+		void onVideoFrame(byte[] data, long timestampUs);
+	}
+
+	private class MockVideoApp {
+		private IVideoStreamListener mListener;
+		private int mFPSNum;
+		private int mFPSDen;
+
+		MockVideoApp(IVideoStreamListener listener) {
+			mListener = listener;
+			// 29.97 fps
+			mFPSNum = 30000;
+			mFPSDen = 1001;
+		}
+
+		void inputByteStreamWithArray(ByteStreamNALUnit[] stream) {
+			generateFramesFromStream(stream, new IVideoFrameSender() {
+				@Override
+				public void onVideoFrame(byte[] data, long timestampUs) {
+					byte[] buffer = new byte[data.length];
+					System.arraycopy(data, 0, buffer, 0, data.length);
+					mListener.sendFrame(buffer, 0, data.length, timestampUs);
+				}
+			});
+		}
+
+		void inputByteStreamWithArrayOffset(ByteStreamNALUnit[] stream) {
+			generateFramesFromStream(stream, new IVideoFrameSender() {
+				private int mDummyOffset = 0;
+
+				@Override
+				public void onVideoFrame(byte[] data, long timestampUs) {
+					// to test 'offset' param, create a buffer with a dummy offset
+					byte[] buffer = new byte[mDummyOffset + data.length];
+					System.arraycopy(data, 0, buffer, mDummyOffset, data.length);
+
+					mListener.sendFrame(buffer, mDummyOffset, data.length, timestampUs);
+					mDummyOffset++;
+				}
+			});
+		}
+
+		void inputByteStreamWithByteBuffer(ByteStreamNALUnit[] stream) {
+			generateFramesFromStream(stream, new IVideoFrameSender() {
+				private int mDummyOffset = 0;
+
+				@Override
+				public void onVideoFrame(byte[] data, long timestampUs) {
+					// add a dummy offset inside byteBuffer for testing
+					ByteBuffer byteBuffer = ByteBuffer.allocate(mDummyOffset + data.length);
+					byteBuffer.position(mDummyOffset);
+
+					byteBuffer.put(data);
+					byteBuffer.flip();
+					byteBuffer.position(mDummyOffset);
+
+					mListener.sendFrame(byteBuffer, timestampUs);
+					mDummyOffset++;
+				}
+			});
+		}
+
+		void inputByteStreamWithDirectByteBuffer(ByteStreamNALUnit[] stream) {
+			generateFramesFromStream(stream, new IVideoFrameSender() {
+				private int mDummyOffset = 0;
+
+				@Override
+				public void onVideoFrame(byte[] data, long timestampUs) {
+					// add a dummy offset inside byteBuffer for testing
+					ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mDummyOffset + data.length);
+					byteBuffer.position(mDummyOffset);
+
+					byteBuffer.put(data);
+					byteBuffer.flip();
+					byteBuffer.position(mDummyOffset);
+
+					mListener.sendFrame(byteBuffer, timestampUs);
+					mDummyOffset++;
+				}
+			});
+		}
+
+		private void generateFramesFromStream(ByteStreamNALUnit[] stream, IVideoFrameSender callback) {
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+			for (int i = 0; i < stream.length; i++) {
+				ByteStreamNALUnit bs = stream[i];
+				byte[] array = bs.createArray();
+				os.write(array, 0, array.length);
+
+				if (i < stream.length - 1) {
+					ByteStreamNALUnit next = stream[i + 1];
+					if (bs.frameNum == next.frameNum) {
+						// enqueue it and send at once
+						continue;
+					}
+				}
+
+				long timestampUs = bs.frameNum * 1000L * 1000L * mFPSDen / mFPSNum;
+				byte[] data = os.toByteArray();
+				callback.onVideoFrame(data, timestampUs);
 				os.reset();
 			}
 

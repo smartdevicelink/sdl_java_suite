@@ -42,6 +42,7 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 
@@ -61,7 +62,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
  *
  * @author Sho Amano
  */
-public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderListener, Runnable {
+public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderListener, IVideoStreamListener, Runnable {
 
 	// Approximate size of data that mOutputQueue can hold in bytes.
 	// By adding a buffer, we accept underlying transport being stuck for a short time. By setting
@@ -287,6 +288,29 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 		onEncoderOutput(mNALUnitReader, ptsInUs);
 	}
 
+	/**
+	 * Called by the app.
+	 *
+	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(byte[], int, int, long)
+	 */
+	@Override
+	public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
+			throws ArrayIndexOutOfBoundsException {
+		mNALUnitReader.init(data, offset, length);
+		onEncoderOutput(mNALUnitReader, presentationTimeUs);
+	}
+
+	/**
+	 * Called by the app.
+	 *
+	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
+	 */
+	@Override
+	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
+		mNALUnitReader.init(data);
+		onEncoderOutput(mNALUnitReader, presentationTimeUs);
+	}
+
 	private void onEncoderOutput(NALUnitReader nalUnitReader, long ptsInUs) {
 		if (mPaused) {
 			return;
@@ -437,6 +461,31 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 			mData = data;
 			mOffset = offset;
 			mLimit = offset + length;
+		}
+
+		void init(ByteBuffer data) {
+			if (data == null || data.remaining() == 0) {
+				mData = null;
+				mOffset = 0;
+				mLimit = 0;
+				return;
+			}
+
+			if (data.hasArray()) {
+				mData = data.array();
+				mOffset = data.position() + data.arrayOffset();
+				mLimit = mOffset + data.remaining();
+
+				// mark the buffer as consumed
+				data.position(data.position() + data.remaining());
+			} else {
+				byte[] buffer = new byte[data.remaining()];
+				data.get(buffer);
+
+				mData = buffer;
+				mOffset = 0;
+				mLimit = buffer.length;
+			}
 		}
 
 		ByteBuffer getNalUnit() {
