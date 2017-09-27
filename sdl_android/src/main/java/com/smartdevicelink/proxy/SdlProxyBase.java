@@ -57,6 +57,7 @@ import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
@@ -90,6 +91,8 @@ import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.streaming.AudioStreamingCodec;
+import com.smartdevicelink.streaming.AudioStreamingParams;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.trace.SdlTrace;
@@ -4020,7 +4023,74 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         
         sdlSession.drainEncoder(endOfStream);
     }
-	
+
+    /**
+     * Opens a audio service (service type 10) and subsequently provides an IAudioStreamListener
+     * to the app to send audio data.
+     *
+     * Currently information passed by "params" are ignored, since Audio Streaming feature lacks
+     * capability negotiation mechanism. App should configure audio stream data to align with
+     * head unit's capability by checking (upcoming) pcmCapabilities. The default format is in
+     * 16kHz and 16 bits.
+     *
+     * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param codec       Audio codec which will be used for streaming. Currently, only
+     *                    AudioStreamingCodec.LPCM is accepted.
+     * @param params      (Reserved for future use) Additional configuration information for each
+     *                    codec. If "codec" is AudioStreamingCodec.LPCM, "params" must be an
+     *                    instance of LPCMParams class.
+     *
+     * @return IAudioStreamListener interface if service is opened successfully and streaming is
+     *         started, null otherwise
+     */
+    @SuppressWarnings("unused")
+    public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
+                                                 AudioStreamingParams params) {
+        if (sdlSession == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (sdlSession.getSdlConnection() == null) {
+            DebugTool.logWarning("SdlConnection is not available.");
+            return null;
+        }
+        if (codec != AudioStreamingCodec.LPCM) {
+            DebugTool.logWarning("Audio codec " + codec + " is not supported.");
+            return null;
+        }
+
+        pcmServiceStartResponseReceived = false;
+        pcmServiceStartResponse = false;
+        sdlSession.startService(SessionType.PCM, sdlSession.getSessionId(), isEncrypted);
+
+        FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!pcmServiceStartResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+
+        if (pcmServiceStartResponse) {
+            DebugTool.logInfo("StartService for audio succeeded");
+            return sdlSession.startAudioStream();
+        } else {
+            if (pcmServiceStartRejectedParams != null) {
+                StringBuilder builder = new StringBuilder();
+                for (String paramName : pcmServiceStartRejectedParams) {
+                    if (builder.length() > 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(paramName);
+                }
+                DebugTool.logWarning("StartService for audio failed. Rejected params: " + builder.toString());
+            } else {
+                DebugTool.logWarning("StartService for audio failed (rejected params not supplied)");
+            }
+            return null;
+        }
+    }
+
 	private void NavServiceStarted() {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = true;

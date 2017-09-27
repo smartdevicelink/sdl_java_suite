@@ -24,6 +24,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
@@ -222,6 +223,19 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					Log.e(TAG, "Protocol " + protocol + " is not supported.");
 					return null;
 			}
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	public IAudioStreamListener startAudioStream() {
+		byte rpcSessionID = getSessionId();
+		try {
+			StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.PCM, rpcSessionID, this);
+			packetizer.sdlConnection = this.getSdlConnection();
+			mAudioPacketizer = packetizer;
+			mAudioPacketizer.start();
+			return packetizer;
 		} catch (IOException e) {
 			return null;
 		}
