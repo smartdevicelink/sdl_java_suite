@@ -15,7 +15,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
-import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -349,42 +348,18 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 			int height, int bitrate, SessionType sType, byte rpcSessionID) {
-		PipedOutputStream stream = null;
-		IEncoderListener encoderListener = null;
-
-		try {
-			VideoStreamingProtocol protocol = getAcceptedProtocol();
-			switch (protocol) {
-				case RAW:
-					stream = (PipedOutputStream) startStream(sType, rpcSessionID);
-					if (stream == null) return null;
-					break;
-				case RTP: {
-					RTPH264Packetizer rtpPacketizer = new RTPH264Packetizer(this, sType, rpcSessionID, this);
-					encoderListener = rtpPacketizer;
-					mVideoPacketizer = rtpPacketizer;
-					mVideoPacketizer.start();
-					break;
-				}
-				default:
-					Log.e(TAG, "Protocol " + protocol + " is not supported.");
-					return null;
-			}
-
-			mSdlEncoder = new SdlEncoder();
-			mSdlEncoder.setFrameRate(frameRate);
-			mSdlEncoder.setFrameInterval(iFrameInterval);
-			mSdlEncoder.setFrameWidth(width);
-			mSdlEncoder.setFrameHeight(height);
-			mSdlEncoder.setBitrate(bitrate);
-			if (encoderListener != null) {
-				mSdlEncoder.setOutputListener(encoderListener);
-			} else {
-				mSdlEncoder.setOutputStream(stream);
-			}
-		} catch (IOException e) {
+		IVideoStreamListener encoderListener = startVideoStream();
+		if (encoderListener == null) {
 			return null;
 		}
+
+		mSdlEncoder = new SdlEncoder();
+		mSdlEncoder.setFrameRate(frameRate);
+		mSdlEncoder.setFrameInterval(iFrameInterval);
+		mSdlEncoder.setFrameWidth(width);
+		mSdlEncoder.setFrameHeight(height);
+		mSdlEncoder.setBitrate(bitrate);
+		mSdlEncoder.setOutputListener(encoderListener);
 		return mSdlEncoder.prepareEncoder();
 	}
 	

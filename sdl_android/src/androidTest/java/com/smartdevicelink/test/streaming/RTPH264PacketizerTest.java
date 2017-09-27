@@ -31,12 +31,9 @@
 package com.smartdevicelink.test.streaming;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.RTPH264Packetizer;
 import com.smartdevicelink.transport.BTTransportConfig;
@@ -156,7 +153,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		} catch (IOException e) {
 			fail();
 		}
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -164,7 +161,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(SAMPLE_STREAM);
+		encoder.inputByteStreamWithArray(SAMPLE_STREAM);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -210,7 +207,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail("Cannot find private field \"" + fieldName + "\".");
 		}
 
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -218,7 +215,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(SAMPLE_STREAM);
+		encoder.inputByteStreamWithArray(SAMPLE_STREAM);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -260,7 +257,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		} catch (IOException e) {
 			fail();
 		}
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -268,7 +265,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(stream);
+		encoder.inputByteStreamWithArray(stream);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -294,7 +291,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		} catch (IOException e) {
 			fail();
 		}
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -302,7 +299,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(stream);
+		encoder.inputByteStreamWithArray(stream);
 		try {
 			Thread.sleep(2000, 0);
 		} catch (InterruptedException e) {}
@@ -325,7 +322,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 		packetizer.setPayloadType(pt);
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -333,7 +330,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(SAMPLE_STREAM);
+		encoder.inputByteStreamWithArray(SAMPLE_STREAM);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -357,7 +354,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 		packetizer.setSSRC(ssrc);
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -365,7 +362,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(SAMPLE_STREAM);
+		encoder.inputByteStreamWithArray(SAMPLE_STREAM);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -412,7 +409,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		} catch (IOException e) {
 			fail();
 		}
-		MockEncoder encoder = new MockEncoder(packetizer);
+		MockVideoApp encoder = new MockVideoApp(packetizer);
 
 		try {
 			packetizer.start();
@@ -420,7 +417,7 @@ public class RTPH264PacketizerTest extends TestCase {
 			fail();
 		}
 
-		encoder.inputByteStream(inputStream1);
+		encoder.inputByteStreamWithArray(inputStream1);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -428,7 +425,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		packetizer.pause();
 
 		// this input stream should be disposed
-		encoder.inputByteStream(inputStream2);
+		encoder.inputByteStreamWithArray(inputStream2);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -436,7 +433,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		packetizer.resume();
 
 		// packetizer should resume from a I frame
-		encoder.inputByteStream(inputStream3);
+		encoder.inputByteStreamWithArray(inputStream3);
 		try {
 			Thread.sleep(1000, 0);
 		} catch (InterruptedException e) {}
@@ -593,7 +590,7 @@ public class RTPH264PacketizerTest extends TestCase {
 		@Override
 		public void sendStreamPacket(ProtocolMessage pm) {
 			mExpectedNALUnit = mStream[mNALCount].nalUnit;
-			// should be same as MockEncoder's configuration (29.97 FPS)
+			// should be same as MockVideoApp's configuration (29.97 FPS)
 			int expectedPTSDelta = mStream[mNALCount].frameNum * 1001 * 3;
 			boolean isLast = shouldBeLast();
 
@@ -767,48 +764,6 @@ public class RTPH264PacketizerTest extends TestCase {
 				}
 			}
 			return true;
-		}
-	}
-
-	private class MockEncoder {
-		private IEncoderListener mListener;
-		private int mFPSNum;
-		private int mFPSDen;
-
-		MockEncoder(IEncoderListener listener) {
-			mListener = listener;
-			// 29.97 fps
-			mFPSNum = 30000;
-			mFPSDen = 1001;
-		}
-
-		void inputByteStream(ByteStreamNALUnit[] stream) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-			for (int i = 0; i < stream.length; i++) {
-				ByteStreamNALUnit bs = stream[i];
-				byte[] array = bs.createArray();
-				os.write(array, 0, array.length);
-
-				if (i < stream.length - 1) {
-					ByteStreamNALUnit next = stream[i + 1];
-					if (bs.frameNum == next.frameNum) {
-						// enqueue it and send at once
-						continue;
-					}
-				}
-
-				long timestampUs = bs.frameNum * 1000L * 1000L * mFPSDen / mFPSNum;
-				byte[] data = os.toByteArray();
-				mListener.onEncoderOutput(VideoStreamingCodec.H264, VideoStreamingProtocol.RAW,
-						data, timestampUs);
-				os.reset();
-			}
-
-			try {
-				os.close();
-			} catch (IOException e) {
-			}
 		}
 	}
 

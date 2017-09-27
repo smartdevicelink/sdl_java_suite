@@ -39,7 +39,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
@@ -62,7 +61,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
  *
  * @author Sho Amano
  */
-public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderListener, IVideoStreamListener, Runnable {
+public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStreamListener, Runnable {
 
 	// Approximate size of data that mOutputQueue can hold in bytes.
 	// By adding a buffer, we accept underlying transport being stuck for a short time. By setting
@@ -254,42 +253,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	}
 
 	/**
-	 * Called by the encoder.
-	 *
-	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(VideoStreamingCodec, VideoStreamingProtocol, byte[], long)
-	 */
-	@Override
-	public void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
-	                            byte[] data, long ptsInUs) {
-		if (data == null ||
-				codec != VideoStreamingCodec.H264 || protocol != VideoStreamingProtocol.RAW) {
-			return;
-		}
-
-		mNALUnitReader.init(data);
-		onEncoderOutput(mNALUnitReader, ptsInUs);
-	}
-
-	/**
-	 * Called by the encoder.
-	 *
-	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(VideoStreamingCodec, VideoStreamingProtocol, byte[], int, int, long)
-	 */
-	@Override
-	public void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
-	                            byte[] data, int offset, int length, long ptsInUs)
-			throws ArrayIndexOutOfBoundsException {
-		if (data == null ||
-				codec != VideoStreamingCodec.H264 || protocol != VideoStreamingProtocol.RAW) {
-			return;
-		}
-
-		mNALUnitReader.init(data, offset, length);
-		onEncoderOutput(mNALUnitReader, ptsInUs);
-	}
-
-	/**
-	 * Called by the app.
+	 * Called by the app and encoder.
 	 *
 	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(byte[], int, int, long)
 	 */
@@ -301,7 +265,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	}
 
 	/**
-	 * Called by the app.
+	 * Called by the app and encoder.
 	 *
 	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
 	 */
