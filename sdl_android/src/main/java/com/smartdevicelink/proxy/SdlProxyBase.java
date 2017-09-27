@@ -3519,6 +3519,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if service is opened successfully and stream is started, return false otherwise
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean startH264(InputStream is, boolean isEncrypted) {
 		
 		if (sdlSession == null) return false;		
@@ -3562,6 +3563,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public OutputStream startH264(boolean isEncrypted) {
 
 		if (sdlSession == null) return null;		
@@ -3604,22 +3606,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service is closed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean endH264() {
-		if (sdlSession == null) return false;		
-
-		navServiceEndResponseReceived = false;
-		navServiceEndResponse = false;
-		sdlSession.stopVideoStream();
-
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
-
-		//noinspection StatementWithEmptyBody
-		while (!navServiceEndResponseReceived && !fTask.isDone());
-		scheduler.shutdown();
-
-		return navServiceEndResponse;
+		return endVideoStream();
 	}
 	/**
 	 *Pauses the stream for the opened audio service (serviceType 10)
@@ -3635,8 +3624,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service stream is paused successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean pauseH264() {
-		return sdlSession != null && sdlSession.pauseVideoStream();
+		return pauseVideoStream();
 	}
 
 	/**
@@ -3653,8 +3643,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service is resumed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean resumeH264() {
-		return sdlSession != null && sdlSession.resumeVideoStream();
+		return resumeVideoStream();
 	}
 
 	
@@ -3792,6 +3783,47 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         } else {
             return null;
         }
+    }
+
+    /**
+     *Closes the opened video service (serviceType 11)
+     *@return true if the video service is closed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean endVideoStream() {
+        if (sdlSession == null) return false;
+
+        navServiceEndResponseReceived = false;
+        navServiceEndResponse = false;
+        sdlSession.stopVideoStream();
+
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!navServiceEndResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+
+        return navServiceEndResponse;
+    }
+
+    /**
+     *Pauses the stream for the opened video service (serviceType 11)
+     *@return true if the video service stream is paused successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean pauseVideoStream() {
+        return sdlSession != null && sdlSession.pauseVideoStream();
+    }
+
+    /**
+     *Resumes the stream for the opened video service (serviceType 11)
+     *@return true if the video service is resumed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean resumeVideoStream() {
+        return sdlSession != null && sdlSession.resumeVideoStream();
     }
 
 	/**
