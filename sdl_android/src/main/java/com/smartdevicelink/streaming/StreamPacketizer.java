@@ -10,9 +10,10 @@ import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 
-public class StreamPacketizer extends AbstractPacketizer implements IVideoStreamListener, Runnable{
+public class StreamPacketizer extends AbstractPacketizer implements IVideoStreamListener, IAudioStreamListener, Runnable{
 
 	public final static String TAG = "StreamPacketizer";
 
@@ -166,11 +167,47 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	@Override
 	public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
 			throws ArrayIndexOutOfBoundsException {
+		sendArrayData(data, offset, length);
+	}
+
+	/**
+	 * Called by the app.
+	 *
+	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
+	 */
+	@Override
+	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
+		sendByteBufferData(data);
+	}
+
+	/**
+	 * Called by the app.
+	 *
+	 * @see com.smartdevicelink.proxy.interfaces.IAudioStreamListener#sendAudio(byte[], int, int, long)
+	 */
+	@Override
+	public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
+			throws ArrayIndexOutOfBoundsException {
+		sendArrayData(data, offset, length);
+	}
+
+	/**
+	 * Called by the app.
+	 *
+	 * @see com.smartdevicelink.proxy.interfaces.IAudioStreamListener#sendAudio(ByteBuffer, long)
+	 */
+	@Override
+	public void sendAudio(ByteBuffer data, long presentationTimeUs) {
+		sendByteBufferData(data);
+	}
+
+	private void sendArrayData(byte[] data, int offset, int length)
+			throws ArrayIndexOutOfBoundsException {
 		if (offset < 0 || offset > data.length || length <= 0 || offset + length > data.length) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 
-		// StreamPacketizer does not need to split a frame into NAL units
+		// StreamPacketizer does not need to split a video frame into NAL units
 		ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.put(data, offset, length);
 		buffer.flip();
@@ -182,19 +219,13 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 	}
 
-	/**
-	 * Called by the app.
-	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
-	 */
-	@Override
-	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
+	private void sendByteBufferData(ByteBuffer data) {
 		if (data == null || data.remaining() == 0) {
 			return;
 		}
 
 		// copy the whole buffer, so that even if the app modifies original ByteBuffer after
-		// sendFrame() call our buffer will stay intact
+		// sendFrame() or sendAudio() call, our buffer will stay intact
 		ByteBuffer buffer = ByteBuffer.allocate(data.remaining());
 		buffer.put(data);
 		buffer.flip();
