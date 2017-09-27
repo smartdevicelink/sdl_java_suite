@@ -2,8 +2,12 @@ package com.smartdevicelink.test.proxy;
 
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
@@ -19,6 +23,8 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -26,6 +32,8 @@ import com.smartdevicelink.util.CorrelationIdGenerator;
 import java.util.List;
 
 import static android.R.id.list;
+import static android.R.id.message;
+import static com.smartdevicelink.proxy.constants.Names.parameters;
 
 public class SystemCapabilityManagerTests extends AndroidTestCase {
 	public static final String TAG = "SystemCapabilityManagerTests";
@@ -42,12 +50,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 	}
 
 	public SystemCapabilityManager createSampleManager(){
-		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
-			@Override
-			public void onSendPacketRequest(RPCRequest message) {
-
-			}
-		});
+		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(new InternalSDLInterface());
 
 		RegisterAppInterfaceResponse raiResponse = new RegisterAppInterfaceResponse();
 
@@ -98,9 +101,9 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 
 		final SystemCapability referenceCapability = cap;
 
-		systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
+		systemCapabilityManager = new SystemCapabilityManager(new InternalSDLInterface() {
 			@Override
-			public void onSendPacketRequest(RPCRequest message) {
+			public void sendRPCRequest(RPCRequest message) {
 				GetSystemCapabilityResponse response = new GetSystemCapabilityResponse();
 				response.setSystemCapability(referenceCapability);
 				response.setSuccess(true);
@@ -131,7 +134,44 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		List<SoftButtonCapabilities> list = SystemCapabilityManager.convertToList(capability, SoftButtonCapabilities.class);
 		assertNotNull(list);
 
+	}
 
+	private class InternalSDLInterface implements ISdl{
+		@Override
+		public void start(){}
+
+		@Override
+		public void stop() {}
+
+		@Override
+		public boolean isConnected() {return false;	}
+
+		@Override
+		public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {}
+
+		@Override
+		public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {}
+
+		@Override
+		public void startVideoService(VideoStreamingParams parameters, boolean encrypted) {	}
+
+		@Override
+		public void stopVideoService() {}
+
+		@Override
+		public void startAudioService(boolean encrypted) {}
+
+		@Override
+		public void stopAudioService() {}
+
+		@Override
+		public void sendRPCRequest(RPCRequest message) {}
+
+		@Override
+		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {}
+
+		@Override
+		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
 	}
 
 
