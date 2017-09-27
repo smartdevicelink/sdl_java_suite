@@ -76,4 +76,10 @@ public class ImageResolution extends RPCStruct {
     public Integer getResolutionHeight() {
         return getInteger(KEY_RESOLUTION_HEIGHT);
     }
+
+    @Override
+    public String toString() {
+        return "width=" + String.valueOf(getResolutionWidth()) +
+               ", height=" + String.valueOf(getResolutionHeight());
+    }
 }

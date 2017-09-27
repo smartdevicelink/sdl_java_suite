@@ -3771,16 +3771,73 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         if (sdlSession == null) return null;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
         if (sdlConn == null) return null;
-        
-        VideoStreamingFormat[] availableFormats = { VIDEO_STREAMING_FORMAT_H264_RTP, VIDEO_STREAMING_FORMAT_H264_RAW };
-		VideoStreamingCapability videoStreamingCapabilities = null;
-		if(_systemCapabilityManager!=null){
-			videoStreamingCapabilities = (VideoStreamingCapability) _systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-		}
-        List<VideoStreamingParams> desiredParamsList = createDesiredVideoParams(
-                videoStreamingCapabilities, frameRate, iFrameInterval, width, height, bitrate, availableFormats);
 
-        // if none of video formats are accepted, try StartService without parameter at last
+        VideoStreamingCodec[] codecs = {VideoStreamingCodec.H264};
+        VideoStreamingParams acceptedParams = tryStartVideoStream(codecs, width, height, bitrate,
+            frameRate, iFrameInterval, isEncrypted);
+        if (acceptedParams != null) {
+            return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Try to open a video service by trying all available codec/protocols one by one.
+     *
+     * Only information from codecs, width and height are used during video format negotiation.
+     *
+     * @param codecs         List of video codecs which app or proxy would like to use
+     * @param width          Width of the video in pixels
+     * @param height         Height of the video in pixels
+     * @param bitrate        Specified bitrate of the video
+     * @param frameRate      Specified rate of frames
+     * @param iFrameInterval Specified interval
+     * @param isEncrypted    Specify true if packets on this service have to be encrypted
+     *
+     * @return If the service is opened successfully, an instance of VideoStreamingParams is
+     *         returned which contains accepted video format. If the service is opened with legacy
+     *         mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
+     *         returned, but its video format and resolution are null.
+     *         If the service was not opened then null is returned.
+     */
+    @SuppressWarnings("unused")
+    private VideoStreamingParams tryStartVideoStream(VideoStreamingCodec[] codecs,
+                                                     int width, int height,
+                                                     int bitrate, int frameRate, int iFrameInterval,
+                                                     boolean isEncrypted) {
+        if (sdlSession == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (codecs == null || codecs.length == 0) {
+            DebugTool.logWarning("Video codec list is not supplied.");
+            return null;
+        }
+
+        List<VideoStreamingFormat> availableFormats = new ArrayList<>();
+        for (VideoStreamingCodec codec : codecs) {
+            if (codec == VideoStreamingCodec.H264) {
+                availableFormats.add(VIDEO_STREAMING_FORMAT_H264_RTP);
+                availableFormats.add(VIDEO_STREAMING_FORMAT_H264_RAW);
+            } else {
+                DebugTool.logInfo("Video codec " + codec +" is not supported.");
+            }
+        }
+
+        VideoStreamingCapability videoStreamingCapabilities = null;
+        if (_systemCapabilityManager != null) {
+            videoStreamingCapabilities = (VideoStreamingCapability) _systemCapabilityManager.getCapability(
+                    SystemCapabilityType.VIDEO_STREAMING);
+        }
+
+        List<VideoStreamingParams> desiredParamsList = createDesiredVideoParams(
+                videoStreamingCapabilities, frameRate, iFrameInterval, width, height, bitrate,
+                availableFormats.toArray(new VideoStreamingFormat[0]));
+
+        // If none of video formats are accepted then try StartService without parameter at last.
+        // This also applies to the case where the system is legacy and capability isn't available.
         VideoStreamingParams emptyParam = new VideoStreamingParams();
         emptyParam.setResolution(null);
         emptyParam.setFormat(null);
@@ -3795,17 +3852,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
             sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-            FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+            FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
             ScheduledExecutorService scheduler = createScheduler();
             scheduler.execute(fTask);
 
-			//noinspection StatementWithEmptyBody
-			while (!navServiceStartResponseReceived && !fTask.isDone());
+            //noinspection StatementWithEmptyBody
+            while (!navServiceStartResponseReceived && !fTask.isDone());
             scheduler.shutdown();
 
-			if (navServiceStartResponse) {
-                return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
-                        height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+            if (navServiceStartResponse) {
+                if (!params.equals(emptyParam)) {
+                    DebugTool.logInfo("StartService for nav succeeded with params: " + params);
+                } else {
+                    DebugTool.logInfo("StartService for nav succeeded in legacy mode.");
+                }
+                return params;
             }
 
             if (navServiceStartRejectedParams != null) {
