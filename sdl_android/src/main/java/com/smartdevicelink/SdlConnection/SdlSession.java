@@ -15,6 +15,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
+import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -24,9 +25,13 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
+import com.smartdevicelink.streaming.RTPH264Packetizer;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.streaming.VideoStreamingParams;
@@ -49,7 +54,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     private LockScreenManager lockScreenMan  = new LockScreenManager();
     private SdlSecurityBase sdlSecurity = null;    
 	StreamRPCPacketizer mRPCPacketizer = null;
-	StreamPacketizer mVideoPacketizer = null;
+	AbstractPacketizer mVideoPacketizer = null;
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
@@ -119,6 +124,14 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
 	}
 	
+	public long getMtu(SessionType type) {
+		if (this._sdlConnection != null) {
+			return this._sdlConnection.getWiProProtocol().getMtu(type);
+		} else {
+			return 0;
+		}
+	}
+
 	public void close() {
 		if (sdlSecurity != null)
 		{
@@ -140,8 +153,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
         if (sType.equals(SessionType.NAV))
         {
-        	mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-        	mVideoPacketizer.sdlConnection = this.getSdlConnection();
+        	// protocol is fixed to RAW
+        	StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
+        	packetizer.sdlConnection = this.getSdlConnection();
+        	mVideoPacketizer = packetizer;
         	mVideoPacketizer.start();
         }
         else if (sType.equals(SessionType.PCM))
@@ -163,8 +178,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
         if (sType.equals(SessionType.NAV))
         {
-            mVideoPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-            mVideoPacketizer.sdlConnection = this.getSdlConnection();
+            // protocol is fixed to RAW
+            StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
+            packetizer.sdlConnection = this.getSdlConnection();
+            mVideoPacketizer = packetizer;
             mVideoPacketizer.start();
         }       
         else if (sType.equals(SessionType.PCM))
@@ -290,16 +307,39 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 			int height, int bitrate, SessionType sType, byte rpcSessionID) {
+		PipedOutputStream stream = null;
+		IEncoderListener encoderListener = null;
+
 		try {
-			PipedOutputStream stream = (PipedOutputStream) startStream(sType, rpcSessionID);
-			if (stream == null) return null;
+			VideoStreamingProtocol protocol = getAcceptedProtocol();
+			switch (protocol) {
+				case RAW:
+					stream = (PipedOutputStream) startStream(sType, rpcSessionID);
+					if (stream == null) return null;
+					break;
+				case RTP: {
+					RTPH264Packetizer rtpPacketizer = new RTPH264Packetizer(this, sType, rpcSessionID, this);
+					encoderListener = rtpPacketizer;
+					mVideoPacketizer = rtpPacketizer;
+					mVideoPacketizer.start();
+					break;
+				}
+				default:
+					Log.e(TAG, "Protocol " + protocol + " is not supported.");
+					return null;
+			}
+
 			mSdlEncoder = new SdlEncoder();
 			mSdlEncoder.setFrameRate(frameRate);
 			mSdlEncoder.setFrameInterval(iFrameInterval);
 			mSdlEncoder.setFrameWidth(width);
 			mSdlEncoder.setFrameHeight(height);
 			mSdlEncoder.setBitrate(bitrate);
-			mSdlEncoder.setOutputStream(stream);
+			if (encoderListener != null) {
+				mSdlEncoder.setOutputListener(encoderListener);
+			} else {
+				mSdlEncoder.setOutputStream(stream);
+			}
 		} catch (IOException e) {
 			return null;
 		}
@@ -551,8 +591,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		this.sessionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+			byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+		this.sessionListener.onProtocolSessionStartedNACKed(sessionType,
+				sessionID, version, correlationID, rejectedParams);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
 			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
 			for(ISdlServiceListener listener:listeners){
@@ -672,5 +713,19 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	public VideoStreamingParams getAcceptedVideoParams(){
 		return acceptedVideoParams;
+	}
+
+	private VideoStreamingProtocol getAcceptedProtocol() {
+		// acquire default protocol (RAW)
+		VideoStreamingProtocol protocol = new VideoStreamingParams().getFormat().getProtocol();
+
+		if (acceptedVideoParams != null) {
+			VideoStreamingFormat format = acceptedVideoParams.getFormat();
+			if (format != null && format.getProtocol() != null) {
+				protocol = format.getProtocol();
+			}
+		}
+
+		return protocol;
 	}
 }

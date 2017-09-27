@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -252,6 +253,8 @@ public class Test {
 	public static final ModuleData 					   GENERAL_MODULEDATA                     = new ModuleData();
 	public static final ClimateControlCapabilities     GENERAL_CLIMATECONTROLCAPABILITIES     = new ClimateControlCapabilities();
 	public static final RadioControlCapabilities       GENERAL_RADIOCONTROLCAPABILITIES       = new RadioControlCapabilities();
+
+	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 
 	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
@@ -603,6 +606,10 @@ public class Test {
 		GENERAL_REMOTECONTROLCAPABILITIES.setClimateControlCapabilities(GENERAL_CLIMATECONTROLCAPABILITIES_LIST);
 		GENERAL_REMOTECONTROLCAPABILITIES.setRadioControlCapabilities(GENERAL_RADIOCONTROLCAPABILITIES_LIST);
 
+		GENERAL_HMICAPABILITIES.setNavigationAvilable(GENERAL_BOOLEAN);
+		GENERAL_HMICAPABILITIES.setVideoStreamingAvailable(GENERAL_BOOLEAN);
+		GENERAL_HMICAPABILITIES.setPhoneCallAvilable(GENERAL_BOOLEAN);
+
 		List<MetadataType> exampleList = new ArrayList<>();
 		exampleList.add(0, MetadataType.CURRENT_TEMPERATURE);
 		exampleList.add(1, MetadataType.MEDIA_ALBUM);
@@ -620,6 +627,7 @@ public class Test {
 
 		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
 		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
+
         
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

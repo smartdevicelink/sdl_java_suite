@@ -2,6 +2,8 @@ package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.enums.*;
 
+import java.util.List;
+
 public interface IProtocolListener {
 	// Called to indicate that these bytes are to be sent as part of a message.
 	// This call includes the part of the message.
@@ -14,7 +16,8 @@ public interface IProtocolListener {
 	// Called to indicate that a protocol session has been started (from either side)
 	void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);
 	
-	void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID);	
+	void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version,
+	                             String correlationID, List<String> rejectedParams);
 
 	// Called to indicate that a protocol session has ended (from either side)
 	void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);

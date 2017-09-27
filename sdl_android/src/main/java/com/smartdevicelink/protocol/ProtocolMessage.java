@@ -45,12 +45,16 @@ public class ProtocolMessage {
 		this._data = data;
 		this._jsonSize = data.length;
 	}
-	
+
 	public void setData(byte[] data, int length) {
+		setData(data, 0, length);
+	}
+
+	public void setData(byte[] data, int offset, int length) {
 		if (this._data != null)
 			this._data = null;
 		this._data = new byte[length];
-		System.arraycopy(data, 0, this._data, 0, length);
+		System.arraycopy(data, offset, this._data, 0, length);
 		this._jsonSize = 0;
 	}	
 
