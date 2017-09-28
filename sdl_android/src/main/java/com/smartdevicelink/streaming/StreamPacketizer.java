@@ -44,6 +44,10 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
         mPauseLock = new Object();
         mPaused = false;
         isServiceProtected = _session.isServiceProtected(_serviceType);
+		if (bufferSize == 0) {
+			// fail safe
+			bufferSize = BUFF_READ_SIZE;
+		}
 		if(isServiceProtected){ //If our service is encrypted we can only use 1024 as the max buffer size. 
 			bufferSize = BUFF_READ_SIZE;
 			buffer = new byte[bufferSize];
