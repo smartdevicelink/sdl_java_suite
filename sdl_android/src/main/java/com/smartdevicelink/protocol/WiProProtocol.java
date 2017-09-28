@@ -644,8 +644,12 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void EndProtocolService(SessionType serviceType, byte sessionID) {
- 		SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[4]);
-		handlePacketToSend(header);
+		if(serviceType.equals(SessionType.RPC)){ //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
+			EndProtocolSession(serviceType,sessionID,hashID);
+		}else {
+			SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
+			handlePacketToSend(header);
+		}
 	}
 
 } // end-class
