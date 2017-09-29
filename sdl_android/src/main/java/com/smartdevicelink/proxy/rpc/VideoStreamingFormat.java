@@ -37,4 +37,10 @@ public class VideoStreamingFormat extends RPCStruct {
 	public VideoStreamingCodec getCodec(){
 		return (VideoStreamingCodec) getObject(VideoStreamingCodec.class, KEY_CODEC);
 	}
+
+	@Override
+	public String toString() {
+		return "codec=" + String.valueOf(getCodec()) +
+				", protocol=" + String.valueOf(getProtocol());
+	}
 }

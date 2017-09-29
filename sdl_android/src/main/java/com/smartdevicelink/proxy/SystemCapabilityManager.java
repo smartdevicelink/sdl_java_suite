@@ -69,6 +69,8 @@ public class SystemCapabilityManager {
 					return hmiCapabilities.isPhoneCallAvailable();
 				case VIDEO_STREAMING:
 					return hmiCapabilities.isVideoStreamingAvailable();
+				case REMOTE_CONTROL:
+					return hmiCapabilities.isRemoteControlAvailable();
 				default:
 					return false;
 			}
