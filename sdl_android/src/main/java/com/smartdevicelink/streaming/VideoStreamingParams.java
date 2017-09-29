@@ -96,4 +96,10 @@ public class VideoStreamingParams {
 	public ImageResolution getResolution() {
 		return resolution;
 	}
+
+    @Override
+    public String toString() {
+        return "format: {" + String.valueOf(format) +
+               "}, resolution: {" + String.valueOf(resolution) + "}";
+    }
 }

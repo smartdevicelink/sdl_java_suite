@@ -11,8 +11,7 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.view.Surface;
 
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SdlEncoder {
@@ -29,7 +28,7 @@ public class SdlEncoder {
 	// encoder state
 	private MediaCodec mEncoder;
 	private PipedOutputStream mOutputStream;
-	private IEncoderListener mOutputListener;
+	private IVideoStreamListener mOutputListener;
 	
 	// allocate one of these up front so we don't need to do it every time
 	private MediaCodec.BufferInfo mBufferInfo;
@@ -55,7 +54,7 @@ public class SdlEncoder {
 	public void setOutputStream(PipedOutputStream mStream){
 		mOutputStream = mStream;
 	}
-	public void setOutputListener(IEncoderListener listener) {
+	public void setOutputListener(IVideoStreamListener listener) {
 		mOutputListener = listener;
 	}
 	public Surface prepareEncoder () {
@@ -165,9 +164,8 @@ public class SdlEncoder {
 						if (mOutputStream != null) {
 							mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
 						} else if (mOutputListener != null) {
-							mOutputListener.onEncoderOutput(
-									VideoStreamingCodec.H264, VideoStreamingProtocol.RAW,
-									dataToWrite, mBufferInfo.presentationTimeUs);
+							mOutputListener.sendFrame(
+									dataToWrite, 0, dataToWrite.length, mBufferInfo.presentationTimeUs);
 						}
 					} catch (Exception e) {}
 				}

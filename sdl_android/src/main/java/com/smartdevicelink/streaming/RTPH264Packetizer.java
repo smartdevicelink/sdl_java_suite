@@ -39,9 +39,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 
@@ -61,7 +61,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
  *
  * @author Sho Amano
  */
-public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderListener, Runnable {
+public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStreamListener, Runnable {
 
 	// Approximate size of data that mOutputQueue can hold in bytes.
 	// By adding a buffer, we accept underlying transport being stuck for a short time. By setting
@@ -253,38 +253,26 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 	}
 
 	/**
-	 * Called by the encoder.
+	 * Called by the app and encoder.
 	 *
-	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(VideoStreamingCodec, VideoStreamingProtocol, byte[], long)
+	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(byte[], int, int, long)
 	 */
 	@Override
-	public void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
-	                            byte[] data, long ptsInUs) {
-		if (data == null ||
-				codec != VideoStreamingCodec.H264 || protocol != VideoStreamingProtocol.RAW) {
-			return;
-		}
-
-		mNALUnitReader.init(data);
-		onEncoderOutput(mNALUnitReader, ptsInUs);
+	public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
+			throws ArrayIndexOutOfBoundsException {
+		mNALUnitReader.init(data, offset, length);
+		onEncoderOutput(mNALUnitReader, presentationTimeUs);
 	}
 
 	/**
-	 * Called by the encoder.
+	 * Called by the app and encoder.
 	 *
-	 * @see com.smartdevicelink.encoder.IEncoderListener#onEncoderOutput(VideoStreamingCodec, VideoStreamingProtocol, byte[], int, int, long)
+	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
 	 */
 	@Override
-	public void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
-	                            byte[] data, int offset, int length, long ptsInUs)
-			throws ArrayIndexOutOfBoundsException {
-		if (data == null ||
-				codec != VideoStreamingCodec.H264 || protocol != VideoStreamingProtocol.RAW) {
-			return;
-		}
-
-		mNALUnitReader.init(data, offset, length);
-		onEncoderOutput(mNALUnitReader, ptsInUs);
+	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
+		mNALUnitReader.init(data);
+		onEncoderOutput(mNALUnitReader, presentationTimeUs);
 	}
 
 	private void onEncoderOutput(NALUnitReader nalUnitReader, long ptsInUs) {
@@ -437,6 +425,31 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IEncoderLis
 			mData = data;
 			mOffset = offset;
 			mLimit = offset + length;
+		}
+
+		void init(ByteBuffer data) {
+			if (data == null || data.remaining() == 0) {
+				mData = null;
+				mOffset = 0;
+				mLimit = 0;
+				return;
+			}
+
+			if (data.hasArray()) {
+				mData = data.array();
+				mOffset = data.position() + data.arrayOffset();
+				mLimit = mOffset + data.remaining();
+
+				// mark the buffer as consumed
+				data.position(data.position() + data.remaining());
+			} else {
+				byte[] buffer = new byte[data.remaining()];
+				data.get(buffer);
+
+				mData = buffer;
+				mOffset = 0;
+				mLimit = buffer.length;
+			}
 		}
 
 		ByteBuffer getNalUnit() {
