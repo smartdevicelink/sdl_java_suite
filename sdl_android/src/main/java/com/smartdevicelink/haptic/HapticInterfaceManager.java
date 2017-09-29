@@ -26,7 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.proxy.SdlProxyALM;
+import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
@@ -46,19 +46,19 @@ import java.util.List;
 public class HapticInterfaceManager {
     private static final String TAG = "Haptic";
 
-    private WeakReference<SdlProxyALM> proxyHolder;
+    private WeakReference<SdlProxyBase> proxyHolder;
     private List<HapticRect> userHapticData;
 
     /**
-     * Sets haptic data to be used instead of letting Presentation find the Views and sends update
-     * to the HU.
+     * Sets haptic data and sends update to the HU.  To be used by app code instead of letting
+     * Presentation find the Views and automatically send to HU.
      *
      * @param hapticData
      *          Rect data indicating "focusable" screen elements or areas
      */
     public void setHapticData(List<HapticRect> hapticData) {
         userHapticData = hapticData;
-        SdlProxyALM proxy = proxyHolder.get();
+        SdlProxyBase proxy = proxyHolder.get();
         if (proxy != null) {
             SendHapticData msg = new SendHapticData();
             msg.setCorrelationID(CorrelationIdGenerator.generateId());
@@ -66,30 +66,37 @@ public class HapticInterfaceManager {
             try {
                 proxy.sendRPCRequest(msg);
             } catch (SdlException e) {
-                Log.e(TAG, "failed to send RPC", e);
+                Log.e(TAG, "failed to send user haptic RPC", e);
             }
         }
     }
 
-    public HapticInterfaceManager(SdlProxyALM proxy) {
+    public HapticInterfaceManager(SdlProxyBase proxy) {
         this.proxyHolder = new WeakReference<>(proxy);
     }
 
     /**
      * Sends haptic data found by searching for focusable and clickable Views in the view heirarchy
-     * to the HU.
+     * to the HU.  Should be called by Presentation's OnShowListener.
      * 
      * @param root
      *          the root or parent View
      */
     public void refreshHapticData(View root) {
-        if (userHapticData == null) {
+        SdlProxyBase proxy = proxyHolder.get();
+        if ((userHapticData == null) && (proxy != null)) {
             List<HapticRect> hapticRects = new ArrayList<>();
             findHapticRects(root, hapticRects);
 
             SendHapticData msg = new SendHapticData();
             msg.setCorrelationID(CorrelationIdGenerator.generateId());
             msg.setHapticRectData(hapticRects);
+
+            try {
+                proxy.sendRPCRequest(msg);
+            } catch (SdlException e) {
+                Log.e(TAG, "failed to send haptic RPC", e);
+            }
         }
     }
 
@@ -121,7 +128,8 @@ public class HapticInterfaceManager {
         // Not using addFocusables() or addTouchables() because of concerns with adding ViewGroup
         // and not getting "clickables."
 
-        if (!(view instanceof ViewGroup) && (view.isFocusable() || view.isClickable())) {
+        if (!(view instanceof ViewGroup) && (view != null) &&
+                (view.isFocusable() || view.isClickable())) {
             focusables.add(view);
         }
 
