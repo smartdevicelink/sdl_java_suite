@@ -6,6 +6,8 @@ import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
+import com.smartdevicelink.proxy.rpc.ClimateControlData;
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
@@ -19,11 +21,18 @@ import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MenuParams;
+import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
+import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
+import com.smartdevicelink.proxy.rpc.RadioControlData;
+import com.smartdevicelink.proxy.rpc.RdsData;
+import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -32,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -55,6 +65,7 @@ import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
@@ -77,10 +88,13 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
+import com.smartdevicelink.proxy.rpc.enums.RadioBand;
+import com.smartdevicelink.proxy.rpc.enums.RadioState;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
@@ -89,6 +103,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
+import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -100,6 +115,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
+import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
@@ -215,13 +231,30 @@ public class Test {
 	public static final VehicleDataNotificationStatus  GENERAL_VEHICLEDATANOTIFICATIONSTATUS  = VehicleDataNotificationStatus.NORMAL;
 	public static final AppInterfaceUnregisteredReason GENERAL_APPINTERFACEUNREGISTEREDREASON = AppInterfaceUnregisteredReason.BLUETOOTH_OFF;
 	public static final SystemCapabilityType           GENERAL_SYSTEMCAPABILITYTYPE           = SystemCapabilityType.NAVIGATION;
+	public static final NavigationCapability           GENERAL_NAVIGATIONCAPABILITY           = new NavigationCapability();
+	public static final PhoneCapability                GENERAL_PHONECAPABILITY                = new PhoneCapability();
+	public static final RemoteControlCapabilities      GENERAL_REMOTECONTROLCAPABILITIES      = new RemoteControlCapabilities();
 	public static final SystemCapability               GENERAL_SYSTEMCAPABILITY               = new SystemCapability();
 	public static final VideoStreamingProtocol         GENERAL_VIDEOSTREAMINGPROTOCOL         = VideoStreamingProtocol.RAW;
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+
+	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
+	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
+	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;
+	public static final DefrostZone 				   GENERAL_DEFROSTZONE               	  = DefrostZone.ALL;
+	public static final VentilationMode 			   GENERAL_VENTILATIONMODE                = VentilationMode.BOTH;
+	public static final RadioBand 				       GENERAL_RADIOBAND               	      = RadioBand.AM;
+	public static final ClimateControlData             GENERAL_CLIMATECONTROLDATA             = new ClimateControlData();
+	public static final RdsData                        GENERAL_RDSDATA                        = new RdsData();
+	public static final RadioState                     GENERAL_RADIOSTATE              	      = RadioState.ACQUIRED;
+	public static final RadioControlData               GENERAL_RADIOCONTROLDATA               = new RadioControlData();
+	public static final ModuleData 					   GENERAL_MODULEDATA                     = new ModuleData();
+	public static final ClimateControlCapabilities     GENERAL_CLIMATECONTROLCAPABILITIES     = new ClimateControlCapabilities();
+	public static final RadioControlCapabilities       GENERAL_RADIOCONTROLCAPABILITIES       = new RadioControlCapabilities();
+
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
-	
 
 	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
@@ -255,7 +288,11 @@ public class Test {
 	public static final List<SoftButtonCapabilities>    GENERAL_SOFTBUTTONCAPABILITIES_LIST    = new ArrayList<SoftButtonCapabilities>(1);
 	public static final List<AudioPassThruCapabilities> GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST = new ArrayList<AudioPassThruCapabilities>(1);
 	public static final List<VideoStreamingFormat>      GENERAL_VIDEOSTREAMINGFORMAT_LIST      = new ArrayList<VideoStreamingFormat>(2);
-	
+	public static final List<DefrostZone>               GENERAL_DEFROSTZONE_LIST               = Arrays.asList(new DefrostZone[]{DefrostZone.FRONT, DefrostZone.REAR});
+	public static final List<VentilationMode>           GENERAL_VENTILATIONMODE_LIST           = Arrays.asList(new VentilationMode[]{VentilationMode.LOWER, VentilationMode.UPPER});
+	public static final List<ClimateControlCapabilities> GENERAL_CLIMATECONTROLCAPABILITIES_LIST = new ArrayList<ClimateControlCapabilities>(1);
+	public static final List<RadioControlCapabilities>   GENERAL_RADIOCONTROLCAPABILITIES_LIST   = new ArrayList<RadioControlCapabilities>(1);
+
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();		
 	public static final JSONArray  JSON_HMILEVELS                 = new JSONArray();
@@ -271,8 +308,9 @@ public class Test {
 	public static final JSONArray  JSON_BUTTONCAPABILITIES        = new JSONArray();
 	public static final JSONArray  JSON_SOFTBUTTONCAPABILITIES    = new JSONArray();
 	public static final JSONArray  JSON_AUDIOPASSTHRUCAPABILITIES = new JSONArray();
+	public static final JSONArray JSON_RADIOCONTROLCAPABILITIES   = new JSONArray();
+	public static final JSONArray JSON_CLIMATECONTROLCAPABILITIES = new JSONArray();
 	public static final JSONArray  JSON_TEXTFIELDTYPES            = new JSONArray();
-	
 	public static final JSONObject JSON_TURN                      = new JSONObject();
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
 	public static final JSONObject JSON_CHOICE                    = new JSONObject();
@@ -296,15 +334,52 @@ public class Test {
 	public static final JSONObject JSON_PARAMETERPERMISSIONS      = new JSONObject();
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_TOUCHEVENTCAPABILITIES    = new JSONObject();
-	
+
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setPressAvailable(GENERAL_BOOLEAN);
 		
 		GENERAL_IMAGERESOLUTION.setResolutionHeight(GENERAL_INT);
-		GENERAL_IMAGERESOLUTION.setResolutionWidth(GENERAL_INT);		
-		
+		GENERAL_IMAGERESOLUTION.setResolutionWidth(GENERAL_INT);
+
+		GENERAL_TEMPERATURE.setUnit(GENERAL_TEMPERATUREUNIT);
+		GENERAL_TEMPERATURE.setValue(GENERAL_FLOAT);
+
+		GENERAL_CLIMATECONTROLDATA.setFanSpeed(GENERAL_INT);
+		GENERAL_CLIMATECONTROLDATA.setCurrentTemperature(GENERAL_TEMPERATURE);
+		GENERAL_CLIMATECONTROLDATA.setDesiredTemperature(GENERAL_TEMPERATURE);
+		GENERAL_CLIMATECONTROLDATA.setAcEnable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLDATA.setCirculateAirEnable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLDATA.setAutoModeEnable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLDATA.setDualModeEnable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLDATA.setAcMaxEnable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLDATA.setDefrostZone(GENERAL_DEFROSTZONE);
+		GENERAL_CLIMATECONTROLDATA.setVentilationMode(GENERAL_VENTILATIONMODE);
+
+		GENERAL_RDSDATA.setProgramService(GENERAL_STRING);
+		GENERAL_RDSDATA.setRadioText(GENERAL_STRING);
+		GENERAL_RDSDATA.setClockText(GENERAL_STRING);
+		GENERAL_RDSDATA.setProgramIdentification(GENERAL_STRING);
+		GENERAL_RDSDATA.setRegion(GENERAL_STRING);
+		GENERAL_RDSDATA.setTrafficProgram(GENERAL_BOOLEAN);
+		GENERAL_RDSDATA.setTrafficAnnouncement(GENERAL_BOOLEAN);
+		GENERAL_RDSDATA.setProgramType(GENERAL_INT);
+
+		GENERAL_RADIOCONTROLDATA.setFrequencyInteger(GENERAL_INT);
+		GENERAL_RADIOCONTROLDATA.setFrequencyFraction(GENERAL_INT);
+		GENERAL_RADIOCONTROLDATA.setBand(GENERAL_RADIOBAND);
+		GENERAL_RADIOCONTROLDATA.setRdsData(GENERAL_RDSDATA);
+		GENERAL_RADIOCONTROLDATA.setAvailableHDs(GENERAL_INT);
+		GENERAL_RADIOCONTROLDATA.setHdChannel(GENERAL_INT);
+		GENERAL_RADIOCONTROLDATA.setSignalStrength(GENERAL_INT);
+		GENERAL_RADIOCONTROLDATA.setSignalChangeThreshold(GENERAL_INT);
+		GENERAL_RADIOCONTROLDATA.setRadioEnable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLDATA.setState(GENERAL_RADIOSTATE);
+
+		GENERAL_MODULEDATA.setModuleType(GENERAL_MODULETYPE);
+		GENERAL_MODULEDATA.setClimateControlData(GENERAL_CLIMATECONTROLDATA);
+
 		GENERAL_CHOICE.setMenuName(GENERAL_STRING);
 		GENERAL_CHOICE.setSecondaryText(GENERAL_STRING);
 		GENERAL_CHOICE.setTertiaryText(GENERAL_STRING);
@@ -486,6 +561,11 @@ public class Test {
 
 		GENERAL_SYSTEMCAPABILITY.setSystemCapabilityType(GENERAL_SYSTEMCAPABILITYTYPE);
 
+		GENERAL_NAVIGATIONCAPABILITY.setSendLocationEnabled(GENERAL_BOOLEAN);
+		GENERAL_NAVIGATIONCAPABILITY.setWayPointsEnabled(GENERAL_BOOLEAN);
+
+		GENERAL_PHONECAPABILITY.setDialNumberEnabled(GENERAL_BOOLEAN);
+
 		GENERAL_VIDEOSTREAMINGFORMAT.setProtocol(GENERAL_VIDEOSTREAMINGPROTOCOL);
 		GENERAL_VIDEOSTREAMINGFORMAT.setCodec(GENERAL_VIDEOSTREAMINGCODEC);
 
@@ -495,6 +575,36 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+
+		GENERAL_CLIMATECONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setFanSpeedAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setDesiredTemperatureAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setAcEnableAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setAcMaxEnableAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setCirculateAirEnableAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setAutoModeEnableAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setDualModeEnableAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setDefrostZoneAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setDefrostZone(GENERAL_DEFROSTZONE_LIST);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setVentilationModeAvailable(GENERAL_BOOLEAN);
+		GENERAL_CLIMATECONTROLCAPABILITIES.setVentilationMode(GENERAL_VENTILATIONMODE_LIST);
+		GENERAL_CLIMATECONTROLCAPABILITIES_LIST.add(GENERAL_CLIMATECONTROLCAPABILITIES);
+
+		GENERAL_RADIOCONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
+		GENERAL_RADIOCONTROLCAPABILITIES.setRadioEnableAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setRadioBandAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setRadioFrequencyAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setHdChannelAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setRdsDataAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setAvailableHDsAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setStateAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setSignalStrengthAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES.setSignalChangeThresholdAvailable(GENERAL_BOOLEAN);
+		GENERAL_RADIOCONTROLCAPABILITIES_LIST.add(GENERAL_RADIOCONTROLCAPABILITIES);
+
+		GENERAL_REMOTECONTROLCAPABILITIES.setButtonCapabilities(GENERAL_BUTTONCAPABILITIES_LIST);
+		GENERAL_REMOTECONTROLCAPABILITIES.setClimateControlCapabilities(GENERAL_CLIMATECONTROLCAPABILITIES_LIST);
+		GENERAL_REMOTECONTROLCAPABILITIES.setRadioControlCapabilities(GENERAL_RADIOCONTROLCAPABILITIES_LIST);
 
 		GENERAL_HMICAPABILITIES.setNavigationAvilable(GENERAL_BOOLEAN);
 		GENERAL_HMICAPABILITIES.setVideoStreamingAvailable(GENERAL_BOOLEAN);
@@ -620,7 +730,35 @@ public class Test {
 			jsonButton.put(ButtonCapabilities.KEY_UP_DOWN_AVAILABLE, GENERAL_BOOLEAN);
 			jsonButton.put(ButtonCapabilities.KEY_NAME, ButtonName.SEEKRIGHT);
 			JSON_BUTTONCAPABILITIES.put(jsonButton);
-			
+
+			JSONObject jsonRadioControlCapabilities = new JSONObject();
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_MODULE_NAME, GENERAL_STRING);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_RADIO_ENABLE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_RADIO_BAND_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_RADIO_FREQUENCY_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_HD_CHANNEL_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_RDS_DATA_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_AVAILABLE_HDS_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_STATE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_SIGNAL_STRENGTH_AVAILABLE, GENERAL_BOOLEAN);
+			jsonRadioControlCapabilities.put(RadioControlCapabilities.KEY_SIGNAL_CHANGE_THRESHOLD_AVAILABLE, GENERAL_BOOLEAN);
+			JSON_RADIOCONTROLCAPABILITIES.put(jsonRadioControlCapabilities);
+
+			JSONObject jsonClimateControlCapabilities = new JSONObject();
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_MODULE_NAME, GENERAL_STRING);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_FAN_SPEED_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_DESIRED_TEMPERATURE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_AC_ENABLE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_AC_MAX_ENABLE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_CIRCULATE_AIR_ENABLE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_AUTO_MODE_ENABLE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_DUAL_MODE_ENABLE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_DEFROST_ZONE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_DEFROST_ZONE, GENERAL_DEFROSTZONE_LIST);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_VENTILATION_MODE_AVAILABLE, GENERAL_BOOLEAN);
+			jsonClimateControlCapabilities.put(ClimateControlCapabilities.KEY_VENTILATION_MODE, GENERAL_VENTILATIONMODE_LIST);
+			JSON_CLIMATECONTROLCAPABILITIES.put(jsonClimateControlCapabilities);
+
 			jsonButton = new JSONObject();
 			jsonButton.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			jsonButton.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, GENERAL_BOOLEAN);

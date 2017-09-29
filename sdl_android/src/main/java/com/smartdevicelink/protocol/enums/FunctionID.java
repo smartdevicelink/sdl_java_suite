@@ -53,6 +53,11 @@ public enum FunctionID{
     SYSTEM_REQUEST(38, "SystemRequest"),
     SEND_LOCATION(39, "SendLocation"),
     DIAL_NUMBER(40, "DialNumber"),
+
+    BUTTON_PRESS(41, "ButtonPress"),
+    GET_INTERIOR_VEHICLE_DATA(43, "GetInteriorVehicleData"),
+    SET_INTERIOR_VEHICLE_DATA(44, "SetInteriorVehicleData"),
+
     GET_WAY_POINTS(45, "GetWayPoints"),
     SUBSCRIBE_WAY_POINTS(46, "SubscribeWayPoints"),
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
@@ -75,6 +80,7 @@ public enum FunctionID{
     ON_TOUCH_EVENT(32780, "OnTouchEvent"),
     ON_SYSTEM_REQUEST(32781, "OnSystemRequest"),
     ON_HASH_CHANGE(32782, "OnHashChange"),
+    ON_INTERIOR_VEHICLE_DATA(32783, "OnInteriorVehicleData"),
     ON_WAY_POINT_CHANGE(32784, "OnWayPointChange"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)

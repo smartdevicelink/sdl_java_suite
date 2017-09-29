@@ -28,43 +28,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.encoder;
+package com.smartdevicelink.proxy.interfaces;
 
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+import java.nio.ByteBuffer;
 
 /**
- * A listener that receives a chunk of data from an encoder.
+ * A listener that receives audio streaming data from app.
  */
-public interface IEncoderListener {
+public interface IAudioStreamListener {
 	/**
-	 * Called when a chunk of data is output by the encoder.
+	 * Sends a chunk of audio data to SDL Core.
+	 * <p>
+	 * Note: this method must not be called after SdlProxyBase.endAudioStream() is called.
 	 *
-	 * @param codec              The codec used by the encoder
-	 * @param protocol           The protocol used by the encoder
-	 * @param data               Data output by the encoder in the format of 'codec' and 'protocol'
-	 * @param presentationTimeUs The presentation timestamp (PTS) of this data in microseconds
-	 */
-	void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
-	                     byte[] data, long presentationTimeUs);
-
-	/**
-	 * Called when a chunk of data is output by the encoder.
-	 *
-	 * @param codec              The codec used by the encoder
-	 * @param protocol           The protocol used by the encoder
-	 * @param data               An array containing data output by the encoder in the format of
-	 *                           'codec' and 'protocol'
+	 * @param data               Byte array containing audio data
 	 * @param offset             Starting offset in 'data'
-	 * @param length             Length of the raw data
-	 * @param presentationTimeUs The presentation timestamp (PTS) of this data in microseconds
-	 *
+	 * @param length             Length of the data
+	 * @param presentationTimeUs (Reserved for future use) Presentation timestamp (PTS) of the
+	 *                           last audio sample data included in this chunk, in microseconds.
+	 *                           It must be greater than the previous timestamp.
+	 *                           Specify -1 if unknown.
 	 * @throws ArrayIndexOutOfBoundsException When offset does not satisfy
 	 *                                        {@code 0 <= offset && offset <= data.length}
 	 *                                        or length does not satisfy
 	 *                                        {@code 0 < length && offset + length <= data.length}
 	 */
-	void onEncoderOutput(VideoStreamingCodec codec, VideoStreamingProtocol protocol,
-	                     byte[] data, int offset, int length, long presentationTimeUs)
-		throws ArrayIndexOutOfBoundsException;
+	void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
+			throws ArrayIndexOutOfBoundsException;
+
+	/**
+	 * Sends a chunk of audio data to SDL Core.
+	 * <p>
+	 * Note: this method must not be called after SdlProxyBase.endAudioStream() is called.
+	 *
+	 * @param data               Data chunk to send. Its position will be updated upon return.
+	 * @param presentationTimeUs (Reserved for future use) Presentation timestamp (PTS) of the
+	 *                           last audio sample data included in this chunk, in microseconds.
+	 *                           It must be greater than the previous timestamp.
+	 *                           Specify -1 if unknown.
+	 */
+	void sendAudio(ByteBuffer data, long presentationTimeUs);
 }

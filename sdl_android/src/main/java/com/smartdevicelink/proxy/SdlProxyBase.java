@@ -57,10 +57,12 @@ import com.smartdevicelink.proxy.callbacks.OnError;
 import com.smartdevicelink.proxy.callbacks.OnProxyClosed;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -91,6 +93,8 @@ import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
+import com.smartdevicelink.streaming.AudioStreamingCodec;
+import com.smartdevicelink.streaming.AudioStreamingParams;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.streaming.VideoStreamingParams;
 import com.smartdevicelink.trace.SdlTrace;
@@ -2923,6 +2927,34 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onUpdateTurnListResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.SET_INTERIOR_VEHICLE_DATA.toString())) {
+				final SetInteriorVehicleDataResponse msg = new SetInteriorVehicleDataResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSetInteriorVehicleDataResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSetInteriorVehicleDataResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA.toString())) {
+				final GetInteriorVehicleDataResponse msg = new GetInteriorVehicleDataResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetInteriorVehicleDataResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetInteriorVehicleDataResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
@@ -2938,8 +2970,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetSystemCapabilityResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			}
-			else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
+			} else if (functionName.equals(FunctionID.BUTTON_PRESS.toString())) {
+				final ButtonPressResponse msg = new ButtonPressResponse(hash);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onButtonPressResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onButtonPressResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
 				final SendHapticDataResponse msg = new SendHapticDataResponse(hash);
 				if (_callbackToUIThread) {
 					// Run in UI thread
@@ -3351,6 +3396,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					onRPCNotificationReceived(msg);
 				}
 			}
+			else if (functionName.equals(FunctionID.ON_INTERIOR_VEHICLE_DATA.toString())) {
+				final OnInteriorVehicleData msg = new OnInteriorVehicleData(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnInteriorVehicleData(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnInteriorVehicleData(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
@@ -3620,6 +3681,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if service is opened successfully and stream is started, return false otherwise
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean startH264(InputStream is, boolean isEncrypted) {
 		
 		if (sdlSession == null) return false;		
@@ -3663,6 +3725,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public OutputStream startH264(boolean isEncrypted) {
 
 		if (sdlSession == null) return null;		
@@ -3705,30 +3768,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service is closed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean endH264() {
-		if (sdlSession == null) return false;		
-
-		navServiceEndResponseReceived = false;
-		navServiceEndResponse = false;
-		sdlSession.stopVideoStream();
-
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
-
-		//noinspection StatementWithEmptyBody
-		while (!navServiceEndResponseReceived && !fTask.isDone());
-		scheduler.shutdown();
-
-		return navServiceEndResponse;
+		return endVideoStream();
 	}
 	/**
 	 *Pauses the stream for the opened audio service (serviceType 10)
 	 *@return true if the audio service stream is paused successfully, return false otherwise  
 	 */		
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean pausePCM() {
-		return sdlSession != null && sdlSession.pauseAudioStream();
+		return pauseAudioStream();
 	}
 
 	/**
@@ -3736,8 +3787,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service stream is paused successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean pauseH264() {
-		return sdlSession != null && sdlSession.pauseVideoStream();
+		return pauseVideoStream();
 	}
 
 	/**
@@ -3745,8 +3797,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service stream is resumed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean resumePCM() {
-		return sdlSession != null && sdlSession.resumeAudioStream();
+		return resumeAudioStream();
 	}
 
 	/**
@@ -3754,8 +3807,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the video service is resumed successfully, return false otherwise  
 	 */	
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean resumeH264() {
-		return sdlSession != null && sdlSession.resumeVideoStream();
+		return resumeVideoStream();
 	}
 
 	
@@ -3764,6 +3818,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if service is opened successfully and stream is started, return false otherwise  
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean startPCM(InputStream is, boolean isEncrypted) {
 		if (sdlSession == null) return false;		
 		
@@ -3796,6 +3851,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return OutputStream if service is opened successfully and stream is started, return null otherwise  
 	 */		
 	@SuppressWarnings("unused")
+	@Deprecated
 	public OutputStream startPCM(boolean isEncrypted) {
 		if (sdlSession == null) return null;		
 		
@@ -3840,26 +3896,87 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *@return true if the audio service is closed successfully, return false otherwise  
 	 */		
 	@SuppressWarnings("unused")
+	@Deprecated
 	public boolean endPCM() {
-		if (sdlSession == null) return false;		
-		SdlConnection sdlConn = sdlSession.getSdlConnection();		
-		if (sdlConn == null) return false;
-		
-		pcmServiceEndResponseReceived = false;
-		pcmServiceEndResponse = false;
-		sdlSession.stopAudioStream();
-		
-		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
-
-		//noinspection StatementWithEmptyBody
-		while (!pcmServiceEndResponseReceived && !fTask.isDone());
-		scheduler.shutdown();
-
-		return pcmServiceEndResponse;
+		return endAudioStream();
 	}
-    
+
+    /**
+     * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
+     * to the app to send video data.
+     *
+     * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param codec       Video codec which will be used for streaming. Currently, only
+     *                    VideoStreamingCodec.H264 is accepted.
+     * @param width       Width of the video in pixels
+     * @param height      Height of the video in pixels
+     *
+     * @return IVideoStreamListener interface if service is opened successfully and streaming is
+     *         started, null otherwise
+     */
+    @SuppressWarnings("unused")
+    public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingCodec codec,
+                                                 int width, int height) {
+        if (sdlSession == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (sdlSession.getSdlConnection() == null) {
+            DebugTool.logWarning("SdlConnection is not available.");
+            return null;
+        }
+
+        VideoStreamingCodec[] codecs = {codec};
+        VideoStreamingParams acceptedParams = tryStartVideoStream(codecs, width, height, -1, -1,
+                -1, isEncrypted);
+        if (acceptedParams != null) {
+            return sdlSession.startVideoStream();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *Closes the opened video service (serviceType 11)
+     *@return true if the video service is closed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean endVideoStream() {
+        if (sdlSession == null) return false;
+
+        navServiceEndResponseReceived = false;
+        navServiceEndResponse = false;
+        sdlSession.stopVideoStream();
+
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!navServiceEndResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+
+        return navServiceEndResponse;
+    }
+
+    /**
+     *Pauses the stream for the opened video service (serviceType 11)
+     *@return true if the video service stream is paused successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean pauseVideoStream() {
+        return sdlSession != null && sdlSession.pauseVideoStream();
+    }
+
+    /**
+     *Resumes the stream for the opened video service (serviceType 11)
+     *@return true if the video service is resumed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean resumeVideoStream() {
+        return sdlSession != null && sdlSession.resumeVideoStream();
+    }
+
 	/**
 	 * Opens the video service (serviceType 11) and creates a Surface (used for streaming video) with input parameters provided by the app
 	 * @param frameRate - specified rate of frames to utilize for creation of Surface 
@@ -3876,16 +3993,73 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         if (sdlSession == null) return null;
         SdlConnection sdlConn = sdlSession.getSdlConnection();
         if (sdlConn == null) return null;
-        
-        VideoStreamingFormat[] availableFormats = { VIDEO_STREAMING_FORMAT_H264_RTP, VIDEO_STREAMING_FORMAT_H264_RAW };
-		VideoStreamingCapability videoStreamingCapabilities = null;
-		if(_systemCapabilityManager!=null){
-			videoStreamingCapabilities = (VideoStreamingCapability) _systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-		}
-        List<VideoStreamingParams> desiredParamsList = createDesiredVideoParams(
-                videoStreamingCapabilities, frameRate, iFrameInterval, width, height, bitrate, availableFormats);
 
-        // if none of video formats are accepted, try StartService without parameter at last
+        VideoStreamingCodec[] codecs = {VideoStreamingCodec.H264};
+        VideoStreamingParams acceptedParams = tryStartVideoStream(codecs, width, height, bitrate,
+            frameRate, iFrameInterval, isEncrypted);
+        if (acceptedParams != null) {
+            return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+                    height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Try to open a video service by trying all available codec/protocols one by one.
+     *
+     * Only information from codecs, width and height are used during video format negotiation.
+     *
+     * @param codecs         List of video codecs which app or proxy would like to use
+     * @param width          Width of the video in pixels
+     * @param height         Height of the video in pixels
+     * @param bitrate        Specified bitrate of the video
+     * @param frameRate      Specified rate of frames
+     * @param iFrameInterval Specified interval
+     * @param isEncrypted    Specify true if packets on this service have to be encrypted
+     *
+     * @return If the service is opened successfully, an instance of VideoStreamingParams is
+     *         returned which contains accepted video format. If the service is opened with legacy
+     *         mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
+     *         returned, but its video format and resolution are null.
+     *         If the service was not opened then null is returned.
+     */
+    @SuppressWarnings("unused")
+    private VideoStreamingParams tryStartVideoStream(VideoStreamingCodec[] codecs,
+                                                     int width, int height,
+                                                     int bitrate, int frameRate, int iFrameInterval,
+                                                     boolean isEncrypted) {
+        if (sdlSession == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (codecs == null || codecs.length == 0) {
+            DebugTool.logWarning("Video codec list is not supplied.");
+            return null;
+        }
+
+        List<VideoStreamingFormat> availableFormats = new ArrayList<>();
+        for (VideoStreamingCodec codec : codecs) {
+            if (codec == VideoStreamingCodec.H264) {
+                availableFormats.add(VIDEO_STREAMING_FORMAT_H264_RTP);
+                availableFormats.add(VIDEO_STREAMING_FORMAT_H264_RAW);
+            } else {
+                DebugTool.logInfo("Video codec " + codec +" is not supported.");
+            }
+        }
+
+        VideoStreamingCapability videoStreamingCapabilities = null;
+        if (_systemCapabilityManager != null) {
+            videoStreamingCapabilities = (VideoStreamingCapability) _systemCapabilityManager.getCapability(
+                    SystemCapabilityType.VIDEO_STREAMING);
+        }
+
+        List<VideoStreamingParams> desiredParamsList = createDesiredVideoParams(
+                videoStreamingCapabilities, frameRate, iFrameInterval, width, height, bitrate,
+                availableFormats.toArray(new VideoStreamingFormat[0]));
+
+        // If none of video formats are accepted then try StartService without parameter at last.
+        // This also applies to the case where the system is legacy and capability isn't available.
         VideoStreamingParams emptyParam = new VideoStreamingParams();
         emptyParam.setResolution(null);
         emptyParam.setFormat(null);
@@ -3900,17 +4074,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
             sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-            FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+            FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
             ScheduledExecutorService scheduler = createScheduler();
             scheduler.execute(fTask);
 
-			//noinspection StatementWithEmptyBody
-			while (!navServiceStartResponseReceived && !fTask.isDone());
+            //noinspection StatementWithEmptyBody
+            while (!navServiceStartResponseReceived && !fTask.isDone());
             scheduler.shutdown();
 
-			if (navServiceStartResponse) {
-                return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
-                        height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+            if (navServiceStartResponse) {
+                if (!params.equals(emptyParam)) {
+                    DebugTool.logInfo("StartService for nav succeeded with params: " + params);
+                } else {
+                    DebugTool.logInfo("StartService for nav succeeded in legacy mode.");
+                }
+                return params;
             }
 
             if (navServiceStartRejectedParams != null) {
@@ -3977,9 +4155,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             resolution.setResolutionWidth(width);
             resolution.setResolutionHeight(height);
             params.setResolution(resolution);
-            params.setFrameRate(frameRate);
-            params.setBitrate(bitrate);
-            params.setInterval(frameInterval);
+            if (frameRate >= 0) {
+                params.setFrameRate(frameRate);
+            }
+            if (bitrate >= 0) {
+                params.setBitrate(bitrate);
+            }
+            if (frameInterval >= 0) {
+                params.setInterval(frameInterval);
+            }
             params.setFormat(format);
             list.add(params);
         }
@@ -4022,7 +4206,117 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         
         sdlSession.drainEncoder(endOfStream);
     }
-	
+
+    /**
+     * Opens a audio service (service type 10) and subsequently provides an IAudioStreamListener
+     * to the app to send audio data.
+     *
+     * Currently information passed by "params" are ignored, since Audio Streaming feature lacks
+     * capability negotiation mechanism. App should configure audio stream data to align with
+     * head unit's capability by checking (upcoming) pcmCapabilities. The default format is in
+     * 16kHz and 16 bits.
+     *
+     * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param codec       Audio codec which will be used for streaming. Currently, only
+     *                    AudioStreamingCodec.LPCM is accepted.
+     * @param params      (Reserved for future use) Additional configuration information for each
+     *                    codec. If "codec" is AudioStreamingCodec.LPCM, "params" must be an
+     *                    instance of LPCMParams class.
+     *
+     * @return IAudioStreamListener interface if service is opened successfully and streaming is
+     *         started, null otherwise
+     */
+    @SuppressWarnings("unused")
+    public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
+                                                 AudioStreamingParams params) {
+        if (sdlSession == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (sdlSession.getSdlConnection() == null) {
+            DebugTool.logWarning("SdlConnection is not available.");
+            return null;
+        }
+        if (codec != AudioStreamingCodec.LPCM) {
+            DebugTool.logWarning("Audio codec " + codec + " is not supported.");
+            return null;
+        }
+
+        pcmServiceStartResponseReceived = false;
+        pcmServiceStartResponse = false;
+        sdlSession.startService(SessionType.PCM, sdlSession.getSessionId(), isEncrypted);
+
+        FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!pcmServiceStartResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+
+        if (pcmServiceStartResponse) {
+            DebugTool.logInfo("StartService for audio succeeded");
+            return sdlSession.startAudioStream();
+        } else {
+            if (pcmServiceStartRejectedParams != null) {
+                StringBuilder builder = new StringBuilder();
+                for (String paramName : pcmServiceStartRejectedParams) {
+                    if (builder.length() > 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(paramName);
+                }
+                DebugTool.logWarning("StartService for audio failed. Rejected params: " + builder.toString());
+            } else {
+                DebugTool.logWarning("StartService for audio failed (rejected params not supplied)");
+            }
+            return null;
+        }
+    }
+
+    /**
+     *Closes the opened audio service (serviceType 10)
+     *@return true if the audio service is closed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean endAudioStream() {
+        if (sdlSession == null) return false;
+        SdlConnection sdlConn = sdlSession.getSdlConnection();
+        if (sdlConn == null) return false;
+
+        pcmServiceEndResponseReceived = false;
+        pcmServiceEndResponse = false;
+        sdlSession.stopAudioStream();
+
+        FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!pcmServiceEndResponseReceived && !fTask.isDone());
+        scheduler.shutdown();
+
+        return pcmServiceEndResponse;
+    }
+
+    /**
+     *Pauses the stream for the opened audio service (serviceType 10)
+     *@return true if the audio service stream is paused successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean pauseAudioStream() {
+        return sdlSession != null && sdlSession.pauseAudioStream();
+    }
+
+    /**
+     *Resumes the stream for the opened audio service (serviceType 10)
+     *@return true if the audio service stream is resumed successfully, return false otherwise
+     */
+    @SuppressWarnings("unused")
+    public boolean resumeAudioStream() {
+        return sdlSession != null && sdlSession.resumeAudioStream();
+    }
+
 	private void NavServiceStarted() {
 		navServiceStartResponseReceived = true;
 		navServiceStartResponse = true;

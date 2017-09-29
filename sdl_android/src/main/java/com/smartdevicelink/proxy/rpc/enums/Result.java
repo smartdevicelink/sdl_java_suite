@@ -168,7 +168,16 @@ public enum Result {
     /**
      * The provided hash ID does not match the hash of the current set of registered data or the core could not resume the previous data.
      */
-    RESUME_FAILED;
+    RESUME_FAILED,
+	/**
+	 * The requested data is not available on this vehicle or is not published for the connected app.
+	 */
+	DATA_NOT_AVAILABLE,
+	/**
+	 * The requested data is read only thus cannot be change via remote control
+	 */
+	READ_ONLY,
+	;
 	 /**
      * Convert String to Result
      * @param value String

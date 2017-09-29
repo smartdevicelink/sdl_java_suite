@@ -15,7 +15,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
-import com.smartdevicelink.encoder.IEncoderListener;
 import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -24,7 +23,9 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.ISecurityInitializedListener;
@@ -198,7 +199,47 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
 		return os;
 	}
-	
+
+	public IVideoStreamListener startVideoStream() {
+		byte rpcSessionID = getSessionId();
+		VideoStreamingProtocol protocol = getAcceptedProtocol();
+		try {
+			switch (protocol) {
+				case RAW: {
+					StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.NAV, rpcSessionID, this);
+					packetizer.sdlConnection = this.getSdlConnection();
+					mVideoPacketizer = packetizer;
+					mVideoPacketizer.start();
+					return packetizer;
+				}
+				case RTP: {
+					RTPH264Packetizer packetizer = new RTPH264Packetizer(this, SessionType.NAV, rpcSessionID, this);
+					mVideoPacketizer = packetizer;
+					mVideoPacketizer.start();
+					return packetizer;
+				}
+				default:
+					Log.e(TAG, "Protocol " + protocol + " is not supported.");
+					return null;
+			}
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	public IAudioStreamListener startAudioStream() {
+		byte rpcSessionID = getSessionId();
+		try {
+			StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.PCM, rpcSessionID, this);
+			packetizer.sdlConnection = this.getSdlConnection();
+			mAudioPacketizer = packetizer;
+			mAudioPacketizer.start();
+			return packetizer;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 	public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
 		try {
 			mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
@@ -307,42 +348,18 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 			int height, int bitrate, SessionType sType, byte rpcSessionID) {
-		PipedOutputStream stream = null;
-		IEncoderListener encoderListener = null;
-
-		try {
-			VideoStreamingProtocol protocol = getAcceptedProtocol();
-			switch (protocol) {
-				case RAW:
-					stream = (PipedOutputStream) startStream(sType, rpcSessionID);
-					if (stream == null) return null;
-					break;
-				case RTP: {
-					RTPH264Packetizer rtpPacketizer = new RTPH264Packetizer(this, sType, rpcSessionID, this);
-					encoderListener = rtpPacketizer;
-					mVideoPacketizer = rtpPacketizer;
-					mVideoPacketizer.start();
-					break;
-				}
-				default:
-					Log.e(TAG, "Protocol " + protocol + " is not supported.");
-					return null;
-			}
-
-			mSdlEncoder = new SdlEncoder();
-			mSdlEncoder.setFrameRate(frameRate);
-			mSdlEncoder.setFrameInterval(iFrameInterval);
-			mSdlEncoder.setFrameWidth(width);
-			mSdlEncoder.setFrameHeight(height);
-			mSdlEncoder.setBitrate(bitrate);
-			if (encoderListener != null) {
-				mSdlEncoder.setOutputListener(encoderListener);
-			} else {
-				mSdlEncoder.setOutputStream(stream);
-			}
-		} catch (IOException e) {
+		IVideoStreamListener encoderListener = startVideoStream();
+		if (encoderListener == null) {
 			return null;
 		}
+
+		mSdlEncoder = new SdlEncoder();
+		mSdlEncoder.setFrameRate(frameRate);
+		mSdlEncoder.setFrameInterval(iFrameInterval);
+		mSdlEncoder.setFrameWidth(width);
+		mSdlEncoder.setFrameHeight(height);
+		mSdlEncoder.setBitrate(bitrate);
+		mSdlEncoder.setOutputListener(encoderListener);
 		return mSdlEncoder.prepareEncoder();
 	}
 	
