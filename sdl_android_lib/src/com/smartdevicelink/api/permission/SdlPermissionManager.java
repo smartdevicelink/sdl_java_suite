@@ -232,8 +232,13 @@ public class SdlPermissionManager {
             char[] chars = vdataRpc.toCharArray();
             chars[0] = Character.toUpperCase(chars[0]);
             String permissionName = prefix + new String(chars);
-            SdlPermission permission = SdlPermission.valueOf(permissionName);
-            permissionSet.permissions.get(hmi.ordinal()).add(permission);
+            try {
+                SdlPermission permission = SdlPermission.valueOf(permissionName);
+                permissionSet.permissions.get(hmi.ordinal()).add(permission);
+            } catch(IllegalArgumentException e){
+                Log.w(TAG, "SubPermission '" + permissionName + "' not supported");
+                Log.w(TAG, e);
+            }
         }
     }
 
