@@ -60,6 +60,8 @@ import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.interfaces.IPutFileResponseListener;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.*;
@@ -225,10 +227,97 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected byte _wiproVersion = 1;
 	
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
-	protected SparseArray<OnRPCNotificationListener> rpcNotificationListeners = null;
-	
+	protected SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = null;
+
+
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
+	//We create an easily passable anonymous class of the interface so that we don't expose the internal interface to developers
+	private ISdl _internalInterface = new ISdl() {
+		@Override
+		public void start() {
+			try{
+				initializeProxy();
+			}catch (SdlException e){
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void stop() {
+			try{
+				dispose();
+			}catch (SdlException e){
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public boolean isConnected() {
+			return getIsConnected();
+		}
+
+		@Override
+		public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+			if(sdlSession!=null){
+				sdlSession.addServiceListener(serviceType,sdlServiceListener);
+			}
+		}
+
+		@Override
+		public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+			if(sdlSession!=null){
+				sdlSession.removeServiceListener(serviceType,sdlServiceListener);
+			}
+		}
+
+		@Override
+		public void startVideoService(VideoStreamingParams parameters, boolean encrypted) {
+			if(isConnected()){
+				sdlSession.startService(SessionType.NAV,sdlSession.getSessionId(),encrypted);
+			}
+		}
+
+		@Override
+		public void stopVideoService() {
+			if(isConnected()){
+				sdlSession.endService(SessionType.NAV,sdlSession.getSessionId());
+			}
+		}
+
+		@Override
+		public void startAudioService(boolean encrypted) {
+			if(isConnected()){
+				sdlSession.startService(SessionType.PCM,sdlSession.getSessionId(),encrypted);
+			}
+		}
+
+		@Override
+		public void stopAudioService() {
+			if(isConnected()){
+				sdlSession.endService(SessionType.PCM,sdlSession.getSessionId());
+			}
+		}
+
+		@Override
+		public void sendRPCRequest(RPCRequest message){
+			try {
+				SdlProxyBase.this.sendRPCRequest(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+			SdlProxyBase.this.addOnRPCNotificationListener(notificationId,listener);
+		}
+
+		@Override
+		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+			return SdlProxyBase.this.removeOnRPCNotificationListener(notificationId,listener);
+		}
+	};
 	
 	private void notifyPutFileStreamError(Exception e, String info)
 	{
@@ -652,7 +741,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		
 		rpcResponseListeners = new SparseArray<OnRPCResponseListener>();
-		rpcNotificationListeners = new SparseArray<OnRPCNotificationListener>();
+		rpcNotificationListeners = new SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>>();
 
 		// Initialize the proxy
 		try {
@@ -1061,7 +1150,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    		mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
 		    	}
 
-		    	if (getIsConnected()) 
+		    	if (getIsConnected())
 		    	{			    	
 		    		sendRPCRequestPrivate(mySystemRequest);
 		    		Log.i("sendSystemRequestToUrl", "sent to sdl");
@@ -1148,8 +1237,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	// Protected isConnected method to allow legacy proxy to poll isConnected state
 	public Boolean getIsConnected() {
 		return sdlSession != null && sdlSession.getIsConnected();
-
 	}
+
 	
 	/**
 	 * Returns whether the application is registered in SDL. Note: for testing
@@ -1175,16 +1264,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
 
 		//Initialize _systemCapabilityManager here.
-		_systemCapabilityManager = new SystemCapabilityManager(new SystemCapabilityManager.ISystemCapabilityManager() {
-			@Override
-			public void onSendPacketRequest(RPCRequest message) {
-				try {
-					sendRPCRequest(message);
-				} catch (SdlException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		_systemCapabilityManager = new SystemCapabilityManager(_internalInterface);
 		// Setup SdlConnection
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);	
@@ -1307,7 +1387,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				Boolean waitForInterfaceUnregistered = false;
 				// Unregister app interface
 				synchronized(CONNECTION_REFERENCE_LOCK) {
-					if (sdlSession != null && sdlSession.getIsConnected() && getAppInterfaceRegistered()) {
+					if (getIsConnected() && getAppInterfaceRegistered()) {
 						waitForInterfaceUnregistered = true;
 						unregisterAppInterfacePrivate(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
 					}
@@ -1768,9 +1848,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean onRPCNotificationReceived(RPCNotification notification){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
-			OnRPCNotificationListener listener = rpcNotificationListeners.get(FunctionID.getFunctionId(notification.getFunctionName()));
-			if(listener!=null){
-				listener.onNotified(notification);
+			CopyOnWriteArrayList<OnRPCNotificationListener> listeners = rpcNotificationListeners.get(FunctionID.getFunctionId(notification.getFunctionName()));
+			if(listeners!=null && listeners.size()>0) {
+				for (OnRPCNotificationListener listener : listeners) {
+					listener.onNotified(notification);
+				}
 				return true;
 			}
 			return false;
@@ -1786,15 +1868,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
-			rpcNotificationListeners.put(notificationId.getId(), listener);
+			if(notificationId != null && listener != null){
+				if(rpcNotificationListeners.indexOfKey(notificationId.getId()) < 0 ){
+					rpcNotificationListeners.put(notificationId.getId(),new CopyOnWriteArrayList<OnRPCNotificationListener>());
+				}
+				rpcNotificationListeners.get(notificationId.getId()).add(listener);
+			}
 		}
 	}
-	
+
+	/**
+	 * This method is no longer valid and will not remove the listener for the supplied notificaiton id
+	 * @param notificationId n/a
+	 * @see #removeOnRPCNotificationListener(FunctionID, OnRPCNotificationListener)
+	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void removeOnRPCNotificationListener(FunctionID notificationId){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
-			rpcNotificationListeners.delete(notificationId.getId());
+			//rpcNotificationListeners.delete(notificationId.getId());
 		}
+	}
+
+	public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			if(rpcNotificationListeners!= null
+					&& notificationId != null
+					&& listener != null
+					&& rpcNotificationListeners.indexOfKey(notificationId.getId()) >= 0){
+				return rpcNotificationListeners.get(notificationId.getId()).remove(listener);
+			}
+		}
+		return false;
 	}
 	
 	private void processRaiResponse(RegisterAppInterfaceResponse rai)
@@ -3341,7 +3446,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 		// Test if SdlConnection is null
 		synchronized(CONNECTION_REFERENCE_LOCK) {
-			if (sdlSession == null || !sdlSession.getIsConnected()) {
+			if (getIsConnected()) {
 				SdlTrace.logProxyEvent("Application attempted to send and RPCRequest without a connected transport.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("There is no valid connection to SDL. sendRPCRequest cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
 			}
