@@ -91,8 +91,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			return;
         }
         
-	    boolean didStart = false;
-	    localRouterClass = defineLocalSdlRouterClass();
+		boolean didStart = false;
+		if (localRouterClass == null){
+			localRouterClass = defineLocalSdlRouterClass();
+		}
         
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION)){ 
@@ -110,9 +112,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								//List obtained. Let's start our service
 								queuedService = componentName;
 								finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
-								//Validate the router service so the service knows if this is a trusted router service
-								RouterServiceValidator vlad = new RouterServiceValidator(finalContext,componentName);
-								finalIntent.putExtra(TransportConstants.ROUTER_SERVICE_VALIDATED, vlad.validate());
 								onSdlEnabled(finalContext, finalIntent);
 							}
 							

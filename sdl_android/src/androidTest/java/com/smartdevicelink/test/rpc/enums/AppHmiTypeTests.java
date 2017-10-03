@@ -40,6 +40,8 @@ public class AppHmiTypeTests extends TestCase {
 		AppHMIType enumTesting = AppHMIType.valueForString(example);
 		example = "SYSTEM";
 		AppHMIType enumSystem = AppHMIType.valueForString(example);
+		example = "REMOTE_CONTROL";
+		AppHMIType enumRemoteControl = AppHMIType.valueForString(example);
 		
 		assertNotNull("DEFAULT returned null", enumDefault);
 		assertNotNull("COMMUNICATION returned null", enumCommunication);
@@ -52,6 +54,7 @@ public class AppHmiTypeTests extends TestCase {
 		assertNotNull("PROJECTION returned null", enumProjection);
 		assertNotNull("TESTING returned null", enumTesting);
 		assertNotNull("SYSTEM returned null", enumSystem);
+		assertNotNull("REMOTE_CONTROL returned null", enumRemoteControl);
 	}
 	
 	/**
@@ -99,7 +102,8 @@ public class AppHmiTypeTests extends TestCase {
 		enumTestList.add(AppHMIType.BACKGROUND_PROCESS);
 		enumTestList.add(AppHMIType.PROJECTION);
 		enumTestList.add(AppHMIType.TESTING);
-		enumTestList.add(AppHMIType.SYSTEM);	
+		enumTestList.add(AppHMIType.SYSTEM);
+		enumTestList.add(AppHMIType.REMOTE_CONTROL);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
