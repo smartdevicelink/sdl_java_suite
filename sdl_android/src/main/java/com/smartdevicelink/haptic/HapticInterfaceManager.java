@@ -61,7 +61,6 @@ public class HapticInterfaceManager {
         SdlProxyBase proxy = proxyHolder.get();
         if (proxy != null) {
             SendHapticData msg = new SendHapticData();
-            msg.setCorrelationID(CorrelationIdGenerator.generateId());
             msg.setHapticRectData(userHapticData);
             try {
                 proxy.sendRPCRequest(msg);
@@ -89,7 +88,6 @@ public class HapticInterfaceManager {
             findHapticRects(root, hapticRects);
 
             SendHapticData msg = new SendHapticData();
-            msg.setCorrelationID(CorrelationIdGenerator.generateId());
             msg.setHapticRectData(hapticRects);
 
             try {
