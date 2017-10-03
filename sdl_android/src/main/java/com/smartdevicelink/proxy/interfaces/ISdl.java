@@ -1,6 +1,5 @@
 package com.smartdevicelink.proxy.interfaces;
 
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
