@@ -74,7 +74,7 @@ public class SdlSecurityBaseTest extends AndroidTestCase {
 		}
 		@Override
 		public void onProtocolSessionStartedNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
 			
 		}
 		@Override

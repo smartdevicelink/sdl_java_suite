@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -118,7 +119,7 @@ class MockInterfaceBroker implements ISdlConnectionListener {
 	}
 	@Override
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
+			byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
 		
 	}
 	@Override

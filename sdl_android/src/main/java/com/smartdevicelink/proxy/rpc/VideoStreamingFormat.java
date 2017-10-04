@@ -17,6 +17,11 @@ public class VideoStreamingFormat extends RPCStruct {
 	public VideoStreamingFormat(){}
 	public VideoStreamingFormat(Hashtable<String, Object> hash){super(hash);}
 
+	public VideoStreamingFormat(VideoStreamingCodec codec,VideoStreamingProtocol protocol){
+		setCodec(codec);
+		setProtocol(protocol);
+	}
+
 	public void setProtocol(VideoStreamingProtocol protocol){
 		setValue(KEY_PROTOCOL, protocol);
 	}
@@ -31,5 +36,11 @@ public class VideoStreamingFormat extends RPCStruct {
 
 	public VideoStreamingCodec getCodec(){
 		return (VideoStreamingCodec) getObject(VideoStreamingCodec.class, KEY_CODEC);
+	}
+
+	@Override
+	public String toString() {
+		return "codec=" + String.valueOf(getCodec()) +
+				", protocol=" + String.valueOf(getProtocol());
 	}
 }

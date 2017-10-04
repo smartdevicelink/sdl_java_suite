@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy;
 
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
@@ -17,13 +19,9 @@ import java.util.List;
 
 public class SystemCapabilityManager {
 	HashMap<SystemCapabilityType, Object> cachedSystemCapabilities = new HashMap<>();
-	ISystemCapabilityManager callback;
+	ISdl callback;
 
-	public interface ISystemCapabilityManager{
-		void onSendPacketRequest(RPCRequest message);
-	}
-
-	public SystemCapabilityManager(ISystemCapabilityManager callback){
+	public SystemCapabilityManager(ISdl callback){
 		this.callback = callback;
 	}
 
@@ -69,6 +67,8 @@ public class SystemCapabilityManager {
 					return hmiCapabilities.isPhoneCallAvailable();
 				case VIDEO_STREAMING:
 					return hmiCapabilities.isVideoStreamingAvailable();
+				case REMOTE_CONTROL:
+					return hmiCapabilities.isRemoteControlAvailable();
 				default:
 					return false;
 			}
@@ -133,7 +133,7 @@ public class SystemCapabilityManager {
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
 		if(callback!=null){
-			callback.onSendPacketRequest(request);
+			callback.sendRPCRequest(request);
 		}
 	}
 

@@ -150,10 +150,17 @@ public class WiProProtocol extends AbstractProtocol {
 	} // end-method
 	
 	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
-		SdlPacket header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashId));
-		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
-		}
+		SdlPacket header;
+			if (sessionType.equals(SessionType.RPC)) { // check for RPC session
+				if(_version < 5){
+					header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashID));
+				}else{
+					header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
+					header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
+				}
+			}else{ //Any other service type we don't include the hash id
+				header = SdlPacketFactory.createEndSession(sessionType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
+			}
 		handlePacketToSend(header);
 
 	} // end-method
@@ -497,6 +504,7 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
+				List<String> rejectedParams = null;
 				if(packet.version >= 5){
 					String rejectedTag = null;
 					if(serviceType.equals(SessionType.RPC)){
@@ -506,11 +514,10 @@ public class WiProProtocol extends AbstractProtocol {
 					}else if(serviceType.equals(SessionType.NAV)){
 						rejectedTag = ControlFrameTags.Video.StartServiceNAK.REJECTED_PARAMS;
 					}
-					List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
-					// TODO: Pass these back
+					rejectedParams = (List<String>) packet.getTag(rejectedTag);
 				}
 				if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
-					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "");
+					handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "", rejectedParams);
 				} else {
 					handleProtocolError("Got StartSessionNACK for protocol sessionID=" + packet.getSessionId(), null);
 				}
@@ -637,8 +644,12 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void EndProtocolService(SessionType serviceType, byte sessionID) {
- 		SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[4]);
-		handlePacketToSend(header);
+		if(serviceType.equals(SessionType.RPC)){ //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
+			EndProtocolSession(serviceType,sessionID,hashID);
+		}else {
+			SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
+			handlePacketToSend(header);
+		}
 	}
 
 } // end-class

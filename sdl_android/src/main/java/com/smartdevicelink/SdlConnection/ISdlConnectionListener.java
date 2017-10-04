@@ -3,6 +3,8 @@ package com.smartdevicelink.SdlConnection;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 
+import java.util.List;
+
 
 public interface ISdlConnectionListener {
 	public void onTransportDisconnected(String info);
@@ -12,7 +14,7 @@ public interface ISdlConnectionListener {
 	public void onProtocolMessageReceived(ProtocolMessage msg);
 	
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID);	
+			byte sessionID, byte version, String correlationID, List<String> rejectedParams);
 	
 	public void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);

@@ -6,6 +6,7 @@ import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
@@ -17,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
@@ -28,6 +30,7 @@ import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnHashChange;
+import com.smartdevicelink.proxy.rpc.OnInteriorVehicleData;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
@@ -49,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
@@ -339,6 +343,14 @@ public interface IProxyListenerBase  {
 	public void onOnWayPointChange(OnWayPointChange notification);
 
 	public void onGetSystemCapabilityResponse(GetSystemCapabilityResponse response);
+
+	public void onGetInteriorVehicleDataResponse(GetInteriorVehicleDataResponse response);
+
+	public void onButtonPressResponse(ButtonPressResponse response);
+
+	public void onSetInteriorVehicleDataResponse(SetInteriorVehicleDataResponse response);
+
+	public void onOnInteriorVehicleData(OnInteriorVehicleData notification);
 
 	public void onSendHapticDataResponse(SendHapticDataResponse response);
 }
