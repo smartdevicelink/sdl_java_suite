@@ -1,4 +1,4 @@
-package com.smartdevicelink.streaming;
+package com.smartdevicelink.streaming.video;
 
 import android.content.Intent;
 import android.util.DisplayMetrics;

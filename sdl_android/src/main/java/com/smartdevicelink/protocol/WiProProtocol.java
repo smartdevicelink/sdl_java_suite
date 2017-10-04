@@ -14,7 +14,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.VideoStreamingParameters;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;

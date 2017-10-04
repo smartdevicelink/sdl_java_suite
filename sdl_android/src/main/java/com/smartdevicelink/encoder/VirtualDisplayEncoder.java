@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -29,7 +28,7 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
-import com.smartdevicelink.streaming.VideoStreamingParameters;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,8 +37,6 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-
-import static android.R.attr.format;
 
 @TargetApi(21)
 public class VirtualDisplayEncoder {

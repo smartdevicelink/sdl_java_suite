@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.streaming;
+package com.smartdevicelink.streaming.audio;
 
 /**
  * A struct to hold LPCM specific audio format information.

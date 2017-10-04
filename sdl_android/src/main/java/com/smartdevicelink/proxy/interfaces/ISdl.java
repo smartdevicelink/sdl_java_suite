@@ -4,7 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.streaming.VideoStreamingParameters;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 /*
  * Copyright (c) 2017 Livio, Inc.

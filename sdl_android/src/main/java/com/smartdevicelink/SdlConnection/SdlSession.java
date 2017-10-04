@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.smartdevicelink.encoder.SdlEncoder;
+import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -32,10 +33,10 @@ import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.streaming.RTPH264Packetizer;
+import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.streaming.VideoStreamingParameters;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -58,6 +59,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	AbstractPacketizer mVideoPacketizer = null;
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;
+	VirtualDisplayEncoder virtualDisplayEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
 	private HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
