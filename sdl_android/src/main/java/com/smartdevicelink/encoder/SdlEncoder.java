@@ -9,13 +9,16 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.util.Log;
 import android.view.Surface;
 
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SdlEncoder {
-	
+
+	private static final String TAG = "SdlEncoder";
+
 	// parameters for the encoder
 	private static final String _MIME_TYPE = "video/avc"; // H.264/AVC video
 	// private static final String MIME_TYPE = "video/mp4v-es"; //MPEG4 video
@@ -32,7 +35,9 @@ public class SdlEncoder {
 	
 	// allocate one of these up front so we don't need to do it every time
 	private MediaCodec.BufferInfo mBufferInfo;
-	
+
+	// Codec-specific data (SPS and PPS)
+	private byte[] mH264CodecSpecificData = null;
 
 	public SdlEncoder () {
 	}
@@ -120,6 +125,7 @@ public class SdlEncoder {
 			}
 			mOutputStream = null;
 		}
+		mH264CodecSpecificData = null;
 	}
 
 	/**
@@ -153,8 +159,33 @@ public class SdlEncoder {
 				// not expected for an encoder
 				encoderOutputBuffers = mEncoder.getOutputBuffers();
 			} else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+				if (mH264CodecSpecificData == null) {
+					MediaFormat format = mEncoder.getOutputFormat();
+					mH264CodecSpecificData = EncoderUtils.getCodecSpecificData(format);
+				} else {
+					Log.w(TAG, "Output format change notified more than once, ignoring.");
+				}
 			} else if (encoderStatus < 0) {
 			} else {
+				if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+					// If we already retrieve codec specific data via OUTPUT_FORMAT_CHANGED event,
+					// we do not need this data.
+					if (mH264CodecSpecificData != null) {
+						mBufferInfo.size = 0;
+					} else {
+						Log.i(TAG, "H264 codec specific data not retrieved yet.");
+					}
+				}
+				// append SPS and PPS in front of every IDR NAL unit
+				if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_KEY_FRAME) != 0
+						&& mBufferInfo.size != 0
+						&& mH264CodecSpecificData != null) {
+					try {
+						mOutputStream.write(mH264CodecSpecificData, 0,
+								mH264CodecSpecificData.length);
+					} catch (Exception e) {}
+				}
+
 				if (mBufferInfo.size != 0) {
 					byte[] dataToWrite = new byte[mBufferInfo.size];
 					encoderOutputBuffers[encoderStatus].get(dataToWrite,
