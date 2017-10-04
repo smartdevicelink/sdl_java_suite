@@ -1,9 +1,10 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import android.content.ComponentName;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -28,8 +29,6 @@ import com.smartdevicelink.transport.USBTransport;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class SdlConnection implements IProtocolListener, ITransportListener {
 
 	private static final String TAG = "SdlConnection";
@@ -49,9 +48,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	private static TransportType legacyTransportRequest = null;
 	private final static int BUFF_READ_SIZE = 1000000;
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
-
-	private Handler WOKEN_RS_HANDLER;
-	public final static int RSERVICE_WAIT_MS = 2000;
 	
 	/**
 	 * Constructor.
@@ -80,14 +76,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		constructor(transportConfig,rsvp);
 	}
 	
-	private void constructor(BaseTransportConfig transportConfig, final RouterServiceValidator rsvp){
+	private void constructor(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
 		_connectionListener = new InternalMsgDispatcher();
-
-		// Set up the handler
-		if (Looper.myLooper() == null) {
-			Looper.prepare();
-		}
-		WOKEN_RS_HANDLER = new Handler(Looper.myLooper());
 		
 		// Initialize the transport
 		synchronized(TRANSPORT_REFERENCE_LOCK) {
@@ -109,28 +99,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					Log.w(TAG, "SDL Router service is valid; attempting to connect");
 					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
 				}else{
+					Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");	
 					if(cachedMultiConfig == null){
 						cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
 						cachedMultiConfig.setService(null);
 					}
-
-					if(!rsvp.isAdditionalSdlBroadcastReceiver()) { // If there are no other Router Services to wake up
-						Log.w(TAG, "Other SDL Router services aren't trusted. Enabling legacy bluetooth connection.");
-						enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
-					}else{
-						Log.w(TAG, "Other SDL Router services exist on device.");
-						WOKEN_RS_HANDLER.postDelayed(new Runnable() {
-							@Override
-							public void run() {
-								if(!rsvp.validate()){ // A router service was not woken
-									Log.w(TAG, "SDL Router service was not woken in time.");
-									enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection
-								}else {
-									Log.w(TAG, "SDL Router service awoke - " + rsvp.getService().getPackageName());
-								}
-							}
-						}, RSERVICE_WAIT_MS); // Wait for a certain amount of time
-					}
+					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
 				}
 			}
 			
@@ -290,8 +264,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 
 	@Override
 	public void onProtocolSessionNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		_connectionListener.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+			byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+		_connectionListener.onProtocolSessionStartedNACKed(sessionType,
+				sessionID, version, correlationID, rejectedParams);
 	}
 
 	@Override
@@ -460,10 +435,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 
 		@Override
 		public void onProtocolSessionStartedNACKed(SessionType sessionType,
-				byte sessionID, byte version, String correlationID) {
+				byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolSessionStartedNACKed(sessionType, sessionID, version, correlationID);
+				session.onProtocolSessionStartedNACKed(sessionType,
+						sessionID, version, correlationID, rejectedParams);
 			}			
 		}
 

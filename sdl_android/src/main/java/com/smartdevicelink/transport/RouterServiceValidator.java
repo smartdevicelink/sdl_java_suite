@@ -22,13 +22,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
-import android.os.Handler;
+import android.os.Build;
 import android.util.Log;
 
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
-
-import static com.smartdevicelink.proxy.constants.Names.appName;
 
 /**
  * This class will tell us if the currently running router service is valid or not.
@@ -87,7 +85,6 @@ public class RouterServiceValidator {
 	private static boolean pendingListRefresh = false;
 	
 	private ComponentName service;//This is how we can save different routers over another in a waterfall method if we choose to.
-	private ComponentName lastClosedService = null;
 
 	private static int securityLevel = -1;
 	
@@ -121,19 +118,29 @@ public class RouterServiceValidator {
 		
 		if(this.service != null){
 			Log.d(TAG, "Supplied service name of " + this.service.getClassName());
-			if(!isServiceRunning(context,this.service)){
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
-				lastClosedService = service;
 				service = null;
 				Log.w(TAG, "Supplied service is not actually running.");
+			} else {
+				// If the running router service is created by this app, the validation is good by default
+				if (this.service.getPackageName().equals(context.getPackageName())) {
+					return true;
+				}
 			}
 		}
 		if(this.service == null){
-			this.service= componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
-			if(this.service == null){ //if this is still null we know there is no service running so we can return false
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O ) {
+				this.service = componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
+				if (this.service == null) { //if this is still null we know there is no service running so we can return false
+					wakeUpRouterServices();
+					return false;
+				}
+			}else{
 				wakeUpRouterServices();
 				return false;
 			}
+
 		}
 		
 		//Log.d(TAG, "Checking app package: " + service.getClassName());
@@ -491,29 +498,6 @@ public class RouterServiceValidator {
 		            return true;
 		        }
 		    }
-		return false;
-	}
-
-	/**
-	 * This method determines whether is an additional trusted Sdl Broadcast Receiver (and therefore Sdl Router Service) on this device, distinct from the last one that was closed.
-	 * @return
-	 */
-	public boolean isAdditionalSdlBroadcastReceiver(){
-		PackageManager manager = context.getPackageManager();
-		for(ResolveInfo resolveInfo : manager.queryBroadcastReceivers(new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)){
-			String packageName = resolveInfo.activityInfo.packageName;
-			if(packageName != null){
-				if(lastClosedService != null){
-					if(isTrustedPackage(packageName, manager) && !lastClosedService.equals(packageName)){
-						return true;
-					}
-				}else{
-					if(isTrustedPackage(packageName, manager)){
-						return true;
-					}
-				}
-			}
-		}
 		return false;
 	}
 	

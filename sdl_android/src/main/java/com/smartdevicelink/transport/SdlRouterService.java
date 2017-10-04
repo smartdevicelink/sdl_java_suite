@@ -22,11 +22,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.Manifest;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -71,6 +74,30 @@ import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.smartdevicelink.transport.TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME;
+import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
+import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXTRA_NAME;
+import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
+import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_ID;
+import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_NAME;
+import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 /**
  * <b>This class should not be modified by anyone outside of the approved contributors of the SmartDeviceLink project.</b>
  * This service is a central point of communication between hardware and the registered clients. It will multiplex a single transport
@@ -98,7 +125,7 @@ public class SdlRouterService extends Service{
 	 */
 	@Deprecated
 	public static final String START_SERVICE_ACTION							= "sdl.router.startservice";
-	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register"; 
+	public static final String REGISTER_WITH_ROUTER_ACTION 					= "com.sdl.android.register";
 	
 	/** Message types sent from the BluetoothReadService Handler */
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -109,7 +136,7 @@ public class SdlRouterService extends Service{
 	
     private final int UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
     
-	private static MultiplexBluetoothTransport mSerialService = null;
+	private MultiplexBluetoothTransport mSerialService = null;
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
@@ -171,7 +198,7 @@ public class SdlRouterService extends Service{
 		{				
 			//Let's grab where to reply to this intent at. We will keep it temp right now because we may have to deny registration
 			String action =intent.getStringExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME);
-			sendBroadcast(prepareRegistrationIntent(action));	
+			sendBroadcast(prepareRegistrationIntent(action));
 		}
 	};
 	
@@ -180,6 +207,7 @@ public class SdlRouterService extends Service{
 		registrationIntent.setAction(action);
 		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA, this.getPackageName());
 		registrationIntent.putExtra(TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA, this.getClass().getName());
+		registrationIntent.setFlags((Intent.FLAG_RECEIVER_FOREGROUND));
 		return registrationIntent;
 	}
 	
@@ -196,16 +224,8 @@ public class SdlRouterService extends Service{
 				Log.e(TAG, "Serial service not initliazed while registering app");
 				//Maybe we should try to do a connect here instead
 				Log.d(TAG, "Serial service being restarted");
-				if(mSerialService ==null){
-					Log.e(TAG, "Local copy of BT Server is null");
-					mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
-					if(mSerialService==null){
-						Log.e(TAG, "Local copy of BT Server is still null and so is global");
-						mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
+				initBluetoothSerialService();
 
-					}
-				}
-				mSerialService.start();
 
 			}
 		}
@@ -220,7 +240,7 @@ public class SdlRouterService extends Service{
 		BroadcastReceiver registerAnInstanceOfSerialServer = new BroadcastReceiver() {
 			final Object COMPARE_LOCK = new Object();
 					@Override
-					public void onReceive(Context context, Intent intent) 
+					public void onReceive(Context context, Intent intent)
 					{
 						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
 						synchronized(COMPARE_LOCK){
@@ -307,7 +327,7 @@ public class SdlRouterService extends Service{
 		*********************************************** Handlers for bound clients **************************************************************
 		****************************************************************************************************************************************/
 
-		
+
 	    /**
 	     * Target we publish for clients to send messages to RouterHandler.
 	     */
@@ -322,7 +342,7 @@ public class SdlRouterService extends Service{
 	    	public RouterHandler(SdlRouterService provider){
 	    		this.provider = new WeakReference<SdlRouterService>(provider);
 	    	}
-	    	
+
 	        @Override
 	        public void handleMessage(Message msg) {
 	        	if(this.provider.get() == null){
@@ -896,6 +916,9 @@ public class SdlRouterService extends Service{
 			}
 		}
 		if(intent != null ){
+			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
+				enterForeground();
+			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
 				if(startSequenceComplete){ //We only check if we are sure we are already through the start up process
@@ -1036,18 +1059,37 @@ public class SdlRouterService extends Service{
         	notification = builder.getNotification();
         	
         }else{
+			if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+				//Now we need to add a notification channel
+				NotificationManager notificationManager =	(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				String channelId = SDL_NOTIFICATION_CHANNEL_ID;
+				CharSequence channelName = SDL_NOTIFICATION_CHANNEL_NAME;
+				int importance = NotificationManager.IMPORTANCE_DEFAULT;
+				NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+				notificationChannel.enableLights(false);
+				notificationChannel.enableVibration(false);
+				notificationManager.createNotificationChannel(notificationChannel);
+				builder.setChannelId(channelId);
+
+			}
         	notification = builder.build();
         }
         if(notification == null){
         	Log.e(TAG, "Notification was null");
+			return;
         }
         startForeground(FOREGROUND_SERVICE_ID, notification);
         isForeground = true;
  
     }
-	
+
 	private void exitForeground(){
 		if(isForeground){
+			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.deleteNotificationChannel(TransportConstants.SDL_NOTIFICATION_CHANNEL_ID);
+			}
+
 			this.stopForeground(true);
 		}
 	}
@@ -1121,18 +1163,16 @@ public class SdlRouterService extends Service{
 			Log.d(TAG, "Not starting own bluetooth during legacy mode");
 			return;
 		}
-		Log.i(TAG, "Iniitializing bluetooth transport");
 		//init serial service
-		if(mSerialService ==null){
-			mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance();
-			if(mSerialService==null){
-				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
-			}
+		if(mSerialService == null || mSerialService.getState() == MultiplexBluetoothTransport.STATE_ERROR){
+			Log.i(TAG, "Initializing bluetooth transport");
+			mSerialService = new MultiplexBluetoothTransport(mHandlerBT);
 		}
 		if (mSerialService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE || mSerialService.getState() == MultiplexBluetoothTransport.STATE_ERROR) {
+            if (mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE) {
               // Start the Bluetooth services
+				Log.i(TAG, "Starting bluetooth transport");
             	mSerialService.start();
             }
 
@@ -1153,11 +1193,23 @@ public class SdlRouterService extends Service{
 		
 		Intent startService = new Intent();  
 		startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
+		//Perform our query prior to adding any extras or flags
+		List<ResolveInfo> sdlApps = getPackageManager().queryBroadcastReceivers(startService, 0);
+
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(this, this.getClass()));
-    	sendBroadcast(startService); 
+		startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+		//Iterate through all apps that we know are listening for this intent with an explicit intent (neccessary for Android O SDK 26)
+		if(sdlApps != null && sdlApps.size()>0){
+			for(ResolveInfo app: sdlApps){
+				startService.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+				sendBroadcast(startService);
+			}
+		}
+
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
     		//If we have clients
@@ -1293,10 +1345,10 @@ public class SdlRouterService extends Service{
 				return false;
 			}
 			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
-				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
-				int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
-				int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
 				if(packet!=null){
+					int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the begining of the array
+					int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
 					mSerialService.write(packet,offset,count);
 					return true;
 				}
@@ -1580,7 +1632,7 @@ public class SdlRouterService extends Service{
     		Log.d(TAG,"Connecting to device: " + device.getName().toString());
 			if(mSerialService == null || !mSerialService.isConnected())
 			{	// Set up the Bluetooth serial object				
-				mSerialService = MultiplexBluetoothTransport.getBluetoothSerialServerInstance(mHandlerBT);
+				mSerialService = new MultiplexBluetoothTransport(mHandlerBT);
 			}
 			// We've been given a device - let's connect to it
 			if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){//mSerialService.stop();
@@ -1673,7 +1725,7 @@ public class SdlRouterService extends Service{
             	//Log.v(TAG, "Self service info " + self);
             	//Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
             	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
-            		if(SdlRouterService.mSerialService!=null && SdlRouterService.mSerialService.isConnected()){ //We are currently connected. Wait for next connection 
+            		if(SdlRouterService.this.mSerialService!=null && SdlRouterService.this.mSerialService.isConnected()){ //We are currently connected. Wait for next connection
             			return;
             		}
             		Log.d(TAG, "There is a newer version "+newestServiceReceived.version+" of the Router Service, starting it up");
@@ -1738,7 +1790,7 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB) 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private boolean removeAllSessionsWithAppId(String appId){
 		synchronized(SESSION_LOCK){
 			if(sessionMap!=null){
