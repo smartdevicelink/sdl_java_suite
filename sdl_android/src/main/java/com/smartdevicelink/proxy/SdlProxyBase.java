@@ -3446,7 +3446,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 		// Test if SdlConnection is null
 		synchronized(CONNECTION_REFERENCE_LOCK) {
-			if (getIsConnected()) {
+			if (!getIsConnected()) {
 				SdlTrace.logProxyEvent("Application attempted to send and RPCRequest without a connected transport.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("There is no valid connection to SDL. sendRPCRequest cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
 			}
