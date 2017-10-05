@@ -187,11 +187,15 @@ public class SdlEncoder {
 				}
 
 				if (mBufferInfo.size != 0) {
+					ByteBuffer encoderOutputBuffer = encoderOutputBuffers[encoderStatus];
 					byte[] dataToWrite = new byte[mBufferInfo.size];
-					encoderOutputBuffers[encoderStatus].get(dataToWrite,
-							mBufferInfo.offset, mBufferInfo.size);
 
 					try {
+						encoderOutputBuffer.position(mBufferInfo.offset);
+						encoderOutputBuffer.limit(mBufferInfo.offset + mBufferInfo.size);
+
+						encoderOutputBuffer.get(dataToWrite, 0, mBufferInfo.size);
+
 						if (mOutputStream != null) {
 							mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
 						} else if (mOutputListener != null) {
