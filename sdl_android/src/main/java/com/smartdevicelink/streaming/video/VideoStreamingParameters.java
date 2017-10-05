@@ -49,6 +49,31 @@ public class VideoStreamingParameters {
 	    this.format = format;
     }
 
+    /**
+     * Will only copy values that are not null or are greater than 0
+     * @param params VideoStreamingParameters that should be copied into this new instants
+     */
+    public VideoStreamingParameters(VideoStreamingParameters params){
+        update(params);
+    }
+
+    /**
+     * Will only copy values that are not null or are greater than 0
+     * @param params VideoStreamingParameters that should be copied into this new instants
+     */
+    public void update(VideoStreamingParameters params){
+        if(params.displayDensity > 0){ this.displayDensity = params.displayDensity; }
+        if(params.frameRate > 0){ this.frameRate = params.frameRate; }
+        if(params.bitrate > 0){ this.bitrate = params.bitrate; }
+        if(params.interval > 0){ this.interval = params.interval; }
+        if(params.resolution !=null){
+            if(params.resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight(params.resolution.getResolutionHeight()); }
+            if(params.resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth(params.resolution.getResolutionWidth()); }
+
+        }
+        if(params.format != null){this.format = params.format;}
+    }
+
     public void setDisplayDensity(int displayDensity) {
         this.displayDensity = displayDensity;
     }

@@ -28,6 +28,7 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 import java.io.IOException;
@@ -37,6 +38,8 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+
+import static com.smartdevicelink.proxy.constants.Names.screenParams;
 
 @TargetApi(21)
 public class VirtualDisplayEncoder {
@@ -48,14 +51,12 @@ public class VirtualDisplayEncoder {
     private volatile MediaCodec.BufferInfo mVideoBufferInfo = null;
     private volatile Surface inputSurface = null;
     private volatile VirtualDisplay virtualDisplay = null;
-    private volatile SdlPresentation presentation = null;
-    private Class<? extends SdlPresentation> presentationClass = null;
+    private volatile SdlRemoteDisplay presentation = null;
+    private Class<? extends SdlRemoteDisplay> presentationClass = null;
     private VideoStreamWriterThread streamWriterThread = null;
     private Context mContext;
     private OutputStream sdlOutStream = null;
     private Boolean initPassed = false;
-    private Handler uiHandler = new Handler(Looper.getMainLooper());
-    private final static int REFRESH_RATE_MS = 100;
     private final Object CLOSE_VID_SESSION_LOCK = new Object();
     private final Object START_DISP_LOCK = new Object();
     private final Object STREAMING_LOCK = new Object();
@@ -68,10 +69,10 @@ public class VirtualDisplayEncoder {
      * @param context
      * @param videoStream
      * @param presentationClass
-     * @param screenParams
+     * @param streamingParams
      * @throws Exception
      */
-    public void init(Context context, OutputStream videoStream, Class<? extends SdlPresentation> presentationClass, ScreenParams screenParams) throws Exception {
+    public void init(Context context, OutputStream videoStream, Class<? extends SdlRemoteDisplay> presentationClass, VideoStreamingParameters streamingParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
             throw new Exception("API level of 21 required");
@@ -82,17 +83,11 @@ public class VirtualDisplayEncoder {
             throw new Exception("init parameters cannot be null");
         }
 
-        mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
+        this.mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
 
-        mContext = context;
+        this.mContext = context;
 
-        if(screenParams.getImageResolution().getResolutionHeight() != null){
-            streamingParams.getResolution().setResolutionHeight(screenParams.getImageResolution().getResolutionHeight());
-        }
-
-        if(screenParams.getImageResolution().getResolutionWidth() != null){
-            streamingParams.getResolution().setResolutionWidth(screenParams.getImageResolution().getResolutionWidth());
-        }
+        this.streamingParams.update(streamingParams);
 
         sdlOutStream = videoStream;
 
@@ -106,7 +101,7 @@ public class VirtualDisplayEncoder {
     public VideoStreamingParameters getStreamingParams(){
         return this.streamingParams;
     }
-
+    
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format){
         this.streamingParams = new VideoStreamingParameters(displayDensity,frameRate,bitrate,interval,resolution,format);
     }
@@ -219,6 +214,7 @@ public class VirtualDisplayEncoder {
         format.setInteger(MediaFormat.KEY_FRAME_RATE, streamingParams.getFrameRate());
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, streamingParams.getInterval()); // seconds between I-frames
 
+
         // Create a MediaCodec encoder and configure it. Get a Surface we can use for recording into.
         try {
             mVideoEncoder = MediaCodec.createEncoderByType(videoMimeType);
@@ -281,14 +277,8 @@ public class VirtualDisplayEncoder {
     public void handleTouchEvent(OnTouchEvent touchEvent)
     {
         final MotionEvent motionEvent = convertTouchEvent(touchEvent);
-        if (motionEvent != null && presentation.mainView != null) {
-
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    presentation.mainView.dispatchTouchEvent(motionEvent);
-                }
-            });
+        if (motionEvent != null && presentation != null) {
+            presentation.handleMotionEvent(motionEvent);
         }
     }
 
@@ -365,91 +355,7 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    public static class SdlPresentation extends Presentation{
-        protected Window w;
-        protected View mainView;
-        protected Handler handler = new Handler();
 
-        public SdlPresentation(Context context, Display display) {
-            super(context, display);
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-
-            super.onCreate(savedInstanceState);
-            setTitle("Presentation");
-
-            w  = getWindow();
-
-            startRefreshTask();
-
-            w.setType(WindowManager.LayoutParams.TYPE_PRIVATE_PRESENTATION);
-        }
-
-        protected void startRefreshTask() {
-            handler.postDelayed(mStartRefreshTaskCallback, REFRESH_RATE_MS);
-        }
-
-        protected void stopRefreshTask() {
-            handler.removeCallbacks(mStartRefreshTaskCallback);
-        }
-
-        protected Runnable mStartRefreshTaskCallback = new Runnable() {
-            public void run() {
-                mainView = w.getDecorView().findViewById(android.R.id.content);
-                if (mainView != null) {
-                    mainView.invalidate();
-                }
-
-                handler.postDelayed(this, REFRESH_RATE_MS);
-            }
-        };
-    }
-
-    private class ShowPresentationCallableMethod implements Callable<Boolean> {
-        private Display mDisplay;
-        boolean bPresentationShowError = false;
-
-        public ShowPresentationCallableMethod(Display display){
-            mDisplay = display;
-        }
-        @Override
-        public Boolean call() {
-
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    // Want to create presentation on UI thread so it finds the right Looper
-                    // when setting up the Dialog.
-                    if ((presentation == null) && (mDisplay != null))
-                    {
-                        Constructor constructor = null;
-                        try {
-                            constructor = presentationClass.getConstructor(Context.class, Display.class);
-                            presentation = (SdlPresentation) constructor.newInstance(mContext, mDisplay);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "Unable to create Presentation Class");
-                            bPresentationShowError = true;
-                            return;
-                        }
-
-                        try {
-                            presentation.show();
-                        } catch (WindowManager.InvalidDisplayException ex) {
-                            Log.e(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
-                            presentation = null;
-                            bPresentationShowError = true;
-                            return;
-                        }
-                    }
-                }
-            });
-
-            return bPresentationShowError;
-        }
-    }
 
     private void displayPresentation() {
 
@@ -463,10 +369,10 @@ public class VirtualDisplayEncoder {
 
                 // Dismiss the current presentation if the display has changed.
                 if (presentation != null && presentation.getDisplay() != disp) {
-                    dismissPresentation();
+                    presentation.dismissPresentation();
                 }
 
-                FutureTask<Boolean> fTask =  new FutureTask<Boolean>(new ShowPresentationCallableMethod(disp));
+                FutureTask<Boolean> fTask =  new FutureTask<Boolean>( presentation.new ShowPresentationCallableMethod(mContext,disp,presentation,presentationClass));
                 Thread showPresentation = new Thread(fTask);
 
                 showPresentation.start();
@@ -476,17 +382,7 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    private void dismissPresentation() {
-        uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (presentation != null) {
-                    presentation.dismiss();
-                    presentation = null;
-                }
-            }
-        });
-    }
+
 
     private void setupVideoStreamWriter() {
         if (streamWriterThread == null) {
