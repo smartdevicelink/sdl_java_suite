@@ -27,7 +27,7 @@ public class SdlRemoteDisplay extends Presentation {
     protected Window w;
     protected View mainView;
     protected Handler handler = new Handler();
-    private Handler uiHandler = new Handler(Looper.getMainLooper());
+    protected Handler uiHandler = new Handler(Looper.getMainLooper());
 
 
     public SdlRemoteDisplay(Context context, Display display) {
@@ -88,12 +88,13 @@ public class SdlRemoteDisplay extends Presentation {
         });
     }
 
-    public class ShowPresentationCallableMethod implements Callable<Boolean> {
+    public static class ShowPresentationCallableMethod implements Callable<Boolean> {
         private Context context;
         private Display mDisplay;
         boolean presentationShowError = false;
         SdlRemoteDisplay remoteDisplay;
         Class<? extends SdlRemoteDisplay> remoteDisplayClass;
+        protected Handler uiHandler = new Handler(Looper.getMainLooper()); //FIXME
 
 
         public ShowPresentationCallableMethod(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass){

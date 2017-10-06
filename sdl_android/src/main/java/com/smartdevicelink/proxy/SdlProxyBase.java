@@ -3950,6 +3950,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		VideoStreamingParameters acceptedParams = tryStartVideoStream(isEncrypted, parameters);
         if (acceptedParams != null) {
             return sdlSession.startVideoStream();
+        } else if(getWiProVersion() < 5){
+			sdlSession.setAcceptedVideoParams(new VideoStreamingParameters());
+			return sdlSession.startVideoStream();
         } else {
             return null;
         }
@@ -4051,7 +4054,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if(!_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+        if(getWiProVersion() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			DebugTool.logWarning("Module doesn't support video streaming.");
 			return null;
 		}
@@ -6218,33 +6221,41 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	VideoStreamingManager manager;
+
 	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
-		if(!_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+		if(getWiProVersion() > 4 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
 		}
 		//Create streaming manager
 		manager = new VideoStreamingManager(context,this._internalInterface);
 
 		if(parameters == null){
-			_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
-				@Override
-				public void onCapabilityRetrieved(Object capability) {
-					VideoStreamingParameters params = new VideoStreamingParameters();
-					List<VideoStreamingCapability> caps = SystemCapabilityManager.convertToList(capability,VideoStreamingCapability.class);
-					if(caps!=null && caps.size() > 0){
-						params.update(caps.get(0)); //Update our streaming parameters with the capabilities we retrieved
+			if(getWiProVersion() >= 5) {
+				_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+					@Override
+					public void onCapabilityRetrieved(Object capability) {
+						VideoStreamingParameters params = new VideoStreamingParameters();
+						List<VideoStreamingCapability> caps = SystemCapabilityManager.convertToList(capability, VideoStreamingCapability.class);
+						if (caps != null && caps.size() > 0) {
+							params.update(caps.get(0)); //Update our streaming parameters with the capabilities we retrieved
+						}
+						//Streaming parameters are ready time to stream
+						sdlSession.setDesiredVideoParams(params);
+						manager.startVideoStreaming(remoteDisplay, parameters, encrypted);
 					}
-					//Streaming parameters are ready time to stream
-					sdlSession.setDesiredVideoParams(params);
-					manager.startVideoStreaming(remoteDisplay,parameters, encrypted);
-				}
 
-				@Override
-				public void onError(String info) {
-					Log.e(TAG, "Error retrieving video streaming capability: " + info);
+					@Override
+					public void onError(String info) {
+						Log.e(TAG, "Error retrieving video streaming capability: " + info);
 
-				}
-			});
+					}
+				});
+			}else{
+				//We just use default video streaming params
+				VideoStreamingParameters params = new VideoStreamingParameters();
+				sdlSession.setDesiredVideoParams(params);
+				manager.startVideoStreaming(remoteDisplay,params, encrypted);
+			}
 		}else{
 			sdlSession.setDesiredVideoParams(parameters);
 			manager.startVideoStreaming(remoteDisplay,parameters, encrypted);
@@ -6252,10 +6263,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		//Start service w/params
 	}
 
+	public void stopRemoteDisplayStream(){
+		if(manager!=null){
+			manager.stopStreaming();
+		}
+	}
+
 	private class VideoStreamingManager implements ISdlServiceListener{
 		Context context;
 		ISdl internalInterface;
-		VirtualDisplayEncoder encoder;
+		volatile VirtualDisplayEncoder encoder;
 		SdlRemoteDisplay remoteDisplay;
 		IVideoStreamListener streamListener;
 		//Touch manager
@@ -6271,15 +6288,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplay, VideoStreamingParameters parameters, boolean encrypted){
 			streamListener = startVideoStream(encrypted,parameters);
 			try {
-				encoder.init(context,null,remoteDisplay,parameters);
+				encoder.init(context,streamListener,remoteDisplay,parameters);
+				//We are all set so we can start streaming at athis point
+				encoder.start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			//Start streaming
+		}
 
+		public void stopStreaming(){
+			if(encoder!=null){
+				encoder.shutDown();
+			}
 		}
 
 		public void dispose(){
+			stopStreaming();
 			internalInterface.removeServiceListener(SessionType.NAV,this);
 		}
 

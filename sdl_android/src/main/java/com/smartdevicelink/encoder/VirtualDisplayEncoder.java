@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
@@ -55,7 +56,7 @@ public class VirtualDisplayEncoder {
     private Class<? extends SdlRemoteDisplay> presentationClass = null;
     private VideoStreamWriterThread streamWriterThread = null;
     private Context mContext;
-    private OutputStream sdlOutStream = null;
+    private IVideoStreamListener mOutputListener;
     private Boolean initPassed = false;
     private final Object CLOSE_VID_SESSION_LOCK = new Object();
     private final Object START_DISP_LOCK = new Object();
@@ -67,18 +68,18 @@ public class VirtualDisplayEncoder {
      * Initialization method for VirtualDisplayEncoder object. MUST be called before start() or shutdown()
      * Will overwrite previously set videoWeight and videoHeight
      * @param context
-     * @param videoStream
+     * @param outputListener
      * @param presentationClass
      * @param streamingParams
      * @throws Exception
      */
-    public void init(Context context, OutputStream videoStream, Class<? extends SdlRemoteDisplay> presentationClass, VideoStreamingParameters streamingParams) throws Exception {
+    public void init(Context context, IVideoStreamListener outputListener, Class<? extends SdlRemoteDisplay> presentationClass, VideoStreamingParameters streamingParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
             throw new Exception("API level of 21 required");
         }
 
-        if (context == null || videoStream == null || presentationClass == null || screenParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
+        if (context == null || outputListener == null || presentationClass == null || screenParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
             Log.e(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
             throw new Exception("init parameters cannot be null");
         }
@@ -89,7 +90,7 @@ public class VirtualDisplayEncoder {
 
         this.streamingParams.update(streamingParams);
 
-        sdlOutStream = videoStream;
+        mOutputListener = outputListener;
 
         this.presentationClass = presentationClass;
 
@@ -178,7 +179,7 @@ public class VirtualDisplayEncoder {
     private void closeVideoSession() {
 
         synchronized (CLOSE_VID_SESSION_LOCK) {
-            if (sdlOutStream != null) {
+            /*if (sdlOutStream != null) {
 
                 try {
                     sdlOutStream.close();
@@ -192,7 +193,7 @@ public class VirtualDisplayEncoder {
                     streamWriterThread.clearOutputStream();
                     streamWriterThread.clearByteBuffer();
                 }
-            }
+            }*/
         }
     }
 
@@ -239,8 +240,9 @@ public class VirtualDisplayEncoder {
                             byte[] dataToWrite = new byte[info.size];
                             encodedData.get(dataToWrite,
                                     info.offset, info.size);
-
-                            onStreamDataAvailable(dataToWrite, info.size);
+                            if(mOutputListener!=null){
+                                mOutputListener.sendFrame(dataToWrite,0,dataToWrite.length, info.presentationTimeUs);
+                            }
                         }
 
                         codec.releaseOutputBuffer(index, false);
@@ -326,28 +328,6 @@ public class VirtualDisplayEncoder {
         return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
     }
 
-    private void onStreamDataAvailable(byte[] data, int size) {
-        if (sdlOutStream != null) {
-            try {
-                synchronized (streamWriterThread.BUFFER_LOCK) {
-                    streamWriterThread.isWaiting = true;
-                    streamWriterThread.BUFFER_LOCK.wait();
-                    streamWriterThread.isWaiting = false;
-
-                    if (streamWriterThread.getOutputStream() == null) {
-                        streamWriterThread.setOutputStream(sdlOutStream);
-                    }
-
-                    streamWriterThread.setByteBuffer(data, size);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.e(TAG, "sdlOutStream is null");
-        }
-    }
-
     private void startEncoder()
     {
         if (mVideoEncoder != null) {
@@ -372,7 +352,7 @@ public class VirtualDisplayEncoder {
                     presentation.dismissPresentation();
                 }
 
-                FutureTask<Boolean> fTask =  new FutureTask<Boolean>( presentation.new ShowPresentationCallableMethod(mContext,disp,presentation,presentationClass));
+                FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.ShowPresentationCallableMethod(mContext,disp,presentation,presentationClass));
                 Thread showPresentation = new Thread(fTask);
 
                 showPresentation.start();
