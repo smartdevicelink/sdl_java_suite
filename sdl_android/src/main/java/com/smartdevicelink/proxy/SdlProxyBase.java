@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
+import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -42,6 +43,7 @@ import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -96,6 +98,7 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
@@ -104,6 +107,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
+
 
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
@@ -3919,20 +3923,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
     /**
      * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
-     * to the app to send video data.
+     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired paramaters
+	 * that will be used to negotiate
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
-     * @param codec       Video codec which will be used for streaming. Currently, only
-     *                    VideoStreamingCodec.H264 is accepted.
-     * @param width       Width of the video in pixels
-     * @param height      Height of the video in pixels
+     * @param parameters  Video streaming parameters including: codec which will be used for streaming (currently, only
+     *                    VideoStreamingCodec.H264 is accepted), height and width of the video in pixels.
      *
      * @return IVideoStreamListener interface if service is opened successfully and streaming is
      *         started, null otherwise
      */
     @SuppressWarnings("unused")
-    public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingCodec codec,
-                                                 int width, int height) {
+    public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (sdlSession == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
@@ -3942,9 +3944,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
-        VideoStreamingCodec[] codecs = {codec};
-		VideoStreamingParameters acceptedParams = tryStartVideoStream(codecs, width, height, -1, -1,
-                -1, isEncrypted);
+		sdlSession.setDesiredVideoParams(parameters);
+
+        //VideoStreamingCodec[] codecs = {parameters.getFormat().getCodec()};
+		VideoStreamingParameters acceptedParams = tryStartVideoStream(isEncrypted, parameters);
         if (acceptedParams != null) {
             return sdlSession.startVideoStream();
         } else {
@@ -4010,9 +4013,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         SdlConnection sdlConn = sdlSession.getSdlConnection();
         if (sdlConn == null) return null;
 
-        VideoStreamingCodec[] codecs = {VideoStreamingCodec.H264};
-		VideoStreamingParameters acceptedParams = tryStartVideoStream(codecs, width, height, bitrate,
-            frameRate, iFrameInterval, isEncrypted);
+		VideoStreamingParameters desired = new VideoStreamingParameters();
+		desired.setFrameRate(frameRate);
+		desired.setInterval(iFrameInterval);
+		ImageResolution resolution = new ImageResolution();
+		resolution.setResolutionWidth(width);
+		resolution.setResolutionHeight(height);
+		desired.setResolution(resolution);
+		desired.setBitrate(bitrate);
+
+		VideoStreamingParameters acceptedParams = tryStartVideoStream(isEncrypted, desired);
         if (acceptedParams != null) {
             return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
                     height, bitrate, SessionType.NAV, sdlSession.getSessionId());
@@ -4026,13 +4036,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      *
      * Only information from codecs, width and height are used during video format negotiation.
      *
-     * @param codecs         List of video codecs which app or proxy would like to use
-     * @param width          Width of the video in pixels
-     * @param height         Height of the video in pixels
-     * @param bitrate        Specified bitrate of the video
-     * @param frameRate      Specified rate of frames
-     * @param iFrameInterval Specified interval
      * @param isEncrypted    Specify true if packets on this service have to be encrypted
+	 * @param parameters VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
      *
      * @return If the service is opened successfully, an instance of VideoStreamingParams is
      *         returned which contains accepted video format. If the service is opened with legacy
@@ -4041,70 +4046,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      *         If the service was not opened then null is returned.
      */
     @SuppressWarnings("unused")
-    private VideoStreamingParameters tryStartVideoStream(VideoStreamingCodec[] codecs,
-                                                     int width, int height,
-                                                     int bitrate, int frameRate, int iFrameInterval,
-                                                     boolean isEncrypted) {
+	private VideoStreamingParameters tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (sdlSession == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if (codecs == null || codecs.length == 0) {
-            DebugTool.logWarning("Video codec list is not supplied.");
+        if(!_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+			DebugTool.logWarning("Module doesn't support video streaming.");
+			return null;
+		}
+        if (parameters == null) {
+            DebugTool.logWarning("Video parameters were not supplied.");
             return null;
         }
 
-        List<VideoStreamingFormat> availableFormats = new ArrayList<>();
-        for (VideoStreamingCodec codec : codecs) {
-            if (codec == VideoStreamingCodec.H264) {
-                availableFormats.add(VIDEO_STREAMING_FORMAT_H264_RTP);
-                availableFormats.add(VIDEO_STREAMING_FORMAT_H264_RAW);
-            } else {
-                DebugTool.logInfo("Video codec " + codec +" is not supported.");
-            }
-        }
+		sdlSession.setDesiredVideoParams(parameters);
 
-        VideoStreamingCapability videoStreamingCapabilities = null;
-        if (_systemCapabilityManager != null) {
-            videoStreamingCapabilities = (VideoStreamingCapability) _systemCapabilityManager.getCapability(
-                    SystemCapabilityType.VIDEO_STREAMING);
-        }
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
+		navServiceStartRejectedParams = null;
 
-        List<VideoStreamingParameters> desiredParamsList = createDesiredVideoParams(
-                videoStreamingCapabilities, frameRate, iFrameInterval, width, height, bitrate,
-                availableFormats.toArray(new VideoStreamingFormat[0]));
+		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-        // If none of video formats are accepted then try StartService without parameter at last.
-        // This also applies to the case where the system is legacy and capability isn't available.
-		VideoStreamingParameters emptyParam = new VideoStreamingParameters();
-        emptyParam.setResolution(null);
-        emptyParam.setFormat(null);
-        desiredParamsList.add(emptyParam);
-
-        for (VideoStreamingParameters params : desiredParamsList) {
-            sdlSession.setDesiredVideoParams(params);
-
-            navServiceStartResponseReceived = false;
-            navServiceStartResponse = false;
-            navServiceStartRejectedParams = null;
-
-            sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
-            FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-            ScheduledExecutorService scheduler = createScheduler();
-            scheduler.execute(fTask);
+		FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+		ScheduledExecutorService scheduler = createScheduler();
+		scheduler.execute(fTask);
 
             //noinspection StatementWithEmptyBody
             while (!navServiceStartResponseReceived && !fTask.isDone());
             scheduler.shutdown();
 
             if (navServiceStartResponse) {
-                if (!params.equals(emptyParam)) {
-                    DebugTool.logInfo("StartService for nav succeeded with params: " + params);
-                } else {
-                    DebugTool.logInfo("StartService for nav succeeded in legacy mode.");
-                }
-                return params;
+                return sdlSession.getAcceptedVideoParams();
             }
 
             if (navServiceStartRejectedParams != null) {
@@ -4121,12 +4094,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                         && !navServiceStartRejectedParams.contains(ControlFrameTags.Video.StartService.VIDEO_CODEC)) {
                     // The reason of NACK is not protocol nor codec. There is no point retrying with
                     // another video format, so we simply fail here.
-                    break;
                 }
             } else {
                 DebugTool.logWarning("StartService for nav failed (rejected params not supplied)");
             }
-        }
+
         return null;
     }
 
@@ -6244,5 +6216,87 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	{
 		return sPoliciesURL;
 	}
-	
+
+	VideoStreamingManager manager;
+	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
+		if(!_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+			Log.e(TAG, "Video streaming not supported on this module");
+		}
+		//Create streaming manager
+		manager = new VideoStreamingManager(context,this._internalInterface);
+
+		if(parameters == null){
+			_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+				@Override
+				public void onCapabilityRetrieved(Object capability) {
+					VideoStreamingParameters params = new VideoStreamingParameters();
+					List<VideoStreamingCapability> caps = SystemCapabilityManager.convertToList(capability,VideoStreamingCapability.class);
+					if(caps!=null && caps.size() > 0){
+						params.update(caps.get(0)); //Update our streaming parameters with the capabilities we retrieved
+					}
+					//Streaming parameters are ready time to stream
+					sdlSession.setDesiredVideoParams(params);
+					manager.startVideoStreaming(remoteDisplay,parameters, encrypted);
+				}
+
+				@Override
+				public void onError(String info) {
+					Log.e(TAG, "Error retrieving video streaming capability: " + info);
+
+				}
+			});
+		}else{
+			sdlSession.setDesiredVideoParams(parameters);
+			manager.startVideoStreaming(remoteDisplay,parameters, encrypted);
+		}
+		//Start service w/params
+	}
+
+	private class VideoStreamingManager implements ISdlServiceListener{
+		Context context;
+		ISdl internalInterface;
+		VirtualDisplayEncoder encoder;
+		SdlRemoteDisplay remoteDisplay;
+		IVideoStreamListener streamListener;
+		//Touch manager
+		//Haptic manager
+
+		public VideoStreamingManager(Context context,ISdl iSdl){
+			this.context = context;
+			this.internalInterface = iSdl;
+			encoder = new VirtualDisplayEncoder();
+			internalInterface.addServiceListener(SessionType.NAV,this);
+		}
+
+		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplay, VideoStreamingParameters parameters, boolean encrypted){
+			streamListener = startVideoStream(encrypted,parameters);
+			try {
+				encoder.init(context,null,remoteDisplay,parameters);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//Start streaming
+
+		}
+
+		public void dispose(){
+			internalInterface.removeServiceListener(SessionType.NAV,this);
+		}
+
+		@Override
+		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+
+
+		}
+
+		@Override
+		public void onServiceEnded(SdlSession session, SessionType type) {
+
+		}
+
+		@Override
+		public void onServiceError(SdlSession session, SessionType type, String reason) {
+
+		}
+	}
 } // end-class

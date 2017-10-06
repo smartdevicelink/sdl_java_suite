@@ -101,7 +101,7 @@ public class VirtualDisplayEncoder {
     public VideoStreamingParameters getStreamingParams(){
         return this.streamingParams;
     }
-    
+
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format){
         this.streamingParams = new VideoStreamingParameters(displayDensity,frameRate,bitrate,interval,resolution,format);
     }

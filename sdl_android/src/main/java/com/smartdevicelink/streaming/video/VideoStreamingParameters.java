@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.util.DisplayMetrics;
 
 import com.smartdevicelink.proxy.rpc.ImageResolution;
+import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+
+import java.util.List;
 
 public class VideoStreamingParameters {
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
@@ -69,9 +72,29 @@ public class VideoStreamingParameters {
         if(params.resolution !=null){
             if(params.resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight(params.resolution.getResolutionHeight()); }
             if(params.resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth(params.resolution.getResolutionWidth()); }
-
         }
         if(params.format != null){this.format = params.format;}
+    }
+
+    /**
+     * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.
+     * This update will use the most preferred streaming format from the module.
+     * @param capability the video streaming capability returned from the SystemCapabilityManager
+     * @see com.smartdevicelink.proxy.SystemCapabilityManager
+     * @see VideoStreamingCapability
+     */
+    public void update(VideoStreamingCapability capability){
+        if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate(); }
+        ImageResolution resolution = capability.getPreferredResolution();
+        if(resolution!=null){
+            if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight(resolution.getResolutionHeight()); }
+            if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth(resolution.getResolutionWidth()); }
+        }
+        List<VideoStreamingFormat> formats = capability.getSupportedFormats();
+        if(formats != null && formats.size()>0){
+            this.format = formats.get(0);
+        }
+
     }
 
     public void setDisplayDensity(int displayDensity) {
