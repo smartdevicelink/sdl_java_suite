@@ -1,7 +1,6 @@
 package com.smartdevicelink.encoder;
 
 import android.annotation.TargetApi;
-import android.app.Presentation;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -9,55 +8,31 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.OnTouchEvent;
-import com.smartdevicelink.proxy.rpc.ScreenParams;
-import com.smartdevicelink.proxy.rpc.TouchCoord;
-import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.enums.TouchType;
-import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 import static com.smartdevicelink.proxy.constants.Names.screenParams;
 
 @TargetApi(21)
 public class VirtualDisplayEncoder {
     private static final String TAG = "VirtualDisplayEncoder";
-    private final String videoMimeType = "video/avc";
     private VideoStreamingParameters streamingParams = new VideoStreamingParameters();
     private DisplayManager mDisplayManager;
     private volatile MediaCodec mVideoEncoder = null;
     private volatile MediaCodec.BufferInfo mVideoBufferInfo = null;
     private volatile Surface inputSurface = null;
     private volatile VirtualDisplay virtualDisplay = null;
-    private VideoStreamWriterThread streamWriterThread = null;
-    private Context mContext;
     private IVideoStreamListener mOutputListener;
     private Boolean initPassed = false;
-    private final Object CLOSE_VID_SESSION_LOCK = new Object();
-    private final Object START_DISP_LOCK = new Object();
     private final Object STREAMING_LOCK = new Object();
 
 
@@ -65,10 +40,10 @@ public class VirtualDisplayEncoder {
     /**
      * Initialization method for VirtualDisplayEncoder object. MUST be called before start() or shutdown()
      * Will overwrite previously set videoWeight and videoHeight
-     * @param context
-     * @param outputListener
-     * @param streamingParams
-     * @throws Exception
+     * @param context to create the virtual display
+     * @param outputListener the listener that the video frames will be sent through
+     * @param streamingParams parameters to create the virtual display and encoder
+     * @throws Exception if the API level is <21 or supplied parameters were null
      */
     public void init(Context context, IVideoStreamListener outputListener, VideoStreamingParameters streamingParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -76,32 +51,31 @@ public class VirtualDisplayEncoder {
             throw new Exception("API level of 21 required");
         }
 
-        if (context == null || outputListener == null || screenParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
+        if (context == null || outputListener == null || streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
             Log.e(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
             throw new Exception("init parameters cannot be null");
         }
 
         this.mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
 
-        this.mContext = context;
-
         this.streamingParams.update(streamingParams);
 
         mOutputListener = outputListener;
 
-        setupVideoStreamWriter();
-
         initPassed = true;
     }
 
+    @SuppressWarnings("unused")
     public VideoStreamingParameters getStreamingParams(){
         return this.streamingParams;
     }
 
+    @SuppressWarnings("unused")
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format){
         this.streamingParams = new VideoStreamingParameters(displayDensity,frameRate,bitrate,interval,resolution,format);
     }
 
+    @SuppressWarnings("unused")
     public void setStreamingParams(VideoStreamingParameters streamingParams){
         this.streamingParams = streamingParams;
     }
@@ -138,16 +112,12 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    public void shutDown()
-    {
+    public void shutDown() {
         if(!initPassed){
             Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
         try {
-
-            closeVideoSession();
-            releaseVideoStreamWriter();
 
             if (mVideoEncoder != null) {
                 mVideoEncoder.stop();
@@ -170,27 +140,6 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    private void closeVideoSession() {
-
-        synchronized (CLOSE_VID_SESSION_LOCK) {
-            /*if (sdlOutStream != null) {
-
-                try {
-                    sdlOutStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                sdlOutStream = null;
-
-                if (streamWriterThread != null) {
-                    streamWriterThread.clearOutputStream();
-                    streamWriterThread.clearByteBuffer();
-                }
-            }*/
-        }
-    }
-
     private Surface prepareVideoEncoder() {
 
         if(streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null){
@@ -200,6 +149,8 @@ public class VirtualDisplayEncoder {
         if (mVideoBufferInfo == null) {
             mVideoBufferInfo = new MediaCodec.BufferInfo();
         }
+
+        String videoMimeType = getMimeForFormat(streamingParams.getFormat());
 
         MediaFormat format = MediaFormat.createVideoFormat(videoMimeType, streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight());
 
@@ -214,7 +165,7 @@ public class VirtualDisplayEncoder {
         try {
             mVideoEncoder = MediaCodec.createEncoderByType(videoMimeType);
             mVideoEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-            Surface surf = mVideoEncoder.createInputSurface();
+            Surface surface = mVideoEncoder.createInputSurface();
 
             mVideoEncoder.setCallback(new MediaCodec.Callback() {
                 @Override
@@ -226,22 +177,22 @@ public class VirtualDisplayEncoder {
                 public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
                     try {
                         ByteBuffer encodedData = codec.getOutputBuffer(index);
+                        if(encodedData!=null) {
 
-                        encodedData.position(info.offset);
-                        encodedData.limit(info.offset + info.size);
+                            encodedData.position(info.offset);
+                            encodedData.limit(info.offset + info.size);
 
-                        if (info.size != 0) {
-                            byte[] dataToWrite = new byte[info.size];
-                            encodedData.get(dataToWrite,
-                                    info.offset, info.size);
-                            if(mOutputListener!=null){
-                                mOutputListener.sendFrame(dataToWrite,0,dataToWrite.length, info.presentationTimeUs);
+                            if (info.size != 0) {
+                                byte[] dataToWrite = new byte[info.size];
+                                encodedData.get(dataToWrite,
+                                        info.offset, info.size);
+                                if (mOutputListener != null) {
+                                    mOutputListener.sendFrame(dataToWrite, 0, dataToWrite.length, info.presentationTimeUs);
+                                }
                             }
-                        }
 
-                        codec.releaseOutputBuffer(index, false);
-                    } catch (IllegalStateException ex) {
-                        ex.printStackTrace();
+                            codec.releaseOutputBuffer(index, false);
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -258,7 +209,7 @@ public class VirtualDisplayEncoder {
                 }
             });
 
-            return surf;
+            return surface;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -266,138 +217,32 @@ public class VirtualDisplayEncoder {
         return null;
     }
 
-
-
-    private void startEncoder()
-    {
+    private void startEncoder() {
         if (mVideoEncoder != null) {
             mVideoEncoder.start();
         }
     }
 
-
     public Display getVirtualDisplay(){
-        synchronized (START_DISP_LOCK) {
-            return virtualDisplay.getDisplay();
-        }
+        return virtualDisplay.getDisplay();
     }
 
-
-    private void setupVideoStreamWriter() {
-        if (streamWriterThread == null) {
-            // Setup VideoStreamWriterThread thread
-            streamWriterThread = new VideoStreamWriterThread();
-            streamWriterThread.setName("VideoStreamWriter");
-            streamWriterThread.setPriority(Thread.MAX_PRIORITY);
-            streamWriterThread.setDaemon(true);
-            streamWriterThread.start();
-        }
-    }
-
-    private void releaseVideoStreamWriter() {
-        if (streamWriterThread != null) {
-
-            streamWriterThread.halt();
-
-            try {
-                streamWriterThread.interrupt();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            streamWriterThread.clearOutputStream();
-            streamWriterThread.clearByteBuffer();
-        }
-        streamWriterThread = null;
-    }
-
-    private class VideoStreamWriterThread extends Thread {
-        private Boolean isHalted = false;
-        private Boolean isWaiting = false;
-        private byte[] buf = null;
-        private Integer size = 0;
-        private OutputStream os = null;
-        protected final Object BUFFER_LOCK = new Object();
-
-        public OutputStream getOutputStream() {
-            return os;
-        }
-
-        public byte[] getByteBuffer() {
-            return buf;
-        }
-
-        public void setOutputStream(OutputStream os) {
-            synchronized (STREAMING_LOCK) {
-                clearOutputStream();
-                this.os = os;
-            }
-        }
-
-        public void setByteBuffer(byte[] buf, Integer size) {
-            synchronized (STREAMING_LOCK) {
-                clearByteBuffer();
-                this.buf = buf;
-                this.size = size;
-            }
-        }
-
-        private void clearOutputStream() {
-            synchronized (STREAMING_LOCK) {
-                try {
-                    if (os != null) {
-                        os.close();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                os = null;
-            }
-        }
-
-        private void clearByteBuffer() {
-            synchronized (STREAMING_LOCK) {
-                try {
-                    if (buf != null) {
-                        buf = null;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+    private String getMimeForFormat(VideoStreamingFormat format){
+        if(format != null){
+            VideoStreamingCodec codec = format.getCodec();
+            if(codec != null){
+                switch(codec){
+                    case VP8:
+                        return MediaFormat.MIMETYPE_VIDEO_VP8;
+                    case VP9:
+                        return MediaFormat.MIMETYPE_VIDEO_VP9;
+                    case H264: //Fall through
+                    default:
+                        return MediaFormat.MIMETYPE_VIDEO_AVC;
                 }
             }
         }
-
-        private void writeToStream() {
-            synchronized (STREAMING_LOCK) {
-                if (buf == null || os == null)
-                    return;
-
-                try {
-                    os.write(buf, 0, size);
-                    clearByteBuffer();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-
-        public void run() {
-            while (!isHalted) {
-                writeToStream();
-                if(isWaiting){
-                    synchronized(BUFFER_LOCK){
-                        BUFFER_LOCK.notify();
-                    }
-                }
-            }
-        }
-
-        /**
-         * Method that marks thread as halted.
-         */
-        public void halt() {
-            isHalted = true;
-        }
+        return null;
     }
 
 }
