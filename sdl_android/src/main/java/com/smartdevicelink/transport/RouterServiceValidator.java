@@ -513,7 +513,7 @@ public class RouterServiceValidator {
 			String packageName = resolveInfo.activityInfo.packageName;
 			if(packageName != null){
 				if(lastClosedService != null){
-					if(isTrustedPackage(packageName, manager) && !lastClosedService.equals(packageName)){
+					if(isTrustedPackage(packageName, manager) && !lastClosedService.toString().equals(packageName)){
 						return true;
 					}
 				}else{

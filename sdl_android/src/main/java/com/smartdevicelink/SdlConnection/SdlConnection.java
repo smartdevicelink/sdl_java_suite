@@ -50,7 +50,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
 
 	private Handler WOKEN_RS_HANDLER;
-	public final static int RSERVICE_WAIT_MS = 2000;
+	public final static int RSERVICE_WAIT_MS = 2500;
 	
 	/**
 	 * Constructor.
@@ -137,7 +137,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if(isLegacyModeEnabled() && legacyTransportRequest == TransportType.BLUETOOTH){
-				_transport = new BTTransport(this, true); 
+				_transport = new BTTransport(this, true);
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());
 			}
