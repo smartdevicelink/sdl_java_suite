@@ -71,6 +71,7 @@ public class SdlRemoteDisplay extends Presentation {
     }
 
     public void handleMotionEvent(final MotionEvent motionEvent){
+        Log.d(TAG, "Received motion event to process");
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -88,20 +89,25 @@ public class SdlRemoteDisplay extends Presentation {
         });
     }
 
-    public static class ShowPresentationCallableMethod implements Callable<Boolean> {
+    public static class Creator implements Callable<Boolean> {
         private Context context;
         private Display mDisplay;
         boolean presentationShowError = false;
         SdlRemoteDisplay remoteDisplay;
         Class<? extends SdlRemoteDisplay> remoteDisplayClass;
         protected Handler uiHandler = new Handler(Looper.getMainLooper()); //FIXME
+        private Callback callback;
 
 
-        public ShowPresentationCallableMethod(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass){
+        public Creator(Context context, Display display, SdlRemoteDisplay remoteDisplay, Class<? extends SdlRemoteDisplay> remoteDisplayClass, Callback callback){
             this.context = context;
             this.mDisplay = display;
             this.remoteDisplay = remoteDisplay;
             this.remoteDisplayClass = remoteDisplayClass;
+            this.callback = callback;
+        }
+        public SdlRemoteDisplay getRemoteDisplay(){
+            return remoteDisplay;
         }
         @Override
         public Boolean call() {
@@ -126,6 +132,10 @@ public class SdlRemoteDisplay extends Presentation {
 
                         try {
                             remoteDisplay.show();
+                            if(callback!=null){
+                                callback.onCreated(remoteDisplay);
+                            }
+
                         } catch (WindowManager.InvalidDisplayException ex) {
                             Log.e(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
                             remoteDisplay = null;
@@ -137,6 +147,10 @@ public class SdlRemoteDisplay extends Presentation {
             });
 
             return presentationShowError;
+        }
+
+        public interface Callback{
+            void onCreated(SdlRemoteDisplay remoteDisplay);
         }
     }
 }

@@ -67,7 +67,6 @@ public class VirtualDisplayEncoder {
      * Will overwrite previously set videoWeight and videoHeight
      * @param context
      * @param outputListener
-     * @param presentationClass
      * @param streamingParams
      * @throws Exception
      */
@@ -132,7 +131,6 @@ public class VirtualDisplayEncoder {
 
                 startEncoder();
 
-                //displayPresentation();
             } catch (Exception ex) {
                 Log.e(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
@@ -268,61 +266,7 @@ public class VirtualDisplayEncoder {
         return null;
     }
 
-    /**
-     * Forward an OnTouchEvent object to the current presentation
-     * @param touchEvent
-     */
-    public void handleTouchEvent(OnTouchEvent touchEvent)
-    {
-        final MotionEvent motionEvent = convertTouchEvent(touchEvent);
-        //if (motionEvent != null && presentation != null) {
-        //    presentation.handleMotionEvent(motionEvent);
-        //}
-    }
 
-    private MotionEvent convertTouchEvent(OnTouchEvent touchEvent){
-        List<TouchEvent> eventList = touchEvent.getEvent();
-        if (eventList == null || eventList.size() == 0) return null;
-
-        TouchType touchType = touchEvent.getType();
-        if (touchType == null){ return null;}
-
-        float x;
-        float y;
-
-        TouchEvent event = eventList.get(eventList.size() - 1);
-        List<TouchCoord> coordList = event.getTouchCoordinates();
-        if (coordList == null || coordList.size() == 0){ return null;}
-
-        TouchCoord coord = coordList.get(coordList.size() - 1);
-        if (coord == null){ return null;}
-
-        x = coord.getX();
-        y = coord.getY();
-
-        if (x == 0 && y == 0){ return null;}
-
-        int eventAction = MotionEvent.ACTION_DOWN;
-        long downTime = 0;
-
-        if (touchType == TouchType.BEGIN) {
-            downTime = SystemClock.uptimeMillis();
-            eventAction = MotionEvent.ACTION_DOWN;
-        }
-
-        long eventTime = SystemClock.uptimeMillis();
-        if (downTime == 0){ downTime = eventTime - 100;}
-
-        if (touchType == TouchType.MOVE) {
-            eventAction = MotionEvent.ACTION_MOVE;
-        }
-
-        if (touchType == TouchType.END) {
-            eventAction = MotionEvent.ACTION_UP;
-        }
-
-        return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
-    }
 
     private void startEncoder()
     {

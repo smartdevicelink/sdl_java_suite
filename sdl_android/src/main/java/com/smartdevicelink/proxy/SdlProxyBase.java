@@ -28,16 +28,17 @@ import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.app.Service;
-import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
@@ -90,6 +91,7 @@ import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SdlInterfaceAvailability;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
@@ -6287,13 +6289,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			this.internalInterface = iSdl;
 			encoder = new VirtualDisplayEncoder();
 			internalInterface.addServiceListener(SessionType.NAV,this);
+			//Take care of the touch events
+			internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, new OnRPCNotificationListener() {
+				@Override
+				public void onNotified(RPCNotification notification) {
+					if(notification !=null && remoteDisplay != null){
+						MotionEvent event = convertTouchEvent((OnTouchEvent)notification);
+						if(event!=null){
+							remoteDisplay.handleMotionEvent(event);
+						}
+					}
+				}
+			});
 		}
 
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
 			streamListener = startVideoStream(encrypted,parameters);
 			this.remoteDisplayClass = remoteDisplayClass;
 			try {
-				encoder.init(context,streamListener,remoteDisplayClass,parameters);
+				encoder.init(context,streamListener,parameters);
 				//We are all set so we can start streaming at at this point
 				encoder.start();
 				//Encoder should be up and running
@@ -6304,6 +6318,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		public void stopStreaming(){
+			if(remoteDisplay!=null){
+				remoteDisplay.dismiss();
+			}
 			if(encoder!=null){
 				encoder.shutDown();
 			}
@@ -6325,7 +6342,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					remoteDisplay.dismissPresentation();
 				}
 
-				FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.ShowPresentationCallableMethod(context, disp, remoteDisplay, remoteDisplayClass));
+				FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.Creator(context, disp, remoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Creator.Callback(){
+					@Override
+					public void onCreated(SdlRemoteDisplay remoteDisplay) {
+						//Remote display has been created.
+						//Now is a good time to do parsing for spatial data
+						VideoStreamingManager.this.remoteDisplay = remoteDisplay;
+					}
+				} ));
 				Thread showPresentation = new Thread(fTask);
 
 				showPresentation.start();
@@ -6348,6 +6372,50 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
 
+		}
+
+		private MotionEvent convertTouchEvent(OnTouchEvent touchEvent){
+			List<TouchEvent> eventList = touchEvent.getEvent();
+			if (eventList == null || eventList.size() == 0) return null;
+
+			TouchType touchType = touchEvent.getType();
+			if (touchType == null){ return null;}
+
+			float x;
+			float y;
+
+			TouchEvent event = eventList.get(eventList.size() - 1);
+			List<TouchCoord> coordList = event.getTouchCoordinates();
+			if (coordList == null || coordList.size() == 0){ return null;}
+
+			TouchCoord coord = coordList.get(coordList.size() - 1);
+			if (coord == null){ return null;}
+
+			x = coord.getX();
+			y = coord.getY();
+
+			if (x == 0 && y == 0){ return null;}
+
+			int eventAction = MotionEvent.ACTION_DOWN;
+			long downTime = 0;
+
+			if (touchType == TouchType.BEGIN) {
+				downTime = SystemClock.uptimeMillis();
+				eventAction = MotionEvent.ACTION_DOWN;
+			}
+
+			long eventTime = SystemClock.uptimeMillis();
+			if (downTime == 0){ downTime = eventTime - 100;}
+
+			if (touchType == TouchType.MOVE) {
+				eventAction = MotionEvent.ACTION_MOVE;
+			}
+
+			if (touchType == TouchType.END) {
+				eventAction = MotionEvent.ACTION_UP;
+			}
+
+			return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
 		}
 	}
 } // end-class
