@@ -52,8 +52,6 @@ public class VirtualDisplayEncoder {
     private volatile MediaCodec.BufferInfo mVideoBufferInfo = null;
     private volatile Surface inputSurface = null;
     private volatile VirtualDisplay virtualDisplay = null;
-    private volatile SdlRemoteDisplay presentation = null;
-    private Class<? extends SdlRemoteDisplay> presentationClass = null;
     private VideoStreamWriterThread streamWriterThread = null;
     private Context mContext;
     private IVideoStreamListener mOutputListener;
@@ -73,13 +71,13 @@ public class VirtualDisplayEncoder {
      * @param streamingParams
      * @throws Exception
      */
-    public void init(Context context, IVideoStreamListener outputListener, Class<? extends SdlRemoteDisplay> presentationClass, VideoStreamingParameters streamingParams) throws Exception {
+    public void init(Context context, IVideoStreamListener outputListener, VideoStreamingParameters streamingParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Log.e(TAG, "API level of 21 required for VirtualDisplayEncoder");
             throw new Exception("API level of 21 required");
         }
 
-        if (context == null || outputListener == null || presentationClass == null || screenParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
+        if (context == null || outputListener == null || screenParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
             Log.e(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
             throw new Exception("init parameters cannot be null");
         }
@@ -91,8 +89,6 @@ public class VirtualDisplayEncoder {
         this.streamingParams.update(streamingParams);
 
         mOutputListener = outputListener;
-
-        this.presentationClass = presentationClass;
 
         setupVideoStreamWriter();
 
@@ -136,7 +132,7 @@ public class VirtualDisplayEncoder {
 
                 startEncoder();
 
-                displayPresentation();
+                //displayPresentation();
             } catch (Exception ex) {
                 Log.e(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
@@ -279,9 +275,9 @@ public class VirtualDisplayEncoder {
     public void handleTouchEvent(OnTouchEvent touchEvent)
     {
         final MotionEvent motionEvent = convertTouchEvent(touchEvent);
-        if (motionEvent != null && presentation != null) {
-            presentation.handleMotionEvent(motionEvent);
-        }
+        //if (motionEvent != null && presentation != null) {
+        //    presentation.handleMotionEvent(motionEvent);
+        //}
     }
 
     private MotionEvent convertTouchEvent(OnTouchEvent touchEvent){
@@ -336,32 +332,11 @@ public class VirtualDisplayEncoder {
     }
 
 
-
-    private void displayPresentation() {
-
+    public Display getVirtualDisplay(){
         synchronized (START_DISP_LOCK) {
-            try {
-                final Display disp = virtualDisplay.getDisplay();
-
-                if (disp == null){
-                    return;
-                }
-
-                // Dismiss the current presentation if the display has changed.
-                if (presentation != null && presentation.getDisplay() != disp) {
-                    presentation.dismissPresentation();
-                }
-
-                FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.ShowPresentationCallableMethod(mContext,disp,presentation,presentationClass));
-                Thread showPresentation = new Thread(fTask);
-
-                showPresentation.start();
-            } catch (Exception ex) {
-                Log.e(TAG, "Unable to create Virtual Display.");
-            }
+            return virtualDisplay.getDisplay();
         }
     }
-
 
 
     private void setupVideoStreamWriter() {

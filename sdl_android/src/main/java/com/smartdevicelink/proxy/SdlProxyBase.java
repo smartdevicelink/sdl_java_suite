@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
@@ -36,6 +37,7 @@ import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Display;
 import android.view.Surface;
 
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
@@ -6269,10 +6271,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
+	@TargetApi(21)
 	private class VideoStreamingManager implements ISdlServiceListener{
 		Context context;
 		ISdl internalInterface;
 		volatile VirtualDisplayEncoder encoder;
+		private Class<? extends SdlRemoteDisplay> remoteDisplayClass = null;
 		SdlRemoteDisplay remoteDisplay;
 		IVideoStreamListener streamListener;
 		//Touch manager
@@ -6285,12 +6289,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			internalInterface.addServiceListener(SessionType.NAV,this);
 		}
 
-		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplay, VideoStreamingParameters parameters, boolean encrypted){
+		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
 			streamListener = startVideoStream(encrypted,parameters);
+			this.remoteDisplayClass = remoteDisplayClass;
 			try {
-				encoder.init(context,streamListener,remoteDisplay,parameters);
-				//We are all set so we can start streaming at athis point
+				encoder.init(context,streamListener,remoteDisplayClass,parameters);
+				//We are all set so we can start streaming at at this point
 				encoder.start();
+				//Encoder should be up and running
+				createDisplay(encoder.getVirtualDisplay());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -6305,6 +6312,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void dispose(){
 			stopStreaming();
 			internalInterface.removeServiceListener(SessionType.NAV,this);
+		}
+
+		private void createDisplay(Display disp){
+			try{
+				if (disp == null){
+					return;
+				}
+
+				// Dismiss the current presentation if the display has changed.
+				if (remoteDisplay != null && remoteDisplay.getDisplay() != disp) {
+					remoteDisplay.dismissPresentation();
+				}
+
+				FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.ShowPresentationCallableMethod(context, disp, remoteDisplay, remoteDisplayClass));
+				Thread showPresentation = new Thread(fTask);
+
+				showPresentation.start();
+				} catch (Exception ex) {
+				Log.e(TAG, "Unable to create Virtual Display.");
+			}
 		}
 
 		@Override
