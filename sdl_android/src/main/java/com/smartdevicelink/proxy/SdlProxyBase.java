@@ -6239,13 +6239,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					@Override
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
-						List<VideoStreamingCapability> caps = SystemCapabilityManager.convertToList(capability, VideoStreamingCapability.class);
-						if (caps != null && caps.size() > 0) {
-							params.update(caps.get(0)); //Update our streaming parameters with the capabilities we retrieved
-						}
-						//Streaming parameters are ready time to stream
+ 						params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
 						sdlSession.setDesiredVideoParams(params);
-						manager.startVideoStreaming(remoteDisplay, parameters, encrypted);
+						manager.startVideoStreaming(remoteDisplay, params, encrypted);
 					}
 
 					@Override
@@ -6305,6 +6301,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
 			streamListener = startVideoStream(encrypted,parameters);
+			if(streamListener == null){
+				Log.e(TAG, "Error starting video service");
+				return;
+			}
 			this.remoteDisplayClass = remoteDisplayClass;
 			try {
 				encoder.init(context,streamListener,parameters);

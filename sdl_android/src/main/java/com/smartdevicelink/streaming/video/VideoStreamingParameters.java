@@ -70,8 +70,8 @@ public class VideoStreamingParameters {
         if(params.bitrate > 0){ this.bitrate = params.bitrate; }
         if(params.interval > 0){ this.interval = params.interval; }
         if(params.resolution !=null){
-            if(params.resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight(params.resolution.getResolutionHeight()); }
-            if(params.resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth(params.resolution.getResolutionWidth()); }
+            if(params.resolution.getResolutionHeight()!=null && params.resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight(params.resolution.getResolutionHeight()); }
+            if(params.resolution.getResolutionWidth() !=null && params.resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth(params.resolution.getResolutionWidth()); }
         }
         if(params.format != null){this.format = params.format;}
     }
