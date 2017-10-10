@@ -6227,11 +6227,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	VideoStreamingManager manager;
 
 	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
-		if(getWiProVersion() > 4 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+		if(getWiProVersion() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
+			return;
 		}
 		//Create streaming manager
-		manager = new VideoStreamingManager(context,this._internalInterface);
+		if(manager == null){
+			manager = new VideoStreamingManager(context,this._internalInterface);
+		}
 
 		if(parameters == null){
 			if(getWiProVersion() >= 5) {
@@ -6260,7 +6263,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			sdlSession.setDesiredVideoParams(parameters);
 			manager.startVideoStreaming(remoteDisplay,parameters, encrypted);
 		}
-		//Start service w/params
 	}
 
 	public void stopRemoteDisplayStream(){
@@ -6270,7 +6272,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@TargetApi(21)
-	private class VideoStreamingManager implements ISdlServiceListener{
+	private class VideoStreamingManager implements ISdlServiceListener{ //THis should move out of the SdlProxyBase and into the SdlSession once we are able to make it public
 		Context context;
 		ISdl internalInterface;
 		volatile VirtualDisplayEncoder encoder;
@@ -6319,7 +6321,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		public void stopStreaming(){
 			if(remoteDisplay!=null){
-				remoteDisplay.dismiss();
+				remoteDisplay.stop();
 			}
 			if(encoder!=null){
 				encoder.shutDown();

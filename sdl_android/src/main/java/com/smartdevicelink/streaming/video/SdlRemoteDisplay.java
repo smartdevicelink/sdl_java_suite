@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 @TargetApi(21)
 public class SdlRemoteDisplay extends Presentation {
     private static final String TAG = "SdlRemoteDisplay";
-    private static final int REFRESH_RATE_MS = 100;
+    private static final int REFRESH_RATE_MS = 50;
 
     protected Window w;
     protected View mainView;
@@ -78,6 +78,11 @@ public class SdlRemoteDisplay extends Presentation {
                 mainView.dispatchTouchEvent(motionEvent);
             }
         });
+    }
+
+    public void stop(){
+        stopRefreshTask();
+        dismissPresentation();
     }
 
     public void dismissPresentation() {
