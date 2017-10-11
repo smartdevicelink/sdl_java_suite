@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.test.streaming;
+package com.smartdevicelink.test.streaming.video;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -36,6 +36,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.video.RTPH264Packetizer;
+import com.smartdevicelink.test.streaming.MockInterfaceBroker;
 import com.smartdevicelink.transport.BTTransportConfig;
 
 import junit.framework.TestCase;
