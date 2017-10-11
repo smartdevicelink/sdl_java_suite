@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2017 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.streaming.video;
 
 import android.annotation.TargetApi;
@@ -17,10 +49,14 @@ import java.lang.reflect.Constructor;
 import java.util.concurrent.Callable;
 
 /**
- * Created by Joey Grover on 10/4/17.
+ * SdlRemoteDisplay is an abstract class that should be extended by developers to creat their remote displays.
+ * All logic for UI events can be stored in their extension.
+ *
+ * <br><br> <b>NOTE:</b> When the UI changes (buttons appear, layouts change, etc) the developer should call {@link #invalidate()} to alert any
+ * other interfaces that are listening for those types of events.
  */
-@TargetApi(21)
-public class SdlRemoteDisplay extends Presentation {
+@TargetApi(17)
+public abstract class SdlRemoteDisplay extends Presentation {
     private static final String TAG = "SdlRemoteDisplay";
     private static final int REFRESH_RATE_MS = 50;
 
@@ -38,7 +74,7 @@ public class SdlRemoteDisplay extends Presentation {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setTitle("Presentation");
+        setTitle(TAG);
 
         w  = getWindow();
 
@@ -57,7 +93,9 @@ public class SdlRemoteDisplay extends Presentation {
 
     protected Runnable mStartRefreshTaskCallback = new Runnable() {
         public void run() {
-            mainView = w.getDecorView().findViewById(android.R.id.content);
+            if(mainView == null){
+                mainView = w.getDecorView().findViewById(android.R.id.content);
+            }
             if (mainView != null) {
                 mainView.invalidate();
             }
@@ -66,12 +104,23 @@ public class SdlRemoteDisplay extends Presentation {
         }
     };
 
+    @SuppressWarnings("unused")
     public View getMainView(){
+        if(mainView == null){
+            mainView = w.getDecorView().findViewById(android.R.id.content);
+        }
         return this.mainView;
     }
 
+    @SuppressWarnings("unused")
+    public void invalidate(){
+        // let listeners know the view has been invalidated
+        if(callback != null){
+            callback.onInvalidated(this);
+        }
+    }
+
     public void handleMotionEvent(final MotionEvent motionEvent){
-        Log.d(TAG, "Received motion event to process");
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -93,6 +142,10 @@ public class SdlRemoteDisplay extends Presentation {
             }
         });
     }
+    public interface Callback{
+        void onCreated(SdlRemoteDisplay remoteDisplay);
+        void onInvalidated(SdlRemoteDisplay remoteDisplay);
+    }
 
     public static class Creator implements Callable<Boolean> {
         private Context context;
@@ -100,7 +153,7 @@ public class SdlRemoteDisplay extends Presentation {
         boolean presentationShowError = false;
         SdlRemoteDisplay remoteDisplay;
         Class<? extends SdlRemoteDisplay> remoteDisplayClass;
-        protected Handler uiHandler = new Handler(Looper.getMainLooper()); //FIXME
+        private Handler uiHandler = new Handler(Looper.getMainLooper());
         private Callback callback;
 
 
@@ -111,9 +164,7 @@ public class SdlRemoteDisplay extends Presentation {
             this.remoteDisplayClass = remoteDisplayClass;
             this.callback = callback;
         }
-        public SdlRemoteDisplay getRemoteDisplay(){
-            return remoteDisplay;
-        }
+
         @Override
         public Boolean call() {
 
@@ -124,9 +175,8 @@ public class SdlRemoteDisplay extends Presentation {
                     // when setting up the Dialog.
                     if ((remoteDisplay == null) && (mDisplay != null))
                     {
-                        Constructor constructor = null;
                         try {
-                            constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
+                            Constructor constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -137,6 +187,7 @@ public class SdlRemoteDisplay extends Presentation {
 
                         try {
                             remoteDisplay.show();
+                            remoteDisplay.callback = callback;
                             if(callback!=null){
                                 callback.onCreated(remoteDisplay);
                             }
@@ -145,7 +196,6 @@ public class SdlRemoteDisplay extends Presentation {
                             Log.e(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
                             remoteDisplay = null;
                             presentationShowError = true;
-                            return;
                         }
                     }
                 }
@@ -154,8 +204,5 @@ public class SdlRemoteDisplay extends Presentation {
             return presentationShowError;
         }
 
-        public interface Callback{
-            void onCreated(SdlRemoteDisplay remoteDisplay);
-        }
     }
 }
