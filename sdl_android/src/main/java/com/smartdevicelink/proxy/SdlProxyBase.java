@@ -49,6 +49,7 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -6240,6 +6241,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlRemoteDisplay remoteDisplay;
 		IVideoStreamListener streamListener;
 		float[] touchScalar = {1.0f,1.0f}; //x, y
+		private HapticInterfaceManager hapticManager;
 
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
@@ -6258,6 +6260,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 				}
 			});
+			hapticManager = new HapticInterfaceManager(iSdl);
 		}
 
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
@@ -6310,6 +6313,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						//Remote display has been created.
 						//Now is a good time to do parsing for spatial data
 						VideoStreamingManager.this.remoteDisplay = remoteDisplay;
+						hapticManager.refreshHapticData(remoteDisplay.getMainView());
 
 						//Get touch scalars
 						ImageResolution resolution = null;
@@ -6335,6 +6339,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					public void onInvalidated(SdlRemoteDisplay remoteDisplay) {
 						//Our view has been invalidated
 						//A good time to refresh spatial data
+						hapticManager.refreshHapticData(remoteDisplay.getMainView());
 					}
 				} ));
 				Thread showPresentation = new Thread(fTask);

@@ -21,16 +21,13 @@
  **************************************************************************************************/
 package com.smartdevicelink.haptic;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
-import com.smartdevicelink.util.CorrelationIdGenerator;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -46,8 +43,12 @@ import java.util.List;
 public class HapticInterfaceManager {
     private static final String TAG = "Haptic";
 
-    private WeakReference<SdlProxyBase> proxyHolder;
+    private WeakReference<ISdl> proxyHolder;
     private List<HapticRect> userHapticData;
+
+    public HapticInterfaceManager(ISdl proxy) {
+        this.proxyHolder = new WeakReference<>(proxy);
+    }
 
     /**
      * Sets haptic data and sends update to the HU.  To be used by app code instead of letting
@@ -58,20 +59,12 @@ public class HapticInterfaceManager {
      */
     public void setHapticData(List<HapticRect> hapticData) {
         userHapticData = hapticData;
-        SdlProxyBase proxy = proxyHolder.get();
+        ISdl proxy = proxyHolder.get();
         if (proxy != null) {
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(userHapticData);
-            try {
-                proxy.sendRPCRequest(msg);
-            } catch (SdlException e) {
-                Log.e(TAG, "failed to send user haptic RPC", e);
-            }
+            proxy.sendRPCRequest(msg);
         }
-    }
-
-    public HapticInterfaceManager(SdlProxyBase proxy) {
-        this.proxyHolder = new WeakReference<>(proxy);
     }
 
     /**
@@ -82,7 +75,7 @@ public class HapticInterfaceManager {
      *          the root or parent View
      */
     public void refreshHapticData(View root) {
-        SdlProxyBase proxy = proxyHolder.get();
+        ISdl proxy = proxyHolder.get();
         if ((userHapticData == null) && (proxy != null)) {
             List<HapticRect> hapticRects = new ArrayList<>();
             findHapticRects(root, hapticRects);
@@ -90,11 +83,7 @@ public class HapticInterfaceManager {
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(hapticRects);
 
-            try {
-                proxy.sendRPCRequest(msg);
-            } catch (SdlException e) {
-                Log.e(TAG, "failed to send haptic RPC", e);
-            }
+            proxy.sendRPCRequest(msg);
         }
     }
 

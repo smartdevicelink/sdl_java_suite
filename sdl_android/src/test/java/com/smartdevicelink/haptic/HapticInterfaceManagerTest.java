@@ -24,8 +24,7 @@ package com.smartdevicelink.haptic;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
@@ -54,7 +53,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.Strict.class)
 public class HapticInterfaceManagerTest extends TestCase {
     @Mock
-    private SdlProxyBase mockProxy;
+    private ISdl mockProxy;
 
     @Captor
     private ArgumentCaptor<SendHapticData> captor;
@@ -87,12 +86,6 @@ public class HapticInterfaceManagerTest extends TestCase {
     }
 
     @Test
-    public void testSetHapticDataException() throws Exception {
-        doThrow(SdlException.class).when(mockProxy).sendRPCRequest(any(SendHapticData.class));
-        hapticMgr.setHapticData(null);
-    }
-
-    @Test
     public void testRefreshHapticData() throws Exception {
         View root = createViews();
         hapticMgr.refreshHapticData(root);
@@ -102,13 +95,6 @@ public class HapticInterfaceManagerTest extends TestCase {
         List<HapticRect> list = data.getHapticRectData();
         assertNotNull("List", list);
         assertEquals("Haptic Rects", 4, list.size());
-    }
-
-    @Test
-    public void testRefreshHapticDataException() throws Exception {
-        doThrow(SdlException.class).when(mockProxy).sendRPCRequest(any(SendHapticData.class));
-        View root = createViews();
-        hapticMgr.refreshHapticData(root);
     }
 
     @Test
