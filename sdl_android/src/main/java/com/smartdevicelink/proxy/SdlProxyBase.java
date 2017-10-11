@@ -6256,6 +6256,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}else{
 				//We just use default video streaming params
 				VideoStreamingParameters params = new VideoStreamingParameters();
+				DisplayCapabilities dispCap = (DisplayCapabilities)_systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+				if(dispCap !=null){
+					params.setResolution(dispCap.getScreenParams().getImageResolution());
+				}
 				sdlSession.setDesiredVideoParams(params);
 				manager.startVideoStreaming(remoteDisplay,params, encrypted);
 			}
@@ -6279,6 +6283,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		private Class<? extends SdlRemoteDisplay> remoteDisplayClass = null;
 		SdlRemoteDisplay remoteDisplay;
 		IVideoStreamListener streamListener;
+		float[] touchScalar = {1.0f,1.0f}; //x, y
 		//Touch manager
 		//Haptic manager
 
@@ -6333,7 +6338,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			internalInterface.removeServiceListener(SessionType.NAV,this);
 		}
 
-		private void createDisplay(Display disp){
+		private void createDisplay(final Display disp){
 			try{
 				if (disp == null){
 					return;
@@ -6344,12 +6349,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					remoteDisplay.dismissPresentation();
 				}
 
-				FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.Creator(context, disp, remoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Creator.Callback(){
+				FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.Creator(context, disp, remoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Callback(){
 					@Override
 					public void onCreated(SdlRemoteDisplay remoteDisplay) {
 						//Remote display has been created.
 						//Now is a good time to do parsing for spatial data
 						VideoStreamingManager.this.remoteDisplay = remoteDisplay;
+
+						//Get touch scalars
+						ImageResolution resolution = null;
+						if(getWiProVersion()>=5){ //At this point we should already have the capability
+							VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+							resolution = capability.getPreferredResolution();
+						}else {
+							DisplayCapabilities dispCap = (DisplayCapabilities) _systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+							if (dispCap != null) {
+								 resolution = (dispCap.getScreenParams().getImageResolution());
+							}
+						}
+						if(resolution != null){
+							DisplayMetrics displayMetrics = new DisplayMetrics();
+							disp.getMetrics(displayMetrics);
+							touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
+							touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
+						}
+
+					}
+
+					@Override
+					public void onInvalidated(SdlRemoteDisplay remoteDisplay) {
+						//Our view has been invalidated
+						//A good time to refresh spatial data
 					}
 				} ));
 				Thread showPresentation = new Thread(fTask);
@@ -6393,8 +6423,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			TouchCoord coord = coordList.get(coordList.size() - 1);
 			if (coord == null){ return null;}
 
-			x = coord.getX();
-			y = coord.getY();
+			x = (coord.getX() * touchScalar[0]);
+			y = (coord.getY() * touchScalar[1]);
 
 			if (x == 0 && y == 0){ return null;}
 

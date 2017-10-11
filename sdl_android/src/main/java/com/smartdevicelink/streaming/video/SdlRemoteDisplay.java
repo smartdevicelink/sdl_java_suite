@@ -28,7 +28,7 @@ public class SdlRemoteDisplay extends Presentation {
     protected View mainView;
     protected Handler handler = new Handler();
     protected Handler uiHandler = new Handler(Looper.getMainLooper());
-
+    protected Callback callback;
 
     public SdlRemoteDisplay(Context context, Display display) {
         super(context, display);
