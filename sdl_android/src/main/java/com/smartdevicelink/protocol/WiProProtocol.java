@@ -14,7 +14,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.VideoStreamingParams;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
@@ -489,7 +489,7 @@ public class WiProProtocol extends AbstractProtocol {
 							acceptedResolution.setResolutionWidth((Integer) packet.getTag(ControlFrameTags.Video.StartServiceACK.WIDTH));
 							acceptedFormat.setCodec(VideoStreamingCodec.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_CODEC)));
 							acceptedFormat.setProtocol(VideoStreamingProtocol.valueForString((String) packet.getTag(ControlFrameTags.Video.StartServiceACK.VIDEO_PROTOCOL)));
-							VideoStreamingParams agreedVideoParams = session.getDesiredVideoParams();
+							VideoStreamingParameters agreedVideoParams = session.getDesiredVideoParams();
 							agreedVideoParams.setResolution(acceptedResolution);
 							agreedVideoParams.setFormat(acceptedFormat);
 							session.setAcceptedVideoParams(agreedVideoParams);

@@ -12,7 +12,6 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
@@ -24,16 +23,12 @@ import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.streaming.VideoStreamingParams;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 
 import java.util.List;
-
-import static android.R.id.list;
-import static android.R.id.message;
-import static com.smartdevicelink.proxy.constants.Names.parameters;
 
 public class SystemCapabilityManagerTests extends AndroidTestCase {
 	public static final String TAG = "SystemCapabilityManagerTests";
@@ -153,7 +148,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {}
 
 		@Override
-		public void startVideoService(VideoStreamingParams parameters, boolean encrypted) {	}
+		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {	}
 
 		@Override
 		public void stopVideoService() {}

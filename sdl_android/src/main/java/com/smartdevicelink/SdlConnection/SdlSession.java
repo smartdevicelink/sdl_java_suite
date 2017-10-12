@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.smartdevicelink.encoder.SdlEncoder;
+import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -32,10 +33,10 @@ import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.streaming.RTPH264Packetizer;
+import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
-import com.smartdevicelink.streaming.VideoStreamingParams;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -58,11 +59,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	AbstractPacketizer mVideoPacketizer = null;
 	StreamPacketizer mAudioPacketizer = null;
 	SdlEncoder mSdlEncoder = null;
+	VirtualDisplayEncoder virtualDisplayEncoder = null;
 	private final static int BUFF_READ_SIZE = 1024;
     private int sessionHashId = 0;
 	private HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
-	private VideoStreamingParams desiredVideoParams = null;
-	private VideoStreamingParams acceptedVideoParams = null;
+	private VideoStreamingParameters desiredVideoParams = null;
+	private VideoStreamingParameters acceptedVideoParams = null;
 
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
@@ -708,7 +710,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return serviceListeners;
 	}
 
-	public void setDesiredVideoParams(VideoStreamingParams params){
+	public void setDesiredVideoParams(VideoStreamingParameters params){
 		this.desiredVideoParams = params;
 	}
 
@@ -717,24 +719,24 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	 * the default options will be returned and set for this instance.
 	 * @return
 	 */
-	public VideoStreamingParams getDesiredVideoParams(){
+	public VideoStreamingParameters getDesiredVideoParams(){
 		if(desiredVideoParams == null){
-			desiredVideoParams = new VideoStreamingParams();
+			desiredVideoParams = new VideoStreamingParameters();
 		}
 		return desiredVideoParams;
 	}
 
-	public void setAcceptedVideoParams(VideoStreamingParams params){
+	public void setAcceptedVideoParams(VideoStreamingParameters params){
 		this.acceptedVideoParams = params;
 	}
 
-	public VideoStreamingParams getAcceptedVideoParams(){
+	public VideoStreamingParameters getAcceptedVideoParams(){
 		return acceptedVideoParams;
 	}
 
 	private VideoStreamingProtocol getAcceptedProtocol() {
 		// acquire default protocol (RAW)
-		VideoStreamingProtocol protocol = new VideoStreamingParams().getFormat().getProtocol();
+		VideoStreamingProtocol protocol = new VideoStreamingParameters().getFormat().getProtocol();
 
 		if (acceptedVideoParams != null) {
 			VideoStreamingFormat format = acceptedVideoParams.getFormat();
