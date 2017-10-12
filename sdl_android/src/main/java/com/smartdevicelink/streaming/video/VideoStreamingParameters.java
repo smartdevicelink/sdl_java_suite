@@ -46,10 +46,10 @@ import java.util.List;
 public class VideoStreamingParameters {
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
 	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
-	private final int DEFAULT_WIDTH = 800;
-	private final int DEFAULT_HEIGHT = 480;
+	private final int DEFAULT_WIDTH = 1024;
+	private final int DEFAULT_HEIGHT = 576;
 	private final int DEFAULT_DENSITY = DisplayMetrics.DENSITY_HIGH;
-	private final int DEFAULT_FRAMERATE = 24;
+	private final int DEFAULT_FRAMERATE = 30;
 	private final int DEFAULT_BITRATE = 512000;
 	private final int DEFAULT_INTERVAL = 5;
 
@@ -181,7 +181,22 @@ public class VideoStreamingParameters {
 
     @Override
     public String toString() {
-        return "format: {" + String.valueOf(format) +
-               "}, resolution: {" + String.valueOf(resolution) + "}";
+        StringBuilder builder = new StringBuilder();
+        builder.append("VideoStreamingParams - format: {");
+        builder.append(format.toString());
+        builder.append("}, resolution: {");
+        builder.append(resolution.getResolutionHeight());
+        builder.append(" , ");
+        builder.append(resolution.getResolutionWidth());
+        builder.append("}, frame rate {");
+        builder.append(frameRate);
+        builder.append("}, displayDensity{ ");
+        builder.append(displayDensity);
+        builder.append("}, bitrate");
+        builder.append(bitrate);
+        builder.append("}, IFrame interval{ ");
+        builder.append(interval);
+        builder.append("}");
+        return builder.toString();
     }
 }
