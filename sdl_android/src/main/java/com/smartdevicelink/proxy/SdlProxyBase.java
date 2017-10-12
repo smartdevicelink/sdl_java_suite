@@ -4037,7 +4037,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     }
 
 	/**
-	 * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 21 or higher
+	 * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
 	 * @param context a context that can be used to create the remote display
 	 * @param remoteDisplay class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
 	 * @param parameters streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
@@ -4046,7 +4046,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
 	 */
-	@TargetApi(21)
+	@TargetApi(19)
 	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
 		if(getWiProVersion() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
@@ -6231,7 +6231,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * VideoStreamingManager houses all the elements needed to create a scoped, streaming manager for video projection. It is only a private, instance
 	 * dependant class at the moment until it can become public. Once the class is public and API defined, it will be moved into the SdlSession class
 	 */
-	@TargetApi(21)
+	@TargetApi(19)
 	private class VideoStreamingManager implements ISdlServiceListener{
 		Context context;
 		ISdl internalInterface;
@@ -6276,6 +6276,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			Log.d(TAG, parameters.toString());
 		}
 
 		public void stopStreaming(){
