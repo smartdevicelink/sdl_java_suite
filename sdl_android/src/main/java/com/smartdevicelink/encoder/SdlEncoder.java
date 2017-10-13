@@ -176,22 +176,29 @@ public class SdlEncoder {
 						Log.i(TAG, "H264 codec specific data not retrieved yet.");
 					}
 				}
-				// append SPS and PPS in front of every IDR NAL unit
-				if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_KEY_FRAME) != 0
-						&& mBufferInfo.size != 0
-						&& mH264CodecSpecificData != null) {
-					try {
-						mOutputStream.write(mH264CodecSpecificData, 0,
-								mH264CodecSpecificData.length);
-					} catch (Exception e) {}
-				}
 
 				if (mBufferInfo.size != 0) {
-					byte[] dataToWrite = new byte[mBufferInfo.size];
-					encoderOutputBuffers[encoderStatus].get(dataToWrite,
-							mBufferInfo.offset, mBufferInfo.size);
+					ByteBuffer encoderOutputBuffer = encoderOutputBuffers[encoderStatus];
+					byte[] dataToWrite = null;
+					int dataOffset = 0;
+
+					// append SPS and PPS in front of every IDR NAL unit
+					if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_KEY_FRAME) != 0
+							&& mH264CodecSpecificData != null) {
+						dataToWrite = new byte[mH264CodecSpecificData.length + mBufferInfo.size];
+						System.arraycopy(mH264CodecSpecificData, 0,
+								dataToWrite, 0, mH264CodecSpecificData.length);
+						dataOffset = mH264CodecSpecificData.length;
+					} else {
+						dataToWrite = new byte[mBufferInfo.size];
+					}
 
 					try {
+						encoderOutputBuffer.position(mBufferInfo.offset);
+						encoderOutputBuffer.limit(mBufferInfo.offset + mBufferInfo.size);
+
+						encoderOutputBuffer.get(dataToWrite, dataOffset, mBufferInfo.size);
+
 						if (mOutputStream != null) {
 							mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
 						} else if (mOutputListener != null) {

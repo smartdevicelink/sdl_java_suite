@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -79,8 +80,13 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.test.streaming.video.SdlRemoteDisplayTest;
 
 import junit.framework.Assert;
+
+import java.lang.reflect.Method;
 
 
 public class SdlProxyBaseTests extends AndroidTestCase{
@@ -136,6 +142,23 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
                 Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
             }
+        }
+    }
+
+    public void testRemoteDisplayStreaming(){
+        SdlProxyALM proxy = null;
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(new ProxyListenerTest(), "appId", "appName", true, getContext());
+        try{
+            proxy = builder.build();
+            //	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
+            Method m = SdlProxyALM.class.getDeclaredMethod("startRemoteDisplayStream", Context.class, SdlRemoteDisplay.class, VideoStreamingParameters.class, boolean.class);
+            assertNotNull(m);
+            m.setAccessible(true);
+            m.invoke(proxy,getContext(), SdlRemoteDisplayTest.MockRemoteDisplay.class, (VideoStreamingParameters)null, false);
+            assert true;
+
+        }catch (Exception e){
+            assert false;
         }
     }
 

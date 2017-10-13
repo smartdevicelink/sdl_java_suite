@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.test.Test;
@@ -20,13 +21,13 @@ import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.streaming.StreamRpcPacketizer}
+ * {@link com.smartdevicelink.streaming.StreamRPCPacketizer}
  */
 public class StreamRPCPacketizerTests extends TestCase {
 		
 	/**
 	 * This is a unit test for the following methods : 
-	 * {@link com.smartdevicelink.streaming.StreamRPCPacketizer#StreamRPCPacketizer(IStreamListener, InputStream, RPCRequest, SessionType, byte, byte)}
+	 * {@link com.smartdevicelink.streaming.StreamRPCPacketizer#StreamRPCPacketizer(SdlProxyBase, IStreamListener, InputStream, RPCRequest, SessionType, byte, byte, long, SdlSession)}
 	 */
 	public void testConstructor () {
 		

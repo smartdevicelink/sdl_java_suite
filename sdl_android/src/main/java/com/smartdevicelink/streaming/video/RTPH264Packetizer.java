@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.streaming;
+package com.smartdevicelink.streaming.video;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -44,6 +44,8 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+import com.smartdevicelink.streaming.AbstractPacketizer;
+import com.smartdevicelink.streaming.IStreamListener;
 
 /*
  * Note for testing.

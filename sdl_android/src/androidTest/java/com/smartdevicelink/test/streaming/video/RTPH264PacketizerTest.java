@@ -28,14 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.test.streaming;
+package com.smartdevicelink.test.streaming.video;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.streaming.RTPH264Packetizer;
+import com.smartdevicelink.streaming.video.RTPH264Packetizer;
+import com.smartdevicelink.test.streaming.MockInterfaceBroker;
 import com.smartdevicelink.transport.BTTransportConfig;
 
 import junit.framework.TestCase;
@@ -46,7 +47,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * This class includes a unit test for {@link com.smartdevicelink.streaming.RTPH264Packetizer}.
+ * This class includes a unit test for {@link RTPH264Packetizer}.
  *
  * @author Sho Amano
  */
@@ -309,7 +310,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	/**
-	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#setPayloadType(byte)}
+	 * Test for {@link RTPH264Packetizer#setPayloadType(byte)}
 	 */
 	public void testSetPayloadType() {
 		byte pt = (byte)123;
@@ -340,7 +341,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	/**
-	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#setSSRC(int)}
+	 * Test for {@link RTPH264Packetizer#setSSRC(int)}
 	 */
 	public void testSetSSRC() {
 		int ssrc = 0xFEDCBA98;
@@ -372,8 +373,8 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	/**
-	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#pause()} and
-	 * {@link com.smartdevicelink.streaming.RTPH264Packetizer#resume()}
+	 * Test for {@link RTPH264Packetizer#pause()} and
+	 * {@link RTPH264Packetizer#resume()}
 	 */
 	public void testPauseResume() {
 		int index = 0;
@@ -443,7 +444,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	/**
-	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#sendFrame(byte[], int, int, long)}
+	 * Test for {@link RTPH264Packetizer#sendFrame(byte[], int, int, long)}
 	 */
 	public void testSendFrameInterfaceWithArray() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
@@ -472,7 +473,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	/**
-	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#sendFrame(ByteBuffer, long)}
+	 * Test for {@link RTPH264Packetizer#sendFrame(ByteBuffer, long)}
 	 */
 	public void testSendFrameInterfaceWithByteBuffer() {
 		StreamVerifier verifier = new StreamVerifier(SAMPLE_STREAM);
@@ -501,7 +502,7 @@ public class RTPH264PacketizerTest extends TestCase {
 	}
 
 	/**
-	 * Test for {@link com.smartdevicelink.streaming.RTPH264Packetizer#sendFrame(ByteBuffer, long)}
+	 * Test for {@link RTPH264Packetizer#sendFrame(ByteBuffer, long)}
 	 * with direct ByteBuffer
 	 */
 	public void testSendFrameInterfaceWithDirectByteBuffer() {

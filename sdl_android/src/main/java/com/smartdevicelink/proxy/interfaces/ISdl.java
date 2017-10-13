@@ -4,7 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.streaming.VideoStreamingParams;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 /*
  * Copyright (c) 2017 Livio, Inc.
@@ -75,7 +75,7 @@ public interface ISdl {
      * @param parameters desired video streaming params for this sevice to be started with
      * @param encrypted flag to start this service with encryption or not
      */
-    void startVideoService(VideoStreamingParams parameters, boolean encrypted);
+    void startVideoService(VideoStreamingParameters parameters, boolean encrypted);
 
     /**
      * Stops the video service if open
