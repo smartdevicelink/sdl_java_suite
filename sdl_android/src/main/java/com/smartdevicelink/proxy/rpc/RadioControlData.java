@@ -182,6 +182,7 @@ public class RadioControlData extends RPCStruct{
 
     /**
      * Sets the radioEnable portion of the RadioControlData class
+     * <br><b>Note: </b> This setting is normally a <b>READ-ONLY</b> setting
      *
      * @param radioEnable
      * True if the radio is on, false is the radio is off.
@@ -192,6 +193,7 @@ public class RadioControlData extends RPCStruct{
 
     /**
      * Gets the radioEnable portion of the RadioControlData class
+     * <br><b>Note: </b> If this is set to false, no other data will be included.
      *
      * @return Boolean - True if the radio is on, false is the radio is off.
      */
