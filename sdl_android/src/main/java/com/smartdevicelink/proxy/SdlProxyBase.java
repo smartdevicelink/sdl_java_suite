@@ -6110,13 +6110,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings("unused")
+	public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
+		return _systemCapabilityManager != null && _systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
+	}
+
+	@SuppressWarnings("unused")
 	public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener){
-		_systemCapabilityManager.getCapability(systemCapabilityType, scListener);
+		if(_systemCapabilityManager != null){
+			_systemCapabilityManager.getCapability(systemCapabilityType, scListener);
+		}
 	}
 
 	@SuppressWarnings("unused")
 	public Object getCapability(SystemCapabilityType systemCapabilityType){
-		return _systemCapabilityManager.getCapability(systemCapabilityType);
+		if(_systemCapabilityManager != null ){
+			return _systemCapabilityManager.getCapability(systemCapabilityType);
+		}else{
+			return null;
+		}
 	}
 
 	/* ******************* END Public Helper Methods *************************/
