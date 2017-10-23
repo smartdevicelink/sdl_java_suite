@@ -6271,7 +6271,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 				}
 			});
-			hapticManager = new HapticInterfaceManager(iSdl);
+
+			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+			if(capability != null && capability.getIsHapticSpatialDataSupported()){
+				hapticManager = new HapticInterfaceManager(iSdl);
+			}
 		}
 
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
@@ -6324,13 +6328,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						//Remote display has been created.
 						//Now is a good time to do parsing for spatial data
 						VideoStreamingManager.this.remoteDisplay = remoteDisplay;
-						remoteDisplay.getMainView().post(new Runnable() {
-							@Override
-							public void run() {
-								hapticManager.refreshHapticData(remoteDisplay.getMainView());
-							}
-						});
-
+						if(hapticManager != null) {
+							remoteDisplay.getMainView().post(new Runnable() {
+								@Override
+								public void run() {
+									hapticManager.refreshHapticData(remoteDisplay.getMainView());
+								}
+							});
+						}
 						//Get touch scalars
 						ImageResolution resolution = null;
 						if(getWiProVersion()>=5){ //At this point we should already have the capability
@@ -6355,12 +6360,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					public void onInvalidated(final SdlRemoteDisplay remoteDisplay) {
 						//Our view has been invalidated
 						//A good time to refresh spatial data
-						remoteDisplay.getMainView().post(new Runnable() {
-							@Override
-							public void run() {
-								hapticManager.refreshHapticData(remoteDisplay.getMainView());
-							}
-						});
+						if(hapticManager != null) {
+							remoteDisplay.getMainView().post(new Runnable() {
+								@Override
+								public void run() {
+									hapticManager.refreshHapticData(remoteDisplay.getMainView());
+								}
+							});
+						}
 					}
 				} ));
 				Thread showPresentation = new Thread(fTask);
