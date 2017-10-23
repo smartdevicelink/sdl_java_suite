@@ -4032,7 +4032,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         if (acceptedParams != null) {
             return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
                     height, bitrate, SessionType.NAV, sdlSession.getSessionId());
-        } else {
+        } else if(getWiProVersion() < 5){
+			sdlSession.setAcceptedVideoParams(new VideoStreamingParameters());
+			return sdlSession.createOpenGLInputSurface(frameRate, iFrameInterval, width,
+					height, bitrate, SessionType.NAV, sdlSession.getSessionId());
+		} else {
             return null;
         }
     }
