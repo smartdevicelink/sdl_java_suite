@@ -6271,11 +6271,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 				}
 			});
-
-			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-			if(capability != null && capability.getIsHapticSpatialDataSupported()){
-				hapticManager = new HapticInterfaceManager(iSdl);
-			}
 		}
 
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
@@ -6283,6 +6278,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(streamListener == null){
 				Log.e(TAG, "Error starting video service");
 				return;
+			}
+			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+			if(capability != null && capability.getIsHapticSpatialDataSupported()){
+				hapticManager = new HapticInterfaceManager(internalInterface);
 			}
 			this.remoteDisplayClass = remoteDisplayClass;
 			try {
