@@ -3953,9 +3953,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		VideoStreamingParameters acceptedParams = tryStartVideoStream(isEncrypted, parameters);
         if (acceptedParams != null) {
             return sdlSession.startVideoStream();
-        } else if(getWiProVersion() < 5){
-			sdlSession.setAcceptedVideoParams(new VideoStreamingParameters());
-			return sdlSession.startVideoStream();
         } else {
             return null;
         }
@@ -4146,7 +4143,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         scheduler.shutdown();
 
         if (navServiceStartResponse) {
-			return sdlSession.getAcceptedVideoParams();
+			VideoStreamingParameters acceptedParams = sdlSession.getAcceptedVideoParams();
+			if (acceptedParams != null) {
+				return acceptedParams;
+			} else if(getWiProVersion() < 5){
+				acceptedParams = sdlSession.getDesiredVideoParams();
+				sdlSession.setAcceptedVideoParams(acceptedParams);
+				return acceptedParams;
+			} else {
+				return null;
+			}
         }
 
         if (navServiceStartRejectedParams != null) {
