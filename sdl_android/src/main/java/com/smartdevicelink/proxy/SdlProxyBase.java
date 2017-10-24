@@ -4148,7 +4148,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				return acceptedParams;
 			} else if(getWiProVersion() < 5){
 				acceptedParams = sdlSession.getDesiredVideoParams();
-				sdlSession.setAcceptedVideoParams(acceptedParams);
 				return acceptedParams;
 			} else {
 				return null;
