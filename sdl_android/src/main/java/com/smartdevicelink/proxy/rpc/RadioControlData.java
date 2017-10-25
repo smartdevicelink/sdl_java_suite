@@ -182,7 +182,9 @@ public class RadioControlData extends RPCStruct{
 
     /**
      * Sets the radioEnable portion of the RadioControlData class
-     * <br><b>Note: </b> This setting is normally a <b>READ-ONLY</b> setting
+     * <br><b>Note: </b> This setting is normally a <b>READ-ONLY</b> setting.
+	 * <br>When the radio is disabled, no data other than radioEnable
+	 * <br>is included in a GetInteriorVehicleData response.
      *
      * @param radioEnable
      * True if the radio is on, false is the radio is off.
