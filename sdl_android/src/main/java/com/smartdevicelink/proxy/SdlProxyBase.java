@@ -4143,14 +4143,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         scheduler.shutdown();
 
         if (navServiceStartResponse) {
-			VideoStreamingParameters acceptedParams = sdlSession.getAcceptedVideoParams();
-			if (acceptedParams != null) {
-				return acceptedParams;
-			} else if(getWiProVersion() < 5){
-				acceptedParams = sdlSession.getDesiredVideoParams();
-				return acceptedParams;
+			if (getWiProVersion() < 5) {
+				return sdlSession.getDesiredVideoParams();
 			} else {
-				return null;
+				return sdlSession.getAcceptedVideoParams();
 			}
         }
 
