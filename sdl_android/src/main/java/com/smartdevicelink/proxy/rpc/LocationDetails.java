@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.DebugTool;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -24,127 +23,59 @@ public class LocationDetails extends RPCStruct{
 
     @SuppressWarnings("unchecked")
     public Coordinate getCoordinate() {
-        Object obj = store.get(KEY_COORDINATE);
-        if (obj instanceof Coordinate) {
-            return (Coordinate) obj;
-        } else if (obj instanceof Hashtable) {
-            try {
-                return new Coordinate((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_COORDINATE, e);
-            }
-        }
-        return null;
+        return (Coordinate) getObject(Coordinate.class, KEY_COORDINATE);
     }
     public void setCoordinate(Coordinate coordinate) {
-        if (coordinate != null) {
-            store.put(KEY_COORDINATE, coordinate);
-        } else {
-            store.remove(KEY_COORDINATE);
-        }
+        setValue(KEY_COORDINATE, coordinate);
     }
 
     public String getLocationName() {
-        return (String) store.get(KEY_LOCATION_NAME);
+        return getString(KEY_LOCATION_NAME);
     }
 
     public void setLocationName(String locationName) {
-        if (locationName != null) {
-            store.put(KEY_LOCATION_NAME, locationName);
-        } else {
-            store.remove(KEY_LOCATION_NAME);
-        }
+        setValue(KEY_LOCATION_NAME, locationName);
     }
 
     @SuppressWarnings("unchecked")
     public List<String> getAddressLines() {
-        final Object listObj = store.get(KEY_ADDRESS_LINES);
-        if (listObj instanceof List<?>) {
-            List<?> list = (List<?>) listObj;
-            if (list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_ADDRESS_LINES);
     }
 
     public void setAddressLines(List<String> addressLines) {
-        if (addressLines != null) {
-            store.put(KEY_ADDRESS_LINES, addressLines);
-        } else {
-            store.remove(KEY_ADDRESS_LINES);
-        }
+        setValue(KEY_ADDRESS_LINES, addressLines);
     }
 
     public String getLocationDescription() {
-        return (String) store.get(KEY_LOCATION_DESCRIPTION);
+        return getString(KEY_LOCATION_DESCRIPTION);
     }
 
     public void setLocationDescription(String locationDescription) {
-        if (locationDescription != null) {
-            store.put(KEY_LOCATION_DESCRIPTION, locationDescription);
-        } else {
-            store.remove(KEY_LOCATION_DESCRIPTION);
-        }
+        setValue(KEY_LOCATION_DESCRIPTION, locationDescription);
     }
 
     public String getPhoneNumber() {
-        return (String) store.get(KEY_PHONE_NUMBER);
+        return getString(KEY_PHONE_NUMBER);
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        if (phoneNumber != null) {
-            store.put(KEY_PHONE_NUMBER, phoneNumber);
-        } else {
-            store.remove(KEY_PHONE_NUMBER);
-        }
+        setValue(KEY_PHONE_NUMBER, phoneNumber);
     }
 
     @SuppressWarnings("unchecked")
     public Image getLocationImage() {
-        Object obj = store.get(KEY_LOCATION_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-            try {
-                return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LOCATION_IMAGE, e);
-            }
-        }
-        return null;
+        return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
 
     public void setLocationImage(Image locationImage) {
-        if (locationImage != null) {
-            store.put(KEY_LOCATION_IMAGE, locationImage);
-        } else {
-            store.remove(KEY_LOCATION_IMAGE);
-        }
+        setValue(KEY_LOCATION_IMAGE, locationImage);
     }
 
     @SuppressWarnings("unchecked")
     public OasisAddress getSearchAddress() {
-        Object obj = store.get(KEY_SEARCH_ADDRESS);
-        if (obj instanceof OasisAddress) {
-            return (OasisAddress) obj;
-        } else if (obj instanceof Hashtable) {
-            try {
-                return new OasisAddress((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_SEARCH_ADDRESS, e);
-            }
-        }
-        return null;
+        return (OasisAddress) getObject(OasisAddress.class, KEY_SEARCH_ADDRESS);
     }
     public void setSearchAddress(OasisAddress searchAddress) {
-        if (searchAddress != null) {
-            store.put(KEY_SEARCH_ADDRESS, searchAddress);
-        } else {
-            store.remove(KEY_SEARCH_ADDRESS);
-        }
+        setValue(KEY_SEARCH_ADDRESS, searchAddress);
     }
 }

@@ -1,11 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 /**
  * Defining sets of HMI levels, which are permitted or prohibited for a given RPC.
  * <p><b>Parameter List</b></p>
@@ -63,26 +63,7 @@ public class HMIPermissions extends RPCStruct {
      */
     @SuppressWarnings("unchecked")
     public List<HMILevel> getAllowed() {
-        if (store.get(KEY_ALLOWED) instanceof List<?>) {
-	    	List<?> list = (List<?>)store.get(KEY_ALLOWED);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
-	            } else if (obj instanceof String) {
-	            	List<HMILevel> newList = new ArrayList<HMILevel>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = HMILevel.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<HMILevel>) getObject(HMILevel.class, KEY_ALLOWED);
     }
     
     /**
@@ -90,11 +71,7 @@ public class HMIPermissions extends RPCStruct {
      * @param allowed HMI level that is permitted for this given RPC
      */
     public void setAllowed(List<HMILevel> allowed) {
-        if (allowed != null) {
-            store.put(KEY_ALLOWED, allowed);
-        } else {
-    		store.remove(KEY_ALLOWED);
-    	}
+    	setValue(KEY_ALLOWED, allowed);
     }
     
     /**
@@ -103,26 +80,7 @@ public class HMIPermissions extends RPCStruct {
      */
     @SuppressWarnings("unchecked")
     public List<HMILevel> getUserDisallowed() {
-        if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
-	    	List<?> list = (List<?>)store.get(KEY_USER_DISALLOWED);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof HMILevel) {
-	                return (List<HMILevel>) list;
-	            } else if (obj instanceof String) {
-	                List<HMILevel> newList = new ArrayList<HMILevel>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    HMILevel toAdd = HMILevel.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<HMILevel>) getObject(HMILevel.class, KEY_USER_DISALLOWED);
     }
     
     /**
@@ -130,10 +88,6 @@ public class HMIPermissions extends RPCStruct {
      * @param userDisallowed  HMI level that is prohibited for this given RPC
      */
     public void setUserDisallowed(List<HMILevel> userDisallowed) {
-        if (userDisallowed != null) {
-            store.put(KEY_USER_DISALLOWED, userDisallowed);
-        } else {
-    		store.remove(KEY_USER_DISALLOWED);
-    	}
+    	setValue(KEY_USER_DISALLOWED, userDisallowed);
     }
 }

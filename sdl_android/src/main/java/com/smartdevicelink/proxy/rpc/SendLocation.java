@@ -1,13 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.DeliveryMode;
-import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import java.util.Hashtable;
+import java.util.List;
 
 
 /**
@@ -59,7 +58,7 @@ public class SendLocation extends RPCRequest{
      * @return The longitude of the location
      */
     public Double getLongitudeDegrees(){
-    	Object value = parameters.get(KEY_LON_DEGREES);    	
+    	Object value = getParameters(KEY_LON_DEGREES);
     	return SdlDataTypeConverter.objectToDouble(value);
     }
 
@@ -68,12 +67,7 @@ public class SendLocation extends RPCRequest{
      * @param longitudeDegrees
      */
     public void setLongitudeDegrees(Double longitudeDegrees){
-        if(longitudeDegrees != null){
-            parameters.put(KEY_LON_DEGREES, longitudeDegrees);
-        }
-        else{
-            parameters.remove(KEY_LON_DEGREES);
-        }
+        setParameters(KEY_LON_DEGREES, longitudeDegrees);
     }
 
     /**
@@ -87,7 +81,7 @@ public class SendLocation extends RPCRequest{
      * @return The latitude of the location
      */
     public Double getLatitudeDegrees(){    	
-    	Object value = parameters.get(KEY_LAT_DEGREES);    	
+    	Object value = getParameters(KEY_LAT_DEGREES);
     	return SdlDataTypeConverter.objectToDouble(value);
     }
 
@@ -96,12 +90,7 @@ public class SendLocation extends RPCRequest{
      * @param latitudeDegrees
      */
     public void setLatitudeDegrees(Double latitudeDegrees){
-        if(latitudeDegrees != null){
-            parameters.put(KEY_LAT_DEGREES, latitudeDegrees);
-        }
-        else{
-            parameters.remove(KEY_LAT_DEGREES);
-        }
+        setParameters(KEY_LAT_DEGREES, latitudeDegrees);
     }
 
     /**
@@ -109,7 +98,7 @@ public class SendLocation extends RPCRequest{
      * @return The name of the location
      */
     public String getLocationName(){
-        return (String) parameters.get(KEY_LOCATION_NAME);
+        return getString(KEY_LOCATION_NAME);
     }
 
     /**
@@ -117,12 +106,7 @@ public class SendLocation extends RPCRequest{
      * @param locationName The name of the location
      */
     public void setLocationName(String locationName){
-        if(locationName != null){
-            parameters.put(KEY_LOCATION_NAME, locationName);
-        }
-        else{
-            parameters.remove(KEY_LOCATION_NAME);
-        }
+        setParameters(KEY_LOCATION_NAME, locationName);
     }
 
     /**
@@ -130,7 +114,7 @@ public class SendLocation extends RPCRequest{
      * @return The description of the location to send
      */
     public String getLocationDescription(){
-        return (String) parameters.get(KEY_LOCATION_DESCRIPTION);
+        return getString(KEY_LOCATION_DESCRIPTION);
     }
 
     /**
@@ -138,12 +122,7 @@ public class SendLocation extends RPCRequest{
      * @param locationDescription The description of the location
      */
     public void setLocationDescription(String locationDescription){
-        if(locationDescription != null){
-            parameters.put(KEY_LOCATION_DESCRIPTION, locationDescription);
-        }
-        else{
-            parameters.remove(KEY_LOCATION_DESCRIPTION);
-        }
+        setParameters(KEY_LOCATION_DESCRIPTION, locationDescription);
     }
 
     /**
@@ -151,7 +130,7 @@ public class SendLocation extends RPCRequest{
      * @return
      */
     public String getPhoneNumber(){
-        return (String) parameters.get(KEY_PHONE_NUMBER);
+        return getString(KEY_PHONE_NUMBER);
     }
 
     /**
@@ -159,12 +138,7 @@ public class SendLocation extends RPCRequest{
      * @param phoneNumber The phone number of the location
      */
     public void setPhoneNumber(String phoneNumber){
-        if(phoneNumber != null){
-            parameters.put(KEY_PHONE_NUMBER, phoneNumber);
-        }
-        else{
-            parameters.remove(KEY_PHONE_NUMBER);
-        }
+        setParameters(KEY_PHONE_NUMBER, phoneNumber);
     }
 
     /**
@@ -173,16 +147,7 @@ public class SendLocation extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<String> getAddressLines(){
-        if(parameters.get(KEY_ADDRESS_LINES) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_ADDRESS_LINES);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof String){
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_ADDRESS_LINES);
     }
 
     /**
@@ -190,12 +155,7 @@ public class SendLocation extends RPCRequest{
      * @param addressLines The address lines of the location
      */
     public void setAddressLines(List<String> addressLines){
-        if(addressLines != null){
-            parameters.put(KEY_ADDRESS_LINES, addressLines);
-        }
-        else{
-            parameters.remove(KEY_ADDRESS_LINES);
-        }
+        setParameters(KEY_ADDRESS_LINES, addressLines);
     }
 
     /**
@@ -204,13 +164,7 @@ public class SendLocation extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public Image getLocationImage(){
-        Object obj = parameters.get(KEY_LOCATION_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-            return new Image((Hashtable<String, Object>) obj);
-        }
-        return null;
+        return (Image) getObject(Image.class, KEY_LOCATION_IMAGE);
     }
 
     /**
@@ -218,75 +172,32 @@ public class SendLocation extends RPCRequest{
      * @param locationImage The image of the location to send
      */
     public void setLocationImage(Image locationImage){
-        if(locationImage != null){
-            parameters.put(KEY_LOCATION_IMAGE, locationImage);
-        }
-        else{
-            parameters.remove(KEY_LOCATION_IMAGE);
-        }
+        setParameters(KEY_LOCATION_IMAGE, locationImage);
     }
 
 	public DeliveryMode getDeliveryMode() {
-		Object obj = parameters.get(KEY_DELIVERY_MODE);
-		if (obj instanceof DeliveryMode) {
-			return (DeliveryMode) obj;
-		} else if (obj instanceof String) {
-			return DeliveryMode.valueForString((String) obj);
-		}
-		return null;
+        return (DeliveryMode) getObject(DeliveryMode.class, KEY_DELIVERY_MODE);
 	}
 
 	public void setDeliveryMode(DeliveryMode deliveryMode) {
-		if (deliveryMode != null) {
-			parameters.put(KEY_DELIVERY_MODE, deliveryMode);
-		} else {
-			parameters.remove(KEY_DELIVERY_MODE);
-		}
+        setParameters(KEY_DELIVERY_MODE, deliveryMode);
 	}
 
     @SuppressWarnings("unchecked")
 	public DateTime getTimeStamp() {
-		Object obj = parameters.get(KEY_TIME_STAMP);
-		if (obj instanceof DateTime) {
-			return (DateTime) obj;
-		} else if (obj instanceof Hashtable) {
-			try {
-				return new DateTime((Hashtable<String, Object>) obj);
-			} catch (Exception e) {
-				DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIME_STAMP, e);
-			}
-		}
-		return null;
+        return (DateTime) getObject(DateTime.class, KEY_TIME_STAMP);
 	}
 
 	public void setTimeStamp(DateTime timeStamp) {
-		if (timeStamp != null) {
-			parameters.put(KEY_TIME_STAMP, timeStamp);
-		} else {
-			parameters.remove(KEY_TIME_STAMP);
-		}
+        setParameters(KEY_TIME_STAMP, timeStamp);
 	}
 
     @SuppressWarnings("unchecked")
 	public OasisAddress getAddress() {
-		Object obj = parameters.get(KEY_ADDRESS);
-		if (obj instanceof OasisAddress) {
-			return (OasisAddress) obj;
-		} else if (obj instanceof Hashtable) {
-			try {
-				return new OasisAddress((Hashtable<String, Object>) obj);
-			} catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_ADDRESS, e);
-			}
-		}
-		return null;
+        return (OasisAddress) getObject(OasisAddress.class, KEY_ADDRESS);
 	}
 
 	public void setAddress(OasisAddress address) {
-		if (address != null) {
-			parameters.put(KEY_ADDRESS, address);
-		} else {
-			parameters.remove(KEY_ADDRESS);
-		}
+        setParameters(KEY_ADDRESS, address);
 	}
 }

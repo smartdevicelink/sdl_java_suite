@@ -14,29 +14,38 @@ public class DiagLevel {
 	}
 	
 	public static void setAllLevels(DetailLevel thisDetail) {
-		for (int i=0; i < levels.length; i++) {
-			levels[i] = thisDetail; //  
+		if (thisDetail != null) {
+			for (int i = 0; i < levels.length; i++) {
+				levels[i] = thisDetail; //
+			}
 		}
 	}
 	
     public static void setLevel(Mod thisMod, DetailLevel thisDetail) {
-    	levels[thisMod.ordinal()] = thisDetail;
+		if (thisMod != null && thisDetail != null) {
+			levels[thisMod.ordinal()] = thisDetail;
+		}
     }
 	
 	public static DetailLevel getLevel(Mod thisMod) {
-		return levels[thisMod.ordinal()];
+		if (thisMod != null) {
+			return levels[thisMod.ordinal()];
+		}
+		return null;
 	}
-	
+
 	public static boolean isValidDetailLevel(String dtString) {
 		// Assume false
 		Boolean isValid = false;
-		
-		if (dtString.equalsIgnoreCase("verbose"))
-			isValid = true;
-		else if (dtString.equalsIgnoreCase("terse"))
-			isValid = true;
-		else if (dtString.equalsIgnoreCase("off"))
-			isValid = true;
+
+		if (dtString != null) {
+			if (dtString.equalsIgnoreCase("verbose"))
+				isValid = true;
+			else if (dtString.equalsIgnoreCase("terse"))
+				isValid = true;
+			else if (dtString.equalsIgnoreCase("off"))
+				isValid = true;
+		}
 		
 		return isValid;
 	}

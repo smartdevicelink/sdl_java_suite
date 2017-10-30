@@ -14,14 +14,16 @@ import com.smartdevicelink.test.Validator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnSdlChoiceChosen}
+ * {@link com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen}
  */
 public class OnSdlChoiceChosenTests extends BaseRpcTests{
+
+    SdlChoice sdlChoice;
 
     @Override
     protected RPCMessage createMessage(){
         OnSdlChoiceChosen msg = new OnSdlChoiceChosen();                
-        SdlChoice sdlChoice = msg.new SdlChoice(Test.GENERAL_CHOICE);
+        sdlChoice = msg.new SdlChoice(Test.GENERAL_CHOICE);
         
         msg.setTriggerSource(Test.GENERAL_TRIGGERSOURCE);
 		msg.setSdlChoice(sdlChoice);
@@ -45,7 +47,7 @@ public class OnSdlChoiceChosenTests extends BaseRpcTests{
 
         try{
             result.put(OnSdlChoiceChosen.KEY_TRIGGER_SOURCE, Test.GENERAL_TRIGGERSOURCE);
-            result.put(OnSdlChoiceChosen.KEY_SDL_CHOICE, Test.JSON_CHOICE);
+            result.put(OnSdlChoiceChosen.KEY_SDL_CHOICE, sdlChoice);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }

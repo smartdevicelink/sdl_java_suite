@@ -1,11 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Speaks a phrase over the vehicle audio system using SDL's TTS
@@ -135,22 +134,7 @@ public class Speak extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<TTSChunk> getTtsChunks() {
-    	if (parameters.get(KEY_TTS_CHUNKS) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_TTS_CHUNKS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TTSChunk) {
-	                return (List<TTSChunk>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TTSChunk> newList = new ArrayList<TTSChunk>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TTSChunk((Hashtable<String, Object>)hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-    	}
-        return null;
+		return (List<TTSChunk>) getObject(TTSChunk.class, KEY_TTS_CHUNKS);
     }
 	/**
 	 * Sets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
@@ -169,10 +153,6 @@ public class Speak extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setTtsChunks( List<TTSChunk> ttsChunks ) {
-        if (ttsChunks != null) {
-            parameters.put(KEY_TTS_CHUNKS, ttsChunks );
-        } else {
-            parameters.remove(KEY_TTS_CHUNKS);
-        }
+		setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 }

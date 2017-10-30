@@ -122,7 +122,7 @@ public class DiagLevelTests extends TestCase {
 			assertFalse(Test.FALSE, DiagLevel.isValidDetailLevel(testInvalidS));
 			assertFalse(Test.FALSE, DiagLevel.isValidDetailLevel(null));
 			assertNull(Test.NULL, DiagLevel.getLevel(null));
-			DiagLevel.setLevel(null, null);		
+			DiagLevel.setLevel(null, null);
 			DiagLevel.setAllLevels(null);
 		} catch (NullPointerException e) {
 			fail("NullPointerException was thrown when attempting to set null values.");

@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 /**
  * Describes the type of vehicle the mobile phone is connected with.
@@ -81,7 +81,7 @@ public class VehicleType extends RPCStruct {
      * @return the make of the vehicle
      */
     public String getMake() {
-        return (String) store.get(KEY_MAKE);
+        return getString(KEY_MAKE);
     }
     
     /**
@@ -89,11 +89,7 @@ public class VehicleType extends RPCStruct {
      *@param make the make of the vehicle
      */
     public void setMake(String make) {
-        if (make != null) {
-            store.put(KEY_MAKE, make);
-        } else {
-        	store.remove(KEY_MAKE);
-        }
+        setValue(KEY_MAKE, make);
     }
     
     /**
@@ -101,7 +97,7 @@ public class VehicleType extends RPCStruct {
      * @return the model of the vehicle
      */
     public String getModel() {
-        return (String) store.get(KEY_MODEL);
+        return getString(KEY_MODEL);
     }
     
     /**
@@ -109,11 +105,7 @@ public class VehicleType extends RPCStruct {
      * @param model the model of the vehicle
      */
     public void setModel(String model) {
-        if (model != null) {
-            store.put(KEY_MODEL, model);
-        } else {
-        	store.remove(KEY_MODEL);
-        }
+        setValue(KEY_MODEL, model);
     }
     
     /**
@@ -121,7 +113,7 @@ public class VehicleType extends RPCStruct {
      * @return the model year of the vehicle
      */
     public String getModelYear() {
-        return (String) store.get(KEY_MODEL_YEAR);
+        return getString(KEY_MODEL_YEAR);
     }
     
     /**
@@ -129,11 +121,7 @@ public class VehicleType extends RPCStruct {
      * @param modelYear the model year of the vehicle
      */
     public void setModelYear(String modelYear) {
-        if (modelYear != null) {
-            store.put(KEY_MODEL_YEAR, modelYear);
-        } else {
-        	store.remove(KEY_MODEL_YEAR);
-        }
+        setValue(KEY_MODEL_YEAR, modelYear);
     }
     
     /**
@@ -141,7 +129,7 @@ public class VehicleType extends RPCStruct {
      * @return the trim of the vehicle
      */
     public String getTrim() {
-        return (String) store.get(KEY_TRIM);
+        return getString(KEY_TRIM);
     }
     
     /**
@@ -149,10 +137,6 @@ public class VehicleType extends RPCStruct {
      * @param trim the trim of the vehicle
      */
     public void setTrim(String trim) {
-        if (trim != null) {
-            store.put(KEY_TRIM, trim);
-        } else {
-        	store.remove(KEY_TRIM);
-        }
+        setValue(KEY_TRIM, trim);
     }
 }

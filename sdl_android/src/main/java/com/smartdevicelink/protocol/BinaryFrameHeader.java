@@ -44,7 +44,7 @@ public class BinaryFrameHeader {
 				System.arraycopy(binHeader, 12 + _jsonSize, _bulkData, 0, _bulkData.length);
 				msg.setBulkData(_bulkData);
 			}
-		} catch (OutOfMemoryError e){
+		} catch (OutOfMemoryError|ArrayIndexOutOfBoundsException e){
 			Log.e(TAG, "Unable to process data to form header");
 			return null;
 		}

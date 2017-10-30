@@ -12,7 +12,7 @@
         "Header Line 4"
       ],
       "position":11,
-      "timeout":30000,
+      "timeout":30000
     }
   },
   "response":{

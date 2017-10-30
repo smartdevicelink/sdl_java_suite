@@ -65,44 +65,22 @@ public class VrHelpItem extends RPCStruct {
         super(hash);
     }
     public void setText(String text) {
-        if (text != null) {
-            store.put(KEY_TEXT, text);
-        } else {
-        	store.remove(KEY_TEXT);
-        }
+        setValue(KEY_TEXT, text);
     }
     public String getText() {
-        return (String) store.get(KEY_TEXT);
+        return getString(KEY_TEXT);
     }
     public void setImage(Image image) {
-        if (image != null) {
-            store.put(KEY_IMAGE, image);
-        } else {
-        	store.remove(KEY_IMAGE);
-        }
+        setValue(KEY_IMAGE, image);
     }
     @SuppressWarnings("unchecked")
     public Image getImage() {
-    	Object obj = store.get(KEY_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
-            }
-        }
-        return null;
+        return (Image) getObject(Image.class, KEY_IMAGE);
     }
     public void setPosition(Integer position) {
-        if (position != null) {
-            store.put(KEY_POSITION, position);
-        } else {
-        	store.remove(KEY_POSITION);
-        }
+        setValue(KEY_POSITION, position);
     }
     public Integer getPosition() {
-        return (Integer) store.get(KEY_POSITION);
+        return getInteger(KEY_POSITION);
     }
 }

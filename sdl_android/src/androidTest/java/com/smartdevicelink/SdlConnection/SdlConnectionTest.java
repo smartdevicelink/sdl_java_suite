@@ -3,6 +3,7 @@ package com.smartdevicelink.SdlConnection;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
+import com.smartdevicelink.test.util.DeviceUtil;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -41,16 +42,15 @@ public class SdlConnectionTest extends AndroidTestCase {
 		
 		assertNotNull(SdlConnectionTestClass.cachedMultiConfig);
 		
-		
-		
 		connection.forceHardwareConnectEvent(TransportType.MULTIPLEX);
 		assertFalse(connection.connected);
-		
-		assertNotNull(SdlConnectionTestClass.cachedMultiConfig.getService());
 
+		SdlConnectionTestClass.cachedMultiConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 		
-		assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
-		
+		if(!DeviceUtil.isEmulator()) { // Cannot perform MBT operations in emulator
+			assertNotNull(SdlConnectionTestClass.cachedMultiConfig.getService());
+			assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
+		}
 		
 		// Test for handling of null service
 		MultiplexTransportConfig null_service_config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
@@ -72,7 +72,11 @@ public class SdlConnectionTest extends AndroidTestCase {
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
 		MultiplexTransportConfig config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
 		SdlConnection connection = new SdlConnection(config,rsvp);
-		assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
+		if(DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
+			assertEquals(TransportType.BLUETOOTH, connection.getCurrentTransportType());
+		}else{
+			assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
+		}
 	}
 	
 	public void testMultiplexConstructorInsalledFrom(){
