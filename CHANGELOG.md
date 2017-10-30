@@ -1,37 +1,48 @@
-# 4.3.0 Release Notes
+# 4.4.0 Release Notes
 
 ### API New Features & Breaking Changes
-* The library has now moved to Android Studio as its default IDE. All files and folders have been moved to align with proper Android Studio project structure.
-* The target API level is now `19` instead of `18`. Apps will also need to target this version or higher to continue using this library.
-* `Java 7` is now used to compile the library and its features can be used moving forward. 
+- Now uses compile version 26 to handle breaking changes in Android Oreo
+- `MOBILE_PROJECTION` added as an app type
+- Gesture cancellation was added as a touch even type
+- More languages were added to the `Language` enum
+- `SystemCapaibilityQuery` was added with a new `SystemCapabilityManager` that can retrieve capabilities
+- `VideoStreamingCapabilities` were added. Includes supported codecs, resolution, etc
+- Added constructed payloads using BSON
+- SDL Remote Control functionality was added. Supports radio and climate controls.
+- Added `MetadataType` to `Show` lines
+- Spatial data for video streaming apps added with `HapticData`
+
 
 ### Enhancements
-* Multiplexing bluetooth, legacy bluetooth, and TCP transport has been improved in performance by switching to buffer reads vs single byte read from transport.
-* Trusted router service checking feature is now adjustable by developers. 
-* More unit tests were created.
-* Router service will now check to make sure the app that propagated it has permissions to use bluetooth. 
-* Packet streaming classes will now use the agreed upon MTU instead of the hardcoded 1024 when the stream is not encrypted.
-* App IDs sent between the client apps and the router service are now Strings instead of Longs to support longer IDs.
+- Enhanced video streaming APIs
+- Added much more test coverage
+- Updated buffer read in sizes and streaming packetizers to use TLS max record size
+- Consolidated all references to `sdl.router.startservice` string into single constant
+- Refactored RPC classes to consolidate redundant code for retrieving items from underlying data structures
+- `MultiplexBluetoothTransport` is no longer a singleton
+- Improved inline documentation
+- h.264 streaming now includes SPS/PPS NAL units with every I frame to match iOS library
+- Real-time Transport Protocol (RTP) video streaming is now supported
+- Correlation IDs are now set automatically. Can be retrieved or overwritten by developer.
+- Introduced new video streaming callback and deprecated used of pipped streams
+- Added an internal interface for common functions between different managers
 
 ### Bug Fixes
-* Fixed issue with AOA transport not clearing old accessory reference after disconnect
-* Fixed missing setting of error state in multiplexing bluetooth transport
-* Fixed potential OOMs when corrupted packets are recieved in:
- *  `SdlPsm`
- *  `WiProProtocol`
- *  `BinaryFrameHeader`
-* Fixed possible NPEs in:
- * `SdlRouterService` when checking for correct process
- * `MultiplexingBluetoothTransport` during reads and writes
- * `SdlConnection` during session registration
- * `SdlProxyBase` when clearing RPC response and notification listeners during close 
- * `TransportBroker` when sending a message to router service
- * `SdlBroadcastReceiver` during check for running router service
- * `HttpRequestTask` that happens when a server can't be reached
- * `SdlSecurityBase` when a security lib would become initialized after the base has been reset. 
-* Added synchronization to a cancel call in the `MultiplexTransport`
-* Refactor code in `SdlBroadcastReceiver` to protect against a potential SecurityException
-* Added try/catch around bluetooth system calls that can fail in Android classes
-* Added try/catch when attempting to build `LocalRouterService` object from parcel when parcel could be corrupt
-* Fixed version checking flow in the router service to be cleaner and correctly synched
+- Fixed potential out of bounds exception in `BinaryFrameHeader` 
+- Fixed issues with unit tests and TravisCI
+- Fixed potential NPE in `SdlProxyBase`method, `performBaseCommon()` 
+- Fixed potential NPE in `MultiplexTransport` constructor 
+- Fixed potential NPE in `SdlRouterService`method, `handleMessaage()` for `AltTransportHandler` 
+- Fixed potential NPE in `SdlRouterService`method, `writeBytesToTransport()`
+- Removed hardcoded `androidDebuggable = "true"` from manifest
+- Added fixes to be compatible with Android Oreo (Does not supported target API level 26 yet)
+- Fixed issue where intent from router service was delayed
+- Apps now trust themselves as router service hosts
+- Removed ambiguous validation call in `SdlBroadcastReceiver` and unused intent extra
+- Cleared all warnings from `SdlProxyBase`
 
+### Meta
+- Added integration that will deploy to Bintray
+- Issue and pull request templates were added for GitHub
+- Codecov integration was added
+- Updated README links
