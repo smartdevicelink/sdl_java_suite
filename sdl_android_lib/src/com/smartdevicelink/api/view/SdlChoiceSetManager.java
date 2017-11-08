@@ -175,7 +175,7 @@ public class SdlChoiceSetManager {
     //TODO: Make private
     boolean unregisterSdlChoiceSet(SdlChoiceSet choiceSetName){
         if(hasBeenUploaded(choiceSetName)){
-            mChoiceSetsUploaded.remove(choiceSetName);
+            mChoiceSetsUploaded.remove(choiceSetName.getChoiceSetId());
             return true;
         }else
             return false;
@@ -183,7 +183,7 @@ public class SdlChoiceSetManager {
 
     SdlChoiceSet grabUploadedChoiceSet(SdlChoiceSet choiceSetName) {
         if (hasBeenUploaded(choiceSetName))
-            return mChoiceSetsUploaded.get(choiceSetName);
+            return mChoiceSetsUploaded.get(choiceSetName.getChoiceSetId());
         else
             return null;
     }
