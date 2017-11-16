@@ -276,6 +276,11 @@ public abstract class SdlActivity extends SdlContextAbsImpl {
     }
 
     @Override
+    public final String getModuleVersion() {
+        return getSdlApplicationContext().getModuleVersion();
+    }
+
+    @Override
     public final Language getConnectedLanguage() {
         return getSdlApplicationContext().getConnectedLanguage();
     }
