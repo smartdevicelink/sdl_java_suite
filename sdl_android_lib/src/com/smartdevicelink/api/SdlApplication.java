@@ -393,6 +393,17 @@ public class SdlApplication extends SdlContextAbsImpl {
     }
 
     @Override
+    public String getModuleVersion() {
+        if(mSdlProxyALM == null) return null;
+        try{
+            return mSdlProxyALM.getSystemSoftwareVersion();
+        } catch (SdlException e) {
+            Log.e(TAG, "Unable to retrieve SystemSoftwareVersion");
+            return null;
+        }
+    }
+
+    @Override
     public Language getConnectedLanguage() {
         return mConnectedLanguage;
     }

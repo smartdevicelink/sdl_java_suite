@@ -59,6 +59,8 @@ public interface SdlContext {
 
     SdlMsgVersion getSdlMessageVersion();
 
+    String getModuleVersion();
+
     Language getConnectedLanguage();
 
     DriverDistractionState getCurrentDDState();
