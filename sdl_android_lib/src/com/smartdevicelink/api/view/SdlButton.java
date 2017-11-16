@@ -1,6 +1,7 @@
 package com.smartdevicelink.api.view;
 
 import com.smartdevicelink.api.file.SdlImage;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
 public class SdlButton {
 
@@ -10,6 +11,7 @@ public class SdlButton {
     private SdlImage mSdlImage;
     private boolean isGraphicOnly;
     private boolean isHighlighted;
+    private SystemAction mSystemAction = SystemAction.DEFAULT_ACTION;
 
     public SdlButton(String text, OnPressListener listener){
         mText = text;
@@ -57,4 +59,8 @@ public class SdlButton {
     public boolean isHighlighted() { return isHighlighted; }
 
     public void setHighlighted(boolean highlighted) {isHighlighted = highlighted;}
+
+    public SystemAction getSystemAction(){return mSystemAction;}
+
+    public void setSystemAction(SystemAction systemAction){mSystemAction = systemAction;}
 }

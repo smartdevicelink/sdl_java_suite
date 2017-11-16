@@ -6,7 +6,6 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
-import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +38,7 @@ class SdlInteractionButtonManager {
                     softButtonFromSdlButton.setType(SoftButtonType.SBT_TEXT);
                 }
                 softButtonFromSdlButton.setIsHighlighted(button.isHighlighted());
-                softButtonFromSdlButton.setSystemAction(SystemAction.DEFAULT_ACTION);
+                softButtonFromSdlButton.setSystemAction(button.getSystemAction());
                 if(button.getSdlImage()!=null){
                     if(context.getSdlFileManager().isFileOnModule(button.getSdlImage().getSdlName())){
                         Image image = new Image();
