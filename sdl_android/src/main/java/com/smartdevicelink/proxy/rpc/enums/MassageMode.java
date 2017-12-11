@@ -1,12 +1,15 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
-public enum ModuleType {
-    CLIMATE,
-    RADIO,
-    SEAT,
+/**
+ * List possible modes of a massage zone.
+ */
+public enum MassageMode {
+    OFF,
+    LOW,
+    HIGH,
     ;
 
-    public static ModuleType valueForString(String value) {
+    public static MassageMode valueForString(String value) {
         try{
             return valueOf(value);
         }catch(Exception e){

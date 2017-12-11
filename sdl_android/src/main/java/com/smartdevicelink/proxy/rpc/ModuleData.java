@@ -12,6 +12,7 @@ public class ModuleData extends RPCStruct{
     public static final String KEY_MODULE_TYPE= "moduleType";
     public static final String KEY_RADIO_CONTROL_DATA = "radioControlData";
     public static final String KEY_CLIMATE_CONTROL_DATA = "climateControlData";
+    public static final String KEY_SEAT_CONTROL_DATA = "seatControlData";
 
     public ModuleData() {
     }
@@ -80,5 +81,23 @@ public class ModuleData extends RPCStruct{
      */
     public ClimateControlData getClimateControlData() {
         return (ClimateControlData) getObject(ClimateControlData.class, KEY_CLIMATE_CONTROL_DATA);
+    }
+
+    /**
+     * Sets the seatControlData portion of the ModuleData class
+     *
+     * @param seatControlData
+     */
+    public void setSeatControlData(SeatControlData seatControlData) {
+        setValue(KEY_SEAT_CONTROL_DATA, seatControlData);
+    }
+
+    /**
+     * Gets the seatControlData portion of the ModuleData class
+     *
+     * @return SeatControlData
+     */
+    public SeatControlData getSeatControlData() {
+        return (SeatControlData) getObject(SeatControlData.class, KEY_SEAT_CONTROL_DATA);
     }
 }
