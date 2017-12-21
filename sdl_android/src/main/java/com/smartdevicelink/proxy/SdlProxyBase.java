@@ -6390,7 +6390,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
-				stopStreaming();
+				if(remoteDisplay!=null){
+					stopStreaming();
+				}
 			}
 		}
 
