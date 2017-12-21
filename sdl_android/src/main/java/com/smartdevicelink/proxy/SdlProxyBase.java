@@ -6299,9 +6299,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void stopStreaming(){
 			if(remoteDisplay!=null){
 				remoteDisplay.stop();
+				remoteDisplay = null;
 			}
 			if(encoder!=null){
 				encoder.shutDown();
+			}
+			if(internalInterface!=null){
+				internalInterface.stopVideoService();
 			}
 		}
 
@@ -6386,9 +6390,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
-				dispose();
+				if(remoteDisplay!=null){
+					stopStreaming();
+				}
 			}
-
 		}
 
 		@Override
