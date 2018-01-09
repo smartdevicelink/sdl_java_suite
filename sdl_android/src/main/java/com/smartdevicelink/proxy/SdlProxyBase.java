@@ -5161,6 +5161,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
 			String appID, Integer correlationID)
 			throws SdlException {
+		Log.w(TAG, " registerAppInterfacePrivate()");
 		String carrierName = null;
 		if(telephonyManager != null){
 			carrierName = telephonyManager.getNetworkOperatorName();
@@ -5174,6 +5175,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			if (_lastHashID != null)
 				msg.setHashID(_lastHashID);
+			Log.w(TAG, " registerAppInterfacePrivate() ->   msg.setHashID(_lastHashID)" + _lastHashID);
 		}
 		
 		Intent sendIntent = createBroadcastIntent();

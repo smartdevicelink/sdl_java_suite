@@ -36,7 +36,8 @@ public class TransportBroker {
 	private String appId = null;
 	private String whereToReply = null;
 	private Context currentContext = null;
-	
+	private static String savedSessionID = null;
+
 	private final Object INIT_LOCK = new Object();
 	
 	private TransportType queuedOnTransportConnect = null;
@@ -173,7 +174,10 @@ public class TransportBroker {
             			// yay! we have been registered. Now what?
             			broker.registeredWithRouterService = true;
             			if(bundle !=null){
-            				if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+							if(savedSessionID == null && bundle.getString(TransportConstants.SESSION_ID_EXTRA) !=null) {
+								savedSessionID = bundle.getString(TransportConstants.SESSION_ID_EXTRA);
+							}
+							if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
             					if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
             						//Keep track if we actually get this
             					}
@@ -214,7 +218,9 @@ public class TransportBroker {
             	case TransportConstants.ROUTER_RECEIVED_PACKET:
             		//So the intent has a packet with it. PEFRECT! Let's send it through the library
         			int flags = bundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
-
+					if(savedSessionID == null && bundle.getString(TransportConstants.SESSION_ID_EXTRA) !=null) {
+						savedSessionID = bundle.getString(TransportConstants.SESSION_ID_EXTRA);
+					}
         			if(bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)){
             			Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
 
@@ -527,9 +533,16 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REGISTER_CLIENT;
 			msg.replyTo = this.clientMessenger;
 			Bundle bundle = new Bundle();
-			bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId)); //We send this no matter what due to us not knowing what router version we are connecting to
-			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
-			msg.setData(bundle);
+			if(savedSessionID == null) {
+				bundle.putLong(TransportConstants.APP_ID_EXTRA, convertAppId(appId)); //We send this no matter what due to us not knowing what router version we are connecting to
+				bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
+				msg.setData(bundle);
+			} else {
+				bundle.putLong(TransportConstants.APP_ID_EXTRA, convertAppId(appId)); //We send this no matter what due to us not knowing what router version we are connecting to
+				bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
+				bundle.putString(TransportConstants.SESSION_ID_EXTRA, savedSessionID);
+				msg.setData(bundle);
+			}
 			sendMessageToRouterService(msg);
 		}
 		
