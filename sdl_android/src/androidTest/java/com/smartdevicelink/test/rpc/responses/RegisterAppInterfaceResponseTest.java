@@ -32,7 +32,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.RegisterAppInterfaceResponse}
+ * {@link com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse}
  */
 public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 
@@ -49,6 +49,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		msg.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
 		msg.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		msg.setAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);
+		msg.setPcmStreamingCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);
 		msg.setHmiZoneCapabilities(Test.GENERAL_HMIZONECAPABILITIES_LIST);
 		msg.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
 		msg.setVrCapabilities(Test.GENERAL_VRCAPABILITIES_LIST);
@@ -84,6 +85,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			result.put(RegisterAppInterfaceResponse.KEY_BUTTON_CAPABILITIES, Test.JSON_BUTTONCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_SOFT_BUTTON_CAPABILITIES, Test.JSON_SOFTBUTTONCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_AUDIO_PASS_THRU_CAPABILITIES, Test.JSON_AUDIOPASSTHRUCAPABILITIES);
+			result.put(RegisterAppInterfaceResponse.KEY_PCM_STREAM_CAPABILITIES, Test.JSON_AUDIOPASSTHRUCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_SPEECH_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_SPEECHCAPABILITIES_LIST));
 			result.put(RegisterAppInterfaceResponse.KEY_VR_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_VRCAPABILITIES_LIST));	
 			result.put(RegisterAppInterfaceResponse.KEY_HMI_ZONE_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_HMIZONECAPABILITIES_LIST));
