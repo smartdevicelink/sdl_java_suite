@@ -273,8 +273,8 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 		<tr>
 	 * 			<td>PCM_STREAMING</td>
-	 * 			<td>List<AudioPassThruCapabilities></td>
-	 * 			<td>Returns a List of AudioPassThruCapabilities</td>
+	 * 			<td>AudioPassThruCapabilities</td>
+	 * 			<td>Returns a AudioPassThruCapabilities Object</td>
 	 * 			<td align=center>N</td>
 	 * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
 	 * 		</tr>
