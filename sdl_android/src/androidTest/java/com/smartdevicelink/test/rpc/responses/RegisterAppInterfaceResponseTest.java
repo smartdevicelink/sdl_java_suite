@@ -49,7 +49,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		msg.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
 		msg.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		msg.setAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);
-		msg.setPcmStreamingCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);
+		msg.setPcmStreamingCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES);
 		msg.setHmiZoneCapabilities(Test.GENERAL_HMIZONECAPABILITIES_LIST);
 		msg.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
 		msg.setVrCapabilities(Test.GENERAL_VRCAPABILITIES_LIST);
@@ -85,7 +85,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			result.put(RegisterAppInterfaceResponse.KEY_BUTTON_CAPABILITIES, Test.JSON_BUTTONCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_SOFT_BUTTON_CAPABILITIES, Test.JSON_SOFTBUTTONCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_AUDIO_PASS_THRU_CAPABILITIES, Test.JSON_AUDIOPASSTHRUCAPABILITIES);
-			result.put(RegisterAppInterfaceResponse.KEY_PCM_STREAM_CAPABILITIES, Test.JSON_AUDIOPASSTHRUCAPABILITIES);
+			result.put(RegisterAppInterfaceResponse.KEY_PCM_STREAM_CAPABILITIES, Test.JSON_PCMSTREAMCAPABILITIES);
 			result.put(RegisterAppInterfaceResponse.KEY_SPEECH_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_SPEECHCAPABILITIES_LIST));
 			result.put(RegisterAppInterfaceResponse.KEY_VR_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_VRCAPABILITIES_LIST));	
 			result.put(RegisterAppInterfaceResponse.KEY_HMI_ZONE_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_HMIZONECAPABILITIES_LIST));
@@ -116,7 +116,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		Language testLang = ( (RegisterAppInterfaceResponse) msg ).getLanguage();
 		SdlMsgVersion testMsgVersion = ( (RegisterAppInterfaceResponse) msg ).getSdlMsgVersion();
 		List<AudioPassThruCapabilities> testAptc = ( (RegisterAppInterfaceResponse) msg ).getAudioPassThruCapabilities();
-		List<AudioPassThruCapabilities> testPcmStream = ( (RegisterAppInterfaceResponse) msg ).getPcmStreamingCapabilities();
+		AudioPassThruCapabilities testPcmStream = ( (RegisterAppInterfaceResponse) msg ).getPcmStreamingCapabilities();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST, testSupportedDiagModes);
@@ -133,7 +133,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, testLang);
 		assertTrue(Test.TRUE, Validator.validateSdlMsgVersion(Test.GENERAL_SDLMSGVERSION, testMsgVersion));
 		assertTrue(Test.TRUE, Validator.validateAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, testAptc));
-		assertTrue(Test.TRUE, Validator.validateAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, testPcmStream));
+		assertTrue(Test.TRUE, Validator.validatePcmStreamCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES, testPcmStream));
 
 		// Invalid/Null Tests
 		RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse();
@@ -180,7 +180,11 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			JSONObject vehicleTypeObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_VEHICLE_TYPE);
 			VehicleType vehicleType = new VehicleType(JsonRPCMarshaller.deserializeJSONObject(vehicleTypeObj));
 			assertTrue(Test.TRUE,  Validator.validateVehicleType(vehicleType, cmd.getVehicleType()));
-			
+
+			JSONObject pcmStreamObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_PCM_STREAM_CAPABILITIES);
+			AudioPassThruCapabilities pcmStreamCap = new AudioPassThruCapabilities(JsonRPCMarshaller.deserializeJSONObject(pcmStreamObj));
+			assertTrue(Test.TRUE,  Validator.validatePcmStreamCapabilities(pcmStreamCap, cmd.getPcmStreamingCapabilities()));
+
 			JSONArray speechCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_SPEECH_CAPABILITIES);
 			for (int index = 0; index < speechCapabilitiesArray.length(); index++) {
 				SpeechCapabilities speechCapability = SpeechCapabilities.valueForString( speechCapabilitiesArray.get(index).toString() );
@@ -201,15 +205,6 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 				audioPassThruCapabilitiesList.add(audioPassThruCapability);
 			}
 			assertTrue(Test.TRUE, Validator.validateAudioPassThruCapabilities(audioPassThruCapabilitiesList, cmd.getAudioPassThruCapabilities() ));
-
-			JSONArray pcmStreamCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_PCM_STREAM_CAPABILITIES);
-			List<AudioPassThruCapabilities> pcmStreamCapabilitiesList = new ArrayList<AudioPassThruCapabilities>();
-			for (int index = 0; index < pcmStreamCapabilitiesArray.length(); index++) {
-				AudioPassThruCapabilities pcmStreamCapability =
-						new AudioPassThruCapabilities(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)pcmStreamCapabilitiesArray.get(index) ));
-				pcmStreamCapabilitiesList.add(pcmStreamCapability);
-			}
-			assertTrue(Test.TRUE, Validator.validateAudioPassThruCapabilities(pcmStreamCapabilitiesList, cmd.getPcmStreamingCapabilities() ));
 
 			JSONArray hmiZoneCapabilitiesArray = JsonUtils.readJsonArrayFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_HMI_ZONE_CAPABILITIES);
 			for (int index = 0; index < hmiZoneCapabilitiesArray.length(); index++) {

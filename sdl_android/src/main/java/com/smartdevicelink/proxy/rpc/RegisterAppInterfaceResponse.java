@@ -307,14 +307,14 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return pcmStreamingCapabilities
 	 */
 	@SuppressWarnings("unchecked")
-	public List<AudioPassThruCapabilities> getPcmStreamingCapabilities() {
-		return (List<AudioPassThruCapabilities>) getObject(AudioPassThruCapabilities.class, KEY_PCM_STREAM_CAPABILITIES);
+	public AudioPassThruCapabilities getPcmStreamingCapabilities() {
+		return (AudioPassThruCapabilities) getObject(AudioPassThruCapabilities.class, KEY_PCM_STREAM_CAPABILITIES);
 	}
 	/**
 	 * Sets pcmStreamingCapabilities
 	 * @param pcmStreamingCapabilities
 	 */
-	public void setPcmStreamingCapabilities(List<AudioPassThruCapabilities> pcmStreamingCapabilities) {
+	public void setPcmStreamingCapabilities(AudioPassThruCapabilities pcmStreamingCapabilities) {
 		setParameters(KEY_PCM_STREAM_CAPABILITIES, pcmStreamingCapabilities);
 	}
     public String getProxyVersionInfo() {
