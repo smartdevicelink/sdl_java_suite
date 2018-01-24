@@ -84,6 +84,7 @@ public class SystemCapabilityManager {
 		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
 		if(capability != null){
 			scListener.onCapabilityRetrieved(capability);
+			return;
 		}else if(scListener == null){
 			return;
 		}
