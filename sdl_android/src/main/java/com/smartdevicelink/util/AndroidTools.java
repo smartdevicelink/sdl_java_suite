@@ -49,4 +49,16 @@ public class AndroidTools {
 		return sdlMultiList;
 	}
 
+	/**
+	 * Checks if the given Intent can be resolved.
+	 * @param pm the PackageManager to use
+	 * @param i the intent to be checked
+	 * @return true if the intent can be resolve; false otherwise
+	 */
+	public static boolean isIntentAvailable(PackageManager pm, Intent i) {
+		List<ResolveInfo> list = pm.queryIntentServices(i, PackageManager.MATCH_DEFAULT_ONLY);
+
+		return list.size() > 1;
+	}
+
 }
