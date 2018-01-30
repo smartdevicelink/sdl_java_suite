@@ -222,9 +222,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 									return 0;
 								}
 							});
+							serviceIntent = new Intent();
+							String pkgName;
 							do {
-								serviceIntent = new Intent();
-								String pkgName = apps.remove(0).activityInfo.packageName;
+								pkgName = apps.remove(0).activityInfo.packageName;
 								serviceIntent.setComponent(new ComponentName(pkgName, pkgName + ".SdlRouterService"));
 								if (packageManager.resolveService(serviceIntent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
 									break;
