@@ -222,11 +222,14 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 									return 0;
 								}
 							});
-							serviceIntent = buildStartServiceIntent(apps.remove(0));
-							while (!AndroidTools.isIntentAvailable(packageManager, serviceIntent)
-									&& apps.size() > 0) {
-								serviceIntent = buildStartServiceIntent(apps.remove(0));
-							}
+							do {
+								serviceIntent = new Intent();
+								String pkgName = apps.remove(0).activityInfo.packageName;
+								serviceIntent.setComponent(new ComponentName(pkgName, pkgName + ".SdlRouterService"));
+								if (packageManager.resolveService(serviceIntent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+									break;
+								}
+							} while (apps.size() > 1);
 						} else{
 							Log.d(TAG, "No router service running, starting ours");
 							//So let's start up our service since no copy is running
@@ -254,19 +257,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			});
 			return true;
 		}
-	}
-
-	/**
-	 * Given a ResolveInfo object, builds an intent to start the SdlRouterService service with info from the ResolveInfo object
-	 * @param info ResolveInfo object to use
-	 * @return intent to start an SdlRouterService service
-	 */
-	private Intent buildStartServiceIntent(ResolveInfo info) {
-		Intent i = new Intent();
-		String pkgName = info.activityInfo.packageName;
-		i.setComponent(new ComponentName(pkgName, pkgName + ".SdlRouterService"));
-
-		return i;
 	}
 
 	private void wakeRouterServiceAltTransport(Context context){
