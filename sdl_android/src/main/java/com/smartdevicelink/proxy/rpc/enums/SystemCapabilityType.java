@@ -62,6 +62,13 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
  * 		</tr>
  * 		<tr>
+ * 			<td>PCM_STREAMING</td>
+ * 			<td>AudioPassThruCapabilities</td>
+ * 			<td>Returns an AudioPassThruCapabilities Object</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>BUTTON</td>
  * 			<td>List<ButtonCapabilities></td>
  * 			<td>Returns a List of ButtonCapabilities</td>
