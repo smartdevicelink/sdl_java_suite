@@ -1915,6 +1915,29 @@ public class Validator{
     	
     	return true;
     }
+
+	public static boolean validatePcmStreamCapabilities (AudioPassThruCapabilities item1, AudioPassThruCapabilities item2) {
+		if (item1 == null) {
+			return ( item2 == null );
+		}
+		if (item2 == null) {
+			return ( item1 == null );
+		}
+
+		if (item1.getAudioType() != item2.getAudioType()) {
+			return false;
+		}
+
+		if (item1.getBitsPerSample() != item2.getBitsPerSample()) {
+			return false;
+		}
+
+		if (item1.getSamplingRate() != item2.getSamplingRate()) {
+			return false;
+		}
+
+		return true;
+	}
     
     public static boolean validatePresetBankCapabilities (PresetBankCapabilities item1, PresetBankCapabilities item2) {
     	if (item1 == null) {

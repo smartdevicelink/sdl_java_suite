@@ -62,6 +62,13 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
  * 		</tr>
  * 		<tr>
+ * 			<td>PCM_STREAMING</td>
+ * 			<td>AudioPassThruCapabilities</td>
+ * 			<td>Returns an AudioPassThruCapabilities Object</td>
+ * 			<td align=center>N</td>
+ * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>BUTTON</td>
  * 			<td>List<ButtonCapabilities></td>
  * 			<td>Returns a List of ButtonCapabilities</td>
@@ -259,6 +266,28 @@ public enum SystemCapabilityType {
 	 * 	</table>
 	 */
     AUDIO_PASSTHROUGH,
+
+	/**
+	 * Available Synchronously after Register App Interface response <br>
+	 * <b>Note:</b> @SuppressWarnings("unchecked") may be needed when casting depending on implementation
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>PCM_STREAMING</td>
+	 * 			<td>AudioPassThruCapabilities</td>
+	 * 			<td>Returns a AudioPassThruCapabilities Object</td>
+	 * 			<td align=center>N</td>
+	 * 			<td>Available Synchronously <strong>after</strong> Register App Interface response. @SuppressWarnings("unchecked") may be needed when casting depending on implementation</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	PCM_STREAMING,
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
