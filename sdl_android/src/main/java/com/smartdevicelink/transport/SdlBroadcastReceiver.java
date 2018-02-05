@@ -18,6 +18,7 @@ import android.util.Log;
 
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
 import java.util.Collection;
@@ -201,35 +202,16 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						//If there isn't a service running we should try to start one
 						//We will try to sort the SDL enabled apps and find the one that's been installed the longest
 						Intent serviceIntent;
-						final PackageManager packageManager = context.getPackageManager();
-						Vector<ResolveInfo> apps = new Vector(AndroidTools.getSdlEnabledApps(context, "").values()); //we want our package
-						if (apps != null && !apps.isEmpty()) {
-							Collections.sort(apps, new Comparator<ResolveInfo>() {
-								@Override
-								public int compare(ResolveInfo resolveInfo, ResolveInfo t1) {
-									try {
-										PackageInfo thisPack = packageManager.getPackageInfo(resolveInfo.activityInfo.packageName, 0);
-										PackageInfo itPack = packageManager.getPackageInfo(t1.activityInfo.packageName, 0);
-										if (thisPack.lastUpdateTime < itPack.lastUpdateTime) {
-											return -1;
-										} else if (thisPack.lastUpdateTime > itPack.lastUpdateTime) {
-											return 1;
-										}
-
-									} catch (PackageManager.NameNotFoundException e) {
-										e.printStackTrace();
-									}
-									return 0;
-								}
-							});
-							String packageName = apps.get(0).activityInfo.packageName;
+						List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator());
+						if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
+							Log.i(TAG, "List size: " + sdlAppInfoList.size());
+							Log.d(TAG, "Router service to start = \n" + sdlAppInfoList.get(0));
 							serviceIntent = new Intent();
-							serviceIntent.setComponent(new ComponentName(packageName, packageName +".SdlRouterService"));
-						} else{
-							Log.d(TAG, "No router service running, starting ours");
-							//So let's start up our service since no copy is running
-							serviceIntent = new Intent(context, localRouterClass);
+							serviceIntent.setComponent(sdlAppInfoList.get(0).getRouterServiceComponentName());
 
+						} else{
+							Log.d(TAG, "No sdl apps found");
+							return;
 						}
 						if (altTransportWake) {
 							serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
@@ -242,7 +224,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							Log.e(TAG, "Security exception, process is bad");
 						}
 					} else {
-						if (altTransportWake && runningBluetoothServicePackage != null && runningBluetoothServicePackage.size() > 0) {
+						if (altTransportWake) {
 							wakeRouterServiceAltTransport(context);
 							return;
 						}

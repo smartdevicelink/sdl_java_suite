@@ -42,6 +42,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -111,7 +112,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 4;	
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 5;
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -144,11 +145,9 @@ public class SdlRouterService extends Service{
 	private TransportType connectedTransportType = null;
 	private static Context currentContext = null;
     
-    private Handler versionCheckTimeOutHandler, altTransportTimerHandler;
-    private Runnable versionCheckRunable, altTransportTimerRunnable;
-    private LocalRouterService localCompareTo = null;
-    private final static int VERSION_TIMEOUT_RUNNABLE = 1500;
-    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000; 
+    private Handler  altTransportTimerHandler;
+    private Runnable  altTransportTimerRunnable;
+    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000;
 	
     private boolean wrongProcess = false;
 	private boolean initPassed = false;
@@ -166,8 +165,7 @@ public class SdlRouterService extends Service{
 	private ExecutorService packetExecuter = null; 
 	PacketWriteTaskMaster packetWriteTaskMaster = null;
 
-	private static LocalRouterService selfRouterService;
-	
+
 	/**
 	 * This flag is to keep track of if we are currently acting as a foreground service
 	 */
@@ -232,54 +230,7 @@ public class SdlRouterService extends Service{
 
 		Log.i(TAG, app.appId + " has just been registered with SDL Router Service");
 	}
-	
-	
-	 /**
-	  * this is to make sure the AceeptThread is still running
-	  */
-		BroadcastReceiver registerAnInstanceOfSerialServer = new BroadcastReceiver() {
-			final Object COMPARE_LOCK = new Object();
-					@Override
-					public void onReceive(Context context, Intent intent)
-					{
-						LocalRouterService tempService = intent.getParcelableExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA);
-						synchronized(COMPARE_LOCK){
-							//Let's make sure we are on the same version.
-							if(tempService!=null && tempService.name!=null){
-								sdlMultiList.remove(tempService.name.getPackageName());
-								if((localCompareTo == null || localCompareTo.isNewer(tempService)) && AndroidTools.isServiceExported(context, tempService.name)){
-									LocalRouterService self = getLocalRouterService();
-									if(!self.isEqual(tempService)){ //We want to ignore self
-										Log.i(TAG, "Newer service received than previously stored service - " + tempService.launchIntent.getAction());
-										localCompareTo = tempService;
-									}else{
-										Log.i(TAG, "Ignoring self local router service");
-									}
-								}
-								if(sdlMultiList.isEmpty()){
-									Log.d(TAG, "All router services have been accounted more. We can start the version check now");
-									if(versionCheckTimeOutHandler!=null){
-										versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);
-										versionCheckTimeOutHandler.post(versionCheckRunable);
-									}
-								}
-							}
-						}
-						/*if(intent!=null && intent.getBooleanExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, false)){
-							Log.w(TAG, "Another serivce has been started, let's resend our version info to make sure they know about us too");
-						}*/
 
-					}
-					@SuppressWarnings("unused")
-					private void notifyStartedService(Context context){
-						Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
-				    	restart.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA, getLocalRouterService());
-				    	context.sendBroadcast(restart);
-					}
-			};
-			
-			
-	
 	/**
 	 * If the user disconnects the bluetooth device we will want to stop SDL and our current
 	 * connection through RFCOMM
@@ -840,6 +791,7 @@ public class SdlRouterService extends Service{
 		super.onCreate();
 
 		if(!initCheck()){ // Run checks on process and permissions
+			deployNextRouterService();
 			stopSelf();
 			return;
 		}
@@ -851,7 +803,6 @@ public class SdlRouterService extends Service{
 		closing = false;
 		currentContext = getBaseContext();
 		
-		startVersionCheck();
 		Log.i(TAG, "SDL Router Service has been created");
 		
 		
@@ -860,22 +811,17 @@ public class SdlRouterService extends Service{
 			this.sessionHashIdMap = new SparseArray<Integer>();
 		}
 		packetExecuter =  Executors.newSingleThreadExecutor();
+
+		startUpSequence();
 	}
-	HashMap<String,ResolveInfo> sdlMultiList ;
-	public void startVersionCheck(){
-		Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
-		List<ResolveInfo> infos = getPackageManager().queryBroadcastReceivers(intent, 0);
-		sdlMultiList = new HashMap<String,ResolveInfo>();
-		for(ResolveInfo info: infos){
-			//Log.d(TAG, "Sdl enabled app: " + info.activityInfo.packageName);
-			if(getPackageName().equals(info.activityInfo.applicationInfo.packageName)){
-				//Log.d(TAG, "Ignoring my own package");
-				continue;
-			}
-			sdlMultiList.put(info.activityInfo.packageName, info);
-		}
-		registerReceiver(registerAnInstanceOfSerialServer, new IntentFilter(REGISTER_NEWER_SERVER_INSTANCE_ACTION));
-		newestServiceCheck(currentContext);
+
+	public void deployNextRouterService(){
+		//TODO
+		closing = true;
+		closeBluetoothSerialServer();
+		notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
+		// context.startService(newestServiceReceived.launchIntent);
+
 	}
 	
 	public void startUpSequence(){
@@ -934,15 +880,12 @@ public class SdlRouterService extends Service{
 	@Override
 	public void onDestroy(){
 		stopClientPings();
-		if(versionCheckTimeOutHandler!=null){
-			versionCheckTimeOutHandler.removeCallbacks(versionCheckRunable);
-			versionCheckTimeOutHandler = null;
-		}
+
 		if(altTransportTimerHandler!=null){
-			altTransportTimerHandler.removeCallbacks(versionCheckRunable);
+			altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
 			altTransportTimerHandler = null;
-			versionCheckRunable = null;
 		}
+
 		Log.w(TAG, "Sdl Router Service Destroyed");
 	    closing = true;
 		currentContext = null;
@@ -992,7 +935,6 @@ public class SdlRouterService extends Service{
 	
 	private void unregisterAllReceivers(){
 		try{
-			unregisterReceiver(registerAnInstanceOfSerialServer);		///This should be first. It will always be registered, these others may not be and cause an exception.
 			unregisterReceiver(mListenForDisconnect);
 			unregisterReceiver(mainServiceReceiver);
 		}catch(Exception e){}
@@ -1680,12 +1622,8 @@ public class SdlRouterService extends Service{
 	 * *****************************************************************  CUSTOM ADDITIONS  ************************************************************************************
 	 *************************************************************************************************************************************************************************/
 
-	private LocalRouterService getLocalBluetoothServiceComapre(){
-		return this.localCompareTo;
-	}
-	
+	@Deprecated
 	protected static LocalRouterService getLocalRouterService(Intent launchIntent, ComponentName name){
-		if(SdlRouterService.selfRouterService == null){
 			if(launchIntent == null){
 				Log.w(TAG, "Supplied intent was null, local router service will not contain intent");
 				//Log.e(TAG, "Unable to create local router service instance. Supplied intent was null");
@@ -1695,66 +1633,7 @@ public class SdlRouterService extends Service{
 				Log.e(TAG, "Unable to create local router service object because component name was null");
 				return null;
 			}
-			selfRouterService = new LocalRouterService(launchIntent,ROUTER_SERVICE_VERSION_NUMBER, System.currentTimeMillis(), name);
-		}
-		if(launchIntent!=null){
-			//Assume we want to set this in our service
-			//Log.d(TAG, "Setting new intent on our local router service object");
-			selfRouterService.launchIntent = launchIntent;
-		}
-		return selfRouterService;
-	}
-	
-	private  LocalRouterService getLocalRouterService(){
-		//return getLocalRouterService(new Intent(getBaseContext(),SdlRouterService.class));
-		return getLocalRouterService(null, new ComponentName(this, this.getClass()));
-	}
-	/**
-	 * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
-	 * @param context
-	 */
-	private void newestServiceCheck(final Context context){
-		getLocalRouterService(); //Make sure our timestamp is set
-		versionCheckTimeOutHandler = new Handler(); 
-		versionCheckRunable = new Runnable() {           
-            public void run() {
-            	Log.i(TAG, "Starting up Version Checking ");
-            	
-            	LocalRouterService newestServiceReceived = getLocalBluetoothServiceComapre();
-            	LocalRouterService self = getLocalRouterService(); //We can send in null here, because it should have already been created
-            	//Log.v(TAG, "Self service info " + self);
-            	//Log.v(TAG, "Newest compare to service info " + newestServiceReceived);
-            	if(newestServiceReceived!=null && self.isNewer(newestServiceReceived)){
-            		if(SdlRouterService.this.mSerialService!=null && SdlRouterService.this.mSerialService.isConnected()){ //We are currently connected. Wait for next connection
-            			return;
-            		}
-            		Log.d(TAG, "There is a newer version "+newestServiceReceived.version+" of the Router Service, starting it up");
-					if(newestServiceReceived.launchIntent == null){
-						if(newestServiceReceived.name!=null){
-							newestServiceReceived.launchIntent = new Intent().setComponent(newestServiceReceived.name);
-						}else{
-							Log.w(TAG, "Service didn't include launch intent or component name");
-							startUpSequence();
-							return;
-						}
-					}
-                	closing = true;
-					closeBluetoothSerialServer();
-					context.startService(newestServiceReceived.launchIntent);
-					notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
-					if(getBaseContext()!=null){
-						stopSelf();
-					}else{
-						onDestroy();
-					}
-            	}
-            	else{			//Let's start up like normal
-            		Log.d(TAG, "No newer services than " + ROUTER_SERVICE_VERSION_NUMBER +" found. Starting up bluetooth transport");
-                	startUpSequence();
-            	}
-            }
-        };
-        versionCheckTimeOutHandler.postDelayed(versionCheckRunable, VERSION_TIMEOUT_RUNNABLE); 
+			return new LocalRouterService(launchIntent,ROUTER_SERVICE_VERSION_NUMBER, System.currentTimeMillis(), name);
 	}
 	
 	/**
@@ -2063,14 +1942,16 @@ public class SdlRouterService extends Service{
 	 * from different apps and determine which is the newest
 	 * and therefore which one should be the one spun up.
 	 * @author Joey Grover
+	 * @deprecated Move to the new version checking system with meta-data
 	 *
 	 */
+	@Deprecated
 	static class LocalRouterService implements Parcelable{
 		Intent launchIntent = null;
 		int version = 0;
 		long timestamp;
 		ComponentName name;
-		
+
 		private LocalRouterService(Intent intent, int version, long timeStamp,ComponentName name ){
 			this.launchIntent = intent;
 			this.version = version;
@@ -2090,10 +1971,10 @@ public class SdlRouterService extends Service{
 			}
 			return false;
 		}
-		
-		
+
+
 		public boolean isEqual(LocalRouterService service) {
-			if(service != null && service.name!= null 
+			if(service != null && service.name!= null
 					&& this.name !=null){
 				return (this.name.equals(service.name));
 			}
@@ -2108,12 +1989,12 @@ public class SdlRouterService extends Service{
 			}else if(name!=null){
 				build.append(name.getClassName());
 			}
-			
+
 			build.append(" Version: ");
 			build.append(version);
 			build.append(" Timestamp: ");
 			build.append(timestamp);
-			
+
 			return build.toString();
 		}
 		public LocalRouterService(Parcel p) {
@@ -2126,7 +2007,7 @@ public class SdlRouterService extends Service{
 				// catch DexException
 			}
 		}
-		
+
 		@Override
 		public int describeContents() {
 			return 0;
@@ -2140,22 +2021,22 @@ public class SdlRouterService extends Service{
 			dest.writeParcelable(name, 0);
 
 		}
-		
+
 		public static final Parcelable.Creator<LocalRouterService> CREATOR = new Parcelable.Creator<LocalRouterService>() {
-	        public LocalRouterService createFromParcel(Parcel in) {
-	     	   return new LocalRouterService(in); 
-	        }
+			public LocalRouterService createFromParcel(Parcel in) {
+				return new LocalRouterService(in);
+			}
 
 			@Override
 			public LocalRouterService[] newArray(int size) {
 				return new LocalRouterService[size];
 			}
 
-	    };
-		
+		};
+
 	}
-	
-	
+
+
 	/**
 	 * This class helps keep track of all the different sessions established with the head unit
 	 * and to which app they belong to.
