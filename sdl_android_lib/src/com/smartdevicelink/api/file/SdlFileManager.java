@@ -120,6 +120,7 @@ public class SdlFileManager implements SdlApplication.LifecycleListener{
     private void sendListFiles(){
         ListFiles listFiles = new ListFiles();
         listFiles.setOnRPCResponseListener(mListFileResponseListener);
+        mFileSet.clear();
         mSdlApplication.sendRpc(listFiles);
     }
 
