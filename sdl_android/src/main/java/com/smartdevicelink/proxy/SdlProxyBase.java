@@ -3329,7 +3329,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				updateBroadcastIntent(sendIntent, "DATA",serializeJSON(msg));
 				sendBroadcastIntent(sendIntent);
 
-				if (_advancedLifecycleManagementEnabled) {
+				if (!_proxyDisposed && _advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
                     cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
                 } else {
