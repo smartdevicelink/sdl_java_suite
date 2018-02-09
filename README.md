@@ -26,4 +26,23 @@ We're still working on creating documentation for each of these individual repos
 
 You can also find some branches that have yet to be merged into this GitHub project on the GENIVI page [here](http://git.projects.genivi.org/?p=smartdevicelink_android.git;a=summary).
 
-For easy integration of SmartDeviceLink Android into your project using Gradle, Maven or Ivy please grab a snippet from [Bintray](https://bintray.com/smartdevicelink/sdl_android/sdl_android)
+### Installation
+
+#### Dependency Managers
+
+To compile with the a release of SDL Android, include the following in your app's `build.gradle` file,
+
+```
+repositories {
+    jcenter()
+}
+dependencies {
+    compile 'com.smartdevicelink:sdl_android:4.+'
+}
+```
+
+For Maven or Ivy snippets please look at [Bintray](https://bintray.com/smartdevicelink/sdl_android/sdl_android)
+
+#### Manually
+
+If you prefer not to use any of the aforementioned dependency managers, you can integrate SDL Android into your project manually.

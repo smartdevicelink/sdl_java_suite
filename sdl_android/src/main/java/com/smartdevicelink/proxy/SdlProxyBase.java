@@ -3025,19 +3025,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				msg.setFirstRun(firstTimeFull);
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
-				
-				if (msg.getHmiLevel() != _hmiLevel || msg.getAudioStreamingState() != _audioStreamingState) {
-					_hmiLevel = msg.getHmiLevel();
-					_audioStreamingState = msg.getAudioStreamingState();
 
-					if (_callbackToUIThread) {
-						// Run in UI thread
-						_mainUIHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								_proxyListener.onOnHMIStatus(msg);
-								_proxyListener.onOnLockScreenNotification(sdlSession.getLockScreenMan().getLockObj());
-								onRPCNotificationReceived(msg);
+				_hmiLevel = msg.getHmiLevel();
+				_audioStreamingState = msg.getAudioStreamingState();
+
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnHMIStatus(msg);
+							_proxyListener.onOnLockScreenNotification(sdlSession.getLockScreenMan().getLockObj());
+							onRPCNotificationReceived(msg);
 							}
 						});
 					} else {
@@ -3045,7 +3044,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_proxyListener.onOnLockScreenNotification(sdlSession.getLockScreenMan().getLockObj());
 						onRPCNotificationReceived(msg);
 					}
-				}				
 			} else if (functionName.equals(FunctionID.ON_COMMAND.toString())) {
 				// OnCommand
 				
@@ -6299,9 +6297,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void stopStreaming(){
 			if(remoteDisplay!=null){
 				remoteDisplay.stop();
+				remoteDisplay = null;
 			}
 			if(encoder!=null){
 				encoder.shutDown();
+			}
+			if(internalInterface!=null){
+				internalInterface.stopVideoService();
 			}
 		}
 
@@ -6386,9 +6388,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
-				dispose();
+				if(remoteDisplay!=null){
+					stopStreaming();
+				}
 			}
-
 		}
 
 		@Override
