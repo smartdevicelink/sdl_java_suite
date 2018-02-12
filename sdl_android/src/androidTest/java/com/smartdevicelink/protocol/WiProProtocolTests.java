@@ -7,10 +7,6 @@ import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.test.SampleRpc;
-import com.smartdevicelink.util.DebugTool;
-import java.io.ByteArrayOutputStream;
-import java.util.Hashtable;
-import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -19,7 +15,9 @@ import com.smartdevicelink.transport.RouterServiceValidator;
 import junit.framework.Assert;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
