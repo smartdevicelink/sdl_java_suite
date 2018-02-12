@@ -1537,7 +1537,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (message.getJsonSize() > 0) {
 							final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
 							//hashTemp.put(Names.parameters, mhash.get(Names.parameters));
-							hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
+							if (mhash != null) {
+								hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
+							}
 						}
 
 						String functionName = FunctionID.getFunctionName(message.getFunctionID());
