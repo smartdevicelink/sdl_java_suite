@@ -222,9 +222,14 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 									return 0;
 								}
 							});
-							String packageName = apps.get(0).activityInfo.packageName;
 							serviceIntent = new Intent();
-							serviceIntent.setComponent(new ComponentName(packageName, packageName +".SdlRouterService"));
+							for (ResolveInfo app : apps) {
+								String pkgName = app.activityInfo.packageName;
+								serviceIntent.setComponent(new ComponentName(pkgName, pkgName + ".SdlRouterService"));
+								if (packageManager.resolveService(serviceIntent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+									break;
+								}
+							}
 						} else{
 							Log.d(TAG, "No router service running, starting ours");
 							//So let's start up our service since no copy is running
