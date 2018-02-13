@@ -259,13 +259,12 @@ public class WiProProtocol extends AbstractProtocol {
 
 					for (int i = 0; i < frameCount; i++) {
 						if (i < (frameCount - 1)) {
-		                     ++frameSequenceNumber;
-		                        if (frameSequenceNumber ==
-		                                SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME) {
-		                            // we can't use 0x00 as frameSequenceNumber, because
-		                            // it's reserved for the last frame
-		                            ++frameSequenceNumber;
-		                        }
+		       				++frameSequenceNumber;
+		         			if (frameSequenceNumber == SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME) {
+		        				// we can't use 0x00 as frameSequenceNumber, because
+		        				// it's reserved for the last frame
+		         				++frameSequenceNumber;		
+		     				}
 						} else {
 							frameSequenceNumber = SdlPacket.FRAME_INFO_FINAL_CONNESCUTIVE_FRAME;
 						} // end-if
