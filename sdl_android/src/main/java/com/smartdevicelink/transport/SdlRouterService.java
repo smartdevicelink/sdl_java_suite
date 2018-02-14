@@ -1486,15 +1486,15 @@ public class SdlRouterService extends Service{
 						BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.getPayload());
 						if(binFrameHeader!=null && FunctionID.UNREGISTER_APP_INTERFACE.getId() == binFrameHeader.getFunctionID()){
 							Log.d(TAG, "Received an unregister app interface. Checking session hash before sending");
-							// make sure that we don't try and unregister recently added app that might have a
+							// make sure that we don't try to unregister a recently added app that might have a
 							// session ID of a removed app whose UAI was delayed
 							int hashOfRemoved = this.cleanedSessionMap.get(session, -1);
 							int currentHash = this.sessionHashIdMap.get(session, -1);
 							if (hashOfRemoved != -1 && currentHash != -1) {
 								// Current session contains key that was held before
 								if (hashOfRemoved != currentHash){
-									// App assigned same session id but is different app. keep this from being killed
-									Log.i(TAG, "same session id for different apps found, dropping packet");
+									// App assigned same session id but is a different app. Keep this from being killed
+									Log.d(TAG, "same session id for different apps found, dropping packet");
 									this.cleanedSessionMap.clear();
 									return false;
 								}
