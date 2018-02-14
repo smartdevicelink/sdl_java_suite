@@ -3476,6 +3476,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					onRPCNotificationReceived(msg);
 				}
 			}
+			else if (functionName.equals(FunctionID.ON_RC_STATUS.toString())) {
+				final OnRCStatus msg = new OnRCStatus(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnRCStatus(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnRCStatus(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
