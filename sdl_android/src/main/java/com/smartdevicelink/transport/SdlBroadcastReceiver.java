@@ -14,8 +14,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.SdlAppInfo;
@@ -95,6 +97,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		boolean didStart = false;
 		if (localRouterClass == null){
 			localRouterClass = defineLocalSdlRouterClass();
+			ResolveInfo info = context.getPackageManager().resolveService(new Intent(context,localRouterClass),PackageManager.GET_META_DATA);
+			if(info == null
+					|| info.serviceInfo.metaData == null
+					|| !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))){
+				Log.w(TAG, "WARNING: This application has not specified its metadata tags for the SdlRouterService. This will throw an exception in future releases!");
+			}
 		}
         
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
@@ -117,10 +125,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							}
 							
 						});
-						
-						
 					}
-					
 					
 				}else{
 					//This was previously not hooked up, so let's leave it commented out
@@ -193,7 +198,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				return false;
 			}
 		}else{ //We are android Oreo or newer
-			ServiceFinder finder = new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
+			new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
 					runningBluetoothServicePackage = new Vector<ComponentName>();
@@ -204,11 +209,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						Intent serviceIntent;
 						List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator());
 						if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
-							Log.i(TAG, "List size: " + sdlAppInfoList.size());
-							Log.d(TAG, "Router service to start = \n" + sdlAppInfoList.get(0));
 							serviceIntent = new Intent();
 							serviceIntent.setComponent(sdlAppInfoList.get(0).getRouterServiceComponentName());
-
 						} else{
 							Log.d(TAG, "No sdl apps found");
 							return;

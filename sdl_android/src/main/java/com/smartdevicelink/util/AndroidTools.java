@@ -56,27 +56,29 @@ public class AndroidTools {
 
 	public static List<SdlAppInfo> querySdlAppInfo(Context context, Comparator<SdlAppInfo> comparator){
 		List<SdlAppInfo> sdlAppInfoList = new ArrayList<>();
+		Intent intent = new Intent(TransportConstants.ROUTER_SERVICE_ACTION);
+		List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentServices(intent, PackageManager.GET_META_DATA);
 
-		Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
-		List<ResolveInfo> resolveInfoList = context.getPackageManager().queryBroadcastReceivers(intent, PackageManager.GET_META_DATA);
 		if(resolveInfoList != null && resolveInfoList.size() > 0) {
 			PackageManager packageManager = context.getPackageManager();
+			if(packageManager != null) {
 
-			for (ResolveInfo info : resolveInfoList) {
-				PackageInfo packageInfo = null;
-				try {
-					packageInfo = packageManager.getPackageInfo(info.activityInfo.packageName, 0);
-				} catch (NameNotFoundException e) {
-				}finally {
-					sdlAppInfoList.add(new SdlAppInfo(info, packageInfo));
+				for (ResolveInfo info : resolveInfoList) {
+					PackageInfo packageInfo = null;
+					try {
+						packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
+					} catch (NameNotFoundException e) {
+					} finally {
+						sdlAppInfoList.add(new SdlAppInfo(info, packageInfo));
+
+					}
+
 
 				}
-
-
 			}
 
 			if (comparator != null) {
-				Collections.sort(sdlAppInfoList, comparator); //TODO ensure this sorts correctly
+				Collections.sort(sdlAppInfoList, comparator);
 			}
 		}
 

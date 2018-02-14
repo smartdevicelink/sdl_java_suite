@@ -19,39 +19,26 @@ public class SdlAppInfo {
 
     //FIXME we shouldn't be duplicating constants, but this currently keeps us from needing a context instance.
     private static final String SDL_ROUTER_VERSION_METADATA = "sdl_router_version";
-    private static final String SDL_ROUTER_LOCATION_METADATA = "sdl_router_location";
     private static final String SDL_CUSTOM_ROUTER_METADATA = "sdl_custom_router";
 
-    private static final String ROUTER_SERVICE_SUFFIX = ".SdlRouterService";
 
     String packageName;
-    ComponentName receiverComponentName, routerServiceComponentName;
+    ComponentName routerServiceComponentName;
     int routerServiceVersion = 4; //We use this as a default and assume if the number doens't exist in meta data it is because the app hasn't updated.
     boolean isCustomRouterService = false;
     long lastUpdateTime;
 
 
     public SdlAppInfo(ResolveInfo resolveInfo, PackageInfo packageInfo){
-        if(resolveInfo.activityInfo != null){
+        if(resolveInfo.serviceInfo != null){
 
-            this.packageName = resolveInfo.activityInfo.packageName;
+            this.packageName = resolveInfo.serviceInfo.packageName;
+            this.routerServiceComponentName = new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
 
-            receiverComponentName = new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
-
-
-            Bundle metadata = resolveInfo.activityInfo.metaData;
+            Bundle metadata = resolveInfo.serviceInfo.metaData;
 
             if(metadata.containsKey(SDL_ROUTER_VERSION_METADATA)){
                 this.routerServiceVersion = metadata.getInt(SDL_ROUTER_VERSION_METADATA);
-            }
-
-            if(metadata.containsKey(SDL_ROUTER_LOCATION_METADATA)){
-                String rsName = metadata.getString(SDL_ROUTER_LOCATION_METADATA);
-                if(rsName != null){
-                    this.routerServiceComponentName = new ComponentName(rsName.substring(0, rsName.lastIndexOf(".")), rsName);
-                } //else there's an issue
-            }else{
-                this.routerServiceComponentName = new ComponentName(this.packageName, this.packageName+ROUTER_SERVICE_SUFFIX);
             }
 
             if(metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)){
@@ -61,7 +48,7 @@ public class SdlAppInfo {
 
         if(packageInfo != null){
             this.lastUpdateTime = packageInfo.lastUpdateTime;
-            if(this.lastUpdateTime == 0){
+            if(this.lastUpdateTime <= 0){
                 this.lastUpdateTime = packageInfo.firstInstallTime;
             }
         }
@@ -75,9 +62,6 @@ public class SdlAppInfo {
         return isCustomRouterService;
     }
 
-    public ComponentName getReceiverComponentName() {
-        return receiverComponentName;
-    }
 
     public ComponentName getRouterServiceComponentName() {
         return routerServiceComponentName;
@@ -90,9 +74,6 @@ public class SdlAppInfo {
 
         builder.append("Package Name: ");
         builder.append(packageName);
-
-        builder.append("\nBroadcast Receiver: ");
-        builder.append(this.receiverComponentName.getClassName());
 
         builder.append("\nRouter Service: ");
         builder.append(this.routerServiceComponentName.getClassName());
@@ -130,9 +111,8 @@ public class SdlAppInfo {
                     }else if(two.isCustomRouterService){
                         return -1;
 
-                    }else {
-                        //Do nothing. Move to version check
-                    }
+                    }//else, do nothing. Move to version check
+
 
                     int versionCompare =  two.routerServiceVersion  - one.routerServiceVersion;
 
