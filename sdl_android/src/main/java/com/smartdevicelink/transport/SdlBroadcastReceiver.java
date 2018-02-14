@@ -222,6 +222,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							serviceIntent.putExtra(FOREGROUND_EXTRA, true);
 							context.startForegroundService(serviceIntent);
 
+							//Make sure to send this out for old apps to close down
+							SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
+							Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
+							restart.putExtra(LOCAL_ROUTER_SERVICE_EXTRA, self);
+							restart.putExtra(LOCAL_ROUTER_SERVICE_DID_START_OWN, true);
+							context.sendBroadcast(restart);
+
 						} catch (SecurityException e) {
 							Log.e(TAG, "Security exception, process is bad");
 						}
