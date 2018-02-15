@@ -7,8 +7,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.test.AndroidTestCase;
 import android.util.Log;
+import android.util.SparseIntArray;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.protocol.enums.MessageType;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 
 import junit.framework.Assert;
 
@@ -19,6 +26,12 @@ import java.lang.reflect.Method;
 public class SdlRouterServiceTests extends AndroidTestCase {
 
     public static final String TAG = "SdlRouterServiceTests";
+
+	private final int SAMPLE_RPC_CORRELATION_ID = 630;
+
+	int version = 1;
+	int sessionId =1;
+	ProtocolMessage pm = null;
 
     @Override
     protected void setUp() throws Exception {
@@ -129,4 +142,70 @@ public class SdlRouterServiceTests extends AndroidTestCase {
             }
         }
     }
+
+	/**
+	 * Test sending UAI to an app whose session id is the same as a removed app
+	 * but is indeed a different app
+	 *
+	 * @see SdlRouterService#sendPacketToRegisteredApp(SdlPacket)
+	 */
+    public void testRegisterAppExistingSessionID() {
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+
+		Method method;
+
+		try {
+
+			// create instance of router service
+			Class<?> routerService = SdlRouterService.class;
+			Object sdlRouterService = routerService.newInstance();
+
+			// set cleaned session map
+			SparseIntArray testCleanedMap = new SparseIntArray();
+			testCleanedMap.put(1,12345);
+			Field f = SdlRouterService.class.getDeclaredField("cleanedSessionMap");
+			f.setAccessible(true);//Very important, this allows the setting to work.
+			f.set(sdlRouterService, testCleanedMap);
+
+			// set session hash id map
+			SparseIntArray testHashIdMap = new SparseIntArray();
+			testCleanedMap.put(1,12344);
+			Field f2 = SdlRouterService.class.getDeclaredField("sessionHashIdMap");
+			f2.setAccessible(true);//Very important, this allows the setting to work.
+			f2.set(sdlRouterService, testHashIdMap);
+
+			// make sure maps are set and NOT the same
+			Assert.assertNotSame(f.get(sdlRouterService),f2.get(sdlRouterService));
+
+			// make da RPC
+			UnregisterAppInterface request = new UnregisterAppInterface();
+			request.setCorrelationID(SAMPLE_RPC_CORRELATION_ID);
+
+			// build protocol message
+			byte[] msgBytes = JsonRPCMarshaller.marshall(request, (byte)version);
+			pm = new ProtocolMessage();
+			pm.setData(msgBytes);
+			pm.setSessionID((byte)sessionId);
+			pm.setMessageType(MessageType.RPC);
+			pm.setSessionType(SessionType.RPC);
+			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
+			pm.setCorrID(request.getCorrelationID());
+
+			if (request.getBulkData() != null) {
+				pm.setBulkData(request.getBulkData());
+			}
+
+			// create packet and invoke sendPacketToRegisteredApp
+			byte[] data = pm.getData();
+			sdlRouterService = Class.forName("com.smartdevicelink.transport.SdlRouterService").newInstance();
+			SdlPacket packet = new SdlPacket(1, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.FRAME_TYPE_CONTROL, 0,sessionId,data.length,123,data);
+			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
+			method.invoke(sdlRouterService, packet);
+
+		} catch (Exception e) {
+			Assert.fail("Exception in sendPacketToRegisteredApp, " + e);
+		}
+	}
 }
