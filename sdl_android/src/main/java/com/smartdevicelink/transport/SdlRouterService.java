@@ -1447,16 +1447,21 @@ public class SdlRouterService extends Service{
 		 * @return whether or not the sending was successful 
 		 */
 		public boolean sendPacketToRegisteredApp(SdlPacket packet) {
+			Log.i(TAG, "SEND PACKAGE");
 			if(registeredApps!=null && (registeredApps.size()>0)){
+				Log.i(TAG, "INSIDE 1");
 				int session = packet.getSessionId();
 				boolean shouldAssertNewSession = packet.getFrameType() == FrameType.Control && (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_NAK);
 	    		String appid = getAppIDForSession(session, shouldAssertNewSession); //Find where this packet should go
+				Log.i(TAG, "APP ID "+ appid);
+				Log.i(TAG, "REGISTERED APPS "+ registeredApps.toString());
 	    		if(appid!=null && appid.length()>0){
 	    			RegisteredApp app;
 	    			synchronized(REGISTERED_APPS_LOCK){
 	    				 app = registeredApps.get(appid);
 	    			}
-	    			if(app==null){Log.e(TAG, "No app found for app id " + appid + " Removing session mapping and sending unregisterAI to head unit.");
+	    			if(app==null){
+	    				Log.e(TAG, "No app found for app id " + appid + " Removing session mapping and sending unregisterAI to head unit.");
 	    				//We have no app to match the app id tied to this session
 	    				removeSessionFromMap(session);
 	    				byte[] uai = createForceUnregisterApp((byte)session, (byte)packet.getVersion());
@@ -1481,8 +1486,9 @@ public class SdlRouterService extends Service{
 	    					}
 	    				}
 	    			}
-
+					Log.i(TAG, "BEFORE CHECK");
 					if(packet.getFrameType() == FrameType.Single && packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC){
+						Log.i(TAG, "INSIDE FIRST IF");
 						BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.getPayload());
 						if(binFrameHeader!=null && FunctionID.UNREGISTER_APP_INTERFACE.getId() == binFrameHeader.getFunctionID()){
 							Log.d(TAG, "Received an unregister app interface. Checking session hash before sending");
@@ -1497,9 +1503,9 @@ public class SdlRouterService extends Service{
 									Log.d(TAG, "same session id for different apps found, dropping packet");
 									this.cleanedSessionMap.clear();
 									return false;
+								} else {
+									return true;
 								}
-								// clean up
-								this.cleanedSessionMap.clear();
 							}
 						}
 					}
