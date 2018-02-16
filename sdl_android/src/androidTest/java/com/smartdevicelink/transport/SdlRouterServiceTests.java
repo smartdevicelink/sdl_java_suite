@@ -325,7 +325,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
 			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
 
-			// we do not want the UAI packet to be sent. make sure it is dropped
+			// Since it is the same app, allow the packet to be sent
 			Assert.assertTrue(success);
 
 		} catch (Exception e) {
