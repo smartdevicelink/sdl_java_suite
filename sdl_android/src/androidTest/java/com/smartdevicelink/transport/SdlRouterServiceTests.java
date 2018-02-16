@@ -202,7 +202,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			Assert.assertNotNull(sessionMapField.get(sdlRouterService));
 			Assert.assertNotNull(f.get(sdlRouterService));
 			Assert.assertNotNull(f2.get(sdlRouterService));
-			Assert.assertNotSame(f.get(sdlRouterService), f2.get(sdlRouterService));
 
 			// make da RPC
 			UnregisterAppInterface request = new UnregisterAppInterface();
@@ -294,7 +293,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			Assert.assertNotNull(sessionMapField.get(sdlRouterService));
 			Assert.assertNotNull(f.get(sdlRouterService));
 			Assert.assertNotNull(f2.get(sdlRouterService));
-			Assert.assertNotSame(f.get(sdlRouterService), f2.get(sdlRouterService));
 
 			// make da RPC
 			UnregisterAppInterface request = new UnregisterAppInterface();
