@@ -154,15 +154,12 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	 *
 	 * @see SdlRouterService#sendPacketToRegisteredApp(SdlPacket)
 	 */
-	public void testRegisterAppExistingSessionID() {
+	public void testRegisterAppExistingSessionIDDifferntApp() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
-
 		Method method;
-
 		try {
-
 			// create instance of router service
 			SdlRouterService sdlRouterService = new SdlRouterService();
 
@@ -178,7 +175,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			Field raf = sdlRouterService.getClass().getDeclaredField("registeredApps");
 			raf.setAccessible(true);
 			raf.set(sdlRouterService, registeredApps);
-			System.out.println(raf.get(sdlRouterService).toString());
 
 			// need a session map too
 			SparseArray<String> sessionMap = new SparseArray<String>();
@@ -186,7 +182,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			Field sessionMapField = sdlRouterService.getClass().getDeclaredField("sessionMap");
 			sessionMapField.setAccessible(true);
 			sessionMapField.set(sdlRouterService, sessionMap);
-			System.out.println(sessionMapField.get(sdlRouterService).toString());
 
 			// set cleaned session map
 			SparseIntArray testCleanedMap = new SparseIntArray();
@@ -197,17 +192,17 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 			// set session hash id map
 			SparseIntArray testHashIdMap = new SparseIntArray();
-			testHashIdMap.put(1, 12345);
+			testHashIdMap.put(1, 12344);
 			Field f2 = sdlRouterService.getClass().getDeclaredField("sessionHashIdMap");
 			f2.setAccessible(true);
 			f2.set(sdlRouterService, testHashIdMap);
 
 			// make sure maps are set and NOT the same
+			Assert.assertNotNull(raf.get(sdlRouterService));
+			Assert.assertNotNull(sessionMapField.get(sdlRouterService));
 			Assert.assertNotNull(f.get(sdlRouterService));
 			Assert.assertNotNull(f2.get(sdlRouterService));
 			Assert.assertNotSame(f.get(sdlRouterService), f2.get(sdlRouterService));
-			System.out.println(f.get(sdlRouterService).toString());
-			System.out.println(f2.get(sdlRouterService).toString());
 
 			// make da RPC
 			UnregisterAppInterface request = new UnregisterAppInterface();
@@ -230,7 +225,6 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			// binary frame header
 			byte[] data = new byte[12 + pm.getJsonSize()];
 			binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(pm.getRPCType(), pm.getFunctionID(), pm.getCorrID(), pm.getJsonSize());
-			System.out.println(binFrameHeader.toString());
 			System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
 			System.arraycopy(pm.getData(), 0, data, 12, pm.getJsonSize());
 
@@ -238,8 +232,101 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			SdlPacket packet = new SdlPacket(4, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.SERVICE_TYPE_RPC, 0, sessionId, data.length, 123, data);
 			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
 			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
-			System.out.println(success.booleanValue());
 
+			// we do not want the UAI packet to be sent. make sure it is dropped
+			Assert.assertFalse(success);
+
+		} catch (Exception e) {
+			Assert.fail("Exception in sendPacketToRegisteredApp, " + e);
+		}
+	}
+	/**
+	 * Test sending UAI to an app whose session id is the same as a removed app
+	 * but is indeed the SAME app
+	 *
+	 * @see SdlRouterService#sendPacketToRegisteredApp(SdlPacket)
+	 */
+	public void testRegisterAppExistingSessionIDSameApp() {
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		Method method;
+		try {
+			// create instance of router service
+			SdlRouterService sdlRouterService = new SdlRouterService();
+
+			// We need a registered app for this to work
+			Message message = Message.obtain();
+			SdlRouterService.RegisteredApp app1 = sdlRouterService.new RegisteredApp("12345",message.replyTo);
+			SdlRouterService.RegisteredApp app2 = sdlRouterService.new RegisteredApp("12344",message.replyTo);
+			HashMap<String,SdlRouterService.RegisteredApp> registeredApps = new HashMap<>();
+			registeredApps.put(app1.getAppId(),app1);
+			registeredApps.put(app2.getAppId(),app2);
+
+			// set registered apps array
+			Field raf = sdlRouterService.getClass().getDeclaredField("registeredApps");
+			raf.setAccessible(true);
+			raf.set(sdlRouterService, registeredApps);
+
+			// need a session map too
+			SparseArray<String> sessionMap = new SparseArray<String>();
+			sessionMap.put(1, "12345");
+			Field sessionMapField = sdlRouterService.getClass().getDeclaredField("sessionMap");
+			sessionMapField.setAccessible(true);
+			sessionMapField.set(sdlRouterService, sessionMap);
+
+			// set cleaned session map
+			SparseIntArray testCleanedMap = new SparseIntArray();
+			testCleanedMap.put(1, 12345);
+			Field f = sdlRouterService.getClass().getDeclaredField("cleanedSessionMap");
+			f.setAccessible(true);
+			f.set(sdlRouterService, testCleanedMap);
+
+			// set session hash id map
+			SparseIntArray testHashIdMap = new SparseIntArray();
+			testHashIdMap.put(1, 12345);
+			Field f2 = sdlRouterService.getClass().getDeclaredField("sessionHashIdMap");
+			f2.setAccessible(true);
+			f2.set(sdlRouterService, testHashIdMap);
+
+			// make sure maps are set and NOT the same
+			Assert.assertNotNull(raf.get(sdlRouterService));
+			Assert.assertNotNull(sessionMapField.get(sdlRouterService));
+			Assert.assertNotNull(f.get(sdlRouterService));
+			Assert.assertNotNull(f2.get(sdlRouterService));
+			Assert.assertNotSame(f.get(sdlRouterService), f2.get(sdlRouterService));
+
+			// make da RPC
+			UnregisterAppInterface request = new UnregisterAppInterface();
+			request.setCorrelationID(SAMPLE_RPC_CORRELATION_ID);
+
+			// build protocol message
+			byte[] msgBytes = JsonRPCMarshaller.marshall(request, (byte) version);
+			pm = new ProtocolMessage();
+			pm.setData(msgBytes);
+			pm.setSessionID((byte) sessionId);
+			pm.setMessageType(MessageType.RPC);
+			pm.setSessionType(SessionType.RPC);
+			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
+			pm.setCorrID(request.getCorrelationID());
+
+			if (request.getBulkData() != null) {
+				pm.setBulkData(request.getBulkData());
+			}
+
+			// binary frame header
+			byte[] data = new byte[12 + pm.getJsonSize()];
+			binFrameHeader = SdlPacketFactory.createBinaryFrameHeader(pm.getRPCType(), pm.getFunctionID(), pm.getCorrID(), pm.getJsonSize());
+			System.arraycopy(binFrameHeader.assembleHeaderBytes(), 0, data, 0, 12);
+			System.arraycopy(pm.getData(), 0, data, 12, pm.getJsonSize());
+
+			// create packet and invoke sendPacketToRegisteredApp
+			SdlPacket packet = new SdlPacket(4, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.SERVICE_TYPE_RPC, 0, sessionId, data.length, 123, data);
+			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
+			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
+
+			// we do not want the UAI packet to be sent. make sure it is dropped
+			Assert.assertTrue(success);
 
 		} catch (Exception e) {
 			Assert.fail("Exception in sendPacketToRegisteredApp, " + e);

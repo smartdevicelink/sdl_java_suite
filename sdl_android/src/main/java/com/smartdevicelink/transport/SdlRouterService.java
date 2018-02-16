@@ -1503,8 +1503,6 @@ public class SdlRouterService extends Service{
 									Log.d(TAG, "same session id for different apps found, dropping packet");
 									this.cleanedSessionMap.clear();
 									return false;
-								} else {
-									return true;
 								}
 							}
 						}
