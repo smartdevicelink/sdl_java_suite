@@ -93,6 +93,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -3424,6 +3425,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} // end-if notification
 
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
+	}
+
+	public void sendSequentialRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener ){
+
+
+	}
+
+	public void sendRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener){
+
+
 	}
 	
 	/**
