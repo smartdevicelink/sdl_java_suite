@@ -131,7 +131,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	assertEquals(Test.MATCH, VehicleDataHelper.PRNDL_FINAL, prndl);
     	assertTrue(Test.MATCH, Validator.validateTireStatus(VehicleDataHelper.TIRE_PRESSURE, pressure));
     	assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_TORQUE, torque);
-		assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_OIL_LIFE, engineOilLife);
+    	assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_OIL_LIFE, engineOilLife);
     	assertEquals(Test.MATCH, VehicleDataHelper.ODOMETER, odometer);
     	assertTrue(Test.MATCH, Validator.validateGpsData(VehicleDataHelper.GPS, gps));
     	assertEquals(Test.MATCH, VehicleDataHelper.FUEL_LEVEL_STATE, state);
