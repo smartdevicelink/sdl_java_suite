@@ -75,6 +75,7 @@ import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
+import com.smartdevicelink.util.SdlAppInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -815,8 +816,36 @@ public class SdlRouterService extends Service{
 		startUpSequence();
 	}
 
-	public void deployNextRouterService(){
-		//TODO
+	/**
+	 * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
+	 */
+	protected void deployNextRouterService(){
+		List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator());
+		if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
+			ComponentName name = new ComponentName(this, this.getClass());
+			SdlAppInfo info;
+			int listSize = sdlAppInfoList.size();
+			for(int i = 0; i < listSize; i++) {
+				info = sdlAppInfoList.get(i);
+				if(info.getRouterServiceComponentName().equals(name) && listSize > i){
+					SdlAppInfo nextUp = sdlAppInfoList.get(i+1);
+					Intent serviceIntent = new Intent();
+					serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
+					if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+						startService(serviceIntent);
+					}else{
+						try{
+							startForegroundService(serviceIntent);
+						}catch (Exception e){}
+					}
+					break;
+
+				}
+			}
+		} else{
+			Log.d(TAG, "No sdl apps found");
+			return;
+		}
 		closing = true;
 		closeBluetoothSerialServer();
 		notifyAltTransportOfClose(TransportConstants.ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE);
