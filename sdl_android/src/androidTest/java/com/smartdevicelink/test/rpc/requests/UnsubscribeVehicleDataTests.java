@@ -75,8 +75,8 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_PRNDL, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_TIRE_PRESSURE, Test.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_ODOMETER, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_GPS, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE, Test.GENERAL_BOOLEAN);
@@ -155,8 +155,8 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getBodyInformation());
         assertNull(Test.NULL, msg.getDeviceStatus());
         assertNull(Test.NULL, msg.getHeadLampStatus());
-		assertNull(Test.NULL, msg.getEngineTorque());
-		assertNull(Test.NULL, msg.getEngineOilLife());
+        assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getSteeringWheelAngle());
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());

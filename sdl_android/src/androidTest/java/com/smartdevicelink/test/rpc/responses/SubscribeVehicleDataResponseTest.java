@@ -85,7 +85,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_PRNDL, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_PRNDL.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TIRE_PRESSURE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TIREPRESSURE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ENGINE_TORQUE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ENGINETORQUE.ordinal()).serializeJSON());
-			result.put(SubscribeVehicleDataResponse.KEY_ENGINE_OIL_LIFE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ENGINEOILLIFE.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_ENGINE_OIL_LIFE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ENGINEOILLIFE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ODOMETER, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ODOMETER.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_GPS, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_GPS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_LEVEL_STATE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELLEVEL_STATE.ordinal()).serializeJSON());
@@ -159,8 +159,8 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 	    assertTrue(Test.TRUE, testFuelLevel.getDataType().equals(VehicleDataType.VEHICLEDATA_FUELLEVEL));
 	    assertTrue(Test.TRUE, testConsumption.getDataType().equals(VehicleDataType.VEHICLEDATA_FUELCONSUMPTION));
 	    assertTrue(Test.TRUE, testExternalTemp.getDataType().equals(VehicleDataType.VEHICLEDATA_EXTERNTEMP));
-		assertTrue(Test.TRUE, testEngineTorque.getDataType().equals(VehicleDataType.VEHICLEDATA_ENGINETORQUE));
-		assertTrue(Test.TRUE, testEngineOilLife.getDataType().equals(VehicleDataType.VEHICLEDATA_ENGINEOILLIFE));
+	    assertTrue(Test.TRUE, testEngineTorque.getDataType().equals(VehicleDataType.VEHICLEDATA_ENGINETORQUE));
+	    assertTrue(Test.TRUE, testEngineOilLife.getDataType().equals(VehicleDataType.VEHICLEDATA_ENGINEOILLIFE));
 	    assertTrue(Test.TRUE, testAccPedal.getDataType().equals(VehicleDataType.VEHICLEDATA_ACCPEDAL));
 	    assertTrue(Test.TRUE, testSteeringWheel.getDataType().equals(VehicleDataType.VEHICLEDATA_STEERINGWHEEL));
 	    assertTrue(Test.TRUE, testFuelLevelState.getDataType().equals(VehicleDataType.VEHICLEDATA_FUELLEVEL_STATE));
@@ -191,8 +191,8 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertNull(Test.NULL, msg.getBodyInformation());
         assertNull(Test.NULL, msg.getDeviceStatus());
         assertNull(Test.NULL, msg.getHeadLampStatus());
-		assertNull(Test.NULL, msg.getEngineTorque());
-		assertNull(Test.NULL, msg.getEngineOilLife());
+        assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getSteeringWheelAngle());
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());
@@ -251,7 +251,7 @@ public class SubscribeVehicleDataResponseTest extends BaseRpcTests {
 			JSONObject engineOilLife = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_ENGINE_OIL_LIFE);
 			VehicleDataResult referenceEngineOilLife = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(engineOilLife));
 			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceEngineOilLife, cmd.getEngineOilLife()));
-			
+
 			JSONObject odometer = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_ODOMETER);
 			VehicleDataResult referenceOdometer = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(odometer));
 			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceOdometer, cmd.getOdometer()));

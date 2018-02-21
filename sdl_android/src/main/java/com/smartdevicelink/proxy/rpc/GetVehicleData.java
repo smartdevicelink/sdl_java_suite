@@ -170,7 +170,7 @@ import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOIC
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
- * 	 	<tr>
+ * 		<tr>
  * 			<td>engineOilLife</td>
  * 			<td>Boolean</td>
  * 			<td>The estimated percentage of remaining oil life of the engine</td>
@@ -218,7 +218,7 @@ import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOIC
  *
  */
 public class GetVehicleData extends RPCRequest {
-    public static final String KEY_SPEED = "speed";
+	public static final String KEY_SPEED = "speed";
 	public static final String KEY_RPM = "rpm";
 	public static final String KEY_EXTERNAL_TEMPERATURE = "externalTemperature";
 	public static final String KEY_FUEL_LEVEL = "fuelLevel";
@@ -226,7 +226,7 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
-    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";

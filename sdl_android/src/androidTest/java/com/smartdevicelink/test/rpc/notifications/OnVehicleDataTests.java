@@ -64,8 +64,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_VIN, VehicleDataHelper.VIN);
             result.put(OnVehicleData.KEY_PRNDL, VehicleDataHelper.PRNDL_FINAL);
             result.put(OnVehicleData.KEY_TIRE_PRESSURE, VehicleDataHelper.TIRE_PRESSURE.serializeJSON());
-			result.put(OnVehicleData.KEY_ENGINE_TORQUE, VehicleDataHelper.ENGINE_TORQUE);
-			result.put(OnVehicleData.KEY_ENGINE_OIL_LIFE, VehicleDataHelper.ENGINE_OIL_LIFE);
+            result.put(OnVehicleData.KEY_ENGINE_TORQUE, VehicleDataHelper.ENGINE_TORQUE);
+            result.put(OnVehicleData.KEY_ENGINE_OIL_LIFE, VehicleDataHelper.ENGINE_OIL_LIFE);
             result.put(OnVehicleData.KEY_ODOMETER, VehicleDataHelper.ODOMETER);
             result.put(OnVehicleData.KEY_GPS, VehicleDataHelper.GPS.serializeJSON());
             result.put(OnVehicleData.KEY_FUEL_LEVEL_STATE, VehicleDataHelper.FUEL_LEVEL_STATE);
@@ -102,8 +102,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	String vin = ( (OnVehicleData) msg).getVin();
     	PRNDL prndl = ( (OnVehicleData) msg).getPrndl();
     	TireStatus pressure = ( (OnVehicleData) msg).getTirePressure();
-		Double torque = ( (OnVehicleData) msg).getEngineTorque();
-		Double engineOilLife = ( (OnVehicleData) msg).getEngineOilLife();
+    	Double torque = ( (OnVehicleData) msg).getEngineTorque();
+    	Double engineOilLife = ( (OnVehicleData) msg).getEngineOilLife();
     	int odometer = ( (OnVehicleData) msg).getOdometer();
     	GPSData gps = ( (OnVehicleData) msg).getGps();
     	ComponentVolumeStatus state = ( (OnVehicleData) msg).getFuelLevelState();
@@ -162,8 +162,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getVin());
         assertNull(Test.NULL, msg.getPrndl());
         assertNull(Test.NULL, msg.getTirePressure());
-		assertNull(Test.NULL, msg.getEngineTorque());
-		assertNull(Test.NULL, msg.getEngineOilLife());
+        assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getOdometer());
         assertNull(Test.NULL, msg.getGps());
         assertNull(Test.NULL, msg.getFuelLevelState());

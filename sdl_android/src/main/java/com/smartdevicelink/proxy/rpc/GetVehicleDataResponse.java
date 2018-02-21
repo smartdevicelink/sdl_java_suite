@@ -25,7 +25,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
-    public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";

@@ -63,8 +63,8 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
             result.put(GetVehicleDataResponse.KEY_VIN, VehicleDataHelper.VIN);
             result.put(GetVehicleDataResponse.KEY_PRNDL, VehicleDataHelper.PRNDL_FINAL);
             result.put(GetVehicleDataResponse.KEY_TIRE_PRESSURE, VehicleDataHelper.TIRE_PRESSURE.serializeJSON());
-			result.put(GetVehicleDataResponse.KEY_ENGINE_TORQUE, VehicleDataHelper.ENGINE_TORQUE);
-			result.put(GetVehicleDataResponse.KEY_ENGINE_OIL_LIFE, VehicleDataHelper.ENGINE_OIL_LIFE);
+            result.put(GetVehicleDataResponse.KEY_ENGINE_TORQUE, VehicleDataHelper.ENGINE_TORQUE);
+            result.put(GetVehicleDataResponse.KEY_ENGINE_OIL_LIFE, VehicleDataHelper.ENGINE_OIL_LIFE);
             result.put(GetVehicleDataResponse.KEY_ODOMETER, VehicleDataHelper.ODOMETER);
             result.put(GetVehicleDataResponse.KEY_GPS, VehicleDataHelper.GPS.serializeJSON());
             result.put(GetVehicleDataResponse.KEY_FUEL_LEVEL_STATE, VehicleDataHelper.FUEL_LEVEL_STATE);
@@ -429,8 +429,8 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getBodyInformation());
         assertNull(Test.NULL, msg.getDeviceStatus());
         assertNull(Test.NULL, msg.getHeadLampStatus());
-		assertNull(Test.NULL, msg.getEngineTorque());
-		assertNull(Test.NULL, msg.getEngineOilLife());
+        assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getSteeringWheelAngle());
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());
