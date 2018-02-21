@@ -131,12 +131,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530,
 						POLICIES_CORRELATION_ID = 65535;
 	
-	// Sdlhronization Objects
+	// Sdl Synchronization Objects
 	private static final Object CONNECTION_REFERENCE_LOCK = new Object(),
 								INCOMING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								OUTGOING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								INTERNAL_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								ON_UPDATE_LISTENER_LOCK = new Object(),
+								ON_UPDATE_MULTIPLE_LISTENER_LOCK = new Object(),
 								ON_NOTIFICATION_LISTENER_LOCK = new Object();
 	
 	private final Object APP_INTERFACE_REGISTERED_LOCK = new Object();
@@ -3427,13 +3428,39 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
 
-	public void sendSequentialRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener ){
+	@SuppressWarnings("unused")
+	public void sendSequentialRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener) throws SdlException {
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
 
+		SdlTrace.logProxyEvent("Application called sendSequentialRequests", SDL_LIB_TRACE_KEY);
+
+		// Test if SdlConnection is null
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (!getIsConnected()) {
+				SdlTrace.logProxyEvent("Application attempted to call sendSequentialRequests without a connected transport.", SDL_LIB_TRACE_KEY);
+				throw new SdlException("There is no valid connection to SDL. sendSequentialRequests cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
+			}
+		}
 
 	}
 
-	public void sendRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener){
+	@SuppressWarnings("unused")
+	public void sendRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener) throws SdlException {
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
 
+		SdlTrace.logProxyEvent("Application called sendRequests", SDL_LIB_TRACE_KEY);
+
+		// Test if SdlConnection is null
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (!getIsConnected()) {
+				SdlTrace.logProxyEvent("Application attempted to call sendRequests without a connected transport.", SDL_LIB_TRACE_KEY);
+				throw new SdlException("There is no valid connection to SDL. sendRequests cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
+			}
+		}
 
 	}
 	
@@ -3485,7 +3512,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
-						", is unallowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
+						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
 			}
 		}
 		
