@@ -824,7 +824,7 @@ public class RPCRequestFactory {
 	@SuppressWarnings("deprecation")
     public static SubscribeVehicleData BuildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
-																 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+																 boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 																 boolean driverBraking, Integer correlationID) 
 	{
 		SubscribeVehicleData msg = new SubscribeVehicleData();
@@ -837,6 +837,7 @@ public class RPCRequestFactory {
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
 		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
 		msg.setOdometer(odometer);
 		msg.setBeltStatus(beltStatus);
 		msg.setBodyInformation(bodyInformation);
@@ -850,7 +851,7 @@ public class RPCRequestFactory {
 	@SuppressWarnings("deprecation")
     public static UnsubscribeVehicleData BuildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 																	 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
-																	 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+																	 boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 																	 boolean driverBraking, Integer correlationID) 
 	{
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
@@ -863,6 +864,7 @@ public class RPCRequestFactory {
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
 		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
 		msg.setOdometer(odometer);
 		msg.setBeltStatus(beltStatus);
 		msg.setBodyInformation(bodyInformation);
@@ -876,7 +878,7 @@ public class RPCRequestFactory {
 	@SuppressWarnings("deprecation")
     public static GetVehicleData BuildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 			 boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
-			 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+			 boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 			 boolean driverBraking, Integer correlationID)
 	{
 		GetVehicleData msg = new GetVehicleData();
@@ -890,6 +892,7 @@ public class RPCRequestFactory {
 		msg.setVin(vin);
 		msg.setPrndl(prndl);
 		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
 		msg.setOdometer(odometer);
 		msg.setBeltStatus(beltStatus);
 		msg.setBodyInformation(bodyInformation);

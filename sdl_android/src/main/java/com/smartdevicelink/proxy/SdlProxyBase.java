@@ -5606,6 +5606,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param prndl -Subscribes to PRNDL data that houses the selected gear.
 	 * @param tirePressure -Subscribes to the TireStatus data containing status and pressure of tires. 
 	 * @param odometer -Subscribes to Odometer data in km.
+	 * @param engineOilLife -Subscribes to Engine Oil Life data.
 	 * @param beltStatus -Subscribes to status of the seat belts.
 	 * @param bodyInformation -Subscribes to body information including power modes.
 	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
@@ -5616,11 +5617,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
-									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									 boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									 boolean driverBraking, Integer correlationID) throws SdlException
 	{
 		SubscribeVehicleData msg = RPCRequestFactory.BuildSubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure, 
-																				odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+																				engineOilLife, odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5639,6 +5640,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param prndl -Unsubscribes to PRNDL data that houses the selected gear.
 	 * @param tirePressure -Unsubscribes to the TireStatus data containing status and pressure of tires. 
 	 * @param odometer -Unsubscribes to Odometer data in km.
+	 * @param engineOilLife -Unsubscribes to Engine Oil Life data.
 	 * @param beltStatus -Unsubscribes to status of the seat belts.
 	 * @param bodyInformation -Unsubscribes to body information including power modes.
 	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
@@ -5650,11 +5652,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
-									   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									   boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									   boolean driverBraking, Integer correlationID) throws SdlException
 	{
 		UnsubscribeVehicleData msg = RPCRequestFactory.BuildUnsubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure,
-																					odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+																					engineOilLife, odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
 		sendRPCRequest(msg);
 	}
 
@@ -5674,6 +5676,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param prndl -Performs an ad-hoc request for PRNDL data that houses the selected gear.
 	 * @param tirePressure -Performs an ad-hoc request for the TireStatus data containing status and pressure of tires. 
 	 * @param odometer -Performs an ad-hoc request for Odometer data in km.
+	 * @param engineOilLife -Performs an ad-hoc request for Engine Oil Life data.
 	 * @param beltStatus -Performs an ad-hoc request for status of the seat belts.
 	 * @param bodyInformation -Performs an ad-hoc request for  body information including power modes.
 	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
@@ -5684,12 +5687,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
-							   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+							   boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 							   boolean driverBraking, Integer correlationID) throws SdlException
 	{
 	
 		GetVehicleData msg = RPCRequestFactory.BuildGetVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, vin, prndl, tirePressure, odometer,
-																   beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+																   engineOilLife, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
 		sendRPCRequest(msg);
 	}
 

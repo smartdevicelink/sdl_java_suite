@@ -11,6 +11,7 @@
       "prndl":true,
       "tirePressure":true,
       "engineTorque":false,
+      "engineOilLife":true,
       "odometer":true,
       "gps":false,
       "fuelLevel_State":true,
@@ -50,6 +51,7 @@
         "rightRear":"ALERT"
       },
       "engineTorque":518.3,
+      "engineOilLife":19.3,
       "odometer":140000,
       "gps":{
         "longitudeDegrees":104.2,
