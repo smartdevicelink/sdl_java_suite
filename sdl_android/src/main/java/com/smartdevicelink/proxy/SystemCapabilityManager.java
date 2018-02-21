@@ -30,6 +30,7 @@ public class SystemCapabilityManager {
 			cachedSystemCapabilities.put(SystemCapabilityType.HMI, response.getHmiCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.AUDIO_PASSTHROUGH, response.getAudioPassThruCapabilities());
+			cachedSystemCapabilities.put(SystemCapabilityType.PCM_STREAMING, response.getPcmStreamingCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.HMI_ZONE, response.getHmiZoneCapabilities());
 			cachedSystemCapabilities.put(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
@@ -84,6 +85,7 @@ public class SystemCapabilityManager {
 		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
 		if(capability != null){
 			scListener.onCapabilityRetrieved(capability);
+			return;
 		}else if(scListener == null){
 			return;
 		}
