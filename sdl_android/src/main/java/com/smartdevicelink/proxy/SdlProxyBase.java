@@ -3428,6 +3428,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
 
+	/**
+	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
+	 * For sending requests asynchronously, use sendRequests
+	 *
+	 * @param rpcs is the list of RPCRequests being sent
+	 * @param listener listener for updates and completions
+	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
+	 */
 	@SuppressWarnings("unused")
 	public void sendSequentialRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
@@ -3446,6 +3454,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	}
 
+	/**
+	 * Takes a list of RPCRequests and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
+	 * For sending requests synchronously, use sendSequentialRequests
+	 *
+	 * @param rpcs is the list of RPCRequests being sent
+	 * @param listener listener for updates and completions
+	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
+	 */
 	@SuppressWarnings("unused")
 	public void sendRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
