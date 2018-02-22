@@ -45,7 +45,7 @@ public class VehicleDataHelper{
 	public static final PRNDL PRNDL_FINAL = PRNDL.SECOND;
 	public static final TireStatus TIRE_PRESSURE = new TireStatus();
 	public static final double ENGINE_TORQUE = 518.3;
-	public static final double ENGINE_OIL_LIFE = 19.3;
+	public static final float ENGINE_OIL_LIFE = 19.3f;
 	public static final int ODOMETER = 140000;
 	public static final GPSData GPS = new GPSData();
 	public static final ComponentVolumeStatus FUEL_LEVEL_STATE = ComponentVolumeStatus.ALERT;

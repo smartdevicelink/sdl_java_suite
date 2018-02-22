@@ -103,7 +103,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	PRNDL prndl = ( (OnVehicleData) msg).getPrndl();
     	TireStatus pressure = ( (OnVehicleData) msg).getTirePressure();
     	Double torque = ( (OnVehicleData) msg).getEngineTorque();
-    	Double engineOilLife = ( (OnVehicleData) msg).getEngineOilLife();
+    	Float engineOilLife = ( (OnVehicleData) msg).getEngineOilLife();
     	int odometer = ( (OnVehicleData) msg).getOdometer();
     	GPSData gps = ( (OnVehicleData) msg).getGps();
     	ComponentVolumeStatus state = ( (OnVehicleData) msg).getFuelLevelState();
@@ -437,6 +437,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					assertTrue(Test.TRUE, Validator.validateMyKey(
 						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
+				}
+				else if (key.equals(OnVehicleData.KEY_ENGINE_OIL_LIFE)) {
+					assertEquals(JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key));
 				}
 				else {
 					assertEquals(Test.TRUE, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

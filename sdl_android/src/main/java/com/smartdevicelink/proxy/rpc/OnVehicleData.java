@@ -415,12 +415,12 @@ public class OnVehicleData extends RPCNotification {
         Object object = getParameters(KEY_ENGINE_TORQUE);
         return SdlDataTypeConverter.objectToDouble(object);
     }
-    public void setEngineOilLife(Double engineOilLife) {
+    public void setEngineOilLife(Float engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
     }
-    public Double getEngineOilLife() {
+    public Float getEngineOilLife() {
         Object object = getParameters(KEY_ENGINE_OIL_LIFE);
-        return SdlDataTypeConverter.objectToDouble(object);
+        return SdlDataTypeConverter.objectToFloat(object);
     }
     public void setAccPedalPosition(Double accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);

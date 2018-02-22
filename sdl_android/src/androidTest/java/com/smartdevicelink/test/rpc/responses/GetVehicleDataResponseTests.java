@@ -362,6 +362,10 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
 				}
+				else if (key.equals(GetVehicleDataResponse.KEY_ENGINE_OIL_LIFE)) {
+					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
+							JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key));
+				}
 				else {
 					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
 							JsonUtils.readObjectFromJsonObject(reference, key),
@@ -470,7 +474,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			assertTrue(Test.TRUE, Validator.validateTireStatus(tireStatus, cmd.getTirePressure()) );
 
 			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
-			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
+			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife(), 0.0002);
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetVehicleDataResponse.KEY_ODOMETER), cmd.getOdometer());
 			
 			JSONObject gpsDataObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_GPS);
