@@ -109,6 +109,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 
 
@@ -3437,7 +3438,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendSequentialRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRequests(List<RPCRequest> rpcs, OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -3463,7 +3464,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendRequests(List<RPCMessage> rpcs, OnMultipleRequestListener listener) throws SdlException {
+	public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -3478,6 +3480,64 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
+		if (rpcs == null || rpcs.size() == 0){
+			//Log error here
+			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
+		}
+
+		for (int i = 0; i < rpcs.size(); i++) {
+
+			RPCRequest rpc = rpcs.get(i);
+			if (rpc.getCorrelationID() == null) {
+				rpc.setCorrelationID(CorrelationIdGenerator.generateId());
+			}
+			listener.addCorrelationId(rpc.getCorrelationID());
+			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+			sendRPCRequestMultiple(rpc);
+		}
+
+		listener.onFinished();
+	}
+
+	private void sendRPCRequestMultiple(RPCRequest request) throws SdlException {
+		try {
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
+
+			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
+
+			ProtocolMessage pm = new ProtocolMessage();
+			pm.setData(msgBytes);
+			if (sdlSession != null)
+				pm.setSessionID(sdlSession.getSessionId());
+			pm.setMessageType(MessageType.RPC);
+			pm.setSessionType(SessionType.RPC);
+			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
+			pm.setPayloadProtected(request.isPayloadProtected());
+			if (request.getCorrelationID() == null) {
+				//Log error here
+				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
+			}
+			pm.setCorrID(request.getCorrelationID());
+			if (request.getBulkData() != null){
+				pm.setBulkData(request.getBulkData());
+			}
+			if(request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
+				pm.setPriorityCoefficient(1);
+			}
+
+			// Queue this outgoing message
+			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
+				if (_outgoingProxyMessageDispatcher != null) {
+					_outgoingProxyMessageDispatcher.queueMessage(pm);
+					if(request.getMessageType().equals(RPCMessage.KEY_REQUEST)){//We might want to include other message types in the future
+						addOnRPCResponseListener(request.getOnRPCResponseListener(), request.getCorrelationID(), msgBytes.length);
+					}
+				}
+			}
+		} catch (OutOfMemoryError e) {
+			SdlTrace.logProxyEvent("OutOfMemory exception while sending request " + request.getFunctionName(), SDL_LIB_TRACE_KEY);
+			throw new SdlException("OutOfMemory exception while sending request " + request.getFunctionName(), e, SdlExceptionCause.INVALID_ARGUMENT);
+		}
 	}
 	
 	/**
