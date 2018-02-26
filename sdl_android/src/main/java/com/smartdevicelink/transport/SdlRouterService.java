@@ -819,9 +819,9 @@ public class SdlRouterService extends Service{
 			ComponentName name = new ComponentName(this, this.getClass());
 			SdlAppInfo info;
 			int listSize = sdlAppInfoList.size();
-			for(int i = 0; i < listSize - 1; i++) {
+			for(int i = 0; i < listSize; i++) {
 				info = sdlAppInfoList.get(i);
-				if(info.getRouterServiceComponentName().equals(name) && listSize > i){
+				if(info.getRouterServiceComponentName().equals(name) && listSize > i + 1){
 					SdlAppInfo nextUp = sdlAppInfoList.get(i+1);
 					Intent serviceIntent = new Intent();
 					serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
