@@ -3494,9 +3494,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			listener.addCorrelationId(rpc.getCorrelationID());
 			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
 			sendRPCRequestMultiple(rpc);
-		}
 
-		listener.onFinished();
+		}
 	}
 
 	private void sendRPCRequestMultiple(RPCRequest request) throws SdlException {

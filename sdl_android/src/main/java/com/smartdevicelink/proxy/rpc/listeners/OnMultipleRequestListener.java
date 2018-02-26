@@ -3,6 +3,9 @@ package com.smartdevicelink.proxy.rpc.listeners;
 import android.util.Log;
 
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import org.json.JSONException;
 
 import java.util.Vector;
 
@@ -23,13 +26,17 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 		rpcResponseListener = new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				Log.i(TAG, "OR "+correlationIds.toString());
 				correlationIds.remove(Integer.valueOf(correlationId));
 				if(correlationIds.size()>0){
 					onUpdate(correlationIds.size());
 				}else{
 					onFinished();
 				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				// bad stuff happening
 			}
 		};
 	}
