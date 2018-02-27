@@ -142,9 +142,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								ON_NOTIFICATION_LISTENER_LOCK = new Object();
 	
 	private final Object APP_INTERFACE_REGISTERED_LOCK = new Object();
-
-	// index for sequential RPC sends
-	private int index = 0;
 		
 	private int iFileCount = 0;
 
@@ -3438,7 +3435,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *
 	 * @param rpcs is the list of RPCRequests being sent
 	 * @param listener listener for updates and completions
-	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
 	public void sendSequentialRequests(final List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
@@ -3455,7 +3452,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		if (rpcs == null || (index == 0 && rpcs.size() == 0)){
+		if (rpcs == null){
 			//Log error here
 			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
 		}
@@ -3465,8 +3462,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		// Break out of recursion, we have finished the requests
 		if (requestCount == 0) {
 			listener.onFinished();
-			// reset index
-			index = 0;
 			return;
 		}
 
@@ -3482,7 +3477,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					// success
 					rpcs.remove(0);
 					listener.onUpdate(rpcs.size());
-					index++;
 					try {
 						// recurse after successful response of RPC
 						sendSequentialRequests(rpcs, listener);
@@ -3505,7 +3499,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 *
 	 * @param rpcs is the list of RPCRequests being sent
 	 * @param listener listener for updates and completions
-	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
 	public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
@@ -3584,7 +3578,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Takes an RPCRequest and sends it to SDL.  Responses are captured through callback on IProxyListener.  
 	 * 
 	 * @param request is the RPCRequest being sent
-	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void sendRPCRequest(RPCRequest request) throws SdlException {
 		if (_proxyDisposed) {
