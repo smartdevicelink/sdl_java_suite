@@ -106,9 +106,10 @@ public class AndroidTools {
 					try {
 						packageInfo = packageManager.getPackageInfo(info.serviceInfo.packageName, 0);
 					} catch (NameNotFoundException e) {
-					} finally {
-						sdlAppInfoList.add(new SdlAppInfo(info, packageInfo));
+						//Package was not found, likely a sign the resolve info can't be trusted.
 					}
+					sdlAppInfoList.add(new SdlAppInfo(info, packageInfo));
+
 				}
 			}
 
