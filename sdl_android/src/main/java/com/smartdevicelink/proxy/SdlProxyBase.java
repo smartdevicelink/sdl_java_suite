@@ -3533,6 +3533,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
+	/**
+	 * This is very similar to sendRPCRequestPrivate, but does not create a new
+	 * listener object when sending the RPC, since we are using our own custom listeners
+	 *
+	 * @param request is the RPC being sent
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
 	private void sendRPCRequestWithCustomListener(RPCRequest request) throws SdlException {
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
