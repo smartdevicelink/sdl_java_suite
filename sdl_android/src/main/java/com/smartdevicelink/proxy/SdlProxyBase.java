@@ -3448,7 +3448,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		SdlTrace.logProxyEvent("Application called sendSequentialRequests", SDL_LIB_TRACE_KEY);
 
-		// Test if SdlConnection is null
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (!getIsConnected()) {
 				SdlTrace.logProxyEvent("Application attempted to call sendSequentialRequests without a connected transport.", SDL_LIB_TRACE_KEY);
@@ -3497,7 +3496,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		});
 
-		sendRPCRequestMultiple(rpc);
+		sendRPCRequestWithCustomListener(rpc);
 	}
 
 	/**
@@ -3517,7 +3516,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		SdlTrace.logProxyEvent("Application called sendRequests", SDL_LIB_TRACE_KEY);
 
-		// Test if SdlConnection is null
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (!getIsConnected()) {
 				SdlTrace.logProxyEvent("Application attempted to call sendRequests without a connected transport.", SDL_LIB_TRACE_KEY);
@@ -3531,19 +3529,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		for (int i = 0; i < rpcs.size(); i++) {
-
 			RPCRequest rpc = rpcs.get(i);
 			if (rpc.getCorrelationID() == null) {
 				rpc.setCorrelationID(CorrelationIdGenerator.generateId());
 			}
 			listener.addCorrelationId(rpc.getCorrelationID());
 			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
-			sendRPCRequestMultiple(rpc);
-
+			sendRPCRequestWithCustomListener(rpc);
 		}
 	}
 
-	private void sendRPCRequestMultiple(RPCRequest request) throws SdlException {
+	private void sendRPCRequestWithCustomListener(RPCRequest request) throws SdlException {
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
 
