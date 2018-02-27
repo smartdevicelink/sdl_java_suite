@@ -142,6 +142,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								ON_NOTIFICATION_LISTENER_LOCK = new Object();
 	
 	private final Object APP_INTERFACE_REGISTERED_LOCK = new Object();
+
+	// index for sequential RPC sends
+	private int index = 0;
 		
 	private int iFileCount = 0;
 
@@ -3438,7 +3441,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendSequentialRequests(List<RPCRequest> rpcs, OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRequests(final List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -3453,6 +3456,48 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
+		if (rpcs == null || (index == 0 && rpcs.size() == 0)){
+			//Log error here
+			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
+		}
+
+		int requestCount = rpcs.size();
+
+		// Break out of recursion, we have finished the requests
+		if (requestCount == 0) {
+			listener.onFinished();
+			// reset index
+			index = 0;
+			return;
+		}
+
+		RPCRequest rpc = rpcs.get(0);
+		if (rpc.getCorrelationID() == null) {
+			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
+		}
+
+		rpc.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()) {
+					// success
+					rpcs.remove(0);
+					listener.onUpdate(rpcs.size());
+					index++;
+					try {
+						// recurse after successful response of RPC
+						sendSequentialRequests(rpcs, listener);
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+				} else {
+					// fail
+					listener.onError(correlationId, response);
+				}
+			}
+		});
+
+		sendRPCRequestMultiple(rpc);
 	}
 
 	/**
