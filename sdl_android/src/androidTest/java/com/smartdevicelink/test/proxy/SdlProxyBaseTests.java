@@ -162,6 +162,14 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         }
     }
 
+    public void testMultipleRPCSendSynchronous() {
+
+	}
+
+	public void testMultipleRPCSendAsynchronous() {
+
+	}
+
     public class ProxyListenerTest implements IProxyListenerALM {
 
         @Override
