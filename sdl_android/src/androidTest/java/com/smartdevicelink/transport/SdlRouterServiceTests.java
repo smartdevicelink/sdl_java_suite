@@ -30,12 +30,11 @@ import java.util.HashMap;
 public class SdlRouterServiceTests extends AndroidTestCase {
 
     public static final String TAG = "SdlRouterServiceTests";
-	private final int SAMPLE_RPC_CORRELATION_ID = 630;
-
-	int version = 1;
-	int sessionId = 1;
-	ProtocolMessage pm = null;
-	BinaryFrameHeader binFrameHeader = null;
+    private final int SAMPLE_RPC_CORRELATION_ID = 630;
+    int version = 1;
+    int sessionId = 1;
+    ProtocolMessage pm = null;
+    BinaryFrameHeader binFrameHeader = null;
 
     @Override
     protected void setUp() throws Exception {
