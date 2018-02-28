@@ -1496,7 +1496,7 @@ public class SdlRouterService extends Service{
 								if (hashOfRemoved != currentHash){
 									// App assigned same session id but is a different app. Keep this from being killed
 									Log.d(TAG, "same session id for different apps found, dropping packet");
-									this.cleanedSessionMap.clear();
+									this.cleanedSessionMap.removeAt(session);
 									return false;
 								}
 							}
