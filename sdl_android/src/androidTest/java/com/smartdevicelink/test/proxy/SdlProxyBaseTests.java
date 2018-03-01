@@ -202,7 +202,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 
 			@Override
 			public void onError(int correlationID, RPCResponse response) {
-
+				assert false;
 			}
 
 			@Override
@@ -211,7 +211,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 			}
 		};
 		try{
-			//	public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+			// public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 			Method m = SdlProxyBase.class.getDeclaredMethod("sendRequests", SdlProxyBase.class);
 			assertNotNull(m);
 			m.setAccessible(true);
@@ -256,7 +256,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 
 			@Override
 			public void onError(int correlationID, RPCResponse response) {
-
+				assert false;
 			}
 
 			@Override
@@ -265,7 +265,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 			}
 		};
 		try{
-			//	public void sendSequentialRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+			// public void sendSequentialRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 			Method m = SdlProxyBase.class.getDeclaredMethod("sendSequentialRequests", SdlProxyBase.class);
 			assertNotNull(m);
 			m.setAccessible(true);
