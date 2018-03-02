@@ -325,6 +325,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	
 	public void unregisterSession(SdlSession registerListener) {
 		boolean didRemove = listenerList.remove(registerListener);
+		// Notify the thread that is running onTransportError() to continue
+		synchronized (SESSION_LOCK) {
+			SESSION_LOCK.notify();
+		}
 		if(didRemove && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){ //If we're connected we can request the extra session now
 			((MultiplexTransport)_transport).removeSession(registerListener.getSessionId());
 		}		
@@ -385,14 +389,19 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			}else{
 				cachedMultiConfig = null; //It should now be consumed
 			}
-
-			// Prevents current thread from locking CONNECTION_REFERENCE_LOCK
-			// if it has already locked PROTOCOL_REFERENCE_LOCK
-			// without this condition, a deadlock may happen
-			if (!Thread.holdsLock(PROTOCOL_REFERENCE_LOCK)) {
-				for (SdlSession session : listenerList) {
-					session.onTransportError(info, e);
+			// Wait for the sessions to be unregistered
+			// if the thread didn't wait, it will continue looping through the sessions
+			// even though, other thread may be closing them, which may cause a deadlock
+			try {
+				synchronized (SESSION_LOCK) {
+					// if we have any deadlocks] issues in the future, we may need to increase the wait duration
+					SESSION_LOCK.wait(250);
 				}
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			for (SdlSession session : listenerList) {
+				session.onTransportError(info, e);
 			}
 
 		}
