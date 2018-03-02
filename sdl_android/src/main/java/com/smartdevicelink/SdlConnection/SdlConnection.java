@@ -385,8 +385,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			}else{
 				cachedMultiConfig = null; //It should now be consumed
 			}
-			for (SdlSession session : listenerList) {
-				session.onTransportError(info, e);
+
+			// Prevents current thread from locking CONNECTION_REFERENCE_LOCK
+			// if it has already locked PROTOCOL_REFERENCE_LOCK
+			// without this condition, a deadlock may happen
+			if (!Thread.holdsLock(PROTOCOL_REFERENCE_LOCK)) {
+				for (SdlSession session : listenerList) {
+					session.onTransportError(info, e);
+				}
 			}
 
 		}
