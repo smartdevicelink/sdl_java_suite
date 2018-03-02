@@ -394,7 +394,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			// even though, other thread may be closing them, which may cause a deadlock
 			try {
 				synchronized (SESSION_LOCK) {
-					// if we have any deadlocks] issues in the future, we may need to increase the wait duration
+					// if we have any deadlock issues in the future, we may need to increase the wait duration
 					SESSION_LOCK.wait(250);
 				}
 			} catch (InterruptedException e1) {
