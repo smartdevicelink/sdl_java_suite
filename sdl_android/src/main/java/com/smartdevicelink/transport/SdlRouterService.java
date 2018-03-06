@@ -1483,28 +1483,28 @@ public class SdlRouterService extends Service{
 	    				}
 	    			}
 
-					// check and prevent a UAI from being passed to an app that is using a recycled session id
-					if (cleanedSessionMap != null && cleanedSessionMap.size() > 0 ) {
-						if(packet.getFrameType() == FrameType.Single && packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC) {
-							BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.getPayload());
-							if (binFrameHeader != null && FunctionID.UNREGISTER_APP_INTERFACE.getId() == binFrameHeader.getFunctionID()) {
-								Log.d(TAG, "Received an unregister app interface. Checking session hash before sending");
-								// make sure that we don't try to unregister a recently added app that might have a
-								// session ID of a removed app whose UAI was delayed
-								int hashOfRemoved = this.cleanedSessionMap.get(session, -1);
-								int currentHash = this.sessionHashIdMap.get(session, -1);
-								if (hashOfRemoved != -1) {
-									// Current session contains key that was held before
-									if (hashOfRemoved != currentHash) {
-										// App assigned same session id but is a different app. Keep this from being killed
-										Log.d(TAG, "same session id for different apps found, dropping packet");
-										this.cleanedSessionMap.delete(session);
-										return false;
-									}
+				// check and prevent a UAI from being passed to an app that is using a recycled session id
+				if (cleanedSessionMap != null && cleanedSessionMap.size() > 0 ) {
+					if(packet.getFrameType() == FrameType.Single && packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC) {
+						BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.getPayload());
+						if (binFrameHeader != null && FunctionID.UNREGISTER_APP_INTERFACE.getId() == binFrameHeader.getFunctionID()) {
+							Log.d(TAG, "Received an unregister app interface. Checking session hash before sending");
+							// make sure that we don't try to unregister a recently added app that might have a
+							// session ID of a removed app whose UAI was delayed
+							int hashOfRemoved = this.cleanedSessionMap.get(session, -1);
+							int currentHash = this.sessionHashIdMap.get(session, -1);
+							if (hashOfRemoved != -1) {
+								// Current session contains key that was held before
+								if (hashOfRemoved != currentHash) {
+									// App assigned same session id but is a different app. Keep this from being killed
+									Log.d(TAG, "same session id for different apps found, dropping packet");
+									this.cleanedSessionMap.delete(session);
+									return false;
 								}
 							}
 						}
 					}
+				}
 
 	    			int packetSize = (int) (packet.getDataSize() + SdlPacket.HEADER_SIZE);
 	    			//Log.i(TAG, "Checking packet size: " + packetSize);
