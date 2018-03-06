@@ -138,6 +138,7 @@ public class SdlRouterService extends Service{
 	public static HashMap<String,RegisteredApp> registeredApps;
 	private SparseArray<String> sessionMap;
 	private SparseIntArray sessionHashIdMap;
+	private SparseIntArray cleanedSessionMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
@@ -803,6 +804,7 @@ public class SdlRouterService extends Service{
 		synchronized(SESSION_LOCK){
 			this.sessionMap = new SparseArray<String>();
 			this.sessionHashIdMap = new SparseIntArray();
+			this.cleanedSessionMap = new SparseIntArray();
 		}
 
 		packetExecutor =  Executors.newSingleThreadExecutor();
@@ -1425,7 +1427,8 @@ public class SdlRouterService extends Service{
 	    			synchronized(REGISTERED_APPS_LOCK){
 	    				 app = registeredApps.get(appid);
 	    			}
-	    			if(app==null){Log.e(TAG, "No app found for app id " + appid + " Removing session mapping and sending unregisterAI to head unit.");
+	    			if(app==null){
+	    				Log.e(TAG, "No app found for app id " + appid + " Removing session mapping and sending unregisterAI to head unit.");
 	    				//We have no app to match the app id tied to this session
 	    				removeSessionFromMap(session);
 	    				byte[] uai = createForceUnregisterApp((byte)session, (byte)packet.getVersion());
@@ -1450,6 +1453,29 @@ public class SdlRouterService extends Service{
 	    					}
 	    				}
 	    			}
+
+				// check and prevent a UAI from being passed to an app that is using a recycled session id
+				if (cleanedSessionMap != null && cleanedSessionMap.size() > 0 ) {
+					if(packet.getFrameType() == FrameType.Single && packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC) {
+						BinaryFrameHeader binFrameHeader = BinaryFrameHeader.parseBinaryHeader(packet.getPayload());
+						if (binFrameHeader != null && FunctionID.UNREGISTER_APP_INTERFACE.getId() == binFrameHeader.getFunctionID()) {
+							Log.d(TAG, "Received an unregister app interface. Checking session hash before sending");
+							// make sure that we don't try to unregister a recently added app that might have a
+							// session ID of a removed app whose UAI was delayed
+							int hashOfRemoved = this.cleanedSessionMap.get(session, -1);
+							int currentHash = this.sessionHashIdMap.get(session, -1);
+							if (hashOfRemoved != -1) {
+								// Current session contains key that was held before
+								if (hashOfRemoved != currentHash) {
+									// App assigned same session id but is a different app. Keep this from being killed
+									Log.d(TAG, "same session id for different apps found, dropping packet");
+									this.cleanedSessionMap.delete(session);
+									return false;
+								}
+							}
+						}
+					}
+				}
 
 	    			int packetSize = (int) (packet.getDataSize() + SdlPacket.HEADER_SIZE);
 	    			//Log.i(TAG, "Checking packet size: " + packetSize);
@@ -1534,6 +1560,7 @@ public class SdlRouterService extends Service{
 				if(this.sessionHashIdMap.indexOfKey(session)>=0){
 					hashId = this.sessionHashIdMap.get(session); 
 					this.sessionHashIdMap.delete(session);
+					this.cleanedSessionMap.put(session,hashId);
 				}
 			}
 			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,BitConverter.intToByteArray(hashId))).constructPacket();
