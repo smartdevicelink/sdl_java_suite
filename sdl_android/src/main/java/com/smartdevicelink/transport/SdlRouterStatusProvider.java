@@ -18,6 +18,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.os.Looper;
 
 public class SdlRouterStatusProvider {
 
