@@ -1,6 +1,6 @@
 {
   "request":{
-    "name":"AddCommand",
+    "name":"GetVehicleData",
     "correlationID":129,
     "parameters":{
       "speed":true,
@@ -27,11 +27,12 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "fuelRange":true
     }
   },
   "response":{
-    "name":"AddCommandResponse",
+    "name":"GetVehicleDataResponse",
     "correlationID":130,
     "parameters":{
       "speed":35.6,
@@ -151,7 +152,17 @@
       },
       "myKey":{
         "e911Override":"NO_DATA_EXISTS"
-      }
+      },
+      "fuelRange":[
+        {
+          "type":"GASOLINE",
+          "range":100.0
+        },
+        {
+          "type":"DIESEL",
+          "range":10.0
+        }
+      ]
     }
   }
 }

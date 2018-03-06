@@ -1,8 +1,11 @@
 package com.smartdevicelink.test.rpc.responses;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
+import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
@@ -81,6 +85,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
             result.put(GetVehicleDataResponse.KEY_EMERGENCY_EVENT, VehicleDataHelper.EMERGENCY_EVENT.serializeJSON());
             result.put(GetVehicleDataResponse.KEY_CLUSTER_MODE_STATUS, VehicleDataHelper.CLUSTER_MODE_STATUS.serializeJSON());
             result.put(GetVehicleDataResponse.KEY_MY_KEY, VehicleDataHelper.MY_KEY.serializeJSON());
+			result.put(GetVehicleDataResponse.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
         } catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -103,6 +108,8 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 		JSONObject emergencyEventObj = new JSONObject();
 		JSONObject clusterModeStatusObj = new JSONObject();
 		JSONObject myKeyObj = new JSONObject();
+		JSONObject fuelRangeObj = new JSONObject();
+		JSONArray  fuelRangeArrayObj = new JSONArray();
 		
 		try {
 			//set up the JSONObject to represent GetVehicleDataResponse
@@ -221,7 +228,12 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			
 			//MY_KEY
 			myKeyObj.put(MyKey.KEY_E_911_OVERRIDE, VehicleDataHelper.MY_KEY_E_911_OVERRIDE);
-			
+
+			// FUEL_RANGE
+			fuelRangeObj.put(FuelRange.KEY_TYPE, VehicleDataHelper.FUEL_RANGE_TYPE);
+			fuelRangeObj.put(FuelRange.KEY_RANGE, VehicleDataHelper.FUEL_RANGE_RANGE);
+			fuelRangeArrayObj.put(fuelRangeObj);
+
 			reference.put(GetVehicleDataResponse.KEY_SPEED, VehicleDataHelper.SPEED);
 			reference.put(GetVehicleDataResponse.KEY_RPM, VehicleDataHelper.RPM);
 			reference.put(GetVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE, VehicleDataHelper.EXTERNAL_TEMPERATURE);
@@ -247,6 +259,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			reference.put(GetVehicleDataResponse.KEY_EMERGENCY_EVENT, emergencyEventObj);
 			reference.put(GetVehicleDataResponse.KEY_CLUSTER_MODE_STATUS, clusterModeStatusObj);
 			reference.put(GetVehicleDataResponse.KEY_MY_KEY, myKeyObj);
+			reference.put(GetVehicleDataResponse.KEY_FUEL_RANGE, fuelRangeArrayObj);
 			
 			JSONObject underTest = msg.serializeJSON();
 			
@@ -359,6 +372,26 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 							Validator.validateMyKey(
 									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 									new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
+				}
+				else if (key.equals(GetVehicleDataResponse.KEY_FUEL_RANGE)) {
+					JSONArray fuelRangeArrayObjReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
+					List<FuelRange> fuelRangeRefereceList = new ArrayList<FuelRange>();
+					for (int index = 0; index < fuelRangeArrayObjReference.length(); index++) {
+						FuelRange fuelRange = new FuelRange(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)fuelRangeArrayObjReference.get(index) ));
+						fuelRangeRefereceList.add(fuelRange);
+					}
+
+					JSONArray fuelRangeArrayObjTest = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
+					List<FuelRange> fuelRangeUnderTestList = new ArrayList<FuelRange>();
+					for (int index = 0; index < fuelRangeArrayObjTest.length(); index++) {
+						FuelRange fuelRange = new FuelRange(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)fuelRangeArrayObjTest.get(index) ));
+						fuelRangeUnderTestList.add(fuelRange);
+					}
+
+					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
+							Validator.validateFuelRange(
+									fuelRangeRefereceList,
+									fuelRangeUnderTestList));
 				}
 				else {
 					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",

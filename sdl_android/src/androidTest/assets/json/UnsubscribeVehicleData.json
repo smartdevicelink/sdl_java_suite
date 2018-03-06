@@ -26,7 +26,8 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "fuelRange":true
     }
   },
   "response":{
@@ -128,6 +129,10 @@
       "myKey":{
         "dataType":"VEHICLEDATA_MYKEY",
         "resultCode":"IGNORED"
+      },
+      "fuelRange":{
+        "dataType":"VEHICLEDATA_FUELRANGE",
+        "resultCode":"SUCCESS"
       }
     }
   }

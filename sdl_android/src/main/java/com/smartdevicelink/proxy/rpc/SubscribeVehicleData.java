@@ -262,6 +262,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -716,6 +717,27 @@ public class SubscribeVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
-    }      
-    
+    }
+
+	/**
+	 * Sets a boolean value. If true, subscribes fuelRange data
+	 *
+	 * @param fuelRange
+	 *            a boolean value
+	 */
+	public void setFuelRange(Boolean fuelRange) {
+		setParameters(KEY_FUEL_RANGE, fuelRange);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the Fuel Range data has been
+	 * subscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Fuel Range data
+	 *         has been subscribed.
+	 *
+	 */
+	public Boolean getFuelRange() {
+		return getBoolean(KEY_FUEL_RANGE);
+	}
 }

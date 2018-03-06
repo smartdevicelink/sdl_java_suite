@@ -70,6 +70,8 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleDataClusterModeStatus = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_MYKEY";
 		VehicleDataType enumVehicleDataMyKey = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_FUELRANGE";
+		VehicleDataType enumVehicleDataFuelRange = VehicleDataType.valueForString(example);
 		
 		assertNotNull("VEHICLEDATA_GPS returned null", enumVehicleDataGps);
 		assertNotNull("VEHICLEDATA_SPEED returned null", enumVehicleDataSpeed);
@@ -97,6 +99,7 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_EMERGENCYEVENT returned null", enumVehicleDataEmergencyEvent);
 		assertNotNull("VEHICLEDATA_CLUSTERMODESTATUS returned null", enumVehicleDataClusterModeStatus);
 		assertNotNull("VEHICLEDATA_MYKEY returned null", enumVehicleDataMyKey);
+		assertNotNull("VEHICLEDATA_FUELRANGE returned null", enumVehicleDataFuelRange);
 	}
 	
 	/**
@@ -159,7 +162,8 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_AIRBAGSTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT);	
 		enumTestList.add(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS);
-		enumTestList.add(VehicleDataType.VEHICLEDATA_MYKEY);	
+		enumTestList.add(VehicleDataType.VEHICLEDATA_MYKEY);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_FUELRANGE);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

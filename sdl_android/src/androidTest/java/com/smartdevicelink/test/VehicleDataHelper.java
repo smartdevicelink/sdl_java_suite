@@ -7,6 +7,7 @@ import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
+import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
@@ -23,6 +24,7 @@ import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
+import com.smartdevicelink.proxy.rpc.enums.FuelType;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
@@ -34,6 +36,13 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VehicleDataHelper{
 	//top level variables for OnVehicleData
@@ -62,7 +71,9 @@ public class VehicleDataHelper{
 	public static final EmergencyEvent EMERGENCY_EVENT = new EmergencyEvent();
 	public static final ClusterModeStatus CLUSTER_MODE_STATUS = new ClusterModeStatus();
 	public static final MyKey MY_KEY = new MyKey();
-	
+	public static final FuelRange FUEL_RANGE = new FuelRange();
+	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
+
 	//other variables inside some of the above objects
     // tire status
 	public static final WarningLightStatus 	  TIRE_PRESSURE_TELL_TALE = WarningLightStatus.ON;
@@ -168,7 +179,13 @@ public class VehicleDataHelper{
 	
 	// my key
 	public static final VehicleDataStatus MY_KEY_E_911_OVERRIDE = VehicleDataStatus.NO_DATA_EXISTS;
-	
+
+	// fuel range
+	public static final FuelType FUEL_RANGE_TYPE = FuelType.GASOLINE;
+	public static final Float FUEL_RANGE_RANGE = Test.GENERAL_FLOAT;
+
+	public static final JSONArray JSON_FUEL_RANGE = new JSONArray();
+
 	//the OnVehicleData which stores all the information above
 	public static final OnVehicleData VEHICLE_DATA = new OnVehicleData();
 	//GetVehicleDataResponse data which stores the same things
@@ -290,9 +307,20 @@ public class VehicleDataHelper{
     	
     	//MY_KEY set up
     	MY_KEY.setE911Override(MY_KEY_E_911_OVERRIDE);
-	
-    	
-    	//set up the OnVehicleData object
+
+		// FUEL_RANGE and FUEL_RANGE_LIST set up
+		FUEL_RANGE.setType(FUEL_RANGE_TYPE);
+		FUEL_RANGE.setRange(FUEL_RANGE_RANGE);
+		FUEL_RANGE_LIST.add(FUEL_RANGE);
+
+		// FUEL_RANGE json array set up
+		try {
+			JSON_FUEL_RANGE.put(FUEL_RANGE.serializeJSON());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		//set up the OnVehicleData object
 		VEHICLE_DATA.setSpeed(SPEED);
 		VEHICLE_DATA.setRpm(RPM);
 		VEHICLE_DATA.setExternalTemperature(EXTERNAL_TEMPERATURE);
@@ -318,6 +346,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA.setMyKey(MY_KEY);
+		VEHICLE_DATA.setFuelRange(FUEL_RANGE_LIST);
 		
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
@@ -345,6 +374,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA_RESPONSE.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA_RESPONSE.setMyKey(MY_KEY);
+		VEHICLE_DATA_RESPONSE.setFuelRange(FUEL_RANGE_LIST);
 	}
 	
     private VehicleDataHelper(){}	

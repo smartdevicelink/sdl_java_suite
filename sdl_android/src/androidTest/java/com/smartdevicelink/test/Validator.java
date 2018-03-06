@@ -23,6 +23,7 @@ import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
+import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -1359,6 +1360,30 @@ public class Validator{
 
         if(item1.getE911Override() != item2.getE911Override()){
             return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateFuelRange (List<FuelRange> item1, List<FuelRange> item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.size(); i++) {
+            if (item1.get(i).getType() != item2.get(i).getType()) {
+                return false;
+            }
+            if (item1.get(i).getRange() != item2.get(i).getRange()) {
+                return false;
+            }
         }
 
         return true;

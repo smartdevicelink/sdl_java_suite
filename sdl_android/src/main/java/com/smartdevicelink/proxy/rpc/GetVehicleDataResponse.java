@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Get Vehicle Data Response is sent, when GetVehicleData has been called.
@@ -42,6 +43,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_FUEL_RANGE = "fuelRange";
 
 	/** 
 	 * Constructs a new GetVehicleDataResponse object
@@ -234,5 +236,23 @@ public class GetVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
         return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
-    }        
+    }
+
+    /**
+     * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @param fuelRange
+     */
+    public void setFuelRange(List<FuelRange> fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets Fuel Range List
+     * @return List<FuelRange>
+     *     Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
+    @SuppressWarnings("unchecked")
+    public List<FuelRange> getFuelRange() {
+        return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
+    }
 }
