@@ -128,6 +128,7 @@ public class SdlRouterStatusProvider {
 		final WeakReference<SdlRouterStatusProvider> provider;
 
 		 public ClientHandler(SdlRouterStatusProvider provider){
+			 super(Looper.getMainLooper());
 			 this.provider = new WeakReference<SdlRouterStatusProvider>(provider);
 		 }
 		 
