@@ -3493,7 +3493,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		});
 
-		sendRPCRequestWithCustomListener(rpc);
+		sendRPCRequestPrivate(rpc);
 	}
 
 	/**
@@ -3540,55 +3540,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			listener.addCorrelationId(rpc.getCorrelationID());
 			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
-			sendRPCRequestWithCustomListener(rpc);
-		}
-	}
-
-	/**
-	 * This is very similar to sendRPCRequestPrivate, but does not create a new
-	 * listener object when sending the RPC, since we are using our own custom listeners
-	 *
-	 * @param request is the RPC being sent
-	 * @throws SdlException if an unrecoverable error is encountered
-	 */
-	private void sendRPCRequestWithCustomListener(RPCRequest request) throws SdlException {
-		try {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
-
-			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
-
-			ProtocolMessage pm = new ProtocolMessage();
-			pm.setData(msgBytes);
-			if (sdlSession != null)
-				pm.setSessionID(sdlSession.getSessionId());
-			pm.setMessageType(MessageType.RPC);
-			pm.setSessionType(SessionType.RPC);
-			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
-			pm.setPayloadProtected(request.isPayloadProtected());
-			if (request.getCorrelationID() == null) {
-				//Log error here
-				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
-			}
-			pm.setCorrID(request.getCorrelationID());
-			if (request.getBulkData() != null){
-				pm.setBulkData(request.getBulkData());
-			}
-			if(request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
-				pm.setPriorityCoefficient(1);
-			}
-
-			// Queue this outgoing message
-			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
-				if (_outgoingProxyMessageDispatcher != null) {
-					_outgoingProxyMessageDispatcher.queueMessage(pm);
-					if(request.getMessageType().equals(RPCMessage.KEY_REQUEST)){//We might want to include other message types in the future
-						addOnRPCResponseListener(request.getOnRPCResponseListener(), request.getCorrelationID(), msgBytes.length);
-					}
-				}
-			}
-		} catch (OutOfMemoryError e) {
-			SdlTrace.logProxyEvent("OutOfMemory exception while sending request " + request.getFunctionName(), SDL_LIB_TRACE_KEY);
-			throw new SdlException("OutOfMemory exception while sending request " + request.getFunctionName(), e, SdlExceptionCause.INVALID_ARGUMENT);
+			sendRPCRequestPrivate(rpc);
 		}
 	}
 	
