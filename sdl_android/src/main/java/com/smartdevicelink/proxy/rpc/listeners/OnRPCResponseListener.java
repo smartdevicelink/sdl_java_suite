@@ -13,7 +13,7 @@ public abstract class OnRPCResponseListener {
 	 */
 	public final static int UPDATE_LISTENER_TYPE_PUT_FILE 		= 1;
 	/**
-	 * Listener type specific to putfile
+	 * Listener type specific to sendRequests and sendSequentialRequests
 	 */
 	public final static int UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS 		= 2;
 

@@ -3468,9 +3468,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		RPCRequest rpc = rpcs.remove(0);
-		if (rpc.getCorrelationID() == null) {
-			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
-		}
+		rpc.setCorrelationID(CorrelationIdGenerator.generateId());
 
 		rpc.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
@@ -3535,9 +3533,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		for (int i = 0; i < arraySize; i++) {
 			RPCRequest rpc = rpcs.get(i);
-			if (rpc.getCorrelationID() == null) {
-				rpc.setCorrelationID(CorrelationIdGenerator.generateId());
-			}
+			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
 			listener.addCorrelationId(rpc.getCorrelationID());
 			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
 			sendRPCRequestPrivate(rpc);

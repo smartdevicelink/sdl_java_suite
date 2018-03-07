@@ -14,15 +14,14 @@ import java.util.Vector;
  */
 public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 
-	Vector<Integer> correlationIds;
+	final Vector<Integer> correlationIds;
 	OnRPCResponseListener rpcResponseListener;
 	private static String TAG = "OnMultipleRequestListener";
 
 	public OnMultipleRequestListener(){
 		setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
-		if(correlationIds == null){
-			correlationIds = new Vector<>();
-		}
+		correlationIds = new Vector<>();
+
 		rpcResponseListener = new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
@@ -37,12 +36,7 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 	}
 
 	public void addCorrelationId(int correlationid){
-		if(correlationIds == null){
-			correlationIds = new Vector<>();
-		}
-
 		correlationIds.add(correlationid);
-		Log.i(TAG, "ADD "+correlationIds.toString());
 	}
 	/**
 	 * onUpdate is called during multiple stream request
