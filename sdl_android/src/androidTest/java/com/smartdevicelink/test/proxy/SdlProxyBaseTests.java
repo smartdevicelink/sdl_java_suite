@@ -83,6 +83,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
@@ -201,7 +202,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 			}
 
 			@Override
-			public void onError(int correlationID, RPCResponse response) {
+			public void onError(int correlationId, Result resultCode, String info) {
 				assert false;
 			}
 
@@ -255,7 +256,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 			}
 
 			@Override
-			public void onError(int correlationID, RPCResponse response) {
+			public void onError(int correlationId, Result resultCode, String info) {
 				assert false;
 			}
 
