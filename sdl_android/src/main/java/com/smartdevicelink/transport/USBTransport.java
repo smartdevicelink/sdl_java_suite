@@ -36,7 +36,7 @@ import com.smartdevicelink.util.DebugTool;
 public class USBTransport extends SdlTransport {
 
 	// Boolean to monitor if the transport is in a disconnecting state
-	private boolean _disconnecting = false;
+	private static volatile boolean _disconnected = false;
 	/**
      * Broadcast action: sent when a USB accessory is attached.
      *
@@ -227,13 +227,13 @@ public class USBTransport extends SdlTransport {
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";
                             logW(msg, e);
-                            handleTransportError(msg, e);
+                            disconnect(msg, e);
                         }
                     } else {
                         final String msg =
                                 "Can't send bytes when output stream is null";
                         logW(msg);
-                        handleTransportError(msg, null);
+                        disconnect(msg,null);
                     }
                 break;
 
@@ -354,11 +354,11 @@ public class USBTransport extends SdlTransport {
     private void disconnect(String msg, Exception ex) {
 	    
 		// If already disconnecting, return
-        if (_disconnecting) {
+        if (_disconnected) {
             // No need to recursively call
             return;
         }
-        _disconnecting = true;
+        _disconnected = true;
 
         mConfig.setUsbAccessory(null);
 
@@ -440,7 +440,6 @@ public class USBTransport extends SdlTransport {
                         "; doing nothing");
                 break;
         }
-        _disconnecting = false;
     }
 
     /**
