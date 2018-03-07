@@ -3431,7 +3431,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	/**
 	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
-	 * For sending requests asynchronously, use sendRequests
+	 * For sending requests asynchronously, use sendRequests <br>
+	 *
+	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
 	 *
 	 * @param rpcs is the list of RPCRequests being sent
 	 * @param listener listener for updates and completions
@@ -3465,7 +3467,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return;
 		}
 
-		RPCRequest rpc = rpcs.get(0);
+		RPCRequest rpc = rpcs.remove(0);
 		if (rpc.getCorrelationID() == null) {
 			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
 		}
@@ -3475,7 +3477,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// success
-					rpcs.remove(0);
 					listener.onUpdate(rpcs.size());
 					try {
 						// recurse after successful response of RPC
@@ -3483,10 +3484,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} catch (SdlException e) {
 						e.printStackTrace();
 					}
-				} else {
-					// fail
-					listener.onError(correlationId, response);
 				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				listener.onError(correlationId, resultCode, info);
 			}
 		});
 
@@ -3495,7 +3498,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	/**
 	 * Takes a list of RPCRequests and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
-	 * For sending requests synchronously, use sendSequentialRequests
+	 * For sending requests synchronously, use sendSequentialRequests <br>
+	 *
+	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
 	 *
 	 * @param rpcs is the list of RPCRequests being sent
 	 * @param listener listener for updates and completions
@@ -3517,12 +3522,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		if (rpcs == null || rpcs.size() == 0){
+		if (rpcs == null){
 			//Log error here
-			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
+			throw new SdlException("You must send some RPCs, the array is null", SdlExceptionCause.INVALID_ARGUMENT);
 		}
 
-		for (int i = 0; i < rpcs.size(); i++) {
+		int arraySize = rpcs.size();
+
+		if (arraySize == 0) {
+			throw new SdlException("You must send some RPCs, the array is empty", SdlExceptionCause.INVALID_ARGUMENT);
+		}
+
+		for (int i = 0; i < arraySize; i++) {
 			RPCRequest rpc = rpcs.get(i);
 			if (rpc.getCorrelationID() == null) {
 				rpc.setCorrelationID(CorrelationIdGenerator.generateId());

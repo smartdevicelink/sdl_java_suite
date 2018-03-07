@@ -50,7 +50,7 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 	 */
 	public abstract void onUpdate(int remainingRequests);
 	public abstract void onFinished();
-	public abstract void onError(int correlationID, RPCResponse response);
+	public abstract void onError(int correlationId, Result resultCode, String info);
 
 	public OnRPCResponseListener getSingleRpcResponseListener(){
 		return rpcResponseListener;
