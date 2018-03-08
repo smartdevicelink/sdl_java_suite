@@ -33,6 +33,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -128,9 +129,9 @@ public class SdlRouterService extends Service{
 	private boolean isTransportConnected = false;
 	private TransportType connectedTransportType = null;
 
-    private Handler  altTransportTimerHandler;
-    private Runnable  altTransportTimerRunnable;
-    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000;
+    private Handler  altTransportTimerHandler, foregroundTimeoutHandler;
+    private Runnable  altTransportTimerRunnable, foregroundTimeoutRunnable;
+    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000, FOREGROUND_TIMEOUT = 10000;
 
     private boolean wrongProcess = false;
 	private boolean initPassed = false;
@@ -876,6 +877,7 @@ public class SdlRouterService extends Service{
 	}
 
 
+	@SuppressLint({"NewApi", "MissingPermission"})
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if(!initPassed) {
@@ -888,7 +890,17 @@ public class SdlRouterService extends Service{
 		}
 		if(intent != null ){
 			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
-				enterForeground();
+
+				BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+				int timeout = FOREGROUND_TIMEOUT;
+				int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
+				if(state == BluetoothAdapter.STATE_CONNECTED){
+					//If we've just connected over A2DP there is a fair chance we want to wait to
+					// listen for a connection so we double our wait time
+					timeout *= 2;
+				}
+				enterForeground("Waiting for connection...", timeout);
+				resetForegroundTimeOut(timeout);
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
@@ -979,17 +991,44 @@ public class SdlRouterService extends Service{
 			}
 		}
 	}
-	
+
+	public void resetForegroundTimeOut(long delay){
+		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
+			return;
+		}
+		if(foregroundTimeoutHandler == null){
+			foregroundTimeoutHandler = new Handler();
+		}
+		if(foregroundTimeoutRunnable == null) {
+			foregroundTimeoutRunnable = new Runnable() {
+				@Override
+				public void run() {
+					exitForeground();
+				}
+			};
+		}else{
+			//This instance likely means there is a callback in the queue so we should remove it
+			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+		}
+		foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable,delay);
+	}
+
+	public void cancelForegroundTimeOut(){
+		if(foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null){
+			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+		}
+
+	}
+
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private void enterForeground() {
+	private void enterForeground(String content, long chronometerLength) {
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
 			return;
 		}
 
- 
 		Bitmap icon;
 		int resourcesIncluded = getResources().getIdentifier("ic_sdl", "drawable", getPackageName());
 
@@ -1008,9 +1047,9 @@ public class SdlRouterService extends Service{
         }else{
         	builder.setContentTitle("SmartDeviceLink");
         }
-        builder.setTicker("SmartDeviceLink Connected");
-        builder.setContentText("Connected to " + this.getConnectedDeviceName());
-       
+        builder.setTicker("SmartDeviceLink");
+        builder.setContentText(content);
+
        //We should use icon from library resources if available
         int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
 
@@ -1022,6 +1061,12 @@ public class SdlRouterService extends Service{
 		}
         builder.setLargeIcon(icon);
         builder.setOngoing(true);
+
+        if(chronometerLength > 0) {
+        	builder.setWhen(chronometerLength + System.currentTimeMillis());
+        	builder.setUsesChronometer(true);
+        	builder.setChronometerCountDown(true);
+        }
         
         Notification notification;
         if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN){
@@ -1065,6 +1110,7 @@ public class SdlRouterService extends Service{
 			}
 
 			this.stopForeground(true);
+			isForeground = false;
 		}
 	}
 	
@@ -1154,7 +1200,8 @@ public class SdlRouterService extends Service{
 	
 	public void onTransportConnected(final TransportType type){
 		isTransportConnected = true;
-		enterForeground();
+		cancelForegroundTimeOut();
+		enterForeground("Connected to " + this.getConnectedDeviceName(),0);
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
 			packetWriteTaskMaster = null;
