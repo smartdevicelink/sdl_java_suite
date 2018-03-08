@@ -1110,6 +1110,7 @@ public class SdlRouterService extends Service{
 			}
 
 			this.stopForeground(true);
+			isForeground = false;
 		}
 	}
 	
