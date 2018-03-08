@@ -1063,10 +1063,10 @@ public class SdlRouterService extends Service{
         builder.setOngoing(true);
 
         if(chronometerLength > 0) {
-			builder.setWhen(chronometerLength + System.currentTimeMillis());
-			builder.setUsesChronometer(true);
-			builder.setChronometerCountDown(true);
-		}
+        	builder.setWhen(chronometerLength + System.currentTimeMillis());
+        	builder.setUsesChronometer(true);
+        	builder.setChronometerCountDown(true);
+        }
         
         Notification notification;
         if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN){
