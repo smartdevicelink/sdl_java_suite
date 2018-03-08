@@ -33,6 +33,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -128,9 +129,9 @@ public class SdlRouterService extends Service{
 	private boolean isTransportConnected = false;
 	private TransportType connectedTransportType = null;
 
-    private Handler  altTransportTimerHandler;
-    private Runnable  altTransportTimerRunnable;
-    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000;
+    private Handler  altTransportTimerHandler, foregroundTimeoutHandler;
+    private Runnable  altTransportTimerRunnable, foregroundTimeoutRunnable;
+    private final static int ALT_TRANSPORT_TIMEOUT_RUNNABLE = 30000, FOREGROUND_TIMEOUT = 10000;
 
     private boolean wrongProcess = false;
 	private boolean initPassed = false;
@@ -889,6 +890,7 @@ public class SdlRouterService extends Service{
 		if(intent != null ){
 			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
 				enterForeground();
+				resetForegroundTimeOut();
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
@@ -979,7 +981,45 @@ public class SdlRouterService extends Service{
 			}
 		}
 	}
-	
+
+	@SuppressLint({"NewApi", "MissingPermission"})
+	public void resetForegroundTimeOut(){
+		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
+			return;
+		}
+		if(foregroundTimeoutHandler == null){
+			foregroundTimeoutHandler = new Handler();
+		}
+		if(foregroundTimeoutRunnable == null) {
+			foregroundTimeoutRunnable = new Runnable() {
+				@Override
+				public void run() {
+					exitForeground();
+				}
+			};
+		}else{
+			//This instance likely means there is a callback in the queue so we should remove it
+			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+		}
+
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		int timeout = FOREGROUND_TIMEOUT;
+		int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
+		if(state == BluetoothAdapter.STATE_CONNECTED || state == BluetoothAdapter.STATE_CONNECTING){
+			//If we've just connected/connecting over A2DP there is a fair chance we want to wait to
+			// listen for a connection so we double our wait time
+			timeout *= 2;
+		}
+		foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable,timeout);
+	}
+
+	public void cancelForegroundTimeOut(){
+		if(foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null){
+			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+		}
+
+	}
+
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void enterForeground() {
@@ -989,7 +1029,6 @@ public class SdlRouterService extends Service{
 			return;
 		}
 
- 
 		Bitmap icon;
 		int resourcesIncluded = getResources().getIdentifier("ic_sdl", "drawable", getPackageName());
 
@@ -1154,6 +1193,7 @@ public class SdlRouterService extends Service{
 	
 	public void onTransportConnected(final TransportType type){
 		isTransportConnected = true;
+		cancelForegroundTimeOut();
 		enterForeground();
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
