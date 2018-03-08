@@ -162,7 +162,10 @@ public class USBTransport extends SdlTransport {
      * @see USBTransportReader
      */
     private Thread mReaderThread = null;
-
+    /**
+     * Reference to the singleton instance of the class.
+     */
+    private static USBTransport instance = null;
     /**
      * Constructs the USBTransport instance.
      *
@@ -170,11 +173,24 @@ public class USBTransport extends SdlTransport {
      * @param transportListener  Listener that gets notified on different
      *                           transport events
      */
-    public USBTransport(USBTransportConfig usbTransportConfig,
+    private USBTransport(USBTransportConfig usbTransportConfig,
                         ITransportListener transportListener) {
         super(transportListener);
         this.mConfig = usbTransportConfig;
     	registerReciever();
+    }
+    /**
+     * Get the singlton instance of the class.
+     *
+     * @param usbTransportConfig Config object for the USB transport
+     * @param transportListener  Listener that gets notified on different
+     *                           transport events
+     */
+    public static USBTransport getInstance(USBTransportConfig usbTransportConfig, ITransportListener transportListener){
+        if (instance == null){
+            instance = new USBTransport(usbTransportConfig, transportListener);
+        }
+        return instance;
     }
 
     /**
@@ -351,7 +367,7 @@ public class USBTransport extends SdlTransport {
      * @param msg Disconnect reason message, if any
      * @param ex  Disconnect exception, if any
      */
-    private void disconnect(String msg, Exception ex) {
+    private synchronized void disconnect(String msg, Exception ex) {
 	    
 		// If already disconnecting, return
         if (_disconnecting) {
