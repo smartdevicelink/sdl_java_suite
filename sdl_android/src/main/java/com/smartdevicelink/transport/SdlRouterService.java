@@ -877,6 +877,7 @@ public class SdlRouterService extends Service{
 	}
 
 
+	@SuppressLint({"NewApi", "MissingPermission"})
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if(!initPassed) {
@@ -889,8 +890,17 @@ public class SdlRouterService extends Service{
 		}
 		if(intent != null ){
 			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
-				enterForeground();
-				resetForegroundTimeOut();
+
+				BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+				int timeout = FOREGROUND_TIMEOUT;
+				int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
+				if(state == BluetoothAdapter.STATE_CONNECTED){
+					//If we've just connected over A2DP there is a fair chance we want to wait to
+					// listen for a connection so we double our wait time
+					timeout *= 2;
+				}
+				enterForeground("Waiting for connection...", timeout);
+				resetForegroundTimeOut(timeout);
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
@@ -982,8 +992,7 @@ public class SdlRouterService extends Service{
 		}
 	}
 
-	@SuppressLint({"NewApi", "MissingPermission"})
-	public void resetForegroundTimeOut(){
+	public void resetForegroundTimeOut(long delay){
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
 			return;
 		}
@@ -1001,16 +1010,7 @@ public class SdlRouterService extends Service{
 			//This instance likely means there is a callback in the queue so we should remove it
 			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
 		}
-
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		int timeout = FOREGROUND_TIMEOUT;
-		int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
-		if(state == BluetoothAdapter.STATE_CONNECTED || state == BluetoothAdapter.STATE_CONNECTING){
-			//If we've just connected/connecting over A2DP there is a fair chance we want to wait to
-			// listen for a connection so we double our wait time
-			timeout *= 2;
-		}
-		foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable,timeout);
+		foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable,delay);
 	}
 
 	public void cancelForegroundTimeOut(){
@@ -1022,7 +1022,7 @@ public class SdlRouterService extends Service{
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private void enterForeground() {
+	private void enterForeground(String content, long chronometerLength) {
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
@@ -1047,9 +1047,9 @@ public class SdlRouterService extends Service{
         }else{
         	builder.setContentTitle("SmartDeviceLink");
         }
-        builder.setTicker("SmartDeviceLink Connected");
-        builder.setContentText("Connected to " + this.getConnectedDeviceName());
-       
+        builder.setTicker("SmartDeviceLink");
+        builder.setContentText(content);
+
        //We should use icon from library resources if available
         int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
 
@@ -1061,6 +1061,12 @@ public class SdlRouterService extends Service{
 		}
         builder.setLargeIcon(icon);
         builder.setOngoing(true);
+
+        if(chronometerLength > 0) {
+			builder.setWhen(chronometerLength + System.currentTimeMillis());
+			builder.setUsesChronometer(true);
+			builder.setChronometerCountDown(true);
+		}
         
         Notification notification;
         if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN){
@@ -1194,7 +1200,7 @@ public class SdlRouterService extends Service{
 	public void onTransportConnected(final TransportType type){
 		isTransportConnected = true;
 		cancelForegroundTimeOut();
-		enterForeground();
+		enterForeground("Connected to " + this.getConnectedDeviceName(),0);
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
 			packetWriteTaskMaster = null;
