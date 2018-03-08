@@ -14,6 +14,7 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.transport.BTTransport;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -385,8 +386,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			}else{
 				cachedMultiConfig = null; //It should now be consumed
 			}
-			for (SdlSession session : listenerList) {
-				session.onTransportError(info, e);
+
+			// If proxy disposing is in progress, then we don't have to worry about the listenerList
+			// because proxy.dispose() will take care of the sessions
+			if (!SdlProxyBase._disposing) {
+				for (SdlSession session : listenerList) {
+					session.onTransportError(info, e);
+				}
 			}
 
 		}

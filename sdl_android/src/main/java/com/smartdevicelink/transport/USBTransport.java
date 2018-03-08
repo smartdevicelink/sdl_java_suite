@@ -36,7 +36,7 @@ import com.smartdevicelink.util.DebugTool;
 public class USBTransport extends SdlTransport {
 
 	// Boolean to monitor if the transport is in a disconnecting state
-	private static volatile boolean _disconnected = false;
+	private boolean _disconnecting = false;
 	/**
      * Broadcast action: sent when a USB accessory is attached.
      *
@@ -354,11 +354,11 @@ public class USBTransport extends SdlTransport {
     private void disconnect(String msg, Exception ex) {
 	    
 		// If already disconnecting, return
-        if (_disconnected) {
+        if (_disconnecting) {
             // No need to recursively call
             return;
         }
-        _disconnected = true;
+        _disconnecting = true;
 
         mConfig.setUsbAccessory(null);
 
@@ -440,6 +440,7 @@ public class USBTransport extends SdlTransport {
                         "; doing nothing");
                 break;
         }
+        _disconnecting = false;
     }
 
     /**
