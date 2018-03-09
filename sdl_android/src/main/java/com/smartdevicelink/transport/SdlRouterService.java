@@ -1266,7 +1266,7 @@ public class SdlRouterService extends Service{
 		}
 		
 		cachedModuleVersion = -1; //Reset our cached version
-		if(registeredApps != null && !registeredApps.isEmpty()){
+		if(registeredApps != null){
 			Message message = Message.obtain();
 			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
 			Bundle bundle = new Bundle();
