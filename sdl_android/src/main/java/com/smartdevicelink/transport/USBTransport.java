@@ -227,13 +227,13 @@ public class USBTransport extends SdlTransport {
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";
                             logW(msg, e);
-                            handleTransportError(msg, e);
+                            disconnect(msg, e);
                         }
                     } else {
                         final String msg =
                                 "Can't send bytes when output stream is null";
                         logW(msg);
-                        handleTransportError(msg, null);
+                        disconnect(msg, null);
                     }
                 break;
 
