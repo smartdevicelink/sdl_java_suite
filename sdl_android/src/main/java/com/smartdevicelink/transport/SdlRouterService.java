@@ -2055,8 +2055,12 @@ public class SdlRouterService extends Service{
 
 		if (apps != null && apps.size()>0) {
 			for(ResolveInfo app: apps){
-				intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-				sendBroadcast(intent);
+				try {
+					intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+					sendBroadcast(intent);
+				}catch(Exception e){
+					//In case there is missing info in the app reference we want to keep moving
+				}
 			}
 		}
 	}
