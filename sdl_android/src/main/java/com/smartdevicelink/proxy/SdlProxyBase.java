@@ -3480,6 +3480,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						sendSequentialRequests(rpcs, listener);
 					} catch (SdlException e) {
 						e.printStackTrace();
+						listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
 					}
 				}
 			}
