@@ -7,6 +7,8 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.smartdevicelink.util.AndroidTools;
+
 import java.util.List;
 
 /**
@@ -71,17 +73,9 @@ public class USBAccessoryAttachmentActivity extends Activity {
                             intent.getParcelableExtra(
                                     UsbManager.EXTRA_PERMISSION_GRANTED));
 
-            List<ResolveInfo> apps = getPackageManager().queryBroadcastReceivers(usbAccessoryAttachedIntent, 0);
-            if (apps != null && apps.size()>0) {
-                for(ResolveInfo app: apps){
-                    try {
-                        usbAccessoryAttachedIntent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-                        sendBroadcast(usbAccessoryAttachedIntent);
-                    }catch(Exception e){
-                        //In case there is missing info in the app reference we want to keep moving
-                    }
-                }
-            }
+
+            AndroidTools.sendExplicitBroadcast(getApplicationContext(),usbAccessoryAttachedIntent,null);
+
         }
 
         finish();
