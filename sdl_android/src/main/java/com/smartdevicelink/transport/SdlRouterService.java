@@ -2038,20 +2038,23 @@ public class SdlRouterService extends Service{
 	}
 
 	/**
-	 * Iterate through all of the apps that we know are listening for this intent
-	 * with an explicit intent (necessary for Android O SDK 26+)
+	 * Sends the provided intent to the specified destinations making it an explicit intent, rather
+	 * than an implicit intent. A direct replacement of sendBroadcast(Intent). As of Android 8.0
+	 * (API 26+) implicit broadcasts are no longer sent to broadcast receivers that are declared via
+	 * the AndroidManifest.
 	 *
 	 * @param intent - the intent to send explicitly
-	 * @param sdlApps - if needed, pass in a specific list of apps to send the broadcast to, or let us query it here
+	 * @param apps - the list of apps that this broadcast will be sent to. If null is passed in
+	 *                the intent will be sent to all SDL enabled apps via a query the package manager
 	 */
-	private void sendExplicitBroadcast(Intent intent, List<ResolveInfo> sdlApps) {
+	private void sendExplicitBroadcast(Intent intent, List<ResolveInfo> apps) {
 
-		if (sdlApps == null) {
-			sdlApps = getPackageManager().queryBroadcastReceivers(intent, 0);
+		if (apps == null) {
+			apps = getPackageManager().queryBroadcastReceivers(intent, 0);
 		}
 
-		if (sdlApps != null && sdlApps.size()>0) {
-			for(ResolveInfo app: sdlApps){
+		if (apps != null && apps.size()>0) {
+			for(ResolveInfo app: apps){
 				intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
 				sendBroadcast(intent);
 			}
