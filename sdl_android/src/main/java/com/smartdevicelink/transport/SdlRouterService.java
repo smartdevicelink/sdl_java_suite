@@ -6,6 +6,7 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -637,7 +638,7 @@ public class SdlRouterService extends Service{
 	        			if(service.pingIntent == null){
 	        				service.initPingIntent();
 	        			}
-	        			service.getBaseContext().sendBroadcast(service.pingIntent); 
+	        			service.sendExplicitBroadcast(service.pingIntent, null);
 	        		}
 	        		break;
 	        	default:
@@ -1213,8 +1214,6 @@ public class SdlRouterService extends Service{
 		
 		Intent startService = new Intent();  
 		startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
-		//Perform our query prior to adding any extras or flags
-		List<ResolveInfo> sdlApps = getPackageManager().queryBroadcastReceivers(startService, 0);
 
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
@@ -1224,13 +1223,7 @@ public class SdlRouterService extends Service{
 			startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 		}
 
-		//Iterate through all apps that we know are listening for this intent with an explicit intent (necessary for Android O SDK 26)
-		if(sdlApps != null && sdlApps.size()>0){
-			for(ResolveInfo app: sdlApps){
-				startService.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-				sendBroadcast(startService);
-			}
-		}
+		sendExplicitBroadcast(startService, null);
 
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
@@ -1269,14 +1262,7 @@ public class SdlRouterService extends Service{
 		}
 		
 		cachedModuleVersion = -1; //Reset our cached version
-		if(registeredApps== null || registeredApps.isEmpty()){
-			Intent unregisterIntent = new Intent();
-			unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
-			unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
-			sendBroadcast(unregisterIntent);
-			//return;
-		}else{
+		if(registeredApps != null && !registeredApps.isEmpty()){
 			Message message = Message.obtain();
 			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
 			Bundle bundle = new Bundle();
@@ -2008,8 +1994,9 @@ public class SdlRouterService extends Service{
 		synchronized(PING_COUNT_LOCK){
 			pingCount = 0;
 		}
+
 		clientPingExecutor.scheduleAtFixedRate(new Runnable(){
-			
+			List<ResolveInfo> sdlApps;
 			@Override
 			public void run() {
 				if(getPingCount()>=10){
@@ -2020,7 +2007,12 @@ public class SdlRouterService extends Service{
 				if(pingIntent == null){
 					initPingIntent();
 				}
-				getBaseContext().sendBroadcast(pingIntent); 
+
+				if(sdlApps == null){
+					sdlApps = getPackageManager().queryBroadcastReceivers(pingIntent, 0);
+				}
+
+				sendExplicitBroadcast(pingIntent, sdlApps);
 				synchronized(PING_COUNT_LOCK){
 					pingCount++;
 				}
@@ -2043,6 +2035,34 @@ public class SdlRouterService extends Service{
 			isPingingClients = false;
 		}
 		pingIntent = null;
+	}
+
+	/**
+	 * Sends the provided intent to the specified destinations making it an explicit intent, rather
+	 * than an implicit intent. A direct replacement of sendBroadcast(Intent). As of Android 8.0
+	 * (API 26+) implicit broadcasts are no longer sent to broadcast receivers that are declared via
+	 * the AndroidManifest.
+	 *
+	 * @param intent - the intent to send explicitly
+	 * @param apps - the list of apps that this broadcast will be sent to. If null is passed in
+	 *                the intent will be sent to all SDL enabled apps via a query the package manager
+	 */
+	private void sendExplicitBroadcast(Intent intent, List<ResolveInfo> apps) {
+
+		if (apps == null) {
+			apps = getPackageManager().queryBroadcastReceivers(intent, 0);
+		}
+
+		if (apps != null && apps.size()>0) {
+			for(ResolveInfo app: apps){
+				try {
+					intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+					sendBroadcast(intent);
+				}catch(Exception e){
+					//In case there is missing info in the app reference we want to keep moving
+				}
+			}
+		}
 	}
 	
 	/* ****************************************************************************************************************************************

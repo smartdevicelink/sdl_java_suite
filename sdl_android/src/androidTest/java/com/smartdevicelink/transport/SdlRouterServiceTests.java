@@ -152,7 +152,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 	 *
 	 * @see SdlRouterService#sendPacketToRegisteredApp(SdlPacket)
 	 */
-	public void testRegisterAppExistingSessionIDDifferntApp() {
+	public void testRegisterAppExistingSessionIDDifferentApp() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
