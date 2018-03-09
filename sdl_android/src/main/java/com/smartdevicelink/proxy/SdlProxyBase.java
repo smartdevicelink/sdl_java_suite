@@ -138,7 +138,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								OUTGOING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								INTERNAL_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								ON_UPDATE_LISTENER_LOCK = new Object(),
-								ON_UPDATE_MULTIPLE_LISTENER_LOCK = new Object(),
 								ON_NOTIFICATION_LISTENER_LOCK = new Object();
 	
 	private final Object APP_INTERFACE_REGISTERED_LOCK = new Object();
