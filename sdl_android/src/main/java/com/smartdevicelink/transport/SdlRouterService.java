@@ -6,6 +6,7 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -165,11 +166,6 @@ public class SdlRouterService extends Service{
 	Intent pingIntent = null;
 	private boolean isPingingClients = false;
 	int pingCount = 0;
-
-	/**
-	 * List of cached SDL apps used for explicit broadcasts
-	 */
-	private List<ResolveInfo> sdlApps;
 
 	
 	/* **************************************************************************************************************************************
@@ -642,7 +638,7 @@ public class SdlRouterService extends Service{
 	        			if(service.pingIntent == null){
 	        				service.initPingIntent();
 	        			}
-	        			service.sendExplicitBroadcast(service.pingIntent, false);
+	        			service.sendExplicitBroadcast(service.pingIntent, null);
 	        		}
 	        		break;
 	        	default:
@@ -1227,7 +1223,7 @@ public class SdlRouterService extends Service{
 			startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 		}
 
-		sendExplicitBroadcast(startService, false);
+		sendExplicitBroadcast(startService, null);
 
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
@@ -1266,7 +1262,7 @@ public class SdlRouterService extends Service{
 		}
 		
 		cachedModuleVersion = -1; //Reset our cached version
-		if(registeredApps != null){
+		if(registeredApps != null && !registeredApps.isEmpty()){
 			Message message = Message.obtain();
 			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
 			Bundle bundle = new Bundle();
@@ -1998,8 +1994,9 @@ public class SdlRouterService extends Service{
 		synchronized(PING_COUNT_LOCK){
 			pingCount = 0;
 		}
+
 		clientPingExecutor.scheduleAtFixedRate(new Runnable(){
-			
+			List<ResolveInfo> sdlApps;
 			@Override
 			public void run() {
 				if(getPingCount()>=10){
@@ -2010,7 +2007,12 @@ public class SdlRouterService extends Service{
 				if(pingIntent == null){
 					initPingIntent();
 				}
-				sendExplicitBroadcast(pingIntent, true);
+
+				if(sdlApps == null){
+					sdlApps = getPackageManager().queryBroadcastReceivers(pingIntent, 0);
+				}
+
+				sendExplicitBroadcast(pingIntent, sdlApps);
 				synchronized(PING_COUNT_LOCK){
 					pingCount++;
 				}
@@ -2040,12 +2042,11 @@ public class SdlRouterService extends Service{
 	 * with an explicit intent (necessary for Android O SDK 26+)
 	 *
 	 * @param intent - the intent to send explicitly
-	 * @param isRepeatingPings - If this is coming from a method that will repeat pings,
-	 * we will use a cached list instead of querying each ping
+	 * @param sdlApps - if needed, pass in a specific list of apps to send the broadcast to, or let us query it here
 	 */
-	private void sendExplicitBroadcast(Intent intent, Boolean isRepeatingPings) {
+	private void sendExplicitBroadcast(Intent intent, List<ResolveInfo> sdlApps) {
 
-		if (sdlApps == null || !isRepeatingPings) {
+		if (sdlApps == null) {
 			sdlApps = getPackageManager().queryBroadcastReceivers(intent, 0);
 		}
 
