@@ -93,6 +93,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -108,6 +109,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 
 
@@ -130,7 +132,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530,
 						POLICIES_CORRELATION_ID = 65535;
 	
-	// Sdlhronization Objects
+	// Sdl Synchronization Objects
 	private static final Object CONNECTION_REFERENCE_LOCK = new Object(),
 								INCOMING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								OUTGOING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
@@ -3425,12 +3427,124 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
+
+	/**
+	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
+	 * For sending requests asynchronously, use sendRequests <br>
+	 *
+	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
+	 *
+	 * @param rpcs is the list of RPCRequests being sent
+	 * @param listener listener for updates and completions
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void sendSequentialRequests(final List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		SdlTrace.logProxyEvent("Application called sendSequentialRequests", SDL_LIB_TRACE_KEY);
+
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (!getIsConnected()) {
+				SdlTrace.logProxyEvent("Application attempted to call sendSequentialRequests without a connected transport.", SDL_LIB_TRACE_KEY);
+				throw new SdlException("There is no valid connection to SDL. sendSequentialRequests cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
+			}
+		}
+
+		if (rpcs == null){
+			//Log error here
+			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
+		}
+
+		int requestCount = rpcs.size();
+
+		// Break out of recursion, we have finished the requests
+		if (requestCount == 0) {
+			listener.onFinished();
+			return;
+		}
+
+		RPCRequest rpc = rpcs.remove(0);
+		rpc.setCorrelationID(CorrelationIdGenerator.generateId());
+
+		rpc.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()) {
+					// success
+					listener.onUpdate(rpcs.size());
+					try {
+						// recurse after successful response of RPC
+						sendSequentialRequests(rpcs, listener);
+					} catch (SdlException e) {
+						e.printStackTrace();
+						listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+					}
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				listener.onError(correlationId, resultCode, info);
+			}
+		});
+
+		sendRPCRequestPrivate(rpc);
+	}
+
+	/**
+	 * Takes a list of RPCRequests and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
+	 * For sending requests synchronously, use sendSequentialRequests <br>
+	 *
+	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
+	 *
+	 * @param rpcs is the list of RPCRequests being sent
+	 * @param listener listener for updates and completions
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		SdlTrace.logProxyEvent("Application called sendRequests", SDL_LIB_TRACE_KEY);
+
+		synchronized(CONNECTION_REFERENCE_LOCK) {
+			if (!getIsConnected()) {
+				SdlTrace.logProxyEvent("Application attempted to call sendRequests without a connected transport.", SDL_LIB_TRACE_KEY);
+				throw new SdlException("There is no valid connection to SDL. sendRequests cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
+			}
+		}
+
+		if (rpcs == null){
+			//Log error here
+			throw new SdlException("You must send some RPCs, the array is null", SdlExceptionCause.INVALID_ARGUMENT);
+		}
+
+		int arraySize = rpcs.size();
+
+		if (arraySize == 0) {
+			throw new SdlException("You must send some RPCs, the array is empty", SdlExceptionCause.INVALID_ARGUMENT);
+		}
+
+		for (int i = 0; i < arraySize; i++) {
+			RPCRequest rpc = rpcs.get(i);
+			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
+			listener.addCorrelationId(rpc.getCorrelationID());
+			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+			sendRPCRequestPrivate(rpc);
+		}
+	}
 	
 	/**
 	 * Takes an RPCRequest and sends it to SDL.  Responses are captured through callback on IProxyListener.  
 	 * 
 	 * @param request is the RPCRequest being sent
-	 * @throws SdlException if an unrecoverable error is encountered  if an unrecoverable error is encountered
+	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	public void sendRPCRequest(RPCRequest request) throws SdlException {
 		if (_proxyDisposed) {
@@ -3474,7 +3588,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
-						", is unallowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
+						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
 			}
 		}
 		
