@@ -397,7 +397,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				Intent serviceIntent = new Intent();
 				serviceIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 				serviceIntent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
-	    		context.sendBroadcast(serviceIntent);
+	    		AndroidTools.sendExplicitBroadcast(context,serviceIntent,null);
 			}
 			if(callback!=null){
 				callback.onConnectionStatusUpdate(false, null,context);
