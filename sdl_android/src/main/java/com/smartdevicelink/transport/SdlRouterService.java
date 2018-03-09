@@ -166,6 +166,11 @@ public class SdlRouterService extends Service{
 	private boolean isPingingClients = false;
 	int pingCount = 0;
 
+	/**
+	 * List of cached SDL apps used for explicit broadcasts
+	 */
+	private List<ResolveInfo> sdlApps;
+
 	
 	/* **************************************************************************************************************************************
 	****************************************************************************************************************************************
@@ -637,7 +642,7 @@ public class SdlRouterService extends Service{
 	        			if(service.pingIntent == null){
 	        				service.initPingIntent();
 	        			}
-	        			service.getBaseContext().sendBroadcast(service.pingIntent); 
+	        			service.sendExplicitBroadcast(service.pingIntent, false);
 	        		}
 	        		break;
 	        	default:
@@ -1213,8 +1218,6 @@ public class SdlRouterService extends Service{
 		
 		Intent startService = new Intent();  
 		startService.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
-		//Perform our query prior to adding any extras or flags
-		List<ResolveInfo> sdlApps = getPackageManager().queryBroadcastReceivers(startService, 0);
 
 		startService.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
 		startService.putExtra(TransportConstants.FORCE_TRANSPORT_CONNECTED, true);
@@ -1224,13 +1227,7 @@ public class SdlRouterService extends Service{
 			startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 		}
 
-		//Iterate through all apps that we know are listening for this intent with an explicit intent (necessary for Android O SDK 26)
-		if(sdlApps != null && sdlApps.size()>0){
-			for(ResolveInfo app: sdlApps){
-				startService.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-				sendBroadcast(startService);
-			}
-		}
+		sendExplicitBroadcast(startService, false);
 
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
@@ -1269,14 +1266,7 @@ public class SdlRouterService extends Service{
 		}
 		
 		cachedModuleVersion = -1; //Reset our cached version
-		if(registeredApps== null || registeredApps.isEmpty()){
-			Intent unregisterIntent = new Intent();
-			unregisterIntent.putExtra(HARDWARE_DISCONNECTED, type.name());
-			unregisterIntent.putExtra(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-			unregisterIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
-			sendBroadcast(unregisterIntent);
-			//return;
-		}else{
+		if(registeredApps != null && !registeredApps.isEmpty()){
 			Message message = Message.obtain();
 			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
 			Bundle bundle = new Bundle();
@@ -2020,7 +2010,7 @@ public class SdlRouterService extends Service{
 				if(pingIntent == null){
 					initPingIntent();
 				}
-				getBaseContext().sendBroadcast(pingIntent); 
+				sendExplicitBroadcast(pingIntent, true);
 				synchronized(PING_COUNT_LOCK){
 					pingCount++;
 				}
@@ -2043,6 +2033,27 @@ public class SdlRouterService extends Service{
 			isPingingClients = false;
 		}
 		pingIntent = null;
+	}
+
+	/**
+	 * Iterate through all of apps that we know are listening for this intent
+	 * with an explicit intent (necessary for Android O SDK 26+)
+	 *
+	 * @param intent - the intent to send explicitly
+	 * @param isRepeatingPings - If this is coming from a method that will repeat pings, we will use a cached list instead of querying each ping
+	 */
+	private void sendExplicitBroadcast(Intent intent, Boolean isRepeatingPings) {
+
+		if (sdlApps == null || !isRepeatingPings) {
+			sdlApps = getPackageManager().queryBroadcastReceivers(intent, 0);
+		}
+
+		if(sdlApps != null && sdlApps.size()>0){
+			for(ResolveInfo app: sdlApps){
+				intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+				sendBroadcast(intent);
+			}
+		}
 	}
 	
 	/* ****************************************************************************************************************************************
