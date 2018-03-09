@@ -2036,11 +2036,12 @@ public class SdlRouterService extends Service{
 	}
 
 	/**
-	 * Iterate through all of apps that we know are listening for this intent
+	 * Iterate through all of the apps that we know are listening for this intent
 	 * with an explicit intent (necessary for Android O SDK 26+)
 	 *
 	 * @param intent - the intent to send explicitly
-	 * @param isRepeatingPings - If this is coming from a method that will repeat pings, we will use a cached list instead of querying each ping
+	 * @param isRepeatingPings - If this is coming from a method that will repeat pings,
+	 * we will use a cached list instead of querying each ping
 	 */
 	private void sendExplicitBroadcast(Intent intent, Boolean isRepeatingPings) {
 
@@ -2048,7 +2049,7 @@ public class SdlRouterService extends Service{
 			sdlApps = getPackageManager().queryBroadcastReceivers(intent, 0);
 		}
 
-		if(sdlApps != null && sdlApps.size()>0){
+		if (sdlApps != null && sdlApps.size()>0) {
 			for(ResolveInfo app: sdlApps){
 				intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
 				sendBroadcast(intent);
