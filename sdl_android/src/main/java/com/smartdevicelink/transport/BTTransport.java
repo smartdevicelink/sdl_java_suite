@@ -46,6 +46,8 @@ public class BTTransport extends SdlTransport {
 	
 	// Boolean to monitor if the transport is in a disconnecting state
     private boolean _disconnecting = false;
+
+	private final Object DISCONNECT_LOCK = new Object();
 	
 	public BTTransport(ITransportListener transportListener) {
 		super(transportListener);
@@ -229,13 +231,15 @@ public class BTTransport extends SdlTransport {
 	 * @param msg
 	 * @param ex
 	 */
-	private synchronized void disconnect(String msg, Exception ex) {		
-		// If already disconnecting, return
-		if (_disconnecting) {
-			// No need to recursively call
-			return;
-		}		
-		_disconnecting = true;
+	private void disconnect(String msg, Exception ex) {
+		synchronized(DISCONNECT_LOCK) {
+			// If already disconnecting, return
+			if (_disconnecting) {
+				// No need to recursively call
+				return;
+			}
+			_disconnecting = true;
+		}
 		
 		String disconnectMsg = (msg == null ? "" : msg);
 		if (ex != null) {
