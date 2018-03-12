@@ -41,6 +41,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 
+import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -594,6 +595,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
+		Log.i(TAG, "SDL_LIB_VERSION: " + Version.VERSION);
 		setWiProVersion((byte)PROX_PROT_VER_ONE);
 		
 		if (preRegister != null && preRegister)
