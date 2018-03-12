@@ -593,7 +593,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
-		Log.i(TAG, "SDL_LIB_VERSION: " + BuildConfig.VERSION_NAME);
+		Log.i(TAG, "SDL_LIB_VERSION: " + Version.VERSION);
 		setWiProVersion((byte)PROX_PROT_VER_ONE);
 		
 		if (preRegister != null && preRegister)
