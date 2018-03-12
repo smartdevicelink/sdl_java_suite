@@ -93,7 +93,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}

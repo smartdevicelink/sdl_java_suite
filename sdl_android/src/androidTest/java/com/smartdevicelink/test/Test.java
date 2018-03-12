@@ -260,8 +260,7 @@ public class Test {
 	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
-
-    public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
+	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
