@@ -121,4 +121,41 @@ public class AndroidTools {
 		return sdlAppInfoList;
 	}
 
+
+	/**
+	 * Sends the provided intent to the specified destinations making it an explicit intent, rather
+	 * than an implicit intent. A direct replacement of sendBroadcast(Intent). As of Android 8.0
+	 * (API 26+) implicit broadcasts are no longer sent to broadcast receivers that are declared via
+	 * the AndroidManifest. Ihe method will also send the broadcast implicitly if no list of apps is
+	 * provided for backwards comparability.
+	 *
+	 * @param intent - the intent to send explicitly
+	 * @param apps - the list of apps that this broadcast will be sent to. If null is passed in
+	 *                the intent will be sent to all apps that match the provided intent via a query
+	 *                to the package manager; it will also be sent implicitly to mimic
+	 *                sendBroadcast()'s original functionality.
+	 */
+	public static void sendExplicitBroadcast(Context context, Intent intent, List<ResolveInfo> apps) {
+
+		if(context == null || intent == null){
+			return;
+		}
+
+		if (apps == null) {
+			apps = context.getPackageManager().queryBroadcastReceivers(intent, 0);
+			context.sendBroadcast(intent);
+		}
+
+		if (apps != null && apps.size()>0) {
+			for(ResolveInfo app: apps){
+				try {
+					intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+					context.sendBroadcast(intent);
+				}catch(Exception e){
+					//In case there is missing info in the app reference we want to keep moving
+				}
+			}
+		}
+	}
+
 }

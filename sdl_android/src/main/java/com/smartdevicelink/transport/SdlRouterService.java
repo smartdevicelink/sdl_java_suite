@@ -638,7 +638,7 @@ public class SdlRouterService extends Service{
 	        			if(service.pingIntent == null){
 	        				service.initPingIntent();
 	        			}
-	        			service.sendExplicitBroadcast(service.pingIntent, null);
+	        			AndroidTools.sendExplicitBroadcast(service.getApplicationContext(),service.pingIntent, null);
 	        		}
 	        		break;
 	        	default:
@@ -1223,7 +1223,7 @@ public class SdlRouterService extends Service{
 			startService.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 		}
 
-		sendExplicitBroadcast(startService, null);
+		AndroidTools.sendExplicitBroadcast(getApplicationContext(),startService, null);
 
 		//HARDWARE_CONNECTED
     	if(!(registeredApps== null || registeredApps.isEmpty())){
@@ -2012,7 +2012,7 @@ public class SdlRouterService extends Service{
 					sdlApps = getPackageManager().queryBroadcastReceivers(pingIntent, 0);
 				}
 
-				sendExplicitBroadcast(pingIntent, sdlApps);
+				AndroidTools.sendExplicitBroadcast(getApplicationContext(), pingIntent, sdlApps);
 				synchronized(PING_COUNT_LOCK){
 					pingCount++;
 				}
@@ -2037,34 +2037,6 @@ public class SdlRouterService extends Service{
 		pingIntent = null;
 	}
 
-	/**
-	 * Sends the provided intent to the specified destinations making it an explicit intent, rather
-	 * than an implicit intent. A direct replacement of sendBroadcast(Intent). As of Android 8.0
-	 * (API 26+) implicit broadcasts are no longer sent to broadcast receivers that are declared via
-	 * the AndroidManifest.
-	 *
-	 * @param intent - the intent to send explicitly
-	 * @param apps - the list of apps that this broadcast will be sent to. If null is passed in
-	 *                the intent will be sent to all SDL enabled apps via a query the package manager
-	 */
-	private void sendExplicitBroadcast(Intent intent, List<ResolveInfo> apps) {
-
-		if (apps == null) {
-			apps = getPackageManager().queryBroadcastReceivers(intent, 0);
-		}
-
-		if (apps != null && apps.size()>0) {
-			for(ResolveInfo app: apps){
-				try {
-					intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-					sendBroadcast(intent);
-				}catch(Exception e){
-					//In case there is missing info in the app reference we want to keep moving
-				}
-			}
-		}
-	}
-	
 	/* ****************************************************************************************************************************************
 	// **********************************************************   TINY CLASSES   ************************************************************
 	//*****************************************************************************************************************************************/
