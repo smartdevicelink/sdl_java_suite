@@ -5,9 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.annotation.SuppressLint;
@@ -19,6 +21,8 @@ import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
+import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
@@ -39,9 +43,19 @@ import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
+import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.StartServiceACK;
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.TransportConfigUpdate;
+
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener, ISecurityInitializedListener {
+	private static final String SECONDARY_TRANSPORT_TCP = "TCP_WIFI";
+	private static final String SECONDARY_TRANSPORT_USB = "AOA_USB";
+	private static final String SECONDARY_TRANSPORT_BT = "SPP_BLUETOOTH";
+	private static final String SECONARY_SERVICE_PCM = "0x0A";
+	private static final String SECONARY_SERVICE_VIDEO = "0x0B";
+
 	private static CopyOnWriteArrayList<SdlConnection> shareConnections = new CopyOnWriteArrayList<SdlConnection>();
 	private CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
 	
@@ -66,6 +80,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private VideoStreamingParameters desiredVideoParams = null;
 	private VideoStreamingParameters acceptedVideoParams = null;
 
+    private boolean secondaryConnectionEnabled = false;
+    private ArrayList<TransportType> secondaryTransportTypes;
+    private SdlConnection secondarySdlConnection = null;
+    private HashMap<SessionType, SecondaryService> secondaryServices;
+    private HashMap<SessionType, ArrayList<TransportLevel>> servicesMap;
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
@@ -73,6 +92,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		session.wiproProcolVer = wiproVersion;
 		session.sessionListener = listener;
 		session.transportConfig = btConfig;
+		session.secondaryConnectionEnabled = true;
 					
 		return session;
 	}
@@ -128,6 +148,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
 	public long getMtu(SessionType type) {
+		if (((type == SessionType.NAV) || (type == SessionType.PCM)) && secondaryConnectionEnabled) {
+			if ((secondarySdlConnection != null) && isServiceAllowed(type, TransportLevel.SECONDARY)) {
+				return secondarySdlConnection.getWiProProtocol().getMtu(type);
+			}
+		}
 		if (this._sdlConnection != null) {
 			return this._sdlConnection.getWiProProtocol().getMtu(type);
 		} else {
@@ -151,27 +176,73 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 			_sdlConnection = null;
 		}
+		if (secondarySdlConnection != null) {
+			secondarySdlConnection.unregisterSession(this);
+
+			secondarySdlConnection = null;
+		}
 	}
 	
 	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
-        if (sType.equals(SessionType.NAV))
-        {
+		SdlConnection connection = null;
+		SecondaryService secondaryService = null;
+		if ((secondaryConnectionEnabled) && ((sType == SessionType.PCM) || (sType == SessionType.NAV))) {
+			boolean allowed = isServiceAllowed(sType, TransportLevel.SECONDARY);
+			if ((this.secondarySdlConnection != null) && allowed) {
+				connection = secondarySdlConnection;
+			} else {
+				if (allowed) {
+					addPendingService(sType, rpcSessionID, null, null);
+					secondaryService = secondaryServices.get(sType);
+				}
+				if (isServiceAllowed(sType, TransportLevel.PRIMARY)) {
+					connection = this.getSdlConnection();
+				}
+			}
+		} else {
+			connection = this.getSdlConnection();
+		}
+
+		if (sType.equals(SessionType.NAV)) {
         	// protocol is fixed to RAW
         	StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-        	packetizer.sdlConnection = this.getSdlConnection();
+			packetizer.sdlConnection = connection;
         	mVideoPacketizer = packetizer;
         	mVideoPacketizer.start();
+            if (secondaryService != null) {
+            	secondaryService.stream = mVideoPacketizer;
         }
-        else if (sType.equals(SessionType.PCM))
-        {
+		} else if (sType.equals(SessionType.PCM)) {
         	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-        	mAudioPacketizer.sdlConnection = this.getSdlConnection();
+			mAudioPacketizer.sdlConnection = connection;
         	mAudioPacketizer.start();            	
+        	if (secondaryService != null) {
+            	secondaryService.stream = mAudioPacketizer;
+            }
         }
 	}
 
 	@SuppressLint("NewApi")
 	public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
+		SecondaryService secondaryService = null;
+		SdlConnection connection = null;
+		if (secondaryConnectionEnabled && ((sType == SessionType.NAV) || (sType == SessionType.PCM))) {
+			boolean allowed = isServiceAllowed(sType, TransportLevel.SECONDARY);
+			if ((this.secondarySdlConnection != null) && allowed) {
+				connection = this.secondarySdlConnection;
+			} else {
+				if (allowed) {
+					addPendingService(sType, rpcSessionID, null, null);
+					secondaryService = secondaryServices.get(sType);
+				}
+				if (isServiceAllowed(sType, TransportLevel.PRIMARY)) {
+					connection = this.getSdlConnection();
+				}
+			}
+		} else {
+			connection = this.getSdlConnection();
+		}
+
 		OutputStream os = new PipedOutputStream();
 		InputStream is = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
@@ -183,15 +254,21 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         {
             // protocol is fixed to RAW
             StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-            packetizer.sdlConnection = this.getSdlConnection();
+            packetizer.sdlConnection = connection;
             mVideoPacketizer = packetizer;
             mVideoPacketizer.start();
+            if (secondaryService != null) {
+            	secondaryService.stream = mVideoPacketizer;
+            }
         }       
         else if (sType.equals(SessionType.PCM))
         {
         	mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-        	mAudioPacketizer.sdlConnection = this.getSdlConnection();
+        	mAudioPacketizer.sdlConnection = connection;
         	mAudioPacketizer.start();            	
+            if (secondaryService != null) {
+            	secondaryService.stream = mAudioPacketizer;
+            }
         }
         else
         {
@@ -209,13 +286,42 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			switch (protocol) {
 				case RAW: {
 					StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.NAV, rpcSessionID, this);
-					packetizer.sdlConnection = this.getSdlConnection();
+					SdlConnection connection = null;
+					if (secondaryConnectionEnabled) {
+						boolean allowed = isServiceAllowed(SessionType.PCM, TransportLevel.SECONDARY);
+						if ((this.secondarySdlConnection != null) && allowed) {
+							connection = this.secondarySdlConnection;
+						} else {
+							if (allowed) {
+								addPendingService(SessionType.NAV, rpcSessionID, null, packetizer);
+							}
+							if (isServiceAllowed(SessionType.NAV, TransportLevel.PRIMARY)) {
+								connection = this.getSdlConnection();
+							}
+						}
+					}
+					packetizer.sdlConnection = connection;
 					mVideoPacketizer = packetizer;
 					mVideoPacketizer.start();
 					return packetizer;
 				}
 				case RTP: {
 					RTPH264Packetizer packetizer = new RTPH264Packetizer(this, SessionType.NAV, rpcSessionID, this);
+					SdlConnection connection = null;
+					if (secondaryConnectionEnabled) {
+						boolean allowed = isServiceAllowed(SessionType.NAV, TransportLevel.SECONDARY);
+						if ((this.secondarySdlConnection != null) && allowed) {
+							connection = this.secondarySdlConnection;
+						} else {
+							if (allowed) {
+								addPendingService(SessionType.NAV, rpcSessionID, null, packetizer);
+							}
+							if (isServiceAllowed(SessionType.NAV, TransportLevel.PRIMARY)) {
+								connection = this.getSdlConnection();
+							}
+						}
+					}
+					packetizer.sdlConnection = connection;
 					mVideoPacketizer = packetizer;
 					mVideoPacketizer.start();
 					return packetizer;
@@ -233,7 +339,21 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		byte rpcSessionID = getSessionId();
 		try {
 			StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.PCM, rpcSessionID, this);
-			packetizer.sdlConnection = this.getSdlConnection();
+			SdlConnection connection = null;
+			if (secondaryConnectionEnabled) {
+				boolean allowed = isServiceAllowed(SessionType.PCM, TransportLevel.SECONDARY);
+				if ((this.secondarySdlConnection != null) && allowed) {
+					connection = this.secondarySdlConnection;
+				} else {
+					if (allowed) {
+						addPendingService(SessionType.PCM, rpcSessionID, null, packetizer);
+					}
+					if (isServiceAllowed(SessionType.PCM, TransportLevel.PRIMARY)) {
+						connection = this.getSdlConnection();
+					}
+				}
+			}
+			packetizer.sdlConnection = connection;
 			mAudioPacketizer = packetizer;
 			mAudioPacketizer.start();
 			return packetizer;
@@ -412,10 +532,31 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			}			
 			return;
 		}
+
+		if (((serviceType != SessionType.NAV) && (serviceType != SessionType.PCM))) {
 		_sdlConnection.startService(serviceType, sessionID, isEncrypted);		
+		} else {
+			boolean allowed = isServiceAllowed(serviceType, TransportLevel.SECONDARY);
+		if ((secondarySdlConnection != null) && allowed) {
+				secondarySdlConnection.startService(serviceType, sessionID, isEncrypted);
+			} else {
+				if (allowed) {
+					addPendingService(serviceType, sessionID, isEncrypted, null);
+				}
+				if (isServiceAllowed(serviceType, TransportLevel.PRIMARY)) {
+					_sdlConnection.startService(serviceType, sessionID, isEncrypted);		
+ 				}
+			}
+		}
 	}
 	
 	public void endService (SessionType serviceType, byte sessionID) {
+		if ((serviceType == SessionType.NAV) || (serviceType == SessionType.PCM)) {
+			if ((secondarySdlConnection != null) && isServiceAllowed(serviceType, TransportLevel.SECONDARY)) {
+				secondarySdlConnection.endService(serviceType, sessionID);
+				return;
+			}
+		}
 		if (_sdlConnection == null) 
 			return;
 		_sdlConnection.endService(serviceType, sessionID);	
@@ -491,6 +632,16 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     }	
 	
 	public void sendMessage(ProtocolMessage msg) {
+		if (secondaryConnectionEnabled && ((msg.getSessionType() == SessionType.NAV) ||
+				(msg.getSessionType() == SessionType.PCM))) {
+			if ((secondarySdlConnection != null) && isServiceAllowed(msg.getSessionType(), TransportLevel.SECONDARY)) {
+				secondarySdlConnection.sendMessage(msg);
+			} else if ((_sdlConnection != null) && isServiceAllowed(msg.getSessionType(), TransportLevel.PRIMARY)) {
+				_sdlConnection.sendMessage(msg);
+			}
+			return;
+		}
+
 		if (_sdlConnection == null) 
 			return;
 		_sdlConnection.sendMessage(msg);
@@ -517,9 +668,40 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		this.sessionListener.onTransportDisconnected(info);
 	}
 
+	void onTransportDisconnected(String info, TransportType transportType) {
+		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
+			onTransportDisconnected(info);
+			if (secondarySdlConnection != null) {
+				// Secondary transport must not be live if primary transport goes down
+				secondarySdlConnection.unregisterSession(this);
+				secondarySdlConnection = null;
+			}
+		} else {
+			// Don't notify higher about secondary transport disconnect
+			if (secondarySdlConnection != null) {
+				secondarySdlConnection.unregisterSession(this);
+				secondarySdlConnection = null;
+				// retry?
+			}
+		}
+	}
+
 	@Override
 	public void onTransportError(String info, Exception e) {
 		this.sessionListener.onTransportError(info, e);
+	}
+
+	void onTransportError(String info, TransportType transportType, Exception e) {
+		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
+			onTransportError(info, e);
+		} else {
+			// Don't notify higher about secondary transport error
+			if (secondarySdlConnection != null) {
+				secondarySdlConnection.unregisterSession(this);
+				secondarySdlConnection = null;
+				// retry?
+			}
+		}
 	}
 
 	@Override
@@ -542,6 +724,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
+		if ((this.sessionId != 0) && (sessionID == this.sessionId) && (sessionType == SessionType.RPC)) {
+			// This is just for SDLCore's notification about the secondary transport, no need to do
+			// all the session initialization again or to notify listeners.
+			return;
+		}
+
 		this.sessionId = sessionID;
 		lockScreenMan.setSessionID(sessionID);
 		if (isEncrypted)
@@ -571,6 +759,20 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			}
 		}
 		encryptedServices.remove(sessionType);
+	}
+
+	void onProtocolSessionEnded(SessionType sessionType, byte sessionId, String correlationID,
+	                            TransportType transportType) {
+		if (secondarySdlConnection != null) {
+			TransportType primaryTransportType = transportConfig.getTransportType();
+			if (transportType == primaryTransportType) {
+				// Primary transport ended, close secondary transport
+				secondarySdlConnection.unregisterSession(this);
+				secondarySdlConnection = null;
+			}
+		}
+
+		onProtocolSessionEnded(sessionType, sessionId, correlationID);
 	}
 
 	@Override
@@ -651,8 +853,25 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			while (iter.hasNext()) {
 				service = iter.next();
 				
-				if (service != null)
+				if (service != null) {
+					if ((service != SessionType.NAV) && (service != SessionType.PCM)) {
+						_sdlConnection.startService(service, getSessionId(), true);
+					} else {
+						boolean allowed = isServiceAllowed(service, TransportLevel.SECONDARY);
+
+						if ((secondarySdlConnection != null) && allowed) {
+							secondarySdlConnection.startService(service, getSessionId(), true);
+						} else {
+							if (secondaryConnectionEnabled && allowed) {
+								addPendingService(service, getSessionId(),true, null);
+							}
+
+							if (isServiceAllowed(service, TransportLevel.PRIMARY)) {
 					_sdlConnection.startService(service, getSessionId(), true);
+							}
+						}
+					}
+				}
 				
 				iter.remove();				
 			}
@@ -661,6 +880,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	
 	public void clearConnection(){
 		_sdlConnection = null;
+		secondarySdlConnection = null;
 	}
 	
 	public void checkForOpenMultiplexConnection(SdlConnection connection){
@@ -705,6 +925,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		return false;
 	}
 
+	private boolean secondaryConnectionEnabled = false;
+	private ArrayList<TransportType> secondaryTransportTypes;
+	private SdlConnection secondarySdlConnection = null;
+	private HashMap<SessionType, SecondaryService> secondaryServices;
+	private HashMap<SessionType, ArrayList<TransportLevel>> servicesMap;
 
 	public HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> getServiceListeners(){
 		return serviceListeners;
@@ -746,5 +971,269 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
 
 		return protocol;
+	}
+
+	public void handleStartSessionACK(SdlPacket startSessionACKPacket, TransportType transportType) {
+		if (!isPrimaryBluetoothTransport()) {
+			// Only BT transports as primary need secondary transport
+			secondaryConnectionEnabled = false;
+			return;
+		}
+
+		if (transportType == transportConfig.getTransportType()) {
+			secondaryServices = null;
+			servicesMap = null;
+
+			if (startSessionACKPacket.getVersion() >= 5) {
+				String secondaryTransport = (String) startSessionACKPacket.getTag(
+						StartServiceACK.SECONDARY_TRANSPORT);
+
+				secondaryConnectionEnabled = (secondaryTransport != null);
+				if (secondaryConnectionEnabled) {
+					int tcpPos = secondaryTransport.indexOf(SECONDARY_TRANSPORT_TCP);
+					int usbPos = secondaryTransport.indexOf(SECONDARY_TRANSPORT_USB);
+					if ((tcpPos >= 0) || (usbPos >= 0)) {
+						//noinspection unchecked
+						HashMap<String, Object> services = (HashMap<String, Object>) startSessionACKPacket.getTag(
+								StartServiceACK.SERVICES_MAP);
+
+						buildServicesMap(services);
+						secondaryTransportTypes = new ArrayList<>();
+						if (tcpPos >= 0) {
+							secondaryTransportTypes.add(TransportType.TCP);
+						}
+						if (usbPos >= 0) {
+							if (usbPos > tcpPos) {
+								secondaryTransportTypes.add(TransportType.USB);
+							} else {
+								usbPos = secondaryTransportTypes.indexOf(TransportType.TCP);
+								if (usbPos < 0) {
+									usbPos = 0;
+								}
+								secondaryTransportTypes.add(usbPos, TransportType.USB);
+							}
+						}
+					} else {
+						secondaryConnectionEnabled = false;
+					}
+				}
+			} else {
+				secondaryConnectionEnabled = false;
+			}
+
+			if (secondaryConnectionEnabled) {
+				secondaryServices = new HashMap<>();
+			}
+		} else if ((secondarySdlConnection != null) &&
+				(secondarySdlConnection.getCurrentTransportType() == transportType)) {
+			startStreamingServices();
+		}
+	}
+
+	private boolean isPrimaryBluetoothTransport() {
+		TransportType transportType = transportConfig.getTransportType();
+		return (transportType == TransportType.BLUETOOTH) ||
+				(transportType == TransportType.MULTIPLEX);
+	}
+
+	private void buildServicesMap(HashMap<String, Object> services) {
+		if ((services != null) && (services.size() > 0)) {
+			servicesMap = new HashMap<>(services.size());
+			Set<String> keys = services.keySet();
+
+			for (String service : keys) {
+				ArrayList list = (ArrayList) services.get(service);
+				if ((list != null) && (list.size() > 0)) {
+					ArrayList<TransportLevel> levels = new ArrayList<>(list.size());
+					for (int i = 0; i < list.size(); i++) {
+						Integer level = (Integer) list.get(i);
+						switch (level) {
+							case 1:
+								levels.add(TransportLevel.PRIMARY);
+								break;
+							case 2:
+								levels.add(TransportLevel.SECONDARY);
+								break;
+						}
+					}
+
+					SessionType sessionType = null;
+					switch (service) {
+						case SECONARY_SERVICE_PCM:
+							sessionType = SessionType.PCM;
+							break;
+						case SECONARY_SERVICE_VIDEO:
+							sessionType = SessionType.NAV;
+							break;
+					}
+
+					if ((sessionType != null) && (levels.size() > 0)) {
+						servicesMap.put(sessionType, levels);
+					}
+				}
+			}
+
+			if (servicesMap.size() == 0) {
+				servicesMap = null;
+			}
+		}
+	}
+
+	private boolean isServiceAllowed(SessionType type, TransportLevel level) {
+		// default to allowed for backward compatibility
+		boolean allowed = (level == TransportLevel.PRIMARY);
+		if (servicesMap != null) {
+			ArrayList<TransportLevel> levels = servicesMap.get(type);
+			allowed = (levels != null) && levels.contains(level);
+		}
+		return allowed;
+	}
+
+	private void startStreamingServices() {
+		if (secondarySdlConnection != null) {
+			// Start up previously requested services on secondary connection
+			if (!secondaryServices.isEmpty()) {
+				Set<SessionType> keys = secondaryServices.keySet();
+				for (SessionType type : keys) {
+					SecondaryService service = secondaryServices.get(type);
+					if (service != null) {
+						secondarySdlConnection.startService(type,
+								service.sessionId, service.isEncrypted);
+
+						if (service.stream instanceof StreamPacketizer) {
+							((StreamPacketizer) service.stream).sdlConnection = secondarySdlConnection;
+						} else if (service.stream instanceof RTPH264Packetizer) {
+							((RTPH264Packetizer) service.stream).sdlConnection = secondarySdlConnection;
+						}
+
+						_sdlConnection.endService(type, service.sessionId);
+					}
+				}
+				secondaryServices.clear();
+			} else {
+				if ((mAudioPacketizer != null) && isServiceAllowed(SessionType.PCM, TransportLevel.SECONDARY)) {
+						secondarySdlConnection.startService(SessionType.PCM,
+								sessionId, (sdlSecurity != null));
+				}
+			}
+		}
+	}
+
+	public void handleTransportConfigUpdate(SdlPacket packet) {
+		if ((secondaryConnectionEnabled) && (secondaryTransportTypes != null)) {
+			//noinspection unchecked
+			HashMap<String, Object> config = (HashMap<String, Object>)
+					packet.getTag(TransportConfigUpdate.TCP_TRANSPORT_CONFIG);
+			if ((config == null) || (config.size() == 0)) {
+				if (secondarySdlConnection != null) {
+					secondarySdlConnection.endService(SessionType.NAV, sessionId);
+					if (mVideoPacketizer != null) {
+						if (mVideoPacketizer instanceof StreamPacketizer) {
+							((StreamPacketizer) mVideoPacketizer).sdlConnection = null;
+						} else if (mVideoPacketizer instanceof RTPH264Packetizer) {
+							((RTPH264Packetizer) mVideoPacketizer).sdlConnection = null;
+						}
+						if ((_sdlConnection != null) && isServiceAllowed(SessionType.NAV, TransportLevel.PRIMARY)) {
+							_sdlConnection.startService(SessionType.NAV, sessionId, (sdlSecurity != null));
+							if (mVideoPacketizer instanceof StreamPacketizer) {
+								((StreamPacketizer) mVideoPacketizer).sdlConnection = _sdlConnection;
+							} else if (mVideoPacketizer instanceof RTPH264Packetizer) {
+								((RTPH264Packetizer) mVideoPacketizer).sdlConnection = _sdlConnection;
+							}
+						} else {
+							stopVideoStream();
+						}
+					}
+
+					secondarySdlConnection.endService(SessionType.PCM, sessionId);
+					if (mAudioPacketizer != null) {
+						mAudioPacketizer.sdlConnection = null;
+						if ((_sdlConnection != null) && isServiceAllowed(SessionType.PCM, TransportLevel.PRIMARY)) {
+							_sdlConnection.startService(SessionType.PCM, sessionId, (sdlSecurity != null));
+							mAudioPacketizer.sdlConnection = _sdlConnection;
+						} else {
+							stopAudioStream();
+						}
+					}
+					secondarySdlConnection.unregisterSession(this);
+					secondarySdlConnection = null;
+				}
+			} else {
+				for (TransportType type : secondaryTransportTypes) {
+					switch (type) {
+						case USB:
+							if (config.containsKey(TransportConfigUpdate.TCP_IP_ADDRESS) &&
+									config.containsKey(TransportConfigUpdate.TCP_PORT)) {
+								startTCPTransport(config);
+							}
+							break;
+
+						case TCP:
+							// TODO: this is not specified in the proposal so it can't be implemented yet
+							if (config.containsKey("SOME_USB_RELATED_CONFIG_KEY")) {
+								startUSBTransport(config);
+							}
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	private void addPendingService(SessionType type, byte sessId, Boolean isEncrypted, Object stream) {
+		SecondaryService svc = secondaryServices.get(type);
+		if (svc == null) {
+			svc = new SecondaryService(sessId, false, stream);
+			svc.isEncrypted = (isEncrypted != null) && isEncrypted;
+			secondaryServices.put(type, svc);
+		} else {
+			if (isEncrypted != null) {
+				svc.isEncrypted = isEncrypted;
+			}
+			if (stream != null) {
+				svc.stream = stream;
+			}
+			if ((svc.sessionId == this.sessionId) && (sessId != svc.sessionId)) {
+				svc.sessionId = sessId;
+			}
+		}
+	}
+
+	private void startTCPTransport(HashMap<String, Object> config) {
+		String ipAddr = (String) config.get(TransportConfigUpdate.TCP_IP_ADDRESS);
+		Integer port = (Integer) config.get(TransportConfigUpdate.TCP_PORT);
+
+		TCPTransportConfig transportConfig = new TCPTransportConfig(port, ipAddr, false);
+		SdlConnection connection = new SdlConnection(transportConfig);
+
+		try {
+			connection.registerSession(this);
+			secondarySdlConnection = connection;
+		} catch (SdlException e) {
+			Log.w(TAG, "secondary transport connection failed", e);
+			// retry?
+			connection.unregisterSession(this);
+		}
+	}
+
+	private void startUSBTransport(HashMap<String, Object> config) {
+		// TODO
+	}
+
+	private static class SecondaryService {
+		SecondaryService(byte sessionID, boolean isEncrypted, Object stream) {
+			this.sessionId = sessionID;
+			this.isEncrypted = isEncrypted;
+			this.stream = stream;
+		}
+
+		Object stream;
+		byte sessionId;
+		boolean isEncrypted;
+	}
+
+	private enum TransportLevel {
+		PRIMARY,
+		SECONDARY
 	}
 }

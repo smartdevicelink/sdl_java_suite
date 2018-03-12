@@ -87,6 +87,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	private final static int MAX_DATA_SIZE_FOR_ENCRYPTED_SERVICE =
 			TLS_MAX_RECORD_SIZE - TLS_RECORD_HEADER_SIZE - TLS_RECORD_MES_AUTH_CDE_SIZE- TLS_MAX_RECORD_PADDING_SIZE;
 
+	public SdlConnection sdlConnection = null;
 	private boolean mServiceProtected;
 	private Thread mThread;
 	private BlockingQueue<ByteBuffer> mOutputQueue;
@@ -219,8 +220,6 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	 * The thread routine.
 	 */
 	public void run() {
-		SdlConnection connection = _session.getSdlConnection();
-
 		while (mThread != null && !mThread.isInterrupted()) {
 			ByteBuffer frame;
 			try {
@@ -249,8 +248,8 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 
 		// XXX: This is added to sync with StreamPacketizer. Actually it shouldn't be here since
 		// it's confusing that a packetizer takes care of End Service request.
-		if (connection != null) {
-			connection.endService(_serviceType, _rpcSessionID);
+		if (sdlConnection != null) {
+			sdlConnection.endService(_serviceType, _rpcSessionID);
 		}
 	}
 

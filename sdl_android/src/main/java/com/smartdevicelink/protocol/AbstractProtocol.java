@@ -42,6 +42,11 @@ public abstract class AbstractProtocol {
 	// session has been established.
 	public abstract void StartProtocolSession(SessionType sessionType);
 	
+	// This method starts a protocol session on a secondary transport.  SDLCore needs this to
+	// identify which app is registering to use the secondary transport to pair up with the
+	// app's session from the primary transport.
+	public abstract void StartSecondaryProtocolSession(SessionType sessionType, byte sessionId);
+
 	public abstract void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted);
 
 	public abstract void EndProtocolService(SessionType serviceType, byte sessionID);

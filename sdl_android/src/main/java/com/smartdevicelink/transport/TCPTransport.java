@@ -102,9 +102,7 @@ public class TCPTransport extends SdlTransport {
 
     /**
      * Performs actual work of sending array of bytes over the transport
-     * @param msgBytes Bytes to send
-     * @param offset Offset in the bytes array to send data from
-     * @param length Number of bytes to send
+     * @param packet Bytes to send
      * @return True if data was sent successfully, False otherwise
      */
     @Override

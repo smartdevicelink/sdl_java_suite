@@ -8,6 +8,10 @@ public class ControlFrameTags {
 	private static class StartServiceACKBase{
 		/** Max transport unit to be used for this service */
 		public static final String MTU = "mtu";
+		/** HU allowed transport for secondary connection */
+		public static final String SECONDARY_TRANSPORT = "secondaryTransport";
+		/** Map of servcies and transports they are allowed on */
+		public static final String SERVICES_MAP = "servicesMap";
 	}
 
 	private static class NAKBase{
@@ -38,6 +42,14 @@ public class ControlFrameTags {
 		}
 		public static class EndServiceACK {}
 		public static class EndServiceNAK extends NAKBase{}
+		public static class TransportConfigUpdate {
+			/** Configuration information for connecting to HU WiFi access point */
+			public static final String TCP_TRANSPORT_CONFIG = "tcpTransportConfig";
+
+			/** The HU reported IP address and port of TCP connection */
+			public static final String TCP_IP_ADDRESS = "ipAddress";
+			public static final String TCP_PORT = "tcpPort";
+		}
 	}
 
 	/**

@@ -49,10 +49,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	private final static int BUFF_READ_SIZE = 1000000;
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
 	
+	private byte secondaryTransportSessionId;
+
 	/**
 	 * Constructor.
 	 * 
-	 * @param listener Sdl connection listener.
 	 * @param transportConfig Transport configuration for this connection.
 	 */
 	public SdlConnection(BaseTransportConfig transportConfig) {
@@ -197,7 +198,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	void startHandShake() {
 		synchronized(PROTOCOL_REFERENCE_LOCK){
 			if(_protocol != null){
-				_protocol.StartProtocolSession(SessionType.RPC);
+				if (secondaryTransportSessionId == 0) {
+					_protocol.StartProtocolSession(SessionType.RPC);
+				} else {
+					_protocol.StartSecondaryProtocolSession(SessionType.RPC, secondaryTransportSessionId);
+//					_protocol.StartProtocolService(SessionType.RPC, secondaryTransportSessionId, false);
+					secondaryTransportSessionId = 0;
+				}
 			}
 		}
 	}	
@@ -310,6 +317,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		boolean didAdd = listenerList.addIfAbsent(registerListener);	
 		if (!this.getIsConnected()) {
 			this.startTransport();
+			if (registerListener.getSessionId() != 0) {
+				secondaryTransportSessionId = registerListener.getSessionId();
+			}
 		} else {
 			if(didAdd && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){ //If we're connected we can request the extra session now
 				((MultiplexTransport)_transport).requestNewSession();
@@ -346,7 +356,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		@Override
 		public void onTransportDisconnected(String info) {
 			for (SdlSession session : listenerList) {
-				session.onTransportDisconnected(info);
+				session.onTransportDisconnected(info, _transport.getTransportType());
 			}
 			if(cachedMultiConfig!=null ){
 				if(cachedMultiConfig.getService()!=null){
@@ -386,7 +396,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				cachedMultiConfig = null; //It should now be consumed
 			}
 			for (SdlSession session : listenerList) {
-				session.onTransportError(info, e);
+				session.onTransportError(info, _transport.getTransportType(), e);
 			}
 
 		}
@@ -422,7 +432,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				byte sessionID, String correlationID) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
-				session.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+				session.onProtocolSessionEnded(sessionType, sessionID, correlationID, _transport.getTransportType());
 			}
 		}
 

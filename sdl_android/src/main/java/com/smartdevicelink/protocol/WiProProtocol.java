@@ -39,7 +39,6 @@ public class WiProProtocol extends AbstractProtocol {
 	private static int TLS_MAX_RECORD_SIZE = 16384;
 
 	int hashID = 0;
-	int messageID = 0;
 	SdlConnection sdlconn = null;
 	
     @SuppressWarnings("unused")
@@ -51,6 +50,8 @@ public class WiProProtocol extends AbstractProtocol {
 	Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>>();
 	Hashtable<Byte, Object> _messageLocks = new Hashtable<Byte, Object>();
 	private HashMap<SessionType, Long> mtus = new HashMap<SessionType,Long>();
+
+	private static int nextMessageId;
 
 	// Hide no-arg ctor
 	private WiProProtocol() {
@@ -138,6 +139,14 @@ public class WiProProtocol extends AbstractProtocol {
 
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
+		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
+			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
+		}
+		handlePacketToSend(header);
+	} // end-method
+
+	public void StartSecondaryProtocolSession(SessionType sessionType, byte sessionId) {
+		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), sessionId, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
 			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
 		}
@@ -233,7 +242,7 @@ public class WiProProtocol extends AbstractProtocol {
 		synchronized(messageLock) {
 			if (data.length > getMtu(sessionType)) {
 
-				messageID++;
+				int messageID = getNextMessageId();
 	
 				// Assemble first frame.
 				Long mtu = getMtu(sessionType);
@@ -279,7 +288,7 @@ public class WiProProtocol extends AbstractProtocol {
 					currentOffset += bytesToWrite;
 				}
 			} else {
-				messageID++;
+				int messageID = getNextMessageId();
 				SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, getMajorVersionByte(),data, protocolMsg.getPayloadProtected());
 				header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
 				handlePacketToSend(header);
@@ -503,6 +512,8 @@ public class WiProProtocol extends AbstractProtocol {
 					}
 				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
+				SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
+				session.handleStartSessionACK(packet, sdlconn.getCurrentTransportType());
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				List<String> rejectedParams = null;
 				if(packet.version >= 5){
@@ -549,6 +560,9 @@ public class WiProProtocol extends AbstractProtocol {
 					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
+			} else if (frameInfo == FrameDataControlFrameType.TransportConfigUpdate.getValue()) {
+				SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
+            	session.handleTransportConfigUpdate(packet);
 			}
             _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
@@ -652,4 +666,20 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
+	/**
+	 * Gets the next available message ID.  Acts as a single point of authority for
+	 * message IDs when there are multiple connected transports.  Resets to zero after reaching
+	 * Integer.MAX_VALUE.
+	 *
+	 * @return next available message ID
+	 */
+	private static synchronized int getNextMessageId() {
+		int nextId = nextMessageId;
+		if (nextMessageId < Integer.MAX_VALUE) {
+			nextMessageId++;
+		} else {
+			nextMessageId = 0;
+		}
+		return nextId;
+	}
 } // end-class
