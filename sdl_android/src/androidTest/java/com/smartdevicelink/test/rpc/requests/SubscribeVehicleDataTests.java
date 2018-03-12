@@ -92,7 +92,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
             result.put(SubscribeVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
-			result.put(SubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -161,7 +161,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
-		assertNull(Test.NULL, msg.getFuelRange());
+        assertNull(Test.NULL, msg.getFuelRange());
 	}
 	
     /**

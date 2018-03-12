@@ -273,7 +273,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
-    public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());

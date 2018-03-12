@@ -161,7 +161,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
-		assertNull(Test.NULL, msg.getFuelRange());
+        assertNull(Test.NULL, msg.getFuelRange());
 	}
 
 	/**
