@@ -65,8 +65,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> serviceListeners;
 	private VideoStreamingParameters desiredVideoParams = null;
 	private VideoStreamingParameters acceptedVideoParams = null;
+	private boolean isRegistered = false;
 
-    
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
 		SdlSession session =  new SdlSession();
@@ -133,6 +133,14 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		} else {
 			return 0;
 		}
+	}
+
+	public boolean getIsRegistered() {
+		return isRegistered;
+	}
+
+	public void setIsRegistered(boolean isRegistered) {
+		this.isRegistered = isRegistered;
 	}
 
 	public void close() {

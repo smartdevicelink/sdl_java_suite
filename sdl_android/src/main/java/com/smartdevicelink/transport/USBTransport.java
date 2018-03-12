@@ -162,10 +162,7 @@ public class USBTransport extends SdlTransport {
      * @see USBTransportReader
      */
     private Thread mReaderThread = null;
-    /**
-     * Reference to the singleton instance of the class.
-     */
-    private static USBTransport instance = null;
+
     /**
      * Constructs the USBTransport instance.
      *
@@ -173,24 +170,11 @@ public class USBTransport extends SdlTransport {
      * @param transportListener  Listener that gets notified on different
      *                           transport events
      */
-    private USBTransport(USBTransportConfig usbTransportConfig,
+    public USBTransport(USBTransportConfig usbTransportConfig,
                         ITransportListener transportListener) {
         super(transportListener);
         this.mConfig = usbTransportConfig;
-    	registerReciever();
-    }
-    /**
-     * Get the singlton instance of the class.
-     *
-     * @param usbTransportConfig Config object for the USB transport
-     * @param transportListener  Listener that gets notified on different
-     *                           transport events
-     */
-    public static USBTransport getInstance(USBTransportConfig usbTransportConfig, ITransportListener transportListener){
-        if (instance == null){
-            instance = new USBTransport(usbTransportConfig, transportListener);
-        }
-        return instance;
+        registerReciever();
     }
 
     /**
@@ -368,7 +352,9 @@ public class USBTransport extends SdlTransport {
      * @param ex  Disconnect exception, if any
      */
     private synchronized void disconnect(String msg, Exception ex) {
-	    
+
+        stopReaderThread();
+
 		// If already disconnecting, return
         if (_disconnecting) {
             // No need to recursively call
@@ -386,12 +372,9 @@ public class USBTransport extends SdlTransport {
                     logI("Disconnect from state " + getState() + "; message: " +
                             msg + "; exception: " + ex);
                     setState(State.IDLE);
-
                     SdlTrace.logTransportEvent(TAG + ": disconnect", null,
                             InterfaceActivityDirection.None, null, 0,
                             SDL_LIB_TRACE_KEY);
-
-                    stopReaderThread();
 
                     if (mAccessory != null) {
                         if (mOutputStream != null) {

@@ -155,7 +155,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private boolean pcmServiceEndResponse = false;
 	private boolean rpcProtectedResponseReceived = false;
 	private boolean rpcProtectedStartResponse = false;
-	public static volatile boolean _disposing = false;
 	
 	// Device Info for logging
 	private TraceDeviceInfo _traceDeviceInterrogator = null;
@@ -372,7 +371,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if(SdlConnection.isLegacyModeEnabled()){
 					cycleProxy(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
 
-				}else{
+				}else if (sdlSession != null && sdlSession.getIsRegistered()){
 					cycleProxy(SdlDisconnectedReason.TRANSPORT_ERROR);
 				}
 			} else {
@@ -1428,8 +1427,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	public void dispose() throws SdlException
 	{
-		_disposing = true;
-
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -1472,7 +1469,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 		} finally {
 			SdlTrace.logProxyEvent("SdlProxy disposed.", SDL_LIB_TRACE_KEY);
-			_disposing = false;
 		}
 	} // end-method
 

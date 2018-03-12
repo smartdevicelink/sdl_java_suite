@@ -14,7 +14,6 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.transport.BTTransport;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -29,6 +28,8 @@ import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.USBTransport;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+
+
 
 public class SdlConnection implements IProtocolListener, ITransportListener {
 
@@ -121,7 +122,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			{
                 _transport = new TCPTransport((TCPTransportConfig) transportConfig, this);
             } else if (transportConfig.getTransportType() == TransportType.USB) {
-                _transport = USBTransport.getInstance((USBTransportConfig) transportConfig, this);
+                _transport = new USBTransport((USBTransportConfig) transportConfig, this);
             }
 		}
 		
@@ -308,6 +309,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		}
 	}
 	void registerSession(SdlSession registerListener) throws SdlException {
+		registerListener.setIsRegistered(true);
 		boolean didAdd = listenerList.addIfAbsent(registerListener);	
 		if (!this.getIsConnected()) {
 			this.startTransport();
@@ -325,6 +327,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	}	
 	
 	public void unregisterSession(SdlSession registerListener) {
+		registerListener.setIsRegistered(false);
 		boolean didRemove = listenerList.remove(registerListener);
 		if(didRemove && _transport !=null  && _transport.getTransportType()== TransportType.MULTIPLEX){ //If we're connected we can request the extra session now
 			((MultiplexTransport)_transport).removeSession(registerListener.getSessionId());
@@ -387,13 +390,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				cachedMultiConfig = null; //It should now be consumed
 			}
 
-			// If proxy disposing is in progress, then we don't have to worry about the listenerList
-			// because proxy.dispose() will take care of the sessions
-			if (!SdlProxyBase._disposing) {
-				for (SdlSession session : listenerList) {
-					session.onTransportError(info, e);
+			for (SdlSession session : listenerList) {
+				if (session == null || !session.getIsRegistered()){
+					continue;
 				}
+				session.onTransportError(info, e);
 			}
+
 
 		}
 
