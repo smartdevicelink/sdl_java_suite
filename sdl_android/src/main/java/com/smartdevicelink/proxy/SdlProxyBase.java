@@ -3441,7 +3441,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendSequentialRequests(final List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRequests(final List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -3507,7 +3507,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
