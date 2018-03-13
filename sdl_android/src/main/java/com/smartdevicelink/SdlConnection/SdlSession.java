@@ -22,7 +22,6 @@ import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
@@ -924,12 +923,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
 		return false;
 	}
-
-	private boolean secondaryConnectionEnabled = false;
-	private ArrayList<TransportType> secondaryTransportTypes;
-	private SdlConnection secondarySdlConnection = null;
-	private HashMap<SessionType, SecondaryService> secondaryServices;
-	private HashMap<SessionType, ArrayList<TransportLevel>> servicesMap;
 
 	public HashMap<SessionType, CopyOnWriteArrayList<ISdlServiceListener>> getServiceListeners(){
 		return serviceListeners;
