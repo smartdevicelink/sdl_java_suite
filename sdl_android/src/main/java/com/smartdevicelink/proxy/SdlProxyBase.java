@@ -3464,7 +3464,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		// Break out of recursion, we have finished the requests
 		if (requestCount == 0) {
-			listener.onFinished();
+			if(listener != null){
+				listener.onFinished();
+			}
 			return;
 		}
 
@@ -3476,20 +3478,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// success
-					listener.onUpdate(rpcs.size());
+					if(listener!=null){
+						listener.onUpdate(rpcs.size());
+					}
 					try {
 						// recurse after successful response of RPC
 						sendSequentialRequests(rpcs, listener);
 					} catch (SdlException e) {
 						e.printStackTrace();
-						listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+						if(listener != null){
+							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+						}
 					}
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				listener.onError(correlationId, resultCode, info);
+				if(listener != null){
+					listener.onError(correlationId, resultCode, info);
+				}
 			}
 		});
 
@@ -3536,8 +3544,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		for (int i = 0; i < arraySize; i++) {
 			RPCRequest rpc = rpcs.get(i);
 			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
-			listener.addCorrelationId(rpc.getCorrelationID());
-			rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+			if(listener != null) {
+				listener.addCorrelationId(rpc.getCorrelationID());
+				rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+			}
 			sendRPCRequestPrivate(rpc);
 		}
 	}
