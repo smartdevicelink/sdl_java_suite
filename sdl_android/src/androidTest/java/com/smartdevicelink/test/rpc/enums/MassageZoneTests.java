@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import com.smartdevicelink.proxy.rpc.enums.ModuleType;
+import com.smartdevicelink.proxy.rpc.enums.MassageZone;
 
 import junit.framework.TestCase;
 
@@ -10,33 +10,30 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.ModuleType}
+ * {@link com.smartdevicelink.rpc.enums.MassageZone}
  */
-public class ModuleTypeTests extends TestCase {
+public class MassageZoneTests extends TestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
 	public void testValidEnums () {	
-		String example = "CLIMATE";
-		ModuleType enumClimate = ModuleType.valueForString(example);
-		example = "RADIO";
-		ModuleType enumRadio = ModuleType.valueForString(example);
-		example = "SEAT";
-		ModuleType enumSeat = ModuleType.valueForString(example);
+		String example = "LUMBAR";
+		MassageZone enumLumbar = MassageZone.valueForString(example);
+		example = "SEAT_CUSHION";
+		MassageZone enumSeatCushion = MassageZone.valueForString(example);
 
-		assertNotNull("CLIMATE returned null", enumClimate);
-		assertNotNull("RADIO returned null", enumRadio);
-		assertNotNull("SEAT returned null", enumSeat);
+		assertNotNull("LUMBAR returned null", enumLumbar);
+		assertNotNull("SEAT_CUSHION returned null", enumSeatCushion);
 	}
 
 	/**
 	 * Verifies that an invalid assignment is null.
 	 */
 	public void testInvalidEnum () {
-		String example = "cLIMATE";
+		String example = "lUMBAR";
 		try {
-			ModuleType temp = ModuleType.valueForString(example);
+			MassageZone temp = MassageZone.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
@@ -50,7 +47,7 @@ public class ModuleTypeTests extends TestCase {
 	public void testNullEnum () {
 		String example = null;
 		try {
-			ModuleType temp = ModuleType.valueForString(example);
+			MassageZone temp = MassageZone.valueForString(example);
             assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
@@ -59,15 +56,14 @@ public class ModuleTypeTests extends TestCase {
 	}
 
 	/**
-	 * Verifies the possible enum values of ModuleType.
+	 * Verifies the possible enum values of MassageZone.
 	 */
 	public void testListEnum() {
- 		List<ModuleType> enumValueList = Arrays.asList(ModuleType.values());
+ 		List<MassageZone> enumValueList = Arrays.asList(MassageZone.values());
 
-		List<ModuleType> enumTestList = new ArrayList<ModuleType>();
-		enumTestList.add(ModuleType.CLIMATE);
-		enumTestList.add(ModuleType.RADIO);
-		enumTestList.add(ModuleType.SEAT);
+		List<MassageZone> enumTestList = new ArrayList<MassageZone>();
+		enumTestList.add(MassageZone.LUMBAR);
+		enumTestList.add(MassageZone.SEAT_CUSHION);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

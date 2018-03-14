@@ -33,6 +33,8 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
+import com.smartdevicelink.proxy.rpc.MassageModeData;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.MyKey;
@@ -50,6 +52,9 @@ import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
+import com.smartdevicelink.proxy.rpc.SeatControlData;
+import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -708,6 +713,62 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateSeatControlData(SeatControlData seatControlData1, SeatControlData seatControlData2){
+        if(seatControlData1 == null){
+            return ( seatControlData2 == null );
+        }
+        if(seatControlData2 == null){
+            return ( seatControlData1 == null );
+        }
+
+        if(seatControlData1.getCoolingEnabled() != seatControlData2.getCoolingEnabled()){
+            return false;
+        }
+        if(seatControlData1.getHeatingEnabled() != seatControlData2.getHeatingEnabled()){
+            return false;
+        }
+        if(seatControlData1.getMassageEnabled() != seatControlData2.getMassageEnabled()){
+            return false;
+        }
+        if(seatControlData1.getBackTiltAngle() != seatControlData2.getBackTiltAngle()){
+            return false;
+        }
+        if(seatControlData1.getBackVerticalPosition() != seatControlData2.getBackVerticalPosition()){
+            return false;
+        }
+        if(seatControlData1.getCoolingLevel() != seatControlData2.getCoolingLevel()){
+            return false;
+        }
+        if(seatControlData1.getFrontVerticalPosition() != seatControlData2.getFrontVerticalPosition()){
+            return false;
+        }
+        if(seatControlData1.getHeadSupportHorizontalPosition() != seatControlData2.getHeadSupportHorizontalPosition()){
+            return false;
+        }
+        if(seatControlData1.getHeadSupportVerticalPosition() != seatControlData2.getHeadSupportVerticalPosition()){
+            return false;
+        }
+        if(seatControlData1.getHeatingLevel() != seatControlData2.getHeatingLevel()){
+            return false;
+        }
+        if(seatControlData1.getHorizontalPosition() != seatControlData2.getHorizontalPosition()){
+            return false;
+        }
+        if(seatControlData1.getId() != seatControlData2.getId()){
+            return false;
+        }
+
+        if(!( validateSeatMemoryAction(seatControlData1.getMemory(), seatControlData2.getMemory()) )){
+            return false;
+        }
+
+        if(!( validateSeatMemoryAction(seatControlData1.getMemory(), seatControlData2.getMemory()) )){
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validateModuleData(ModuleData moduleData1, ModuleData moduleData2){
         if(moduleData1 == null){
             return ( moduleData2 == null );
@@ -900,6 +961,33 @@ public class Validator{
         if(item1.getMultiTouchAvailable() != item2.getMultiTouchAvailable()){
             log("validateTouchEventCapabilities", "Multi-touch available \"" + item1.getMultiTouchAvailable()
                     + "\" didn't match multi-touch available \"" + item1.getMultiTouchAvailable() + "\".");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateSeatMemoryAction(SeatMemoryAction item1, SeatMemoryAction item2){
+        if(item1 == null){
+            return ( item2 == null );
+        }
+        if(item2 == null){
+            return ( item1 == null );
+        }
+
+        if (item1.getAction() == null) {
+            return ( item2.getAction() == null );
+        }
+
+        if (item1.getAction() != item2.getAction()) {
+            return false;
+        }
+
+        if (item1.getId() != item2.getId()) {
+            return false;
+        }
+
+        if (item1.getLabel() != item2.getLabel()) {
             return false;
         }
 
@@ -1541,6 +1629,86 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateMassageModeData(MassageModeData item1, MassageModeData item2){
+        if(item1 == null){
+            return ( item2 == null );
+        }
+        if(item2 == null){
+            return ( item1 == null );
+        }
+
+        if(item1.getMassageMode() != item2.getMassageMode()){
+            return false;
+        }
+
+        if(item1.getMassageZone() != item2.getMassageZone()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateMassageModeDataList(List<MassageModeData> item1, List<MassageModeData> item2){
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.size(); i++) {
+            if(!validateMassageModeData(item1.get(i), item2.get(i))){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateMassageCushionFirmness(MassageCushionFirmness item1, MassageCushionFirmness item2){
+        if(item1 == null){
+            return ( item2 == null );
+        }
+        if(item2 == null){
+            return ( item1 == null );
+        }
+
+        if(item1.getCushion() != item2.getCushion()){
+            return false;
+        }
+
+        if(item1.getFirmness() != item2.getFirmness()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateMassageCushionFirmnessList(List<MassageCushionFirmness> item1, List<MassageCushionFirmness> item2){
+        if(item1 == null){
+            return ( item2 == null );
+        }
+        if(item2 == null){
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.size(); i++) {
+            if(!validateMassageCushionFirmness(item1.get(i), item2.get(i))){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static void log(String tag, String msg){
         Logger.log(tag, msg);
     }
@@ -1634,7 +1802,7 @@ public class Validator{
 
 	    return true;
     }
-    
+
     public static boolean validateDisplayCapabilities (DisplayCapabilities item1, DisplayCapabilities item2) {
     	if (item1 == null) {
     		return ( item2 == null );
@@ -1889,6 +2057,87 @@ public class Validator{
             }
 
             if(! (validateVentilationModes(item1.get(i).getVentilationMode(), item2.get(i).getVentilationMode()) )){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateSeatControlCapabilities(SeatControlCapabilities item1, SeatControlCapabilities item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getModuleName() != item2.getModuleName()) {
+            return false;
+        }
+        if (item1.getHeatingEnabledAvailable() != item2.getHeatingEnabledAvailable()) {
+            return false;
+        }
+        if (item1.getCoolingEnabledAvailable() != item2.getCoolingEnabledAvailable()) {
+            return false;
+        }
+        if (item1.getHeatingLevelAvailable() != item2.getHeatingLevelAvailable()) {
+            return false;
+        }
+        if (item1.getCoolingLevelAvailable() != item2.getCoolingLevelAvailable()) {
+            return false;
+        }
+        if (item1.getHorizontalPositionAvailable() != item2.getHorizontalPositionAvailable()) {
+            return false;
+        }
+        if (item1.getVerticalPositionAvailable() != item2.getVerticalPositionAvailable()) {
+            return false;
+        }
+        if (item1.getFrontVerticalPositionAvailable() != item2.getFrontVerticalPositionAvailable()) {
+            return false;
+        }
+        if (item1.getBackVerticalPositionAvailable() != item2.getBackVerticalPositionAvailable()) {
+            return false;
+        }
+        if (item1.getBackTiltAngleAvailable() != item2.getBackTiltAngleAvailable()) {
+            return false;
+        }
+        if (item1.getHeadSupportVerticalPositionAvailable() != item2.getHeadSupportVerticalPositionAvailable()) {
+            return false;
+        }
+        if (item1.getHeadSupportHorizontalPositionAvailable() != item2.getHeadSupportHorizontalPositionAvailable()) {
+            return false;
+        }
+        if (item1.getMassageEnabledAvailable() != item2.getMassageEnabledAvailable()) {
+            return false;
+        }
+        if (item1.getMassageModeAvailable() != item2.getMassageModeAvailable()) {
+            return false;
+        }
+        if (item1.getMassageCushionFirmnessAvailable() != item2.getMassageCushionFirmnessAvailable()) {
+            return false;
+        }
+        if (item1.getMemoryAvailable() != item2.getMemoryAvailable()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateSeatControlCapabilitiesList(List<SeatControlCapabilities> item1, List<SeatControlCapabilities> item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.size(); i++) {
+            if(!validateSeatControlCapabilities(item1.get(i), item2.get(i))){
                 return false;
             }
         }
