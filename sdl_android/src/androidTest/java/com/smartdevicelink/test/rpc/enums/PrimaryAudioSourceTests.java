@@ -33,6 +33,10 @@ public class PrimaryAudioSourceTests extends TestCase {
 		PrimaryAudioSource enumIpod = PrimaryAudioSource.valueForString(example);
 		example = "MOBILE_APP";
 		PrimaryAudioSource enumMobileApp = PrimaryAudioSource.valueForString(example);
+		example = "RADIO_TUNER";
+		PrimaryAudioSource enumRadioTuner = PrimaryAudioSource.valueForString(example);
+		example = "CD";
+		PrimaryAudioSource enumCd = PrimaryAudioSource.valueForString(example);
 		
 		assertNotNull("NO_SOURCE_SELECTED returned null", enumNoSourceSelected);
 		assertNotNull("USB returned null", enumUsb);
@@ -41,6 +45,8 @@ public class PrimaryAudioSourceTests extends TestCase {
 		assertNotNull("LINE_IN returned null", enumLineIn);
 		assertNotNull("IPOD returned null", enumIpod);
 		assertNotNull("MOBILE_APP returned null", enumMobileApp);
+		assertNotNull("RADIO_TUNER returned null", enumRadioTuner);
+		assertNotNull("CD returned null", enumCd);
 	}
 
 	/**
@@ -86,6 +92,8 @@ public class PrimaryAudioSourceTests extends TestCase {
 		enumTestList.add(PrimaryAudioSource.LINE_IN);
 		enumTestList.add(PrimaryAudioSource.IPOD);		
 		enumTestList.add(PrimaryAudioSource.MOBILE_APP);
+		enumTestList.add(PrimaryAudioSource.RADIO_TUNER);
+		enumTestList.add(PrimaryAudioSource.CD);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

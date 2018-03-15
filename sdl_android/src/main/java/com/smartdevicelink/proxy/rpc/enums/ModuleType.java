@@ -4,6 +4,9 @@ public enum ModuleType {
 	CLIMATE,
 	RADIO,
 	SEAT,
+	AUDIO,
+	LIGHT,
+	HMI_SETTINGS,
 	;
 
 	public static ModuleType valueForString(String value) {
