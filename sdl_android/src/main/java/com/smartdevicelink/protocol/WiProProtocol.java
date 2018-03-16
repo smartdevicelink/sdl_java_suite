@@ -51,7 +51,7 @@ public class WiProProtocol extends AbstractProtocol {
 	Hashtable<Byte, Object> _messageLocks = new Hashtable<Byte, Object>();
 	private HashMap<SessionType, Long> mtus = new HashMap<SessionType,Long>();
 
-	private static int nextMessageId;
+	private static int nextMessageId = 1;
 
 	// Hide no-arg ctor
 	private WiProProtocol() {
@@ -678,7 +678,7 @@ public class WiProProtocol extends AbstractProtocol {
 		if (nextMessageId < Integer.MAX_VALUE) {
 			nextMessageId++;
 		} else {
-			nextMessageId = 0;
+			nextMessageId = 1;
 		}
 		return nextId;
 	}
