@@ -560,7 +560,7 @@ public class WiProProtocol extends AbstractProtocol {
 					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
-			} else if (frameInfo == FrameDataControlFrameType.TransportConfigUpdate.getValue()) {
+			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
 				SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
             	session.handleTransportConfigUpdate(packet);
 			}

@@ -46,7 +46,7 @@ import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
 import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.StartServiceACK;
-import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.TransportConfigUpdate;
+import static com.smartdevicelink.protocol.enums.ControlFrameTags.RPC.TransportEventUpdate;
 
 public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorListener, IStreamListener, ISecurityInitializedListener {
 	private static final String SECONDARY_TRANSPORT_TCP = "TCP_WIFI";
@@ -83,7 +83,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     private ArrayList<TransportType> secondaryTransportTypes;
     private SdlConnection secondarySdlConnection = null;
     private HashMap<SessionType, SecondaryService> secondaryServices;
-    private HashMap<SessionType, ArrayList<TransportLevel>> servicesMap;
+	private ArrayList<TransportLevel> audioTransports;
+	private ArrayList<TransportLevel> videoTransports;
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
@@ -533,10 +534,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
 
 		if (((serviceType != SessionType.NAV) && (serviceType != SessionType.PCM))) {
-		_sdlConnection.startService(serviceType, sessionID, isEncrypted);		
+			_sdlConnection.startService(serviceType, sessionID, isEncrypted);
 		} else {
 			boolean allowed = isServiceAllowed(serviceType, TransportLevel.SECONDARY);
-		if ((secondarySdlConnection != null) && allowed) {
+			if ((secondarySdlConnection != null) && allowed) {
 				secondarySdlConnection.startService(serviceType, sessionID, isEncrypted);
 			} else {
 				if (allowed) {
@@ -975,7 +976,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 		if (transportType == transportConfig.getTransportType()) {
 			secondaryServices = null;
-			servicesMap = null;
+			audioTransports = null;
+			videoTransports = null;
 
 			if (startSessionACKPacket.getVersion() >= 5) {
 				String secondaryTransport = (String) startSessionACKPacket.getTag(
@@ -987,10 +989,13 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					int usbPos = secondaryTransport.indexOf(SECONDARY_TRANSPORT_USB);
 					if ((tcpPos >= 0) || (usbPos >= 0)) {
 						//noinspection unchecked
-						HashMap<String, Object> services = (HashMap<String, Object>) startSessionACKPacket.getTag(
-								StartServiceACK.SERVICES_MAP);
+						ArrayList<Integer> audio = (ArrayList<Integer>) startSessionACKPacket.getTag(
+								StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
+						ArrayList<Integer> video = (ArrayList<Integer>) startSessionACKPacket.getTag(
+								StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
 
-						buildServicesMap(services);
+						audioTransports = buildServicesList(audio);
+						videoTransports = buildServicesList(video);
 						secondaryTransportTypes = new ArrayList<>();
 						if (tcpPos >= 0) {
 							secondaryTransportTypes.add(TransportType.TCP);
@@ -1029,56 +1034,36 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 				(transportType == TransportType.MULTIPLEX);
 	}
 
-	private void buildServicesMap(HashMap<String, Object> services) {
-		if ((services != null) && (services.size() > 0)) {
-			servicesMap = new HashMap<>(services.size());
-			Set<String> keys = services.keySet();
-
-			for (String service : keys) {
-				ArrayList list = (ArrayList) services.get(service);
-				if ((list != null) && (list.size() > 0)) {
-					ArrayList<TransportLevel> levels = new ArrayList<>(list.size());
-					for (int i = 0; i < list.size(); i++) {
-						Integer level = (Integer) list.get(i);
-						switch (level) {
-							case 1:
-								levels.add(TransportLevel.PRIMARY);
-								break;
-							case 2:
-								levels.add(TransportLevel.SECONDARY);
-								break;
-						}
-					}
-
-					SessionType sessionType = null;
-					switch (service) {
-						case SECONARY_SERVICE_PCM:
-							sessionType = SessionType.PCM;
-							break;
-						case SECONARY_SERVICE_VIDEO:
-							sessionType = SessionType.NAV;
-							break;
-					}
-
-					if ((sessionType != null) && (levels.size() > 0)) {
-						servicesMap.put(sessionType, levels);
-					}
+	private ArrayList<TransportLevel> buildServicesList(ArrayList<Integer> transports) {
+		ArrayList<TransportLevel> levels = new ArrayList<>();
+		if ((transports != null) && (transports.size() > 0)) {
+			for (int i = 0; i < transports.size(); i++) {
+				Integer level = transports.get(i);
+				switch (level) {
+					case 1:
+						levels.add(TransportLevel.PRIMARY);
+						break;
+					case 2:
+						levels.add(TransportLevel.SECONDARY);
+						break;
 				}
 			}
-
-			if (servicesMap.size() == 0) {
-				servicesMap = null;
-			}
 		}
+
+		levels.trimToSize();
+		return levels;
 	}
 
 	private boolean isServiceAllowed(SessionType type, TransportLevel level) {
 		// default to allowed for backward compatibility
 		boolean allowed = (level == TransportLevel.PRIMARY);
-		if (servicesMap != null) {
-			ArrayList<TransportLevel> levels = servicesMap.get(type);
-			allowed = (levels != null) && levels.contains(level);
+
+		if ((type == SessionType.PCM) && (audioTransports != null)) {
+			allowed = audioTransports.contains(level);
+		} else if ((type == SessionType.NAV) && (videoTransports != null)) {
+			allowed = videoTransports.contains(level);
 		}
+
 		return allowed;
 	}
 
@@ -1113,11 +1098,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	public void handleTransportConfigUpdate(SdlPacket packet) {
+		String ipAddr = (String) packet.getTag(TransportEventUpdate.TCP_IP_ADDRESS);
+		Integer port = (Integer) packet.getTag(TransportEventUpdate.TCP_PORT);
+		// TODO: get USB transport related data from packet
 		if ((secondaryConnectionEnabled) && (secondaryTransportTypes != null)) {
-			//noinspection unchecked
-			HashMap<String, Object> config = (HashMap<String, Object>)
-					packet.getTag(TransportConfigUpdate.TCP_TRANSPORT_CONFIG);
-			if ((config == null) || (config.size() == 0)) {
+			if ((ipAddr == null) && (port == null)) {
+				// empty frame data indicates that TCP transport is not available
 				if (secondarySdlConnection != null) {
 					secondarySdlConnection.endService(SessionType.NAV, sessionId);
 					if (mVideoPacketizer != null) {
@@ -1151,25 +1137,21 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					secondarySdlConnection.unregisterSession(this);
 					secondarySdlConnection = null;
 				}
-			} else {
-				for (TransportType type : secondaryTransportTypes) {
-					switch (type) {
-						case USB:
-							if (config.containsKey(TransportConfigUpdate.TCP_IP_ADDRESS) &&
-									config.containsKey(TransportConfigUpdate.TCP_PORT)) {
-								startTCPTransport(config);
-							}
-							break;
-
-						case TCP:
-							// TODO: this is not specified in the proposal so it can't be implemented yet
-							if (config.containsKey("SOME_USB_RELATED_CONFIG_KEY")) {
-								startUSBTransport(config);
-							}
-							break;
-					}
+			} else if ((ipAddr != null) && (port != null)) {
+				if (secondaryTransportTypes.contains(TransportType.TCP)) {
+					startTCPTransport(ipAddr, port);
 				}
 			}
+
+			// TODO: we need some indication in start session ACK to indicate that USB transport is available
+//	        if (some indication of USB transport available)
+//		        if (transport config data for USB missing) {
+					// empty frame data indicates that TCP transport is not available
+					// TODO: disconnect USB transport
+//              } else if (all USB transport config data is available) {
+//		            startUSBTransport(some USB parameters);
+//              }
+//	        }
 		}
 	}
 
@@ -1192,10 +1174,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		}
 	}
 
-	private void startTCPTransport(HashMap<String, Object> config) {
-		String ipAddr = (String) config.get(TransportConfigUpdate.TCP_IP_ADDRESS);
-		Integer port = (Integer) config.get(TransportConfigUpdate.TCP_PORT);
-
+	private void startTCPTransport(String ipAddr, int port) {
 		TCPTransportConfig transportConfig = new TCPTransportConfig(port, ipAddr, false);
 		SdlConnection connection = new SdlConnection(transportConfig);
 
@@ -1210,7 +1189,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	private void startUSBTransport(HashMap<String, Object> config) {
-		// TODO
+		// TODO: this is not specified in the proposal so it can't be implemented yet
 	}
 
 	private static class SecondaryService {
