@@ -1,7 +1,9 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.ComponentName;
@@ -201,8 +203,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				if (secondaryTransportSessionId == 0) {
 					_protocol.StartProtocolSession(SessionType.RPC);
 				} else {
-					_protocol.StartSecondaryProtocolSession(SessionType.RPC, secondaryTransportSessionId);
-//					_protocol.StartProtocolService(SessionType.RPC, secondaryTransportSessionId, false);
+					_protocol.RegisterSecondaryTransport(secondaryTransportSessionId);
 					secondaryTransportSessionId = 0;
 				}
 			}
@@ -475,7 +476,40 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if (session != null) {
 				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 			}
-		}			
+		}
+
+		@Override
+		public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
+		        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports,
+		        TransportType type) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+			}
+		}
+
+		@Override
+		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onTransportEventUpdate(sessionID, params);
+			}
+		}
+
+		@Override
+		public void onRegisterSecondaryTransportACK(byte sessionID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onRegisterSecondaryTransportACK(sessionID);
+			}
+		}
+
+		@Override
+		public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onRegisterSecondaryTransportNACKed(sessionID, reason);
+			}
+		}
 	}
 		
 	public int getRegisterCount() {
@@ -616,5 +650,27 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	@Override
 	public void onProtocolServiceDataACK(SessionType serviceType, int dataSize, byte sessionID) {
 		_connectionListener.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
+	}
+
+	@Override
+	public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
+	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {
+		_connectionListener.onEnableSecondaryTransport(sessionID, secondaryTransports, audioTransports,
+				videoTransports, _transport.getTransportType());
+	}
+
+	@Override
+	public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
+		_connectionListener.onTransportEventUpdate(sessionID, params);
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportACK(byte sessionId) {
+		_connectionListener.onRegisterSecondaryTransportACK(sessionId);
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportNACKed(byte sessionId, String reason) {
+		_connectionListener.onRegisterSecondaryTransportNACKed(sessionId, reason);
 	}
 }

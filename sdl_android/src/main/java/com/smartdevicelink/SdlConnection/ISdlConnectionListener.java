@@ -2,8 +2,11 @@ package com.smartdevicelink.SdlConnection;
 
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.transport.enums.TransportType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public interface ISdlConnectionListener {
@@ -30,4 +33,14 @@ public interface ISdlConnectionListener {
 	public void onHeartbeatTimedOut(byte sessionID);
 	
 	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID);
+
+	void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
+	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports,
+	        TransportType type);
+
+	void onTransportEventUpdate(byte sessionID, Map<String, Object> params);
+
+	void onRegisterSecondaryTransportACK(byte sessionID);
+
+	void onRegisterSecondaryTransportNACKed(byte sessionID, String reason);
 }

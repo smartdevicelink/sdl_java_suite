@@ -40,16 +40,20 @@ public class SdlPacket implements Parcelable{
 	 * Frame Info
 	 */
 	//Control Frame Info
-	public static final int FRAME_INFO_HEART_BEAT 				= 0x00;
-	public static final int FRAME_INFO_START_SERVICE 			= 0x01;
-	public static final int FRAME_INFO_START_SERVICE_ACK		= 0x02;
-	public static final int FRAME_INFO_START_SERVICE_NAK		= 0x03;
-	public static final int FRAME_INFO_END_SERVICE 				= 0x04;
-	public static final int FRAME_INFO_END_SERVICE_ACK			= 0x05;
-	public static final int FRAME_INFO_END_SERVICE_NAK			= 0x06;
-	//0x07-0xFD are reserved	
-	public static final int FRAME_INFO_SERVICE_DATA_ACK			= 0xFE;
-	public static final int FRAME_INFO_HEART_BEAT_ACK			= 0xFF;
+	public static final int FRAME_INFO_HEART_BEAT 				        = 0x00;
+	public static final int FRAME_INFO_START_SERVICE 			        = 0x01;
+	public static final int FRAME_INFO_START_SERVICE_ACK		        = 0x02;
+	public static final int FRAME_INFO_START_SERVICE_NAK		        = 0x03;
+	public static final int FRAME_INFO_END_SERVICE 				        = 0x04;
+	public static final int FRAME_INFO_END_SERVICE_ACK			        = 0x05;
+	public static final int FRAME_INFO_END_SERVICE_NAK			        = 0x06;
+	public static final int FRAME_INFO_REGISTER_SECONDARY_TRANSPORT     = 0x07;
+	public static final int FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_ACK = 0x08;
+	public static final int FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_NAK = 0x09;
+	//0x0A-0xFC are reserved
+	public static final int FRAME_INFO_TRANSPORT_EVENT_UPDATE           = 0xFD;
+	public static final int FRAME_INFO_SERVICE_DATA_ACK			        = 0xFE;
+	public static final int FRAME_INFO_HEART_BEAT_ACK			        = 0xFF;
 	
 	public static final int FRAME_INFO_FINAL_CONNESCUTIVE_FRAME	= 0x00;
 

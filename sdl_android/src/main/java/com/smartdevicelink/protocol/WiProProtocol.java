@@ -20,6 +20,7 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
 public class WiProProtocol extends AbstractProtocol {
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-	public static final Version MAX_PROTOCOL_VERSION = new Version("5.0.0");
+	public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
 	private Version protocolVersion = new Version("1.0.0");
 	byte _version = 1;
 
@@ -145,11 +146,8 @@ public class WiProProtocol extends AbstractProtocol {
 		handlePacketToSend(header);
 	} // end-method
 
-	public void StartSecondaryProtocolSession(SessionType sessionType, byte sessionId) {
-		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), sessionId, false);
-		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
-		}
+	public void RegisterSecondaryTransport(byte sessionId) {
+		SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, getMajorVersionByte());
 		handlePacketToSend(header);
 	} // end-method
 
@@ -512,8 +510,10 @@ public class WiProProtocol extends AbstractProtocol {
 					}
 				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
-				SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
-				session.handleStartSessionACK(packet, sdlconn.getCurrentTransportType());
+				ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
+				ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
+				ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
+				handleEnableSecondaryTransport((byte) packet.getSessionId(), secondary, audio, video);
 			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				List<String> rejectedParams = null;
 				if(packet.version >= 5){
@@ -560,9 +560,23 @@ public class WiProProtocol extends AbstractProtocol {
 					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
+			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
+            	handleRegisterSecondaryTransportACK((byte) packet.sessionId);
+			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNAK.getValue()) {
+            	String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
+            	handleRegisterSecondaryTransportNAKed((byte) packet.sessionId, reason);
 			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
-				SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
-            	session.handleTransportConfigUpdate(packet);
+            	// Get TCP params
+				String ipAddr = (String) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
+				Integer port = (Integer) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
+				HashMap<String, Object> params = new HashMap<>();
+				params.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
+				params.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
+
+				// Get USB params
+				// TODO
+
+            	handleTransportEventUpdate((byte) packet.getSessionId(), params);
 			}
             _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
