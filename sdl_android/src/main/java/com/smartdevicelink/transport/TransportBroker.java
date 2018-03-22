@@ -501,6 +501,7 @@ public class TransportBroker {
 			
 			if(!sendBindingIntent()){
 				Log.e(TAG, "Something went wrong while trying to bind with the router service.");
+				SdlBroadcastReceiver.queryForConnectedService(currentContext);
 				return false;
 			}
 			return true;
