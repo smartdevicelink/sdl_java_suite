@@ -3,18 +3,15 @@ package com.smartdevicelink.transport;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.R;
@@ -23,19 +20,12 @@ import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.smartdevicelink.transport.TransportConstants.BIND_LOCATION_CLASS_NAME_EXTRA;
-import static com.smartdevicelink.transport.TransportConstants.BIND_LOCATION_PACKAGE_NAME_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
-import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	
@@ -393,7 +383,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				
 		}else{
 			Log.w(TAG, "Router service isn't running, returning false.");
-			if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
+			if(isBluetoothConnected()){
+				Log.d(TAG, "Bluetooth is connected. Attempting to start Router Service");
 				Intent serviceIntent = new Intent();
 				serviceIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 				serviceIntent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
@@ -404,9 +395,24 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			}
 		}
 	}
-	
 
-	
+	@SuppressWarnings({"MissingPermission"})
+	private static boolean isBluetoothConnected() {
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if(bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				int  a2dpState  = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.A2DP);
+				int headSetState  = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
+
+				return ((a2dpState == BluetoothAdapter.STATE_CONNECTED || a2dpState == BluetoothAdapter.STATE_CONNECTING)
+						&& (headSetState == BluetoothAdapter.STATE_CONNECTED || headSetState == BluetoothAdapter.STATE_CONNECTING));
+			}else{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static ComponentName consumeQueuedRouterService(){
 		synchronized(QUEUED_SERVICE_LOCK){
 			ComponentName retVal = queuedService;
