@@ -8,7 +8,10 @@ import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
+import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -66,6 +69,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -79,7 +83,9 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.streaming.video.SdlRemoteDisplayTest;
@@ -87,6 +93,8 @@ import com.smartdevicelink.test.streaming.video.SdlRemoteDisplayTest;
 import junit.framework.Assert;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SdlProxyBaseTests extends AndroidTestCase{
@@ -161,6 +169,114 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             assert false;
         }
     }
+
+    public void testMultipleRPCSendSynchronous() {
+
+		List<RPCRequest> rpcs = new ArrayList<>();
+
+		// rpc 1
+		Show show = new Show();
+		show.setMainField1("hey y'all");
+		show.setMainField2("");
+		show.setMainField3("");
+		show.setMainField4("");
+		rpcs.add(show);
+
+		// rpc 2
+		Show show2 = new Show();
+		show2.setMainField1("");
+		show2.setMainField2("It is Wednesday My Dudes");
+		show2.setMainField3("");
+		show2.setMainField4("");
+		rpcs.add(show2);
+
+		OnMultipleRequestListener mrl = new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+
+			}
+
+			@Override
+			public void onFinished() {
+
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				assert false;
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+
+			}
+		};
+		try{
+			// public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+			Method m = SdlProxyBase.class.getDeclaredMethod("sendRequests", SdlProxyBase.class);
+			assertNotNull(m);
+			m.setAccessible(true);
+			m.invoke(rpcs,mrl);
+			assert true;
+
+		}catch (Exception e){
+			assert false;
+		}
+	}
+
+	public void testMultipleRPCSendAsynchronous() {
+
+		List<RPCRequest> rpcs = new ArrayList<>();
+
+		// rpc 1
+		Show show = new Show();
+		show.setMainField1("hey y'all");
+		show.setMainField2("");
+		show.setMainField3("");
+		show.setMainField4("");
+		rpcs.add(show);
+
+		// rpc 2
+		Show show2 = new Show();
+		show2.setMainField1("");
+		show2.setMainField2("It is Wednesday My Dudes");
+		show2.setMainField3("");
+		show2.setMainField4("");
+		rpcs.add(show2);
+
+		OnMultipleRequestListener mrl = new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+
+			}
+
+			@Override
+			public void onFinished() {
+
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				assert false;
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+
+			}
+		};
+		try{
+			// public void sendSequentialRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+			Method m = SdlProxyBase.class.getDeclaredMethod("sendSequentialRequests", SdlProxyBase.class);
+			assertNotNull(m);
+			m.setAccessible(true);
+			m.invoke(rpcs,mrl);
+			assert true;
+
+		}catch (Exception e){
+			assert false;
+		}
+	}
 
     public class ProxyListenerTest implements IProxyListenerALM {
 

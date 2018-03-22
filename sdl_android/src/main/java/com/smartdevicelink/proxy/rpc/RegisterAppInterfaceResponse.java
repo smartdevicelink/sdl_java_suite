@@ -35,6 +35,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
     public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
     public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
+	public static final String KEY_PCM_STREAM_CAPABILITIES      = "pcmStreamCapabilities";
 
     
 	/**
@@ -299,6 +300,23 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
 		setParameters(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
     }
+
+	/**
+	 * Gets pcmStreamingCapabilities set when application interface is registered.
+	 *
+	 * @return pcmStreamingCapabilities
+	 */
+	@SuppressWarnings("unchecked")
+	public AudioPassThruCapabilities getPcmStreamingCapabilities() {
+		return (AudioPassThruCapabilities) getObject(AudioPassThruCapabilities.class, KEY_PCM_STREAM_CAPABILITIES);
+	}
+	/**
+	 * Sets pcmStreamingCapabilities
+	 * @param pcmStreamingCapabilities
+	 */
+	public void setPcmStreamingCapabilities(AudioPassThruCapabilities pcmStreamingCapabilities) {
+		setParameters(KEY_PCM_STREAM_CAPABILITIES, pcmStreamingCapabilities);
+	}
     public String getProxyVersionInfo() {
 		if (Version.VERSION != null)
 			return  Version.VERSION;
