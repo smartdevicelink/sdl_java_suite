@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -229,7 +230,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<SpeechCapabilities> getSpeechCapabilities() {
-		return (List<SpeechCapabilities>) getObject(SpeechCapabilities.class, KEY_SPEECH_CAPABILITIES);
+    	Object speechCapabilities = getObject(SpeechCapabilities.class, KEY_SPEECH_CAPABILITIES);
+		if (speechCapabilities instanceof List<?>) {
+			return (List<SpeechCapabilities>) speechCapabilities;
+		} else if (speechCapabilities instanceof SpeechCapabilities) {
+			// this is a known issue observed with some core implementations
+			List<SpeechCapabilities> newSpeechCapList = new ArrayList<>();
+			newSpeechCapList.add((SpeechCapabilities) speechCapabilities);
+			return newSpeechCapList;
+		}
+		return null;
     }
     /**
      * Sets speechCapabilities
@@ -355,5 +365,5 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 
     public String getSystemSoftwareVersion() {    
     	 return getString(KEY_SYSTEM_SOFTWARE_VERSION);
-    } 
+    }
 }
