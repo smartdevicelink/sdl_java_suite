@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -107,6 +110,7 @@ public class TCPTransport extends SdlTransport {
      * @param length Number of bytes to send
      * @return True if data was sent successfully, False otherwise
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected boolean sendBytesOverTransport(SdlPacket packet) {
         TCPTransportState currentState = getCurrentState();
@@ -123,7 +127,7 @@ public class TCPTransport extends SdlTransport {
                         mOutputStream.write(msgBytes, 0, msgBytes.length);
                         bResult = true;
                         logInfo("TCPTransport.sendBytesOverTransport: successfully send data");
-                    } catch (IOException e) {
+                    } catch (IOException | NetworkOnMainThreadException e) {
                         logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
                         bResult = false;
                     }
