@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.smartdevicelink.transport.SdlRouterService;
@@ -51,7 +52,7 @@ public class ServiceFinder {
                 onFinished();
             }
         };
-        timeoutHandler = new Handler();
+        timeoutHandler = new Handler(Looper.getMainLooper());
         timeoutHandler.postDelayed(timeoutRunnable, TIMEOUT + (50 * packageName.length()));
 
         //Send out our broadcast
