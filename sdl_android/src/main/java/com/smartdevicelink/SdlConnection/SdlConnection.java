@@ -208,7 +208,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				}
 			}
 		}
-	}	
+	}
 	
 	@Override
 	public void onTransportPacketReceived(SdlPacket packet) {
@@ -230,6 +230,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 							if(shouldRequestSession){
 								((MultiplexTransport)_transport).requestNewSession();
 							}
+							startHandShake();
+						} else if (s.getSessionId() == secondaryTransportSessionId) {
 							startHandShake();
 						}
 					}
@@ -476,7 +478,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if (session != null) {
 				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 			}
-		}
+		}			
 
 		@Override
 		public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
@@ -486,7 +488,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if (session != null) {
 			}
 		}
-
+		
 		@Override
 		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
 			SdlSession session = findSessionById(sessionID);
