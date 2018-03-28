@@ -88,10 +88,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		if (localRouterClass == null){
 			localRouterClass = defineLocalSdlRouterClass();
 			ResolveInfo info = context.getPackageManager().resolveService(new Intent(context,localRouterClass),PackageManager.GET_META_DATA);
-			if(info == null
-					|| info.serviceInfo.metaData == null
-					|| !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))){
-				Log.w(TAG, "WARNING: This application has not specified its metadata tags for the SdlRouterService. This will throw an exception in future releases!");
+			if(info != null){
+					if(info.filter == null || !info.filter.hasAction(TransportConstants.ROUTER_SERVICE_ACTION)){
+						Log.e(TAG, "WARNING: This application has not specified its intent-filter for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+					}
+					if( info.serviceInfo.metaData == null || !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))) {
+						Log.e(TAG, "WARNING: This application has not specified its metadata tags for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+					}
+			}else{
+				Log.e(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 			}
 		}
         
@@ -161,33 +166,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    }
 	}
 
-	@TargetApi(Build.VERSION_CODES.O)
 	private boolean wakeUpRouterService(final Context context, final boolean ping, final boolean altTransportWake){
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			if (!isRouterServiceRunning(context, ping)) {
-				//If there isn't a service running we should try to start one
-				//The under class should have implemented this....
-				Log.d(TAG, "No router service running, starting ours");
-				//So let's start up our service since no copy is running
-				Intent serviceIntent = new Intent(context, localRouterClass);
-				if (altTransportWake) {
-					serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
-				}
-				try {
-					context.startService(serviceIntent);
-				} catch (SecurityException e) {
-					Log.e(TAG, "Security exception, process is bad");
-					return false; // Let's exit, we can't start the service
-				}
-				return true;
-			} else {
-				if (altTransportWake && runningBluetoothServicePackage != null && runningBluetoothServicePackage.size() > 0) {
-					wakeRouterServiceAltTransport(context);
-					return true;
-				}
-				return false;
-			}
-		}else{ //We are android Oreo or newer
 			new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
@@ -202,16 +181,21 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							serviceIntent = new Intent();
 							serviceIntent.setComponent(sdlAppInfoList.get(0).getRouterServiceComponentName());
 						} else{
-							Log.d(TAG, "No sdl apps found");
+							Log.d(TAG, "No SDL Router Services found");
+							Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 							return;
 						}
 						if (altTransportWake) {
 							serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
 						}
 						try {
-							serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-							context.startForegroundService(serviceIntent);
+							if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+								context.startService(serviceIntent);
+							}else {
+								serviceIntent.putExtra(FOREGROUND_EXTRA, true);
+								context.startForegroundService(serviceIntent);
 
+							}
 							//Make sure to send this out for old apps to close down
 							SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
 							Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
@@ -232,7 +216,6 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				}
 			});
 			return true;
-		}
 	}
 
 	private void wakeRouterServiceAltTransport(Context context){
