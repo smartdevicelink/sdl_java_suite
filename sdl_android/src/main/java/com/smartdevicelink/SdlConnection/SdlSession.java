@@ -1008,8 +1008,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			} else {
 				secondaryConnectionEnabled = false;
 			}
-
-			}
 		}
 	}
 
@@ -1079,7 +1077,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 								sessionId, (sdlSecurity != null));
 				}
 				if ((mVideoPacketizer != null) && isServiceAllowed(SessionType.NAV, TransportLevel.SECONDARY)) {
-						android.util.Log.v("JT_DBG_SSN", "'" + SdlProxyBase.sAppId + "' starting NAV service on secondary transport");
 						secondarySdlConnection.startService(SessionType.NAV,
 								sessionId, (sdlSecurity != null));
 				}
