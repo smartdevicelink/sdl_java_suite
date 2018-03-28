@@ -1,48 +1,27 @@
-# 4.4.0 Release Notes
+# 4.5.0 Release Notes
 
 ### API New Features & Breaking Changes
-- Now uses compile version 26 to handle breaking changes in Android Oreo
-- `MOBILE_PROJECTION` added as an app type
-- Gesture cancellation was added as a touch even type
-- More languages were added to the `Language` enum
-- `SystemCapaibilityQuery` was added with a new `SystemCapabilityManager` that can retrieve capabilities
-- `VideoStreamingCapabilities` were added. Includes supported codecs, resolution, etc
-- Added constructed payloads using BSON
-- SDL Remote Control functionality was added. Supports radio and climate controls.
-- Added `MetadataType` to `Show` lines
-- Spatial data for video streaming apps added with `HapticData`
-
+- **IMPORTANT:** `SdlRouterService` manifest declarations now require an `intent-filter` and `meta-data` tags. These changes can be found in the documentation.
+- Now targeting version 26 to make use of new Android Oreo features.
+    - Most broadcast intents are now sent explicitly instead of implicitly 
+- Added methods to send a batch of RPCs. This includes chaining RPC messages or sending them all at once
 
 ### Enhancements
-- Enhanced video streaming APIs
-- Added much more test coverage
-- Updated buffer read in sizes and streaming packetizers to use TLS max record size
-- Consolidated all references to `sdl.router.startservice` string into single constant
-- Refactored RPC classes to consolidate redundant code for retrieving items from underlying data structures
-- `MultiplexBluetoothTransport` is no longer a singleton
-- Improved inline documentation
-- h.264 streaming now includes SPS/PPS NAL units with every I frame to match iOS library
-- Real-time Transport Protocol (RTP) video streaming is now supported
-- Correlation IDs are now set automatically. Can be retrieved or overwritten by developer.
-- Introduced new video streaming callback and deprecated used of pipped streams
-- Added an internal interface for common functions between different managers
+- Added method calls to retrieve `pcmCapabilities` from the `SystemCapbilityManager`
+- `SdlRouterService` had a good deal of refactoring and cleaning up to remove warnings and issues
+- Created a new way to retrieve the library version from apps.
+- Version checking for `SdlRouterService` is now performed before starting an actual router service.
+- General enhancements and stability fixes to the multiplexing transport feature
 
 ### Bug Fixes
-- Fixed potential out of bounds exception in `BinaryFrameHeader` 
-- Fixed issues with unit tests and TravisCI
-- Fixed potential NPE in `SdlProxyBase`method, `performBaseCommon()` 
-- Fixed potential NPE in `MultiplexTransport` constructor 
-- Fixed potential NPE in `SdlRouterService`method, `handleMessaage()` for `AltTransportHandler` 
-- Fixed potential NPE in `SdlRouterService`method, `writeBytesToTransport()`
-- Removed hardcoded `androidDebuggable = "true"` from manifest
-- Added fixes to be compatible with Android Oreo (Does not supported target API level 26 yet)
-- Fixed issue where intent from router service was delayed
-- Apps now trust themselves as router service hosts
-- Removed ambiguous validation call in `SdlBroadcastReceiver` and unused intent extra
-- Cleared all warnings from `SdlProxyBase`
-
-### Meta
-- Added integration that will deploy to Bintray
-- Issue and pull request templates were added for GitHub
-- Codecov integration was added
-- Updated README links
+- Fixed a potential deadlock within the `LegacyBluetoothTransport`
+- Fix issue with video streaming not being able to restart after being stopped
+- Fixed issue where `OnHMIStatus` was ignored if the level was the same, but the `AudioStreamingState` had changed
+- Fixed potential NPE in the `SdlProxyBase` class when a packet was malformed
+- Fixed issue that would incorrectly unregister apps from the module through the router service when apps are being force closed and others register
+- Fixed issue in `SdlRouterStatusProvider` class where the handler wasn't able to obtain a looper.
+- Fixed issue in `ServiceFinder` class where the handler was using a looper than was exiting and therefore not posting the expected runnable
+- Fixed an issue that kept the `SdlRouterService` notification icon showing even if there were no current connects
+- Fixed an issue where the `SdlRouterService` would start regardless of what bluetooth device it connected.
+- `UsbTransport` was given a few fixes around incorrect exiting calls
+- Fixed an issue found with some modules where they would return a single `SpeechCapability` instead of a list
