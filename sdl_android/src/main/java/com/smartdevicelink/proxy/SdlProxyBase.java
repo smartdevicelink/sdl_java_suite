@@ -353,7 +353,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private class SdlInterfaceBroker implements ISdlConnectionListener {
 		
 		@Override
-		public void onTransportDisconnected(String info) {
+		public void onTransportDisconnected(String info, TransportType transportType) {
 			// proxyOnTransportDisconnect is called to alert the proxy that a requested
 			// disconnect has completed
 			notifyPutFileStreamError(null, info);
@@ -366,7 +366,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onTransportError(String info, Exception e) {
+		public void onTransportError(String info, TransportType transportType, Exception e) {
 			DebugTool.logError("Transport failure: " + info, e);
 			
 			notifyPutFileStreamError(e, info);
@@ -472,7 +472,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onProtocolSessionEnded(SessionType sessionType,
-				byte sessionID, String correlationID) {
+				byte sessionID, String correlationID, TransportType transportType) {
 			OnServiceEnded message = new OnServiceEnded(sessionType);
 			queueInternalMessage(message);
 

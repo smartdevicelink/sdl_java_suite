@@ -661,13 +661,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
-	public void onTransportDisconnected(String info) {
-		this.sessionListener.onTransportDisconnected(info);
-	}
-
-	void onTransportDisconnected(String info, TransportType transportType) {
+	public void onTransportDisconnected(String info, TransportType transportType) {
 		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
-			onTransportDisconnected(info);
+			this.sessionListener.onTransportDisconnected(info, transportType);
 			if (secondarySdlConnection != null) {
 				// Secondary transport must not be live if primary transport goes down
 				secondarySdlConnection.unregisterSession(this);
@@ -684,13 +680,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
-	public void onTransportError(String info, Exception e) {
-		this.sessionListener.onTransportError(info, e);
-	}
-
-	void onTransportError(String info, TransportType transportType, Exception e) {
+	public void onTransportError(String info, TransportType transportType, Exception e) {
 		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
-			onTransportError(info, e);
+			this.sessionListener.onTransportError(info, transportType, e);
 		} else {
 			// Don't notify higher about secondary transport error
 			if (secondarySdlConnection != null) {
@@ -747,8 +739,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-			String correlationID) {		
-		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
+			String correlationID, TransportType transportType) {
+		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID, transportType);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
 			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
 			for(ISdlServiceListener listener:listeners){
@@ -756,20 +748,15 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			}
 		}
 		encryptedServices.remove(sessionType);
-	}
 
-	void onProtocolSessionEnded(SessionType sessionType, byte sessionId, String correlationID,
-	                            TransportType transportType) {
-		if (secondarySdlConnection != null) {
+		if ((secondarySdlConnection != null) && (sessionType == SessionType.RPC)) {
 			TransportType primaryTransportType = transportConfig.getTransportType();
 			if (transportType == primaryTransportType) {
-				// Primary transport ended, close secondary transport
+				// Primary transport RPC ended, close secondary transport
 				secondarySdlConnection.unregisterSession(this);
 				secondarySdlConnection = null;
 			}
 		}
-
-		onProtocolSessionEnded(sessionType, sessionId, correlationID);
 	}
 
 	@Override

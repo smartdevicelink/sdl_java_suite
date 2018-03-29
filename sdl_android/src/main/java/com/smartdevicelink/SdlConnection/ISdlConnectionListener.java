@@ -10,9 +10,9 @@ import java.util.Map;
 
 
 public interface ISdlConnectionListener {
-	public void onTransportDisconnected(String info);
+	public void onTransportDisconnected(String info, TransportType transportType);
 	
-	public void onTransportError(String info, Exception e);
+	public void onTransportError(String info, TransportType transportType, Exception e);
 	
 	public void onProtocolMessageReceived(ProtocolMessage msg);
 	
@@ -23,7 +23,7 @@ public interface ISdlConnectionListener {
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);
 	
 	public void onProtocolSessionEnded(SessionType sessionType,
-			byte sessionID, String correlationID);
+			byte sessionID, String correlationID, TransportType transportType);
 	
 	public void onProtocolSessionEndedNACKed(SessionType sessionType,
 	byte sessionID, String correlationID);
