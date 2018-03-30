@@ -672,9 +672,16 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		} else {
 			// Don't notify higher about secondary transport disconnect
 			if (secondarySdlConnection != null) {
-				secondarySdlConnection.unregisterSession(this);
-				secondarySdlConnection = null;
-				// retry?
+				if (secondaryConnectionEnabled) {
+					try {
+						secondarySdlConnection.startTransport();
+					} catch (SdlException e) {
+						e.printStackTrace();
+					}
+				} else {
+					secondarySdlConnection.unregisterSession(this);
+					secondarySdlConnection = null;
+				}
 			}
 		}
 	}
