@@ -357,6 +357,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	private class InternalMsgDispatcher implements ISdlConnectionListener {
 
 		@Override
+		public void onTransportDisconnected(String info) {
+			// deprecated, not used
+		}
+
+		@Override
 		public void onTransportDisconnected(String info, TransportType transportType) {
 			for (SdlSession session : listenerList) {
 				session.onTransportDisconnected(info, transportType);
@@ -384,6 +389,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					}
 				}
 			}
+		}
+
+		@Override
+		public void onTransportError(String info, Exception e) {
+			// deprecated, not used
 		}
 
 		@Override
@@ -428,6 +438,12 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
 				}
 			}
+		}
+
+		@Override
+		public void onProtocolSessionEnded(SessionType sessionType,
+				byte sessionID, String correlationID) {
+			// deprecated, not used
 		}
 
 		@Override

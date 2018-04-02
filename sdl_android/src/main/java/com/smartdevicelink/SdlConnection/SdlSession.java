@@ -661,9 +661,16 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
+	public void onTransportDisconnected(String info) {
+		// deprecated, not used
+	}
+
+	@Override
 	public void onTransportDisconnected(String info, TransportType transportType) {
 		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
 			this.sessionListener.onTransportDisconnected(info, transportType);
+	        // TODO: remove this when the deprecated method is removed
+			this.sessionListener.onTransportDisconnected(info);
 			if (secondarySdlConnection != null) {
 				// Secondary transport must not be live if primary transport goes down
 				secondarySdlConnection.unregisterSession(this);
@@ -687,9 +694,16 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	@Override
+	public void onTransportError(String info, Exception e) {
+		// deprecated, not used
+	}
+
+	@Override
 	public void onTransportError(String info, TransportType transportType, Exception e) {
 		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
 			this.sessionListener.onTransportError(info, transportType, e);
+	        // TODO: remove this when the deprecated method is removed
+			this.sessionListener.onTransportError(info, e);
 		} else {
 			// Don't notify higher about secondary transport error
 			if (secondarySdlConnection != null) {
@@ -746,8 +760,16 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
+			String correlationID) {
+		// deprecated, not used
+	}
+
+	@Override
+	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
 			String correlationID, TransportType transportType) {
 		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID, transportType);
+        // TODO: remove this when the deprecated method is removed
+		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
 			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
 			for(ISdlServiceListener listener:listeners){

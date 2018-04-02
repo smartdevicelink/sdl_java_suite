@@ -351,7 +351,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	// Private Class to Interface with SdlConnection
 	private class SdlInterfaceBroker implements ISdlConnectionListener {
-		
+
+		@Override
+		public void onTransportDisconnected(String info) {
+			// deprecated, not used
+		}
+
 		@Override
 		public void onTransportDisconnected(String info, TransportType transportType) {
 			// proxyOnTransportDisconnect is called to alert the proxy that a requested
@@ -363,6 +368,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
 			}// else If ALM, nothing is required to be done here
 
+		}
+
+		@Override
+		public void onTransportError(String info, Exception e) {
+			// deprecated, not used
 		}
 
 		@Override
@@ -468,6 +478,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				AudioServiceStartedNACK(rejectedParams);
 			}
+		}
+
+		@Override
+		public void onProtocolSessionEnded(SessionType sessionType,
+				byte sessionID, String correlationID) {
+			// deprecated, not used
 		}
 
 		@Override

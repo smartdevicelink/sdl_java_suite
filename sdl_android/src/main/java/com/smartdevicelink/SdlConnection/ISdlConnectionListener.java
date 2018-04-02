@@ -10,10 +10,16 @@ import java.util.Map;
 
 
 public interface ISdlConnectionListener {
-	public void onTransportDisconnected(String info, TransportType transportType);
-	
-	public void onTransportError(String info, TransportType transportType, Exception e);
-	
+	@Deprecated
+	public void onTransportDisconnected(String info);
+
+	void onTransportDisconnected(String info, TransportType transportType);
+
+	@Deprecated
+	public void onTransportError(String info, Exception e);
+
+	void onTransportError(String info, TransportType transportType, Exception e);
+
 	public void onProtocolMessageReceived(ProtocolMessage msg);
 	
 	public void onProtocolSessionStartedNACKed(SessionType sessionType,
@@ -21,12 +27,16 @@ public interface ISdlConnectionListener {
 	
 	public void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);
-	
+
+	@Deprecated
 	public void onProtocolSessionEnded(SessionType sessionType,
+			byte sessionID, String correlationID);
+
+	void onProtocolSessionEnded(SessionType sessionType,
 			byte sessionID, String correlationID, TransportType transportType);
 	
 	public void onProtocolSessionEndedNACKed(SessionType sessionType,
-	byte sessionID, String correlationID);
+			byte sessionID, String correlationID);
 	
 	public void onProtocolError(String info, Exception e);
 	
