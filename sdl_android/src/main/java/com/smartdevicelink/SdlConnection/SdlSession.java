@@ -1179,7 +1179,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	private void startTCPTransport(String ipAddr, int port) {
-		TCPTransportConfig transportConfig = new TCPTransportConfig(port, ipAddr, false);
+		TCPTransportConfig transportConfig = new TCPTransportConfig(port, ipAddr, true);
 		SdlConnection connection = new SdlConnection(transportConfig);
 
 		try {

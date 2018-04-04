@@ -52,6 +52,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
 	
 	private byte secondaryTransportSessionId;
+	private TransportType lastKnownTransportType = null;
 
 	/**
 	 * Constructor.
@@ -125,6 +126,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
             } else if (transportConfig.getTransportType() == TransportType.USB) {
                 _transport = new USBTransport((USBTransportConfig) transportConfig, this);
             }
+            lastKnownTransportType = _transport.getTransportType();
 		}
 		
 		// Initialize the protocol
@@ -299,7 +301,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	 * @see TransportType
 	 */
 	public TransportType getCurrentTransportType() {
-		return _transport.getTransportType();
+		return (_transport != null ? _transport.getTransportType() : lastKnownTransportType);
 	}
 	
 	public void startService (SessionType sessionType, byte sessionID, boolean isEncrypted) {
