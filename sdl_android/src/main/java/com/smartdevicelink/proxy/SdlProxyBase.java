@@ -408,7 +408,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
 				byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-			
+			// deprecated, not used
+		}
+
+		public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version,
+				String correlationID, int hashID, boolean isEncrypted, TransportType transportType) {
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onProtocolSessionStarted");
 			updateBroadcastIntent(sendIntent, "COMMENT1", "SessionID: " + sessionID);

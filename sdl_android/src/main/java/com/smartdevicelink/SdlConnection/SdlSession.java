@@ -7,6 +7,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -82,6 +83,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     private HashMap<SessionType, SecondaryService> secondaryServices;
 	private ArrayList<TransportLevel> audioTransports;
 	private ArrayList<TransportLevel> videoTransports;
+
+	private Set<SessionType> primaryConnectionServices = new HashSet<>();
     
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
@@ -734,6 +737,16 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
+		// deprecated, not used
+	}
+
+	@Override
+	public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version,
+	        String correlationID, int hashID, boolean isEncrypted, TransportType transportType) {
+		if (transportType == transportConfig.getTransportType()) {
+			// service on primary transport
+			primaryConnectionServices.add(sessionType);
+		}
 		if ((this.sessionId != 0) && (sessionID == this.sessionId) && (sessionType == SessionType.RPC)) {
 			// This is just for SDLCore's notification about the secondary transport, no need to do
 			// all the session initialization again or to notify listeners.
@@ -744,6 +757,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		lockScreenMan.setSessionID(sessionID);
 		if (isEncrypted)
 			encryptedServices.addIfAbsent(sessionType);
+		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted, transportType);
+        // TODO: remove this when the deprecated method is removed
 		this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
 		if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
 			CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
@@ -767,6 +782,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
 			String correlationID, TransportType transportType) {
+		if (transportType == transportConfig.getTransportType()) {
+			// service on primary transport
+			primaryConnectionServices.remove(sessionType);
+		}
 		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID, transportType);
         // TODO: remove this when the deprecated method is removed
 		this.sessionListener.onProtocolSessionEnded(sessionType, sessionID, correlationID);
@@ -880,7 +899,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 							}
 
 							if (isServiceAllowed(service, TransportLevel.PRIMARY)) {
-					_sdlConnection.startService(service, getSessionId(), true);
+								_sdlConnection.startService(service, getSessionId(), true);
 							}
 						}
 					}
@@ -1083,7 +1102,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 							((RTPH264Packetizer) service.stream).sdlConnection = secondarySdlConnection;
 						}
 
-						_sdlConnection.endService(type, service.sessionId);
+						if (primaryConnectionServices.contains(type)) {
+							_sdlConnection.endService(type, service.sessionId);
+						}
 					}
 				}
 				secondaryServices.clear();

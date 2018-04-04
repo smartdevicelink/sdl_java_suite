@@ -269,7 +269,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	@Override
 	public void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-		_connectionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
+		_connectionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID,
+				hashID, isEncrypted, getCurrentTransportType());
 	}
 
 	@Override
@@ -425,9 +426,16 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		@Override
 		public void onProtocolSessionStarted(SessionType sessionType,
 				byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
+			// deprecated, not used
+		}
+
+		@Override
+		public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version,
+				String correlationID, int hashID, boolean isEncrypted, TransportType transportType) {
 			for (SdlSession session : listenerList) {
 				if (session.getSessionId() == 0) {
-					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
+					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID,
+							hashID, isEncrypted, transportType);
 					break;
 				}
 			}
@@ -435,7 +443,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if (sessionType.equals(SessionType.NAV) || sessionType.equals(SessionType.PCM) || isEncrypted){
 				SdlSession session = findSessionById(sessionID);
 				if (session != null) {
-					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
+					session.onProtocolSessionStarted(sessionType, sessionID, version, correlationID,
+							hashID, isEncrypted, transportType);
 				}
 			}
 		}
