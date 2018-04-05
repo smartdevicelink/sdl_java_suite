@@ -513,6 +513,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		        TransportType type) {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
+                session.onEnableSecondaryTransport(sessionID, secondaryTransports, audioTransports,
+                        videoTransports, type);
 			}
 		}
 		
