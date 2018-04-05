@@ -6,7 +6,6 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -673,16 +672,18 @@ public class SdlRouterService extends Service{
 	        	}
 	        	SdlRouterService service = this.provider.get();
 	        	switch(msg.what){
-					case 5555://TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
+					case TransportConstants.USB_CONNECTED_WITH_DEVICE:
         			int flags = msg.arg1;
 						ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor)msg.obj;
 						if(parcelFileDescriptor != null){
 							//New USB constructor with PFD
-							usbTransport = new MultiplexUsbTransport(parcelFileDescriptor,);
+							service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor,service.usbHandler);
+							service.usbTransport.start();
+
 						}
 	        		if(msg.replyTo!=null){
 	        			Message message = Message.obtain();
-	        			message.what = 5556;// TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
+	        			message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
 	        			try {
 	        				msg.replyTo.send(message);
 	        			} catch (RemoteException e) {
@@ -724,6 +725,8 @@ public class SdlRouterService extends Service{
 				return this.routerMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
 				return this.routerStatusMessenger.getBinder();
+			}else if(TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER.equals(requestType)){
+			    return this.usbTransferMessenger.getBinder();
 			}else{
 				Log.w(TAG, "Unknown bind request type");
 			}
@@ -1241,7 +1244,7 @@ public class SdlRouterService extends Service{
 		//init serial service
 		if(mSerialService == null || mSerialService.getState() == MultiplexBluetoothTransport.STATE_ERROR){
 			Log.i(TAG, "Initializing bluetooth transport");
-			mSerialService = new MultiplexBluetoothTransport(mHandlerBT);
+			mSerialService = new MultiplexBluetoothTransport(bluetoothHandler);
 		}
 		if (mSerialService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
@@ -1304,6 +1307,19 @@ public class SdlRouterService extends Service{
 		if(altTransportService!=null){  //If we still have an alt transport open, then we don't need to tell the clients to close
 			return;
 		}
+		switch (type){
+            case BLUETOOTH:
+                if(!connectAsClient ){
+                    if(!legacyModeEnabled && !closing){
+                        initBluetoothSerialService();
+                    }
+                }
+                break;
+            case USB:
+                break;
+            case TCP:
+                break;
+        }
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
 		connectedTransportType = null;
 		isTransportConnected = false;
@@ -1323,9 +1339,11 @@ public class SdlRouterService extends Service{
 			Bundle bundle = new Bundle();
 			bundle.putString(HARDWARE_DISCONNECTED, type.name());
 			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
+			//TODO put other transports still connected
 			message.setData(bundle);
 			notifyClients(message);
 		}
+		//TODO check to see if there are any transports still active
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
 			this.sessionMap.clear();
@@ -1338,7 +1356,22 @@ public class SdlRouterService extends Service{
 			registeredApps.clear();
 		}
 	}
-	
+
+	public void onTransportError(TransportType transportType){
+        switch (transportType){
+            case BLUETOOTH:
+                if(mSerialService!=null){
+                    mSerialService.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
+                    mSerialService = null;
+                }
+                break;
+            case USB:
+                break;
+            case TCP:
+                break;
+        }
+    }
+
 	public void onPacketRead(SdlPacket packet){
         try {
     		//Log.i(TAG, "******** Read packet with header: " +(packet).toString());
@@ -1359,7 +1392,10 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
-	 private final Handler mHandlerBT = new TransportHandler(this);
+	 private final Handler bluetoothHandler = new TransportHandler(this);
+	 private final Handler usbHandler = new TransportHandler(this);
+
+
 	 private static class TransportHandler extends Handler{
 
 		 final WeakReference<SdlRouterService> provider;
@@ -1375,33 +1411,26 @@ public class SdlRouterService extends Service{
 				SdlRouterService service = this.provider.get();
 	            switch (msg.what) {
 	            	case MESSAGE_DEVICE_NAME:
-						service.connectedDeviceName = msg.getData().getString(MultiplexBluetoothTransport.DEVICE_NAME);
+						service.connectedDeviceName = msg.getData().getString(MultiplexBaseTransport.DEVICE_NAME);
 	            		break;
 	            	case MESSAGE_STATE_CHANGE:
+	            	    TransportType transportType = (TransportType) msg.obj;
 	            		switch (msg.arg1) {
-	            		case MultiplexBluetoothTransport.STATE_CONNECTED:
-							service.onTransportConnected(TransportType.BLUETOOTH);
+	            		case MultiplexBaseTransport.STATE_CONNECTED:
+							service.onTransportConnected(transportType);
 	            			break;
-	            		case MultiplexBluetoothTransport.STATE_CONNECTING:
+	            		case MultiplexBaseTransport.STATE_CONNECTING:
 	            			// Currently attempting to connect - update UI?
 	            			break;
-	            		case MultiplexBluetoothTransport.STATE_LISTEN:
+	            		case MultiplexBaseTransport.STATE_LISTEN:
 	            			break;
-	            		case MultiplexBluetoothTransport.STATE_NONE:
+	            		case MultiplexBaseTransport.STATE_NONE:
 	            			// We've just lost the connection
-	            			if(!connectAsClient ){
-	            				if(!service.legacyModeEnabled && !closing){
-									service.initBluetoothSerialService();
-	            				}
-								service.onTransportDisconnected(TransportType.BLUETOOTH);
-	            			}
+                            service.onTransportDisconnected(transportType);
 	            			break;
-	            		case MultiplexBluetoothTransport.STATE_ERROR:
-	            			if(service.mSerialService!=null){
-	            				Log.d(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
-								service.mSerialService.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
-								service.mSerialService = null;
-	            			}
+	            		case MultiplexBaseTransport.STATE_ERROR:
+                            Log.d(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
+                            service.onTransportError(transportType);
 	            			break;
 	            		}
 	                break;
@@ -1730,7 +1759,7 @@ public class SdlRouterService extends Service{
     		Log.d(TAG,"Connecting to device: " + device.getName());
 			if(mSerialService == null || !mSerialService.isConnected())
 			{	// Set up the Bluetooth serial object				
-				mSerialService = new MultiplexBluetoothTransport(mHandlerBT);
+				mSerialService = new MultiplexBluetoothTransport(bluetoothHandler);
 			}
 			// We've been given a device - let's connect to it
 			if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){

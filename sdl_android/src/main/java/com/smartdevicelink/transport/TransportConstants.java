@@ -52,6 +52,7 @@ public class TransportConstants {
 	public static final String	BIND_REQUEST_TYPE_CLIENT						= "BIND_REQUEST_TYPE_CLIENT";
 	public static final String	BIND_REQUEST_TYPE_ALT_TRANSPORT					= "BIND_REQUEST_TYPE_ALT_TRANSPORT";
 	public static final String	BIND_REQUEST_TYPE_STATUS						= "BIND_REQUEST_TYPE_STATUS";
+	public static final String	BIND_REQUEST_TYPE_USB_PROVIDER					= "BIND_REQUEST_TYPE_USB_PROVIDER";
 
 
 	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
@@ -219,6 +220,15 @@ public class TransportConstants {
 	 */
 	public static final int ROUTER_STATUS_FLAG_TRIGGER_PING					= 0x02;
  
+
+	/**
+	 * Usb Transfer binder
+	 */
+
+	public static final int USB_CONNECTED_WITH_DEVICE						= 0x55;
+	public static final int ROUTER_USB_ACC_RECEIVED							= 0x56;
+
+
 
 
 	

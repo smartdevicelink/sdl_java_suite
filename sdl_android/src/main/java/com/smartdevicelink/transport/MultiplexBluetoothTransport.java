@@ -38,6 +38,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.smartdevicelink.transport.enums.TransportType;
+
 /**
  * This class does all the work for setting up and managing Bluetooth
  * connections with other devices. It has a thread that listens for
@@ -54,7 +56,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE =" SdlRouterService";
     // Key names received from the BluetoothSerialServer Handler
-    public static final String DEVICE_NAME = "device_name";
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
     private static final Object THREAD_LOCK =  new Object();;
@@ -73,16 +74,12 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     Runnable socketRunable;
     boolean keepSocketAlive = true;
 
-    public static String currentlyConnectedDevice = null;
-    public static String currentlyConnectedDeviceAddress = null;
-
-
     /**
      * Constructor. Prepares a new BluetoothChat session.
      * @param handler  A Handler to send messages back to the UI Activity
      */
     public MultiplexBluetoothTransport(Handler handler) {
-        super(handler);
+        super(handler, TransportType.BLUETOOTH);
          //This will keep track of which method worked last night
         mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
     }

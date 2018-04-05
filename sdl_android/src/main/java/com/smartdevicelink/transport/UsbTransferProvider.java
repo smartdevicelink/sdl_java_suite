@@ -43,7 +43,7 @@ public class UsbTransferProvider {
             //So we just established our connection
             //Register with router service
             Message msg = Message.obtain();
-            msg.what = 5555; //TransportConstants.USB_CONNECTED_WITH_DEVICE;
+            msg.what = TransportConstants.USB_CONNECTED_WITH_DEVICE;
             msg.arg1 = flags;
             msg.replyTo = clientMessenger;
             msg.obj = usbPfd;
@@ -113,7 +113,7 @@ public class UsbTransferProvider {
         bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
         //Quickly make sure it's just up and running
         context.startService(bindingIntent);
-        bindingIntent.setAction( "TransportConstants.BIND_REQUEST_TYPE_USB");
+        bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER);
         return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -149,7 +149,7 @@ public class UsbTransferProvider {
                 return;
             }
             switch (msg.what) {
-                case 5556: //TransportConstants.USB_ACC_RECEIVED:
+                case TransportConstants.ROUTER_USB_ACC_RECEIVED:
                     Log.d(TAG, "Successful USB transfer");
                     provider.get().finish();
                     break;

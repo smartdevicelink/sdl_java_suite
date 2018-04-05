@@ -2,6 +2,8 @@ package com.smartdevicelink.transport;
 
 import android.os.Handler;
 
+import com.smartdevicelink.transport.enums.TransportType;
+
 public abstract class MultiplexBaseTransport {
 
     // Constants that indicate the current connection state
@@ -12,14 +14,18 @@ public abstract class MultiplexBaseTransport {
     public static final int STATE_ERROR 		= 4;  	// Something bad happend, we wil not try to restart the thread
 
     public static final String TOAST = "toast";
-
+    public static final String DEVICE_NAME = "device_name";
 
     protected int mState = STATE_NONE;
     protected final Handler handler;
+    protected final TransportType transportType;
 
+    public static String currentlyConnectedDevice = null;
+    public static String currentlyConnectedDeviceAddress = null;
 
-    public MultiplexBaseTransport(Handler handler){
+    public MultiplexBaseTransport(Handler handler, TransportType transportType){
         this.handler = handler;
+        this.transportType = transportType;
     }
 
     protected synchronized void setState(int state) {
@@ -29,7 +35,7 @@ public abstract class MultiplexBaseTransport {
 
         // Give the new state to the Handler so the UI Activity can update
         //Also sending the previous state so we know if we lost a connection
-        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState).sendToTarget();
+        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState,transportType).sendToTarget();
     }
 
     /**

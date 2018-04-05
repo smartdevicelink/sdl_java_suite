@@ -8,6 +8,7 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -23,23 +24,33 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
 
     ReaderThread readerThread;
     WriterThread writerThread;
-    final FileDescriptor fileDescriptor;
+    final ParcelFileDescriptor parcelFileDescriptor;
 
     MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler){
-        super(handler);
+        super(handler, TransportType.USB);
         if(parcelFileDescriptor == null){
             Log.e(TAG, "Error with object");
-            fileDescriptor = null;
-            //TODO throw an exception
+            this.parcelFileDescriptor = null;
+            throw new ExceptionInInitializerError("ParcelFileDescriptor can't be null");
         }else{
-            fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            this.parcelFileDescriptor = parcelFileDescriptor;
+            currentlyConnectedDevice = "USB";
         }
     }
 
     public synchronized void start(){
         setState(STATE_CONNECTING);
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         readerThread = new ReaderThread(fileDescriptor);
         writerThread = new WriterThread(fileDescriptor);
+
+
+        // Send the name of the connected device back to the UI Activity
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+        Bundle bundle = new Bundle();
+        bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
+        msg.setData(bundle);
+        handler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
         readerThread.start();
@@ -48,11 +59,22 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
 
     protected synchronized void stop(int stateToTransitionTo) {
         //Log.d(TAG, "Attempting to close the Usb transports");
-        if (writerThread != null) {writerThread.cancel(); writerThread = null;}
+        if (writerThread != null) {
+            writerThread.cancel();
+            writerThread = null;
+        }
 
         if (readerThread != null) {
             readerThread.cancel();
             readerThread = null;
+        }
+
+        if(parcelFileDescriptor != null){
+            try {
+                parcelFileDescriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         setState(stateToTransitionTo);
