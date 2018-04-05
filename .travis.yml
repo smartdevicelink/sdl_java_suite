@@ -43,7 +43,7 @@ before_script:
 
 script:
   - android list target
-  - ./gradlew connectedAndroidTest
+  - ./gradlew connectedAndroidTest --no-daemon
 
 before_install:
     - pip install --user codecov    #Install codecov
