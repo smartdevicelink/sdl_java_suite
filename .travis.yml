@@ -46,7 +46,6 @@ script:
   - ./gradlew connectedAndroidTest
 
 before_install:
-    - yes | sdkmanager "platforms;android-27"
     - pip install --user codecov    #Install codecov
 
 after_success:
