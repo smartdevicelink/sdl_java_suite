@@ -122,8 +122,14 @@ public class SdlRouterService extends Service{
 	
     @SuppressWarnings("FieldCanBeLocal")
 	private final int UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
-    
-	private MultiplexBluetoothTransport mSerialService = null;
+
+	/* Bluetooth Transport */
+	private MultiplexBluetoothTransport bluetoothTransport = null;
+	private final Handler bluetoothHandler = new TransportHandler(this);
+
+	/* USB Transport */
+	private MultiplexUsbTransport usbTransport;
+	private final Handler usbHandler = new TransportHandler(this);
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
@@ -204,8 +210,8 @@ public class SdlRouterService extends Service{
 		//Should we ask for all relevant data in this packet?
 		if(bluetoothAvailable()){
 			if(startSequenceComplete &&
-					!connectAsClient && (mSerialService ==null 
-					|| mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE)){
+					!connectAsClient && (bluetoothTransport ==null
+					|| bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_NONE)){
 				Log.e(TAG, "Serial service not initialized while registering app");
 				//Maybe we should try to do a connect here instead
 				Log.d(TAG, "Serial service being restarted");
@@ -653,7 +659,7 @@ public class SdlRouterService extends Service{
 	     * Target we publish for alternative transport (USB) clients to send messages to RouterHandler.
 	     */
 	    final Messenger usbTransferMessenger = new Messenger(new UsbTransferHandler(this));
-		MultiplexUsbTransport usbTransport;
+
 		 /**
 	     * Handler of incoming messages from an alternative transport (USB).
 	     */
@@ -1243,16 +1249,16 @@ public class SdlRouterService extends Service{
 			return;
 		}
 		//init serial service
-		if(mSerialService == null || mSerialService.getState() == MultiplexBluetoothTransport.STATE_ERROR){
+		if(bluetoothTransport == null || bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_ERROR){
 			Log.i(TAG, "Initializing bluetooth transport");
-			mSerialService = new MultiplexBluetoothTransport(bluetoothHandler);
+			bluetoothTransport = new MultiplexBluetoothTransport(bluetoothHandler);
 		}
-		if (mSerialService != null) {
+		if (bluetoothTransport != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mSerialService.getState() == MultiplexBluetoothTransport.STATE_NONE) {
+            if (bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_NONE) {
               // Start the Bluetooth services
 				Log.i(TAG, "Starting bluetooth transport");
-            	mSerialService.start();
+            	bluetoothTransport.start();
             }
 
 		}
@@ -1361,9 +1367,9 @@ public class SdlRouterService extends Service{
 	public void onTransportError(TransportType transportType){
         switch (transportType){
             case BLUETOOTH:
-                if(mSerialService!=null){
-                    mSerialService.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
-                    mSerialService = null;
+                if(bluetoothTransport !=null){
+                    bluetoothTransport.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
+                    bluetoothTransport = null;
                 }
                 break;
             case USB:
@@ -1392,12 +1398,12 @@ public class SdlRouterService extends Service{
 			e.printStackTrace();
 		}
 	}
-	
-	 private final Handler bluetoothHandler = new TransportHandler(this);
-	 private final Handler usbHandler = new TransportHandler(this);
 
-
-	 private static class TransportHandler extends Handler{
+	/**
+	 * Handler for all Multiplex Based transports.
+	 * It will ensure messages are properly queued back to the router service.
+	 */
+	private static class TransportHandler extends Handler{
 
 		 final WeakReference<SdlRouterService> provider;
 
@@ -1435,37 +1441,33 @@ public class SdlRouterService extends Service{
 	            			break;
 	            		}
 	                break;
-	                
+
 	            	case MESSAGE_READ:
 						service.onPacketRead((SdlPacket) msg.obj);
 	        			break;
 	            }
 	        }
 	    }
-		
+
 		@SuppressWarnings("unused") //The return false after the packet null check is not dead code. Read the getByteArray method from bundle
 		public boolean writeBytesToTransport(Bundle bundle){
 			if(bundle == null){
 				return false;
 			}
-			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
-				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
-				if(packet!=null){
-					int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
-					int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-					mSerialService.write(packet,offset,count);
-					return true;
-				}
+			byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
+			if(packet==null) {
+				Log.w(TAG, "Ignoring null packet");
 				return false;
+			}
+			int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
+			int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+
+			if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED){
+				bluetoothTransport.write(packet,offset,count);
+				return true;
 			}else if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED){
-				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
-				if(packet!=null){
-					int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
-					int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-					usbTransport.write(packet,offset,count);
-					return true;
-				}
-				return false;
+				usbTransport.write(packet,offset,count);
+				return true;
 
 			}else if(sendThroughAltTransport(bundle)){
 				return true;
@@ -1477,9 +1479,9 @@ public class SdlRouterService extends Service{
 		}
 		
 		private boolean manuallyWriteBytes(byte[] bytes, int offset, int count){
-			if(mSerialService !=null && mSerialService.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
+			if(bluetoothTransport !=null && bluetoothTransport.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
 				if(bytes!=null){
-					mSerialService.write(bytes,offset,count);
+					bluetoothTransport.write(bytes,offset,count);
 					return true;
 				}
 				return false;
@@ -1732,9 +1734,9 @@ public class SdlRouterService extends Service{
 	    }
 
 		private synchronized void closeBluetoothSerialServer(){
-			if(mSerialService != null){
-				mSerialService.stop();
-				mSerialService = null;
+			if(bluetoothTransport != null){
+				bluetoothTransport.stop();
+				bluetoothTransport = null;
 			}
 		}
 		
@@ -1768,14 +1770,14 @@ public class SdlRouterService extends Service{
 		@SuppressWarnings("MissingPermission")
 		private synchronized boolean bluetoothConnect(BluetoothDevice device){
     		Log.d(TAG,"Connecting to device: " + device.getName());
-			if(mSerialService == null || !mSerialService.isConnected())
+			if(bluetoothTransport == null || !bluetoothTransport.isConnected())
 			{	// Set up the Bluetooth serial object				
-				mSerialService = new MultiplexBluetoothTransport(bluetoothHandler);
+				bluetoothTransport = new MultiplexBluetoothTransport(bluetoothHandler);
 			}
 			// We've been given a device - let's connect to it
-			if(mSerialService.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){
-				mSerialService.connect(device);
-				if(mSerialService.getState() == MultiplexBluetoothTransport.STATE_CONNECTING){
+			if(bluetoothTransport.getState()!=MultiplexBluetoothTransport.STATE_CONNECTING){
+				bluetoothTransport.connect(device);
+				if(bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTING){
 					return true;
 				}
 			}
