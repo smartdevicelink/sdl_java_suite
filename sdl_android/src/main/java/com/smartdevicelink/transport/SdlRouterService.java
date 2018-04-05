@@ -54,6 +54,7 @@ import android.os.IBinder.DeathRecipient;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.Log;
@@ -647,7 +648,61 @@ public class SdlRouterService extends Service{
 	        	}
 	        }
 	    }
-		
+
+
+		/**
+	     * Target we publish for alternative transport (USB) clients to send messages to RouterHandler.
+	     */
+	    final Messenger usbTransferMessenger = new Messenger(new UsbTransferHandler(this));
+		MultiplexUsbTransport usbTransport;
+		 /**
+	     * Handler of incoming messages from an alternative transport (USB).
+	     */
+	    @SuppressWarnings("Convert2Diamond")
+		static class UsbTransferHandler extends Handler {
+	    	 final WeakReference<SdlRouterService> provider;
+
+	    	 public UsbTransferHandler(SdlRouterService provider){
+				 this.provider = new WeakReference<SdlRouterService>(provider);
+	    	 }
+
+	        @Override
+	        public void handleMessage(Message msg) {
+	        	if(this.provider.get() == null){
+	        		return;
+	        	}
+	        	SdlRouterService service = this.provider.get();
+	        	switch(msg.what){
+					case 5555://TransportConstants.ROUTER_STATUS_CONNECTED_STATE_REQUEST:
+        			int flags = msg.arg1;
+						ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor)msg.obj;
+						if(parcelFileDescriptor != null){
+							//New USB constructor with PFD
+							usbTransport = new MultiplexUsbTransport(parcelFileDescriptor,);
+						}
+	        		if(msg.replyTo!=null){
+	        			Message message = Message.obtain();
+	        			message.what = 5556;// TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
+	        			try {
+	        				msg.replyTo.send(message);
+	        			} catch (RemoteException e) {
+	        				e.printStackTrace();
+	        			}
+	        		}
+	        		if(service.isTransportConnected && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
+	        			if(service.pingIntent == null){
+	        				service.initPingIntent();
+	        			}
+	        			AndroidTools.sendExplicitBroadcast(service.getApplicationContext(),service.pingIntent, null);
+	        		}
+	        		break;
+	        	default:
+	        		Log.w(TAG, "Unsupported request: " + msg.what);
+	        		break;
+	        	}
+	        }
+	    }
+
 /* **************************************************************************************************************************************
 ***********************************************  Life Cycle **************************************************************
 ****************************************************************************************************************************************/
@@ -1304,12 +1359,12 @@ public class SdlRouterService extends Service{
 		}
 	}
 	
-	 private final Handler mHandlerBT = new BluetoothHandler(this);
-	 private static class BluetoothHandler extends Handler{
+	 private final Handler mHandlerBT = new TransportHandler(this);
+	 private static class TransportHandler extends Handler{
 
 		 final WeakReference<SdlRouterService> provider;
 
-		 public BluetoothHandler(SdlRouterService provider){
+		 public TransportHandler(SdlRouterService provider){
 			 this.provider = new WeakReference<SdlRouterService>(provider);
 		 }
 	        @Override
