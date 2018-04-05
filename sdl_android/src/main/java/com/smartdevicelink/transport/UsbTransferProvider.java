@@ -29,6 +29,7 @@ public class UsbTransferProvider {
     Messenger routerServiceMessenger = null;
     private ComponentName routerService = null;
     private int flags = 0;
+    UsbTransferCallback callback;
 
     final Messenger clientMessenger;
 
@@ -61,12 +62,13 @@ public class UsbTransferProvider {
         }
     };
 
-    public UsbTransferProvider(Context context, ComponentName service, UsbAccessory usbAccessory){
+    public UsbTransferProvider(Context context, ComponentName service, UsbAccessory usbAccessory, UsbTransferCallback callback){
         if(context == null || service == null || usbAccessory == null){
             throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
         this.context = context;
         this.routerService = service;
+        this.callback = callback;
         this.clientMessenger = new Messenger(new ClientHandler(this));
         usbPfd = getFileDescriptor(usbAccessory);
         if(usbPfd != null){
@@ -91,7 +93,7 @@ public class UsbTransferProvider {
     public void checkIsConnected(){
         if(!AndroidTools.isServiceExported(context,routerService) || !bindToService()){
             //We are unable to bind to service
-            Log.e(TAG, "Unable to bind to servicec");
+            Log.e(TAG, "Unable to bind to service");
             unBindFromService();
         }
     }
@@ -131,6 +133,9 @@ public class UsbTransferProvider {
     }
 
     private void finish(){
+        if(callback != null){
+            callback.onUsbTransferUpdate(true);
+        }
         unBindFromService();
         routerServiceMessenger =null;
     }
@@ -157,7 +162,11 @@ public class UsbTransferProvider {
                     break;
             }
         }
-    };
+    }
+
+    public interface UsbTransferCallback{
+        void onUsbTransferUpdate(boolean success);
+    }
 
 
 }

@@ -726,6 +726,7 @@ public class SdlRouterService extends Service{
 			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
 				return this.routerStatusMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER.equals(requestType)){
+				Log.d(TAG, "Received bind request for USB");
 			    return this.usbTransferMessenger.getBinder();
 			}else{
 				Log.w(TAG, "Unknown bind request type");
@@ -1456,6 +1457,16 @@ public class SdlRouterService extends Service{
 					return true;
 				}
 				return false;
+			}else if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED){
+				byte[] packet = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
+				if(packet!=null){
+					int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
+					int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
+					usbTransport.write(packet,offset,count);
+					return true;
+				}
+				return false;
+
 			}else if(sendThroughAltTransport(bundle)){
 				return true;
 			}
