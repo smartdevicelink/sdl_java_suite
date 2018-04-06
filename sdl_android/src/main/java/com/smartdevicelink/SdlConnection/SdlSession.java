@@ -685,34 +685,88 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 				if (secondaryConnectionEnabled) {
 					try {
 						secondarySdlConnection.startTransport();
-					} catch (SdlException e) {
-						e.printStackTrace();
+					} catch (SdlException ex) {
+						Log.e(TAG, "error restrying TCP connection", ex);
 					}
 				} else {
 					secondarySdlConnection.unregisterSession(this);
 					secondarySdlConnection = null;
 				}
+//				switchServices(TransportLevel.PRIMARY);
 			}
 		}
 	}
 
+//	private void switchServices(TransportLevel level) {
+//		if ((mAudioPacketizer != null) && isServiceAllowed(SessionType.PCM, level)) {
+//			switch (level) {
+//				case PRIMARY:
+//					mAudioPacketizer.pause();
+//					mAudioPacketizer.sdlConnection = _sdlConnection;
+//					mAudioPacketizer.resume();
+//					break;
+//
+//				case SECONDARY:
+//					mAudioPacketizer.pause();
+//					mAudioPacketizer.sdlConnection = secondarySdlConnection;
+//					mAudioPacketizer.resume();
+//					break;
+//
+//				default:
+//					break;
+//			}
+//		}
+//
+//		if ((mVideoPacketizer != null) && isServiceAllowed(SessionType.PCM, level)) {
+//			switch (level) {
+//				case PRIMARY:
+//					mVideoPacketizer.pause();
+//					if (mVideoPacketizer instanceof StreamPacketizer) {
+//						((StreamPacketizer) mVideoPacketizer).sdlConnection = _sdlConnection;
+//					} else if (mVideoPacketizer instanceof RTPH264Packetizer) {
+//						((RTPH264Packetizer) mVideoPacketizer).sdlConnection = _sdlConnection;
+//					}
+//					mVideoPacketizer.resume();
+//					break;
+//
+//				case SECONDARY:
+//					mVideoPacketizer.pause();
+//					if (mVideoPacketizer instanceof StreamPacketizer) {
+//						((StreamPacketizer) mVideoPacketizer).sdlConnection = _sdlConnection;
+//					} else if (mVideoPacketizer instanceof RTPH264Packetizer) {
+//						((RTPH264Packetizer) mVideoPacketizer).sdlConnection = _sdlConnection;
+//					}
+//					mVideoPacketizer.resume();
+//					break;
+//
+//				default:
+//					break;
+//			}
+//		}
+//	}
+
 	@Override
-	public void onTransportError(String info, Exception e) {
+	public void onTransportError(String info, Exception err) {
 		// deprecated, not used
 	}
 
 	@Override
-	public void onTransportError(String info, TransportType transportType, Exception e) {
+	public void onTransportError(String info, TransportType transportType, Exception err) {
 		if (!secondaryConnectionEnabled || (transportType == transportConfig.getTransportType())) {
-			this.sessionListener.onTransportError(info, transportType, e);
+			this.sessionListener.onTransportError(info, transportType, err);
 	        // TODO: remove this when the deprecated method is removed
-			this.sessionListener.onTransportError(info, e);
+			this.sessionListener.onTransportError(info, err);
 		} else {
 			// Don't notify higher about secondary transport error
-			if (secondarySdlConnection != null) {
+			if (secondaryConnectionEnabled) {
+				try {
+					secondarySdlConnection.startTransport();
+				} catch (SdlException ex) {
+					Log.e(TAG, "error restrying TCP connection", ex);
+				}
+			} else {
 				secondarySdlConnection.unregisterSession(this);
 				secondarySdlConnection = null;
-				// retry?
 			}
 		}
 	}
