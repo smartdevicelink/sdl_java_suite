@@ -61,4 +61,6 @@ abstract public class AbstractPacketizer {
 	public abstract void pause();
 
 	public abstract void resume();
+
+	public abstract boolean isPaused();
 }

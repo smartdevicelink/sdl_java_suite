@@ -634,9 +634,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void sendMessage(ProtocolMessage msg) {
 		if (secondaryConnectionEnabled && ((msg.getSessionType() == SessionType.NAV) ||
 				(msg.getSessionType() == SessionType.PCM))) {
-			if ((secondarySdlConnection != null) && isServiceAllowed(msg.getSessionType(), TransportLevel.SECONDARY)) {
+			if ((secondarySdlConnection != null) && secondarySdlConnection.getIsConnected() && isServiceAllowed(msg.getSessionType(), TransportLevel.SECONDARY)) {
 				secondarySdlConnection.sendMessage(msg);
-			} else if ((_sdlConnection != null) && isServiceAllowed(msg.getSessionType(), TransportLevel.PRIMARY)) {
+			} else if ((_sdlConnection != null) && _sdlConnection.getIsConnected() && isServiceAllowed(msg.getSessionType(), TransportLevel.PRIMARY)) {
 				_sdlConnection.sendMessage(msg);
 			}
 			return;
@@ -759,6 +759,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		} else {
 			// Don't notify higher about secondary transport error
 			if (secondaryConnectionEnabled) {
+				if (mVideoPacketizer != null) {
+					mVideoPacketizer.pause();
+				}
+				if (mAudioPacketizer != null) {
+					mAudioPacketizer.pause();
+				}
 				try {
 					secondarySdlConnection.startTransport();
 				} catch (SdlException ex) {
@@ -1164,12 +1170,18 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 				secondaryServices.clear();
 			} else {
 				if ((mAudioPacketizer != null) && isServiceAllowed(SessionType.PCM, TransportLevel.SECONDARY)) {
-						secondarySdlConnection.startService(SessionType.PCM,
-								sessionId, (sdlSecurity != null));
+					secondarySdlConnection.startService(SessionType.PCM,
+							sessionId, (sdlSecurity != null));
+					if (mAudioPacketizer.isPaused()) {
+						mAudioPacketizer.resume();
+					}
 				}
 				if ((mVideoPacketizer != null) && isServiceAllowed(SessionType.NAV, TransportLevel.SECONDARY)) {
-						secondarySdlConnection.startService(SessionType.NAV,
-								sessionId, (sdlSecurity != null));
+					secondarySdlConnection.startService(SessionType.NAV,
+							sessionId, (sdlSecurity != null));
+					if (mVideoPacketizer.isPaused()) {
+						mVideoPacketizer.resume();
+					}
 				}
 			}
 		}
