@@ -52,6 +52,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
 	
 	private byte secondaryTransportSessionId;
+	private boolean secondaryTransportConnected = false;
 	private TransportType lastKnownTransportType = null;
 
 	/**
@@ -206,7 +207,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					_protocol.StartProtocolSession(SessionType.RPC);
 				} else {
 					_protocol.RegisterSecondaryTransport(secondaryTransportSessionId);
-					secondaryTransportSessionId = 0;
 				}
 			}
 		}
@@ -233,7 +233,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 								((MultiplexTransport)_transport).requestNewSession();
 							}
 							startHandShake();
-						} else if (s.getSessionId() == secondaryTransportSessionId) {
+						} else if ((s.getSessionId() == secondaryTransportSessionId) && !secondaryTransportConnected) {
 							startHandShake();
 						}
 					}
@@ -369,6 +369,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			for (SdlSession session : listenerList) {
 				session.onTransportDisconnected(info, transportType);
 			}
+			secondaryTransportConnected = false;
 			if(cachedMultiConfig!=null ){
 				if(cachedMultiConfig.getService()!=null){
 					synchronized(TRANSPORT_REFERENCE_LOCK) {
@@ -414,7 +415,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			for (SdlSession session : listenerList) {
 				session.onTransportError(info, transportType, e);
 			}
-
+			secondaryTransportConnected = false;
 		}
 
 		@Override
@@ -529,6 +530,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		@Override
 		public void onRegisterSecondaryTransportACK(byte sessionID) {
 			SdlSession session = findSessionById(sessionID);
+			secondaryTransportConnected = true;
 			if (session != null) {
 				session.onRegisterSecondaryTransportACK(sessionID);
 			}
@@ -537,6 +539,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		@Override
 		public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
 			SdlSession session = findSessionById(sessionID);
+			secondaryTransportConnected = false;
 			if (session != null) {
 				session.onRegisterSecondaryTransportNACKed(sessionID, reason);
 			}

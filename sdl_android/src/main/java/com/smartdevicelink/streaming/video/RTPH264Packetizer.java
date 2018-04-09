@@ -216,6 +216,11 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 		mPaused = false;
 	}
 
+	@Override
+	public boolean isPaused() {
+		return mPaused;
+	}
+
 	/**
 	 * The thread routine.
 	 */

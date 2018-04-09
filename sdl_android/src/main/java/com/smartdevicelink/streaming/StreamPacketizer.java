@@ -163,6 +163,11 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
         }
     }
 
+	@Override
+	public boolean isPaused() {
+		return mPaused;
+	}
+
 	/**
 	 * Called by the app.
 	 *

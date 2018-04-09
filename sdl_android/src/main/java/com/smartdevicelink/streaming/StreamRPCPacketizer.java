@@ -139,6 +139,11 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
         }
     }
 
+	@Override
+	public boolean isPaused() {
+		return mPaused;
+	}
+
     public void run() {
 		int length;
 		byte[] msgBytes;
