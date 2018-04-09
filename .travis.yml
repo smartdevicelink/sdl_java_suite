@@ -44,6 +44,7 @@ before_script:
 script:
   - android list target
   - ./gradlew connectedAndroidTest
+  - ./gradlew connectedCheck
 
 before_install:
     - echo yes | sdkmanager "build-tools;27.0.3"
