@@ -394,6 +394,21 @@ public class TCPTransport extends SdlTransport {
                         break;
                     }
 
+                    if (bytesRead < 0) {
+                        int available;
+                        try {
+                            available = mInputStream.available();
+                        } catch (IOException e) {
+                            internalHandleStreamReadError();
+                            break;
+                        }
+
+                        if (available < 0) {
+                            internalHandleStreamReadError();
+                            break;
+                        }
+                    }
+
                     synchronized (TCPTransport.this) {
                         if (mThread.isInterrupted()) {
                             logInfo("TCPTransport.run: Got new data but thread is interrupted");
