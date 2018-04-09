@@ -48,8 +48,8 @@ script:
 
 before_install:
     - echo yes | sdkmanager "build-tools;27.0.3"
-    - pip install --user codecov    #Install codecov
+    #- pip install --user codecov    #Install codecov
 
 after_success:
-    - codecov                       #Run codecov
+    #- codecov                       #Run codecov
     - bash <(curl -s https://codecov.io/bash)
