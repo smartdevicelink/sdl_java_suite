@@ -30,4 +30,6 @@ public class MockPacketizer extends AbstractPacketizer {
 
 	@Override public void pause() { }
 	@Override public void resume() { }
+
+	@Override public boolean isPaused() { return false; }
 }

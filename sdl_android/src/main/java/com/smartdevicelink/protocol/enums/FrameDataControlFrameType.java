@@ -24,7 +24,7 @@ public class FrameDataControlFrameType extends ByteEnumer {
 	public final static FrameDataControlFrameType EndSessionNACK = new FrameDataControlFrameType((byte)0x06, "EndSessionNACK");
 	public final static FrameDataControlFrameType RegisterSecondaryTransport = new FrameDataControlFrameType((byte)0x07, "RegisterSecondaryTransport");
 	public final static FrameDataControlFrameType RegisterSecondaryTransportACK = new FrameDataControlFrameType((byte)0x08, "RegisterSecondaryTransportACK");
-	public final static FrameDataControlFrameType RegisterSecondaryTransportNAK = new FrameDataControlFrameType((byte)0x09, "RegisterSecondaryTransportNAC");
+	public final static FrameDataControlFrameType RegisterSecondaryTransportNACK = new FrameDataControlFrameType((byte)0x09, "RegisterSecondaryTransportNACK");
 	public final static FrameDataControlFrameType TransportEventUpdate = new FrameDataControlFrameType((byte)0xFD, "TransportEventUpdate");
 	public final static FrameDataControlFrameType ServiceDataACK = new FrameDataControlFrameType((byte)0xFE, "ServiceDataACK");
 	public final static FrameDataControlFrameType HeartbeatACK = new FrameDataControlFrameType((byte)0xFF, "HeartbeatACK");
@@ -37,6 +37,9 @@ public class FrameDataControlFrameType extends ByteEnumer {
 		theList.addElement(EndSession);	
 		theList.addElement(EndSessionACK);
 		theList.addElement(EndSessionNACK);
+		theList.addElement(RegisterSecondaryTransport);
+		theList.addElement(RegisterSecondaryTransportACK);
+		theList.addElement(RegisterSecondaryTransportNACK);
 		theList.addElement(TransportEventUpdate);
 		theList.addElement(ServiceDataACK);
 		theList.addElement(HeartbeatACK);
