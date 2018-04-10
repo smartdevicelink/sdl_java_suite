@@ -61,7 +61,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 	public WiProProtocol(IProtocolListener protocolListener) {
 		super(protocolListener);
-		
+
 		if (protocolListener instanceof SdlConnection)
 		{
 			sdlconn = (SdlConnection) protocolListener;
@@ -562,7 +562,7 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
             	handleRegisterSecondaryTransportACK((byte) packet.sessionId);
-			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNAK.getValue()) {
+			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
             	String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
             	handleRegisterSecondaryTransportNAKed((byte) packet.sessionId, reason);
 			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {

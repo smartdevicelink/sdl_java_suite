@@ -132,9 +132,13 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 		enumTestList.add(FrameDataControlFrameType.EndSession);
 		enumTestList.add(FrameDataControlFrameType.EndSessionACK);
 		enumTestList.add(FrameDataControlFrameType.EndSessionNACK);
+		enumTestList.add(FrameDataControlFrameType.RegisterSecondaryTransport);
+		enumTestList.add(FrameDataControlFrameType.RegisterSecondaryTransportACK);
+		enumTestList.add(FrameDataControlFrameType.RegisterSecondaryTransportNACK);
+		enumTestList.add(FrameDataControlFrameType.TransportEventUpdate);
 		enumTestList.add(FrameDataControlFrameType.ServiceDataACK);
 		enumTestList.add(FrameDataControlFrameType.HeartbeatACK);
-		
+
 		assertTrue("List does not match enum test list.",
 					list.containsAll(enumTestList) &&
 					enumTestList.containsAll(list));
@@ -142,10 +146,12 @@ public class FrameDataControlFrameTypeTests extends TestCase {
 		// Test Array
 		FrameDataControlFrameType[] enumValueArray = FrameDataControlFrameType.values();
 		FrameDataControlFrameType[] enumTestArray = { 
-				FrameDataControlFrameType.Heartbeat,       FrameDataControlFrameType.StartSession,
-				FrameDataControlFrameType.StartSessionACK, FrameDataControlFrameType.StartSessionNACK,
-				FrameDataControlFrameType.EndSession,      FrameDataControlFrameType.EndSessionACK,
-				FrameDataControlFrameType.EndSessionNACK,  FrameDataControlFrameType.ServiceDataACK,
+				FrameDataControlFrameType.Heartbeat,                     FrameDataControlFrameType.StartSession,
+				FrameDataControlFrameType.StartSessionACK,               FrameDataControlFrameType.StartSessionNACK,
+				FrameDataControlFrameType.EndSession,                    FrameDataControlFrameType.EndSessionACK,
+				FrameDataControlFrameType.EndSessionNACK,                FrameDataControlFrameType.EndSession.RegisterSecondaryTransport,
+				FrameDataControlFrameType.RegisterSecondaryTransportACK, FrameDataControlFrameType.RegisterSecondaryTransportNACK,
+				FrameDataControlFrameType.TransportEventUpdate,          FrameDataControlFrameType.ServiceDataACK,
 				FrameDataControlFrameType.HeartbeatACK, };
 		
 		assertTrue("Array does not match enum values array.",
