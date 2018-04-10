@@ -24,8 +24,8 @@ public class RPCMessage extends RPCStruct  {
 	}
 	
 	public RPCMessage(String functionName, String messageType) {
-		function   = new Hashtable<String, Object>();
-		parameters = new Hashtable<String, Object>();
+		function   = new Hashtable<>();
+		parameters = new Hashtable<>();
 		
 		this.messageType = messageType;
 		function.put(KEY_PARAMETERS, parameters);
@@ -72,7 +72,6 @@ public class RPCMessage extends RPCStruct  {
 	}
 
 	// Generalized Getters and Setters
-	
 	public void setParameters(String key, Object value) {
 		if (value != null) {
 			parameters.put(key, value);
@@ -92,7 +91,6 @@ public class RPCMessage extends RPCStruct  {
 	}
 
 	// Common Object Getters
-
 	@Override
 	public String getString(String key) {
 		return (String) parameters.get(key);
