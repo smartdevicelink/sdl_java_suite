@@ -199,7 +199,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					connection = this.getSdlConnection();
 				}
 			}
-		} else {
+		} else if (isServiceAllowed(sType, TransportLevel.PRIMARY)) {
 			connection = this.getSdlConnection();
 		}
 
@@ -239,7 +239,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					connection = this.getSdlConnection();
 				}
 			}
-		} else {
+		} else if (isServiceAllowed(sType, TransportLevel.PRIMARY)) {
 			connection = this.getSdlConnection();
 		}
 
@@ -299,6 +299,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 								connection = this.getSdlConnection();
 							}
 						}
+					} else if (isServiceAllowed(SessionType.NAV, TransportLevel.PRIMARY)) {
+						connection = this.getSdlConnection();
 					}
 					packetizer.sdlConnection = connection;
 					mVideoPacketizer = packetizer;
@@ -320,6 +322,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 								connection = this.getSdlConnection();
 							}
 						}
+					} else if (isServiceAllowed(SessionType.NAV, TransportLevel.PRIMARY)) {
+						connection = this.getSdlConnection();
 					}
 					packetizer.sdlConnection = connection;
 					mVideoPacketizer = packetizer;
@@ -352,6 +356,8 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 						connection = this.getSdlConnection();
 					}
 				}
+			} else if (isServiceAllowed(SessionType.PCM, TransportLevel.PRIMARY)) {
+				connection = this.getSdlConnection();
 			}
 			packetizer.sdlConnection = connection;
 			mAudioPacketizer = packetizer;
@@ -692,58 +698,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					secondarySdlConnection.unregisterSession(this);
 					secondarySdlConnection = null;
 				}
-//				switchServices(TransportLevel.PRIMARY);
 			}
 		}
 	}
-
-//	private void switchServices(TransportLevel level) {
-//		if ((mAudioPacketizer != null) && isServiceAllowed(SessionType.PCM, level)) {
-//			switch (level) {
-//				case PRIMARY:
-//					mAudioPacketizer.pause();
-//					mAudioPacketizer.sdlConnection = _sdlConnection;
-//					mAudioPacketizer.resume();
-//					break;
-//
-//				case SECONDARY:
-//					mAudioPacketizer.pause();
-//					mAudioPacketizer.sdlConnection = secondarySdlConnection;
-//					mAudioPacketizer.resume();
-//					break;
-//
-//				default:
-//					break;
-//			}
-//		}
-//
-//		if ((mVideoPacketizer != null) && isServiceAllowed(SessionType.PCM, level)) {
-//			switch (level) {
-//				case PRIMARY:
-//					mVideoPacketizer.pause();
-//					if (mVideoPacketizer instanceof StreamPacketizer) {
-//						((StreamPacketizer) mVideoPacketizer).sdlConnection = _sdlConnection;
-//					} else if (mVideoPacketizer instanceof RTPH264Packetizer) {
-//						((RTPH264Packetizer) mVideoPacketizer).sdlConnection = _sdlConnection;
-//					}
-//					mVideoPacketizer.resume();
-//					break;
-//
-//				case SECONDARY:
-//					mVideoPacketizer.pause();
-//					if (mVideoPacketizer instanceof StreamPacketizer) {
-//						((StreamPacketizer) mVideoPacketizer).sdlConnection = _sdlConnection;
-//					} else if (mVideoPacketizer instanceof RTPH264Packetizer) {
-//						((RTPH264Packetizer) mVideoPacketizer).sdlConnection = _sdlConnection;
-//					}
-//					mVideoPacketizer.resume();
-//					break;
-//
-//				default:
-//					break;
-//			}
-//		}
-//	}
 
 	@Override
 	public void onTransportError(String info, Exception err) {
