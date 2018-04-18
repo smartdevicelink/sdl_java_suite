@@ -394,19 +394,11 @@ public class TCPTransport extends SdlTransport {
                         break;
                     }
 
-                    if (bytesRead < 0) {
-                        int available;
-                        try {
-                            available = mInputStream.available();
-                        } catch (IOException e) {
+                    if (bytesRead == -1) {
+                        // Javadoc says -1 indicates end of input stream.  In TCP case this means loss
+                        // of connection from HU (no exception is thrown when HU connection is lost).
                             internalHandleStreamReadError();
                             break;
-                        }
-
-                        if (available < 0) {
-                            internalHandleStreamReadError();
-                            break;
-                        }
                     }
 
                     synchronized (TCPTransport.this) {

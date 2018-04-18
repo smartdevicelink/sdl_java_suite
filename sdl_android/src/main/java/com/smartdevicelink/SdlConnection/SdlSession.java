@@ -80,7 +80,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     private boolean secondaryConnectionEnabled = false;
     private ArrayList<TransportType> secondaryTransportTypes;
     private SdlConnection secondarySdlConnection = null;
-    private HashMap<SessionType, SecondaryService> secondaryServices;
+    private HashMap<SessionType, SecondaryService> secondaryServices = new HashMap<>();
 	private ArrayList<TransportLevel> audioTransports;
 	private ArrayList<TransportLevel> videoTransports;
 
@@ -92,7 +92,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		session.wiproProcolVer = wiproVersion;
 		session.sessionListener = listener;
 		session.transportConfig = btConfig;
-		session.secondaryConnectionEnabled = true;
 
 		return session;
 	}
@@ -107,6 +106,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 		
 	
 	private SdlSession() {
+		// enable video and audio on primary transport by default
+		audioTransports = new ArrayList<>();
+		audioTransports.add(TransportLevel.PRIMARY);
+		videoTransports = new ArrayList<>();
+		videoTransports.add(TransportLevel.PRIMARY);
 	}
 	
     public IHeartbeatMonitor getOutgoingHeartbeatMonitor() {
@@ -148,10 +152,9 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 	
 	public long getMtu(SessionType type) {
-		if (((type == SessionType.NAV) || (type == SessionType.PCM)) && secondaryConnectionEnabled) {
-			if ((secondarySdlConnection != null) && isServiceAllowed(type, TransportLevel.SECONDARY)) {
+		if ((secondarySdlConnection != null) && secondaryConnectionEnabled &&
+				isServiceAllowed(type, TransportLevel.SECONDARY)) {
 				return secondarySdlConnection.getWiProProtocol().getMtu(type);
-			}
 		}
 		if (this._sdlConnection != null) {
 			return this._sdlConnection.getWiProProtocol().getMtu(type);
@@ -728,19 +731,19 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					mAudioPacketizer.pause();
 				}
 				if (secondarySdlConnection != null) {
-				try {
-					secondarySdlConnection.startTransport();
-				} catch (SdlException ex) {
-					Log.e(TAG, "error restrying TCP connection", ex);
-				}
+					try {
+						secondarySdlConnection.startTransport();
+					} catch (SdlException ex) {
+						Log.e(TAG, "error restrying TCP connection", ex);
+					}
 				}
 			} else {
 				if (secondarySdlConnection != null) {
-				secondarySdlConnection.unregisterSession(this);
-				secondarySdlConnection = null;
+					secondarySdlConnection.unregisterSession(this);
+					secondarySdlConnection = null;
+				}
 			}
 		}
-	}
 	}
 
 	@Override
@@ -1028,14 +1031,23 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransport,
 	        ArrayList<Integer> audio, ArrayList<Integer> video, TransportType transportType) {
+		if (sessionID != this.sessionId) {
+			return;
+		}
+
 		if (!isPrimaryBluetoothTransport()) {
 			// Only BT transports as primary need secondary transport
 			secondaryConnectionEnabled = false;
+			// enable video and audio on primary transport
+			audioTransports = new ArrayList<>();
+			audioTransports.add(TransportLevel.PRIMARY);
+			videoTransports = new ArrayList<>();
+			videoTransports.add(TransportLevel.PRIMARY);
 			return;
 		}
 
 		if (transportType == transportConfig.getTransportType()) {
-			secondaryServices = null;
+			secondaryServices.clear();
 			audioTransports = null;
 			videoTransports = null;
 
@@ -1062,13 +1074,17 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					}
 
 					secondaryConnectionEnabled = true;
-					secondaryServices = new HashMap<>();
 				} else {
 					secondaryConnectionEnabled = false;
 				}
 			} else {
 				secondaryConnectionEnabled = false;
 			}
+		} else if ((secondarySdlConnection != null) && (secondarySdlConnection.getCurrentTransportType() != transportType)) {
+			// Since we got this message we know core supports multiple transports but this message
+			// is for a different primary transport.  Disable multiple transports for this session
+			// until we get a message for this session's primary transport.
+			secondaryConnectionEnabled = (secondaryServices != null) && !secondaryServices.isEmpty();
 		}
 	}
 
@@ -1155,40 +1171,49 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	@Override
 	public void onTransportEventUpdate(byte sessionId, Map<String, Object> params) {
+		if (sessionId != this.sessionId) {
+			return;
+		}
+
+		if ((secondaryConnectionEnabled) && (secondaryTransportTypes != null)) {
+			if (secondaryTransportTypes.contains(TransportType.TCP)) {
 		String ipAddr = (String) params.get(TransportEventUpdate.TCP_IP_ADDRESS);
 		Integer port = (Integer) params.get(TransportEventUpdate.TCP_PORT);
-		// TODO: get USB transport related data from packet
-		if ((secondaryConnectionEnabled) && (secondaryTransportTypes != null)) {
 			if ((ipAddr == null) && (port == null)) {
 				// empty frame data indicates that TCP transport is not available
 				stopTCPTransport();
 			} else if ((ipAddr != null) && (port != null)) {
-				if (secondaryTransportTypes.contains(TransportType.TCP)) {
 					startTCPTransport(ipAddr, port);
 				}
 			}
 
-			// TODO: we need some indication in start session ACK to indicate that USB transport is available
-//	        if (some indication of USB transport available)
+			if (secondaryTransportTypes.contains(TransportType.USB)) {
+				// TODO: we need some parameter(s) in start session ACK to indicate that USB transport is available
+				// TODO: get USB transport related data from packet
 //		        if (transport config data for USB missing) {
-					// empty frame data indicates that TCP transport is not available
-					// TODO: disconnect USB transport
+//					 // empty frame data indicates that USB transport is not available
+					 // TODO: stop USB transport
+//					stopUSBTransport();
 //              } else if (all USB transport config data is available) {
+					// TODO: this is not specified in the proposal so it can't be implemented yet
 //		            startUSBTransport(some USB parameters);
 //              }
-//	        }
+			}
 		}
 	}
 
 	@Override
 	public void onRegisterSecondaryTransportACK(byte sessionID) {
-		startStreamingServices();
+		if (sessionID == this.sessionId) {
+			startStreamingServices();
+		}
 	}
 
 	@Override
 	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
-		Log.w(TAG, "received RegisterSecondaryTransportNACK because '" + reason + "'");
-		stopTCPTransport();
+		if (sessionID == this.sessionId) {
+			stopTCPTransport();
+		}
 	}
 
 	private void addPendingService(SessionType type, byte sessId, Boolean isEncrypted, Object stream) {
@@ -1213,6 +1238,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private void startTCPTransport(String ipAddr, int port) {
 		TCPTransportConfig transportConfig = new TCPTransportConfig(port, ipAddr, true);
 		SdlConnection connection = new SdlConnection(transportConfig);
+		if (secondarySdlConnection != null) {
+			secondarySdlConnection.unregisterSession(this);
+			secondarySdlConnection = null;
+		}
 
 		try {
 			connection.registerSession(this);
@@ -1261,7 +1290,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	}
 
 	private void startUSBTransport(HashMap<String, Object> config) {
-		// TODO: this is not specified in the proposal so it can't be implemented yet
+		//TODO
+	}
+
+	private void stopUSBTransport() {
+		//TODO
 	}
 
 	private static class SecondaryService {
