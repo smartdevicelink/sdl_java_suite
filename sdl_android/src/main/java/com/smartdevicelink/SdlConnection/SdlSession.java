@@ -1212,6 +1212,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	@Override
 	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
 		if (sessionID == this.sessionId) {
+			Log.w(TAG, "received RegisterSecondaryTransportNACK because '" + reason + "'");
 			stopTCPTransport();
 		}
 	}
