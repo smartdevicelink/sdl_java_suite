@@ -713,6 +713,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			this.sessionListener.onTransportError(info, transportType, err);
 	        // TODO: remove this when the deprecated method is removed
 			this.sessionListener.onTransportError(info, err);
+			if (secondarySdlConnection != null) {
+				// Secondary transport must not be live if primary transport goes down
+				secondarySdlConnection.unregisterSession(this);
+				secondarySdlConnection = null;
+			}
 		} else {
 			// Don't notify higher about secondary transport error
 			if (secondaryConnectionEnabled) {
@@ -722,16 +727,20 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 				if (mAudioPacketizer != null) {
 					mAudioPacketizer.pause();
 				}
+				if (secondarySdlConnection != null) {
 				try {
 					secondarySdlConnection.startTransport();
 				} catch (SdlException ex) {
 					Log.e(TAG, "error restrying TCP connection", ex);
 				}
+				}
 			} else {
+				if (secondarySdlConnection != null) {
 				secondarySdlConnection.unregisterSession(this);
 				secondarySdlConnection = null;
 			}
 		}
+	}
 	}
 
 	@Override
