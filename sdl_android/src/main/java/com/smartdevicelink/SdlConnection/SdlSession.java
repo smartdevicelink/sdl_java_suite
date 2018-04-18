@@ -288,7 +288,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 					StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.NAV, rpcSessionID, this);
 					SdlConnection connection = null;
 					if (secondaryConnectionEnabled) {
-						boolean allowed = isServiceAllowed(SessionType.PCM, TransportLevel.SECONDARY);
+						boolean allowed = isServiceAllowed(SessionType.NAV, TransportLevel.SECONDARY);
 						if ((this.secondarySdlConnection != null) && allowed) {
 							connection = this.secondarySdlConnection;
 						} else {
