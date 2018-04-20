@@ -29,6 +29,7 @@ import com.smartdevicelink.transport.USBTransport;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
+@Deprecated
 public class SdlConnection implements IProtocolListener, ITransportListener {
 
 	private static final String TAG = "SdlConnection";

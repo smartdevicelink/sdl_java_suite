@@ -130,19 +130,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
         mState = state;
     }
-    /**
-     * Set the current state of the chat connection
-     * @param state  An integer defining the current connection state
-     */
-    protected synchronized void setState(int state) {
-        //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
-    	int previousState = mState;
-        mState = state;
-
-        // Give the new state to the Handler so the UI Activity can update
-        //Also sending the previous state so we know if we lost a connection
-        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState).sendToTarget();
-    }
 
     /**
      * Return the current connection state. */

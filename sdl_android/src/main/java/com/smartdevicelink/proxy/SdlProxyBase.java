@@ -53,6 +53,7 @@ import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
+import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -108,7 +109,9 @@ import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
+import com.smartdevicelink.transport.TransportManager;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
@@ -237,6 +240,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
+
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
 	//We create an easily passable anonymous class of the interface so that we don't expose the internal interface to developers
@@ -356,10 +360,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			// disconnect has completed
 			notifyPutFileStreamError(null, info);
 			
-			if (!_advancedLifecycleManagementEnabled) {
+			//if (!_advancedLifecycleManagementEnabled) {
 				// If original model, notify app the proxy is closed so it will delete and reinstanciate 
-				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
-			}// else If ALM, nothing is required to be done here
+			Log.d(TAG, "notifying proxy of closed");
+			notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
+			//}// else If ALM, nothing is required to be done here
 
 		}
 
@@ -371,7 +376,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
-				if(SdlConnection.isLegacyModeEnabled()){
+				if(SdlConnection.isLegacyModeEnabled()){	//FIXME
 					cycleProxy(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
 
 				}else{
@@ -1272,7 +1277,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_systemCapabilityManager = new SystemCapabilityManager(_internalInterface);
 		// Setup SdlConnection
 		synchronized(CONNECTION_REFERENCE_LOCK) {
-			this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);	
+			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
+				this.sdlSession = new SdlSession(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
+			}else{
+				//FIXME this won't actually work
+				this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);
+			}
 		}
 		
 		synchronized(CONNECTION_REFERENCE_LOCK) {
@@ -1287,7 +1297,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession != null) {
-				if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
+				Log.d(TAG, "Forcing on connected.... might actually need this"); //FIXME
+				/*if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
 					try {
 						sdlSession.startSession();
 					} catch (SdlException e) {
@@ -1295,7 +1306,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 				}
 				sdlSession.getSdlConnection().forceHardwareConnectEvent(TransportType.BLUETOOTH);
-				
+				*/
 			}
 		}
 	}
@@ -4069,8 +4080,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if (sdlSession.getSdlConnection() == null) {
-            DebugTool.logWarning("SdlConnection is not available.");
+        if (!sdlSession.getIsConnected()) {
+            DebugTool.logWarning("Connection is not available.");
             return null;
         }
 
@@ -4138,7 +4149,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 											int height, int bitrate, boolean isEncrypted) {
         
-        if (sdlSession == null || sdlSession.getSdlConnection() == null){
+        if (sdlSession == null || !sdlSession.getIsConnected()){
 			return null;
         }
 
@@ -4298,10 +4309,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
     @SuppressWarnings("unused")
 	public void startEncoder () {
-        if (sdlSession == null) return;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return;
-        
+        if (sdlSession == null  || !sdlSession.getIsConnected()) return;
+
         sdlSession.startEncoder();
     }
     
@@ -4310,10 +4319,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
     @SuppressWarnings("unused")
 	public void releaseEncoder() {
-        if (sdlSession == null) return;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return;
-        
+		if (sdlSession == null  || !sdlSession.getIsConnected()) return;
+
         sdlSession.releaseEncoder();
     }
     
@@ -4322,10 +4329,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
     @SuppressWarnings("unused")
 	public void drainEncoder(boolean endOfStream) {
-        if (sdlSession == null) return;		
-        SdlConnection sdlConn = sdlSession.getSdlConnection();		
-        if (sdlConn == null) return;
-        
+		if (sdlSession == null  || !sdlSession.getIsConnected()) return;
+
         sdlSession.drainEncoder(endOfStream);
     }
 
@@ -4355,8 +4360,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if (sdlSession.getSdlConnection() == null) {
-            DebugTool.logWarning("SdlConnection is not available.");
+        if (!sdlSession.getIsConnected()) {
+            DebugTool.logWarning("Connection is not available.");
             return null;
         }
         if (codec != AudioStreamingCodec.LPCM) {
@@ -4402,9 +4407,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      */
     @SuppressWarnings("unused")
     public boolean endAudioStream() {
-        if (sdlSession == null) return false;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return false;
+		if (sdlSession == null  || !sdlSession.getIsConnected()) return false;
 
         pcmServiceEndResponseReceived = false;
         pcmServiceEndResponse = false;

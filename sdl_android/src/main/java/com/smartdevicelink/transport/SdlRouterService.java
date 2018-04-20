@@ -166,7 +166,7 @@ public class SdlRouterService extends Service{
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
 	private boolean isTransportConnected = false;
-	private TransportType connectedTransportType = null;
+	private TransportType connectedTransportType = TransportType.MULTIPLEX;
 
     private Handler  altTransportTimerHandler, foregroundTimeoutHandler;
     private Runnable  altTransportTimerRunnable, foregroundTimeoutRunnable;
