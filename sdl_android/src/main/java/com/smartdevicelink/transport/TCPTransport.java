@@ -6,6 +6,11 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -59,6 +64,12 @@ public class TCPTransport extends SdlTransport {
     private static final int RECONNECT_RETRY_COUNT = 30;
 
     /**
+     * Parameters for messages to the write thread
+     */
+    private static final String KEY_MSG_PACKET = "packet";
+    private static final int MSG_SEND_PACKET = 1;
+
+    /**
      * Instance of TCP transport configuration
      */
     private TCPTransportConfig mConfig = null;
@@ -82,6 +93,10 @@ public class TCPTransport extends SdlTransport {
      * Instance of the separate thread, that does actual work, related to connecting/reading/writing data
      */
     private TCPTransportThread mThread = null;
+
+    private HandlerThread mWriteThread = null;
+    private Handler mWriteHandler;
+    private TCPWriteWorker mWriteWorker;
 
     /**
      * Initial internal state of the component. Used like a simple lightweight FSM replacement while component
@@ -108,33 +123,37 @@ public class TCPTransport extends SdlTransport {
     @Override
     protected boolean sendBytesOverTransport(SdlPacket packet) {
         TCPTransportState currentState = getCurrentState();
-        byte[] msgBytes = packet.constructPacket();
-        logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Size: %d, Offset: %d, Length: %d, Current state is: %s"
-                , msgBytes.length, 0, msgBytes.length, currentState.name()));
+        logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Message ID: %d, Current state is: %s"
+                , packet.getMessageId(), currentState.name()));
 
         boolean bResult = false;
 
-        if(currentState == TCPTransportState.CONNECTED) {
-                if (mOutputStream != null) {
-                    logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
-                    try {
-                        mOutputStream.write(msgBytes, 0, msgBytes.length);
-                        bResult = true;
-                        logInfo("TCPTransport.sendBytesOverTransport: successfully send data");
-                    } catch (IOException e) {
-                        logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
-                        bResult = false;
-                    }
-                } else {
-                    logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
-                }
-            }
-        else {
+        if ((currentState == TCPTransportState.CONNECTED) && (mWriteHandler != null)) {
+            bResult = true;
+            logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
+            Bundle msgBundle = new Bundle();
+            msgBundle.putParcelable(KEY_MSG_PACKET, packet);
+            Message msg = Message.obtain();
+            msg.what = MSG_SEND_PACKET;
+            msg.setData(msgBundle);
+            mWriteHandler.sendMessage(msg);
+        } else {
             logInfo("TCPTransport: sendBytesOverTransport request rejected. Transport is not connected");
             bResult = false;
         }
 
         return bResult;
+    }
+
+    private void startWriteThread() {
+        if (mWriteThread == null) {
+            mWriteThread = new HandlerThread("WriteThread");
+
+            mWriteThread.start();
+            Looper looper = mWriteThread.getLooper();
+            mWriteWorker = new TCPWriteWorker();
+            mWriteHandler = new Handler(looper, mWriteWorker);
+        }
     }
 
     /**
@@ -219,6 +238,15 @@ public class TCPTransport extends SdlTransport {
                 mThread.interrupt();
             }
 
+            if (mWriteThread != null) {
+                mWriteHandler.removeMessages(1);
+                mWriteWorker.cancel();
+                mWriteThread.quit();
+                mWriteThread = null;
+                mWriteHandler = null;
+                mWriteWorker = null;
+            }
+
             if(mSocket != null){
                 mSocket.close();
             }
@@ -285,6 +313,47 @@ public class TCPTransport extends SdlTransport {
     }
 
     /**
+     * Returns current TCP transport state
+     *
+     * @return current state
+     */
+    private synchronized TCPTransportState getCurrentState() {
+        return mCurrentState;
+    }
+
+    /**
+     * Sets current TCP transport state
+     * @param currentState New state
+     */
+    private synchronized void setCurrentState(TCPTransportState currentState) {
+        logInfo(String.format("Current state changed to: %s", currentState));
+        this.mCurrentState = currentState;
+    }
+
+    /**
+     * Implementation of waiting required delay that cannot be interrupted
+     * @param timeMs Time in milliseconds of required delay
+     */
+    private void waitFor(long timeMs) {
+        long endTime = System.currentTimeMillis() +timeMs;
+        while (System.currentTimeMillis() < endTime) {
+            synchronized (this) {
+                try {
+                    wait(endTime - System.currentTimeMillis());
+                } catch (Exception e) {
+                    // Nothing To Do, simple wait
+                }
+            }
+        }
+    }
+
+
+	@Override
+	public String getBroadcastComment() {
+		return "";
+	}
+
+    /**
      * Internal class that represents separate thread, that does actual work, related to connecting/reading/writing data
      */
     private class TCPTransportThread extends Thread {
@@ -331,7 +400,7 @@ public class TCPTransport extends SdlTransport {
                         mSocket.connect(new InetSocketAddress(mConfig.getIPAddress(), mConfig.getPort()));
                         mOutputStream = mSocket.getOutputStream();
                         mInputStream = mSocket.getInputStream();
-
+                        startWriteThread();
                     } catch (IOException e) {
                         logError("TCPTransport.connect: Exception during connect stage: " + e.getMessage());
                     }
@@ -463,41 +532,6 @@ public class TCPTransport extends SdlTransport {
     }
 
     /**
-     * Returns current TCP transport state
-     *
-     * @return current state
-     */
-    private synchronized TCPTransportState getCurrentState() {
-        return mCurrentState;
-    }
-
-    /**
-     * Sets current TCP transport state
-     * @param currentState New state
-     */
-    private synchronized void setCurrentState(TCPTransportState currentState) {
-        logInfo(String.format("Current state changed to: %s", currentState));
-        this.mCurrentState = currentState;
-    }
-
-    /**
-     * Implementation of waiting required delay that cannot be interrupted
-     * @param timeMs Time in milliseconds of required delay
-     */
-    private void waitFor(long timeMs) {
-        long endTime = System.currentTimeMillis() +timeMs;
-        while (System.currentTimeMillis() < endTime) {
-            synchronized (this) {
-                try {
-                    wait(endTime - System.currentTimeMillis());
-                } catch (Exception e) {
-                    // Nothing To Do, simple wait
-                }
-            }
-        }
-    }
-
-    /**
      * Defines available states of the TCP transport
      */
     private enum TCPTransportState {
@@ -522,8 +556,73 @@ public class TCPTransport extends SdlTransport {
         DISCONNECTING
     }
 
-	@Override
-	public String getBroadcastComment() {
-		return "";
-	}
+    private class TCPWriteWorker implements Handler.Callback {
+        private boolean mCancelled = false;
+
+        public void cancel() {
+            mCancelled = true;
+            if (mOutputStream != null) {
+                synchronized (TCPTransport.this) {
+                    try {
+                        mOutputStream.flush();
+                    } catch (IOException e) {
+                        logError("TCPTransport flushing output stream failed: " + e.getMessage());
+                    }
+
+                    try {
+                        mOutputStream.close();
+                    } catch (IOException e) {
+                        logError("TCPTransport closing output stream failed: " + e.getMessage());
+                    }
+                    mOutputStream = null;
+                }
+            }
+        }
+
+        private void write(byte [] msgBytes,  int offset, int count) {
+            if ((msgBytes == null) || (msgBytes.length == 0)) {
+                logInfo("TCPTransport.sendBytesOverTransport: nothing to send");
+                return;
+            }
+
+            if (offset + count > msgBytes.length) {
+                count = msgBytes.length - offset;
+            }
+
+            OutputStream out;
+            if ((mOutputStream != null) && (!mCancelled)) {
+                synchronized (TCPTransport.this) {
+                    out = mOutputStream;
+                }
+
+                try {
+                    out.write(msgBytes, offset, count);
+                    logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
+                } catch (IOException e) {
+                    logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
+                }
+            } else {
+                logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
+            }
+        }
+
+        @Override
+        public boolean handleMessage(Message message) {
+            if (!mCancelled && (message.what == MSG_SEND_PACKET)) {
+                Bundle msgBundle = message.getData();
+                SdlPacket packet = msgBundle.getParcelable(KEY_MSG_PACKET);
+
+                byte [] msgBytes = packet.constructPacket();
+
+                TCPTransportState currentState = getCurrentState();
+
+                logInfo(String.format("TCPTransport: Sending bytes over transport. Message ID: %d, Size: %d, Offset: %d, Length: %d, Current state is: %s"
+                    , msgBytes.length, 0, msgBytes.length, packet.getMessageId(), currentState.name()));
+
+                write(msgBytes, 0, msgBytes.length);
+                return true;
+            }
+            return false;
+        }
+    }
 } // end-class
