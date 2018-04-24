@@ -1,5 +1,7 @@
 package com.smartdevicelink.marshal;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -28,6 +30,7 @@ public class JsonRPCMarshaller {
 		byte[] jsonBytes = null;
 		try {
 			JSONObject jsonObject = msg.serializeJSON(version);
+			Log.i("JsonRPCMarshaller", "marshall: " + jsonObject.toString());
 			jsonBytes = jsonObject.toString().getBytes();
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);

@@ -1,9 +1,8 @@
 package com.smartdevicelink.proxy;
 
-import java.util.Vector;
-
 import android.os.Build;
 
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.Alert;
@@ -55,6 +54,8 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+
+import java.util.Vector;
 
 public class RPCRequestFactory {
 
@@ -584,59 +585,73 @@ public class RPCRequestFactory {
 		
 		return buildRegisterAppInterface(null, appName, null, null, null, isMediaApp, 
 				null, null, null, appID, null, null);
-	}	
-		
+	}
+
 	public static RegisterAppInterface buildRegisterAppInterface(
-			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, 
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
+			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName,
+			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
 			String appID, Integer correlationID, DeviceInfo deviceInfo) {
+		return buildRegisterAppInterface(sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName,
+				vrSynonyms, isMediaApp, languageDesired, hmiDisplayLanguageDesired, appType,
+				appID, null, null, correlationID, deviceInfo);
+	}
+
+	public static RegisterAppInterface buildRegisterAppInterface(
+			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName,
+			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,
+			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
+			String appID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID, DeviceInfo deviceInfo) {
 		RegisterAppInterface msg = new RegisterAppInterface();
-		
+
 		if (correlationID == null) {
 			correlationID = 1;
 		}
 		msg.setCorrelationID(correlationID);
-		
+
 		if (sdlMsgVersion == null) {
 			sdlMsgVersion = new SdlMsgVersion();
 			sdlMsgVersion.setMajorVersion(Integer.valueOf(SDL_MSG_MAJOR_VERSION));
 			sdlMsgVersion.setMinorVersion(Integer.valueOf(SDL_MSG_MINOR_VERSION));
-		} 
+		}
 		msg.setSdlMsgVersion(sdlMsgVersion);
 		msg.setDeviceInfo(deviceInfo);
 		msg.setAppName(appName);
-		
+
 		msg.setTtsName(ttsName);
-		
+
 		if (ngnMediaScreenAppName == null) {
 			ngnMediaScreenAppName = appName;
 		}
-		
+
 		msg.setNgnMediaScreenAppName(ngnMediaScreenAppName);
-		
+
 		if (vrSynonyms == null) {
 			vrSynonyms = new Vector<String>();
 			vrSynonyms.add(appName);
 		}
 		msg.setVrSynonyms(vrSynonyms);
-		
+
 		msg.setIsMediaApplication(isMediaApp);
-		
+
 		if (languageDesired == null) {
 			languageDesired = Language.EN_US;
 		}
 		msg.setLanguageDesired(languageDesired);
-		
+
 		if (hmiDisplayLanguageDesired == null) {
 			hmiDisplayLanguageDesired = Language.EN_US;
-		}		
-		
+		}
+
 		msg.setHmiDisplayLanguageDesired(hmiDisplayLanguageDesired);
-		
+
 		msg.setAppHMIType(appType);
-		
+
 		msg.setAppID(appID);
+
+		msg.setDayColorScheme(dayColorScheme);
+
+		msg.setNightColorScheme(nightColorScheme);
 
 		return msg;
 	}

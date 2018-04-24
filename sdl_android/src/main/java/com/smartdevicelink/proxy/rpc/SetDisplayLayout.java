@@ -44,6 +44,8 @@ import java.util.Hashtable;
  */
 public class SetDisplayLayout extends RPCRequest {
 	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
+	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
+	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
 	/**
 	 * Constructs a new SetDisplayLayout object
 	 */
@@ -82,4 +84,22 @@ public class SetDisplayLayout extends RPCRequest {
     public String getDisplayLayout() {
     	return getString(KEY_DISPLAY_LAYOUT);
     }
+
+
+
+	public TemplateColorScheme getDayColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
+	}
+
+	public void setDayColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+	}
+
+	public TemplateColorScheme getNightColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
+	}
+
+	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+	}
 }

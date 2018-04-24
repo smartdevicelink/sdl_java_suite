@@ -41,12 +41,12 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 
-import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -186,6 +186,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Language _hmiDisplayLanguageDesired = null;
 	private Vector<AppHMIType> _appType = null;
 	private String _appID = null;
+	private TemplateColorScheme _dayColorScheme = null;
+	private TemplateColorScheme _nightColorScheme = null;
 	@SuppressWarnings({"FieldCanBeLocal", "unused"}) //Need to understand what this is used for
 	private String _autoActivateIdDesired = null;
 	private String _lastHashID = null;
@@ -584,7 +586,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throws SdlException {
 				
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, null, null, null, transportConfig);	
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, null, null, callbackToUIThread, null, null, null, transportConfig);
 	}
 	
 	@SuppressWarnings("ConstantConditions")
@@ -592,7 +594,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
 								   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
 								   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
-								   String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
+								   String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
 		Log.i(TAG, "SDL_LIB_VERSION: " + Version.VERSION);
@@ -630,6 +633,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_appType = appType;
 		_appID = appID;
 		_autoActivateIdDesired = autoActivateID;
+		_dayColorScheme = dayColorScheme;
+		_nightColorScheme = nightColorScheme;
 		_transportConfig = transportConfig;
 				
 		// Test conditions to invalidate the proxy
@@ -778,14 +783,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID, Boolean bEnableResume, BaseTransportConfig transportConfig) 
+			String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+		    boolean callbackToUIThread, boolean preRegister, String sHashID, Boolean bEnableResume, BaseTransportConfig transportConfig)
 			throws SdlException 
 	{
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, preRegister, sHashID, bEnableResume, transportConfig);
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme, callbackToUIThread, preRegister, sHashID, bEnableResume, transportConfig);
 	}
-	
-	
 	
 	/**
 	 * Constructor.
@@ -809,15 +813,51 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param transportConfig Configuration of transport to be used by underlying connection.
 	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
 	 */	
-	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
-			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) 
+	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+						   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+						   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+						   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						   String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig)
 			throws SdlException 
 	{
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, preRegister, null, null, transportConfig);
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, null, null, callbackToUIThread, preRegister, null, null, transportConfig);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param listener Type of listener for this proxy base.
+	 * @param sdlProxyConfigurationResources Configuration resources for this proxy.
+	 * @param enableAdvancedLifecycleManagement Flag that ALM should be enabled or not.
+	 * @param appName Client application name.
+	 * @param ttsName TTS name.
+	 * @param ngnMediaScreenAppName Media Screen Application name.
+	 * @param vrSynonyms List of synonyms.
+	 * @param isMediaApp Flag that indicates that client application if media application or not.
+	 * @param sdlMsgVersion Version of Sdl Message.
+	 * @param languageDesired Desired language.
+	 * @param hmiDisplayLanguageDesired Desired language for HMI.
+	 * @param appType Type of application.
+	 * @param appID Application identifier.
+	 * @param autoActivateID Auto activation identifier.
+	 * @param dayColorScheme Day color scheme.
+	 * @param dayColorScheme Night color scheme.
+	 * @param callbackToUIThread Flag that indicates that this proxy should send callback to UI thread or not.
+	 * @param preRegister Flag that indicates that this proxy should be pre-registerd or not.
+	 * @param transportConfig Configuration of transport to be used by underlying connection.
+	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
+	 */
+	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+						   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+						   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+						   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						   String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+						   boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig)
+			throws SdlException
+	{
+		performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme, callbackToUIThread, preRegister, null, null, transportConfig);
 	}
 
 	private Intent createBroadcastIntent()
@@ -3636,6 +3676,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_hmiDisplayLanguageDesired,
 						_appType,
 						_appID,
+						_dayColorScheme,
+						_nightColorScheme,
 						REGISTER_APP_INTERFACE_CORRELATION_ID);
 				
 			} catch (Exception e) {
@@ -5285,7 +5327,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName,
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, Integer correlationID)
+			String appID, TemplateColorScheme _dayColorScheme, TemplateColorScheme _nightColorScheme, Integer correlationID)
 			throws SdlException {
 		String carrierName = null;
 		if(telephonyManager != null){
@@ -5293,8 +5335,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		deviceInfo = RPCRequestFactory.BuildDeviceInfo(carrierName);
 		RegisterAppInterface msg = RPCRequestFactory.buildRegisterAppInterface(
-				sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, 
-				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID, deviceInfo);
+				sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
+				languageDesired, hmiDisplayLanguageDesired, appType, appID, _dayColorScheme, _nightColorScheme,correlationID, deviceInfo);
 		
 		if (_bAppResumeEnabled)
 		{

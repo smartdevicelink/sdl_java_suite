@@ -226,6 +226,9 @@ public class RegisterAppInterface extends RPCRequest {
 	public static final String KEY_VR_SYNONYMS = "vrSynonyms";
 	public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
 	public static final String KEY_HASH_ID = "hashID";
+	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
+	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
+
 	/**
 	 * Constructs a new RegisterAppInterface object
 	 */
@@ -537,4 +540,20 @@ public class RegisterAppInterface extends RPCRequest {
     public void setAppID(String appID) {
 		setParameters(KEY_APP_ID, appID);
     }
+
+    public TemplateColorScheme getDayColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
+	}
+
+    public void setDayColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+	}
+
+	public TemplateColorScheme getNightColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
+	}
+
+	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+	}
 }
