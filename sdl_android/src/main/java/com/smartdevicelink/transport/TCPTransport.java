@@ -590,11 +590,11 @@ public class TCPTransport extends SdlTransport {
             }
 
             OutputStream out;
-            if ((mOutputStream != null) && (!mCancelled)) {
-                synchronized (TCPTransport.this) {
-                    out = mOutputStream;
-                }
+            synchronized (TCPTransport.this) {
+                out = mOutputStream;
+            }
 
+            if ((out != null) && (!mCancelled)) {
                 try {
                     out.write(msgBytes, offset, count);
                     logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
@@ -602,7 +602,11 @@ public class TCPTransport extends SdlTransport {
                     logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
                 }
             } else {
-                logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
+                if (mCancelled) {
+                    logError("TCPTransport: sendBytesOverTransport request accepted, thread is cancelled");
+                } else {
+                    logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
+                }
             }
         }
 
