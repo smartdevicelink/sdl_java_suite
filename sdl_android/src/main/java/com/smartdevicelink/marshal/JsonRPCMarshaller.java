@@ -21,22 +21,22 @@ import com.smartdevicelink.util.DebugTool;
  */
 
 public class JsonRPCMarshaller {
-
+	
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-
+	
 	public static byte[] marshall(RPCMessage msg, byte version) {
 		byte[] jsonBytes = null;
 		try {
 			JSONObject jsonObject = msg.serializeJSON(version);
 			jsonBytes = jsonObject.toString().getBytes();
-
+			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
 		} catch (JSONException e) {
 			DebugTool.logError("Failed to encode messages to JSON.", e);
 		}
 		return jsonBytes;
 	}
-
+	
 	public static Hashtable<String, Object> unmarshall(byte[] message) {
 		SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Receive, message, SDL_LIB_PRIVATE_KEY);
 		Hashtable<String, Object> ret = null;
@@ -49,9 +49,9 @@ public class JsonRPCMarshaller {
 		}
 		return ret;
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject)
+    public static Hashtable<String, Object> deserializeJSONObject(JSONObject jsonObject) 
 			throws JSONException {
 		Hashtable<String, Object> ret = new Hashtable<String, Object>();
 		Iterator<String> it = jsonObject.keys();
@@ -65,7 +65,7 @@ public class JsonRPCMarshaller {
 				JSONArray arrayValue = (JSONArray) value;
 				List<Object> putList = new ArrayList<Object>(arrayValue.length());
 				for (int i = 0; i < arrayValue.length(); i++) {
-					Object anObject = arrayValue.get(i);
+					Object anObject = arrayValue.get(i); 
 					if (anObject instanceof JSONObject) {
 						Hashtable<String, Object> deserializedObject = deserializeJSONObject((JSONObject)anObject);
 						putList.add(deserializedObject);
@@ -81,7 +81,7 @@ public class JsonRPCMarshaller {
 		return ret;
 	}
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	private static JSONArray serializeList(List<?> list) throws JSONException{
 		JSONArray toPut = new JSONArray();
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
@@ -101,7 +101,7 @@ public class JsonRPCMarshaller {
 	}
 
 	@SuppressWarnings({"unchecked" })
-	public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
+    public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
 		JSONObject obj = new JSONObject();
 		Iterator<String> hashKeyIterator = hash.keySet().iterator();
 		while (hashKeyIterator.hasNext()){
