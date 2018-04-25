@@ -198,7 +198,7 @@ import java.util.List;
  *                 <td>Maxlength: 100</td>
  * 			<td>SmartDeviceLink 2.3.2.2</td>
  * 		</tr>
- * 
+ *
  * 		<tr>
  * 			<td>systemSoftwareVersion</td>
  * 			<td>String</td>
@@ -206,6 +206,24 @@ import java.util.List;
  *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
  * 			<td>SmartDeviceLink 2.3.2.2</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>dayColorScheme</td>
+ * 			<td>TemplateColorScheme</td>
+ * 			<td>The color scheme that is used for day.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 4.7</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>nightColorScheme</td>
+ * 			<td>TemplateColorScheme</td>
+ * 			<td>The color scheme that is used for night.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 4.7</td>
  * 		</tr>
  *  </table>
  *  <p></p>
@@ -541,18 +559,46 @@ public class RegisterAppInterface extends RPCRequest {
 		setParameters(KEY_APP_ID, appID);
     }
 
+	/**
+	 * Gets the color scheme that is currently used for day
+	 *
+	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+	 * for day color scheme
+	 * @since SmartDeviceLink 4.7
+	 */
     public TemplateColorScheme getDayColorScheme(){
 		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
 	}
 
+	/**
+	 * Sets the color scheme that is intended to be used for day
+	 *
+	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+	 * used for day color scheme
+	 * @since SmartDeviceLink 4.7
+	 */
     public void setDayColorScheme(TemplateColorScheme templateColorScheme){
 		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
 	}
 
+	/**
+	 * Gets the color scheme that is currently used for night
+	 *
+	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+	 * for night color scheme
+	 * @since SmartDeviceLink 4.7
+	 */
 	public TemplateColorScheme getNightColorScheme(){
 		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
 	}
 
+	/**
+	 * Sets the color scheme that is intended to be used for night
+	 *
+	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+	 * used for night color scheme
+	 * @since SmartDeviceLink 4.7
+	 */
 	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
 		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
 	}
