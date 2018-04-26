@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
@@ -42,6 +43,7 @@ import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -239,6 +241,10 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor(GENERAL_INT, GENERAL_INT, GENERAL_INT);
+	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme(GENERAL_RGBCOLOR, GENERAL_RGBCOLOR, GENERAL_RGBCOLOR);
+	public static final TemplateColorScheme            GENERAL_NIGHTCOLORSCHEME               = new TemplateColorScheme(GENERAL_RGBCOLOR, GENERAL_RGBCOLOR, GENERAL_RGBCOLOR);
+
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -335,6 +341,9 @@ public class Test {
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_TOUCHEVENTCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_PCMSTREAMCAPABILITIES     = new JSONObject();
+	public static final JSONObject JSON_RGBCOLOR                  = new JSONObject();
+	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
+	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
 
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -718,6 +727,18 @@ public class Test {
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_MAX_NUMBER_RFCOMM_PORTS, GENERAL_INT);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS, GENERAL_STRING);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS_VERSION, GENERAL_STRING);
+
+			JSON_RGBCOLOR.put(RGBColor.KEY_RED, GENERAL_INT);
+			JSON_RGBCOLOR.put(RGBColor.KEY_GREEN, GENERAL_INT);
+			JSON_RGBCOLOR.put(RGBColor.KEY_BLUE, GENERAL_INT);
+
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_PRIMARY_COLOR, JSON_RGBCOLOR);
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_SECONDARY_COLOR, JSON_RGBCOLOR);
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, JSON_RGBCOLOR);
+
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_PRIMARY_COLOR, JSON_RGBCOLOR);
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_SECONDARY_COLOR, JSON_RGBCOLOR);
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, JSON_RGBCOLOR);
 			
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MAJOR_VERSION, GENERAL_INT);
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MINOR_VERSION, GENERAL_INT);	

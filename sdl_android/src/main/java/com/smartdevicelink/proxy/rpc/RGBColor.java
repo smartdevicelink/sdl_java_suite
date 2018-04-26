@@ -54,9 +54,13 @@ import java.util.Hashtable;
  * @since SmartDeviceLink 4.7
  */
 public class RGBColor extends RPCStruct{
-    private static final String KEY_RED = "red";
-    private static final String KEY_GREEN = "green";
-    private static final String KEY_BLUE = "blue";
+    public static final String KEY_RED = "red";
+    public static final String KEY_GREEN = "green";
+    public static final String KEY_BLUE = "blue";
+
+    public RGBColor(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
     /**
      * Constructs a new RGB object
@@ -66,9 +70,15 @@ public class RGBColor extends RPCStruct{
      */
     public RGBColor(Integer red, Integer green, Integer blue) {
         Hashtable<String, Object> hash = new Hashtable<>();
-        hash.put(KEY_RED, red);
-        hash.put(KEY_GREEN, green);
-        hash.put(KEY_BLUE, blue);
+        if (red != null) {
+            hash.put(KEY_RED, red);
+        }
+        if (green != null) {
+            hash.put(KEY_GREEN, green);
+        }
+        if (blue != null) {
+            hash.put(KEY_BLUE, blue);
+        }
         this.store = hash;
     }
 

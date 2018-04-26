@@ -948,13 +948,24 @@ public class RPCRequestFactory {
 		
 		return msg;
 	}
-	
+
 	public static SetDisplayLayout BuildSetDisplayLayout(String displayLayout, Integer correlationID)
 	{
 		SetDisplayLayout msg = new SetDisplayLayout();
 		msg.setCorrelationID(correlationID);
 		msg.setDisplayLayout(displayLayout);
-		
+
+		return msg;
+	}
+
+	public static SetDisplayLayout BuildSetDisplayLayout(String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID)
+	{
+		SetDisplayLayout msg = new SetDisplayLayout();
+		msg.setCorrelationID(correlationID);
+		msg.setDisplayLayout(displayLayout);
+		msg.setDayColorScheme(dayColorScheme);
+		msg.setNightColorScheme(nightColorScheme);
+
 		return msg;
 	}
 	

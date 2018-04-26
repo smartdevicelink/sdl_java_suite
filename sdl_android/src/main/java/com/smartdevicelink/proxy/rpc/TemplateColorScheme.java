@@ -40,9 +40,13 @@ import java.util.Hashtable;
  */
 public class TemplateColorScheme extends RPCStruct {
 
-    private static final String KEY_PRIMARY_COLOR = "primaryColor";
-    private static final String KEY_SECONDARY_COLOR = "secondaryColor";
-    private static final String KEY_BACKGROUND_COLOR = "backgroundColor";
+    public static final String KEY_PRIMARY_COLOR = "primaryColor";
+    public static final String KEY_SECONDARY_COLOR = "secondaryColor";
+    public static final String KEY_BACKGROUND_COLOR = "backgroundColor";
+
+    public TemplateColorScheme(Hashtable<String, Object> hash) {
+        super(hash);
+    }
 
     /**
      * Constructs a new TemplateColorScheme object
@@ -52,9 +56,15 @@ public class TemplateColorScheme extends RPCStruct {
      */
     public TemplateColorScheme(RGBColor primaryColor, RGBColor secondaryColor, RGBColor backgroundColor) {
         Hashtable<String, Object> hash = new Hashtable<>();
-        hash.put(KEY_PRIMARY_COLOR, primaryColor);
-        hash.put(KEY_SECONDARY_COLOR, secondaryColor);
-        hash.put(KEY_BACKGROUND_COLOR, backgroundColor);
+        if (primaryColor != null) {
+            hash.put(KEY_PRIMARY_COLOR, primaryColor);
+        }
+        if (secondaryColor != null) {
+            hash.put(KEY_SECONDARY_COLOR, secondaryColor);
+        }
+        if (backgroundColor != null) {
+            hash.put(KEY_BACKGROUND_COLOR, backgroundColor);
+        }
         this.store = hash;
     }
 

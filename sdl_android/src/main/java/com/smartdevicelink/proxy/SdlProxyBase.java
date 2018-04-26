@@ -6261,19 +6261,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SetAppIcon msg = RPCRequestFactory.buildSetAppIcon(sdlFileName, correlationID);
 		sendRPCRequest(msg);
 	}
-	
+
 	/**
 	 *     Set an alternate display layout. If not sent, default screen for given platform will be shown.
 	 *     Responses are captured through callback on IProxyListener.
-	 * 
+	 *
 	 * @param displayLayout -Predefined or dynamically created screen layout.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
-	*/	
+	 */
 	@SuppressWarnings("unused")
 	public void setdisplaylayout(String displayLayout, Integer correlationID) throws SdlException
 	{
 		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, correlationID);
+		sendRPCRequest(msg);
+	}
+
+	/**
+	 *     Set an alternate display layout. If not sent, default screen for given platform will be shown.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param displayLayout -Predefined or dynamically created screen layout.
+	 * @param dayColorScheme a TemplateColorScheme object representing the colors that will be used for day color scheme
+     * @param nightColorScheme a TemplateColorScheme object representing the colors that will be used for night color scheme
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void setdisplaylayout(String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID) throws SdlException
+	{
+		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, dayColorScheme, nightColorScheme, correlationID);
 		sendRPCRequest(msg);
 	}
 

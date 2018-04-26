@@ -25,6 +25,7 @@ import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThru;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.ScrollableMessage;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -40,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeButton;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleData;
 import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
@@ -612,6 +614,11 @@ public class RPCRequestFactoryTests extends TestCase {
 		Vector<AppHMIType> testHMIType = new Vector<AppHMIType>();
 		testHMIType.add(AppHMIType.DEFAULT);
 		DeviceInfo testDI = RPCRequestFactory.BuildDeviceInfo(null);
+		RGBColor testColor = new RGBColor(255,0,0);
+		TemplateColorScheme testDayColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
+		TemplateColorScheme testNightColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
+
+
 		RegisterAppInterface testRAI;
 		
 		// Test -- buildRegisterAppInterface(String appName, String appID)
@@ -621,7 +628,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		// ^ Calls another build method.
 		
 		// Test -- buildRegisterAppInterface(SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,  Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, Integer correlationID)
-		testRAI = RPCRequestFactory.buildRegisterAppInterface(testSMV, testAppName, testTTSName, testNGN, testSynonyms, testIMA, testLang, testHMILang, testHMIType, testAppID, testCorrelationID,testDI);
+		testRAI = RPCRequestFactory.buildRegisterAppInterface(testSMV, testAppName, testTTSName, testNGN, testSynonyms, testIMA, testLang, testHMILang, testHMIType, testAppID, testDayColorScheme, testNightColorScheme, testCorrelationID, testDI);
 		assertTrue(Test.TRUE, Validator.validateSdlMsgVersion(testSMV, testRAI.getSdlMsgVersion()));
 		assertEquals(Test.MATCH, testAppName, testRAI.getAppName());
 		assertTrue(Test.TRUE, Validator.validateTtsChunks(testTTSName, testRAI.getTtsName()));
@@ -634,9 +641,11 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertEquals(Test.MATCH, testAppID, testRAI.getAppID());
 		assertEquals(Test.MATCH, testCorrelationID, testRAI.getCorrelationID());
 		assertEquals(Test.MATCH, testDI, testRAI.getDeviceInfo());
+		assertEquals(Test.MATCH, testDayColorScheme, testRAI.getDayColorScheme());
+		assertEquals(Test.MATCH, testNightColorScheme, testRAI.getNightColorScheme());
 
-		
-		testRAI = RPCRequestFactory.buildRegisterAppInterface(null, null, null, null, null, null, null, null, null, null, null,null);
+
+		testRAI = RPCRequestFactory.buildRegisterAppInterface(null, null, null, null, null, null, null, null, null, null, null, null, null,null);
 		assertEquals(Test.MATCH, (Integer) 1, testRAI.getCorrelationID());
 		assertEquals(Test.MATCH, testSMV.getMajorVersion(), testRAI.getSdlMsgVersion().getMajorVersion());
 		assertEquals(Test.MATCH, testSMV.getMinorVersion(), testRAI.getSdlMsgVersion().getMinorVersion());
@@ -650,6 +659,8 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertNull(Test.NULL, testRAI.getAppHMIType());
 		assertNull(Test.NULL, testRAI.getAppID());
 		assertNull(Test.NULL, testRAI.getDeviceInfo());
+		assertNull(Test.NULL, testRAI.getDayColorScheme());
+		assertNull(Test.NULL, testRAI.getNightColorScheme());
 	}
 	
 	public void testBuildSetAppIcon () {
@@ -1039,14 +1050,31 @@ public class RPCRequestFactoryTests extends TestCase {
 		String testDL = "layout";
 		Integer testCorrelationID = 0;
 		SetDisplayLayout testSDL;
-		
+		RGBColor testColor = new RGBColor(255, 0, 0);
+		TemplateColorScheme testDayColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
+		TemplateColorScheme testNightColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
+
 		// Test -- BuildSetDisplayLayout(String displayLayout, Integer correlationID)
 		testSDL = RPCRequestFactory.BuildSetDisplayLayout(testDL, testCorrelationID);
 		assertEquals(Test.MATCH, testDL, testSDL.getDisplayLayout());
 		assertEquals(Test.MATCH, testCorrelationID, testSDL.getCorrelationID());
-		
+
 		testSDL = RPCRequestFactory.BuildSetDisplayLayout(null, null);
 		assertNull(Test.NULL, testSDL.getDisplayLayout());
+		assertNotNull(Test.NOT_NULL, testSDL.getCorrelationID());
+
+
+		// Test -- BuildSetDisplayLayout(String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID)
+		testSDL = RPCRequestFactory.BuildSetDisplayLayout(testDL, testDayColorScheme, testNightColorScheme, testCorrelationID);
+		assertEquals(Test.MATCH, testDL, testSDL.getDisplayLayout());
+		assertEquals(Test.MATCH, testDayColorScheme, testSDL.getDayColorScheme());
+		assertEquals(Test.MATCH, testNightColorScheme, testSDL.getNightColorScheme());
+		assertEquals(Test.MATCH, testCorrelationID, testSDL.getCorrelationID());
+
+		testSDL = RPCRequestFactory.BuildSetDisplayLayout(null, null, null, null);
+		assertNull(Test.NULL, testSDL.getDisplayLayout());
+		assertNull(Test.NULL, testSDL.getDayColorScheme());
+		assertNull(Test.NULL, testSDL.getNightColorScheme());
 		assertNotNull(Test.NOT_NULL, testSDL.getCorrelationID());
 	}
 	
