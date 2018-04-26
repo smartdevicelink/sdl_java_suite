@@ -64,9 +64,9 @@ public class RGBColor extends RPCStruct{
 
     /**
      * Constructs a new RGB object
-     * @param red red value
-     * @param green green value
-     * @param blue blue value
+     * @param red red value - min: 0; max: 255
+     * @param green green value - min: 0; max: 255
+     * @param blue blue value - min: 0; max: 255
      */
     public RGBColor(Integer red, Integer green, Integer blue) {
         Hashtable<String, Object> hash = new Hashtable<>();
