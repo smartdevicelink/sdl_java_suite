@@ -210,6 +210,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						if (altTransportWake) {
 							wakeRouterServiceAltTransport(context);
 							return;
+						}else{
+							for(ComponentName service : runningBluetoothServicePackage){
+								pingRouterService(context,service.getPackageName(),service.getClassName());
+							}
 						}
 						return;
 					}
