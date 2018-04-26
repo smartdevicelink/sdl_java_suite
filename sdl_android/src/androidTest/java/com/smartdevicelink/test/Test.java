@@ -241,9 +241,9 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
-	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor(GENERAL_INT, GENERAL_INT, GENERAL_INT);
-	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme(GENERAL_RGBCOLOR, GENERAL_RGBCOLOR, GENERAL_RGBCOLOR);
-	public static final TemplateColorScheme            GENERAL_NIGHTCOLORSCHEME               = new TemplateColorScheme(GENERAL_RGBCOLOR, GENERAL_RGBCOLOR, GENERAL_RGBCOLOR);
+	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor();
+	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme();
+	public static final TemplateColorScheme            GENERAL_NIGHTCOLORSCHEME               = new TemplateColorScheme();
 
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
@@ -637,6 +637,18 @@ public class Test {
 
 		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
 		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
+
+		GENERAL_RGBCOLOR.setRed(GENERAL_INTEGER);
+		GENERAL_RGBCOLOR.setGreen(GENERAL_INTEGER);
+		GENERAL_RGBCOLOR.setBlue(GENERAL_INTEGER);
+
+		GENERAL_NIGHTCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
+		GENERAL_NIGHTCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
+		GENERAL_NIGHTCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
+
+		GENERAL_DAYCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
+		GENERAL_DAYCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
+		GENERAL_DAYCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
 
         
 		try {

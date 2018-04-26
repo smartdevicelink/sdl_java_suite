@@ -39,12 +39,12 @@ public class RGBColorTest extends TestCase {
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, blue);
 
 		// Invalid/Null Tests
-		RGBColor msg = new RGBColor(null, null, null);
+		RGBColor msg = new RGBColor();
 		assertNotNull(Test.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getRed());
-		assertNull(Test.NULL, msg.getGreen());
-		assertNull(Test.NULL, msg.getBlue());
+		assertEquals(Test.MATCH, msg.getRed(), (Integer) 0);
+		assertEquals(Test.MATCH, msg.getGreen(), (Integer) 0);
+		assertEquals(Test.MATCH, msg.getBlue(), (Integer) 0);
 	}
 
 	public void testJson() {

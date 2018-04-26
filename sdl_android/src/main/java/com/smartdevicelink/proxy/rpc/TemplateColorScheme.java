@@ -44,28 +44,18 @@ public class TemplateColorScheme extends RPCStruct {
     public static final String KEY_SECONDARY_COLOR = "secondaryColor";
     public static final String KEY_BACKGROUND_COLOR = "backgroundColor";
 
-    public TemplateColorScheme(Hashtable<String, Object> hash) {
-        super(hash);
+    /**
+     * Constructs a new TemplateColorScheme object
+     */
+    public TemplateColorScheme(){
     }
 
     /**
-     * Constructs a new TemplateColorScheme object
-     * @param primaryColor The primary "accent" color
-     * @param secondaryColor The secondary "accent" color
-     * @param backgroundColor The color of the background
+     * Constructs a new TemplateColorScheme object indicated by the Hashtable parameter
+     * @param hash The Hashtable to use
      */
-    public TemplateColorScheme(RGBColor primaryColor, RGBColor secondaryColor, RGBColor backgroundColor) {
-        Hashtable<String, Object> hash = new Hashtable<>();
-        if (primaryColor != null) {
-            hash.put(KEY_PRIMARY_COLOR, primaryColor);
-        }
-        if (secondaryColor != null) {
-            hash.put(KEY_SECONDARY_COLOR, secondaryColor);
-        }
-        if (backgroundColor != null) {
-            hash.put(KEY_BACKGROUND_COLOR, backgroundColor);
-        }
-        this.store = hash;
+    public TemplateColorScheme(Hashtable<String, Object> hash) {
+        super(hash);
     }
 
     /**

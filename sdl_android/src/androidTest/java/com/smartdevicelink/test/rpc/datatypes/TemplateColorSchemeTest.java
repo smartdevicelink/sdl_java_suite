@@ -25,7 +25,10 @@ public class TemplateColorSchemeTest extends TestCase {
 
 	@Override
 	public void setUp() {
-		msg = new TemplateColorScheme(Test.GENERAL_RGBCOLOR, Test.GENERAL_RGBCOLOR, Test.GENERAL_RGBCOLOR);
+		msg = new TemplateColorScheme();
+		msg.setPrimaryColor(Test.GENERAL_RGBCOLOR);
+		msg.setSecondaryColor(Test.GENERAL_RGBCOLOR);
+		msg.setBackgroundColor(Test.GENERAL_RGBCOLOR);
 	}
 
     /**
@@ -43,7 +46,7 @@ public class TemplateColorSchemeTest extends TestCase {
 		assertTrue(Test.TRUE, Validator.validateRGBColor(Test.GENERAL_RGBCOLOR, backgroundColor));
 
 		// Invalid/Null Tests
-		TemplateColorScheme msg = new TemplateColorScheme(null, null, null);
+		TemplateColorScheme msg = new TemplateColorScheme();
 		assertNotNull(Test.NOT_NULL, msg);
 
 		assertNull(Test.NULL, msg.getPrimaryColor());
@@ -69,7 +72,7 @@ public class TemplateColorSchemeTest extends TestCase {
 				RGBColor referenceColor = new RGBColor(JsonRPCMarshaller.deserializeJSONObject(referenceColorObj));
 				JSONObject underTestColorObj = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 				RGBColor underTestColor = new RGBColor(JsonRPCMarshaller.deserializeJSONObject(underTestColorObj));
-				assertTrue(Test.TRUE,  Validator.validateRGBColor(referenceColor, underTestColor));
+				assertTrue(Test.TRUE, Validator.validateRGBColor(referenceColor, underTestColor));
 			}
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);

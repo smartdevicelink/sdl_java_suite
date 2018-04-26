@@ -614,9 +614,18 @@ public class RPCRequestFactoryTests extends TestCase {
 		Vector<AppHMIType> testHMIType = new Vector<AppHMIType>();
 		testHMIType.add(AppHMIType.DEFAULT);
 		DeviceInfo testDI = RPCRequestFactory.BuildDeviceInfo(null);
-		RGBColor testColor = new RGBColor(255,0,0);
-		TemplateColorScheme testDayColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
-		TemplateColorScheme testNightColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
+		RGBColor testColor = new RGBColor();
+		testColor.setRed(255);
+		testColor.setGreen(0);
+		testColor.setBlue(0);
+		TemplateColorScheme testDayColorScheme = new TemplateColorScheme();
+		testDayColorScheme.setPrimaryColor(testColor);
+		testDayColorScheme.setSecondaryColor(testColor);
+		testDayColorScheme.setBackgroundColor(testColor);
+		TemplateColorScheme testNightColorScheme = new TemplateColorScheme();
+		testNightColorScheme.setPrimaryColor(testColor);
+		testNightColorScheme.setSecondaryColor(testColor);
+		testNightColorScheme.setBackgroundColor(testColor);
 
 
 		RegisterAppInterface testRAI;
@@ -1050,9 +1059,18 @@ public class RPCRequestFactoryTests extends TestCase {
 		String testDL = "layout";
 		Integer testCorrelationID = 0;
 		SetDisplayLayout testSDL;
-		RGBColor testColor = new RGBColor(255, 0, 0);
-		TemplateColorScheme testDayColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
-		TemplateColorScheme testNightColorScheme = new TemplateColorScheme(testColor, testColor, testColor);
+		RGBColor testColor = new RGBColor();
+		testColor.setRed(255);
+		testColor.setGreen(0);
+		testColor.setBlue(0);
+		TemplateColorScheme testDayColorScheme = new TemplateColorScheme();
+		testDayColorScheme.setPrimaryColor(testColor);
+		testDayColorScheme.setSecondaryColor(testColor);
+		testDayColorScheme.setBackgroundColor(testColor);
+		TemplateColorScheme testNightColorScheme = new TemplateColorScheme();
+		testNightColorScheme.setPrimaryColor(testColor);
+		testNightColorScheme.setSecondaryColor(testColor);
+		testNightColorScheme.setBackgroundColor(testColor);
 
 		// Test -- BuildSetDisplayLayout(String displayLayout, Integer correlationID)
 		testSDL = RPCRequestFactory.BuildSetDisplayLayout(testDL, testCorrelationID);
