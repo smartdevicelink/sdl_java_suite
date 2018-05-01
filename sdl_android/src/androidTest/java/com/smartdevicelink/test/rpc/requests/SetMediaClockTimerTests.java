@@ -19,7 +19,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SetMediaClockTimer}
+ * {@link com.smartdevicelink.proxy.rpc.SetMediaClockTimer}
  */
 public class SetMediaClockTimerTests extends BaseRpcTests {
 
@@ -30,6 +30,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		msg.setStartTime(Test.GENERAL_STARTTIME);
 		msg.setEndTime(Test.GENERAL_STARTTIME);
 		msg.setUpdateMode(Test.GENERAL_UPDATEMODE);
+		msg.setEnableSeek(Test.GENERAL_BOOLEAN);
 
 		return msg;
 	}
@@ -51,7 +52,8 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		try {
 			result.put(SetMediaClockTimer.KEY_START_TIME, Test.JSON_STARTTIME);
 			result.put(SetMediaClockTimer.KEY_END_TIME, Test.JSON_STARTTIME);
-			result.put(SetMediaClockTimer.KEY_UPDATE_MODE, Test.GENERAL_UPDATEMODE);			
+			result.put(SetMediaClockTimer.KEY_UPDATE_MODE, Test.GENERAL_UPDATEMODE);
+			result.put(SetMediaClockTimer.KEY_ENABLE_SEEK, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -67,12 +69,14 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		StartTime  testStartTime  = ( (SetMediaClockTimer) msg ).getStartTime();
 		StartTime  testEndTime    = ( (SetMediaClockTimer) msg ).getEndTime();
 		UpdateMode testUpdateMode = ( (SetMediaClockTimer) msg ).getUpdateMode();
+		Boolean testEnableSeek = ( (SetMediaClockTimer) msg ).getEnableSeek();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_UPDATEMODE, testUpdateMode);
 		assertTrue(Test.TRUE, Validator.validateStartTime(Test.GENERAL_STARTTIME, testStartTime));
 		assertTrue(Test.TRUE, Validator.validateStartTime(Test.GENERAL_STARTTIME, testEndTime));
-		
+		assertEquals(Test.MATCH, Boolean.valueOf(Test.GENERAL_BOOLEAN), testEnableSeek);
+
 		// Invalid/Null Tests
 		SetMediaClockTimer msg = new SetMediaClockTimer();
 		assertNotNull(Test.NOT_NULL, msg);
@@ -81,6 +85,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getStartTime());
 		assertNull(Test.NULL, msg.getEndTime());
 		assertNull(Test.NULL, msg.getUpdateMode());
+		assertNull(Test.NULL, msg.getEnableSeek());
 	}
 	
 	/**
@@ -110,6 +115,8 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 			StartTime referenceEndTime = new StartTime(JsonRPCMarshaller.deserializeJSONObject(endTime));
 			assertTrue(Test.TRUE, Validator.validateStartTime(referenceEndTime, cmd.getEndTime()));
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_UPDATE_MODE), cmd.getUpdateMode().toString());
+
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SetMediaClockTimer.KEY_ENABLE_SEEK), cmd.getEnableSeek());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	

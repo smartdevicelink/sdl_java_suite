@@ -691,10 +691,10 @@ public class RPCRequestFactory {
 
 		return req;
 	}
-	
+
 	public static SetMediaClockTimer buildSetMediaClockTimer(Integer hours,
-			Integer minutes, Integer seconds, UpdateMode updateMode,
-			Integer correlationID) {
+															 Integer minutes, Integer seconds, UpdateMode updateMode,
+															 Boolean enableSeek, Integer correlationID) {
 
 		SetMediaClockTimer msg = new SetMediaClockTimer();
 		if (hours != null || minutes != null || seconds != null) {
@@ -706,7 +706,18 @@ public class RPCRequestFactory {
 		}
 
 		msg.setUpdateMode(updateMode);
+		msg.setEnableSeek(enableSeek);
 		msg.setCorrelationID(correlationID);
+
+		return msg;
+	}
+
+	@Deprecated
+	public static SetMediaClockTimer buildSetMediaClockTimer(Integer hours,
+			Integer minutes, Integer seconds, UpdateMode updateMode,
+			Integer correlationID) {
+
+		SetMediaClockTimer msg = buildSetMediaClockTimer(hours, minutes, seconds, updateMode, null, correlationID);
 
 		return msg;
 	}
@@ -717,9 +728,10 @@ public class RPCRequestFactory {
 		Integer hours = null;
 		Integer minutes = null;
 		Integer seconds = null;
+		Boolean enableSeek = null;
 
 		SetMediaClockTimer msg = buildSetMediaClockTimer(hours, minutes,
-				seconds, updateMode, correlationID);
+				seconds, updateMode, enableSeek, correlationID);
 		return msg;
 	}
 	

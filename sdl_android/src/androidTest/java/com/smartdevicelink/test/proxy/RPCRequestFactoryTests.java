@@ -722,20 +722,23 @@ public class RPCRequestFactoryTests extends TestCase {
 	public void testBuildSetMediaClockTimer () {
 		
 		Integer hours = 0, minutes = 0, seconds = 0, testCorrelationID = 0;
+		Boolean enableSeek = true;
 		UpdateMode testMode = UpdateMode.COUNTUP;
 		SetMediaClockTimer testSMCT;
 		
 		// Test -- buildSetMediaClockTimer(Integer hours, Integer minutes, Integer seconds, UpdateMode updateMode, Integer correlationID)
-		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(hours, minutes, seconds, testMode, testCorrelationID);
+		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(hours, minutes, seconds, testMode, enableSeek, testCorrelationID);
 		assertEquals(Test.MATCH, hours, testSMCT.getStartTime().getHours());
 		assertEquals(Test.MATCH, minutes, testSMCT.getStartTime().getMinutes());
 		assertEquals(Test.MATCH, seconds, testSMCT.getStartTime().getSeconds());
 		assertEquals(Test.MATCH, testMode, testSMCT.getUpdateMode());
+		assertEquals(Test.MATCH, enableSeek, testSMCT.getEnableSeek());
 		assertEquals(Test.MATCH, testCorrelationID, testSMCT.getCorrelationID());
 		
-		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(null, null, null, null, null);
+		testSMCT = RPCRequestFactory.buildSetMediaClockTimer(null, null, null, null, null, null);
 		assertNull(Test.NULL, testSMCT.getStartTime());
 		assertNull(Test.NULL, testSMCT.getUpdateMode());
+		assertNull(Test.NULL, testSMCT.getEnableSeek());
 		assertNotNull(Test.NOT_NULL, testSMCT.getCorrelationID());
 		
 		// Test -- buildSetMediaClockTimer(UpdateMode updateMode, Integer correlationID)

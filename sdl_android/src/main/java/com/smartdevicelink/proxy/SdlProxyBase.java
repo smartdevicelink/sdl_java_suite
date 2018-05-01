@@ -5422,8 +5422,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		sendRPCRequest(req);
 	}
-	                                                        
-	
+
+	/**
+	 * Sends a SetMediaClockTimer RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 * @param hours integer for hours
+	 * @param minutes integer for minutes
+	 * @param seconds integer for seconds
+	 * @param updateMode mode in which the media clock timer should be updated
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @param enableSeek a Boolean representing whether seek media clock timer functionality will be available
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void setMediaClockTimer(Integer hours,
+								   Integer minutes, Integer seconds, UpdateMode updateMode,
+								   Boolean enableSeek, Integer correlationID) throws SdlException {
+
+		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(hours,
+				minutes, seconds, updateMode, null, correlationID);
+
+		sendRPCRequest(msg);
+	}
+
 	/**
 	 * Sends a SetMediaClockTimer RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
@@ -5435,19 +5456,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void setMediaClockTimer(Integer hours,
 								   Integer minutes, Integer seconds, UpdateMode updateMode,
 								   Integer correlationID) throws SdlException {
 
 		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(hours,
-				minutes, seconds, updateMode, correlationID);
+				minutes, seconds, updateMode, null, correlationID);
 
 		sendRPCRequest(msg);
 	}
-	
+
 	/**
 	 * Pauses the media clock. Responses are captured through callback on IProxyListener.
-	 * 
+	 *
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @param enableSeek a Boolean representing whether seek media clock timer functionality will be available
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void pauseMediaClockTimer(Integer correlationID, Boolean enableSeek)
+			throws SdlException {
+
+		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
+				0, 0, UpdateMode.PAUSE, enableSeek, correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+	/**
+	 * Pauses the media clock. Responses are captured through callback on IProxyListener.
+	 *
 	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
@@ -5456,11 +5495,28 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throws SdlException {
 
 		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
-				0, 0, UpdateMode.PAUSE, correlationID);
+				0, 0, UpdateMode.PAUSE, null, correlationID);
 
 		sendRPCRequest(msg);
 	}
-	
+
+	/**
+	 * Resumes the media clock. Responses are captured through callback on IProxyListener.
+	 *
+	 * @param correlationID ID to be attached to the RPCRequest that correlates the RPCResponse
+	 * @param enableSeek a Boolean representing whether seek media clock timer functionality will be available
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void resumeMediaClockTimer(Integer correlationID, Boolean enableSeek)
+			throws SdlException {
+
+		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
+				0, 0, UpdateMode.RESUME, enableSeek, correlationID);
+
+		sendRPCRequest(msg);
+	}
+
 	/**
 	 * Resumes the media clock. Responses are captured through callback on IProxyListener.
 	 * 
@@ -5472,11 +5528,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throws SdlException {
 
 		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
-				0, 0, UpdateMode.RESUME, correlationID);
+				0, 0, UpdateMode.RESUME, null, correlationID);
 
 		sendRPCRequest(msg);
 	}
-	
+
 	/**
 	 * Clears the media clock. Responses are captured through callback on IProxyListener.
 	 * 
